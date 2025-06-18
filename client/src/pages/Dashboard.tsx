@@ -38,17 +38,26 @@ export default function Dashboard() {
   const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-full">
+    <div className="p-6 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Vue d'ensemble</h1>
-          <p className="text-gray-500 mt-1">Mercredi 18 juin 2025</p>
+          <h1 className="text-3xl font-bold text-gray-900">Vue d'ensemble</h1>
+          <p className="text-gray-600 mt-2 flex items-center">
+            <Calendar className="w-4 h-4 mr-2" />
+            Mercredi 18 juin 2025 - Journée productive
+          </p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-          <Plus className="w-4 h-4 mr-2" />
-          Nouveau RDV
-        </Button>
+        <div className="flex space-x-3">
+          <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Analytics
+          </Button>
+          <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg">
+            <Plus className="w-4 h-4 mr-2" />
+            Nouveau RDV
+          </Button>
+        </div>
       </div>
 
       {/* Stats Grid */}
