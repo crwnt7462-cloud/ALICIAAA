@@ -13,7 +13,7 @@ const navItems: NavItem[] = [
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
   { path: "/booking", icon: CalendarPlus, label: "Réservations" },
-  { path: "/forum", icon: MessageCircle, label: "Forum", hasNotification: true },
+  { path: "/support", icon: MessageCircle, label: "Support", hasNotification: true },
 ];
 
 export function BottomNavigation() {

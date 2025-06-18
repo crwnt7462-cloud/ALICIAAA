@@ -12,7 +12,7 @@ import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
-import Forum from "@/pages/Forum";
+import Support from "@/pages/Support";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,7 +26,7 @@ function Router() {
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
           <Route path="/booking" component={Booking} />
-          <Route path="/forum" component={Forum} />
+          <Route path="/support" component={Support} />
           <Route component={NotFound} />
         </Switch>
       </main>
