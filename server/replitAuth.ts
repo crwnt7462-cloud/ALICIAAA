@@ -128,6 +128,36 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // Admin mode: bypass authentication in development
+  if (process.env.NODE_ENV === "development" && process.env.ADMIN_MODE === "true") {
+    // Create a mock admin user for development
+    req.user = {
+      claims: {
+        sub: "admin-dev-user",
+        email: "admin@example.com",
+        first_name: "Admin",
+        last_name: "User"
+      },
+      access_token: "dev-token",
+      expires_at: Math.floor(Date.now() / 1000) + 3600
+    };
+    
+    // Ensure admin user exists in storage
+    try {
+      await storage.upsertUser({
+        id: "admin-dev-user",
+        email: "admin@example.com",
+        firstName: "Admin",
+        lastName: "User",
+        profileImageUrl: null
+      });
+    } catch (error) {
+      console.log("Admin user creation error:", error);
+    }
+    
+    return next();
+  }
+
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user.expires_at) {
