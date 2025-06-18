@@ -79,70 +79,123 @@ export default function Clients() {
   };
 
   return (
-    <div className="p-4 space-y-4">
-      {/* Search and Filter */}
-      <div className="flex space-x-3 mb-6">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-          <Input
-            type="text"
-            placeholder="Rechercher un client..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600"
-          />
+    <div className="p-6 space-y-6 bg-gray-50 min-h-full">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Clients</h1>
+          <p className="text-gray-500 mt-1">{clients.length} clients actifs</p>
         </div>
-        <Button
-          variant="outline"
-          className="px-4 py-3 bg-gray-100 dark:bg-dark-700 rounded-xl border border-gray-200 dark:border-gray-600"
-        >
-          <Filter className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-        </Button>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Nouveau client
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Ajouter un client</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="firstName">Prénom</Label>
+                  <Input
+                    id="firstName"
+                    {...form.register("firstName")}
+                    placeholder="Prénom"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Nom</Label>
+                  <Input
+                    id="lastName"
+                    {...form.register("lastName")}
+                    placeholder="Nom"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  {...form.register("email")}
+                  type="email"
+                  placeholder="email@exemple.com"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phone">Téléphone</Label>
+                <Input
+                  id="phone"
+                  {...form.register("phone")}
+                  placeholder="06 12 34 56 78"
+                />
+              </div>
+              <div>
+                <Label htmlFor="notes">Notes</Label>
+                <Textarea
+                  id="notes"
+                  {...form.register("notes")}
+                  placeholder="Notes sur le client..."
+                  rows={3}
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={createClientMutation.isPending}>
+                {createClientMutation.isPending ? "Ajout..." : "Ajouter le client"}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+        <Input
+          type="text"
+          placeholder="Rechercher un client..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 h-10 bg-white border-gray-200"
+        />
       </div>
 
       {/* Client List */}
       <div className="space-y-3">
         {clients.map((client: any) => (
-          <Card key={client.id}>
+          <Card key={client.id} className="border-0 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
-                  <span className="text-primary font-semibold">
-                    {client.firstName[0]}{client.lastName[0]}
+                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold text-sm">
+                    {client.firstName?.[0]}{client.lastName?.[0]}
                   </span>
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-semibold">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className="font-semibold text-gray-900 truncate">
                       {client.firstName} {client.lastName}
                     </h3>
                     {renderStars(client.rating)}
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Dernière visite: {
-                      client.lastVisit 
-                        ? new Date(client.lastVisit).toLocaleDateString('fr-FR')
-                        : 'Aucune visite'
-                    }
+                  <p className="text-sm text-gray-500 mb-1">
+                    {client.email || 'Pas d\'email'}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {client.visitCount || 0} visites • {client.totalSpent || 0}€ total
-                  </p>
+                  <div className="flex items-center text-xs text-gray-400 space-x-3">
+                    <span>{client.visitCount || 0} visites</span>
+                    <span>•</span>
+                    <span>{client.totalSpent || 0}€ total</span>
+                  </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <Button
-                    size="sm"
-                    className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-medium"
-                  >
-                    <Calendar className="w-3 h-3 mr-1" />
-                    RDV
+                <div className="flex items-center space-x-2">
+                  <Button size="sm" variant="outline" className="h-8 w-8 p-0">
+                    <MessageCircle className="w-4 h-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="px-3 py-1 bg-gray-100 dark:bg-dark-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm"
-                  >
-                    <MessageCircle className="w-3 h-3" />
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white h-8">
+                    <Calendar className="w-4 h-4 mr-1" />
+                    RDV
                   </Button>
                 </div>
               </div>

@@ -18,7 +18,7 @@ import NotFound from "@/pages/not-found";
 function Router() {
   // Bypass authentication completely - go directly to main app
   return (
-    <div className="h-full flex flex-col max-w-md mx-auto bg-white dark:bg-dark-800 shadow-xl">
+    <div className="h-full flex flex-col max-w-md mx-auto bg-white shadow-sm">
       <Header />
       <main className="flex-1 overflow-y-auto">
         <Switch>

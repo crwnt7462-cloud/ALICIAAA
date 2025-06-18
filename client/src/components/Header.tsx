@@ -1,28 +1,23 @@
-import { Bell, Moon, Sun } from "lucide-react";
+import { Bell, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "./ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
-  const { theme, toggleTheme } = useTheme();
   const { user } = useAuth();
 
   return (
-    <header className="bg-white dark:bg-dark-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-            <i className="fas fa-cut text-white text-sm"></i>
+        <div className="flex items-center space-x-4">
+          <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-semibold text-lg">S</span>
           </div>
           <div>
-            <h1 className="font-semibold text-lg">
-              {user?.businessName || 'Salon Élégance'}
+            <h1 className="font-semibold text-gray-900 text-lg">
+              Studio Pro
             </h1>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              {user?.firstName && user?.lastName 
-                ? `${user.firstName} ${user.lastName}`
-                : 'Professionnel de la beauté'
-              }
+            <p className="text-sm text-gray-500">
+              Gestion professionnelle
             </p>
           </div>
         </div>
@@ -30,25 +25,23 @@ export function Header() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={toggleTheme}
-            className="rounded-lg bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600"
+            className="h-9 w-9 text-gray-500 hover:text-gray-900 hover:bg-gray-100"
           >
-            {theme === 'dark' ? (
-              <Sun className="h-4 w-4 text-yellow-400" />
-            ) : (
-              <Moon className="h-4 w-4 text-gray-600" />
-            )}
+            <Search className="h-4 w-4" />
           </Button>
           <div className="relative">
             <Button
               variant="ghost"
               size="icon"
-              className="rounded-lg bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600"
+              className="h-9 w-9 text-gray-500 hover:text-gray-900 hover:bg-gray-100"
             >
-              <Bell className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+              <Bell className="h-4 w-4" />
             </Button>
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-              3
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
+          </div>
+          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <span className="text-gray-600 font-medium text-sm">
+              {user?.firstName?.[0] || 'U'}
             </span>
           </div>
         </div>
