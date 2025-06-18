@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Search, Filter, Star, UserPlus, MessageCircle, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,7 @@ export default function Clients() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   const { data: clients = [] } = useQuery({
     queryKey: ["/api/clients", searchQuery],
@@ -41,14 +43,19 @@ export default function Clients() {
       const response = await apiRequest("POST", "/api/clients", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (newClient) => {
       toast({
         title: "Client ajouté",
-        description: "Le client a été ajouté avec succès.",
+        description: "Le client a été ajouté avec succès. Redirection vers la réservation...",
       });
       setIsDialogOpen(false);
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      
+      // Rediriger automatiquement vers la page de réservation avec le client pré-sélectionné
+      setTimeout(() => {
+        setLocation(`/booking?clientId=${newClient.id}&clientName=${encodeURIComponent(newClient.firstName + ' ' + newClient.lastName)}`);
+      }, 1000);
     },
     onError: (error) => {
       toast({

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Calendar, Clock, MapPin, Star, ChevronRight, User, Phone, Mail, CreditCard, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,6 +21,26 @@ export default function Booking() {
     email: "",
     phone: ""
   });
+  const [preSelectedClientId, setPreSelectedClientId] = useState<string | null>(null);
+
+  // Vérifier les paramètres URL pour client pré-sélectionné
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clientId = urlParams.get('clientId');
+    const clientName = urlParams.get('clientName');
+    
+    if (clientId && clientName) {
+      setPreSelectedClientId(clientId);
+      const [firstName, lastName] = decodeURIComponent(clientName).split(' ');
+      setClientInfo({
+        firstName: firstName || '',
+        lastName: lastName || '',
+        email: '',
+        phone: ''
+      });
+      setCurrentStep(2); // Passer directement à l'étape de sélection de service
+    }
+  }, []);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -49,7 +69,11 @@ export default function Booking() {
 
   const createAppointmentMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/appointments", data);
+      const appointmentData = {
+        ...data,
+        clientId: preSelectedClientId ? parseInt(preSelectedClientId) : null,
+      };
+      const response = await apiRequest("POST", "/api/appointments", appointmentData);
       return response.json();
     },
     onSuccess: () => {
@@ -283,8 +307,15 @@ export default function Booking() {
           Vos informations
         </h2>
         <p className="text-gray-600 dark:text-gray-400">
-          Complétez vos coordonnées pour finaliser la réservation
+          {preSelectedClientId ? 'Client pré-sélectionné - Vérifiez les informations' : 'Complétez vos coordonnées pour finaliser la réservation'}
         </p>
+        {preSelectedClientId && (
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-blue-800 text-sm font-medium">
+              ✓ Client automatiquement sélectionné depuis la liste des clients
+            </p>
+          </div>
+        )}
       </div>
 
       <Card>
