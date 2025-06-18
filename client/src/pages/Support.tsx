@@ -42,7 +42,7 @@ const supportCategories: SupportCategory[] = [
 ];
 
 const botResponses = {
-  greeting: "Bonjour ! Je suis votre assistant Support Beauty Pro. Comment puis-je vous aider aujourd'hui ?",
+  greeting: "Assistant IA spécialisé salon de beauté activé. Je peux vous aider avec l'optimisation planning, prédiction no-shows, stratégies fidélisation client, analyse performances, suggestions services et tarification. Posez-moi vos questions sur la gestion de votre établissement.",
   booking: "Pour la gestion des réservations, vous pouvez :\n• Créer un nouveau rendez-vous depuis l'onglet Réservations\n• Modifier un RDV depuis le Planning\n• Gérer la liste d'attente pour optimiser votre planning",
   clients: "Pour la gestion de vos clients :\n• Ajoutez de nouveaux clients avec leurs informations\n• Consultez l'historique des rendez-vous\n• Gérez les préférences et notes personnelles",
   technical: "Pour le support technique :\n• Vérifiez votre connexion internet\n• Actualisez la page si nécessaire\n• Contactez notre équipe technique via contact@beautypro.fr",
@@ -70,7 +70,7 @@ export default function Support() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     const userMessage: Message = {
@@ -81,21 +81,37 @@ export default function Support() {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageToSend = newMessage;
     setNewMessage("");
     setIsTyping(true);
 
-    // Simuler une réponse du bot
-    setTimeout(() => {
-      const botResponse = getBotResponse(newMessage);
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: messageToSend }),
+      });
+      
+      const data = await response.json();
+      
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: botResponse,
+        text: data.response || "Comment puis-je vous aider avec votre salon ?",
         isBot: true,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, botMessage]);
-      setIsTyping(false);
-    }, 1000);
+    } catch (error) {
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Je rencontre un problème technique. Pouvez-vous reformuler votre question ?",
+        isBot: true,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botMessage]);
+    }
+    
+    setIsTyping(false);
   };
 
   const getBotResponse = (message: string): string => {

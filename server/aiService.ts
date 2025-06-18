@@ -290,6 +290,39 @@ Répondez en JSON:
       return { satisfactionScore: 0.5, sentimentTrend: "stable", churnRisk: 0, loyaltyScore: 0.5, upsellOpportunities: [], retentionStrategy: "" };
     }
   }
+
+  async generateChatResponse(userMessage: string) {
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "system",
+            content: `Tu es un assistant IA spécialisé dans la gestion de salon de beauté. Tu aides les professionnels avec :
+            - La gestion des rendez-vous et du planning
+            - L'optimisation des créneaux horaires
+            - Les conseils pour réduire les no-shows
+            - La fidélisation client et stratégies marketing
+            - L'analyse des performances du salon
+            - Les suggestions de services et tarification
+            
+            Réponds toujours de manière professionnelle, bienveillante et pratique. Donne des conseils concrets et actionables.`
+          },
+          {
+            role: "user",
+            content: userMessage
+          }
+        ],
+        max_tokens: 500,
+        temperature: 0.7
+      });
+
+      return response.choices[0].message.content || "Comment puis-je vous aider avec votre salon aujourd'hui ?";
+    } catch (error) {
+      console.error('Erreur génération réponse chat:', error);
+      return "Je suis votre assistant IA pour salon de beauté. Comment puis-je vous aider avec la gestion de votre établissement ?";
+    }
+  }
 }
 
 export const aiService = new AIService();

@@ -400,6 +400,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
+    try {
+      const { message } = req.body;
+      const response = await aiService.generateChatResponse(message);
+      res.json({ response });
+    } catch (error) {
+      console.error('Erreur chat IA:', error);
+      res.json({ response: "Je suis votre assistant IA. Comment puis-je vous aider aujourd'hui ?" });
+    }
+  });
+
   app.post('/api/ai/optimize-planning', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
