@@ -12,7 +12,7 @@ import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
-import Support from "@/pages/Support";
+
 import AIAutomation from "@/pages/AIAutomation";
 import NotFound from "@/pages/not-found";
 
@@ -28,7 +28,7 @@ function Router() {
           <Route path="/clients" component={Clients} />
           <Route path="/booking" component={Booking} />
           <Route path="/ai" component={AIAutomation} />
-          <Route path="/support" component={Support} />
+
           <Route component={NotFound} />
         </Switch>
       </main>
