@@ -11,19 +11,19 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: revenueChart } = useQuery({
+  const { data: revenueChart = [] } = useQuery({
     queryKey: ["/api/dashboard/revenue-chart"],
   });
 
-  const { data: upcomingAppointments } = useQuery({
+  const { data: upcomingAppointments = [] } = useQuery({
     queryKey: ["/api/dashboard/upcoming-appointments"],
   });
 
-  const { data: topServices } = useQuery({
+  const { data: topServices = [] } = useQuery({
     queryKey: ["/api/dashboard/top-services"],
   });
 
-  const { data: staffPerformance } = useQuery({
+  const { data: staffPerformance = [] } = useQuery({
     queryKey: ["/api/dashboard/staff-performance"],
   });
 
@@ -129,7 +129,7 @@ export default function Dashboard() {
         <CardContent>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={revenueChart || []}>
+              <LineChart data={Array.isArray(revenueChart) ? revenueChart : []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                 <XAxis 
                   dataKey="date" 
@@ -165,7 +165,7 @@ export default function Dashboard() {
           <CardContent>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={topServices || []} layout="horizontal">
+                <BarChart data={Array.isArray(topServices) ? topServices : []} layout="horizontal">
                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
                   <XAxis type="number" stroke="#6b7280" fontSize={12} />
                   <YAxis 
@@ -191,7 +191,7 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {staffPerformance?.map((staff: any, index: number) => (
+              {Array.isArray(staffPerformance) && staffPerformance.map((staff: any, index: number) => (
                 <div key={staff.staffName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
@@ -227,7 +227,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {upcomingAppointments?.length > 0 ? (
+            {Array.isArray(upcomingAppointments) && upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appointment: any, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                   <div className="flex items-center space-x-3">
