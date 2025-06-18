@@ -341,11 +341,11 @@ export default function AIAutomation() {
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                        <span>Demande d'acompte si risque > 30%</span>
+                        <span>Demande d'acompte si risque {">"} 30%</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span>Double confirmation si risque > 60%</span>
+                        <span>Double confirmation si risque {">"} 60%</span>
                       </div>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import { Home, Calendar, Users, CalendarPlus, MessageCircle } from "lucide-react";
+import { Home, Calendar, Users, CalendarPlus, MessageCircle, Brain } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface NavItem {
@@ -13,7 +13,8 @@ const navItems: NavItem[] = [
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
   { path: "/booking", icon: CalendarPlus, label: "Réservations" },
-  { path: "/support", icon: MessageCircle, label: "Support", hasNotification: true },
+  { path: "/ai", icon: Brain, label: "IA & Auto", hasNotification: true },
+  { path: "/support", icon: MessageCircle, label: "Support" },
 ];
 
 export function BottomNavigation() {
