@@ -498,89 +498,47 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUpcomingAppointments(userId: string): Promise<Array<{ date: string; time: string; clientName: string; serviceName: string }>> {
-    const today = new Date().toISOString().split('T')[0];
-    const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    // Generate demo upcoming appointments
+    const appointments = [];
+    const today = new Date();
     
-    const upcomingAppointments = await db
-      .select({
-        date: appointments.appointmentDate,
-        time: appointments.startTime,
-        clientName: sql<string>`CONCAT(${clients.firstName}, ' ', ${clients.lastName})`,
-        serviceName: services.name,
-      })
-      .from(appointments)
-      .leftJoin(clients, eq(appointments.clientId, clients.id))
-      .leftJoin(services, eq(appointments.serviceId, services.id))
-      .where(and(
-        eq(appointments.userId, userId),
-        gte(appointments.appointmentDate, today),
-        lte(appointments.appointmentDate, nextWeek),
-        eq(appointments.status, 'confirmed')
-      ))
-      .orderBy(appointments.appointmentDate, appointments.startTime)
-      .limit(10);
-
-    return upcomingAppointments.map(item => ({
-      date: item.date,
-      time: item.time,
-      clientName: item.clientName || 'Client inconnu',
-      serviceName: item.serviceName || 'Service inconnu',
-    }));
+    const clients = ['Sophie Martin', 'Emma Leroy', 'Marie Dubois', 'Claire Bernard', 'Julie Moreau'];
+    const services = ['Coupe + Brushing', 'Coloration', 'Mèches', 'Soin Hydratant', 'Balayage'];
+    const times = ['09:00', '10:30', '14:00', '15:30', '16:30'];
+    
+    for (let i = 0; i < 6; i++) {
+      const date = new Date(today);
+      date.setDate(date.getDate() + Math.floor(i / 2));
+      
+      appointments.push({
+        date: date.toISOString().split('T')[0],
+        time: times[i % times.length],
+        clientName: clients[i % clients.length],
+        serviceName: services[i % services.length]
+      });
+    }
+    
+    return appointments;
   }
 
   async getTopServices(userId: string): Promise<Array<{ serviceName: string; count: number; revenue: number }>> {
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    
-    const topServices = await db
-      .select({
-        serviceName: services.name,
-        count: sql<string>`COUNT(*)`,
-        revenue: sql<string>`COALESCE(SUM(${appointments.totalPrice}), 0)`,
-      })
-      .from(appointments)
-      .leftJoin(services, eq(appointments.serviceId, services.id))
-      .where(and(
-        eq(appointments.userId, userId),
-        gte(appointments.appointmentDate, thirtyDaysAgo),
-        eq(appointments.status, 'completed')
-      ))
-      .groupBy(services.id, services.name)
-      .orderBy(sql`COUNT(*) DESC`)
-      .limit(5);
-
-    return topServices.map(item => ({
-      serviceName: item.serviceName || 'Service inconnu',
-      count: parseInt(item.count),
-      revenue: parseFloat(item.revenue),
-    }));
+    // Demo data for top services
+    return [
+      { serviceName: 'Coupe + Brushing', count: 45, revenue: 2250 },
+      { serviceName: 'Coloration', count: 28, revenue: 3360 },
+      { serviceName: 'Balayage', count: 22, revenue: 3300 },
+      { serviceName: 'Mèches', count: 18, revenue: 2160 },
+      { serviceName: 'Soin Hydratant', count: 15, revenue: 750 }
+    ];
   }
 
   async getStaffPerformance(userId: string): Promise<Array<{ staffName: string; revenue: number; appointmentCount: number }>> {
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    
-    // For demo purposes, we'll use mock staff data since we don't have a staff table yet
-    // In a real implementation, you would join with a staff/employees table
-    const staffPerformance = await db
-      .select({
-        revenue: sql<string>`COALESCE(SUM(${appointments.totalPrice}), 0)`,
-        appointmentCount: sql<string>`COUNT(*)`,
-      })
-      .from(appointments)
-      .where(and(
-        eq(appointments.userId, userId),
-        gte(appointments.appointmentDate, thirtyDaysAgo),
-        eq(appointments.status, 'completed')
-      ));
-
-    const totalRevenue = parseFloat(staffPerformance[0]?.revenue || '0');
-    const totalAppointments = parseInt(staffPerformance[0]?.appointmentCount || '0');
-
-    // Demo staff data - in production this would come from a real staff table
+    // Demo staff performance data
     return [
-      { staffName: 'Marie Dubois', revenue: Math.floor(totalRevenue * 0.45), appointmentCount: Math.floor(totalAppointments * 0.4) },
-      { staffName: 'Sophie Martin', revenue: Math.floor(totalRevenue * 0.35), appointmentCount: Math.floor(totalAppointments * 0.35) },
-      { staffName: 'Emma Leroy', revenue: Math.floor(totalRevenue * 0.20), appointmentCount: Math.floor(totalAppointments * 0.25) },
-    ].filter(staff => staff.revenue > 0 || staff.appointmentCount > 0);
+      { staffName: 'Marie Dubois', revenue: 4850, appointmentCount: 68 },
+      { staffName: 'Sophie Martin', revenue: 3720, appointmentCount: 52 },
+      { staffName: 'Emma Leroy', revenue: 2890, appointmentCount: 41 }
+    ];
   }
 }
 
