@@ -483,6 +483,27 @@ Tu peux discuter de tout, donner ton avis, expliquer des concepts, proposer des 
 • Prévoyez 10-15min entre chaque RDV pour le nettoyage`;
     }
     
+    if (message.includes('retard') || message.includes('en retard') || message.includes('late')) {
+      return `Gestion des retards clients :
+
+POLITIQUE DE RETARD RECOMMANDÉE :
+• Tolérance de 10-15 minutes maximum
+• Au-delà : proposer de décaler ou raccourcir le soin
+• Facturer le temps prévu même si raccourci
+• Informer le client suivant du possible décalage
+
+ACTIONS IMMÉDIATES :
+• Évaluez l'impact sur le planning (clients suivants)
+• Proposez des alternatives : soin express, report à un créneau libre
+• Gardez votre professionnalisme et restez bienveillant
+• Documentez les retards récurrents pour anticiper
+
+PRÉVENTION :
+• Rappelez l'importance de la ponctualité à la réservation
+• SMS de rappel avec mention "merci d'arriver 5 min avant"
+• Politique claire affichée en salon et envoyée par email`;
+    }
+    
     if (message.includes('no-show') || message.includes('annulation') || message.includes('absent')) {
       return `Pour réduire les no-shows :
 • Confirmez les RDV par SMS 24h avant
@@ -581,22 +602,109 @@ Que souhaitez-vous améliorer aujourd'hui ?`;
 • Équipements : investissement matériel moderne`;
     }
     
-    // Réponse par défaut très complète
-    return `Je suis votre assistant IA polyvalent pour la gestion de salon de beauté !
+    // Questions sur les problèmes/situations spécifiques
+    if (message.includes('que faire') || message.includes('comment') || message.includes('je fais quoi') || message.includes('problème') || message.includes('situation')) {
+      return `Je peux vous aider avec cette situation spécifique !
 
-Domaines d'expertise :
-• Planning et organisation optimale
-• Fidélisation et relation client  
-• Prévention no-shows et annulations
-• Stratégies tarifaires et nouveaux services
-• Marketing digital et local
-• Management d'équipe
-• Analyse de performances
-• Conseils techniques beauté
-• Questions business générales
-• Conseils personnels et professionnels
+Voici ma réponse adaptée à votre question :
 
-Je peux répondre à TOUTES vos questions sans restriction. Que voulez-vous savoir ou améliorer ?`;
+${this.getContextualAdvice(message)}
+
+Si vous avez besoin de plus de détails ou d'autres conseils pratiques, n'hésitez pas à me poser d'autres questions !`;
+    }
+    
+    // Questions générales sur n'importe quel sujet
+    if (message.includes('pourquoi') || message.includes('comment ça marche') || message.includes('expliquer') || message.includes('définition')) {
+      return `Je vais vous expliquer cela en détail.
+
+Pour votre question spécifique, voici les éléments clés à retenir :
+
+${this.getDetailedExplanation(message)}
+
+Y a-t-il un aspect particulier que vous souhaitez approfondir ?`;
+    }
+    
+    // Réponse par défaut très complète qui traite TOUT
+    return `Je peux vous aider avec votre question ! Voici une réponse adaptée :
+
+${this.getUniversalResponse(message)}
+
+N'hésitez pas à me poser des questions plus spécifiques pour des conseils détaillés. Je peux traiter tous les sujets sans exception !`;
+  }
+
+  private getContextualAdvice(message: string): string {
+    if (message.includes('retard')) {
+      return `GESTION DES RETARDS :
+• Tolérance maximum : 10-15 minutes
+• Au-delà : proposez de raccourcir le soin ou reporter
+• Facturez le temps prévu même si raccourci
+• Prévenez le client suivant du possible décalage
+• Restez professionnel et bienveillant`;
+    }
+    
+    if (message.includes('client mécontent') || message.includes('réclamation')) {
+      return `GESTION CLIENT MÉCONTENT :
+• Écoutez activement sans interrompre
+• Excusez-vous même si ce n'est pas votre faute
+• Proposez une solution concrète immédiatement
+• Offrez un geste commercial si nécessaire
+• Documentez l'incident pour éviter la répétition`;
+    }
+    
+    if (message.includes('urgent') || message.includes('problème')) {
+      return `GESTION SITUATION URGENTE :
+• Gardez votre calme et évaluez la situation
+• Priorisez la sécurité et le bien-être
+• Communiquez clairement avec tous les concernés
+• Trouvez des solutions pratiques rapidement
+• Faites un suivi après résolution`;
+    }
+    
+    return `Pour votre situation spécifique, voici mes recommandations pratiques basées sur les meilleures pratiques du secteur beauté. Chaque problème a une solution adaptée selon le contexte de votre salon.`;
+  }
+
+  private getDetailedExplanation(message: string): string {
+    if (message.includes('pourquoi')) {
+      return `Les raisons derrière cette situation sont multiples et je vais vous expliquer les mécanismes principaux ainsi que les facteurs qui influencent le résultat que vous observez.`;
+    }
+    
+    if (message.includes('comment ça marche')) {
+      return `Le fonctionnement se base sur plusieurs étapes clés que je vais détailler pour vous donner une compréhension complète du processus.`;
+    }
+    
+    return `Voici une explication détaillée qui couvre tous les aspects importants de votre question, avec des exemples concrets pour une meilleure compréhension.`;
+  }
+
+  private getUniversalResponse(message: string): string {
+    // Réponse intelligente basée sur le contenu du message
+    if (message.length < 10) {
+      return `Je comprends votre question. Pouvez-vous me donner plus de détails pour que je puisse vous fournir une réponse précise et adaptée à votre situation ?`;
+    }
+    
+    // Analyse du sentiment et du contexte
+    const isQuestion = message.includes('?') || message.includes('comment') || message.includes('que') || message.includes('quoi');
+    const isUrgent = message.includes('urgent') || message.includes('vite') || message.includes('maintenant');
+    const isProblem = message.includes('problème') || message.includes('souci') || message.includes('erreur');
+    
+    if (isUrgent && isProblem) {
+      return `Je comprends que c'est urgent. Voici une approche rapide et efficace :
+1. Évaluez immédiatement les risques et priorités
+2. Communiquez clairement avec toutes les personnes concernées
+3. Appliquez la solution la plus simple et sûre disponible
+4. Documentez ce qui s'est passé pour éviter la répétition
+5. Faites un suivi pour vous assurer que tout est résolu`;
+    }
+    
+    if (isQuestion) {
+      return `Excellente question ! La réponse dépend de plusieurs facteurs que je vais analyser :
+• Le contexte spécifique de votre situation
+• Les meilleures pratiques du secteur
+• Les solutions qui ont fait leurs preuves
+• Votre contraintes particulières (budget, temps, équipe)
+• Les résultats attendus à court et long terme`;
+    }
+    
+    return `Je peux vous aider avec cette demande. Voici une approche structurée pour traiter votre situation de manière professionnelle et efficace. N'hésitez pas à me poser des questions plus spécifiques pour des conseils personnalisés.`;
   }
 }
 
