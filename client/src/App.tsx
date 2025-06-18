@@ -16,20 +16,7 @@ import Forum from "@/pages/Forum";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="h-full flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Landing />;
-  }
-
+  // Bypass authentication completely - go directly to main app
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white dark:bg-dark-800 shadow-xl">
       <Header />

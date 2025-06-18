@@ -128,60 +128,30 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  // Admin mode: bypass authentication in development
-  if (process.env.NODE_ENV === "development" && process.env.ADMIN_MODE === "true") {
-    // Create a mock admin user for development
-    req.user = {
-      claims: {
-        sub: "admin-dev-user",
-        email: "admin@example.com",
-        first_name: "Admin",
-        last_name: "User"
-      },
-      access_token: "dev-token",
-      expires_at: Math.floor(Date.now() / 1000) + 3600
-    };
-    
-    // Ensure admin user exists in storage
-    try {
-      await storage.upsertUser({
-        id: "admin-dev-user",
-        email: "admin@example.com",
-        firstName: "Admin",
-        lastName: "User",
-        profileImageUrl: null
-      });
-    } catch (error) {
-      console.log("Admin user creation error:", error);
-    }
-    
-    return next();
-  }
-
-  const user = req.user as any;
-
-  if (!req.isAuthenticated() || !user.expires_at) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const now = Math.floor(Date.now() / 1000);
-  if (now <= user.expires_at) {
-    return next();
-  }
-
-  const refreshToken = user.refresh_token;
-  if (!refreshToken) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
-
+  // Bypass authentication completely - always provide demo user
+  req.user = {
+    claims: {
+      sub: "demo-user",
+      email: "demo@beautyapp.com",
+      first_name: "Demo",
+      last_name: "User"
+    },
+    access_token: "demo-token",
+    expires_at: Math.floor(Date.now() / 1000) + 86400 // 24 hours
+  };
+  
+  // Ensure demo user exists in storage
   try {
-    const config = await getOidcConfig();
-    const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
-    updateUserSession(user, tokenResponse);
-    return next();
+    await storage.upsertUser({
+      id: "demo-user",
+      email: "demo@beautyapp.com",
+      firstName: "Demo",
+      lastName: "User",
+      profileImageUrl: null
+    });
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
+    console.log("Demo user creation error:", error);
   }
+  
+  return next();
 };
