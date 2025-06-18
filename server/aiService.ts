@@ -129,6 +129,136 @@ Répondez en JSON:
     }
   }
 
+  async predictCancellationRisk(appointment: AppointmentData, clientBehavior: ClientBehavior, appointmentHistory: any[]) {
+    try {
+      // Analyse l'historique d'annulations du client
+      const cancellations = appointmentHistory.filter(h => h.actionType === 'cancelled');
+      const totalAppointments = appointmentHistory.length || 1;
+      const cancellationRate = cancellations.length / totalAppointments;
+      
+      // Analyse les patterns d'annulation
+      const cancellationPatterns = this.analyzeCancellationPatterns(cancellations, appointment);
+      
+      // Facteurs de risque
+      const riskFactors = [];
+      let riskScore = 0;
+      
+      // 1. Taux d'annulation historique (30% du score)
+      const historicalRisk = cancellationRate * 0.3;
+      riskScore += historicalRisk;
+      if (cancellationRate > 0.2) riskFactors.push(`Taux d'annulation élevé: ${(cancellationRate * 100).toFixed(1)}%`);
+      
+      // 2. Pattern temporel (25% du score)
+      const dayOfWeek = new Date(appointment.date).getDay();
+      const timeHour = parseInt(appointment.time.split(':')[0]);
+      const temporalRisk = this.calculateTemporalRisk(cancellations, dayOfWeek, timeHour);
+      riskScore += temporalRisk * 0.25;
+      if (temporalRisk > 0.5) riskFactors.push('Créneau à risque selon l\'historique');
+      
+      // 3. Délai moyen d'annulation (20% du score)
+      const avgCancelDays = cancellations.reduce((sum, c) => sum + (c.daysBeforeAppointment || 0), 0) / (cancellations.length || 1);
+      const delayRisk = Math.max(0, (7 - avgCancelDays) / 7); // Plus le délai est court, plus le risque est élevé
+      riskScore += delayRisk * 0.2;
+      if (avgCancelDays < 2) riskFactors.push('Annulations habituellement tardives');
+      
+      // 4. Fréquence récente (15% du score)
+      const recentCancellations = cancellations.filter(c => {
+        const cancelDate = new Date(c.actionDate);
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+        return cancelDate > threeMonthsAgo;
+      });
+      const recentRisk = Math.min(recentCancellations.length / 3, 1);
+      riskScore += recentRisk * 0.15;
+      if (recentCancellations.length >= 2) riskFactors.push('Annulations récentes multiples');
+      
+      // 5. Fidélité du client (10% du score inversé)
+      const loyaltyScore = Math.min(clientBehavior.totalSpent / 500, 1); // Clients dépensant plus sont plus fidèles
+      riskScore += (1 - loyaltyScore) * 0.1;
+      if (loyaltyScore < 0.3) riskFactors.push('Client peu fidèle');
+      
+      // Limiter le score entre 0 et 1
+      riskScore = Math.min(Math.max(riskScore, 0), 1);
+      
+      // Déterminer l'action recommandée
+      let recommendedAction = 'none';
+      if (riskScore > 0.7) {
+        recommendedAction = 'deposit_required';
+      } else if (riskScore > 0.5) {
+        recommendedAction = 'reminder_call';
+      } else if (riskScore > 0.3) {
+        recommendedAction = 'confirmation_sms';
+      }
+      
+      return {
+        predictionScore: riskScore,
+        confidence: Math.min(0.9, 0.5 + (totalAppointments / 20)), // Plus d'historique = plus de confiance
+        riskFactors,
+        recommendedAction,
+        reasoning: `Analyse basée sur ${totalAppointments} rendez-vous historiques, ${cancellations.length} annulations identifiées`
+      };
+      
+    } catch (error) {
+      console.error('Erreur prédiction annulation:', error);
+      // Fallback simplifié
+      const cancellationRate = clientBehavior.cancelCount / Math.max(clientBehavior.totalAppointments, 1);
+      return {
+        predictionScore: Math.min(cancellationRate * 1.5, 1),
+        confidence: 0.6,
+        riskFactors: cancellationRate > 0.2 ? ['Historique d\'annulations'] : [],
+        recommendedAction: cancellationRate > 0.4 ? 'reminder_call' : 'none',
+        reasoning: 'Analyse simplifiée basée sur le taux d\'annulation global'
+      };
+    }
+  }
+
+  private analyzeCancellationPatterns(cancellations: any[], appointment: AppointmentData) {
+    const patterns = {
+      preferredCancelDays: {},
+      preferredCancelTimes: {},
+      commonReasons: {}
+    };
+    
+    cancellations.forEach(cancel => {
+      // Jours de la semaine où le client annule le plus
+      if (cancel.dayOfWeek) {
+        patterns.preferredCancelDays[cancel.dayOfWeek] = (patterns.preferredCancelDays[cancel.dayOfWeek] || 0) + 1;
+      }
+      
+      // Créneaux horaires problématiques
+      if (cancel.timeSlot) {
+        patterns.preferredCancelTimes[cancel.timeSlot] = (patterns.preferredCancelTimes[cancel.timeSlot] || 0) + 1;
+      }
+      
+      // Raisons d'annulation récurrentes
+      if (cancel.cancelReason) {
+        patterns.commonReasons[cancel.cancelReason] = (patterns.commonReasons[cancel.cancelReason] || 0) + 1;
+      }
+    });
+    
+    return patterns;
+  }
+
+  private calculateTemporalRisk(cancellations: any[], dayOfWeek: number, timeHour: number): number {
+    if (cancellations.length === 0) return 0;
+    
+    let riskScore = 0;
+    
+    // Risque basé sur le jour de la semaine
+    const dayRisk = cancellations.filter(c => c.dayOfWeek === dayOfWeek).length / cancellations.length;
+    riskScore += dayRisk * 0.6;
+    
+    // Risque basé sur la tranche horaire
+    let timeSlot = 'morning';
+    if (timeHour >= 12 && timeHour < 17) timeSlot = 'afternoon';
+    else if (timeHour >= 17) timeSlot = 'evening';
+    
+    const timeRisk = cancellations.filter(c => c.timeSlot === timeSlot).length / cancellations.length;
+    riskScore += timeRisk * 0.4;
+    
+    return Math.min(riskScore, 1);
+  }
+
   // Assistant rebooking automatique
   async generateRebookingSuggestions(clients: ClientBehavior[], businessData: any) {
     try {

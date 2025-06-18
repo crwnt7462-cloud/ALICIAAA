@@ -217,6 +217,34 @@ export const smartPlanningLogs = pgTable("smart_planning_logs", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const appointmentHistory = pgTable("appointment_history", {
+  id: serial("id").primaryKey(),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  userId: varchar("user_id", { length: 255 }).notNull().references(() => users.id),
+  actionType: varchar("action_type", { length: 20 }).notNull(), // created, confirmed, cancelled, no_show, completed, rescheduled
+  actionDate: timestamp("action_date").notNull(),
+  previousDate: timestamp("previous_date"), // For rescheduled appointments
+  cancelReason: text("cancel_reason"), // Reason for cancellation
+  daysBeforeAppointment: integer("days_before_appointment"), // How many days before appointment was cancelled
+  timeSlot: varchar("time_slot", { length: 10 }), // Morning, afternoon, evening
+  dayOfWeek: integer("day_of_week"), // 1-7 (Monday-Sunday)
+  weatherCondition: varchar("weather_condition", { length: 20 }), // For external factors
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const cancellationPredictions = pgTable("cancellation_predictions", {
+  id: serial("id").primaryKey(),
+  appointmentId: integer("appointment_id").notNull().references(() => appointments.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  predictionScore: numeric("prediction_score", { precision: 3, scale: 2 }).notNull(), // 0.00-1.00
+  riskFactors: text("risk_factors").array(), // Array of risk factors identified
+  confidence: numeric("confidence", { precision: 3, scale: 2 }).notNull(), // Confidence in prediction
+  recommendedAction: varchar("recommended_action", { length: 50 }), // deposit_required, reminder_call, flexible_policy
+  createdAt: timestamp("created_at").defaultNow(),
+  processedAt: timestamp("processed_at"),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   services: many(services),

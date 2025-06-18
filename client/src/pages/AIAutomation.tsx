@@ -357,21 +357,36 @@ export default function AIAutomation() {
                   
                   <CardContent className="flex-1 flex flex-col p-0">
                     {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                      {messages.map((message) => (
-                        <div key={message.id} className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}>
-                          <div className={`max-w-[80%] rounded-lg p-3 ${
-                            message.isBot 
-                              ? 'bg-blue-50 text-blue-900 border border-blue-200' 
-                              : 'bg-gray-100 text-gray-900'
-                          }`}>
-                            <p className="text-sm">{message.text}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              {message.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                            </p>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[400px] max-h-[400px]">
+                      {messages.length === 0 ? (
+                        <div className="flex items-center justify-center h-full text-gray-500">
+                          <div className="text-center">
+                            <Bot className="h-12 w-12 mx-auto mb-3 text-blue-300" />
+                            <p className="text-sm">Bonjour ! Je suis votre assistant IA.</p>
+                            <p className="text-xs mt-1">Posez-moi vos questions sur la gestion de votre salon.</p>
                           </div>
                         </div>
-                      ))}
+                      ) : (
+                        messages.map((message) => (
+                          <div key={message.id} className={`flex ${message.isBot ? 'justify-start' : 'justify-end'} mb-4`}>
+                            <div className={`max-w-[85%] rounded-lg p-4 shadow-sm ${
+                              message.isBot 
+                                ? 'bg-blue-50 text-blue-900 border border-blue-200' 
+                                : 'bg-blue-600 text-white'
+                            }`}>
+                              <div className="flex items-start gap-2">
+                                {message.isBot && <Bot className="h-4 w-4 mt-0.5 flex-shrink-0" />}
+                                <div className="flex-1">
+                                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
+                                  <p className={`text-xs mt-2 ${message.isBot ? 'text-blue-600' : 'text-blue-100'}`}>
+                                    {message.timestamp.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                     
                     {/* Input */}

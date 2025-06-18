@@ -411,6 +411,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post('/api/ai/predict-cancellation', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { appointmentId } = req.body;
+      
+      // Récupérer les données du rendez-vous
+      const appointment = await storage.getAppointment(appointmentId);
+      if (!appointment) {
+        return res.status(404).json({ message: "Rendez-vous non trouvé" });
+      }
+      
+      // Récupérer les données du client
+      const client = await storage.getClient(appointment.clientId);
+      if (!client) {
+        return res.status(404).json({ message: "Client non trouvé" });
+      }
+      
+      // Simuler l'historique des rendez-vous pour ce client
+      const appointmentHistory = await db.select()
+        .from(appointmentHistory)
+        .where(eq(appointmentHistory.clientId, appointment.clientId))
+        .orderBy(desc(appointmentHistory.actionDate));
+      
+      // Créer les données nécessaires pour la prédiction
+      const appointmentData = {
+        id: appointment.id,
+        date: appointment.date,
+        time: appointment.time,
+        duration: appointment.duration || 60,
+        clientName: client.name,
+        serviceName: appointment.serviceId ? 'Service' : 'Service inconnu',
+        price: appointment.price || 0,
+        status: appointment.status
+      };
+      
+      const clientBehavior = {
+        id: client.id,
+        name: client.name,
+        totalAppointments: appointmentHistory.length || 1,
+        noShowCount: appointmentHistory.filter(h => h.actionType === 'no_show').length,
+        cancelCount: appointmentHistory.filter(h => h.actionType === 'cancelled').length,
+        avgDaysBetweenVisits: 30,
+        lastVisit: new Date(appointment.date),
+        totalSpent: appointmentHistory.length * 50,
+        preferredTimeSlots: ['09:00-12:00', '14:00-17:00']
+      };
+      
+      // Effectuer la prédiction
+      const prediction = await aiService.predictCancellationRisk(appointmentData, clientBehavior, appointmentHistory);
+      
+      // Sauvegarder la prédiction en base
+      if (prediction.predictionScore > 0) {
+        await db.insert(cancellationPredictions).values({
+          appointmentId: appointment.id,
+          clientId: appointment.clientId,
+          predictionScore: prediction.predictionScore.toString(),
+          riskFactors: prediction.riskFactors,
+          confidence: prediction.confidence.toString(),
+          recommendedAction: prediction.recommendedAction,
+          createdAt: new Date()
+        });
+      }
+      
+      res.json(prediction);
+    } catch (error) {
+      console.error('Erreur prédiction annulation:', error);
+      res.status(500).json({ message: "Erreur lors de la prédiction d'annulation" });
+    }
+  });
+
+  app.get('/api/ai/cancellation-predictions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Récupérer toutes les prédictions d'annulation récentes
+      const predictions = await db.select({
+        id: cancellationPredictions.id,
+        appointmentId: cancellationPredictions.appointmentId,
+        clientId: cancellationPredictions.clientId,
+        predictionScore: cancellationPredictions.predictionScore,
+        riskFactors: cancellationPredictions.riskFactors,
+        confidence: cancellationPredictions.confidence,
+        recommendedAction: cancellationPredictions.recommendedAction,
+        createdAt: cancellationPredictions.createdAt,
+        clientName: clients.name,
+        appointmentDate: appointments.date,
+        appointmentTime: appointments.time
+      })
+      .from(cancellationPredictions)
+      .innerJoin(appointments, eq(cancellationPredictions.appointmentId, appointments.id))
+      .innerJoin(clients, eq(cancellationPredictions.clientId, clients.id))
+      .where(eq(appointments.userId, userId))
+      .orderBy(desc(cancellationPredictions.createdAt))
+      .limit(20);
+      
+      res.json(predictions);
+    } catch (error) {
+      console.error('Erreur récupération prédictions:', error);
+      res.status(500).json({ message: "Erreur lors de la récupération des prédictions" });
+    }
+  });
+
   app.post('/api/ai/optimize-planning', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
