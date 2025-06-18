@@ -158,7 +158,7 @@ export default function Forum() {
         ))}
 
         {/* Special AMA Card */}
-        <Card className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center space-x-3 mb-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">

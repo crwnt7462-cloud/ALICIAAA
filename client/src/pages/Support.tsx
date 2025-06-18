@@ -154,7 +154,7 @@ export default function Support() {
                       className="w-full p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
                     >
                       <div className="flex items-start gap-3">
-                        <Icon className="h-5 w-5 text-pink-500 mt-0.5" />
+                        <Icon className="h-5 w-5 text-blue-500 mt-0.5" />
                         <div>
                           <h3 className="font-medium text-gray-900">{category.title}</h3>
                           <p className="text-sm text-gray-600 mt-1">{category.description}</p>
@@ -173,21 +173,21 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-3 p-2">
-                  <Phone className="h-4 w-4 text-pink-500" />
+                  <Phone className="h-4 w-4 text-blue-500" />
                   <div>
                     <p className="font-medium">01 23 45 67 89</p>
                     <p className="text-sm text-gray-600">Lun-Ven 9h-18h</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2">
-                  <Mail className="h-4 w-4 text-pink-500" />
+                  <Mail className="h-4 w-4 text-blue-500" />
                   <div>
                     <p className="font-medium">support@beautypro.fr</p>
                     <p className="text-sm text-gray-600">Réponse sous 24h</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-2">
-                  <Clock className="h-4 w-4 text-pink-500" />
+                  <Clock className="h-4 w-4 text-blue-500" />
                   <div>
                     <p className="font-medium">Statut du service</p>
                     <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -204,7 +204,7 @@ export default function Support() {
             <Card className="h-[600px] flex flex-col">
               <CardHeader className="border-b">
                 <CardTitle className="flex items-center gap-2">
-                  <Bot className="h-5 w-5 text-pink-500" />
+                  <Bot className="h-5 w-5 text-blue-500" />
                   Assistant Support
                   <Badge variant="secondary" className="ml-auto">En ligne</Badge>
                 </CardTitle>
@@ -219,20 +219,20 @@ export default function Support() {
                         className={`flex gap-3 ${message.isBot ? 'justify-start' : 'justify-end'}`}
                       >
                         {message.isBot && (
-                          <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                            <Bot className="h-4 w-4 text-pink-600" />
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-blue-600" />
                           </div>
                         )}
                         <div
                           className={`max-w-[80%] p-3 rounded-lg ${
                             message.isBot
                               ? 'bg-gray-100 text-gray-900'
-                              : 'bg-pink-500 text-white'
+                              : 'bg-blue-500 text-white'
                           }`}
                         >
                           <p className="whitespace-pre-line">{message.text}</p>
                           <p className={`text-xs mt-1 ${
-                            message.isBot ? 'text-gray-500' : 'text-pink-100'
+                            message.isBot ? 'text-gray-500' : 'text-blue-100'
                           }`}>
                             {message.timestamp.toLocaleTimeString('fr-FR', {
                               hour: '2-digit',
@@ -241,7 +241,7 @@ export default function Support() {
                           </p>
                         </div>
                         {!message.isBot && (
-                          <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                             <User className="h-4 w-4 text-white" />
                           </div>
                         )}
@@ -250,8 +250,8 @@ export default function Support() {
                     
                     {isTyping && (
                       <div className="flex gap-3 justify-start">
-                        <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                          <Bot className="h-4 w-4 text-pink-600" />
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <Bot className="h-4 w-4 text-blue-600" />
                         </div>
                         <div className="bg-gray-100 p-3 rounded-lg">
                           <div className="flex gap-1">
@@ -274,7 +274,7 @@ export default function Support() {
                       placeholder="Tapez votre question..."
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                     />
-                    <Button onClick={handleSendMessage} className="bg-pink-500 hover:bg-pink-600">
+                    <Button onClick={handleSendMessage} className="bg-blue-500 hover:bg-blue-600">
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>

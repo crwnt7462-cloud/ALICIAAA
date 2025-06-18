@@ -131,12 +131,12 @@ export default function AIAutomation() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <Brain className="h-8 w-8 text-pink-500" />
+              <Brain className="h-8 w-8 text-blue-500" />
               IA & Automatisation
             </h1>
             <p className="text-gray-600 mt-1">Intelligence artificielle au service de votre salon</p>
           </div>
-          <Button className="bg-pink-500 hover:bg-pink-600">
+          <Button className="bg-blue-500 hover:bg-blue-600">
             <Settings className="h-4 w-4 mr-2" />
             Configurer
           </Button>
@@ -223,7 +223,7 @@ export default function AIAutomation() {
                   <div key={insight.id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="p-2 bg-pink-100 rounded-lg">
+                        <div className="p-2 bg-blue-100 rounded-lg">
                           {getTypeIcon(insight.type)}
                         </div>
                         <div>
@@ -252,7 +252,7 @@ export default function AIAutomation() {
                       </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm">Ignorer</Button>
-                        <Button size="sm" className="bg-pink-500 hover:bg-pink-600">Appliquer</Button>
+                        <Button size="sm" className="bg-blue-500 hover:bg-blue-600">Appliquer</Button>
                       </div>
                     </div>
                   </div>
@@ -475,7 +475,7 @@ export default function AIAutomation() {
 
                 <div className="flex gap-4">
                   <Button variant="outline">Réinitialiser</Button>
-                  <Button className="bg-pink-500 hover:bg-pink-600">
+                  <Button className="bg-blue-500 hover:bg-blue-600">
                     Sauvegarder les paramètres
                   </Button>
                 </div>

@@ -99,14 +99,14 @@ export default function Booking() {
         <div key={step} className="flex items-center">
           <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
             currentStep >= step 
-              ? 'bg-pink-500 text-white' 
+              ? 'bg-blue-500 text-white' 
               : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
           }`}>
             {currentStep > step ? <Check className="w-5 h-5" /> : step}
           </div>
           {step < 3 && (
             <div className={`w-16 h-1 mx-2 ${
-              currentStep > step ? 'bg-pink-500' : 'bg-gray-200 dark:bg-gray-700'
+              currentStep > step ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
             }`} />
           )}
         </div>
@@ -131,17 +131,17 @@ export default function Booking() {
             key={service.id}
             className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
               selectedService?.id === service.id 
-                ? 'ring-2 ring-pink-500 bg-pink-50 dark:bg-pink-900/20' 
+                ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20' 
                 : 'hover:shadow-md'
             }`}
             onClick={() => setSelectedService(service)}
           >
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center">
                   <Star className="w-6 h-6 text-white" />
                 </div>
-                <Badge variant="secondary" className="bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-300">
+                <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
                   {service.duration}min
                 </Badge>
               </div>
@@ -155,7 +155,7 @@ export default function Booking() {
               </p>
               
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold text-pink-600 dark:text-pink-400">
+                <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {service.price}€
                 </span>
                 <div className="flex items-center text-yellow-500">
@@ -172,7 +172,7 @@ export default function Booking() {
         <div className="flex justify-center mt-8">
           <Button 
             onClick={() => setCurrentStep(2)}
-            className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl font-medium"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-medium"
           >
             Continuer
             <ChevronRight className="w-4 h-4 ml-2" />
@@ -218,8 +218,8 @@ export default function Booking() {
                     variant={selectedTime === time ? "default" : "outline"}
                     className={`h-12 ${
                       selectedTime === time
-                        ? 'bg-pink-500 hover:bg-pink-600 text-white'
-                        : 'border-gray-200 dark:border-gray-600 hover:border-pink-500 hover:text-pink-500'
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                        : 'border-gray-200 dark:border-gray-600 hover:border-blue-500 hover:text-blue-500'
                     }`}
                     onClick={() => setSelectedTime(time)}
                   >
@@ -231,21 +231,21 @@ export default function Booking() {
           </div>
 
           {selectedDate && selectedTime && (
-            <div className="mt-6 p-4 bg-pink-50 dark:bg-pink-900/20 rounded-xl border border-pink-200 dark:border-pink-800">
+            <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-pink-900 dark:text-pink-100">
+                  <h4 className="font-medium text-blue-900 dark:text-blue-100">
                     Récapitulatif
                   </h4>
-                  <p className="text-pink-700 dark:text-pink-300 text-sm">
+                  <p className="text-blue-700 dark:text-blue-300 text-sm">
                     {selectedService?.name} • {selectedDate} à {selectedTime}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-pink-600 dark:text-pink-400">
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                     {selectedService?.price}€
                   </p>
-                  <p className="text-sm text-pink-700 dark:text-pink-300">
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
                     {selectedService?.duration}min
                   </p>
                 </div>
@@ -266,7 +266,7 @@ export default function Booking() {
         {selectedDate && selectedTime && (
           <Button 
             onClick={() => setCurrentStep(3)}
-            className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl font-medium"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-medium"
           >
             Continuer
             <ChevronRight className="w-4 h-4 ml-2" />
@@ -346,7 +346,7 @@ export default function Booking() {
           </div>
 
           {/* Final Summary */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 rounded-xl border border-pink-200 dark:border-pink-800">
+          <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-800">
             <h4 className="font-semibold text-lg mb-4 text-gray-900 dark:text-white">
               Récapitulatif de votre réservation
             </h4>
@@ -365,7 +365,7 @@ export default function Booking() {
               </div>
               <div className="border-t pt-3 flex justify-between text-lg font-semibold">
                 <span>Total</span>
-                <span className="text-pink-600 dark:text-pink-400">{selectedService?.price}€</span>
+                <span className="text-blue-600 dark:text-blue-400">{selectedService?.price}€</span>
               </div>
             </div>
           </div>
@@ -383,7 +383,7 @@ export default function Booking() {
         <Button 
           onClick={handleBooking}
           disabled={!clientInfo.firstName || !clientInfo.lastName || !clientInfo.email || !clientInfo.phone || createAppointmentMutation.isPending}
-          className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl font-medium disabled:opacity-50"
+          className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-medium disabled:opacity-50"
         >
           {createAppointmentMutation.isPending ? "Confirmation..." : "Confirmer la réservation"}
           <CreditCard className="w-4 h-4 ml-2" />
@@ -438,7 +438,7 @@ export default function Booking() {
           setSelectedTime("");
           setClientInfo({ firstName: "", lastName: "", email: "", phone: "" });
         }}
-        className="bg-pink-500 hover:bg-pink-600 text-white px-8 py-3 rounded-xl font-medium"
+        className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-xl font-medium"
       >
         Nouvelle réservation
       </Button>
