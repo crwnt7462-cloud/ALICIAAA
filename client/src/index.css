@@ -44,28 +44,7 @@
   --orange-500: hsl(25, 95%, 53%);
 }
 
-.dark {
-  --background: hsl(222, 47%, 5%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(217, 32%, 17%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(222, 47%, 5%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(215, 28%, 17%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(217, 32%, 17%);
-  --input: hsl(217, 32%, 17%);
-  --primary: hsl(330, 85%, 60%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(280, 70%, 65%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(217, 32%, 17%);
-  --accent-foreground: hsl(0, 0%, 98%);
-  --destructive: hsl(0, 62.8%, 30.6%);
-  --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
-  --radius: 0.5rem;
-}
+
 
 @layer base {
   * {
@@ -96,20 +75,20 @@
   font-weight: 900;
 }
 
-/* Custom scrollbar for dark mode */
-.dark ::-webkit-scrollbar {
+/* Custom scrollbar */
+::-webkit-scrollbar {
   width: 6px;
 }
 
-.dark ::-webkit-scrollbar-track {
-  background: hsl(217, 32%, 17%);
+::-webkit-scrollbar-track {
+  background: hsl(240, 4.8%, 95.9%);
 }
 
-.dark ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background: hsl(240, 5%, 64.9%);
   border-radius: 3px;
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: hsl(240, 5%, 54.9%);
 }
