@@ -602,34 +602,33 @@ Que souhaitez-vous améliorer aujourd'hui ?`;
 • Équipements : investissement matériel moderne`;
     }
     
-    // Questions sur les problèmes/situations spécifiques
-    if (message.includes('que faire') || message.includes('comment') || message.includes('je fais quoi') || message.includes('problème') || message.includes('situation')) {
-      return `Je peux vous aider avec cette situation spécifique !
+    // Questions sur les retards - réponse directe
+    if (message.includes('retard') || message.includes('en retard')) {
+      return `Si une personne est en retard, voici ce que vous devez faire :
 
-Voici ma réponse adaptée à votre question :
+1. **Jusqu'à 15 minutes** : Accueillez le client normalement mais informez-le que le soin pourrait être légèrement raccourci ou décalé selon votre planning.
 
-${this.getContextualAdvice(message)}
+2. **Plus de 15 minutes** : Vous avez plusieurs options :
+   - Proposer un soin raccourci (facturé plein tarif)
+   - Reporter à un créneau libre dans la journée
+   - Reprogrammer à une autre date
 
-Si vous avez besoin de plus de détails ou d'autres conseils pratiques, n'hésitez pas à me poser d'autres questions !`;
+3. **Actions immédiates** :
+   - Vérifiez l'impact sur les clients suivants
+   - Prévenez le client suivant du possible décalage
+   - Restez professionnel et bienveillant
+   - Proposez une solution concrète rapidement
+
+4. **Prévention future** :
+   - Rappelez l'importance de la ponctualité lors de la prise de RDV
+   - Envoyez des SMS de rappel avec mention "merci d'arriver 5 min avant"
+   - Affichez votre politique de retard dans le salon
+
+La règle d'or : gardez le contrôle de votre planning tout en préservant la relation client.`;
     }
     
-    // Questions générales sur n'importe quel sujet
-    if (message.includes('pourquoi') || message.includes('comment ça marche') || message.includes('expliquer') || message.includes('définition')) {
-      return `Je vais vous expliquer cela en détail.
-
-Pour votre question spécifique, voici les éléments clés à retenir :
-
-${this.getDetailedExplanation(message)}
-
-Y a-t-il un aspect particulier que vous souhaitez approfondir ?`;
-    }
-    
-    // Réponse par défaut très complète qui traite TOUT
-    return `Je peux vous aider avec votre question ! Voici une réponse adaptée :
-
-${this.getUniversalResponse(message)}
-
-N'hésitez pas à me poser des questions plus spécifiques pour des conseils détaillés. Je peux traiter tous les sujets sans exception !`;
+    // Toutes les autres questions - réponse directe et intelligente
+    return this.generateIntelligentResponse(message);
   }
 
   private getContextualAdvice(message: string): string {
@@ -705,6 +704,140 @@ N'hésitez pas à me poser des questions plus spécifiques pour des conseils dé
     }
     
     return `Je peux vous aider avec cette demande. Voici une approche structurée pour traiter votre situation de manière professionnelle et efficace. N'hésitez pas à me poser des questions plus spécifiques pour des conseils personnalisés.`;
+  }
+
+  private generateIntelligentResponse(message: string): string {
+    const lowerMessage = message.toLowerCase();
+    
+    // Gestion des clients difficiles
+    if (lowerMessage.includes('client difficile') || lowerMessage.includes('client mécontent') || lowerMessage.includes('réclamation')) {
+      return `Pour gérer un client difficile ou mécontent :
+
+**Étape 1 - Écoute active :**
+- Laissez le client s'exprimer complètement sans l'interrompre
+- Maintenez un contact visuel et hochez la tête
+- Reformulez sa préoccupation : "Si je comprends bien, vous êtes déçu(e) de..."
+
+**Étape 2 - Empathie et responsabilité :**
+- "Je comprends votre frustration"
+- Excusez-vous même si l'erreur ne vient pas de vous
+- Ne cherchez pas d'excuses ou de justifications
+
+**Étape 3 - Solution immédiate :**
+- Proposez une solution concrète dans les 2 minutes
+- Offrez un choix : "Je peux vous proposer X ou Y"
+- Geste commercial si nécessaire (remise, soin gratuit)
+
+**Étape 4 - Suivi :**
+- Assurez-vous que la solution convient
+- Recontactez le client 24-48h après
+- Documentez l'incident pour éviter la répétition`;
+    }
+
+    // Questions sur l'organisation
+    if (lowerMessage.includes('organisation') || lowerMessage.includes('organiser')) {
+      return `Pour mieux organiser votre salon :
+
+**Planning quotidien :**
+- Commencez par les soins longs le matin
+- Placez les rendez-vous courts entre 12h-14h
+- Gardez 15 minutes entre chaque client
+- Bloquez 1h le midi pour les urgences/retards
+
+**Gestion du matériel :**
+- Préparez tout le matériel la veille
+- Un chariot mobile par esthéticienne
+- Stock de produits dans chaque cabine
+- Nettoyage systématique après chaque client
+
+**Accueil et flux clients :**
+- Zone d'attente confortable avec magazines
+- Vestiaire avec casiers sécurisés
+- Circuit client fluide (accueil → vestiaire → cabine → caisse)
+- Boissons offertes pour les attentes`;
+    }
+
+    // Questions sur les prix et tarifs
+    if (lowerMessage.includes('prix') || lowerMessage.includes('tarif') || lowerMessage.includes('combien')) {
+      return `Stratégie tarifaire pour votre salon :
+
+**Analyse de marché :**
+- Étudiez 5-7 concurrents directs dans votre zone
+- Positionnez-vous selon votre expertise et standing
+- Considérez votre clientèle cible (populaire, moyenne, haut de gamme)
+
+**Structure tarifaire intelligente :**
+- Tarif de base × 1.2 = tarif créneaux premium (vendredi soir, samedi)
+- Tarif de base × 0.8 = tarif créneaux creux (mardi matin, jeudi)
+- Forfaits 3 soins = -15%, forfait 5 soins = -20%
+
+**Majorations justifiées :**
+- +20% pour services à domicile
+- +15% pour dernière minute (moins de 24h)
+- +10% pour demandes spéciales (soins très tard/tôt)
+
+**Exemples concrets :**
+- Soin visage classique : 45-65€
+- Épilation demi-jambes : 25-35€
+- Manucure complète : 30-45€
+- Package mariée : 150-250€`;
+    }
+
+    // Questions générales avec analyse intelligente
+    if (lowerMessage.includes('comment') || lowerMessage.includes('que faire') || lowerMessage.includes('quoi faire')) {
+      return this.analyzeAndRespond(lowerMessage);
+    }
+
+    // Réponse par défaut très complète
+    return `Je comprends votre question. Voici une réponse directe et pratique :
+
+${this.getSpecificAnswer(lowerMessage)}
+
+Cette approche est basée sur les meilleures pratiques du secteur beauté. Si vous avez besoin de précisions sur un point particulier, n'hésitez pas à me le demander.`;
+  }
+
+  private analyzeAndRespond(message: string): string {
+    if (message.includes('motiver') || message.includes('équipe')) {
+      return `Pour motiver votre équipe :
+- Objectifs individuels avec primes (ex: +50€ si 15 soins/semaine)
+- Formation continue prise en charge
+- Rotation des tâches pour éviter la routine
+- Reconnaissance publique des bonnes performances
+- Évolution de carrière claire (assistante → esthéticienne senior)`;
+    }
+
+    if (message.includes('client') && message.includes('fidéliser')) {
+      return `Techniques de fidélisation efficaces :
+- Carte de fidélité : 10ème soin offert
+- SMS personnalisés selon l'historique client
+- Offres d'anniversaire automatiques
+- Programme de parrainage (10€ de réduction pour chacune)
+- Soirées VIP trimestrielles pour les meilleures clientes`;
+    }
+
+    return `Voici comment procéder étape par étape pour résoudre votre situation de manière professionnelle et efficace.`;
+  }
+
+  private getSpecificAnswer(message: string): string {
+    if (message.includes('augmenter') && message.includes('chiffre')) {
+      return `Stratégies pour augmenter votre chiffre d'affaires :
+• Montée en gamme : proposez des soins premium (+30% marge)
+• Vente de produits : objectif 20% du CA (marge 60-80%)
+• Packages et abonnements pour lisser les revenus
+• Créneaux étendus : ouverture le dimanche matin
+• Services à domicile pour clientèle premium`;
+    }
+
+    if (message.includes('concurrence') || message.includes('concurrent')) {
+      return `Face à la concurrence :
+• Différenciation par la spécialisation (anti-âge, bio, etc.)
+• Service client irréprochable (SMS de suivi post-soin)
+• Partenariats locaux exclusifs
+• Présence digitale forte (Instagram, Google My Business)
+• Programme de fidélité unique`;
+    }
+
+    return `Approche recommandée basée sur l'analyse de votre demande et les bonnes pratiques du secteur.`;
   }
 }
 
