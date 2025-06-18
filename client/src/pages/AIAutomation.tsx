@@ -99,10 +99,10 @@ export default function AIAutomation() {
 
   // Mutation pour l'optimisation du planning
   const optimizePlanningMutation = useMutation({
-    mutationFn: (date: string) => apiRequest(`/api/ai/optimize-planning`, {
-      method: 'POST',
-      body: { date }
-    }),
+    mutationFn: async (date: string) => {
+      const response = await apiRequest("POST", "/api/ai/optimize-planning", { date });
+      return response.json();
+    },
   });
 
   const getImpactColor = (impact: string) => {

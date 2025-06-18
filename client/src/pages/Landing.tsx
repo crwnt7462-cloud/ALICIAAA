@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Scissors } from "lucide-react";
+import { Scissors, Calendar, Users, TrendingUp, Bot, Shield, Star } from "lucide-react";
 
 export default function Landing() {
   const handleLogin = () => {
@@ -10,18 +10,37 @@ export default function Landing() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 dark:bg-dark-900">
-      {/* Header with Logo */}
-      <div className="pt-16 pb-8 px-6 text-center">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-2xl mx-auto mb-4 flex items-center justify-center">
-          <Scissors className="text-white text-2xl w-8 h-8" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Hero Section */}
+      <div className="pt-16 pb-12 px-6 text-center">
+        <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-xl">
+          <span className="text-white text-3xl">✂</span>
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          BeautyPro
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          Beauty Pro
         </h1>
-        <p className="text-gray-600 dark:text-gray-300">
-          Plateforme tout-en-un pour professionnels
+        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          La solution complète pour gérer votre salon de beauté avec intelligence artificielle
         </p>
+        
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <Calendar className="w-8 h-8 text-blue-600 mb-4 mx-auto" />
+            <h3 className="font-semibold text-gray-900 mb-2">Planning Intelligent</h3>
+            <p className="text-gray-600 text-sm">Optimisation automatique des créneaux</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <Bot className="w-8 h-8 text-blue-600 mb-4 mx-auto" />
+            <h3 className="font-semibold text-gray-900 mb-2">IA Avancée</h3>
+            <p className="text-gray-600 text-sm">Prédictions et recommandations intelligentes</p>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <TrendingUp className="w-8 h-8 text-blue-600 mb-4 mx-auto" />
+            <h3 className="font-semibold text-gray-900 mb-2">Analytics Pro</h3>
+            <p className="text-gray-600 text-sm">Tableaux de bord détaillés</p>
+          </div>
+        </div>
       </div>
 
       {/* Auth Form */}

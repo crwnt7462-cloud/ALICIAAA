@@ -18,7 +18,7 @@ export default function Forum() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: posts = [] } = useQuery({
+  const { data: posts = [] } = useQuery<any[]>({
     queryKey: ["/api/forum/posts"],
   });
 

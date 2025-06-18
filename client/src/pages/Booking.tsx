@@ -45,7 +45,7 @@ export default function Booking() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: services = [] } = useQuery({
+  const { data: services = [] } = useQuery<any[]>({
     queryKey: ["/api/services"],
   });
 

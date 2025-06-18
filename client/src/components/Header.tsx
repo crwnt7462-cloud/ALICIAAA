@@ -9,14 +9,14 @@ export function Header() {
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-semibold text-lg">S</span>
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-lg">✂</span>
           </div>
           <div>
-            <h1 className="font-semibold text-gray-900 text-lg">
-              Studio Pro
+            <h1 className="font-bold text-gray-900 text-xl">
+              Beauty Pro
             </h1>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-blue-600 font-medium">
               Gestion professionnelle
             </p>
           </div>
@@ -39,10 +39,16 @@ export function Header() {
             </Button>
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full"></span>
           </div>
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <span className="text-gray-600 font-medium text-sm">
-              {user?.firstName?.[0] || 'U'}
-            </span>
+          <div className="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-lg">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-sm font-semibold">
+                {user?.firstName?.[0] || 'M'}
+              </span>
+            </div>
+            <div className="text-sm">
+              <p className="font-medium text-gray-900">{user?.firstName || 'Marie'} {user?.lastName || 'Dubois'}</p>
+              <p className="text-gray-500">Propriétaire</p>
+            </div>
           </div>
         </div>
       </div>

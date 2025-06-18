@@ -21,7 +21,7 @@ export default function Clients() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
-  const { data: clients = [] } = useQuery({
+  const { data: clients = [] } = useQuery<any[]>({
     queryKey: ["/api/clients", searchQuery],
     enabled: true,
   });
