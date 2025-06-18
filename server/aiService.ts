@@ -320,8 +320,70 @@ Répondez en JSON:
       return response.choices[0].message.content || "Comment puis-je vous aider avec votre salon aujourd'hui ?";
     } catch (error) {
       console.error('Erreur génération réponse chat:', error);
-      return "Je suis votre assistant IA pour salon de beauté. Comment puis-je vous aider avec la gestion de votre établissement ?";
+      return this.getFallbackResponse(userMessage);
     }
+  }
+
+  private getFallbackResponse(userMessage: string): string {
+    const message = userMessage.toLowerCase();
+    
+    if (message.includes('planning') || message.includes('créneaux') || message.includes('horaires')) {
+      return `Pour optimiser votre planning :
+• Analysez vos heures de pointe pour mieux répartir les RDV
+• Proposez des créneaux courts (15-30min) pour combler les trous
+• Utilisez la liste d'attente pour optimiser les annulations
+• Regroupez les services similaires pour gagner du temps
+• Prévoyez 10-15min entre chaque RDV pour le nettoyage`;
+    }
+    
+    if (message.includes('no-show') || message.includes('annulation') || message.includes('absent')) {
+      return `Pour réduire les no-shows :
+• Confirmez les RDV par SMS 24h avant
+• Demandez un acompte de 20-30% à la réservation
+• Créez une politique d'annulation claire (48h minimum)
+• Proposez un rappel automatique 2h avant le RDV
+• Fidélisez avec un système de points/récompenses`;
+    }
+    
+    if (message.includes('client') || message.includes('fidélisation') || message.includes('fidélité')) {
+      return `Stratégies de fidélisation client :
+• Programme de fidélité avec carte de 10 soins
+• Offres personnalisées selon l'historique
+• Suivi post-soin avec conseils d'entretien
+• Événements exclusifs (soirées beauté)
+• Parrainage récompensé (réduction pour les deux)
+• Newsletter avec conseils beauté mensuels`;
+    }
+    
+    if (message.includes('prix') || message.includes('tarif') || message.includes('service')) {
+      return `Conseils tarification et services :
+• Analysez la concurrence locale
+• Proposez des forfaits avantageux
+• Ajustez selon votre expertise et localisation
+• Créez des services premium (soins VIP)
+• Offrez des packages mariages/événements
+• Testez de nouveaux soins selon les tendances`;
+    }
+    
+    if (message.includes('performance') || message.includes('statistiques') || message.includes('analyse')) {
+      return `Indicateurs clés à surveiller :
+• Taux d'occupation moyen (objectif: 75-85%)
+• Revenu par client et par service
+• Fréquence de visite moyenne
+• Taux de no-show (<10%)
+• Temps moyen entre rendez-vous
+• Satisfaction client (enquêtes régulières)`;
+    }
+    
+    return `En tant qu'assistant spécialisé salon de beauté, je peux vous conseiller sur :
+
+🗓️ Optimisation du planning et gestion des créneaux
+🚫 Réduction des no-shows et politique d'annulation
+💝 Fidélisation client et programmes de fidélité
+💰 Tarification et création de nouveaux services
+📊 Analyse des performances de votre salon
+
+Posez-moi une question plus précise sur l'un de ces sujets !`;
   }
 }
 
