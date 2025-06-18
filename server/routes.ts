@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
+import { aiService } from "./aiService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import {
   insertServiceSchema,
@@ -375,6 +376,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // Routes IA et automatisation
+  app.get('/api/ai/insights', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const stats = await storage.getDashboardStats(userId);
+      const topServices = await storage.getTopServices(userId);
+      
+      const analyticsData = {
+        monthRevenue: stats.monthRevenue,
+        totalClients: stats.totalClients,
+        topServices,
+        occupancyRate: 75,
+        clientSegments: { new: 20, regular: 60, vip: 20 }
+      };
+      
+      const insights = await aiService.generateBusinessInsights(analyticsData);
+      res.json(insights);
+    } catch (error) {
+      console.error("Error generating AI insights:", error);
+      res.status(500).json({ message: "Failed to generate AI insights" });
+    }
+  });
+
+  app.post('/api/ai/optimize-planning', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { date } = req.body;
+      
+      const appointments = await storage.getAppointments(userId, date);
+      const appointmentData = appointments.map(apt => ({
+        id: apt.id,
+        date: apt.appointmentDate || new Date().toISOString().split('T')[0],
+        time: apt.appointmentTime || '10:00',
+        duration: 60,
+        clientName: apt.clientName || 'Client',
+        serviceName: apt.serviceName || 'Service',
+        price: parseFloat(apt.servicePrice || '0'),
+        status: apt.status || 'confirmed'
+      }));
+      
+      const optimization = await aiService.optimizeDailySchedule(appointmentData, date);
+      res.json(optimization);
+    } catch (error) {
+      console.error("Error optimizing planning:", error);
+      res.status(500).json({ message: "Failed to optimize planning" });
+    }
+  });
+
+  app.get('/api/ai/promotions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const stats = await storage.getDashboardStats(userId);
+      const topServices = await storage.getTopServices(userId);
+      
+      const analyticsData = {
+        monthRevenue: stats.monthRevenue,
+        totalClients: stats.totalClients,
+        topServices,
+        occupancyRate: 75,
+        clientSegments: { new: 20, regular: 60, vip: 20 }
+      };
+      
+      const insights = await aiService.generateBusinessInsights(analyticsData);
+      res.json(insights.promotions || []);
+    } catch (error) {
+      console.error("Error fetching AI promotions:", error);
+      res.status(500).json({ message: "Failed to fetch AI promotions" });
+    }
+  });
 
   // WebSocket setup for real-time updates
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });

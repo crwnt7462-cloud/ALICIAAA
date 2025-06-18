@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Brain, Calendar, AlertTriangle, TrendingUp, Settings, Zap, Target, Clock, Users, DollarSign } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,6 +83,26 @@ export default function AIAutomation() {
     businessCopilotEnabled: true,
     noShowThreshold: 0.3,
     rebookingDaysAdvance: 7
+  });
+
+  // Récupération des insights IA en temps réel
+  const { data: aiInsights, isLoading: insightsLoading } = useQuery({
+    queryKey: ['/api/ai/insights'],
+    refetchInterval: 30000, // Actualisation toutes les 30 secondes
+  });
+
+  // Récupération des promotions générées par l'IA
+  const { data: aiPromotions, isLoading: promotionsLoading } = useQuery({
+    queryKey: ['/api/ai/promotions'],
+    refetchInterval: 60000, // Actualisation toutes les minutes
+  });
+
+  // Mutation pour l'optimisation du planning
+  const optimizePlanningMutation = useMutation({
+    mutationFn: (date: string) => apiRequest(`/api/ai/optimize-planning`, {
+      method: 'POST',
+      body: { date }
+    }),
   });
 
   const getImpactColor = (impact: string) => {
