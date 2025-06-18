@@ -10,7 +10,8 @@ import {
   decimal,
   boolean,
   time,
-  date
+  date,
+  numeric
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
@@ -149,6 +150,73 @@ export const forumLikes = pgTable("forum_likes", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Tables pour l'IA et l'automatisation
+export const aiSettings = pgTable("ai_settings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull().references(() => users.id),
+  smartPlanningEnabled: boolean("smart_planning_enabled").default(true),
+  noShowPredictionEnabled: boolean("no_show_prediction_enabled").default(true),
+  autoRebookingEnabled: boolean("auto_rebooking_enabled").default(true),
+  businessCopilotEnabled: boolean("business_copilot_enabled").default(true),
+  noShowThreshold: numeric("no_show_threshold", { precision: 3, scale: 2 }).default("0.30"), // Seuil de probabilité pour demander un acompte
+  rebookingDaysAdvance: integer("rebooking_days_advance").default(7), // Jours avant d'envoyer des suggestions de rebooking
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const clientBehaviorData = pgTable("client_behavior_data", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  noShowCount: integer("no_show_count").default(0),
+  cancelCount: integer("cancel_count").default(0),
+  totalAppointments: integer("total_appointments").default(0),
+  avgDaysBetweenVisits: numeric("avg_days_between_visits", { precision: 8, scale: 2 }),
+  preferredTimeSlots: text("preferred_time_slots").array(), // ["09:00-12:00", "14:00-17:00"]
+  seasonalPatterns: text("seasonal_patterns"), // JSON des patterns saisonniers
+  lastNoShow: timestamp("last_no_show"),
+  riskScore: numeric("risk_score", { precision: 3, scale: 2 }).default("0.00"), // Score de risque de no-show (0-1)
+  loyaltyScore: numeric("loyalty_score", { precision: 3, scale: 2 }).default("0.00"), // Score de fidélité (0-1)
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const aiPredictions = pgTable("ai_predictions", {
+  id: serial("id").primaryKey(),
+  appointmentId: integer("appointment_id").notNull().references(() => appointments.id),
+  predictionType: varchar("prediction_type", { length: 50 }).notNull(), // "no_show", "cancellation", "rebooking"
+  confidence: numeric("confidence", { precision: 3, scale: 2 }).notNull(), // Niveau de confiance (0-1)
+  factors: text("factors"), // JSON des facteurs influençant la prédiction
+  actionTaken: varchar("action_taken", { length: 100 }), // Action automatique prise
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const autoPromotions = pgTable("auto_promotions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull().references(() => users.id),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // "discount", "package", "loyalty"
+  targetSegment: varchar("target_segment", { length: 100 }), // "new_clients", "lapsed_clients", "vip_clients"
+  conditions: text("conditions"), // JSON des conditions de la promo
+  aiGenerated: boolean("ai_generated").default(false),
+  aiReasoning: text("ai_reasoning"), // Pourquoi l'IA a suggéré cette promo
+  status: varchar("status", { length: 20 }).default("draft"), // "draft", "active", "paused", "ended"
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const smartPlanningLogs = pgTable("smart_planning_logs", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id", { length: 255 }).notNull().references(() => users.id),
+  date: date("date").notNull(),
+  originalSlots: integer("original_slots").notNull(),
+  optimizedSlots: integer("optimized_slots").notNull(),
+  gapsReduced: integer("gaps_reduced").notNull(),
+  revenueImpact: numeric("revenue_impact", { precision: 10, scale: 2 }), // Impact estimé sur le CA
+  optimizationAlgorithm: varchar("optimization_algorithm", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   services: many(services),
@@ -238,6 +306,22 @@ export type InsertForumReply = typeof forumReplies.$inferInsert;
 export type ForumReply = typeof forumReplies.$inferSelect;
 
 export type ForumCategory = typeof forumCategories.$inferSelect;
+
+// Types pour l'IA et l'automatisation
+export type AiSettings = typeof aiSettings.$inferSelect;
+export type InsertAiSettings = typeof aiSettings.$inferInsert;
+
+export type ClientBehaviorData = typeof clientBehaviorData.$inferSelect;
+export type InsertClientBehaviorData = typeof clientBehaviorData.$inferInsert;
+
+export type AiPrediction = typeof aiPredictions.$inferSelect;
+export type InsertAiPrediction = typeof aiPredictions.$inferInsert;
+
+export type AutoPromotion = typeof autoPromotions.$inferSelect;
+export type InsertAutoPromotion = typeof autoPromotions.$inferInsert;
+
+export type SmartPlanningLog = typeof smartPlanningLogs.$inferSelect;
+export type InsertSmartPlanningLog = typeof smartPlanningLogs.$inferInsert;
 
 // Schemas for validation
 export const insertServiceSchema = createInsertSchema(services).omit({
