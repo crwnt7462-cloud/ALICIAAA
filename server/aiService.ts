@@ -428,26 +428,43 @@ Répondez en JSON:
         messages: [
           {
             role: "system",
-            content: `Tu es un assistant IA spécialisé dans la gestion de salon de beauté. Tu aides les professionnels avec :
-            - La gestion des rendez-vous et du planning
-            - L'optimisation des créneaux horaires
-            - Les conseils pour réduire les no-shows
-            - La fidélisation client et stratégies marketing
-            - L'analyse des performances du salon
-            - Les suggestions de services et tarification
-            
-            Réponds toujours de manière professionnelle, bienveillante et pratique. Donne des conseils concrets et actionables.`
+            content: `Tu es un assistant IA polyvalent et expert dans la gestion de salon de beauté. Tu peux répondre à TOUTES les questions, qu'elles concernent :
+
+DOMAINES PRINCIPAUX :
+- Gestion de salon : rendez-vous, planning, équipe, clients
+- Business : marketing, pricing, stratégies de croissance
+- Techniques beauté : soins, produits, tendances
+- Management : RH, formation, organisation
+- Finances : comptabilité, rentabilité, investissements
+- Légal : réglementation, hygiene, assurances
+- Personnel : développement, motivation, bien-être
+
+AUTRES SUJETS :
+- Questions générales sur n'importe quel sujet
+- Conseils personnels et professionnels
+- Résolution de problèmes concrets
+- Explications techniques ou théoriques
+- Recommandations pratiques
+
+STYLE DE RÉPONSE :
+- Toujours bienveillant et professionnel
+- Réponses détaillées et complètes
+- Exemples concrets quand c'est pertinent
+- Pas de restrictions sur les sujets
+- Adapte la complexité à la question
+
+Tu peux discuter de tout, donner ton avis, expliquer des concepts, proposer des solutions créatives. Il n'y a aucune limite à tes réponses tant qu'elles sont utiles et respectueuses.`
           },
           {
             role: "user",
             content: userMessage
           }
         ],
-        max_tokens: 500,
+        max_tokens: 800,
         temperature: 0.7
       });
 
-      return response.choices[0].message.content || "Comment puis-je vous aider avec votre salon aujourd'hui ?";
+      return response.choices[0].message.content || "Comment puis-je vous aider aujourd'hui ?";
     } catch (error) {
       console.error('Erreur génération réponse chat:', error);
       return this.getFallbackResponse(userMessage);
@@ -501,19 +518,85 @@ Répondez en JSON:
 • Revenu par client et par service
 • Fréquence de visite moyenne
 • Taux de no-show (<10%)
-• Temps moyen entre rendez-vous
-• Satisfaction client (enquêtes régulières)`;
+• Satisfaction client (enquêtes post-soin)
+• Marge par service et produit vendu`;
     }
     
-    return `En tant qu'assistant spécialisé salon de beauté, je peux vous conseiller sur :
+    if (message.includes('marketing') || message.includes('publicité') || message.includes('réseaux')) {
+      return `Stratégies marketing efficaces :
+• Instagram : photos avant/après, stories quotidiennes
+• Google My Business avec avis clients
+• Partenariats locaux (magasins, coiffeurs)
+• Programme de parrainage
+• Email marketing avec conseils beauté
+• Événements et ateliers bien-être`;
+    }
+    
+    if (message.includes('équipe') || message.includes('formation') || message.includes('employé')) {
+      return `Management d'équipe :
+• Formations techniques régulières
+• Objectifs individuels motivants
+• Planning équitable et prévisible
+• Reconnaissance des bonnes performances
+• Communication transparente
+• Évolution de carrière claire`;
+    }
+    
+    // Réponses pour questions générales
+    if (message.includes('bonjour') || message.includes('salut') || message.includes('hello')) {
+      return `Bonjour ! Je suis votre assistant IA spécialisé dans la gestion de salon de beauté.
 
-🗓️ Optimisation du planning et gestion des créneaux
-🚫 Réduction des no-shows et politique d'annulation
-💝 Fidélisation client et programmes de fidélité
-💰 Tarification et création de nouveaux services
-📊 Analyse des performances de votre salon
+Je peux vous aider avec :
+• Optimisation du planning et organisation
+• Stratégies de fidélisation client
+• Réduction des no-shows
+• Conseils tarifaires et nouveaux services
+• Marketing et communication
+• Gestion d'équipe et formation
+• Analyse de performances
+• Toute autre question business ou personnelle
 
-Posez-moi une question plus précise sur l'un de ces sujets !`;
+Que souhaitez-vous améliorer aujourd'hui ?`;
+    }
+    
+    // Questions sur la rentabilité
+    if (message.includes('rentabilité') || message.includes('bénéfice') || message.includes('chiffre')) {
+      return `Améliorer la rentabilité :
+• Optimisez le taux de remplissage (objectif 80%+)
+• Développez la vente de produits (marge élevée)
+• Proposez des services premium
+• Réduisez les coûts fixes (négociation fournisseurs)
+• Analysez la rentabilité par service
+• Fidélisez pour augmenter la fréquence`;
+    }
+    
+    // Questions techniques beauté
+    if (message.includes('soin') || message.includes('technique') || message.includes('produit')) {
+      return `Expertise technique beauté :
+• Soins anti-âge : acide hyaluronique, LED, radiofrequence
+• Tendances : cosmétiques naturels, soins sur-mesure
+• Protocoles : adaptation selon type de peau
+• Nouveautés : sérums concentrés, masques haute tech
+• Formation : stages avec marques professionnelles
+• Équipements : investissement matériel moderne`;
+    }
+    
+    // Réponse par défaut très complète
+    return `Je suis votre assistant IA polyvalent pour la gestion de salon de beauté !
+
+Domaines d'expertise :
+• Planning et organisation optimale
+• Fidélisation et relation client  
+• Prévention no-shows et annulations
+• Stratégies tarifaires et nouveaux services
+• Marketing digital et local
+• Management d'équipe
+• Analyse de performances
+• Conseils techniques beauté
+• Questions business générales
+• Conseils personnels et professionnels
+
+Je peux répondre à TOUTES vos questions sans restriction. Que voulez-vous savoir ou améliorer ?`;
   }
 }
 
