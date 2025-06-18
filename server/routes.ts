@@ -229,6 +229,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Advanced dashboard analytics
+  app.get('/api/dashboard/revenue-chart', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const revenueData = await storage.getRevenueChart(userId);
+      res.json(revenueData);
+    } catch (error) {
+      console.error("Error fetching revenue chart:", error);
+      res.status(500).json({ message: "Failed to fetch revenue chart" });
+    }
+  });
+
+  app.get('/api/dashboard/upcoming-appointments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const upcomingAppointments = await storage.getUpcomingAppointments(userId);
+      res.json(upcomingAppointments);
+    } catch (error) {
+      console.error("Error fetching upcoming appointments:", error);
+      res.status(500).json({ message: "Failed to fetch upcoming appointments" });
+    }
+  });
+
+  app.get('/api/dashboard/top-services', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const topServices = await storage.getTopServices(userId);
+      res.json(topServices);
+    } catch (error) {
+      console.error("Error fetching top services:", error);
+      res.status(500).json({ message: "Failed to fetch top services" });
+    }
+  });
+
+  app.get('/api/dashboard/staff-performance', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const staffPerformance = await storage.getStaffPerformance(userId);
+      res.json(staffPerformance);
+    } catch (error) {
+      console.error("Error fetching staff performance:", error);
+      res.status(500).json({ message: "Failed to fetch staff performance" });
+    }
+  });
+
   // Waiting list routes
   app.get('/api/waiting-list', isAuthenticated, async (req: any, res) => {
     try {
