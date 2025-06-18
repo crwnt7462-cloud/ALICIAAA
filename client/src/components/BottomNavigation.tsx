@@ -9,12 +9,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: "/", icon: Home, label: "Tableau de bord" },
+  { path: "/", icon: Home, label: "Accueil" },
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
-  { path: "/booking", icon: CalendarPlus, label: "Réservations" },
-  { path: "/ai", icon: Brain, label: "IA & Auto", hasNotification: true },
-  { path: "/support", icon: MessageCircle, label: "Support" },
+  { path: "/booking", icon: CalendarPlus, label: "Réserver" },
+  { path: "/ai", icon: Brain, label: "IA & Support", hasNotification: true },
 ];
 
 export function BottomNavigation() {
