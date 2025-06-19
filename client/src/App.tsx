@@ -14,6 +14,7 @@ import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
 import AIAutomation from "@/pages/AIAutomation";
+import NotificationTest from "@/pages/NotificationTest";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -28,7 +29,7 @@ function Router() {
           <Route path="/clients" component={Clients} />
           <Route path="/booking" component={Booking} />
           <Route path="/ai" component={AIAutomation} />
-
+          <Route path="/notifications" component={NotificationTest} />
           <Route component={NotFound} />
         </Switch>
       </main>
