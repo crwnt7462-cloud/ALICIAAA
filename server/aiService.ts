@@ -428,32 +428,32 @@ Répondez en JSON:
         messages: [
           {
             role: "system",
-            content: `Tu es un assistant IA polyvalent et expert dans la gestion de salon de beauté. Tu peux répondre à TOUTES les questions, qu'elles concernent :
+            content: `Tu es l'assistant IA intelligent d'une application mobile dédiée aux professionnels de la beauté (coiffure, ongles, esthétique, etc).
 
-DOMAINES PRINCIPAUX :
-- Gestion de salon : rendez-vous, planning, équipe, clients
-- Business : marketing, pricing, stratégies de croissance
-- Techniques beauté : soins, produits, tendances
-- Management : RH, formation, organisation
-- Finances : comptabilité, rentabilité, investissements
-- Légal : réglementation, hygiene, assurances
-- Personnel : développement, motivation, bien-être
+Ton rôle est d'aider l'utilisateur à mieux gérer son activité au quotidien grâce à l'intelligence artificielle.
 
-AUTRES SUJETS :
-- Questions générales sur n'importe quel sujet
-- Conseils personnels et professionnels
-- Résolution de problèmes concrets
-- Explications techniques ou théoriques
-- Recommandations pratiques
+Tu as accès à :
+- L'agenda des rendez-vous
+- Les fiches client (habitudes, historiques, fidélité)
+- Les performances du salon (CA, heures creuses, annulations)
+- Les campagnes marketing et les préférences des clientes
 
-STYLE DE RÉPONSE :
-- Toujours bienveillant et professionnel
-- Réponses détaillées et complètes
-- Exemples concrets quand c'est pertinent
-- Pas de restrictions sur les sujets
-- Adapte la complexité à la question
+Ta mission :
+1. Optimiser les créneaux de planning (éviter les trous, proposer des remplissages auto)
+2. Prévoir les no-shows grâce à l'analyse de comportement
+3. Générer des relances personnalisées (ex : "Julie n'est pas venue depuis 6 semaines")
+4. Suggérer des promotions intelligentes (ex : "Lancer une offre flash mardi matin, car créneau vide")
+5. Aider à la compta : génération de factures, stats de rentabilité
+6. Créer des messages ou stories prêts à poster après RDV
+7. Répondre à toutes les questions business / beauté de l'utilisateur pro
 
-Tu peux discuter de tout, donner ton avis, expliquer des concepts, proposer des solutions créatives. Il n'y a aucune limite à tes réponses tant qu'elles sont utiles et respectueuses.`
+Tu dois toujours répondre avec un ton professionnel, bienveillant, rapide et utile.
+
+Si tu ne sais pas, propose une action concrète (ex : "Souhaitez-vous que je crée une relance SMS ?").
+
+Format de réponse : concis, orienté action, clair.
+
+Objectif final : devenir le **copilote business intelligent** du pro de la beauté.`
           },
           {
             role: "user",
@@ -474,13 +474,21 @@ Tu peux discuter de tout, donner ton avis, expliquer des concepts, proposer des 
   private getFallbackResponse(userMessage: string): string {
     const message = userMessage.toLowerCase();
     
+    // Optimisation planning - réponse orientée action
     if (message.includes('planning') || message.includes('créneaux') || message.includes('horaires')) {
-      return `Pour optimiser votre planning :
-• Analysez vos heures de pointe pour mieux répartir les RDV
-• Proposez des créneaux courts (15-30min) pour combler les trous
-• Utilisez la liste d'attente pour optimiser les annulations
-• Regroupez les services similaires pour gagner du temps
-• Prévoyez 10-15min entre chaque RDV pour le nettoyage`;
+      return `**Optimisation de votre planning :**
+
+🎯 **Actions immédiates :**
+• Analysez vos créneaux vides de cette semaine
+• Proposez des créneaux express (30min) pour combler les trous
+• Activez les notifications de liste d'attente
+
+📊 **Stratégie intelligente :**
+• Regroupez les services similaires (gain de temps de 15%)
+• Bloquez 15min entre RDV pour le setup/nettoyage
+• Créez des créneaux premium aux heures de pointe (+20% tarif)
+
+💡 **Souhaitez-vous que je génère une stratégie personnalisée pour votre salon ?**`;
     }
     
     if (message.includes('retard') || message.includes('en retard') || message.includes('late')) {
@@ -602,29 +610,25 @@ Que souhaitez-vous améliorer aujourd'hui ?`;
 • Équipements : investissement matériel moderne`;
     }
     
-    // Questions sur les retards - réponse directe
+    // Questions sur les retards - réponse business orientée
     if (message.includes('retard') || message.includes('en retard')) {
-      return `Si une personne est en retard, voici ce que vous devez faire :
+      return `**Gestion des retards clients :**
 
-1. **Jusqu'à 15 minutes** : Accueillez le client normalement mais informez-le que le soin pourrait être légèrement raccourci ou décalé selon votre planning.
+⚡ **Action immédiate :**
+- Jusqu'à 15min : Accueillez normalement, informez du possible raccourcissement
+- Plus de 15min : Proposez report/raccourcissement (facturé plein tarif)
 
-2. **Plus de 15 minutes** : Vous avez plusieurs options :
-   - Proposer un soin raccourci (facturé plein tarif)
-   - Reporter à un créneau libre dans la journée
-   - Reprogrammer à une autre date
+🎯 **Protocole optimal :**
+1. Évaluez l'impact sur les clients suivants
+2. Prévenez le client suivant du décalage
+3. Proposez une solution concrète en 30 secondes
+4. Documentez les retards récurrents
 
-3. **Actions immédiates** :
-   - Vérifiez l'impact sur les clients suivants
-   - Prévenez le client suivant du possible décalage
-   - Restez professionnel et bienveillant
-   - Proposez une solution concrète rapidement
+🔧 **Automatisation préventive :**
+- SMS rappel : "RDV demain 14h, merci d'arriver 5min avant"
+- Politique claire affichée et envoyée par email
 
-4. **Prévention future** :
-   - Rappelez l'importance de la ponctualité lors de la prise de RDV
-   - Envoyez des SMS de rappel avec mention "merci d'arriver 5 min avant"
-   - Affichez votre politique de retard dans le salon
-
-La règle d'or : gardez le contrôle de votre planning tout en préservant la relation client.`;
+💡 **Souhaitez-vous que je configure des rappels automatiques pour réduire les retards ?**`;
     }
     
     // Toutes les autres questions - réponse directe et intelligente
