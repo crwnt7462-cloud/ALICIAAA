@@ -245,6 +245,16 @@ export const cancellationPredictions = pgTable("cancellation_predictions", {
   processedAt: timestamp("processed_at"),
 });
 
+export const pushTokens = pgTable("push_tokens", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  token: text("token").notNull(),
+  deviceType: text("device_type"), // "ios" | "android"
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  lastUsed: timestamp("last_used").defaultNow()
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   services: many(services),
