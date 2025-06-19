@@ -224,9 +224,18 @@ export class NotificationService {
   // Récupérer le token push de l'utilisateur
   private async getUserPushToken(userId: string): Promise<string | null> {
     try {
-      // TODO: Ajouter une table push_tokens ou colonne dans users
-      // Pour l'instant, return null - à implémenter
-      return process.env.TEST_PUSH_TOKEN || null;
+      const { pushTokens } = await import('../shared/schema');
+      const tokenRecord = await db
+        .select()
+        .from(pushTokens)
+        .where(and(
+          eq(pushTokens.userId, userId),
+          eq(pushTokens.isActive, true)
+        ))
+        .orderBy(desc(pushTokens.lastUsed))
+        .limit(1);
+
+      return tokenRecord[0]?.token || null;
     } catch (error) {
       console.error('Erreur récupération token:', error);
       return null;

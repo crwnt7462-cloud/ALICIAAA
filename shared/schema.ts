@@ -361,6 +361,9 @@ export type InsertAutoPromotion = typeof autoPromotions.$inferInsert;
 export type SmartPlanningLog = typeof smartPlanningLogs.$inferSelect;
 export type InsertSmartPlanningLog = typeof smartPlanningLogs.$inferInsert;
 
+export type PushToken = typeof pushTokens.$inferSelect;
+export type InsertPushToken = typeof pushTokens.$inferInsert;
+
 // Schemas for validation
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,

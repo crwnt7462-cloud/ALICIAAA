@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { aiService } from "./aiService";
+import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import {
   insertServiceSchema,
@@ -177,6 +178,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const appointmentData = insertAppointmentSchema.parse({ ...req.body, userId });
       const appointment = await storage.createAppointment(appointmentData);
       
+      // Send push notification for new booking
+      await notificationService.sendNewBookingNotification(appointment.id);
+      
+      // Detect gaps in schedule after new appointment
+      await notificationService.detectAndNotifyGaps(userId, appointment.appointmentDate);
+      
       // Broadcast to WebSocket clients
       broadcastToClients('appointment-created', appointment);
       
@@ -206,7 +213,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Get appointment data before deletion for notification
+      const appointment = await storage.getAppointment(id);
+      
       await storage.deleteAppointment(id);
+      
+      // Send cancellation notification
+      if (appointment) {
+        await notificationService.sendCancellationNotification(appointment);
+        
+        // Check for gaps after cancellation
+        await notificationService.detectAndNotifyGaps(appointment.userId, appointment.appointmentDate);
+      }
       
       // Broadcast to WebSocket clients
       broadcastToClients('appointment-deleted', { id });
@@ -577,6 +596,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error('WebSocket error:', error);
       clients.delete(ws);
     });
+  });
+
+  // Push Notifications Management
+  app.post('/api/notifications/register-token', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { token, deviceType } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+
+      // Import pushTokens from schema
+      const { pushTokens } = await import('../shared/schema');
+      const { db } = await import('./db');
+      const { eq } = await import('drizzle-orm');
+
+      // Deactivate existing tokens for this user
+      await db
+        .update(pushTokens)
+        .set({ isActive: false })
+        .where(eq(pushTokens.userId, userId));
+
+      // Insert new token
+      await db.insert(pushTokens).values({
+        userId,
+        token,
+        deviceType: deviceType || 'unknown',
+        isActive: true
+      });
+
+      res.json({ success: true, message: "Token registered successfully" });
+    } catch (error) {
+      console.error("Error registering push token:", error);
+      res.status(500).json({ message: "Failed to register push token" });
+    }
+  });
+
+  // Test notification endpoint
+  app.post('/api/notifications/test', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { type, appointmentId } = req.body;
+
+      switch (type) {
+        case 'new_booking':
+          if (appointmentId) {
+            await notificationService.sendNewBookingNotification(appointmentId);
+          }
+          break;
+        case 'gap_detected':
+          const today = new Date().toISOString().split('T')[0];
+          await notificationService.detectAndNotifyGaps(userId, today);
+          break;
+        case 'reminder':
+          if (appointmentId) {
+            await notificationService.sendReminderNotification(appointmentId);
+          }
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid notification type" });
+      }
+
+      res.json({ success: true, message: "Test notification sent" });
+    } catch (error) {
+      console.error("Error sending test notification:", error);
+      res.status(500).json({ message: "Failed to send test notification" });
+    }
   });
 
   function broadcastToClients(type: string, data: any) {
