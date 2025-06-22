@@ -636,11 +636,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       const { receiptService } = await import('./receiptService');
-      const pdfBuffer = await receiptService.generateReceiptPDF(receiptData);
+      const htmlContent = await receiptService.generateReceiptHTML(receiptData);
 
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="recu-reservation-${appointmentId}.pdf"`);
-      res.send(pdfBuffer);
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(htmlContent);
 
     } catch (error: any) {
       console.error("Error generating receipt:", error);
