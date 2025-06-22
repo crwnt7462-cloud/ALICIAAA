@@ -187,6 +187,38 @@ export class DatabaseStorage implements IStorage {
       .orderBy(clients.firstName);
   }
 
+  // Staff operations
+  async getStaff(userId: string): Promise<Staff[]> {
+    return await db
+      .select()
+      .from(staff)
+      .where(and(eq(staff.userId, userId), eq(staff.isActive, true)))
+      .orderBy(staff.firstName);
+  }
+
+  async getStaffMember(id: number): Promise<Staff | undefined> {
+    const [staffMember] = await db.select().from(staff).where(eq(staff.id, id));
+    return staffMember;
+  }
+
+  async createStaffMember(staffData: InsertStaff): Promise<Staff> {
+    const [newStaff] = await db.insert(staff).values(staffData).returning();
+    return newStaff;
+  }
+
+  async updateStaffMember(id: number, staffData: Partial<InsertStaff>): Promise<Staff> {
+    const [updated] = await db
+      .update(staff)
+      .set(staffData)
+      .where(eq(staff.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteStaffMember(id: number): Promise<void> {
+    await db.update(staff).set({ isActive: false }).where(eq(staff.id, id));
+  }
+
   // Appointment operations
   async getAppointments(userId: string, date?: string): Promise<(Appointment & { client?: Client; service?: Service })[]> {
     const query = db
@@ -215,6 +247,7 @@ export class DatabaseStorage implements IStorage {
       .from(appointments)
       .leftJoin(clients, eq(appointments.clientId, clients.id))
       .leftJoin(services, eq(appointments.serviceId, services.id))
+      .leftJoin(staff, eq(appointments.staffId, staff.id))
       .where(
         date 
           ? and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date))

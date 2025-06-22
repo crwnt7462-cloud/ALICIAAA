@@ -406,6 +406,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/public-staff/:salonId", async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const staffMembers = await storage.getStaff(salonId);
+      res.json(staffMembers);
+    } catch (error: any) {
+      console.error("Error fetching staff members:", error);
+      res.status(500).json({ error: "Erreur lors du chargement de l'équipe" });
+    }
+  });
+
   app.get("/api/business-info/:salonId", async (req, res) => {
     try {
       const { salonId } = req.params;
@@ -436,6 +447,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { 
         salonId, 
         serviceId, 
+        staffId,
         appointmentDate, 
         startTime, 
         endTime,
@@ -503,6 +515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: salonId,
         clientId: client[0].id,
         serviceId: parseInt(serviceId),
+        staffId: staffId ? parseInt(staffId) : null,
         appointmentDate,
         startTime,
         endTime,

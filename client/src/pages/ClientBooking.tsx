@@ -27,6 +27,7 @@ export default function ClientBooking() {
   const [location] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
+  const [selectedStaff, setSelectedStaff] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [paymentCompleted, setPaymentCompleted] = useState(false);
@@ -43,6 +44,15 @@ export default function ClientBooking() {
     queryFn: async () => {
       const response = await fetch(`/api/public-services/${salonId}`);
       if (!response.ok) throw new Error('Salon non trouvé');
+      return response.json();
+    },
+  });
+
+  const { data: staffMembers = [] } = useQuery<any[]>({
+    queryKey: ["/api/public-staff", salonId],
+    queryFn: async () => {
+      const response = await fetch(`/api/public-staff/${salonId}`);
+      if (!response.ok) throw new Error('Équipe non trouvée');
       return response.json();
     },
   });
