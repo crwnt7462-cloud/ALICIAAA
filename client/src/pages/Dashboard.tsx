@@ -38,22 +38,27 @@ export default function Dashboard() {
   const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
   return (
-    <div className="p-6 space-y-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-full">
+    <div className="p-6 space-y-8 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Vue d'ensemble</h1>
-          <p className="text-gray-600 mt-2 flex items-center">
-            <Calendar className="w-4 h-4 mr-2" />
-            Mercredi 18 juin 2025 - Journée productive
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Tableau de bord</h1>
+          <p className="text-gray-600 mt-2 flex items-center text-sm">
+            <Calendar className="w-4 h-4 mr-2 text-purple-500" />
+            {new Date().toLocaleDateString('fr-FR', { 
+              weekday: 'long', 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            })}
           </p>
         </div>
         <div className="flex space-x-3">
-          <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+          <Button variant="outline" className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl">
             <TrendingUp className="w-4 h-4 mr-2" />
             Analytics
           </Button>
-          <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg">
+          <Button className="gradient-bg text-white shadow-luxury hover:scale-105 transition-all duration-200 rounded-xl">
             <Plus className="w-4 h-4 mr-2" />
             Nouveau RDV
           </Button>
