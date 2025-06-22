@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
+import PublicLanding from "@/pages/PublicLanding";
+import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
@@ -32,6 +34,24 @@ function Router() {
     );
   }
 
+  // Page d'accueil publique (sans header/nav mobile)
+  if (location === '/' || location === '/home') {
+    return (
+      <div className="h-full">
+        <PublicLanding />
+      </div>
+    );
+  }
+
+  // Page de résultats de recherche
+  if (location.startsWith('/search')) {
+    return (
+      <div className="h-full">
+        <SearchResults />
+      </div>
+    );
+  }
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
@@ -46,7 +66,7 @@ function Router() {
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
           <Route path="/test-booking" component={BookingTest} />
-          <Route path="/" component={Landing} />
+          <Route path="/pro" component={Landing} />
           <Route component={NotFound} />
         </Switch>
       </main>
