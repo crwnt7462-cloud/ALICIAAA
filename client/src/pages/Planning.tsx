@@ -96,25 +96,24 @@ export default function Planning() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
+    <div className="p-4 space-y-4 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Planning</h2>
-          <p className="text-sm text-gray-600 mt-2 flex items-center">
-            <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Planning</h2>
+          <p className="text-xs text-gray-600 mt-1 flex items-center">
+            <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
             {new Date(selectedDate).toLocaleDateString('fr-FR', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
+              weekday: 'short', 
+              month: 'short', 
               day: 'numeric' 
             })}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gradient-bg text-white px-6 py-3 rounded-xl font-medium shadow-luxury hover:scale-105 transition-all duration-200">
-              <Plus className="w-4 h-4 mr-2" />
+            <Button size="sm" className="gradient-bg text-white px-3 py-1.5 rounded-lg font-medium shadow-md hover:scale-105 transition-all duration-200 text-xs">
+              <Plus className="w-3 h-3 mr-1" />
               Nouveau RDV
             </Button>
           </DialogTrigger>

@@ -6,48 +6,48 @@ export function Header() {
   const { user } = useAuth();
 
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 px-6 py-4 sticky top-0 z-50">
+    <header className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 px-4 py-3 sticky top-0 z-50">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury">
-            <Sparkles className="w-6 h-6 text-white" />
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 gradient-bg rounded-xl flex items-center justify-center shadow-sm">
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-gray-900 text-xl tracking-tight">
+            <h1 className="font-bold text-gray-900 text-lg tracking-tight">
               Beauty Pro
             </h1>
-            <p className="text-sm text-gradient font-medium">
-              Plateforme de gestion avancée
+            <p className="text-xs text-gradient font-medium">
+              Gestion salon
             </p>
           </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1">
           <Button
             variant="ghost"
             size="icon"
-            className="h-10 w-10 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-xl transition-all duration-200"
+            className="h-8 w-8 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-3.5 w-3.5" />
           </Button>
           <div className="relative">
             <Button
               variant="ghost"
               size="icon"
-              className="h-10 w-10 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-xl transition-all duration-200"
+              className="h-8 w-8 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg"
             >
-              <Bell className="h-4 w-4" />
+              <Bell className="h-3.5 w-3.5" />
             </Button>
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full animate-pulse"></span>
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-purple-500 rounded-full"></span>
           </div>
-          <div className="flex items-center space-x-3 bg-gray-50/80 px-4 py-2.5 rounded-xl border border-gray-200/50 ml-2">
-            <div className="w-9 h-9 gradient-bg rounded-xl flex items-center justify-center shadow-sm">
-              <span className="text-white text-sm font-semibold">
+          <div className="flex items-center space-x-2 bg-gray-50/80 px-2.5 py-1.5 rounded-lg border border-gray-200/50 ml-1">
+            <div className="w-6 h-6 gradient-bg rounded-lg flex items-center justify-center">
+              <span className="text-white text-xs font-semibold">
                 {user?.firstName?.[0] || 'M'}
               </span>
             </div>
-            <div className="text-sm">
-              <p className="font-semibold text-gray-900">{user?.firstName || 'Marie'} {user?.lastName || 'Dubois'}</p>
-              <p className="text-gray-500 text-xs">Salon Manager</p>
+            <div className="text-xs hidden sm:block">
+              <p className="font-semibold text-gray-900 leading-tight">{user?.firstName || 'Marie'}</p>
+              <p className="text-gray-500 text-[10px]">Manager</p>
             </div>
           </div>
         </div>

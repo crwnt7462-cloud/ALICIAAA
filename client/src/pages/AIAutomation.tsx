@@ -171,22 +171,22 @@ export default function AIAutomation() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4">
+      <div className="max-w-md mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3 tracking-tight">
-              <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury">
-                <Brain className="h-6 w-6 text-white" />
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2 tracking-tight">
+              <div className="w-8 h-8 gradient-bg rounded-xl flex items-center justify-center shadow-md">
+                <Brain className="h-4 w-4 text-white" />
               </div>
               Assistant Pro
             </h1>
-            <p className="text-gray-600 mt-2">Copilote IA pour optimiser votre business beauté</p>
+            <p className="text-gray-600 mt-1 text-xs">Copilote IA pour votre salon</p>
           </div>
-          <Button className="gradient-bg text-white px-6 py-3 rounded-xl font-medium shadow-luxury hover:scale-105 transition-all duration-200">
-            <Settings className="h-4 w-4 mr-2" />
-            Configurer
+          <Button size="sm" className="gradient-bg text-white px-3 py-1.5 rounded-lg font-medium shadow-md hover:scale-105 transition-all duration-200 text-xs">
+            <Settings className="h-3 w-3 mr-1" />
+            Config
           </Button>
         </div>
 
