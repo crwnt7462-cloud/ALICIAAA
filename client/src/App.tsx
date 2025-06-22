@@ -43,7 +43,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <div className="h-full bg-gray-50 dark:bg-dark-900">
+          <div className="h-full animated-bg">
             <Toaster />
             <Router />
           </div>

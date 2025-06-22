@@ -2,28 +2,29 @@ import { useQuery } from "@tanstack/react-query";
 import { CalendarCheck, TrendingUp, Users, Clock, ChevronRight, Plus, Award, Star, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { LoadingDashboard } from "@/components/ui/loading-spinner";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 export default function Dashboard() {
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
 
-  const { data: revenueChart = [] } = useQuery({
+  const { data: revenueChart = [], isLoading: revenueLoading } = useQuery({
     queryKey: ["/api/dashboard/revenue-chart"],
   });
 
-  const { data: upcomingAppointments = [] } = useQuery({
+  const { data: upcomingAppointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ["/api/dashboard/upcoming-appointments"],
   });
 
-  const { data: topServices = [] } = useQuery({
+  const { data: topServices = [], isLoading: servicesLoading } = useQuery({
     queryKey: ["/api/dashboard/top-services"],
   });
 
-  const { data: staffPerformance = [] } = useQuery({
+  const { data: staffPerformance = [], isLoading: staffLoading } = useQuery({
     queryKey: ["/api/dashboard/staff-performance"],
   });
 
@@ -35,7 +36,11 @@ export default function Dashboard() {
     }
   }, [lastMessage]);
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+
+  if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading) {
+    return <LoadingDashboard />;
+  }
 
   return (
     <div className="p-6 space-y-8 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
