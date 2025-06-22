@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 const clientBookingSchema = z.object({
   firstName: z.string().min(2, "Prénom requis"),
@@ -23,13 +24,18 @@ const clientBookingSchema = z.object({
 type ClientBookingForm = z.infer<typeof clientBookingSchema>;
 
 export default function ClientBooking() {
+  const [location] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [paymentCompleted, setPaymentCompleted] = useState(false);
+  const [businessInfo, setBusinessInfo] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  // Extraire l'ID du salon depuis l'URL
+  const salonId = location.split('/book/')[1] || 'demo-user';
 
   const { data: services = [] } = useQuery<any[]>({
     queryKey: ["/api/services"],

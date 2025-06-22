@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, CalendarPlus, Brain } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, Share, Brain } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface NavItem {
@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { path: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord" },
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
-  { path: "/booking", icon: CalendarPlus, label: "Nouveau RDV" },
+  { path: "/share", icon: Share, label: "Partager" },
   { path: "/ai", icon: Brain, label: "Assistant Pro", hasNotification: true },
 ];
 

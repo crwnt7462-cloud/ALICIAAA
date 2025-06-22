@@ -16,13 +16,14 @@ import Booking from "@/pages/Booking";
 import AIAutomation from "@/pages/AIAutomation";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
+import ShareBooking from "@/pages/ShareBooking";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   const [location] = useLocation();
   
   // Page publique pour réservation client (sans header/nav)
-  if (location === '/book') {
+  if (location.startsWith('/book/')) {
     return (
       <div className="h-full">
         <ClientBooking />
@@ -42,6 +43,7 @@ function Router() {
           <Route path="/booking" component={Booking} />
           <Route path="/ai" component={AIAutomation} />
           <Route path="/notifications" component={NotificationTest} />
+          <Route path="/share" component={ShareBooking} />
           <Route path="/" component={Landing} />
           <Route component={NotFound} />
         </Switch>
