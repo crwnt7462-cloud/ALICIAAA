@@ -431,6 +431,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/public-booking", async (req, res) => {
     try {
+      console.log("Received booking data:", req.body);
+      
       const { 
         salonId, 
         serviceId, 
@@ -444,6 +446,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notes,
         depositAmount 
       } = req.body;
+
+      // Validation des champs obligatoires
+      if (!clientFirstName || !clientLastName || !clientEmail) {
+        return res.status(400).json({ 
+          error: "Les informations client (prénom, nom, email) sont obligatoires" 
+        });
+      }
       
       // Récupérer les données nécessaires
       const [service, businessUser] = await Promise.all([
