@@ -4,10 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingDashboard } from "@/components/ui/loading-spinner";
 import { useWebSocket } from "@/hooks/useWebSocket";
+import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 export default function Dashboard() {
+  const [, setLocation] = useLocation();
+  
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
   });
@@ -62,7 +65,7 @@ export default function Dashboard() {
             variant="outline" 
             size="sm" 
             className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
-            onClick={() => window.location.href = '/ai'}
+            onClick={() => setLocation('/ai')}
           >
             <TrendingUp className="w-3 h-3 mr-1" />
             Analytics
@@ -70,7 +73,7 @@ export default function Dashboard() {
           <Button 
             size="sm" 
             className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5"
-            onClick={() => window.location.href = '/booking'}
+            onClick={() => setLocation('/booking')}
           >
             <Plus className="w-3 h-3 mr-1" />
             Nouveau RDV

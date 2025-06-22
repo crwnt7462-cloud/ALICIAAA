@@ -105,7 +105,7 @@ export default function Landing() {
         <div className="space-y-3">
           <Button 
             className="w-full gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-xl py-3"
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation('/dashboard')}
           >
             Accéder au tableau de bord
             <ArrowRight className="w-4 h-4 ml-2" />
