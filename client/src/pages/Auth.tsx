@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
-import { X, User, Building2, Mail, Lock, Eye, EyeOff, ArrowLeft, Menu } from "lucide-react";
+import { X, User, Building2, Mail, Lock, Eye, EyeOff, ArrowLeft, Menu, Home, Search, Calendar, MessageCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,19 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<'client' | 'professional' | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -62,21 +75,67 @@ export default function Auth() {
         <div className="relative z-10 min-h-screen flex flex-col">
           {/* Header */}
           <div className="flex justify-between items-center p-4">
+            <div className="relative" ref={menuRef}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMenu(!showMenu)}
+                className="text-white hover:bg-white/20 bg-black/20 backdrop-blur-sm rounded-full p-2"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+              {showMenu && (
+                <div className="absolute top-12 left-0 bg-white rounded-lg shadow-lg border w-56 py-2 z-50">
+                  <button
+                    onClick={() => {
+                      setLocation('/');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Accueil
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLocation('/search');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Rechercher
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLocation('/booking');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+                  >
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Mes rendez-vous
+                  </button>
+                  <button
+                    onClick={() => {
+                      setLocation('/forum');
+                      setShowMenu(false);
+                    }}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Forum
+                  </button>
+                </div>
+              )}
+            </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setLocation('/')}
-              className="text-white hover:bg-white/20"
+              className="text-white hover:bg-white/20 bg-black/20 backdrop-blur-sm rounded-full p-2"
             >
-              <Menu className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation('/')}
-              className="text-white hover:bg-white/20"
-            >
-              <X className="w-6 h-6" />
+              <X className="w-5 h-5" />
             </Button>
           </div>
 
@@ -145,14 +204,50 @@ export default function Auth() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white shadow-sm border-b px-4 py-3 flex items-center justify-between">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setUserType(null)}
-          className="text-gray-600"
-        >
-          <Menu className="w-5 h-5" />
-        </Button>
+        <div className="relative" ref={menuRef}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowMenu(!showMenu)}
+            className="text-gray-600 hover:bg-gray-100"
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+          {showMenu && (
+            <div className="absolute top-12 left-0 bg-white rounded-lg shadow-lg border w-56 py-2 z-50">
+              <button
+                onClick={() => {
+                  setLocation('/');
+                  setShowMenu(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Accueil
+              </button>
+              <button
+                onClick={() => {
+                  setLocation('/search');
+                  setShowMenu(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                Rechercher
+              </button>
+              <button
+                onClick={() => {
+                  setUserType(null);
+                  setShowMenu(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </button>
+            </div>
+          )}
+        </div>
         <h1 className="text-lg font-semibold text-gray-900">
           {isLogin ? 'Connexion' : userType === 'professional' ? 'Inscription Pro' : 'Inscription'}
         </h1>
