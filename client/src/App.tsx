@@ -10,6 +10,7 @@ import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
 import SearchResults from "@/pages/SearchResults";
+import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
@@ -48,6 +49,15 @@ function Router() {
     return (
       <div className="h-full">
         <SearchResults />
+      </div>
+    );
+  }
+
+  // Page d'authentification
+  if (location === '/auth' || location === '/login' || location === '/signup') {
+    return (
+      <div className="h-full">
+        <Auth />
       </div>
     );
   }
