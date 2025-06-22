@@ -17,6 +17,7 @@ import AIAutomation from "@/pages/AIAutomation";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
+import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -44,6 +45,7 @@ function Router() {
           <Route path="/ai" component={AIAutomation} />
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
+          <Route path="/test-booking" component={BookingTest} />
           <Route path="/" component={Landing} />
           <Route component={NotFound} />
         </Switch>
