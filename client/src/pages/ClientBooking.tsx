@@ -335,72 +335,55 @@ export default function ClientBooking() {
 
             {/* Staff Selection */}
             {selectedService && staffMembers.length > 0 && (
-              <div className="space-y-4">
-                <div className="text-center bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Choisissez votre professionnel</h3>
-                  <p className="text-sm text-gray-600">Nos experts sont là pour vous offrir la meilleure expérience</p>
+              <div className="space-y-3">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Choisissez votre professionnel</h3>
+                  <p className="text-sm text-gray-600">Sélectionnez le professionnel de votre choix</p>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {staffMembers.map((staff: any) => (
                     <Card 
                       key={staff.id}
-                      className={`border-0 shadow-lg bg-white backdrop-blur-sm rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] ${
+                      className={`border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl cursor-pointer transition-all hover:scale-105 ${
                         selectedStaff?.id === staff.id 
-                          ? 'ring-3 ring-purple-500 bg-gradient-to-r from-purple-50 to-pink-50 shadow-purple-200/50' 
-                          : 'hover:ring-2 hover:ring-purple-200'
+                          ? 'ring-2 ring-purple-500 shadow-lg' 
+                          : 'hover:ring-1 hover:ring-purple-300'
                       }`}
                       onClick={() => setSelectedStaff(staff)}
                     >
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-4">
+                      <CardContent className="p-3">
+                        <div className="flex items-center gap-3">
                           <div className="relative">
-                            <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center text-white font-bold text-lg shadow-lg ${
-                              selectedStaff?.id === staff.id ? 'ring-4 ring-white' : ''
+                            <div className={`w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold text-sm ${
+                              selectedStaff?.id === staff.id ? 'ring-2 ring-white' : ''
                             }`}>
                               {staff.firstName?.charAt(0)}{staff.lastName?.charAt(0)}
                             </div>
                             {selectedStaff?.id === staff.id && (
-                              <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                <Check className="w-4 h-4 text-white" />
+                              <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                <Check className="w-2.5 h-2.5 text-white" />
                               </div>
                             )}
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <h4 className="font-bold text-gray-900 text-lg">{staff.firstName} {staff.lastName}</h4>
-                              <div className="px-2 py-0.5 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-xs font-bold rounded-full">
+                              <h4 className="font-semibold text-gray-900">{staff.firstName} {staff.lastName}</h4>
+                              <div className="px-1.5 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">
                                 PRO
                               </div>
                             </div>
-                            <p className="text-sm text-gray-600 mb-2 font-medium">{staff.specialties || 'Spécialiste beauté'}</p>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star key={i} className="w-3 h-3 text-amber-400 fill-current" />
-                                ))}
-                                <span className="text-xs text-gray-500 ml-1 font-medium">4.9</span>
-                              </div>
-                              <span className="text-xs text-gray-400">+127 avis</span>
-                            </div>
-                            <div className="flex gap-1 mt-2">
-                              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                                5+ ans d'expérience
-                              </span>
-                              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                                Certifié
-                              </span>
+                            <p className="text-xs text-gray-600 mb-1">{staff.specialties || 'Spécialiste beauté'}</p>
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className="w-2.5 h-2.5 text-yellow-400 fill-current" />
+                              ))}
+                              <span className="text-xs text-gray-500 ml-1">4.9 (127)</span>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-xs text-emerald-600 font-bold bg-emerald-100 px-3 py-1.5 rounded-full mb-2">
-                              ● Disponible
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Prochain créneau
-                            </div>
-                            <div className="text-xs font-semibold text-gray-700">
-                              Aujourd'hui 14h
+                            <div className="text-xs text-green-600 font-medium bg-green-100 px-2 py-1 rounded-full">
+                              Disponible
                             </div>
                           </div>
                         </div>
@@ -409,62 +392,45 @@ export default function ClientBooking() {
                   ))}
                   
                   <Card 
-                    className={`border-0 shadow-lg bg-white backdrop-blur-sm rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-[1.02] ${
+                    className={`border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl cursor-pointer transition-all hover:scale-105 ${
                       selectedStaff === null 
-                        ? 'ring-3 ring-purple-500 bg-gradient-to-r from-purple-50 to-pink-50 shadow-purple-200/50' 
-                        : 'hover:ring-2 hover:ring-purple-200'
+                        ? 'ring-2 ring-purple-500 shadow-lg' 
+                        : 'hover:ring-1 hover:ring-purple-300'
                     }`}
                     onClick={() => setSelectedStaff(null)}
                   >
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-4">
+                    <CardContent className="p-3">
+                      <div className="flex items-center gap-3">
                         <div className="relative">
-                          <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white shadow-lg ${
-                            selectedStaff === null ? 'ring-4 ring-white' : ''
+                          <div className={`w-12 h-12 rounded-full bg-gradient-to-r from-gray-400 to-gray-600 flex items-center justify-center text-white font-semibold text-sm ${
+                            selectedStaff === null ? 'ring-2 ring-white' : ''
                           }`}>
-                            <Star className="w-8 h-8" />
+                            <Star className="w-6 h-6" />
                           </div>
                           {selectedStaff === null && (
-                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                              <Check className="w-4 h-4 text-white" />
+                            <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                              <Check className="w-2.5 h-2.5 text-white" />
                             </div>
                           )}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-bold text-gray-900 text-lg">Pas de préférence</h4>
-                            <div className="px-2 py-0.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-xs font-bold rounded-full">
+                            <h4 className="font-semibold text-gray-900">Pas de préférence</h4>
+                            <div className="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">
                               RAPIDE
                             </div>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2 font-medium">Notre équipe vous assignera automatiquement le meilleur professionnel disponible</p>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className="w-3 h-3 text-amber-400 fill-current" />
-                              ))}
-                              <span className="text-xs text-gray-500 ml-1 font-medium">4.8</span>
-                            </div>
-                            <span className="text-xs text-gray-400">Moyenne équipe</span>
-                          </div>
-                          <div className="flex gap-1 mt-2">
-                            <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full font-medium">
-                              Réservation instantanée
-                            </span>
-                            <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
-                              Recommandé
-                            </span>
+                          <p className="text-xs text-gray-600 mb-1">Attribution automatique du meilleur professionnel disponible</p>
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className="w-2.5 h-2.5 text-yellow-400 fill-current" />
+                            ))}
+                            <span className="text-xs text-gray-500 ml-1">4.8 (équipe)</span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-xs text-emerald-600 font-bold bg-emerald-100 px-3 py-1.5 rounded-full mb-2">
-                            ● Toujours disponible
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            Attribution auto
-                          </div>
-                          <div className="text-xs font-semibold text-gray-700">
-                            Immédiate
+                          <div className="text-xs text-green-600 font-medium bg-green-100 px-2 py-1 rounded-full">
+                            Recommandé
                           </div>
                         </div>
                       </div>
