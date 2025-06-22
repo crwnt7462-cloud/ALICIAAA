@@ -1,4 +1,4 @@
-import jsPDF from 'jspdf';
+const jsPDF = require('jspdf');
 import QRCode from 'qrcode';
 
 interface ReceiptData {
@@ -40,11 +40,11 @@ export class ReceiptService {
     
     // En-tête avec logo/nom du salon
     doc.setFontSize(24);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text(receiptData.businessInfo.name, pageWidth / 2, 30, { align: 'center' });
     
     doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text(receiptData.businessInfo.address, pageWidth / 2, 40, { align: 'center' });
     doc.text(`Tél: ${receiptData.businessInfo.phone} | Email: ${receiptData.businessInfo.email}`, pageWidth / 2, 47, { align: 'center' });
     
@@ -54,24 +54,24 @@ export class ReceiptService {
     
     // Titre du reçu
     doc.setFontSize(18);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('REÇU DE RÉSERVATION', pageWidth / 2, 70, { align: 'center' });
     
     // Numéro de réservation et date
     doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text(`N° Réservation: #${receiptData.appointmentId.toString().padStart(6, '0')}`, 20, 85);
     doc.text(`Date d'émission: ${new Date().toLocaleDateString('fr-FR')}`, pageWidth - 20, 85, { align: 'right' });
     
     // Informations client
     let yPos = 105;
     doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('INFORMATIONS CLIENT', 20, yPos);
     
     yPos += 10;
     doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text(`Nom: ${receiptData.clientInfo.firstName} ${receiptData.clientInfo.lastName}`, 20, yPos);
     yPos += 7;
     doc.text(`Email: ${receiptData.clientInfo.email}`, 20, yPos);
@@ -81,145 +81,137 @@ export class ReceiptService {
     // Détails du rendez-vous
     yPos += 20;
     doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('DÉTAILS DU RENDEZ-VOUS', 20, yPos);
     
     yPos += 10;
     doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
+    doc.setFont('helvetica', 'normal');
     doc.text(`Service: ${receiptData.serviceInfo.name}`, 20, yPos);
     yPos += 7;
-    doc.text(`Date: ${new Date(receiptData.appointmentInfo.date).toLocaleDateString('fr-FR', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    })}`, 20, yPos);
+    doc.text(`Date: ${receiptData.appointmentInfo.date}`, 20, yPos);
     yPos += 7;
     doc.text(`Heure: ${receiptData.appointmentInfo.time}`, 20, yPos);
     yPos += 7;
     doc.text(`Durée: ${receiptData.serviceInfo.duration} minutes`, 20, yPos);
     yPos += 7;
-    doc.text(`Statut: ${receiptData.appointmentInfo.status === 'confirmed' ? 'Confirmé' : receiptData.appointmentInfo.status}`, 20, yPos);
+    doc.text(`Statut: ${receiptData.appointmentInfo.status}`, 20, yPos);
     
     // Détails financiers
     yPos += 20;
     doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
+    doc.setFont('helvetica', 'bold');
     doc.text('DÉTAILS FINANCIERS', 20, yPos);
     
-    yPos += 15;
-    // Tableau des montants
-    const tableData = [
-      ['Service', receiptData.serviceInfo.name, `${receiptData.paymentInfo.totalAmount}€`],
-      ['Acompte payé', `30% (${receiptData.paymentInfo.paymentMethod})`, `${receiptData.paymentInfo.depositPaid}€`],
-      ['Solde à régler', 'Sur place', `${receiptData.paymentInfo.remainingBalance}€`]
-    ];
-    
-    const colWidths = [60, 80, 40];
-    const startX = 20;
-    
-    // En-tête du tableau
+    yPos += 10;
     doc.setFontSize(10);
-    doc.setFont(undefined, 'bold');
-    doc.text('Description', startX, yPos);
-    doc.text('Détail', startX + colWidths[0], yPos);
-    doc.text('Montant', startX + colWidths[0] + colWidths[1], yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Prix total du service: ${receiptData.paymentInfo.totalAmount}€`, 20, yPos);
+    yPos += 7;
+    doc.text(`Acompte payé: ${receiptData.paymentInfo.depositPaid}€`, 20, yPos);
+    yPos += 7;
+    doc.text(`Reste à payer: ${receiptData.paymentInfo.remainingBalance}€`, 20, yPos);
+    yPos += 7;
+    doc.text(`Mode de paiement: ${receiptData.paymentInfo.paymentMethod}`, 20, yPos);
     
-    yPos += 5;
-    doc.line(startX, yPos, startX + colWidths[0] + colWidths[1] + colWidths[2], yPos);
-    
-    // Lignes du tableau
-    doc.setFont(undefined, 'normal');
-    tableData.forEach((row, index) => {
-      yPos += 10;
-      doc.text(row[0], startX, yPos);
-      doc.text(row[1], startX + colWidths[0], yPos);
-      doc.text(row[2], startX + colWidths[0] + colWidths[1], yPos, { align: 'right' });
-      
-      if (index === tableData.length - 1) {
-        // Ligne de total
-        yPos += 5;
-        doc.setLineWidth(1);
-        doc.line(startX + colWidths[0] + colWidths[1], yPos, startX + colWidths[0] + colWidths[1] + colWidths[2], yPos);
-      }
-    });
-    
-    // QR Code pour annulation/modification
-    yPos += 30;
+    // QR Code pour gestion de la réservation
+    yPos += 25;
     try {
-      const qrCodeUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/manage-booking/${receiptData.appointmentId}`;
-      const qrCodeDataUrl = await QRCode.toDataURL(qrCodeUrl, { width: 80 });
-      doc.addImage(qrCodeDataUrl, 'PNG', pageWidth - 50, yPos, 30, 30);
+      const manageUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/manage-booking/${receiptData.appointmentId}`;
+      const qrCodeDataUrl = await QRCode.toDataURL(manageUrl, { width: 80 });
+      doc.addImage(qrCodeDataUrl, 'PNG', pageWidth - 50, yPos - 10, 30, 30);
       
       doc.setFontSize(8);
-      doc.text('Scanner pour gérer', pageWidth - 50, yPos + 35, { align: 'left' });
-      doc.text('votre réservation', pageWidth - 50, yPos + 40, { align: 'left' });
+      doc.text('Scannez pour gérer votre réservation', pageWidth - 50, yPos + 25, { align: 'left' });
     } catch (error) {
       console.error('Erreur génération QR code:', error);
     }
     
-    // Notes importantes
-    yPos += 20;
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'bold');
-    doc.text('NOTES IMPORTANTES:', 20, yPos);
+    // Conditions d'annulation
+    yPos += 40;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CONDITIONS D\'ANNULATION', 20, yPos);
     
-    yPos += 8;
-    doc.setFont(undefined, 'normal');
-    doc.text('• L\'acompte versé est non-remboursable en cas d\'annulation tardive', 20, yPos);
-    yPos += 6;
-    doc.text('• Merci d\'arriver 5 minutes avant l\'heure du rendez-vous', 20, yPos);
-    yPos += 6;
-    doc.text('• Toute modification doit être effectuée au moins 24h à l\'avance', 20, yPos);
+    yPos += 10;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('• Annulation gratuite jusqu\'à 24h avant le rendez-vous', 20, yPos);
+    yPos += 5;
+    doc.text('• Annulation tardive: frais de 10€', 20, yPos);
+    yPos += 5;
+    doc.text('• L\'acompte versé est non-remboursable', 20, yPos);
     
     // Pied de page
-    yPos = doc.internal.pageSize.getHeight() - 30;
+    const footerY = doc.internal.pageSize.getHeight() - 20;
     doc.setFontSize(8);
-    doc.setTextColor(128, 128, 128);
-    doc.text('Merci de votre confiance !', pageWidth / 2, yPos, { align: 'center' });
-    doc.text(`Document généré le ${new Date().toLocaleString('fr-FR')}`, pageWidth / 2, yPos + 8, { align: 'center' });
+    doc.setFont('helvetica', 'normal');
+    doc.text('Merci de votre confiance !', pageWidth / 2, footerY, { align: 'center' });
     
     return Buffer.from(doc.output('arraybuffer'));
   }
-  
+
   async generateInvoicePDF(receiptData: ReceiptData): Promise<Buffer> {
-    // Version facture complète (après paiement total)
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     
-    // En-tête similaire mais titre différent
+    // En-tête facture
     doc.setFontSize(24);
-    doc.setFont(undefined, 'bold');
-    doc.text(receiptData.businessInfo.name, pageWidth / 2, 30, { align: 'center' });
+    doc.setFont('helvetica', 'bold');
+    doc.text('FACTURE', pageWidth / 2, 30, { align: 'center' });
     
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-    doc.text(receiptData.businessInfo.address, pageWidth / 2, 40, { align: 'center' });
-    doc.text(`Tél: ${receiptData.businessInfo.phone} | Email: ${receiptData.businessInfo.email}`, pageWidth / 2, 47, { align: 'center' });
-    
-    doc.setLineWidth(0.5);
-    doc.line(20, 55, pageWidth - 20, 55);
-    
-    doc.setFontSize(18);
-    doc.setFont(undefined, 'bold');
-    doc.text('FACTURE', pageWidth / 2, 70, { align: 'center' });
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text(receiptData.businessInfo.name, 20, 50);
+    doc.text(receiptData.businessInfo.address, 20, 60);
+    doc.text(`Tél: ${receiptData.businessInfo.phone}`, 20, 70);
+    doc.text(`Email: ${receiptData.businessInfo.email}`, 20, 80);
     
     // Numéro de facture
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-    doc.text(`N° Facture: F${receiptData.appointmentId.toString().padStart(6, '0')}`, 20, 85);
-    doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, pageWidth - 20, 85, { align: 'right' });
+    doc.text(`Facture N°: F-${receiptData.appointmentId.toString().padStart(6, '0')}`, pageWidth - 20, 50, { align: 'right' });
+    doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, pageWidth - 20, 60, { align: 'right' });
     
-    // Reste du contenu similaire mais avec statut "PAYÉ"
-    return this.generateReceiptPDF({
-      ...receiptData,
-      paymentInfo: {
-        ...receiptData.paymentInfo,
-        depositPaid: receiptData.paymentInfo.totalAmount,
-        remainingBalance: 0
-      }
-    });
+    // Client facturé
+    let yPos = 100;
+    doc.setFont('helvetica', 'bold');
+    doc.text('FACTURÉ À:', 20, yPos);
+    
+    yPos += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${receiptData.clientInfo.firstName} ${receiptData.clientInfo.lastName}`, 20, yPos);
+    yPos += 8;
+    doc.text(receiptData.clientInfo.email, 20, yPos);
+    yPos += 8;
+    doc.text(receiptData.clientInfo.phone, 20, yPos);
+    
+    // Tableau des services
+    yPos += 30;
+    doc.setFont('helvetica', 'bold');
+    doc.text('DÉTAIL DES PRESTATIONS', 20, yPos);
+    
+    yPos += 15;
+    // En-têtes du tableau
+    doc.rect(20, yPos, pageWidth - 40, 10);
+    doc.text('Service', 25, yPos + 7);
+    doc.text('Date', 80, yPos + 7);
+    doc.text('Durée', 120, yPos + 7);
+    doc.text('Prix', pageWidth - 30, yPos + 7, { align: 'right' });
+    
+    // Ligne de service
+    yPos += 10;
+    doc.setFont('helvetica', 'normal');
+    doc.rect(20, yPos, pageWidth - 40, 12);
+    doc.text(receiptData.serviceInfo.name, 25, yPos + 8);
+    doc.text(receiptData.appointmentInfo.date, 80, yPos + 8);
+    doc.text(`${receiptData.serviceInfo.duration}min`, 120, yPos + 8);
+    doc.text(`${receiptData.paymentInfo.totalAmount}€`, pageWidth - 30, yPos + 8, { align: 'right' });
+    
+    // Total
+    yPos += 25;
+    doc.setFont('helvetica', 'bold');
+    doc.text(`TOTAL: ${receiptData.paymentInfo.totalAmount}€`, pageWidth - 30, yPos, { align: 'right' });
+    
+    return Buffer.from(doc.output('arraybuffer'));
   }
 }
 
