@@ -219,7 +219,7 @@ export default function ClientBooking() {
                 className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl py-3"
                 onClick={() => window.open(bookingResponse.downloadUrl, '_blank')}
               >
-                📄 Télécharger le reçu PDF
+                Télécharger le reçu PDF
               </Button>
               
               <Button 
@@ -227,7 +227,7 @@ export default function ClientBooking() {
                 className="w-full rounded-xl py-3"
                 onClick={() => window.open(bookingResponse.manageUrl, '_blank')}
               >
-                🎯 Gérer ma réservation
+                Gérer ma réservation
               </Button>
             </div>
           )}

@@ -447,7 +447,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("clientInfo:", JSON.stringify(clientInfo, null, 2));
       
       if (!clientInfo) {
-        console.log("❌ clientInfo is missing");
+        console.log("clientInfo is missing");
         return res.status(400).json({ 
           error: "Les informations client sont manquantes" 
         });
@@ -459,11 +459,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const clientPhone = clientInfo.phone;
       const notes = clientInfo.notes || "";
 
-      console.log("✅ Extracted:", { clientFirstName, clientLastName, clientEmail, clientPhone });
+      console.log("Extracted client data:", { clientFirstName, clientLastName, clientEmail, clientPhone });
 
       // Validation des champs obligatoires
       if (!clientFirstName || !clientLastName || !clientEmail) {
-        console.log("❌ Validation failed - missing:", { 
+        console.log("Validation failed - missing required fields:", { 
           firstName: !clientFirstName, 
           lastName: !clientLastName, 
           email: !clientEmail 
@@ -473,7 +473,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      console.log("✅ Validation passed");
+      console.log("Validation passed - proceeding with booking");
       
       // Récupérer les données nécessaires
       const [service, businessUser] = await Promise.all([
