@@ -511,7 +511,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         success: true, 
         appointmentId: appointment.id,
-        message: "Rendez-vous confirmé avec succès"
+        message: "Rendez-vous confirmé avec succès",
+        downloadUrl: `/download-receipt/${appointment.id}`,
+        manageUrl: `/manage-booking/${appointment.id}`
       });
     } catch (error: any) {
       console.error("Error creating public booking:", error);

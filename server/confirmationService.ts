@@ -32,7 +32,7 @@ interface AppointmentData {
 }
 
 export class ConfirmationService {
-  private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter | null = null;
 
   constructor() {
     // Configuration Nodemailer - utilise SendGrid si disponible
@@ -44,8 +44,8 @@ export class ConfirmationService {
           pass: process.env.SENDGRID_API_KEY
         }
       });
-    } else {
-      // Configuration SMTP générique
+    } else if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      // Configuration SMTP générique seulement si les credentials sont fournis
       this.transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
@@ -55,11 +55,21 @@ export class ConfirmationService {
           pass: process.env.SMTP_PASS
         }
       });
+    } else {
+      // Mode simulation - logs seulement
+      console.log('📧 Mode simulation email: aucune configuration SMTP trouvée');
     }
   }
 
   async sendBookingConfirmation(appointmentData: AppointmentData): Promise<void> {
     try {
+      // Si pas de configuration email, log seulement
+      if (!this.transporter) {
+        console.log('📧 Email de confirmation simulé pour:', appointmentData.client.email);
+        console.log('🎯 Lien de gestion:', `${process.env.BASE_URL || 'http://localhost:5000'}/manage-booking/${appointmentData.id}`);
+        return;
+      }
+
       // Générer le reçu PDF
       const receiptData = {
         appointmentId: appointmentData.id,

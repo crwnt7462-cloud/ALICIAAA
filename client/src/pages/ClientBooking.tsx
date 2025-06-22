@@ -31,6 +31,7 @@ export default function ClientBooking() {
   const [selectedTime, setSelectedTime] = useState("");
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [businessInfo, setBusinessInfo] = useState<any>(null);
+  const [bookingResponse, setBookingResponse] = useState<any>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -121,7 +122,8 @@ export default function ClientBooking() {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      setBookingResponse(data);
       setCurrentStep(4);
       toast({
         title: "Réservation confirmée !",
