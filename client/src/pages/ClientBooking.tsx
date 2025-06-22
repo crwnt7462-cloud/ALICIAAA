@@ -96,29 +96,30 @@ export default function ClientBooking() {
   const timeSlots = generateTimeSlots();
 
   const createBookingMutation = useMutation({
-    mutationFn: async (data: any) => {
-      // Créer le client d'abord
-      const clientResponse = await apiRequest("POST", "/api/clients", {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
-        notes: data.notes,
-      });
-      const client = await clientResponse.json();
-
-      // Créer le rendez-vous
-      const appointmentResponse = await apiRequest("POST", "/api/appointments", {
-        clientId: client.id,
-        serviceId: selectedService.id,
-        appointmentDate: selectedDate,
-        startTime: selectedTime,
-        endTime: selectedTime, // Sera calculé côté serveur
-        status: "confirmed",
-        notes: `Réservation en ligne - Acompte payé`,
+    mutationFn: async (data: ClientBookingForm) => {
+      const depositAmount = calculateDeposit();
+      
+      const response = await fetch("/api/public-booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          salonId,
+          serviceId: selectedService.id,
+          appointmentDate: selectedDate,
+          startTime: selectedTime,
+          endTime: addMinutesToTime(selectedTime, selectedService.duration || 60),
+          clientInfo: data,
+          depositAmount
+        }),
       });
       
-      return appointmentResponse.json();
+      if (!response.ok) {
+        throw new Error('Erreur lors de la réservation');
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       setCurrentStep(4);
@@ -126,7 +127,6 @@ export default function ClientBooking() {
         title: "Réservation confirmée !",
         description: "Votre rendez-vous a été créé avec succès.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
     },
     onError: () => {
       toast({
@@ -144,6 +144,14 @@ export default function ClientBooking() {
   const calculateDeposit = () => {
     if (!selectedService) return 0;
     return Math.round(selectedService.price * 0.3); // 30% d'acompte
+  };
+
+  const addMinutesToTime = (time: string, minutes: number): string => {
+    const [hours, mins] = time.split(':').map(Number);
+    const totalMinutes = hours * 60 + mins + minutes;
+    const newHours = Math.floor(totalMinutes / 60);
+    const newMins = totalMinutes % 60;
+    return `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}`;
   };
 
   const simulatePayment = () => {
@@ -230,7 +238,9 @@ export default function ClientBooking() {
           </Button>
           <div className="flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-purple-600" />
-            <span className="font-bold text-gray-900">Beauty Pro</span>
+            <span className="font-bold text-gray-900">
+              {businessInfo?.name || 'Salon de Beauté'}
+            </span>
           </div>
         </div>
 
