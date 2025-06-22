@@ -12,7 +12,6 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState<'client' | 'professional' | null>(null);
-
   const [formData, setFormData] = useState({
     email: '',
     password: '',
