@@ -87,14 +87,14 @@ export default function PublicLanding() {
                 variant="ghost" 
                 size="sm"
                 className="text-gray-600 hover:text-purple-600 text-sm hidden sm:flex"
-                onClick={() => setLocation("/auth")}
+                onClick={() => setLocation("/pro")}
               >
                 Espace Pro
               </Button>
               <Button 
                 size="sm"
                 className="bg-purple-600 hover:bg-purple-700 text-white"
-                onClick={() => setLocation("/auth")}
+                onClick={() => setLocation("/pro")}
               >
                 Connexion
               </Button>
@@ -313,7 +313,7 @@ export default function PublicLanding() {
               size="lg"
               variant="outline"
               className="bg-white text-purple-600 hover:bg-gray-50 border-white w-full sm:w-auto"
-              onClick={() => setLocation("/auth")}
+              onClick={() => setLocation("/pro")}
             >
               Rejoindre BeautyBook Pro
             </Button>
@@ -321,7 +321,7 @@ export default function PublicLanding() {
               size="lg"
               variant="ghost"
               className="text-white hover:bg-white/10 border border-white/30 w-full sm:w-auto"
-              onClick={() => setLocation("/auth")}
+              onClick={() => setLocation("/pro")}
             >
               Démo gratuite
             </Button>
@@ -356,7 +356,7 @@ export default function PublicLanding() {
               <h4 className="font-semibold mb-3 lg:mb-4 text-sm lg:text-base">Professionnels</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#pro" className="hover:text-white text-xs lg:text-sm">Rejoindre BeautyBook</a></li>
-                <li><a href="#" className="hover:text-white text-xs lg:text-sm" onClick={() => setLocation("/auth")}>Tableau de bord</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm" onClick={() => setLocation("/pro")}>Tableau de bord</a></li>
                 <li><a href="#" className="hover:text-white text-xs lg:text-sm">Gestion des rdv</a></li>
               </ul>
             </div>
