@@ -62,39 +62,41 @@ export default function PublicLanding() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-8 h-8 text-purple-600" />
-              <span className="text-xl font-bold text-gray-900">BeautyBook</span>
+              <Sparkles className="w-7 h-7 text-purple-600" />
+              <span className="text-lg font-bold text-gray-900">BeautyBook</span>
             </div>
             
-            <div className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-gray-700 hover:text-purple-600 font-medium">
+            <div className="hidden lg:flex items-center space-x-6">
+              <a href="#salons" className="text-gray-700 hover:text-purple-600 font-medium text-sm">
                 Trouver un salon
               </a>
-              <a href="#" className="text-gray-700 hover:text-purple-600 font-medium">
-                Comment ça marche
+              <a href="#benefits" className="text-gray-700 hover:text-purple-600 font-medium text-sm">
+                Avantages
               </a>
-              <a href="#" className="text-gray-700 hover:text-purple-600 font-medium">
-                Aide
+              <a href="#pro" className="text-gray-700 hover:text-purple-600 font-medium text-sm">
+                Professionnels
               </a>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-purple-600"
-                onClick={() => setLocation("/dashboard")}
+                size="sm"
+                className="text-gray-600 hover:text-purple-600 text-sm hidden sm:flex"
+                onClick={() => setLocation("/pro")}
               >
-                Je suis un professionnel de beauté
+                Espace Pro
               </Button>
               <Button 
-                className="bg-gray-900 hover:bg-gray-800 text-white"
-                onClick={() => setLocation("/dashboard")}
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700 text-white"
+                onClick={() => setLocation("/pro")}
               >
-                Mon compte
+                Connexion
               </Button>
             </div>
           </div>
@@ -102,50 +104,50 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-12 lg:py-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
               Réservez votre rendez-vous beauté
               <br />
               <span className="text-purple-600">en quelques clics</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-gray-600 mb-6 lg:mb-8 max-w-2xl mx-auto">
               Découvrez les meilleurs salons de beauté près de chez vous. 
               Réservation instantanée, paiement sécurisé, satisfaction garantie.
             </p>
           </div>
 
           {/* Search Bar */}
-          <div className="max-w-4xl mx-auto">
-            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-4">
+          <div className="max-w-3xl mx-auto">
+            <Card className="border-0 shadow-xl bg-white/95 backdrop-blur-sm">
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <Input
-                        placeholder="Rechercher un service (coiffure, manucure...)"
+                        placeholder="Service (coiffure, manucure...)"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 h-12 text-lg border-gray-200 focus:border-purple-500"
+                        className="pl-9 h-11 border-gray-200 focus:border-purple-500"
                       />
                     </div>
                   </div>
                   <div className="flex-1">
                     <div className="relative">
-                      <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                      <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
                       <Input
-                        placeholder="Où ? (Paris, Lyon, Marseille...)"
+                        placeholder="Ville ou adresse"
                         value={searchLocation}
                         onChange={(e) => setSearchLocation(e.target.value)}
-                        className="pl-10 h-12 text-lg border-gray-200 focus:border-purple-500"
+                        className="pl-9 h-11 border-gray-200 focus:border-purple-500"
                       />
                     </div>
                   </div>
                   <Button 
                     onClick={handleSearch}
-                    className="h-12 px-8 bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                    className="h-11 px-6 bg-purple-600 hover:bg-purple-700 text-white font-semibold whitespace-nowrap"
                   >
                     Rechercher
                   </Button>
@@ -155,19 +157,20 @@ export default function PublicLanding() {
           </div>
 
           {/* Popular Services */}
-          <div className="mt-12">
-            <h3 className="text-center text-lg font-semibold text-gray-700 mb-6">
+          <div className="mt-8 lg:mt-12">
+            <h3 className="text-center text-base lg:text-lg font-semibold text-gray-700 mb-4 lg:mb-6">
               Services populaires
             </h3>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-2 lg:gap-3">
               {popularServices.map((service) => (
                 <Button
                   key={service.name}
                   variant="outline"
-                  className="bg-white hover:bg-purple-50 border-purple-200 hover:border-purple-300"
+                  size="sm"
+                  className="bg-white hover:bg-purple-50 border-purple-200 hover:border-purple-300 text-sm"
                   onClick={() => setSearchQuery(service.name)}
                 >
-                  <span className="mr-2 text-lg">{service.icon}</span>
+                  <span className="mr-1.5 text-base">{service.icon}</span>
                   {service.name}
                 </Button>
               ))}
@@ -177,54 +180,54 @@ export default function PublicLanding() {
       </section>
 
       {/* Featured Salons */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <section id="salons" className="py-12 lg:py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 lg:mb-4">
               Salons recommandés
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-base lg:text-lg text-gray-600">
               Découvrez les établissements les mieux notés par notre communauté
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
             {featuredSalons.map((salon) => (
               <Card 
                 key={salon.id}
-                className="overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group bg-white"
                 onClick={() => setLocation(`/book/${salon.id}`)}
               >
                 <div className="relative">
                   <img 
                     src={salon.image} 
                     alt={salon.name}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-semibold">{salon.rating}</span>
+                  <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                    <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                    <span className="text-xs font-semibold">{salon.rating}</span>
                   </div>
                 </div>
                 
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{salon.name}</h3>
+                <CardContent className="p-4 lg:p-5">
+                  <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">{salon.name}</h3>
                   
-                  <div className="flex items-center gap-2 mb-3">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-600">{salon.location}</span>
+                  <div className="flex items-center gap-2 mb-2">
+                    <MapPin className="w-3 h-3 text-gray-400" />
+                    <span className="text-sm text-gray-600">{salon.location}</span>
                   </div>
 
                   <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-4 h-4 text-green-500" />
-                    <span className="text-green-600 font-medium">{salon.nextSlot}</span>
+                    <Clock className="w-3 h-3 text-green-500" />
+                    <span className="text-sm text-green-600 font-medium">{salon.nextSlot}</span>
                   </div>
 
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {salon.services.map((service) => (
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {salon.services.slice(0, 3).map((service) => (
                       <span 
                         key={service}
-                        className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full"
+                        className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium"
                       >
                         {service}
                       </span>
@@ -232,8 +235,8 @@ export default function PublicLanding() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{salon.reviews} avis</span>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <span className="text-xs text-gray-500">{salon.reviews} avis</span>
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4">
                       Réserver
                     </Button>
                   </div>
@@ -245,50 +248,50 @@ export default function PublicLanding() {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <section id="benefits" className="py-12 lg:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 lg:mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 lg:mb-4">
               Pourquoi choisir BeautyBook ?
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-base lg:text-lg text-gray-600">
               La plateforme de référence pour vos rendez-vous beauté
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Calendar className="w-8 h-8 text-purple-600" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+            <div className="text-center p-4">
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+                <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">
                 Réservation 24h/24
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm lg:text-base text-gray-600">
                 Réservez votre rendez-vous à tout moment, même en dehors des heures d'ouverture
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award className="w-8 h-8 text-green-600" />
+            <div className="text-center p-4">
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+                <Award className="w-6 h-6 lg:w-8 lg:h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">
                 Salons vérifiés
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm lg:text-base text-gray-600">
                 Tous nos partenaires sont sélectionnés et évalués pour garantir la qualité
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-blue-600" />
+            <div className="text-center p-4">
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+                <Users className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">
                 Communauté active
               </h3>
-              <p className="text-gray-600">
+              <p className="text-sm lg:text-base text-gray-600">
                 Consultez les avis authentiques de milliers de clients satisfaits
               </p>
             </div>
@@ -297,69 +300,79 @@ export default function PublicLanding() {
       </section>
 
       {/* Professional CTA */}
-      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600">
+      <section id="pro" className="py-12 lg:py-16 bg-gradient-to-r from-purple-600 to-pink-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl lg:text-3xl font-bold text-white mb-3 lg:mb-4">
             Vous êtes un professionnel de la beauté ?
           </h2>
-          <p className="text-xl text-purple-100 mb-8">
+          <p className="text-base lg:text-xl text-purple-100 mb-6 lg:mb-8">
             Rejoignez BeautyBook et développez votre clientèle
           </p>
-          <Button 
-            size="lg"
-            variant="outline"
-            className="bg-white text-purple-600 hover:bg-gray-50 border-white"
-            onClick={() => setLocation("/dashboard")}
-          >
-            Rejoindre BeautyBook Pro
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <Button 
+              size="lg"
+              variant="outline"
+              className="bg-white text-purple-600 hover:bg-gray-50 border-white w-full sm:w-auto"
+              onClick={() => setLocation("/pro")}
+            >
+              Rejoindre BeautyBook Pro
+            </Button>
+            <Button 
+              size="lg"
+              variant="ghost"
+              className="text-white hover:bg-white/10 border border-white/30 w-full sm:w-auto"
+              onClick={() => setLocation("/pro")}
+            >
+              Démo gratuite
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-6 h-6 text-purple-400" />
-                <span className="text-lg font-bold">BeautyBook</span>
+      <footer className="bg-gray-900 text-white py-8 lg:py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 mb-3 lg:mb-4">
+                <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-purple-400" />
+                <span className="text-base lg:text-lg font-bold">BeautyBook</span>
               </div>
-              <p className="text-gray-400">
+              <p className="text-sm lg:text-base text-gray-400">
                 La plateforme de réservation beauté de référence en France
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Pour les clients</h4>
+              <h4 className="font-semibold mb-3 lg:mb-4 text-sm lg:text-base">Pour les clients</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Trouver un salon</a></li>
-                <li><a href="#" className="hover:text-white">Mes réservations</a></li>
-                <li><a href="#" className="hover:text-white">Avis et notes</a></li>
+                <li><a href="#salons" className="hover:text-white text-xs lg:text-sm">Trouver un salon</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">Mes réservations</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">Avis et notes</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Pour les professionnels</h4>
+              <h4 className="font-semibold mb-3 lg:mb-4 text-sm lg:text-base">Professionnels</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Rejoindre BeautyBook</a></li>
-                <li><a href="#" className="hover:text-white">Tableau de bord</a></li>
-                <li><a href="#" className="hover:text-white">Gestion des rdv</a></li>
+                <li><a href="#pro" className="hover:text-white text-xs lg:text-sm">Rejoindre BeautyBook</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm" onClick={() => setLocation("/pro")}>Tableau de bord</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">Gestion des rdv</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-3 lg:mb-4 text-sm lg:text-base">Support</h4>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
-                <li><a href="#" className="hover:text-white">CGU</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">Centre d'aide</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">Contact</a></li>
+                <li><a href="#" className="hover:text-white text-xs lg:text-sm">CGU</a></li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 BeautyBook. Tous droits réservés.</p>
+          <div className="border-t border-gray-800 mt-6 lg:mt-8 pt-6 lg:pt-8 text-center text-gray-400">
+            <p className="text-xs lg:text-sm">&copy; 2025 BeautyBook. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
