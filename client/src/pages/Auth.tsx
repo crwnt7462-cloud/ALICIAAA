@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { X, User, Building2, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { X, User, Building2, Mail, Lock, Eye, EyeOff, ArrowLeft, Menu } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ export default function Auth() {
               onClick={() => setLocation('/')}
               className="text-white hover:bg-white/20"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <Menu className="w-5 h-5" />
             </Button>
             <Button
               variant="ghost"
@@ -151,7 +151,7 @@ export default function Auth() {
           onClick={() => setUserType(null)}
           className="text-gray-600"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <Menu className="w-5 h-5" />
         </Button>
         <h1 className="text-lg font-semibold text-gray-900">
           {isLogin ? 'Connexion' : userType === 'professional' ? 'Inscription Pro' : 'Inscription'}
