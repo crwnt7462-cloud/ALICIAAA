@@ -86,16 +86,19 @@ export default function Clients() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-full">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Clients</h1>
-          <p className="text-gray-500 mt-1">{clients.length} clients actifs</p>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Clients</h1>
+          <p className="text-gray-600 mt-2 flex items-center">
+            <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+            {clients.length} clients actifs
+          </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="gradient-bg text-white px-6 py-3 rounded-xl font-medium shadow-luxury hover:scale-105 transition-all duration-200">
               <UserPlus className="w-4 h-4 mr-2" />
               Nouveau client
             </Button>

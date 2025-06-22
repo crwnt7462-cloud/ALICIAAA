@@ -96,12 +96,13 @@ export default function Planning() {
   };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-xl font-bold">Planning</h2>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Planning</h2>
+          <p className="text-sm text-gray-600 mt-2 flex items-center">
+            <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
             {new Date(selectedDate).toLocaleDateString('fr-FR', { 
               weekday: 'long', 
               year: 'numeric', 
@@ -112,7 +113,7 @@ export default function Planning() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary text-white px-4 py-2 rounded-xl font-medium">
+            <Button className="gradient-bg text-white px-6 py-3 rounded-xl font-medium shadow-luxury hover:scale-105 transition-all duration-200">
               <Plus className="w-4 h-4 mr-2" />
               Nouveau RDV
             </Button>

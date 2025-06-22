@@ -20,9 +20,9 @@ import NotFound from "@/pages/not-found";
 function Router() {
   // Bypass authentication completely - go directly to main app
   return (
-    <div className="h-full flex flex-col max-w-md mx-auto bg-white shadow-sm">
+    <div className="h-full flex flex-col max-w-lg mx-auto bg-white/90 backdrop-blur-sm shadow-luxury rounded-t-3xl overflow-hidden">
       <Header />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20">
         <Switch>
           <Route path="/" component={Dashboard} />
           <Route path="/planning" component={Planning} />

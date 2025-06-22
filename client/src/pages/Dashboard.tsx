@@ -66,68 +66,68 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-0 shadow-sm">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Aujourd'hui</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                <p className="text-3xl font-bold text-gray-900 mt-2">
                   {(stats as any)?.todayAppointments || 0}
                 </p>
                 <p className="text-sm text-gray-500">Rendez-vous</p>
               </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                <CalendarCheck className="w-6 h-6 text-blue-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
+                <CalendarCheck className="w-7 h-7 text-blue-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">CA Semaine</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                <p className="text-3xl font-bold text-gray-900 mt-2">
                   {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '0€'}
                 </p>
-                <p className="text-sm text-green-600">+12% vs sem. prec.</p>
+                <p className="text-sm text-emerald-600 font-medium">+12% vs sem. prec.</p>
               </div>
-              <div className="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center">
+                <TrendingUp className="w-7 h-7 text-emerald-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Clients</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">
+                <p className="text-3xl font-bold text-gray-900 mt-2">
                   {(stats as any)?.totalClients || 0}
                 </p>
                 <p className="text-sm text-gray-500">Total</p>
               </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
+                <Users className="w-7 h-7 text-purple-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">Taux remplissage</p>
-                <p className="text-2xl font-semibold text-gray-900 mt-1">82%</p>
-                <p className="text-sm text-gray-500">Cette semaine</p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">82%</p>
+                <p className="text-sm text-amber-600 font-medium">Cette semaine</p>
               </div>
-              <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center">
-                <Clock className="w-6 h-6 text-orange-600" />
+              <div className="w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center">
+                <Clock className="w-7 h-7 text-amber-600" />
               </div>
             </div>
           </CardContent>
@@ -135,19 +135,19 @@ export default function Dashboard() {
       </div>
 
       {/* Revenue Chart */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">Évolution du chiffre d'affaires</CardTitle>
+      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Évolution du chiffre d'affaires</CardTitle>
           <p className="text-sm text-gray-500">30 derniers jours</p>
         </CardHeader>
         <CardContent>
-          <div className="h-64">
+          <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={Array.isArray(revenueChart) ? revenueChart : []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis 
                   dataKey="date" 
-                  stroke="#6b7280"
+                  stroke="#64748b"
                   fontSize={12}
                   tickFormatter={(date) => new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
                 />

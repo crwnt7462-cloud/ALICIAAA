@@ -171,18 +171,20 @@ export default function AIAutomation() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              <Brain className="h-8 w-8 text-blue-500" />
-              IA & Support
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3 tracking-tight">
+              <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury">
+                <Brain className="h-6 w-6 text-white" />
+              </div>
+              Assistant Pro
             </h1>
-            <p className="text-gray-600 mt-1">Intelligence artificielle et assistance pour votre salon</p>
+            <p className="text-gray-600 mt-2">Copilote IA pour optimiser votre business beauté</p>
           </div>
-          <Button className="bg-blue-500 hover:bg-blue-600">
+          <Button className="gradient-bg text-white px-6 py-3 rounded-xl font-medium shadow-luxury hover:scale-105 transition-all duration-200">
             <Settings className="h-4 w-4 mr-2" />
             Configurer
           </Button>
