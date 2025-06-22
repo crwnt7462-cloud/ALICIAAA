@@ -439,16 +439,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         appointmentDate, 
         startTime, 
         endTime,
-        clientFirstName,
-        clientLastName,
-        clientEmail,
-        clientPhone,
-        notes,
+        clientInfo,
         depositAmount 
       } = req.body;
 
+      // Extraction des informations client
+      console.log("clientInfo object:", clientInfo);
+      
+      let clientFirstName, clientLastName, clientEmail, clientPhone, notes;
+      
+      if (clientInfo) {
+        clientFirstName = clientInfo.firstName;
+        clientLastName = clientInfo.lastName;
+        clientEmail = clientInfo.email;
+        clientPhone = clientInfo.phone;
+        notes = clientInfo.notes || "";
+      }
+
+      console.log("Extracted client data:", { clientFirstName, clientLastName, clientEmail, clientPhone });
+
       // Validation des champs obligatoires
       if (!clientFirstName || !clientLastName || !clientEmail) {
+        console.log("Validation failed - missing required fields");
         return res.status(400).json({ 
           error: "Les informations client (prénom, nom, email) sont obligatoires" 
         });
