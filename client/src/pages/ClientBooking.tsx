@@ -38,8 +38,37 @@ export default function ClientBooking() {
   const salonId = location.split('/book/')[1] || 'demo-user';
 
   const { data: services = [] } = useQuery<any[]>({
-    queryKey: ["/api/services"],
+    queryKey: ["/api/public-services", salonId],
+    queryFn: async () => {
+      const response = await fetch(`/api/public-services/${salonId}`);
+      if (!response.ok) throw new Error('Salon non trouvé');
+      return response.json();
+    },
   });
+
+  // Récupérer les informations du business
+  useEffect(() => {
+    const fetchBusinessInfo = async () => {
+      try {
+        const response = await fetch(`/api/business-info/${salonId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setBusinessInfo(data);
+        } else {
+          throw new Error('Salon non trouvé');
+        }
+      } catch (error) {
+        setBusinessInfo({
+          name: "Salon de Beauté",
+          address: "123 Rue Example",
+          phone: "01 23 45 67 89",
+          email: "contact@salon.fr",
+          description: "Votre salon de beauté professionnel"
+        });
+      }
+    };
+    fetchBusinessInfo();
+  }, [salonId]);
 
   const form = useForm<ClientBookingForm>({
     resolver: zodResolver(clientBookingSchema),

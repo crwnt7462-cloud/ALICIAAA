@@ -394,6 +394,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Endpoints publics pour réservation client
+  app.get("/api/public-services/:salonId", async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const services = await storage.getServices(salonId);
+      res.json(services);
+    } catch (error: any) {
+      console.error("Error fetching public services:", error);
+      res.status(500).json({ error: "Erreur lors du chargement des services" });
+    }
+  });
+
+  app.get("/api/business-info/:salonId", async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const user = await storage.getUser(salonId);
+      
+      if (!user) {
+        return res.status(404).json({ error: "Salon non trouvé" });
+      }
+
+      // Retourner les infos business du salon
+      res.json({
+        name: user.businessName || `Salon ${user.firstName || 'Beauty'}`,
+        address: user.address || "123 Rue de la Beauté, 75001 Paris",
+        phone: user.phone || "01 23 45 67 89",
+        email: user.email || "contact@salon.fr",
+        description: "Votre salon de beauté professionnel"
+      });
+    } catch (error: any) {
+      console.error("Error fetching business info:", error);
+      res.status(500).json({ error: "Erreur lors du chargement des informations" });
+    }
+  });
+
+  app.post("/api/public-booking", async (req, res) => {
+    try {
+      const { salonId, serviceId, appointmentDate, startTime, endTime, clientInfo, depositAmount } = req.body;
+      
+      // Créer ou récupérer le client
+      let client = await storage.searchClients(salonId, clientInfo.email);
+      if (client.length === 0) {
+        client = [await storage.createClient({
+          userId: salonId,
+          firstName: clientInfo.firstName,
+          lastName: clientInfo.lastName,
+          email: clientInfo.email,
+          phone: clientInfo.phone,
+          notes: clientInfo.notes || ""
+        })];
+      }
+
+      // Créer le rendez-vous
+      const appointment = await storage.createAppointment({
+        userId: salonId,
+        clientId: client[0].id,
+        serviceId: parseInt(serviceId),
+        appointmentDate,
+        startTime,
+        endTime,
+        status: "confirmed",
+        notes: "Réservation en ligne - Acompte payé"
+      });
+
+      res.json({ 
+        success: true, 
+        appointmentId: appointment.id,
+        message: "Rendez-vous confirmé avec succès"
+      });
+    } catch (error: any) {
+      console.error("Error creating public booking:", error);
+      res.status(500).json({ error: "Erreur lors de la création du rendez-vous" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // Routes IA et automatisation

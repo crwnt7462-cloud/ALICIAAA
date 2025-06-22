@@ -10,7 +10,9 @@ export default function ShareBooking() {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   
-  const bookingUrl = `${window.location.origin}/book`;
+  // Utiliser l'ID de l'utilisateur connecté pour générer le lien unique
+  const salonId = "demo-user"; // À récupérer depuis l'auth plus tard
+  const bookingUrl = `${window.location.origin}/book/${salonId}`;
   
   const copyToClipboard = async () => {
     try {
