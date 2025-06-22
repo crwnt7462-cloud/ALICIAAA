@@ -24,12 +24,13 @@ function Router() {
       <Header />
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/" component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
           <Route path="/booking" component={Booking} />
           <Route path="/ai" component={AIAutomation} />
           <Route path="/notifications" component={NotificationTest} />
+          <Route path="/" component={Landing} />
           <Route component={NotFound} />
         </Switch>
       </main>

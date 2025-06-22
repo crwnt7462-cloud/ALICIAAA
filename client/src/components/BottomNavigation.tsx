@@ -9,7 +9,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: "/", icon: LayoutDashboard, label: "Tableau de bord" },
+  { path: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord" },
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
   { path: "/booking", icon: CalendarPlus, label: "Nouveau RDV" },

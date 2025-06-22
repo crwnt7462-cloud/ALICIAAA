@@ -1,9 +1,11 @@
 import { Bell, Search, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 
 export function Header() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
 
   return (
     <header className="bg-white/90 backdrop-blur-md border-b border-gray-200/50 px-4 py-3 sticky top-0 z-50">
@@ -26,6 +28,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             className="h-8 w-8 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg"
+            onClick={() => setLocation('/clients')}
           >
             <Search className="h-3.5 w-3.5" />
           </Button>
@@ -34,6 +37,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="h-8 w-8 text-gray-500 hover:text-gray-900 hover:bg-gray-100/80 rounded-lg"
+              onClick={() => setLocation('/notifications')}
             >
               <Bell className="h-3.5 w-3.5" />
             </Button>

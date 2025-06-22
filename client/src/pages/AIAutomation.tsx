@@ -184,7 +184,16 @@ export default function AIAutomation() {
             </h1>
             <p className="text-gray-600 mt-1 text-xs">Copilote IA pour votre salon</p>
           </div>
-          <Button size="sm" className="gradient-bg text-white px-3 py-1.5 rounded-lg font-medium shadow-md hover:scale-105 transition-all duration-200 text-xs">
+          <Button 
+            size="sm" 
+            className="gradient-bg text-white px-3 py-1.5 rounded-lg font-medium shadow-md hover:scale-105 transition-all duration-200 text-xs"
+            onClick={() => {
+              setAiSettings(prev => ({
+                ...prev,
+                smartPlanningEnabled: !prev.smartPlanningEnabled
+              }));
+            }}
+          >
             <Settings className="h-3 w-3 mr-1" />
             Config
           </Button>
