@@ -2,6 +2,7 @@ import {
   users,
   services,
   clients,
+  staff,
   appointments,
   waitingList,
   forumCategories,
@@ -14,6 +15,8 @@ import {
   type InsertService,
   type Client,
   type InsertClient,
+  type Staff,
+  type InsertStaff,
   type Appointment,
   type InsertAppointment,
   type WaitingListItem,
@@ -46,8 +49,15 @@ export interface IStorage {
   deleteClient(id: number): Promise<void>;
   searchClients(userId: string, query: string): Promise<Client[]>;
 
+  // Staff operations
+  getStaff(userId: string): Promise<Staff[]>;
+  getStaffMember(id: number): Promise<Staff | undefined>;
+  createStaffMember(staff: InsertStaff): Promise<Staff>;
+  updateStaffMember(id: number, staff: Partial<InsertStaff>): Promise<Staff>;
+  deleteStaffMember(id: number): Promise<void>;
+
   // Appointment operations
-  getAppointments(userId: string, date?: string): Promise<(Appointment & { client?: Client; service?: Service })[]>;
+  getAppointments(userId: string, date?: string): Promise<(Appointment & { client?: Client; service?: Service; staff?: Staff })[]>;
   getAppointment(id: number): Promise<Appointment | undefined>;
   createAppointment(appointment: InsertAppointment): Promise<Appointment>;
   updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment>;
@@ -185,6 +195,7 @@ export class DatabaseStorage implements IStorage {
         userId: appointments.userId,
         clientId: appointments.clientId,
         serviceId: appointments.serviceId,
+        staffId: appointments.staffId,
         clientName: appointments.clientName,
         clientEmail: appointments.clientEmail,
         clientPhone: appointments.clientPhone,
@@ -199,6 +210,7 @@ export class DatabaseStorage implements IStorage {
         createdAt: appointments.createdAt,
         client: clients,
         service: services,
+        staff: staff,
       })
       .from(appointments)
       .leftJoin(clients, eq(appointments.clientId, clients.id))
