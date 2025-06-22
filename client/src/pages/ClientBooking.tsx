@@ -118,6 +118,7 @@ export default function ClientBooking() {
         body: JSON.stringify({
           salonId,
           serviceId: selectedService.id,
+          staffId: selectedStaff?.id || null,
           appointmentDate: selectedDate,
           startTime: selectedTime,
           endTime: addMinutesToTime(selectedTime, selectedService.duration || 60),
@@ -331,6 +332,65 @@ export default function ClientBooking() {
                 </Card>
               ))}
             </div>
+
+            {/* Staff Selection */}
+            {selectedService && staffMembers.length > 0 && (
+              <div className="space-y-3">
+                <div className="text-center">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Choisissez votre professionnel</h3>
+                  <p className="text-sm text-gray-600">Sélectionnez le professionnel de votre choix</p>
+                </div>
+                
+                <div className="space-y-2">
+                  {staffMembers.map((staff: any) => (
+                    <Card 
+                      key={staff.id}
+                      className={`border-0 shadow-sm bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer transition-all hover:scale-102 ${
+                        selectedStaff?.id === staff.id ? 'ring-2 ring-purple-500 bg-purple-50/80' : ''
+                      }`}
+                      onClick={() => setSelectedStaff(staff)}
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 flex items-center justify-center text-white font-semibold">
+                            {staff.firstName?.charAt(0)}{staff.lastName?.charAt(0)}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-900">{staff.firstName} {staff.lastName}</h4>
+                            <p className="text-xs text-gray-600">{staff.specialties || 'Professionnel'}</p>
+                          </div>
+                          {selectedStaff?.id === staff.id && (
+                            <Check className="w-5 h-5 text-purple-600" />
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  
+                  <Card 
+                    className={`border-0 shadow-sm bg-white/60 backdrop-blur-sm rounded-xl cursor-pointer transition-all hover:scale-102 ${
+                      selectedStaff === null ? 'ring-2 ring-purple-500 bg-purple-50/80' : ''
+                    }`}
+                    onClick={() => setSelectedStaff(null)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+                          <Star className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900">Pas de préférence</h4>
+                          <p className="text-xs text-gray-600">Le premier professionnel disponible</p>
+                        </div>
+                        {selectedStaff === null && (
+                          <Check className="w-5 h-5 text-purple-600" />
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
 
             <Button 
               className="w-full gradient-bg text-white rounded-xl py-3"
