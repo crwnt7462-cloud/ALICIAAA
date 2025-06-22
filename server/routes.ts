@@ -431,7 +431,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/public-booking", async (req, res) => {
     try {
-      const { salonId, serviceId, appointmentDate, startTime, endTime, clientInfo, depositAmount } = req.body;
+      const { 
+        salonId, 
+        serviceId, 
+        appointmentDate, 
+        startTime, 
+        endTime,
+        clientFirstName,
+        clientLastName,
+        clientEmail,
+        clientPhone,
+        notes,
+        depositAmount 
+      } = req.body;
       
       // Récupérer les données nécessaires
       const [service, businessUser] = await Promise.all([
@@ -444,15 +456,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Créer ou récupérer le client
-      let client = await storage.searchClients(salonId, clientInfo.email);
+      let client = await storage.searchClients(salonId, clientEmail);
       if (client.length === 0) {
         client = [await storage.createClient({
           userId: salonId,
-          firstName: clientInfo.firstName,
-          lastName: clientInfo.lastName,
-          email: clientInfo.email,
-          phone: clientInfo.phone,
-          notes: clientInfo.notes || ""
+          firstName: clientFirstName,
+          lastName: clientLastName,
+          email: clientEmail,
+          phone: clientPhone,
+          notes: notes || ""
         })];
       }
 
@@ -476,10 +488,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         endTime,
         status: "confirmed",
         client: {
-          firstName: clientInfo.firstName,
-          lastName: clientInfo.lastName,
-          email: clientInfo.email,
-          phone: clientInfo.phone
+          firstName: clientFirstName,
+          lastName: clientLastName,
+          email: clientEmail,
+          phone: clientPhone
         },
         service: {
           name: service.name,
