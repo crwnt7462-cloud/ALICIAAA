@@ -431,7 +431,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/public-booking", async (req, res) => {
     try {
-      console.log("Received booking data:", req.body);
+      console.log("Received booking data:", JSON.stringify(req.body, null, 2));
       
       const { 
         salonId, 
@@ -443,28 +443,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         depositAmount 
       } = req.body;
 
-      // Extraction des informations client
-      console.log("clientInfo object:", clientInfo);
+      // Extraction des informations client avec validation
+      console.log("clientInfo:", JSON.stringify(clientInfo, null, 2));
       
-      let clientFirstName, clientLastName, clientEmail, clientPhone, notes;
-      
-      if (clientInfo) {
-        clientFirstName = clientInfo.firstName;
-        clientLastName = clientInfo.lastName;
-        clientEmail = clientInfo.email;
-        clientPhone = clientInfo.phone;
-        notes = clientInfo.notes || "";
+      if (!clientInfo) {
+        console.log("❌ clientInfo is missing");
+        return res.status(400).json({ 
+          error: "Les informations client sont manquantes" 
+        });
       }
 
-      console.log("Extracted client data:", { clientFirstName, clientLastName, clientEmail, clientPhone });
+      const clientFirstName = clientInfo.firstName;
+      const clientLastName = clientInfo.lastName;
+      const clientEmail = clientInfo.email;
+      const clientPhone = clientInfo.phone;
+      const notes = clientInfo.notes || "";
+
+      console.log("✅ Extracted:", { clientFirstName, clientLastName, clientEmail, clientPhone });
 
       // Validation des champs obligatoires
       if (!clientFirstName || !clientLastName || !clientEmail) {
-        console.log("Validation failed - missing required fields");
+        console.log("❌ Validation failed - missing:", { 
+          firstName: !clientFirstName, 
+          lastName: !clientLastName, 
+          email: !clientEmail 
+        });
         return res.status(400).json({ 
           error: "Les informations client (prénom, nom, email) sont obligatoires" 
         });
       }
+
+      console.log("✅ Validation passed");
       
       // Récupérer les données nécessaires
       const [service, businessUser] = await Promise.all([
