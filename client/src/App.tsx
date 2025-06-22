@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -15,10 +15,22 @@ import Booking from "@/pages/Booking";
 
 import AIAutomation from "@/pages/AIAutomation";
 import NotificationTest from "@/pages/NotificationTest";
+import ClientBooking from "@/pages/ClientBooking";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  // Bypass authentication completely - go directly to main app
+  const [location] = useLocation();
+  
+  // Page publique pour réservation client (sans header/nav)
+  if (location === '/book') {
+    return (
+      <div className="h-full">
+        <ClientBooking />
+      </div>
+    );
+  }
+
+  // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
       <Header />
