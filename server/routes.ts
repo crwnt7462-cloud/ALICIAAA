@@ -433,6 +433,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { salonId, serviceId, appointmentDate, startTime, endTime, clientInfo, depositAmount } = req.body;
       
+      // Récupérer les données nécessaires
+      const [service, businessUser] = await Promise.all([
+        storage.getServices(salonId).then(services => services.find(s => s.id === parseInt(serviceId))),
+        storage.getUser(salonId)
+      ]);
+
+      if (!service || !businessUser) {
+        return res.status(404).json({ error: "Service ou salon non trouvé" });
+      }
+
       // Créer ou récupérer le client
       let client = await storage.searchClients(salonId, clientInfo.email);
       if (client.length === 0) {
@@ -458,6 +468,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         notes: "Réservation en ligne - Acompte payé"
       });
 
+      // Préparer les données pour la confirmation
+      const appointmentData = {
+        id: appointment.id,
+        appointmentDate,
+        startTime,
+        endTime,
+        status: "confirmed",
+        client: {
+          firstName: clientInfo.firstName,
+          lastName: clientInfo.lastName,
+          email: clientInfo.email,
+          phone: clientInfo.phone
+        },
+        service: {
+          name: service.name,
+          price: parseInt(service.price.toString()),
+          duration: service.duration || 60
+        },
+        business: {
+          name: businessUser.businessName || `Salon ${businessUser.firstName || 'Beauty'}`,
+          address: businessUser.address || "123 Rue de la Beauté, 75001 Paris",
+          phone: businessUser.phone || "01 23 45 67 89",
+          email: businessUser.email || "contact@salon.fr"
+        },
+        payment: {
+          depositPaid: depositAmount,
+          totalAmount: parseInt(service.price.toString()),
+          remainingBalance: parseInt(service.price.toString()) - depositAmount
+        }
+      };
+
+      // Envoyer confirmation automatique
+      try {
+        const { confirmationService } = await import('./confirmationService');
+        await confirmationService.sendBookingConfirmation(appointmentData);
+      } catch (confirmationError) {
+        console.error("Erreur envoi confirmation:", confirmationError);
+        // Continue même si l'envoi échoue
+      }
+
       res.json({ 
         success: true, 
         appointmentId: appointment.id,
@@ -466,6 +516,214 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error creating public booking:", error);
       res.status(500).json({ error: "Erreur lors de la création du rendez-vous" });
+    }
+  });
+
+  // Endpoints pour gestion des réservations
+  app.get("/manage-booking/:appointmentId", async (req, res) => {
+    try {
+      const { appointmentId } = req.params;
+      const appointment = await storage.getAppointment(parseInt(appointmentId));
+      
+      if (!appointment) {
+        return res.status(404).send(`
+          <html><body style="font-family: Arial; text-align: center; padding: 50px;">
+            <h2>Réservation introuvable</h2>
+            <p>Le rendez-vous demandé n'existe pas ou a été supprimé.</p>
+          </body></html>
+        `);
+      }
+
+      // Page de gestion simplifiée
+      res.send(`
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Gérer ma réservation</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
+            .card { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 10px 0; }
+            .btn { display: inline-block; padding: 12px 24px; margin: 5px; text-decoration: none; border-radius: 6px; font-weight: bold; text-align: center; }
+            .btn-primary { background: #007bff; color: white; }
+            .btn-danger { background: #dc3545; color: white; }
+            .btn-secondary { background: #6c757d; color: white; }
+          </style>
+        </head>
+        <body>
+          <h1>🎯 Gérer ma réservation</h1>
+          
+          <div class="card">
+            <h3>📅 Détails du rendez-vous</h3>
+            <p><strong>N° Réservation:</strong> #${appointmentId.padStart(6, '0')}</p>
+            <p><strong>Date:</strong> ${appointment.appointmentDate}</p>
+            <p><strong>Heure:</strong> ${appointment.startTime}</p>
+            <p><strong>Statut:</strong> ${appointment.status === 'confirmed' ? 'Confirmé' : appointment.status}</p>
+          </div>
+
+          <div class="card">
+            <h3>⚡ Actions disponibles</h3>
+            <a href="/download-receipt/${appointmentId}" class="btn btn-primary">📄 Télécharger le reçu</a>
+            <a href="/reschedule-booking/${appointmentId}" class="btn btn-secondary">📅 Reporter le RDV</a>
+            <a href="/cancel-booking/${appointmentId}" class="btn btn-danger">❌ Annuler</a>
+          </div>
+
+          <div class="card">
+            <h3>📱 Ajouter au calendrier</h3>
+            <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Rendez-vous&dates=${appointment.appointmentDate.replace(/-/g, '')}T${appointment.startTime.replace(':', '')}00/${appointment.appointmentDate.replace(/-/g, '')}T${appointment.endTime.replace(':', '')}00" class="btn btn-secondary">Google Calendar</a>
+          </div>
+        </body>
+        </html>
+      `);
+    } catch (error: any) {
+      console.error("Error managing booking:", error);
+      res.status(500).send("Erreur lors du chargement de la réservation");
+    }
+  });
+
+  app.get("/download-receipt/:appointmentId", async (req, res) => {
+    try {
+      const { appointmentId } = req.params;
+      const appointment = await storage.getAppointment(parseInt(appointmentId));
+      
+      if (!appointment) {
+        return res.status(404).json({ error: "Réservation introuvable" });
+      }
+
+      // Récupérer les données complètes
+      const [client, service, businessUser] = await Promise.all([
+        storage.getClient(appointment.clientId!),
+        storage.getServices(appointment.userId).then(services => services.find(s => s.id === appointment.serviceId)),
+        storage.getUser(appointment.userId)
+      ]);
+
+      if (!client || !service || !businessUser) {
+        return res.status(404).json({ error: "Données incomplètes" });
+      }
+
+      const receiptData = {
+        appointmentId: appointment.id,
+        businessInfo: {
+          name: businessUser.businessName || `Salon ${businessUser.firstName || 'Beauty'}`,
+          address: businessUser.address || "123 Rue de la Beauté, 75001 Paris",
+          phone: businessUser.phone || "01 23 45 67 89",
+          email: businessUser.email || "contact@salon.fr"
+        },
+        clientInfo: {
+          firstName: client.firstName,
+          lastName: client.lastName,
+          email: client.email || "",
+          phone: client.phone || ""
+        },
+        serviceInfo: {
+          name: service.name,
+          price: parseInt(service.price.toString()),
+          duration: service.duration || 60
+        },
+        appointmentInfo: {
+          date: appointment.appointmentDate,
+          time: appointment.startTime,
+          status: appointment.status
+        },
+        paymentInfo: {
+          depositPaid: Math.round(parseInt(service.price.toString()) * 0.3),
+          totalAmount: parseInt(service.price.toString()),
+          remainingBalance: Math.round(parseInt(service.price.toString()) * 0.7),
+          paymentMethod: "Carte bancaire"
+        }
+      };
+
+      const { receiptService } = await import('./receiptService');
+      const pdfBuffer = await receiptService.generateReceiptPDF(receiptData);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="recu-reservation-${appointmentId}.pdf"`);
+      res.send(pdfBuffer);
+
+    } catch (error: any) {
+      console.error("Error generating receipt:", error);
+      res.status(500).json({ error: "Erreur lors de la génération du reçu" });
+    }
+  });
+
+  app.get("/cancel-booking/:appointmentId", async (req, res) => {
+    try {
+      const { appointmentId } = req.params;
+      
+      // Page de confirmation d'annulation
+      res.send(`
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Annuler ma réservation</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; }
+            .card { background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 10px; margin: 10px 0; }
+            .btn { display: inline-block; padding: 12px 24px; margin: 5px; text-decoration: none; border-radius: 6px; font-weight: bold; text-align: center; }
+            .btn-danger { background: #dc3545; color: white; }
+            .btn-secondary { background: #6c757d; color: white; }
+          </style>
+        </head>
+        <body>
+          <h1>⚠️ Annuler ma réservation</h1>
+          
+          <div class="card">
+            <h3>Conditions d'annulation</h3>
+            <ul>
+              <li>L'acompte versé est non-remboursable</li>
+              <li>Annulation gratuite jusqu'à 24h avant le RDV</li>
+              <li>Annulation tardive : frais de 10€</li>
+            </ul>
+          </div>
+
+          <form method="POST" action="/api/cancel-booking/${appointmentId}">
+            <textarea name="reason" placeholder="Motif d'annulation (optionnel)" style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+            <br>
+            <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+            <a href="/manage-booking/${appointmentId}" class="btn btn-secondary">Retour</a>
+          </form>
+        </body>
+        </html>
+      `);
+    } catch (error: any) {
+      res.status(500).send("Erreur lors du chargement de la page d'annulation");
+    }
+  });
+
+  app.post("/api/cancel-booking/:appointmentId", async (req, res) => {
+    try {
+      const { appointmentId } = req.params;
+      const { reason } = req.body;
+      
+      const appointment = await storage.updateAppointment(parseInt(appointmentId), {
+        status: "cancelled",
+        notes: `${appointment?.notes || ''} - Annulé: ${reason || 'Aucun motif'}`
+      });
+
+      res.send(`
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Annulation confirmée</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; text-align: center; }
+            .success { background: #d4edda; border: 1px solid #c3e6cb; padding: 20px; border-radius: 10px; color: #155724; }
+          </style>
+        </head>
+        <body>
+          <div class="success">
+            <h1>✅ Annulation confirmée</h1>
+            <p>Votre rendez-vous a été annulé avec succès.</p>
+            <p>Vous recevrez un email de confirmation sous peu.</p>
+          </div>
+        </body>
+        </html>
+      `);
+    } catch (error: any) {
+      console.error("Error cancelling booking:", error);
+      res.status(500).send("Erreur lors de l'annulation");
     }
   });
 
