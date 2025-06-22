@@ -56,6 +56,22 @@ export const services = pgTable("services", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Staff members
+export const staff = pgTable("staff", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  specialties: text("specialties"), // JSON array of service IDs or names
+  isActive: boolean("is_active").default(true),
+  avatar: varchar("avatar"),
+  bio: text("bio"),
+  workingHours: text("working_hours"), // JSON object with schedule
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Clients
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
@@ -79,6 +95,7 @@ export const appointments = pgTable("appointments", {
   userId: varchar("user_id").notNull().references(() => users.id),
   clientId: integer("client_id").references(() => clients.id),
   serviceId: integer("service_id").references(() => services.id),
+  staffId: integer("staff_id").references(() => staff.id),
   clientName: varchar("client_name"), // for walk-in clients
   clientEmail: varchar("client_email"),
   clientPhone: varchar("client_phone"),
@@ -260,6 +277,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   services: many(services),
   clients: many(clients),
   appointments: many(appointments),
+  staff: many(staff),
   forumPosts: many(forumPosts),
   forumReplies: many(forumReplies),
   forumLikes: many(forumLikes),
@@ -268,6 +286,14 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const servicesRelations = relations(services, ({ one, many }) => ({
   user: one(users, {
     fields: [services.userId],
+    references: [users.id],
+  }),
+  appointments: many(appointments),
+}));
+
+export const staffRelations = relations(staff, ({ one, many }) => ({
+  user: one(users, {
+    fields: [staff.userId],
     references: [users.id],
   }),
   appointments: many(appointments),
@@ -293,6 +319,10 @@ export const appointmentsRelations = relations(appointments, ({ one }) => ({
   service: one(services, {
     fields: [appointments.serviceId],
     references: [services.id],
+  }),
+  staff: one(staff, {
+    fields: [appointments.staffId],
+    references: [staff.id],
   }),
 }));
 
@@ -330,6 +360,9 @@ export type Service = typeof services.$inferSelect;
 
 export type InsertClient = typeof clients.$inferInsert;
 export type Client = typeof clients.$inferSelect;
+
+export type InsertStaff = typeof staff.$inferInsert;
+export type Staff = typeof staff.$inferSelect;
 
 export type InsertAppointment = typeof appointments.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -375,6 +408,11 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   totalSpent: true,
   visitCount: true,
   lastVisit: true,
+  createdAt: true,
+});
+
+export const insertStaffSchema = createInsertSchema(staff).omit({
+  id: true,
   createdAt: true,
 });
 
