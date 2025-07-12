@@ -107,15 +107,35 @@ export default function PublicLanding() {
       <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-12 lg:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
+            <div className="inline-flex items-center bg-gradient-to-r from-violet-100 to-purple-100 rounded-full px-6 py-2 mb-6">
+              <Sparkles className="w-4 h-4 text-violet-600 mr-2" />
+              <span className="text-sm font-medium text-violet-800">Réservation en 3 clics • Plus rapide que Planity</span>
+            </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
               Réservez votre rendez-vous beauté
               <br />
-              <span className="text-purple-600">en quelques clics</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600">en 3 clics seulement</span>
             </h1>
             <p className="text-lg lg:text-xl text-gray-600 mb-6 lg:mb-8 max-w-2xl mx-auto">
-              Découvrez les meilleurs salons de beauté près de chez vous. 
-              Réservation instantanée, paiement sécurisé, satisfaction garantie.
+              L'expérience de réservation la plus rapide du marché. 
+              Simple, fluide, efficace. Fini les formulaires interminables !
             </p>
+            
+            {/* Badge USP */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+                <Clock className="w-4 h-4 text-green-600 mr-2" />
+                <span className="text-sm font-medium text-gray-700">Réservation en 30 secondes</span>
+              </div>
+              <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+                <Star className="w-4 h-4 text-yellow-500 mr-2" />
+                <span className="text-sm font-medium text-gray-700">Confirmation instantanée</span>
+              </div>
+              <div className="flex items-center bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-md">
+                <Users className="w-4 h-4 text-blue-600 mr-2" />
+                <span className="text-sm font-medium text-gray-700">100% sans attente</span>
+              </div>
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -147,7 +167,7 @@ export default function PublicLanding() {
                   </div>
                   <Button 
                     onClick={handleSearch}
-                    className="h-11 px-6 bg-purple-600 hover:bg-purple-700 text-white font-semibold whitespace-nowrap"
+                    className="h-11 px-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold whitespace-nowrap shadow-lg"
                   >
                     Rechercher
                   </Button>
@@ -174,6 +194,18 @@ export default function PublicLanding() {
                   {service.name}
                 </Button>
               ))}
+            </div>
+            
+            {/* CTA Button pour test rapide */}
+            <div className="text-center mt-8">
+              <Button 
+                onClick={() => setLocation("/book/demo-user")}
+                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-8 py-4 rounded-full shadow-xl text-lg"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Tester la réservation 3 clics
+              </Button>
+              <p className="text-sm text-gray-500 mt-2">Démo gratuite • Aucune inscription requise</p>
             </div>
           </div>
         </div>
@@ -208,6 +240,9 @@ export default function PublicLanding() {
                     <Star className="w-3 h-3 text-yellow-400 fill-current" />
                     <span className="text-xs font-semibold">{salon.rating}</span>
                   </div>
+                  <div className="absolute top-3 left-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 rounded-full shadow-md">
+                    <span className="text-xs font-bold">3 clics</span>
+                  </div>
                 </div>
                 
                 <CardContent className="p-4 lg:p-5">
@@ -236,8 +271,8 @@ export default function PublicLanding() {
 
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">{salon.reviews} avis</span>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white text-xs px-4">
-                      Réserver
+                    <Button size="sm" className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white text-xs px-4 shadow-md">
+                      Réserver en 3 clics
                     </Button>
                   </div>
                 </CardContent>
@@ -252,35 +287,35 @@ export default function PublicLanding() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 lg:mb-12">
             <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 lg:mb-4">
-              Pourquoi choisir BeautyBook ?
+              L'expérience utilisateur qui claque 🔥
             </h2>
             <p className="text-base lg:text-lg text-gray-600">
-              La plateforme de référence pour vos rendez-vous beauté
+              Plus rapide que Planity • Plus simple que tout le reste
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             <div className="text-center p-4">
-              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
-                <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-purple-600" />
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+                <Clock className="w-6 h-6 lg:w-8 lg:h-8 text-green-600" />
               </div>
               <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">
-                Réservation 24h/24
+                Réservation en 30 secondes
               </h3>
               <p className="text-sm lg:text-base text-gray-600">
-                Réservez votre rendez-vous à tout moment, même en dehors des heures d'ouverture
+                3 clics suffisent : Service → Créneau → Confirmer. C'est tout !
               </p>
             </div>
 
             <div className="text-center p-4">
-              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
-                <Award className="w-6 h-6 lg:w-8 lg:h-8 text-green-600" />
+              <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+                <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-blue-600" />
               </div>
               <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">
-                Salons vérifiés
+                Interface fluide et moderne
               </h3>
               <p className="text-sm lg:text-base text-gray-600">
-                Tous nos partenaires sont sélectionnés et évalués pour garantir la qualité
+                Design épuré, navigation intuitive, zéro complication. L'expérience que vous méritez.
               </p>
             </div>
 
