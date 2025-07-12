@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Calendar, MapPin, Star, Clock, Euro, Users, Award, Sparkles } from "lucide-react";
+import { Search, Calendar, MapPin, Star, Clock, Euro, Users, Award, Sparkles, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,17 +86,17 @@ export default function PublicLanding() {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="text-gray-600 hover:text-purple-600 text-sm hidden sm:flex"
-                onClick={() => setLocation("/pro-login")}
+                className="text-gray-600 hover:text-purple-600 text-sm"
+                onClick={() => setLocation("/dashboard")}
               >
                 Espace Pro
               </Button>
               <Button 
                 size="sm"
-                className="bg-purple-600 hover:bg-purple-700 text-white"
-                onClick={() => setLocation("/pro-login")}
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg"
+                onClick={() => setLocation("/dashboard")}
               >
-                Connexion
+                Dashboard
               </Button>
             </div>
           </div>
@@ -196,16 +196,32 @@ export default function PublicLanding() {
               ))}
             </div>
             
-            {/* CTA Button pour test rapide */}
-            <div className="text-center mt-8">
-              <Button 
-                onClick={() => setLocation("/book/demo-user")}
-                className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-8 py-4 rounded-full shadow-xl text-lg"
-              >
-                <Sparkles className="w-5 h-5 mr-2" />
-                Tester la réservation 3 clics
-              </Button>
-              <p className="text-sm text-gray-500 mt-2">Démo gratuite • Aucune inscription requise</p>
+            {/* CTA Buttons */}
+            <div className="text-center mt-8 space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button 
+                  onClick={() => setLocation("/book/demo-user")}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-8 py-4 rounded-full shadow-xl text-lg"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Tester la réservation 3 clics
+                </Button>
+                
+                <Button 
+                  onClick={() => setLocation("/dashboard")}
+                  variant="outline"
+                  className="bg-white/80 backdrop-blur-sm border-2 border-violet-200 hover:border-violet-400 text-violet-700 hover:text-violet-900 font-bold px-8 py-4 rounded-full shadow-lg text-lg"
+                >
+                  <User className="w-5 h-5 mr-2" />
+                  Accès Professionnel
+                </Button>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center text-sm text-gray-500">
+                <p>Démo gratuite • Aucune inscription requise</p>
+                <span className="hidden sm:inline">•</span>
+                <p>Dashboard complet disponible</p>
+              </div>
             </div>
           </div>
         </div>
