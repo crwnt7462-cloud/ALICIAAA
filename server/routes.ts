@@ -12,6 +12,8 @@ import {
   insertAppointmentSchema,
   insertForumPostSchema,
   insertForumReplySchema,
+  insertReviewSchema,
+  insertPromotionSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -353,6 +355,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching staff performance:", error);
       res.status(500).json({ message: "Failed to fetch staff performance" });
+    }
+  });
+
+  // Reviews routes
+  app.get('/api/reviews', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const reviews = await storage.getReviews(userId);
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ message: "Failed to fetch reviews" });
+    }
+  });
+
+  app.post('/api/reviews', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const reviewData = insertReviewSchema.parse({ ...req.body, userId });
+      const review = await storage.createReview(reviewData);
+      res.json(review);
+    } catch (error) {
+      console.error("Error creating review:", error);
+      res.status(400).json({ message: "Failed to create review" });
+    }
+  });
+
+  // Analytics routes
+  app.get('/api/analytics/overview', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeRange = '30d' } = req.query;
+      const overview = await storage.getAnalyticsOverview(userId, timeRange as string);
+      res.json(overview);
+    } catch (error) {
+      console.error("Error fetching analytics overview:", error);
+      res.status(500).json({ message: "Failed to fetch analytics overview" });
+    }
+  });
+
+  app.get('/api/analytics/revenue-chart', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeRange = '30d' } = req.query;
+      const revenueChart = await storage.getAnalyticsRevenueChart(userId, timeRange as string);
+      res.json(revenueChart);
+    } catch (error) {
+      console.error("Error fetching revenue chart:", error);
+      res.status(500).json({ message: "Failed to fetch revenue chart" });
+    }
+  });
+
+  app.get('/api/analytics/client-segments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeRange = '30d' } = req.query;
+      const segments = await storage.getClientSegments(userId, timeRange as string);
+      res.json(segments);
+    } catch (error) {
+      console.error("Error fetching client segments:", error);
+      res.status(500).json({ message: "Failed to fetch client segments" });
+    }
+  });
+
+  app.get('/api/analytics/service-performance', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeRange = '30d' } = req.query;
+      const performance = await storage.getServiceAnalytics(userId, timeRange as string);
+      res.json(performance);
+    } catch (error) {
+      console.error("Error fetching service performance:", error);
+      res.status(500).json({ message: "Failed to fetch service performance" });
+    }
+  });
+
+  app.get('/api/analytics/loyalty-stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const loyaltyStats = await storage.getLoyaltyStats(userId);
+      res.json(loyaltyStats);
+    } catch (error) {
+      console.error("Error fetching loyalty stats:", error);
+      res.status(500).json({ message: "Failed to fetch loyalty stats" });
+    }
+  });
+
+  app.get('/api/analytics/predictions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const predictions = await aiService.generateBusinessInsights({ userId });
+      res.json(predictions);
+    } catch (error) {
+      console.error("Error fetching predictions:", error);
+      res.status(500).json({ message: "Failed to fetch predictions" });
+    }
+  });
+
+  app.get('/api/analytics/top-clients', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { timeRange = '30d' } = req.query;
+      const topClients = await storage.getTopClients(userId, timeRange as string);
+      res.json(topClients);
+    } catch (error) {
+      console.error("Error fetching top clients:", error);
+      res.status(500).json({ message: "Failed to fetch top clients" });
     }
   });
 

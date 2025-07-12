@@ -272,6 +272,61 @@ export const pushTokens = pgTable("push_tokens", {
   lastUsed: timestamp("last_used").defaultNow()
 });
 
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  serviceId: integer("service_id").notNull().references(() => services.id),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  rating: integer("rating").notNull(),
+  comment: text("comment").notNull(),
+  isPublic: boolean("is_public").default(true),
+  isVerified: boolean("is_verified").default(false),
+  helpfulCount: integer("helpful_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const loyaltyProgram = pgTable("loyalty_program", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  points: integer("points").default(0),
+  totalSpent: numeric("total_spent", { precision: 10, scale: 2 }).default("0"),
+  membershipLevel: text("membership_level").default("bronze"),
+  lastActivity: timestamp("last_activity").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const promotions = pgTable("promotions", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  discountType: text("discount_type").notNull(),
+  discountValue: numeric("discount_value", { precision: 10, scale: 2 }).notNull(),
+  code: text("code"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").default(true),
+  usageLimit: integer("usage_limit"),
+  usageCount: integer("usage_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  clientId: integer("client_id").references(() => clients.id),
+  type: text("type").notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  scheduledFor: timestamp("scheduled_for"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   services: many(services),
@@ -281,6 +336,10 @@ export const usersRelations = relations(users, ({ many }) => ({
   forumPosts: many(forumPosts),
   forumReplies: many(forumReplies),
   forumLikes: many(forumLikes),
+  reviews: many(reviews),
+  loyaltyPrograms: many(loyaltyProgram),
+  promotions: many(promotions),
+  notifications: many(notifications),
 }));
 
 export const servicesRelations = relations(services, ({ one, many }) => ({
@@ -397,6 +456,18 @@ export type InsertSmartPlanningLog = typeof smartPlanningLogs.$inferInsert;
 export type PushToken = typeof pushTokens.$inferSelect;
 export type InsertPushToken = typeof pushTokens.$inferInsert;
 
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = typeof reviews.$inferInsert;
+
+export type LoyaltyProgram = typeof loyaltyProgram.$inferSelect;
+export type InsertLoyaltyProgram = typeof loyaltyProgram.$inferInsert;
+
+export type Promotion = typeof promotions.$inferSelect;
+export type InsertPromotion = typeof promotions.$inferInsert;
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = typeof notifications.$inferInsert;
+
 // Schemas for validation
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
@@ -433,5 +504,18 @@ export const insertForumPostSchema = createInsertSchema(forumPosts).omit({
 export const insertForumReplySchema = createInsertSchema(forumReplies).omit({
   id: true,
   likeCount: true,
+  createdAt: true,
+});
+
+export const insertReviewSchema = createInsertSchema(reviews).omit({
+  id: true,
+  helpfulCount: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPromotionSchema = createInsertSchema(promotions).omit({
+  id: true,
+  usageCount: true,
   createdAt: true,
 });

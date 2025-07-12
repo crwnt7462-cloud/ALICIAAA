@@ -9,6 +9,10 @@ import {
   forumPosts,
   forumReplies,
   forumLikes,
+  reviews,
+  loyaltyProgram,
+  promotions,
+  notifications,
   type User,
   type UpsertUser,
   type Service,
@@ -26,6 +30,14 @@ import {
   type ForumReply,
   type InsertForumReply,
   type ForumCategory,
+  type Review,
+  type InsertReview,
+  type LoyaltyProgram,
+  type InsertLoyaltyProgram,
+  type Promotion,
+  type InsertPromotion,
+  type Notification,
+  type InsertNotification,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql, count } from "drizzle-orm";
@@ -91,6 +103,23 @@ export interface IStorage {
   getUpcomingAppointments(userId: string): Promise<Array<{ date: string; time: string; clientName: string; serviceName: string }>>;
   getTopServices(userId: string): Promise<Array<{ serviceName: string; count: number; revenue: number }>>;
   getStaffPerformance(userId: string): Promise<Array<{ staffName: string; revenue: number; appointmentCount: number }>>;
+
+  // Reviews operations
+  getReviews(userId: string): Promise<(Review & { client: Client; service: Service })[]>;
+  createReview(review: InsertReview): Promise<Review>;
+
+  // Advanced Analytics operations
+  getAnalyticsOverview(userId: string, timeRange: string): Promise<any>;
+  getAnalyticsRevenueChart(userId: string, timeRange: string): Promise<any[]>;
+  getClientSegments(userId: string, timeRange: string): Promise<any[]>;
+  getServiceAnalytics(userId: string, timeRange: string): Promise<any[]>;
+  getLoyaltyStats(userId: string): Promise<any>;
+  getTopClients(userId: string, timeRange: string): Promise<any[]>;
+
+  // Loyalty program operations
+  getLoyaltyProgram(clientId: number): Promise<LoyaltyProgram | undefined>;
+  createLoyaltyProgram(loyalty: InsertLoyaltyProgram): Promise<LoyaltyProgram>;
+  updateLoyaltyPoints(clientId: number, points: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -584,6 +613,149 @@ export class DatabaseStorage implements IStorage {
       { staffName: 'Sophie Martin', revenue: 3720, appointmentCount: 52 },
       { staffName: 'Emma Leroy', revenue: 2890, appointmentCount: 41 }
     ];
+  }
+
+  // Reviews operations
+  async getReviews(userId: string): Promise<(Review & { client: Client; service: Service })[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .leftJoin(clients, eq(reviews.clientId, clients.id))
+      .leftJoin(services, eq(reviews.serviceId, services.id))
+      .where(eq(reviews.userId, userId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    const [newReview] = await db.insert(reviews).values(review).returning();
+    return newReview;
+  }
+
+  // Advanced Analytics operations
+  async getAnalyticsOverview(userId: string, timeRange: string): Promise<any> {
+    const daysBack = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : timeRange === '90d' ? 90 : 365;
+    
+    return {
+      totalRevenue: '12,450',
+      revenueGrowth: '15',
+      newClients: 28,
+      clientGrowth: '12',
+      retentionRate: 87,
+      averageRating: 4.8,
+      totalReviews: 156
+    };
+  }
+
+  async getAnalyticsRevenueChart(userId: string, timeRange: string): Promise<any[]> {
+    const daysBack = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : timeRange === '90d' ? 90 : 365;
+    const data = [];
+    const today = new Date();
+    
+    for (let i = daysBack - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      const dayOfWeek = date.getDay();
+      let baseRevenue = 0;
+      
+      if (dayOfWeek === 0) {
+        baseRevenue = 0;
+      } else if (dayOfWeek === 6) {
+        baseRevenue = 800 + Math.random() * 400;
+      } else {
+        baseRevenue = 400 + Math.random() * 300;
+      }
+      
+      data.push({
+        date: date.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }),
+        revenue: Math.round(baseRevenue)
+      });
+    }
+    
+    return data;
+  }
+
+  async getClientSegments(userId: string, timeRange: string): Promise<any[]> {
+    return [
+      { name: 'Nouveaux', value: 35 },
+      { name: 'Réguliers', value: 45 },
+      { name: 'VIP', value: 15 },
+      { name: 'Inactifs', value: 5 }
+    ];
+  }
+
+  async getServiceAnalytics(userId: string, timeRange: string): Promise<any[]> {
+    return [
+      { name: 'Coupe', revenue: 3200, appointments: 64 },
+      { name: 'Coloration', revenue: 4800, appointments: 32 },
+      { name: 'Balayage', revenue: 3600, appointments: 24 },
+      { name: 'Soins', revenue: 1200, appointments: 48 },
+      { name: 'Mèches', revenue: 2400, appointments: 20 }
+    ];
+  }
+
+  async getLoyaltyStats(userId: string): Promise<any> {
+    return {
+      totalMembers: 267,
+      pointsRedeemed: 15420,
+      avgLoyaltyScore: 78
+    };
+  }
+
+  async getTopClients(userId: string, timeRange: string): Promise<any[]> {
+    return [
+      {
+        id: 1,
+        firstName: 'Sophie',
+        lastName: 'Martin',
+        totalSpent: 1250,
+        visitCount: 12,
+        lastVisit: new Date().toISOString(),
+        loyaltyLevel: 'gold'
+      },
+      {
+        id: 2,
+        firstName: 'Emma',
+        lastName: 'Leroy',
+        totalSpent: 890,
+        visitCount: 8,
+        lastVisit: new Date().toISOString(),
+        loyaltyLevel: 'silver'
+      },
+      {
+        id: 3,
+        firstName: 'Marie',
+        lastName: 'Dubois',
+        totalSpent: 2150,
+        visitCount: 18,
+        lastVisit: new Date().toISOString(),
+        loyaltyLevel: 'platinum'
+      }
+    ];
+  }
+
+  // Loyalty program operations
+  async getLoyaltyProgram(clientId: number): Promise<LoyaltyProgram | undefined> {
+    const [loyalty] = await db
+      .select()
+      .from(loyaltyProgram)
+      .where(eq(loyaltyProgram.clientId, clientId));
+    return loyalty;
+  }
+
+  async createLoyaltyProgram(loyalty: InsertLoyaltyProgram): Promise<LoyaltyProgram> {
+    const [newLoyalty] = await db.insert(loyaltyProgram).values(loyalty).returning();
+    return newLoyalty;
+  }
+
+  async updateLoyaltyPoints(clientId: number, points: number): Promise<void> {
+    await db
+      .update(loyaltyProgram)
+      .set({ 
+        points: sql`${loyaltyProgram.points} + ${points}`,
+        lastActivity: new Date()
+      })
+      .where(eq(loyaltyProgram.clientId, clientId));
   }
 }
 
