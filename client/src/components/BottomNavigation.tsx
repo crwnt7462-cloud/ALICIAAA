@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Share, Brain } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, Settings, Brain } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface NavItem {
@@ -9,11 +9,11 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { path: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord" },
+  { path: "/dashboard", icon: LayoutDashboard, label: "Accueil" },
   { path: "/planning", icon: Calendar, label: "Planning" },
   { path: "/clients", icon: Users, label: "Clients" },
-  { path: "/share", icon: Share, label: "Partager" },
-  { path: "/ai", icon: Brain, label: "Assistant Pro", hasNotification: true },
+  { path: "/services", icon: Settings, label: "Services" },
+  { path: "/ai", icon: Brain, label: "IA Pro", hasNotification: true },
 ];
 
 export function BottomNavigation() {

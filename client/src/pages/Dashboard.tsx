@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { CalendarCheck, TrendingUp, Users, Clock, ChevronRight, Plus, Award, Star, Calendar } from "lucide-react";
+import { CalendarCheck, TrendingUp, Users, Clock, ChevronRight, Plus, Award, Star, Calendar, Settings, UserCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingDashboard } from "@/components/ui/loading-spinner";
@@ -79,6 +79,42 @@ export default function Dashboard() {
             Nouveau RDV
           </Button>
         </div>
+      </div>
+
+      {/* Quick Access Menu */}
+      <div className="grid grid-cols-4 gap-2">
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl text-xs"
+          onClick={() => setLocation("/services")}
+        >
+          <Settings className="w-5 h-5 mb-1" />
+          Services
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-blue-200 text-blue-700 hover:bg-blue-50 rounded-xl text-xs"
+          onClick={() => setLocation("/staff")}
+        >
+          <UserCheck className="w-5 h-5 mb-1" />
+          Équipe
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl text-xs"
+          onClick={() => setLocation("/clients")}
+        >
+          <Users className="w-5 h-5 mb-1" />
+          Clients
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-orange-200 text-orange-700 hover:bg-orange-50 rounded-xl text-xs"
+          onClick={() => setLocation("/planning")}
+        >
+          <Calendar className="w-5 h-5 mb-1" />
+          Planning
+        </Button>
       </div>
 
       {/* Stats Grid */}

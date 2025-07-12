@@ -8,6 +8,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import {
   insertServiceSchema,
   insertClientSchema,
+  insertStaffSchema,
   insertAppointmentSchema,
   insertForumPostSchema,
   insertForumReplySchema,
@@ -54,7 +55,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/services/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/services/:id', isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const serviceData = insertServiceSchema.partial().parse(req.body);
@@ -74,6 +75,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting service:", error);
       res.status(500).json({ message: "Failed to delete service" });
+    }
+  });
+
+  // Staff routes
+  app.get('/api/staff', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const staff = await storage.getStaff(userId);
+      res.json(staff);
+    } catch (error) {
+      console.error("Error fetching staff:", error);
+      res.status(500).json({ message: "Failed to fetch staff" });
+    }
+  });
+
+  app.get('/api/staff/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const staffMember = await storage.getStaffMember(id);
+      if (!staffMember) {
+        return res.status(404).json({ message: "Staff member not found" });
+      }
+      res.json(staffMember);
+    } catch (error) {
+      console.error("Error fetching staff member:", error);
+      res.status(500).json({ message: "Failed to fetch staff member" });
+    }
+  });
+
+  app.post('/api/staff', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const staffData = insertStaffSchema.parse({ ...req.body, userId });
+      const staffMember = await storage.createStaffMember(staffData);
+      res.json(staffMember);
+    } catch (error) {
+      console.error("Error creating staff member:", error);
+      res.status(400).json({ message: "Failed to create staff member" });
+    }
+  });
+
+  app.patch('/api/staff/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const staffData = insertStaffSchema.partial().parse(req.body);
+      const staffMember = await storage.updateStaffMember(id, staffData);
+      res.json(staffMember);
+    } catch (error) {
+      console.error("Error updating staff member:", error);
+      res.status(400).json({ message: "Failed to update staff member" });
+    }
+  });
+
+  app.delete('/api/staff/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteStaffMember(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting staff member:", error);
+      res.status(500).json({ message: "Failed to delete staff member" });
     }
   });
 
@@ -122,7 +184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/clients/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/clients/:id', isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const clientData = insertClientSchema.partial().parse(req.body);
@@ -194,7 +256,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
+  app.patch('/api/appointments/:id', isAuthenticated, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
       const appointmentData = insertAppointmentSchema.partial().parse(req.body);

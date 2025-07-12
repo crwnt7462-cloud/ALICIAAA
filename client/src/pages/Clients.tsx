@@ -1,269 +1,366 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
-import { Search, Filter, Star, UserPlus, MessageCircle, Calendar } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Plus, Search, User, Phone, Mail, Calendar, Trash2, Edit } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertClientSchema } from "@shared/schema";
+import { insertClientSchema, type Client } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+
+type InsertClientForm = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  notes?: string;
+};
+
+const clientFormSchema = insertClientSchema.extend({
+  notes: insertClientSchema.shape.notes.optional(),
+});
 
 export default function Clients() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingClient, setEditingClient] = useState<Client | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [, setLocation] = useLocation();
 
-  const { data: clients = [] } = useQuery<any[]>({
-    queryKey: ["/api/clients", searchQuery],
-    enabled: true,
+  const { data: clients = [], isLoading } = useQuery({
+    queryKey: ["/api/clients"],
   });
 
-  const form = useForm({
-    resolver: zodResolver(insertClientSchema),
+  const createMutation = useMutation({
+    mutationFn: (data: InsertClientForm) => 
+      apiRequest("POST", "/api/clients", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      setIsDialogOpen(false);
+      form.reset();
+      toast({
+        title: "Client créé",
+        description: "Le client a été ajouté avec succès.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de créer le client.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Partial<InsertClientForm> }) =>
+      apiRequest("PATCH", `/api/clients/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      setIsDialogOpen(false);
+      setEditingClient(null);
+      form.reset();
+      toast({
+        title: "Client modifié",
+        description: "Les informations du client ont été mises à jour.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de modifier le client.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/clients/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
+      toast({
+        title: "Client supprimé",
+        description: "Le client a été supprimé avec succès.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de supprimer le client.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const form = useForm<InsertClientForm>({
+    resolver: zodResolver(clientFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
       phone: "",
       notes: "",
-      preferences: "",
     },
   });
 
-  const createClientMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/clients", data);
-      return response.json();
-    },
-    onSuccess: (newClient) => {
-      toast({
-        title: "Client ajouté",
-        description: "Le client a été ajouté avec succès. Redirection vers la réservation...",
-      });
-      setIsDialogOpen(false);
-      form.reset();
-      queryClient.invalidateQueries({ queryKey: ["/api/clients"] });
-      
-      // Rediriger automatiquement vers la page de réservation avec le client pré-sélectionné
-      setTimeout(() => {
-        setLocation(`/booking?clientId=${newClient.id}&clientName=${encodeURIComponent(newClient.firstName + ' ' + newClient.lastName)}`);
-      }, 1000);
-    },
-    onError: (error) => {
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter le client.",
-        variant: "destructive",
-      });
-    },
-  });
+  const filteredClients = clients.filter((client: Client) =>
+    `${client.firstName} ${client.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    client.phone?.includes(searchQuery)
+  );
 
-  const onSubmit = (data: any) => {
-    createClientMutation.mutate(data);
+  const handleEdit = (client: Client) => {
+    setEditingClient(client);
+    form.reset({
+      firstName: client.firstName,
+      lastName: client.lastName,
+      email: client.email || "",
+      phone: client.phone || "",
+      notes: client.notes || "",
+    });
+    setIsDialogOpen(true);
   };
 
-  const renderStars = (rating: number = 5) => {
-    return (
-      <div className="flex items-center space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`w-3 h-3 ${
-              star <= rating ? "text-yellow-400 fill-current" : "text-gray-300"
-            }`}
-          />
-        ))}
-      </div>
-    );
+  const handleNewClient = () => {
+    setEditingClient(null);
+    form.reset({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      notes: "",
+    });
+    setIsDialogOpen(true);
+  };
+
+  const onSubmit = (data: InsertClientForm) => {
+    if (editingClient) {
+      updateMutation.mutate({ id: editingClient.id, data });
+    } else {
+      createMutation.mutate(data);
+    }
   };
 
   return (
-    <div className="p-4 space-y-4 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
+    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50/50 to-blue-50/30 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Clients</h1>
-          <p className="text-gray-600 mt-1 flex items-center text-xs">
-            <span className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2"></span>
-            {clients.length} clients actifs
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gestion des clients</h1>
+          <p className="text-gray-600 text-sm mt-1">
+            {filteredClients.length} client{filteredClients.length > 1 ? "s" : ""}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="gradient-bg text-white px-3 py-1.5 rounded-lg font-medium shadow-md hover:scale-105 transition-all duration-200 text-xs">
-              <UserPlus className="w-3 h-3 mr-1" />
+            <Button 
+              className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg"
+              onClick={handleNewClient}
+            >
+              <Plus className="w-4 h-4 mr-2" />
               Nouveau client
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Ajouter un client</DialogTitle>
+              <DialogTitle>
+                {editingClient ? "Modifier le client" : "Nouveau client"}
+              </DialogTitle>
             </DialogHeader>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="firstName">Prénom</Label>
-                  <Input
-                    id="firstName"
-                    {...form.register("firstName")}
-                    placeholder="Prénom"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Prénom</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nom</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="lastName">Nom</Label>
-                  <Input
-                    id="lastName"
-                    {...form.register("lastName")}
-                    placeholder="Nom"
-                  />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Téléphone</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder="Notes optionnelles..." />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                  >
+                    {editingClient ? "Modifier" : "Créer"}
+                  </Button>
                 </div>
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  {...form.register("email")}
-                  type="email"
-                  placeholder="email@exemple.com"
-                />
-              </div>
-              <div>
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  {...form.register("phone")}
-                  placeholder="06 12 34 56 78"
-                />
-              </div>
-              <div>
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  {...form.register("notes")}
-                  placeholder="Notes sur le client..."
-                  rows={3}
-                />
-              </div>
-              <Button type="submit" className="w-full" disabled={createClientMutation.isPending}>
-                {createClientMutation.isPending ? "Ajout..." : "Ajouter le client"}
-              </Button>
-            </form>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
         <Input
-          type="text"
           placeholder="Rechercher un client..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 h-10 bg-white border-gray-200"
+          className="pl-10 bg-white/80 backdrop-blur-sm border-gray-200"
         />
       </div>
 
-      {/* Client List */}
-      <div className="space-y-3">
-        {clients.map((client: any) => (
-          <Card key={client.id} className="border-0 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-semibold text-sm">
-                    {client.firstName?.[0]}{client.lastName?.[0]}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="font-semibold text-gray-900 truncate">
-                      {client.firstName} {client.lastName}
-                    </h3>
-                    {renderStars(client.rating)}
+      {/* Clients List */}
+      <div className="grid gap-3">
+        {isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+                <CardContent className="p-4">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                   </div>
-                  <p className="text-sm text-gray-500 mb-1">
-                    {client.email || 'Pas d\'email'}
-                  </p>
-                  <div className="flex items-center text-xs text-gray-400 space-x-3">
-                    <span>{client.visitCount || 0} visites</span>
-                    <span>•</span>
-                    <span>{client.totalSpent || 0}€ total</span>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button size="sm" variant="outline" className="h-8 w-8 p-0">
-                    <MessageCircle className="w-4 h-4" />
-                  </Button>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white h-8">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    RDV
-                  </Button>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : filteredClients.length === 0 ? (
+          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+            <CardContent className="p-8 text-center">
+              <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {searchQuery ? "Aucun client trouvé" : "Aucun client"}
+              </h3>
+              <p className="text-gray-600 text-sm">
+                {searchQuery 
+                  ? "Essayez de modifier votre recherche" 
+                  : "Commencez par ajouter votre premier client"
+                }
+              </p>
             </CardContent>
           </Card>
-        ))}
+        ) : (
+          filteredClients.map((client: Client) => (
+            <Card key={client.id} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                      <User className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {client.firstName} {client.lastName}
+                      </h3>
+                      <div className="flex items-center space-x-4 text-xs text-gray-600 mt-1">
+                        {client.email && (
+                          <div className="flex items-center">
+                            <Mail className="w-3 h-3 mr-1" />
+                            {client.email}
+                          </div>
+                        )}
+                        {client.phone && (
+                          <div className="flex items-center">
+                            <Phone className="w-3 h-3 mr-1" />
+                            {client.phone}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEdit(client)}
+                      className="text-blue-600 hover:bg-blue-50"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteMutation.mutate(client.id)}
+                      className="text-red-600 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+                {client.notes && (
+                  <p className="text-sm text-gray-600 mt-2 bg-gray-50 p-2 rounded-lg">
+                    {client.notes}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
-
-      {/* Add New Client Button */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <Button className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-xl font-semibold mt-6">
-            <UserPlus className="w-4 h-4 mr-2" />
-            Ajouter un nouveau client
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Nouveau client</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Prénom</Label>
-                <Input {...form.register('firstName')} />
-              </div>
-              <div>
-                <Label>Nom</Label>
-                <Input {...form.register('lastName')} />
-              </div>
-            </div>
-
-            <div>
-              <Label>Email</Label>
-              <Input type="email" {...form.register('email')} />
-            </div>
-
-            <div>
-              <Label>Téléphone</Label>
-              <Input {...form.register('phone')} />
-            </div>
-
-            <div>
-              <Label>Préférences</Label>
-              <Textarea {...form.register('preferences')} placeholder="Couleurs préférées, allergies, etc." />
-            </div>
-
-            <div>
-              <Label>Notes</Label>
-              <Textarea {...form.register('notes')} placeholder="Notes privées sur le client" />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={createClientMutation.isPending}>
-              {createClientMutation.isPending ? "Ajout en cours..." : "Ajouter le client"}
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

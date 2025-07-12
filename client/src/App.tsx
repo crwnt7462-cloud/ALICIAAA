@@ -21,6 +21,9 @@ import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
 import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
+import ProLogin from "@/pages/ProLogin";
+import Services from "@/pages/Services";
+import Staff from "@/pages/Staff";
 
 function Router() {
   const [location] = useLocation();
@@ -52,6 +55,15 @@ function Router() {
     );
   }
 
+  // Page de connexion professionnelle
+  if (location === '/pro-login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
+      </div>
+    );
+  }
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
@@ -62,6 +74,8 @@ function Router() {
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
           <Route path="/booking" component={Booking} />
+          <Route path="/services" component={Services} />
+          <Route path="/staff" component={Staff} />
           <Route path="/ai" component={AIAutomation} />
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />

@@ -87,14 +87,14 @@ export default function PublicLanding() {
                 variant="ghost" 
                 size="sm"
                 className="text-gray-600 hover:text-purple-600 text-sm hidden sm:flex"
-                onClick={() => setLocation("/pro")}
+                onClick={() => setLocation("/pro-login")}
               >
                 Espace Pro
               </Button>
               <Button 
                 size="sm"
                 className="bg-purple-600 hover:bg-purple-700 text-white"
-                onClick={() => setLocation("/pro")}
+                onClick={() => setLocation("/pro-login")}
               >
                 Connexion
               </Button>
@@ -313,7 +313,7 @@ export default function PublicLanding() {
               size="lg"
               variant="outline"
               className="bg-white text-purple-600 hover:bg-gray-50 border-white w-full sm:w-auto"
-              onClick={() => setLocation("/pro")}
+              onClick={() => setLocation("/pro-login")}
             >
               Rejoindre BeautyBook Pro
             </Button>
@@ -321,7 +321,7 @@ export default function PublicLanding() {
               size="lg"
               variant="ghost"
               className="text-white hover:bg-white/10 border border-white/30 w-full sm:w-auto"
-              onClick={() => setLocation("/pro")}
+              onClick={() => setLocation("/pro-login")}
             >
               Démo gratuite
             </Button>
