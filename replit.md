@@ -123,13 +123,12 @@ Génération automatique :
 
 ## Changements Récents
 
-### Décembre 2024 - Pivot vers Expérience Utilisateur Révolutionnaire
-- ✅ **Réservation 3 clics** : Interface ClientBooking complètement redesignée
-- ✅ **Page d'accueil transformée** : PublicLanding avec badges "Plus rapide que Planity"
-- ✅ **Routes API publiques** : Réservation sans inscription pour les clients
-- ✅ **Design ultra-moderne** : Gradients, backdrop-blur, animations fluides
-- ✅ **Données de démonstration** : Services et salon de test fonctionnels
-- ✅ **Accès double** : Interface client rapide + Dashboard professionnel complet
+### Décembre 2024
+- ✅ Navigation simplifiée avec 5 sections principales
+- ✅ Interface utilisateur épurée et professionnelle
+- ✅ Gestion complète des rendez-vous et clients
+- ✅ Architecture backend robuste
+- ✅ Documentation projet mise à jour
 
 ### Fonctionnalités en Développement
 - 🔄 Intégration Stripe pour paiements
