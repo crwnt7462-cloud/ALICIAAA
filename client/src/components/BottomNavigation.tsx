@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Users, Settings, Brain, BarChart3, Star, Zap, QrCode, MoreHorizontal } from "lucide-react";
+import { LayoutDashboard, Calendar, Users, Settings, Brain } from "lucide-react";
 import { useLocation } from "wouter";
 
 interface NavItem {
@@ -11,9 +11,9 @@ interface NavItem {
 const navItems: NavItem[] = [
   { path: "/dashboard", icon: LayoutDashboard, label: "Accueil" },
   { path: "/planning", icon: Calendar, label: "Planning" },
-  { path: "/analytics", icon: BarChart3, label: "Analytics" },
-  { path: "/smart-features", icon: Zap, label: "Smart", hasNotification: true },
-  { path: "/more", icon: MoreHorizontal, label: "Plus" },
+  { path: "/clients", icon: Users, label: "Clients" },
+  { path: "/services", icon: Settings, label: "Services" },
+  { path: "/ai", icon: Brain, label: "IA Pro" },
 ];
 
 export function BottomNavigation() {
