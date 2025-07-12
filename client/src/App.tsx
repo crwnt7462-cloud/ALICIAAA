@@ -24,6 +24,11 @@ import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
+import Analytics from "@/pages/Analytics";
+import Reviews from "@/pages/Reviews";
+import SmartFeatures from "@/pages/SmartFeatures";
+import QRBooking from "@/pages/QRBooking";
+import More from "@/pages/More";
 
 function Router() {
   const [location] = useLocation();
@@ -73,6 +78,11 @@ function Router() {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
+          <Route path="/analytics" component={Analytics} />
+          <Route path="/reviews" component={Reviews} />
+          <Route path="/smart-features" component={SmartFeatures} />
+          <Route path="/qr-booking" component={QRBooking} />
+          <Route path="/more" component={More} />
           <Route path="/booking" component={Booking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
