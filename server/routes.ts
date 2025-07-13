@@ -1226,6 +1226,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route de téléchargement du code complet
+  app.get('/download-code', (req, res) => {
+    const filePath = './salon-beaute-code-complet.zip';
+    
+    if (require('fs').existsSync(filePath)) {
+      res.download(filePath, 'salon-beaute-code-complet.zip', (err) => {
+        if (err) {
+          console.error('Erreur de téléchargement:', err);
+          res.status(500).send('Erreur lors du téléchargement');
+        }
+      });
+    } else {
+      res.status(404).send('Fichier non trouvé');
+    }
+  });
+
   function broadcastToClients(type: string, data: any) {
     const message = JSON.stringify({ type, data });
     clients.forEach((client) => {

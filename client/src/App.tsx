@@ -24,6 +24,7 @@ import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
+import DownloadCode from "@/pages/DownloadCode";
 
 
 function Router() {
