@@ -76,6 +76,7 @@ function Router() {
           <Route path="/clients" component={Clients} />
 
           <Route path="/booking" component={Booking} />
+          <Route path="/share-booking" component={ShareBooking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
           <Route path="/ai" component={AIAutomation} />

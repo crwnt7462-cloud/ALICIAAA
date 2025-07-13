@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,7 +24,7 @@
   --destructive-foreground: hsl(0, 0%, 100%);
   --ring: hsl(262, 83%, 58%);
   --radius: 0.5rem;
-  
+
   /* Professional color palette */
   --gray-50: hsl(240, 4.8%, 95.9%);
   --gray-100: hsl(240, 4.8%, 91%);
@@ -35,7 +36,7 @@
   --gray-700: hsl(240, 5.3%, 26.1%);
   --gray-800: hsl(240, 3.7%, 15.9%);
   --gray-900: hsl(240, 5.9%, 10%);
-  
+
   /* Professional brand colors */
   --blue-50: hsl(214, 100%, 97%);
   --blue-500: hsl(210, 100%, 50%);

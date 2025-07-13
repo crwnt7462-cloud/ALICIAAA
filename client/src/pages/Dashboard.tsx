@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { CalendarCheck, TrendingUp, Users, Clock, ChevronRight, Plus, Award, Star, Calendar, Settings, UserCheck } from "lucide-react";
+import { CalendarCheck, TrendingUp, Users, Clock, ChevronRight, Plus, Award, Star, Calendar, Settings, UserCheck, Share2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LoadingDashboard } from "@/components/ui/loading-spinner";
@@ -82,6 +82,24 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Access Menu */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <Button 
+          className="h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg rounded-xl"
+          onClick={() => setLocation("/share-booking")}
+        >
+          <Share2 className="w-5 h-5 mr-2" />
+          Partager lien réservation
+        </Button>
+        <Button 
+          variant="outline"
+          className="h-14 border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl"
+          onClick={() => setLocation("/booking")}
+        >
+          <Plus className="w-5 h-5 mr-2" />
+          Nouvelle réservation
+        </Button>
+      </div>
+
       <div className="grid grid-cols-4 gap-2">
         <Button 
           variant="outline" 
