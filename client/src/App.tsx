@@ -71,7 +71,7 @@ function Router() {
   // PageBuilder en plein écran (sans navigation)
   if (location === '/page-builder') {
     return (
-      <div className="h-full">
+      <div className="h-screen w-full">
         <PageBuilder />
       </div>
     );

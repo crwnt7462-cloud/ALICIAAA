@@ -242,8 +242,13 @@ export default function PageBuilder() {
 
   const selectedBlockData = selectedBlock ? pageDesign.blocks.find(b => b.id === selectedBlock) : null;
 
+  // Set page title
+  useEffect(() => {
+    document.title = `${pageDesign.name} - Éditeur de Pages | Beauty Pro`;
+  }, [pageDesign.name]);
+
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 w-full">
       {/* Sidebar - Block Library */}
       <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
         <div className="p-4 border-b border-gray-200">
@@ -251,10 +256,10 @@ export default function PageBuilder() {
             <Button 
               variant="ghost" 
               size="sm"
-              onClick={() => setLocation('/business-features')}
+              onClick={() => window.close()}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour
+              Fermer
             </Button>
             <div className="flex space-x-1">
               <Button
@@ -275,18 +280,24 @@ export default function PageBuilder() {
           </div>
           
           <div className="space-y-2">
-            <Input
-              value={pageDesign.name}
-              onChange={(e) => setPageDesign(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Nom de la page"
-              className="text-sm"
-            />
-            <Input
-              value={pageDesign.slug}
-              onChange={(e) => setPageDesign(prev => ({ ...prev, slug: e.target.value }))}
-              placeholder="URL de la page"
-              className="text-sm"
-            />
+            <div>
+              <Label className="text-xs text-gray-500 mb-1">Nom de la page</Label>
+              <Input
+                value={pageDesign.name}
+                onChange={(e) => setPageDesign(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Ma Page de Réservation"
+                className="text-sm"
+              />
+            </div>
+            <div>
+              <Label className="text-xs text-gray-500 mb-1">URL de la page</Label>
+              <Input
+                value={pageDesign.slug}
+                onChange={(e) => setPageDesign(prev => ({ ...prev, slug: e.target.value }))}
+                placeholder="ma-page-reservation"
+                className="text-sm"
+              />
+            </div>
           </div>
         </div>
 
@@ -398,7 +409,7 @@ export default function PageBuilder() {
         {/* Preview Area */}
         <div className="flex-1 p-6 overflow-y-auto">
           <div className={`mx-auto bg-white shadow-xl rounded-lg overflow-hidden ${
-            activeView === 'mobile' ? 'max-w-sm' : 'max-w-4xl'
+            activeView === 'mobile' ? 'max-w-sm' : 'max-w-5xl'
           }`}>
             {pageDesign.blocks
               .sort((a, b) => a.order - b.order)

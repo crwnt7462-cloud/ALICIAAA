@@ -312,7 +312,7 @@ export default function BusinessFeatures() {
                 size="sm" 
                 variant="outline" 
                 className="w-full"
-                onClick={() => setLocation('/page-builder')}
+                onClick={() => window.open('/page-builder', '_blank')}
               >
                 + Créer nouvelle page
               </Button>
