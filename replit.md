@@ -123,6 +123,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - SYSTÈME IA AVANCÉ COMPLET (14 Janvier)
+- ✅ **IA pour l'Entrepreneur** : Analyse des tendances clients, détection churn, opportunités business
+- ✅ **IA pour le Client** : Conseiller beauté virtuel avec analyse photo, suggestions looks tendances
+- ✅ **IA Transverse** : Détection d'insights business, prédictions saisonnières, cross-selling
+- ✅ **Chat IA conversationnel** : Assistant personnel avec OpenAI GPT-4o
+- ✅ **Interface à onglets** : Navigation séparée Entrepreneur/Client/Assistant
+- ✅ **Analyse photo multimodale** : Vision par ordinateur pour recommandations beauté
+- ✅ **Pricing dynamique** : Suggestions tarifaires selon demande et saison
+- ✅ **Prédictions avancées** : No-shows, annulations, fidélisation clients
+- ✅ **API OpenAI intégrée** : Toutes les fonctions IA utilisant GPT-4o
+- ✅ **Cerveau silencieux** : L'IA anticipe et optimise automatiquement
+
 ### Janvier 2025 - DESIGN ÉPURÉ ET AMÉLIORATIONS UX (14 Janvier)
 - ✅ **Dégradé cohérent** : Utilisation de `gradient-bg` (hsl 262°-217°) identique au site pro
 - ✅ **Design professionnel** : Suppression totale des emojis, remplacés par icônes Lucide

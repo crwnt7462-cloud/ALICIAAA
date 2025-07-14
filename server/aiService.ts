@@ -315,6 +315,370 @@ Répondez en JSON:
     }
   }
 
+  // 🎯 IA POUR L'ENTREPRENEUR - ASSISTANT COMMERCIAL INTELLIGENT
+  async analyzeClientTrends(clientData: any[], services: any[]) {
+    try {
+      const prompt = `
+Analysez les tendances clients et suggérez de nouveaux services rentables:
+
+Données clients:
+${clientData.map(client => `
+- ${client.name}: ${client.totalAppointments} RDV, ${client.totalSpent}€, services: ${client.favoriteServices?.join(', ') || 'Non spécifié'}
+`).join('\n')}
+
+Services actuels:
+${services.map(service => `- ${service.name}: ${service.price}€, demande: ${service.bookingCount || 0}`).join('\n')}
+
+Analysez et proposez:
+1. Nouveaux services tendances à introduire
+2. Services sous-utilisés à promouvoir
+3. Créneaux de prix optimaux
+4. Clients cibles pour chaque service
+
+Répondez en JSON:
+{
+  "newServices": [
+    {
+      "name": "string",
+      "suggestedPrice": number,
+      "demand": "high|medium|low",
+      "targetClients": ["noms"],
+      "reasoning": "justification"
+    }
+  ],
+  "underutilizedServices": [
+    {
+      "serviceName": "string",
+      "currentDemand": number,
+      "promotionSuggestion": "string",
+      "targetSegment": "string"
+    }
+  ],
+  "pricingOptimization": [
+    {
+      "serviceName": "string",
+      "currentPrice": number,
+      "suggestedPrice": number,
+      "expectedImpact": "string"
+    }
+  ]
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.4
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur analyse tendances:", error);
+      return { newServices: [], underutilizedServices: [], pricingOptimization: [] };
+    }
+  }
+
+  // Pricing dynamique selon demande et saison
+  async generateDynamicPricing(services: any[], seasonalData: any, demandData: any) {
+    try {
+      const prompt = `
+Analysez la demande et proposez des prix dynamiques pour optimiser la rentabilité:
+
+Services actuels:
+${services.map(service => `- ${service.name}: ${service.price}€, réservations/mois: ${service.monthlyBookings || 0}`).join('\n')}
+
+Données saisonnières:
+- Saison actuelle: ${seasonalData.currentSeason || 'Non spécifié'}
+- Tendances: ${seasonalData.trends || 'Non spécifié'}
+
+Données de demande:
+- Pics de demande: ${demandData.peakHours || 'Non spécifié'}
+- Jours populaires: ${demandData.popularDays || 'Non spécifié'}
+
+Calculez des prix optimaux avec:
+1. Coefficients saisonniers
+2. Prix différenciés par créneaux
+3. Promotions ciblées
+4. Stratégie de yield management
+
+Répondez en JSON:
+{
+  "dynamicPricing": [
+    {
+      "serviceName": "string",
+      "basePrice": number,
+      "peakHourPrice": number,
+      "offPeakPrice": number,
+      "seasonalMultiplier": number,
+      "promotionalPrice": number,
+      "validityPeriod": "string"
+    }
+  ],
+  "revenueImpact": {
+    "estimatedIncrease": number,
+    "confidence": number
+  }
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur pricing dynamique:", error);
+      return { dynamicPricing: [], revenueImpact: { estimatedIncrease: 0, confidence: 0 } };
+    }
+  }
+
+  // Détection clients à risque de départ
+  async identifyChurnRisk(clients: ClientBehavior[]) {
+    try {
+      const prompt = `
+Analysez ces clients et identifiez ceux à risque de départ:
+
+${clients.map(client => `
+Client: ${client.name}
+- Dernière visite: ${client.lastVisit.toLocaleDateString()}
+- Fréquence moyenne: ${client.avgDaysBetweenVisits} jours
+- Total dépensé: ${client.totalSpent}€
+- Nombre d'annulations: ${client.cancelCount}
+- Rendez-vous total: ${client.totalAppointments}
+`).join('\n')}
+
+Identifiez les signaux d'alerte:
+1. Espacement anormal entre visites
+2. Baisse de fréquence
+3. Réduction du panier moyen
+4. Augmentation des annulations
+
+Répondez en JSON:
+{
+  "churnRisks": [
+    {
+      "clientId": number,
+      "clientName": "string",
+      "riskScore": number,
+      "riskFactors": ["facteurs"],
+      "retentionStrategy": "string",
+      "urgency": "high|medium|low",
+      "suggestedActions": ["actions"]
+    }
+  ],
+  "overallChurnRate": number
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.3
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur détection churn:", error);
+      return { churnRisks: [], overallChurnRate: 0 };
+    }
+  }
+
+  // 🎨 IA POUR LE CLIENT - CONSEILLER BEAUTÉ VIRTUEL
+  async analyzePhotoForRecommendations(photoBase64: string, clientProfile: any) {
+    try {
+      const prompt = `
+Analysez cette photo et le profil client pour recommander des services adaptés:
+
+Profil client:
+- Âge: ${clientProfile.age || 'Non spécifié'}
+- Préférences: ${clientProfile.preferences || 'Non spécifié'}
+- Historique: ${clientProfile.serviceHistory || 'Non spécifié'}
+- Budget moyen: ${clientProfile.averageSpend || 'Non spécifié'}€
+
+Analysez la photo pour:
+1. Type et couleur des cheveux
+2. Forme du visage
+3. Teint de peau
+4. Style actuel
+
+Recommandez:
+- Services adaptés (coupe, couleur, soins)
+- Produits complémentaires
+- Conseils personnalisés
+
+Répondez en JSON:
+{
+  "analysis": {
+    "hairType": "string",
+    "faceShape": "string",
+    "skinTone": "string",
+    "currentStyle": "string"
+  },
+  "recommendations": [
+    {
+      "service": "string",
+      "reasoning": "string",
+      "priority": "high|medium|low",
+      "estimatedPrice": number
+    }
+  ],
+  "productSuggestions": [
+    {
+      "product": "string",
+      "benefit": "string",
+      "price": number
+    }
+  ],
+  "personalizedTips": ["conseils"]
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "text", text: prompt },
+              {
+                type: "image_url",
+                image_url: { url: `data:image/jpeg;base64,${photoBase64}` }
+              }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" },
+        temperature: 0.4
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur analyse photo:", error);
+      return { analysis: {}, recommendations: [], productSuggestions: [], personalizedTips: [] };
+    }
+  }
+
+  // Suggestions de looks selon tendances
+  async suggestTrendyLooks(clientProfile: any, currentTrends: any[]) {
+    try {
+      const prompt = `
+Suggérez des looks tendances adaptés à ce profil client:
+
+Profil:
+- Âge: ${clientProfile.age}
+- Style: ${clientProfile.style || 'Non spécifié'}
+- Morphologie: ${clientProfile.faceShape || 'Non spécifié'}
+- Lifestyle: ${clientProfile.lifestyle || 'Non spécifié'}
+
+Tendances actuelles:
+${currentTrends.map(trend => `- ${trend.name}: ${trend.description}`).join('\n')}
+
+Proposez des looks:
+1. Adaptés à la morphologie
+2. Alignés avec les tendances
+3. Réalisables selon le budget
+4. Appropriés au lifestyle
+
+Répondez en JSON:
+{
+  "suggestedLooks": [
+    {
+      "name": "string",
+      "description": "string",
+      "services": ["liste des services"],
+      "totalCost": number,
+      "difficulty": "easy|medium|hard",
+      "maintenanceLevel": "low|medium|high",
+      "trendAlignment": number,
+      "suitabilityScore": number
+    }
+  ],
+  "trendsExplanation": "string"
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.5
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur suggestions looks:", error);
+      return { suggestedLooks: [], trendsExplanation: "" };
+    }
+  }
+
+  // 🚀 IA TRANSVERSE - DÉTECTION D'INSIGHTS BUSINESS
+  async detectBusinessOpportunities(analyticsData: any) {
+    try {
+      const prompt = `
+Analysez ces données complètes et identifiez les opportunités business:
+
+Données analytiques:
+- CA mensuel: ${analyticsData.monthRevenue || 0}€
+- Services populaires: ${analyticsData.topServices?.map((s: any) => `${s.name} (${s.count})`).join(', ') || 'Non disponible'}
+- Créneaux les plus demandés: ${analyticsData.peakHours || 'Non disponible'}
+- Taux de fidélisation: ${analyticsData.retentionRate || 0}%
+- Panier moyen: ${analyticsData.averageBasket || 0}€
+
+Identifiez:
+1. Services les plus rentables
+2. Opportunités de cross-selling
+3. Créneaux sous-exploités
+4. Segments clients à développer
+5. Prédictions saisonnières
+
+Répondez en JSON:
+{
+  "profitableServices": [
+    {
+      "serviceName": "string",
+      "profitMargin": number,
+      "demand": "high|medium|low",
+      "growth": number
+    }
+  ],
+  "crossSellingOpportunities": [
+    {
+      "primaryService": "string",
+      "complementaryServices": ["services"],
+      "conversionRate": number,
+      "revenueImpact": number
+    }
+  ],
+  "underutilizedSlots": [
+    {
+      "timeSlot": "string",
+      "utilizationRate": number,
+      "suggestions": ["actions"]
+    }
+  ],
+  "seasonalPredictions": [
+    {
+      "period": "string",
+      "expectedDemand": "high|medium|low",
+      "recommendedActions": ["actions"]
+    }
+  ]
+}`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        temperature: 0.4
+      });
+
+      return JSON.parse(response.choices[0].message.content || "{}");
+    } catch (error) {
+      console.error("Erreur détection opportunités:", error);
+      return { profitableServices: [], crossSellingOpportunities: [], underutilizedSlots: [], seasonalPredictions: [] };
+    }
+  }
+
   // Business Copilot - Suggestions promotions et insights
   async generateBusinessInsights(analyticsData: any) {
     try {

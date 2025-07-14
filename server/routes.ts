@@ -1033,6 +1033,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🤖 AI ROUTES AVANCÉES
+  
+  // Chat général
   app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
     try {
       const { message } = req.body;
@@ -1041,6 +1044,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Erreur chat IA:', error);
       res.json({ response: "Je suis votre assistant IA. Comment puis-je vous aider aujourd'hui ?" });
+    }
+  });
+
+  // 🎯 IA POUR L'ENTREPRENEUR
+  app.post('/api/ai/analyze-client-trends', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const clients = await storage.getClients(userId);
+      const services = await storage.getServices(userId);
+      
+      const analysis = await aiService.analyzeClientTrends(clients, services);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing client trends:", error);
+      res.status(500).json({ message: "Failed to analyze client trends" });
+    }
+  });
+
+  app.post('/api/ai/dynamic-pricing', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { seasonalData, demandData } = req.body;
+      const services = await storage.getServices(userId);
+      
+      const pricing = await aiService.generateDynamicPricing(services, seasonalData, demandData);
+      res.json(pricing);
+    } catch (error) {
+      console.error("Error generating dynamic pricing:", error);
+      res.status(500).json({ message: "Failed to generate dynamic pricing" });
+    }
+  });
+
+  app.post('/api/ai/churn-detection', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const clients = await storage.getClients(userId);
+      
+      // Transformer les clients en format ClientBehavior pour l'IA
+      const clientBehaviors = clients.map(client => ({
+        id: client.id,
+        name: `${client.firstName} ${client.lastName}`,
+        totalAppointments: client.totalAppointments || 0,
+        noShowCount: client.noShowCount || 0,
+        cancelCount: client.cancelCount || 0,
+        avgDaysBetweenVisits: client.avgDaysBetweenVisits || 30,
+        lastVisit: client.lastVisit ? new Date(client.lastVisit) : new Date(),
+        totalSpent: client.totalSpent || 0,
+        preferredTimeSlots: client.preferredTimeSlots || []
+      }));
+      
+      const churnAnalysis = await aiService.identifyChurnRisk(clientBehaviors);
+      res.json(churnAnalysis);
+    } catch (error) {
+      console.error("Error detecting churn risk:", error);
+      res.status(500).json({ message: "Failed to detect churn risk" });
+    }
+  });
+
+  // 🎨 IA POUR LE CLIENT
+  app.post('/api/ai/analyze-photo', isAuthenticated, async (req: any, res) => {
+    try {
+      const { photoBase64, clientProfile } = req.body;
+      
+      if (!photoBase64) {
+        return res.status(400).json({ message: "Photo base64 is required" });
+      }
+      
+      const analysis = await aiService.analyzePhotoForRecommendations(photoBase64, clientProfile);
+      res.json(analysis);
+    } catch (error) {
+      console.error("Error analyzing photo:", error);
+      res.status(500).json({ message: "Failed to analyze photo" });
+    }
+  });
+
+  app.post('/api/ai/suggest-looks', isAuthenticated, async (req: any, res) => {
+    try {
+      const { clientProfile, currentTrends } = req.body;
+      
+      // Tendances par défaut si non fournies
+      const defaultTrends = [
+        { name: "Balayage naturel", description: "Couleurs naturelles et dégradées" },
+        { name: "Bob asymétrique", description: "Coupes courtes modernes" },
+        { name: "Soins hydratants", description: "Focus sur la santé capillaire" }
+      ];
+      
+      const suggestions = await aiService.suggestTrendyLooks(clientProfile, currentTrends || defaultTrends);
+      res.json(suggestions);
+    } catch (error) {
+      console.error("Error suggesting looks:", error);
+      res.status(500).json({ message: "Failed to suggest looks" });
+    }
+  });
+
+  // 🚀 IA TRANSVERSE
+  app.post('/api/ai/business-opportunities', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Récupérer les données analytiques complètes
+      const analyticsData = {
+        monthRevenue: await storage.getMonthlyRevenue(userId),
+        topServices: await storage.getTopServices(userId),
+        peakHours: await storage.getPeakHours(userId),
+        retentionRate: await storage.getRetentionRate(userId),
+        averageBasket: await storage.getAverageBasket(userId)
+      };
+      
+      const opportunities = await aiService.detectBusinessOpportunities(analyticsData);
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error detecting business opportunities:", error);
+      res.status(500).json({ message: "Failed to detect business opportunities" });
     }
   });
 
