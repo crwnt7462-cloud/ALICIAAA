@@ -160,9 +160,13 @@ export default function PageBuilder() {
     { type: 'header', icon: Image, label: 'En-tête', description: 'Titre, logo et image de fond' },
     { type: 'text', icon: Type, label: 'Texte', description: 'Paragraphe de contenu' },
     { type: 'services', icon: Square, label: 'Services', description: 'Liste des prestations' },
-    { type: 'booking-form', icon: Calendar, label: 'Formulaire', description: 'Formulaire de réservation' },
+    { type: 'booking-form', icon: Calendar, label: 'Réservation', description: 'Formulaire de réservation rapide' },
     { type: 'testimonials', icon: Star, label: 'Témoignages', description: 'Avis clients' },
     { type: 'contact', icon: Type, label: 'Contact', description: 'Informations de contact' },
+    { type: 'gallery', icon: Image, label: 'Galerie', description: 'Photos du salon' },
+    { type: 'pricing', icon: Square, label: 'Tarifs', description: 'Grille tarifaire' },
+    { type: 'team', icon: Type, label: 'Équipe', description: 'Présentation de l\'équipe' },
+    { type: 'promotions', icon: Star, label: 'Promotions', description: 'Offres spéciales' },
   ];
 
   const addBlock = (type: string) => {
@@ -215,17 +219,32 @@ export default function PageBuilder() {
   const getDefaultContent = (type: string) => {
     switch (type) {
       case 'header':
-        return { title: 'Nouveau titre', subtitle: 'Sous-titre', backgroundImage: '', logoUrl: '' };
+        return { title: 'Nouveau titre', subtitle: 'Sous-titre', backgroundImage: '', logoUrl: '', ctaText: 'Réserver maintenant', showCta: true };
       case 'text':
-        return { content: 'Votre texte ici...' };
+        return { content: 'Votre texte ici...', alignment: 'left' };
       case 'services':
-        return { title: 'Nos Services', showPrices: true, showDuration: true, layout: 'grid' };
+        return { title: 'Nos Services', showPrices: true, showDuration: true, layout: 'grid', showBookingButton: true };
       case 'booking-form':
-        return { title: 'Prendre rendez-vous', buttonText: 'Réserver' };
+        return { 
+          title: 'Réservation Express', 
+          subtitle: 'Réservez en 30 secondes', 
+          buttonText: 'Réserver & Payer',
+          showInstantBooking: true,
+          requireDeposit: true,
+          depositAmount: 20
+        };
       case 'testimonials':
-        return { title: 'Témoignages', testimonials: [] };
+        return { title: 'Témoignages', layout: 'carousel' };
       case 'contact':
-        return { title: 'Contact', address: '', phone: '', email: '' };
+        return { title: 'Contact', address: '', phone: '', email: '', showMap: true };
+      case 'gallery':
+        return { title: 'Notre Salon', layout: 'masonry', images: [] };
+      case 'pricing':
+        return { title: 'Nos Tarifs', layout: 'table', showPromotions: true };
+      case 'team':
+        return { title: 'Notre Équipe', layout: 'cards', showSpecialties: true };
+      case 'promotions':
+        return { title: 'Offres Spéciales', layout: 'cards', showCountdown: true };
       default:
         return {};
     }
@@ -234,9 +253,40 @@ export default function PageBuilder() {
   const getDefaultStyle = (type: string) => {
     switch (type) {
       case 'header':
-        return { backgroundColor: '#8B5CF6', textColor: '#FFFFFF', alignment: 'center', height: '300px' };
+        return { 
+          backgroundColor: '#8B5CF6', 
+          textColor: '#FFFFFF', 
+          alignment: 'center', 
+          height: '400px',
+          gradient: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+          borderRadius: '0px',
+          animation: 'fadeIn'
+        };
+      case 'services':
+        return { 
+          backgroundColor: '#F8FAFC', 
+          textColor: '#1F2937', 
+          padding: '60px 40px',
+          borderRadius: '16px',
+          shadow: 'lg'
+        };
+      case 'booking-form':
+        return { 
+          backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+          textColor: '#FFFFFF', 
+          padding: '60px',
+          borderRadius: '24px',
+          buttonColor: '#10B981',
+          buttonStyle: 'rounded-full'
+        };
       default:
-        return { backgroundColor: '#FFFFFF', textColor: '#1F2937', padding: '40px' };
+        return { 
+          backgroundColor: '#FFFFFF', 
+          textColor: '#1F2937', 
+          padding: '40px',
+          borderRadius: '8px',
+          shadow: 'sm'
+        };
     }
   };
 
@@ -489,12 +539,23 @@ export default function PageBuilder() {
                         backgroundPosition: 'center'
                       }}
                     >
-                      <div className="flex flex-col items-center justify-center h-full">
-                        {block.content.logoUrl && (
-                          <img src={block.content.logoUrl} alt="Logo" className={`mb-4 ${activeView === 'mobile' ? 'h-12' : 'h-16'}`} />
-                        )}
-                        <h1 className={`font-bold mb-2 ${activeView === 'mobile' ? 'text-2xl' : 'text-4xl'}`}>{block.content.title}</h1>
-                        <p className={`opacity-90 ${activeView === 'mobile' ? 'text-lg' : 'text-xl'}`}>{block.content.subtitle}</p>
+                      <div className="flex flex-col items-center justify-center h-full relative">
+                        <div className="absolute inset-0 bg-black/20"></div>
+                        <div className="relative z-10 text-center">
+                          {block.content.logoUrl && (
+                            <img src={block.content.logoUrl} alt="Logo" className={`mb-6 drop-shadow-lg ${activeView === 'mobile' ? 'h-12' : 'h-20'}`} />
+                          )}
+                          <h1 className={`font-bold mb-4 drop-shadow-lg ${activeView === 'mobile' ? 'text-3xl' : 'text-5xl'}`}>{block.content.title}</h1>
+                          <p className={`opacity-95 mb-6 drop-shadow ${activeView === 'mobile' ? 'text-lg' : 'text-2xl'}`}>{block.content.subtitle}</p>
+                          {block.content.showCta && (
+                            <Button 
+                              size="lg"
+                              className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full shadow-xl transform hover:scale-105 transition-all duration-200"
+                            >
+                              {block.content.ctaText}
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -510,23 +571,39 @@ export default function PageBuilder() {
                       <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl mb-4' : 'text-2xl'}`}>{block.content.title}</h2>
                       <div className={`grid gap-4 ${block.content.layout === 'grid' && activeView !== 'mobile' ? 'grid-cols-2' : 'grid-cols-1'}`}>
                         {[
-                          { name: "Coupe femme", price: 45, duration: 60 },
-                          { name: "Coloration", price: 80, duration: 120 },
-                          { name: "Brushing", price: 30, duration: 45 },
-                          { name: "Balayage", price: 120, duration: 180 }
+                          { name: "Coupe femme", price: 45, duration: 60, popular: true },
+                          { name: "Coloration", price: 80, duration: 120, popular: false },
+                          { name: "Brushing", price: 30, duration: 45, popular: false },
+                          { name: "Balayage", price: 120, duration: 180, popular: true }
                         ].map((service, index) => (
-                          <div key={index} className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex justify-between items-center">
-                              <div>
-                                <h3 className="font-semibold">{service.name}</h3>
+                          <div key={index} className={`border rounded-xl p-4 transition-all hover:shadow-lg ${service.popular ? 'border-purple-300 bg-purple-50' : 'border-gray-200 bg-white'}`}>
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-semibold text-lg">{service.name}</h3>
+                                  {service.popular && (
+                                    <Badge className="bg-purple-600 text-white text-xs">Populaire</Badge>
+                                  )}
+                                </div>
                                 {block.content.showDuration && (
-                                  <p className="text-sm opacity-70">{service.duration} min</p>
+                                  <p className="text-sm text-gray-600 mt-1">⏱️ {service.duration} min</p>
                                 )}
                               </div>
                               {block.content.showPrices && (
-                                <span className="font-bold text-lg">{service.price}€</span>
+                                <div className="text-right">
+                                  <span className="font-bold text-2xl text-purple-600">{service.price}€</span>
+                                </div>
                               )}
                             </div>
+                            {block.content.showBookingButton && (
+                              <Button 
+                                size="sm" 
+                                className="w-full mt-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg"
+                                onClick={() => window.open('/quick-booking', '_blank')}
+                              >
+                                Réserver maintenant
+                              </Button>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -535,17 +612,149 @@ export default function PageBuilder() {
 
                   {block.type === 'booking-form' && (
                     <div className="text-center">
-                      <h2 className="text-2xl font-bold mb-6">{block.content.title}</h2>
+                      <h2 className={`font-bold mb-2 ${activeView === 'mobile' ? 'text-xl' : 'text-3xl'}`}>{block.content.title}</h2>
+                      {block.content.subtitle && (
+                        <p className={`opacity-90 mb-6 ${activeView === 'mobile' ? 'text-sm' : 'text-lg'}`}>{block.content.subtitle}</p>
+                      )}
+                      
                       <div className="max-w-md mx-auto space-y-4">
-                        <Input placeholder="Votre nom" />
-                        <Input placeholder="Votre email" />
-                        <Input placeholder="Votre téléphone" />
+                        <div className="grid grid-cols-2 gap-3">
+                          <Input placeholder="Prénom" className="bg-white/90" />
+                          <Input placeholder="Nom" className="bg-white/90" />
+                        </div>
+                        <Input placeholder="Email" className="bg-white/90" />
+                        <Input placeholder="Téléphone" className="bg-white/90" />
+                        
+                        <div className="bg-white/10 rounded-lg p-4 mb-4">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm opacity-80">Service sélectionné</span>
+                            <span className="font-semibold">Coupe + Brushing</span>
+                          </div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm opacity-80">Date souhaitée</span>
+                            <span className="font-semibold">Aujourd'hui 14h30</span>
+                          </div>
+                          {block.content.requireDeposit && (
+                            <div className="flex justify-between items-center border-t border-white/20 pt-2">
+                              <span className="text-sm opacity-80">Acompte à régler</span>
+                              <span className="font-bold text-lg">{block.content.depositAmount}€</span>
+                            </div>
+                          )}
+                        </div>
+                        
                         <Button 
-                          className="w-full"
+                          className={`w-full text-lg py-6 ${block.style.buttonStyle === 'rounded-full' ? 'rounded-full' : 'rounded-lg'} shadow-xl transform hover:scale-105 transition-all duration-200`}
                           style={{ backgroundColor: block.style.buttonColor }}
+                          onClick={() => window.open('/quick-booking', '_blank')}
                         >
-                          {block.content.buttonText}
+                          ⚡ {block.content.buttonText}
+                          {block.content.requireDeposit && (
+                            <span className="ml-2 bg-white/20 px-2 py-1 rounded text-sm">
+                              Acompte {block.content.depositAmount}€
+                            </span>
+                          )}
                         </Button>
+                        
+                        <p className="text-xs opacity-70 mt-3">
+                          🔒 Paiement sécurisé • Confirmation immédiate • Annulation gratuite 24h avant
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === 'gallery' && (
+                    <div>
+                      <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl' : 'text-2xl'}`}>{block.content.title}</h2>
+                      <div className={`grid gap-4 ${activeView === 'mobile' ? 'grid-cols-2' : 'grid-cols-3'}`}>
+                        {[1, 2, 3, 4, 5, 6].map((i) => (
+                          <div key={i} className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center">
+                            <Image className="w-8 h-8 text-purple-400" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === 'pricing' && (
+                    <div>
+                      <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl' : 'text-2xl'}`}>{block.content.title}</h2>
+                      <div className="space-y-3">
+                        {[
+                          { category: "Coupes", services: [
+                            { name: "Coupe femme", price: "45€", duration: "45min" },
+                            { name: "Coupe homme", price: "35€", duration: "30min" }
+                          ]},
+                          { category: "Couleurs", services: [
+                            { name: "Coloration", price: "80€", duration: "2h" },
+                            { name: "Balayage", price: "120€", duration: "3h" }
+                          ]}
+                        ].map((category, index) => (
+                          <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
+                            <h3 className="font-semibold text-lg mb-3 text-purple-600">{category.category}</h3>
+                            {category.services.map((service, i) => (
+                              <div key={i} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                                <div>
+                                  <span className="font-medium">{service.name}</span>
+                                  <span className="text-sm text-gray-500 ml-2">({service.duration})</span>
+                                </div>
+                                <span className="font-bold text-purple-600">{service.price}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === 'team' && (
+                    <div>
+                      <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl' : 'text-2xl'}`}>{block.content.title}</h2>
+                      <div className={`grid gap-6 ${activeView === 'mobile' ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                        {[
+                          { name: "Sophie Martin", role: "Styliste Senior", specialties: "Coupes, Couleurs" },
+                          { name: "Emma Dubois", role: "Coloriste", specialties: "Balayages, Méchés" },
+                          { name: "Julie Moreau", role: "Coiffeuse", specialties: "Brushings, Soins" }
+                        ].map((member, index) => (
+                          <div key={index} className="text-center">
+                            <div className="w-24 h-24 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                              <span className="text-2xl">👩‍💼</span>
+                            </div>
+                            <h3 className="font-semibold text-lg">{member.name}</h3>
+                            <p className="text-purple-600 font-medium">{member.role}</p>
+                            {block.content.showSpecialties && (
+                              <p className="text-sm text-gray-600 mt-1">{member.specialties}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === 'promotions' && (
+                    <div>
+                      <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl' : 'text-2xl'}`}>{block.content.title}</h2>
+                      <div className={`grid gap-4 ${activeView === 'mobile' ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                        {[
+                          { title: "Offre Découverte", description: "Première visite -30%", price: "31€", originalPrice: "45€", badge: "Nouveau client" },
+                          { title: "Duo Amies", description: "2 coupes pour le prix d'1.5", price: "67€", originalPrice: "90€", badge: "Limitée" }
+                        ].map((promo, index) => (
+                          <div key={index} className="bg-gradient-to-br from-orange-400 to-red-500 text-white rounded-xl p-6 relative overflow-hidden">
+                            <div className="absolute top-2 right-2 bg-white text-red-500 px-2 py-1 rounded-full text-xs font-bold">
+                              {promo.badge}
+                            </div>
+                            <h3 className="font-bold text-xl mb-2">{promo.title}</h3>
+                            <p className="opacity-90 mb-4">{promo.description}</p>
+                            <div className="flex items-center space-x-2">
+                              <span className="text-2xl font-bold">{promo.price}</span>
+                              <span className="text-lg line-through opacity-70">{promo.originalPrice}</span>
+                            </div>
+                            {block.content.showCountdown && (
+                              <div className="mt-3 text-sm opacity-80">
+                                ⏰ Plus que 2 jours !
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -850,6 +1059,15 @@ export default function PageBuilder() {
                           })}
                         />
                       </div>
+                      <div className="flex items-center justify-between">
+                        <Label>Boutons de réservation</Label>
+                        <Switch
+                          checked={selectedBlockData.content.showBookingButton}
+                          onCheckedChange={(checked) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, showBookingButton: checked }
+                          })}
+                        />
+                      </div>
                     </>
                   )}
 
@@ -865,6 +1083,15 @@ export default function PageBuilder() {
                         />
                       </div>
                       <div>
+                        <Label>Sous-titre</Label>
+                        <Input
+                          value={selectedBlockData.content.subtitle}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, subtitle: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div>
                         <Label>Texte du bouton</Label>
                         <Input
                           value={selectedBlockData.content.buttonText}
@@ -873,6 +1100,27 @@ export default function PageBuilder() {
                           })}
                         />
                       </div>
+                      <div className="flex items-center justify-between">
+                        <Label>Acompte requis</Label>
+                        <Switch
+                          checked={selectedBlockData.content.requireDeposit}
+                          onCheckedChange={(checked) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, requireDeposit: checked }
+                          })}
+                        />
+                      </div>
+                      {selectedBlockData.content.requireDeposit && (
+                        <div>
+                          <Label>Montant de l'acompte (€)</Label>
+                          <Input
+                            type="number"
+                            value={selectedBlockData.content.depositAmount}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              content: { ...selectedBlockData.content, depositAmount: parseInt(e.target.value) }
+                            })}
+                          />
+                        </div>
+                      )}
                     </>
                   )}
                 </CardContent>

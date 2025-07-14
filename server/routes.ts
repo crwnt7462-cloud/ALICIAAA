@@ -968,6 +968,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Quick booking endpoint
+  app.post('/api/quick-booking', async (req, res) => {
+    try {
+      const { firstName, lastName, email, phone, serviceName, servicePrice, serviceDuration, preferredDate, preferredTime, notes } = req.body;
+      
+      // Create client if doesn't exist
+      let client = await storage.getClientByEmail(email);
+      if (!client) {
+        client = await storage.createClient({
+          firstName,
+          lastName,
+          email,
+          phone: phone || '',
+          notes: notes || ''
+        });
+      }
+
+      // Create appointment
+      const appointment = await storage.createAppointment({
+        clientId: client.id,
+        serviceName,
+        price: servicePrice,
+        duration: serviceDuration,
+        appointmentDate: preferredDate,
+        startTime: preferredTime,
+        endTime: '', // Calculate based on duration
+        status: 'pending'
+      });
+
+      res.json({ 
+        success: true, 
+        appointmentId: appointment.id,
+        message: 'Réservation confirmée avec succès'
+      });
+    } catch (error) {
+      console.error('Quick booking error:', error);
+      res.status(500).json({ error: 'Erreur lors de la réservation' });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // Routes IA et automatisation

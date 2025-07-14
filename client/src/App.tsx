@@ -27,6 +27,7 @@ import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeatures from "@/pages/BusinessFeatures";
 import PageBuilder from "@/pages/PageBuilder";
+import QuickBooking from "@/pages/QuickBooking";
 
 
 function Router() {
@@ -73,6 +74,15 @@ function Router() {
     return (
       <div className="h-screen w-full">
         <PageBuilder />
+      </div>
+    );
+  }
+
+  // QuickBooking en plein écran (sans navigation)
+  if (location === '/quick-booking') {
+    return (
+      <div className="h-full">
+        <QuickBooking />
       </div>
     );
   }
