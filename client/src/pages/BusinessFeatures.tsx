@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,7 @@ import {
 export default function BusinessFeatures() {
   const [activeTab, setActiveTab] = useState("settings");
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   return (
     <div className="p-4 max-w-md mx-auto">
@@ -306,7 +308,12 @@ export default function BusinessFeatures() {
                   </div>
                 ))}
               </div>
-              <Button size="sm" variant="outline" className="w-full">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => setLocation('/page-builder')}
+              >
                 + Créer nouvelle page
               </Button>
             </CardContent>

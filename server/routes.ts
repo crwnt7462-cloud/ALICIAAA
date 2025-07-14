@@ -1309,6 +1309,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch('/api/booking-pages/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const pageData = insertBookingPageSchema.partial().parse(req.body);
+      const page = await storage.updateBookingPage(id, pageData);
+      res.json(page);
+    } catch (error) {
+      console.error("Error updating booking page:", error);
+      res.status(400).json({ message: "Failed to update booking page" });
+    }
+  });
+
   // Public booking page access
   app.get('/booking/:slug', async (req, res) => {
     try {

@@ -26,6 +26,7 @@ import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeatures from "@/pages/BusinessFeatures";
+import PageBuilder from "@/pages/PageBuilder";
 
 
 function Router() {
@@ -63,6 +64,15 @@ function Router() {
     return (
       <div className="h-full">
         <ProLogin />
+      </div>
+    );
+  }
+
+  // PageBuilder en plein écran (sans navigation)
+  if (location === '/page-builder') {
+    return (
+      <div className="h-full">
+        <PageBuilder />
       </div>
     );
   }
