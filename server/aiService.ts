@@ -1104,33 +1104,390 @@ PRÉVENTION :
 • Équipements : investissement matériel moderne`;
     }
     
-    // Réponse générale intelligente pour tout le reste
-    return `Je suis votre assistant IA universel intelligent !
+    // Analyse intelligente de la question pour réponse personnalisée
+    return this.analyzeQuestionAndRespond(userMessage, message);
+  }
 
-**Votre question**: "${userMessage}"
+  // Analyse intelligente des questions pour réponses personnalisées
+  private analyzeQuestionAndRespond(userMessage: string, message: string): string {
+    // Analyse des mots-clés pour identifier le type de question
+    const questionTypes = {
+      business: ['clients', 'business', 'revenus', 'marketing', 'salon', 'esthétique', 'beauté', 'planning', 'équipe', 'formation', 'prix', 'tarif', 'concurrence', 'fidélisation', 'rentabilité', 'gestion', 'organisation'],
+      culture: ['histoire', 'culture', 'art', 'littérature', 'livre', 'musique', 'peinture', 'sculpture', 'philosophie', 'science', 'physique', 'chimie', 'biologie', 'mathématiques'],
+      lifestyle: ['cuisine', 'recette', 'voyage', 'vacances', 'sport', 'fitness', 'santé', 'bien-être', 'mode', 'style', 'décoration', 'jardinage'],
+      technology: ['technologie', 'ordinateur', 'smartphone', 'internet', 'logiciel', 'application', 'intelligence', 'artificielle', 'programmation', 'digital'],
+      practical: ['comment', 'que faire', 'quoi faire', 'pourquoi', 'conseil', 'aide', 'solution', 'problème', 'résoudre', 'améliorer', 'optimiser']
+    };
 
-**Réponse personnalisée** :
+    // Détection du type de question
+    let questionType = 'general';
+    let maxMatches = 0;
+    
+    Object.entries(questionTypes).forEach(([type, keywords]) => {
+      const matches = keywords.filter(keyword => message.includes(keyword)).length;
+      if (matches > maxMatches) {
+        maxMatches = matches;
+        questionType = type;
+      }
+    });
 
-Je peux vous aider avec cette question ! Voici quelques suggestions :
+    // Génération de réponse selon le type identifié
+    switch (questionType) {
+      case 'business':
+        return this.generateBusinessResponse(userMessage, message);
+      case 'culture':
+        return this.generateCultureResponse(userMessage, message);
+      case 'lifestyle':
+        return this.generateLifestyleResponse(userMessage, message);
+      case 'technology':
+        return this.generateTechnologyResponse(userMessage, message);
+      case 'practical':
+        return this.generatePracticalResponse(userMessage, message);
+      default:
+        return this.generateGeneralResponse(userMessage, message);
+    }
+  }
 
-**Actions pratiques** :
-- Analysez le contexte de votre situation
-- Explorez plusieurs options possibles
-- Priorisez selon vos objectifs
+  private generateBusinessResponse(userMessage: string, message: string): string {
+    if (message.includes('clients') && message.includes('fidéliser')) {
+      return `Stratégies de fidélisation client efficaces :
+
+**Actions immédiates** :
+- Créez un système de points : 1 point = 1€ dépensé
+- SMS personnalisé 24h après chaque soin
+- Offre anniversaire automatique (-20%)
+- Programme de parrainage (10€ pour chaque amie)
+
+**Stratégies avancées** :
+- Soirées VIP trimestrielles pour top clients
+- Carte de fidélité digitale avec récompenses
+- Forfaits avantageux (5 soins = -15%)
+- Suivi personnalisé des préférences
+
+**Mesure de succès** :
+- Taux de retour : objectif 70% dans les 3 mois
+- Fréquence moyenne : 1 visite par mois
+- Recommandations : 30% de nouveaux clients`;
+    }
+
+    if (message.includes('planning') || message.includes('organisation')) {
+      return `Optimisation du planning salon :
+
+**Structure optimale** :
+- 9h-12h : Soins longs (forfaits, traitements)
+- 12h-14h : Créneaux courts (épilations, manucures)
+- 14h-18h : Soins moyens (soins visage, beauté)
+- 18h-20h : Créneaux premium (+20% tarif)
+
+**Règles d'or** :
+- 15 minutes entre chaque client (nettoyage)
+- Pas plus de 7 clients par jour et par praticienne
+- Bloquer 1h à 13h pour urgences/retards
+- Prévoir 30% de créneaux libres pour dernière minute
+
+**Outils recommandés** :
+- Rappels SMS automatiques J-1
+- Système de liste d'attente
+- Paiement d'acompte obligatoire`;
+    }
+
+    if (message.includes('prix') || message.includes('tarif')) {
+      return `Stratégie tarifaire rentable :
+
+**Analyse concurrentielle** :
+- Étudiez 5 concurrents dans 2km
+- Positionnez-vous selon votre standing
+- Considérez votre zone géographique
+
+**Grille tarifaire intelligente** :
+- Soin visage : 50-70€ (selon zone)
+- Épilation jambes : 30-45€
+- Manucure : 35-50€
+- Forfait 3 soins : -15%
+- Créneaux premium : +20%
+- Domicile : +25%
+
+**Optimisation rentabilité** :
+- Marge produits : 60-80%
+- Objectif taux remplissage : 75%
+- CA minimum/heure : 45€`;
+    }
+
+    return `Pour votre question business "${userMessage}" :
+
+**Approche recommandée** :
+- Analysez d'abord votre situation actuelle
+- Définissez des objectifs SMART mesurables
 - Implémentez étape par étape
+- Mesurez les résultats chaque semaine
 
-**Besoin d'aide spécifique** :
-- Reformulez votre question pour plus de précision
-- Partagez le contexte si nécessaire
-- Demandez des conseils ciblés
+**Besoin d'aide spécifique** ? Reformulez votre question pour des conseils plus précis sur votre situation particulière.`;
+  }
 
-**Exemples de questions** :
-- "Comment optimiser mon planning ?"
-- "Quelle stratégie marketing adopter ?"
-- "Comment calculer ma rentabilité ?"
-- "Que faire en cas de retard client ?"
+  private generateCultureResponse(userMessage: string, message: string): string {
+    if (message.includes('histoire') || message.includes('historique')) {
+      return `Sujet historique passionnant !
 
-**Posez-moi une question plus précise et je vous donnerai une réponse détaillée !**`;
+**Approche pour comprendre** :
+- Contexte historique et chronologie
+- Causes et conséquences
+- Personnages clés et leur rôle
+- Impact sur notre époque
+
+**Ressources recommandées** :
+- Livres d'historiens reconnus
+- Documentaires Arte ou France 5
+- Musées et expositions
+- Podcasts d'histoire (France Inter, Europe 1)
+
+**Conseil pratique** : Commencez par une vue d'ensemble, puis approfondissez les aspects qui vous intéressent le plus.
+
+Quelle période ou quel aspect historique vous intéresse particulièrement ?`;
+    }
+
+    if (message.includes('art') || message.includes('culture')) {
+      return `L'art et la culture enrichissent la vie !
+
+**Domaines à explorer** :
+- Peinture : de la Renaissance à l'art contemporain
+- Littérature : classiques et auteurs modernes
+- Musique : tous genres et époques
+- Cinéma : chefs-d'œuvre et tendances actuelles
+
+**Pour approfondir** :
+- Visitez musées et galeries
+- Assistez à spectacles et concerts
+- Rejoignez des clubs de lecture
+- Suivez des cours ou ateliers
+
+**Inspiration pour votre salon** : Créez une ambiance artistique avec des reproductions d'œuvres, musique douce, décoration soignée.`;
+    }
+
+    return `Question culturelle intéressante ! "${userMessage}"
+
+**Méthode d'exploration** :
+- Recherchez des sources fiables
+- Croisez plusieurs points de vue
+- Approfondissez progressivement
+- Partagez vos découvertes
+
+La culture nous enrichit personnellement et professionnellement !`;
+  }
+
+  private generateLifestyleResponse(userMessage: string, message: string): string {
+    if (message.includes('cuisine') || message.includes('recette')) {
+      return `Conseils culinaires pratiques :
+
+**Bases essentielles** :
+- Préparez tous les ingrédients avant de commencer
+- Goûtez régulièrement pendant la cuisson
+- Utilisez des produits frais et de saison
+- Maîtrisez les techniques de base
+
+**Idées recettes simples** :
+- Poêlée de légumes colorés
+- Pâtes aux légumes grillés
+- Salades composées créatives
+- Plats mijotés réconfortants
+
+**Lien avec votre métier** : Une alimentation saine améliore l'éclat de la peau et la santé des cheveux - partagez ces conseils avec vos clientes !
+
+Quel type de cuisine vous intéresse ?`;
+    }
+
+    if (message.includes('voyage') || message.includes('vacances')) {
+      return `Conseils voyage et vacances :
+
+**Destinations populaires** :
+- Europe : Paris, Rome, Amsterdam, Barcelone
+- Tropical : Bali, Thaïlande, Maldives
+- Urbain : New York, Tokyo, Londres
+- Nature : Islande, Nouvelle-Zélande, Canada
+
+**Planification intelligente** :
+- Réservez 2-3 mois à l'avance
+- Vérifiez visa et vaccinations
+- Prévoyez budget +20% pour imprévus
+- Assurance voyage indispensable
+
+**Conseil professionnel** : Planifiez vos congés pour éviter les périodes de forte demande de votre salon. Prévenez vos clientes et préparez des offres de retour !`;
+    }
+
+    if (message.includes('sport') || message.includes('fitness')) {
+      return `Le sport, essentiel pour la santé !
+
+**Activités recommandées** :
+- Cardio : marche, course, vélo, natation
+- Renforcement : musculation, yoga, pilates
+- Détente : stretching, méditation, tai-chi
+
+**Bénéfices beauté** :
+- Améliore circulation sanguine
+- Évacue le stress
+- Raffermit la peau
+- Booste confiance en soi
+
+**Conseil pro** : Proposez à vos clientes des soins post-sport ou des massages de récupération !
+
+Quel sport vous attire le plus ?`;
+    }
+
+    return `Question lifestyle "${userMessage}" :
+
+**Approche équilibrée** :
+- Privilégiez le bien-être global
+- Intégrez des habitudes saines
+- Trouvez votre rythme personnel
+- Partagez vos passions
+
+La qualité de vie se reflète dans votre travail et vos relations !`;
+  }
+
+  private generateTechnologyResponse(userMessage: string, message: string): string {
+    if (message.includes('technologie') || message.includes('digital')) {
+      return `La technologie évolue rapidement !
+
+**Tendances actuelles** :
+- Intelligence artificielle et automatisation
+- Applications mobiles intuitives
+- Réseaux sociaux professionnels
+- Outils de gestion digitale
+
+**Pour votre salon** :
+- Système de réservation en ligne
+- Gestion clients digitalisée
+- Marketing sur réseaux sociaux
+- Paiements sans contact
+- Outils de fidélisation automatisés
+
+**Conseils adoption** :
+- Commencez par un outil à la fois
+- Formez-vous progressivement
+- Choisissez des solutions simples
+- Mesurez l'impact sur votre activité
+
+Comment puis-je vous aider à digitaliser votre salon ?`;
+    }
+
+    if (message.includes('intelligence') && message.includes('artificielle')) {
+      return `L'IA révolutionne de nombreux secteurs !
+
+**Applications pratiques** :
+- Assistants virtuels comme moi
+- Prédictions et recommandations
+- Automatisation des tâches
+- Analyse de données
+
+**Dans votre métier** :
+- Prédiction des no-shows
+- Recommandations personnalisées
+- Optimisation du planning
+- Analyse comportement clients
+
+**Futur proche** :
+- IA encore plus intuitive
+- Intégration naturelle au quotidien
+- Gain de temps considérable
+- Personnalisation poussée
+
+L'IA est votre alliée pour optimiser votre salon !`;
+    }
+
+    return `Question technologique "${userMessage}" :
+
+**Évolution constante** :
+- Restez curieux et informé
+- Testez les nouveautés utiles
+- Adaptez à vos besoins réels
+- Formez-vous régulièrement
+
+La technologie doit simplifier votre vie, pas la compliquer !`;
+  }
+
+  private generatePracticalResponse(userMessage: string, message: string): string {
+    if (message.includes('comment') || message.includes('que faire')) {
+      return `Méthode pour résoudre "${userMessage}" :
+
+**Étape 1 - Analyse** :
+- Définissez clairement le problème
+- Identifiez les causes possibles
+- Évaluez les ressources disponibles
+
+**Étape 2 - Solutions** :
+- Listez 3-5 options possibles
+- Évaluez avantages/inconvénients
+- Choisissez la plus adaptée
+
+**Étape 3 - Action** :
+- Planifiez les étapes concrètes
+- Fixez des délais réalistes
+- Commencez immédiatement
+
+**Étape 4 - Suivi** :
+- Mesurez les résultats
+- Ajustez si nécessaire
+- Documentez pour l'avenir
+
+Voulez-vous approfondir un aspect particulier ?`;
+    }
+
+    if (message.includes('améliorer') || message.includes('optimiser')) {
+      return `Stratégie d'amélioration pour "${userMessage}" :
+
+**Diagnostic actuel** :
+- Qu'est-ce qui fonctionne bien ?
+- Quels sont les points faibles ?
+- Où sont les opportunités ?
+
+**Plan d'action** :
+- Priorités par ordre d'impact
+- Ressources nécessaires
+- Timeline réaliste
+- Indicateurs de succès
+
+**Mise en œuvre** :
+- Commencez par le plus simple
+- Mesurez chaque amélioration
+- Ajustez en continu
+- Célébrez les progrès
+
+**Conseil** : L'amélioration continue vaut mieux que la perfection immédiate !`;
+    }
+
+    return `Pour votre question pratique "${userMessage}" :
+
+**Approche structurée** :
+- Analysez la situation objectivement
+- Définissez l'objectif précis
+- Identifiez les étapes nécessaires
+- Passez à l'action immédiatement
+
+**Principe clé** : Chaque problème a une solution, il suffit de l'adapter à votre contexte !
+
+Besoin de précisions sur un aspect particulier ?`;
+  }
+
+  private generateGeneralResponse(userMessage: string, message: string): string {
+    return `Réponse à votre question "${userMessage}" :
+
+**Analyse de votre demande** :
+Je comprends que vous cherchez des informations ou des conseils sur ce sujet.
+
+**Approche recommandée** :
+- Identifiez vos objectifs précis
+- Recherchez des sources fiables
+- Appliquez progressivement
+- Adaptez à votre situation
+
+**Conseil personnalisé** :
+Chaque situation est unique. Pour vous donner des conseils plus précis, n'hésitez pas à :
+- Détailler votre contexte
+- Préciser vos contraintes
+- Partager vos objectifs
+
+**Je reste à votre disposition** pour approfondir n'importe quel aspect de votre question !
+
+Que souhaitez-vous savoir de plus spécifique ?`;
   }
 
   // Suppression des doublons - ces conditions sont déjà gérées plus haut
