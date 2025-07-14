@@ -367,6 +367,14 @@ export const businessSettings = pgTable("business_settings", {
   sendSmsReminders: boolean("send_sms_reminders").default(true),
   sendEmailReminders: boolean("send_email_reminders").default(true),
   reminderHoursBefore: integer("reminder_hours_before").default(24),
+  // Booking page customization
+  brandColor: text("brand_color").default("#8B5CF6"),
+  logoUrl: text("logo_url"),
+  welcomeMessage: text("welcome_message").default("Bienvenue ! Prenez rendez-vous en quelques clics."),
+  description: text("description"),
+  showPrices: boolean("show_prices").default(true),
+  showDuration: boolean("show_duration").default(true),
+  enableInstantBooking: boolean("enable_instant_booking").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
