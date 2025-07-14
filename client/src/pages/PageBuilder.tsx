@@ -66,63 +66,58 @@ export default function PageBuilder() {
 
   const [pageDesign, setPageDesign] = useState<PageDesign>({
     name: "Réservation Express",
-    slug: "quick-booking",
+    slug: "reservation-express",
     blocks: [
       {
         id: "header-1",
-        type: "header",
-        content: {
-          title: "Réservation Express",
-          subtitle: "Réservez votre rendez-vous en 3 étapes simples",
-          backgroundImage: "",
-          logoUrl: "",
-          ctaText: "",
-          showCta: false
-        },
-        style: {
-          backgroundColor: "#A855F7",
-          textColor: "#FFFFFF",
-          alignment: "center",
-          height: "150px",
-          borderRadius: "0px",
-          fontFamily: "system-ui"
-        },
-        order: 0
-      },
-      {
-        id: "progress-1",
         type: "text",
         content: {
-          content: `<div class="flex items-center justify-center space-x-4 py-8">
-            <div class="flex items-center justify-center w-10 h-10 bg-purple-600 text-white rounded-full font-bold text-sm">1</div>
-            <div class="w-16 h-0.5 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">2</div>
-            <div class="w-16 h-0.5 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">3</div>
+          content: `<div class="text-center bg-gradient-to-r from-purple-600 to-pink-600 text-white p-8">
+            <h1 class="text-4xl font-bold mb-4">Réservation Express</h1>
+            <p class="text-xl opacity-90">Réservez votre rendez-vous en 3 étapes simples</p>
           </div>`,
           alignment: "center"
         },
         style: {
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#A855F7",
+          textColor: "#FFFFFF",
+          padding: "0px"
+        },
+        order: 0
+      },
+      {
+        id: "progress-steps",
+        type: "text",
+        content: {
+          content: `<div class="flex items-center justify-center space-x-4 py-8 bg-gray-50">
+            <div class="flex items-center justify-center w-12 h-12 bg-purple-600 text-white rounded-full font-bold text-lg">1</div>
+            <div class="w-16 h-1 bg-gray-300"></div>
+            <div class="flex items-center justify-center w-12 h-12 bg-gray-300 text-gray-600 rounded-full font-bold text-lg">2</div>
+            <div class="w-16 h-1 bg-gray-300"></div>
+            <div class="flex items-center justify-center w-12 h-12 bg-gray-300 text-gray-600 rounded-full font-bold text-lg">3</div>
+          </div>`,
+          alignment: "center"
+        },
+        style: {
+          backgroundColor: "#F9FAFB",
           textColor: "#1F2937",
           padding: "0px"
         },
         order: 1
       },
       {
-        id: "service-header",
+        id: "service-selector",
         type: "text",
         content: {
-          content: `<div class="bg-purple-600 text-white p-6 text-center">
-            <h2 class="text-xl font-semibold">Choisissez votre service</h2>
+          content: `<div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 text-center">
+            <h2 class="text-2xl font-semibold">Choisissez votre service</h2>
           </div>`,
           alignment: "center"
         },
         style: {
           backgroundColor: "#A855F7",
           textColor: "#FFFFFF",
-          padding: "0px",
-          borderRadius: "0px"
+          padding: "0px"
         },
         order: 2
       },
@@ -130,14 +125,14 @@ export default function PageBuilder() {
         id: "services-list",
         type: "text",
         content: {
-          content: `<div class="space-y-4 p-4">
-            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+          content: `<div class="space-y-4 p-4 bg-white">
+            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
               <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="font-semibold text-lg">Coupe femme</h3>
-                  <span class="bg-orange-500 text-white px-2 py-1 rounded text-xs font-medium">Populaire</span>
+                <div class="flex items-center gap-3 mb-2">
+                  <h3 class="font-semibold text-xl">Coupe femme</h3>
+                  <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">Populaire</span>
                 </div>
-                <p class="text-gray-600 text-sm flex items-center gap-1">
+                <p class="text-gray-600 flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12,6 12,12 16,14"></polyline>
@@ -145,13 +140,13 @@ export default function PageBuilder() {
                   60 min
                 </p>
               </div>
-              <span class="text-2xl font-bold text-purple-600">45€</span>
+              <span class="text-3xl font-bold text-purple-600">45€</span>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
               <div>
-                <h3 class="font-semibold text-lg">Coloration</h3>
-                <p class="text-gray-600 text-sm flex items-center gap-1">
+                <h3 class="font-semibold text-xl mb-2">Coloration</h3>
+                <p class="text-gray-600 flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12,6 12,12 16,14"></polyline>
@@ -159,13 +154,13 @@ export default function PageBuilder() {
                   120 min
                 </p>
               </div>
-              <span class="text-2xl font-bold text-purple-600">80€</span>
+              <span class="text-3xl font-bold text-purple-600">80€</span>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
               <div>
-                <h3 class="font-semibold text-lg">Brushing</h3>
-                <p class="text-gray-600 text-sm flex items-center gap-1">
+                <h3 class="font-semibold text-xl mb-2">Brushing</h3>
+                <p class="text-gray-600 flex items-center gap-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12,6 12,12 16,14"></polyline>
@@ -173,7 +168,7 @@ export default function PageBuilder() {
                   45 min
                 </p>
               </div>
-              <span class="text-2xl font-bold text-purple-600">30€</span>
+              <span class="text-3xl font-bold text-purple-600">30€</span>
             </div>
           </div>`,
           alignment: "left"
