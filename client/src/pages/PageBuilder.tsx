@@ -33,7 +33,7 @@ import { useLocation } from "wouter";
 
 interface PageBlock {
   id: string;
-  type: 'header' | 'text' | 'services' | 'contact' | 'testimonials' | 'booking-form';
+  type: 'header' | 'text' | 'services' | 'contact' | 'testimonials' | 'booking-form' | 'team' | 'gallery' | 'promotions' | 'pricing';
   content: any;
   style: any;
   order: number;
@@ -63,6 +63,160 @@ export default function PageBuilder() {
   const [selectedBlock, setSelectedBlock] = useState<string | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Template professionnel complet
+  const loadProTemplate = () => {
+    const proTemplate: PageDesign = {
+      name: "Salon Beauté Elite",
+      slug: "salon-beaute-elite",
+      blocks: [
+        {
+          id: "header-1",
+          type: "header",
+          content: {
+            title: "Salon Beauté Elite",
+            subtitle: "L'excellence au service de votre beauté depuis 1995",
+            backgroundImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200",
+            logoUrl: "",
+            ctaText: "Réserver maintenant",
+            showCta: true
+          },
+          style: {
+            backgroundColor: "#8B5CF6",
+            textColor: "#FFFFFF",
+            alignment: "center",
+            height: "500px",
+            gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            borderRadius: "0px",
+            animation: "fadeIn"
+          },
+          order: 0
+        },
+        {
+          id: "services-1",
+          type: "services",
+          content: {
+            title: "Nos Services Premium",
+            subtitle: "Des prestations d'exception pour sublimer votre beauté",
+            showPrices: true,
+            showDuration: true,
+            layout: "grid",
+            showBookingButton: true
+          },
+          style: {
+            backgroundColor: "#FFFFFF",
+            textColor: "#1F2937",
+            padding: "60px 40px",
+            borderRadius: "0px",
+            animation: "slideUp"
+          },
+          order: 1
+        },
+        {
+          id: "team-1",
+          type: "team",
+          content: {
+            title: "Notre Équipe d'Experts",
+            subtitle: "Des professionnels passionnés à votre service",
+            layout: "cards",
+            showSpecialties: true
+          },
+          style: {
+            backgroundColor: "#F8FAFC",
+            textColor: "#1F2937",
+            padding: "60px 40px",
+            animation: "fadeIn"
+          },
+          order: 2
+        },
+        {
+          id: "gallery-1",
+          type: "gallery",
+          content: {
+            title: "Découvrez Notre Salon",
+            subtitle: "Un cadre luxueux et apaisant",
+            layout: "masonry"
+          },
+          style: {
+            backgroundColor: "#FFFFFF",
+            textColor: "#1F2937",
+            padding: "60px 40px"
+          },
+          order: 3
+        },
+        {
+          id: "promotions-1",
+          type: "promotions",
+          content: {
+            title: "Offres Spéciales du Moment",
+            subtitle: "Ne manquez pas nos promotions exceptionnelles",
+            layout: "cards",
+            showCountdown: true
+          },
+          style: {
+            backgroundColor: "#F8FAFC",
+            textColor: "#1F2937",
+            padding: "60px 40px"
+          },
+          order: 4
+        },
+        {
+          id: "pricing-1",
+          type: "pricing",
+          content: {
+            title: "Nos Tarifs",
+            subtitle: "Des prix transparents pour tous nos services",
+            layout: "table",
+            showPromotions: true
+          },
+          style: {
+            backgroundColor: "#FFFFFF",
+            textColor: "#1F2937",
+            padding: "60px 40px"
+          },
+          order: 5
+        },
+        {
+          id: "booking-form-1",
+          type: "booking-form",
+          content: {
+            title: "Réservation Express",
+            subtitle: "Réservez votre rendez-vous en 30 secondes",
+            buttonText: "Réserver & Confirmer",
+            showInstantBooking: true,
+            requireDeposit: true,
+            depositAmount: 25
+          },
+          style: {
+            backgroundColor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            textColor: "#FFFFFF",
+            padding: "60px",
+            buttonColor: "#10B981",
+            buttonStyle: "rounded-lg",
+            animation: "pulse"
+          },
+          order: 6
+        }
+      ],
+      theme: {
+        primaryColor: "#667eea",
+        secondaryColor: "#764ba2",
+        fontFamily: "Inter",
+        buttonStyle: "rounded"
+      },
+      settings: {
+        isPublished: true,
+        metaTitle: "Salon Beauté Elite - Réservation en ligne",
+        metaDescription: "Réservez votre rendez-vous dans notre salon de beauté premium. Services de coiffure, coloration, soins. Équipe d'experts."
+      }
+    };
+    
+    setPageDesign(proTemplate);
+    toast({
+      title: "Template Pro chargé",
+      description: "Page professionnelle complète chargée avec succès",
+    });
+  };
 
   const [pageDesign, setPageDesign] = useState<PageDesign>({
     name: "Ma Page de Réservation",
@@ -433,7 +587,16 @@ export default function PageBuilder() {
         </div>
 
         {/* Save Button */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="p-4 border-t border-gray-200 space-y-3">
+          <Button
+            onClick={loadProTemplate}
+            variant="outline"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+          >
+            <Star className="w-4 h-4 mr-2" />
+            Charger Template Pro
+          </Button>
+          
           <Button
             onClick={() => savePageMutation.mutate(pageDesign)}
             disabled={savePageMutation.isPending}
@@ -485,17 +648,28 @@ export default function PageBuilder() {
               </Button>
             </div>
             
-            <Button
-              onClick={() => savePageMutation.mutate(pageDesign)}
-              disabled={savePageMutation.isPending}
-              size="sm"
-            >
-              {savePageMutation.isPending ? (
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
-            </Button>
+            <div className="flex space-x-1">
+              <Button
+                onClick={loadProTemplate}
+                variant="outline"
+                size="sm"
+                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
+              >
+                <Star className="w-4 h-4" />
+              </Button>
+              
+              <Button
+                onClick={() => savePageMutation.mutate(pageDesign)}
+                disabled={savePageMutation.isPending}
+                size="sm"
+              >
+                {savePageMutation.isPending ? (
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
