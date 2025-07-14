@@ -271,15 +271,19 @@ export default function PageBuilder() {
   // Save page design
   const savePageMutation = useMutation({
     mutationFn: (data: PageDesign) => apiRequest('/api/booking-pages', {
-      method: pageDesign.id ? 'PATCH' : 'POST',
+      method: 'POST',
       body: data,
     }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Page sauvegardée",
         description: "Votre page de réservation a été enregistrée avec succès",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/booking-pages'] });
+      // Update the page design with the returned data
+      if (data && data.id) {
+        setPageDesign(prev => ({ ...prev, id: data.id }));
+      }
     },
     onError: () => {
       toast({
@@ -394,7 +398,9 @@ export default function PageBuilder() {
           height: '400px',
           gradient: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
           borderRadius: '0px',
-          animation: 'fadeIn'
+          animation: 'fadeIn',
+          buttonColor: '#FFFFFF',
+          padding: '40px'
         };
       case 'services':
         return { 
@@ -684,7 +690,11 @@ export default function PageBuilder() {
                           {block.content.showCta && (
                             <Button 
                               size="lg"
-                              className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full shadow-xl transform hover:scale-105 transition-all duration-200"
+                              className="font-bold px-8 py-4 rounded-full shadow-xl transform hover:scale-105 transition-all duration-200"
+                              style={{ 
+                                backgroundColor: block.style.buttonColor || '#FFFFFF',
+                                color: block.style.buttonColor === '#FFFFFF' ? '#8B5CF6' : '#FFFFFF'
+                              }}
                             >
                               {block.content.ctaText}
                             </Button>
@@ -1115,25 +1125,69 @@ export default function PageBuilder() {
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm">Couleurs</CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex space-x-2">
-                      <Input
-                        type="color"
-                        value={selectedBlockData.style.backgroundColor}
-                        onChange={(e) => updateBlock(selectedBlockData.id, {
-                          style: { ...selectedBlockData.style, backgroundColor: e.target.value }
-                        })}
-                        className="w-12 h-8 p-1"
-                      />
-                      <Input
-                        type="color"
-                        value={selectedBlockData.style.textColor}
-                        onChange={(e) => updateBlock(selectedBlockData.id, {
-                          style: { ...selectedBlockData.style, textColor: e.target.value }
-                        })}
-                        className="w-12 h-8 p-1"
-                      />
+                  <CardContent className="space-y-3">
+                    <div>
+                      <Label>Couleur de fond</Label>
+                      <div className="flex space-x-2 mt-1">
+                        <Input
+                          type="color"
+                          value={selectedBlockData.style.backgroundColor}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            style: { ...selectedBlockData.style, backgroundColor: e.target.value }
+                          })}
+                          className="w-16 h-10 p-1"
+                        />
+                        <Input
+                          value={selectedBlockData.style.backgroundColor}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            style: { ...selectedBlockData.style, backgroundColor: e.target.value }
+                          })}
+                          className="flex-1"
+                        />
+                      </div>
                     </div>
+                    <div>
+                      <Label>Couleur du texte</Label>
+                      <div className="flex space-x-2 mt-1">
+                        <Input
+                          type="color"
+                          value={selectedBlockData.style.textColor}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            style: { ...selectedBlockData.style, textColor: e.target.value }
+                          })}
+                          className="w-16 h-10 p-1"
+                        />
+                        <Input
+                          value={selectedBlockData.style.textColor}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            style: { ...selectedBlockData.style, textColor: e.target.value }
+                          })}
+                          className="flex-1"
+                        />
+                      </div>
+                    </div>
+                    {selectedBlockData.type === 'header' && (
+                      <div>
+                        <Label>Couleur du bouton</Label>
+                        <div className="flex space-x-2 mt-1">
+                          <Input
+                            type="color"
+                            value={selectedBlockData.style.buttonColor || '#FFFFFF'}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              style: { ...selectedBlockData.style, buttonColor: e.target.value }
+                            })}
+                            className="w-16 h-10 p-1"
+                          />
+                          <Input
+                            value={selectedBlockData.style.buttonColor || '#FFFFFF'}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              style: { ...selectedBlockData.style, buttonColor: e.target.value }
+                            })}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -1237,6 +1291,24 @@ export default function PageBuilder() {
                             content: { ...selectedBlockData.content, backgroundImage: e.target.value }
                           })}
                           placeholder="https://..."
+                        />
+                      </div>
+                      <div>
+                        <Label>Texte du bouton</Label>
+                        <Input
+                          value={selectedBlockData.content.ctaText}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, ctaText: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <Label>Afficher le bouton</Label>
+                        <Switch
+                          checked={selectedBlockData.content.showCta}
+                          onCheckedChange={(checked) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, showCta: checked }
+                          })}
                         />
                       </div>
                     </>
