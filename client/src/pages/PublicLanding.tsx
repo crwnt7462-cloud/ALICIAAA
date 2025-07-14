@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell } from "lucide-react";
+import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell, Share2, Copy } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -178,16 +178,6 @@ export default function PublicLanding() {
 
       {/* Hero section épuré */}
       <section className="bg-gradient-to-b from-violet-50/30 to-white py-8 md:py-12 lg:py-16 relative">
-        {/* Notification flottante */}
-        <div className="absolute top-8 right-8 hidden lg:block">
-          <div className="bg-white border border-violet-200 rounded-lg p-3 shadow-lg animate-bounce">
-            <div className="flex items-center gap-2 text-sm">
-              <Bell className="w-4 h-4 text-violet-600" />
-              <span className="text-gray-700">Marie vient de réserver</span>
-            </div>
-            <div className="text-xs text-gray-500 mt-1">Salon Excellence • il y a 2 min</div>
-          </div>
-        </div>
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -252,7 +242,7 @@ export default function PublicLanding() {
 
 
             {/* Recherches populaires compactes */}
-            <div className="max-w-md mx-auto mb-6">
+            <div className="max-w-md mx-auto mb-4">
               <p className="text-xs text-gray-500 mb-2 text-center">Recherches populaires :</p>
               <div className="flex flex-wrap gap-1 justify-center">
                 {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((search) => (
@@ -267,6 +257,36 @@ export default function PublicLanding() {
                     {search}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Partage lien de réservation */}
+            <div className="max-w-md mx-auto mb-6">
+              <div className="bg-violet-50 border border-violet-200 rounded-lg p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Share2 className="w-4 h-4 text-violet-600" />
+                  <span className="text-sm font-medium text-violet-700">Partager votre lien</span>
+                </div>
+                <p className="text-xs text-gray-600 mb-3">
+                  Professionnels : partagez votre lien de réservation personnalisé
+                </p>
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => setLocation("/share-booking")}
+                    className="flex-1 h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
+                  >
+                    Créer mon lien
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="h-9 px-3 border-violet-200 text-violet-600 rounded-lg touch-manipulation"
+                    onClick={() => {
+                      navigator.clipboard?.writeText(window.location.origin + '/book/demo-salon');
+                    }}
+                  >
+                    <Copy className="w-3 h-3" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
