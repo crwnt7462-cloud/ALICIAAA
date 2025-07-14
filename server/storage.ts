@@ -13,6 +13,17 @@ import {
   loyaltyProgram,
   promotions,
   notifications,
+  businessSettings,
+  serviceCategories,
+  paymentMethods,
+  transactions,
+  bookingPages,
+  clientCommunications,
+  staffAvailability,
+  staffTimeOff,
+  inventory,
+  marketingCampaigns,
+  clientPreferences,
   type User,
   type UpsertUser,
   type Service,
@@ -38,6 +49,28 @@ import {
   type InsertPromotion,
   type Notification,
   type InsertNotification,
+  type BusinessSettings,
+  type InsertBusinessSettings,
+  type ServiceCategory,
+  type InsertServiceCategory,
+  type PaymentMethod,
+  type InsertPaymentMethod,
+  type Transaction,
+  type InsertTransaction,
+  type BookingPage,
+  type InsertBookingPage,
+  type ClientCommunication,
+  type InsertClientCommunication,
+  type StaffAvailability,
+  type InsertStaffAvailability,
+  type StaffTimeOff,
+  type InsertStaffTimeOff,
+  type Inventory,
+  type InsertInventory,
+  type MarketingCampaign,
+  type InsertMarketingCampaign,
+  type ClientPreferences,
+  type InsertClientPreferences,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql, count } from "drizzle-orm";
@@ -120,6 +153,91 @@ export interface IStorage {
   getLoyaltyProgram(clientId: number): Promise<LoyaltyProgram | undefined>;
   createLoyaltyProgram(loyalty: InsertLoyaltyProgram): Promise<LoyaltyProgram>;
   updateLoyaltyPoints(clientId: number, points: number): Promise<void>;
+
+  // Business Settings operations (like Planity's business configuration)
+  getBusinessSettings(userId: string): Promise<BusinessSettings | undefined>;
+  createBusinessSettings(settings: InsertBusinessSettings): Promise<BusinessSettings>;
+  updateBusinessSettings(userId: string, settings: Partial<InsertBusinessSettings>): Promise<BusinessSettings>;
+
+  // Service Categories operations (like Treatwell's service organization)
+  getServiceCategories(userId: string): Promise<ServiceCategory[]>;
+  createServiceCategory(category: InsertServiceCategory): Promise<ServiceCategory>;
+  updateServiceCategory(id: number, category: Partial<InsertServiceCategory>): Promise<ServiceCategory>;
+  deleteServiceCategory(id: number): Promise<void>;
+
+  // Payment Methods and Transactions (POS functionality like Planity)
+  getPaymentMethods(userId: string): Promise<PaymentMethod[]>;
+  createPaymentMethod(method: InsertPaymentMethod): Promise<PaymentMethod>;
+  updatePaymentMethod(id: number, method: Partial<InsertPaymentMethod>): Promise<PaymentMethod>;
+  deletePaymentMethod(id: number): Promise<void>;
+  
+  getTransactions(userId: string, limit?: number): Promise<(Transaction & { client?: Client; appointment?: Appointment })[]>;
+  createTransaction(transaction: InsertTransaction): Promise<Transaction>;
+  updateTransaction(id: number, transaction: Partial<InsertTransaction>): Promise<Transaction>;
+
+  // Booking Pages operations (custom booking pages like Treatwell)
+  getBookingPages(userId: string): Promise<BookingPage[]>;
+  getBookingPageBySlug(slug: string): Promise<BookingPage | undefined>;
+  createBookingPage(page: InsertBookingPage): Promise<BookingPage>;
+  updateBookingPage(id: number, page: Partial<InsertBookingPage>): Promise<BookingPage>;
+  deleteBookingPage(id: number): Promise<void>;
+
+  // Client Communication History
+  getClientCommunications(clientId: number): Promise<ClientCommunication[]>;
+  createClientCommunication(communication: InsertClientCommunication): Promise<ClientCommunication>;
+
+  // Staff Availability and Time Off (advanced scheduling like Planity)
+  getStaffAvailability(staffId: number): Promise<StaffAvailability[]>;
+  createStaffAvailability(availability: InsertStaffAvailability): Promise<StaffAvailability>;
+  updateStaffAvailability(id: number, availability: Partial<InsertStaffAvailability>): Promise<StaffAvailability>;
+  deleteStaffAvailability(id: number): Promise<void>;
+  
+  getStaffTimeOff(staffId: number): Promise<StaffTimeOff[]>;
+  createStaffTimeOff(timeOff: InsertStaffTimeOff): Promise<StaffTimeOff>;
+  updateStaffTimeOff(id: number, timeOff: Partial<InsertStaffTimeOff>): Promise<StaffTimeOff>;
+  deleteStaffTimeOff(id: number): Promise<void>;
+
+  // Inventory Management (for beauty products)
+  getInventory(userId: string): Promise<Inventory[]>;
+  getInventoryItem(id: number): Promise<Inventory | undefined>;
+  createInventoryItem(item: InsertInventory): Promise<Inventory>;
+  updateInventoryItem(id: number, item: Partial<InsertInventory>): Promise<Inventory>;
+  deleteInventoryItem(id: number): Promise<void>;
+  getLowStockItems(userId: string): Promise<Inventory[]>;
+
+  // Marketing Campaigns (like Treatwell's marketing tools)
+  getMarketingCampaigns(userId: string): Promise<MarketingCampaign[]>;
+  createMarketingCampaign(campaign: InsertMarketingCampaign): Promise<MarketingCampaign>;
+  updateMarketingCampaign(id: number, campaign: Partial<InsertMarketingCampaign>): Promise<MarketingCampaign>;
+  deleteMarketingCampaign(id: number): Promise<void>;
+
+  // Client Preferences and Notes
+  getClientPreferences(clientId: number): Promise<ClientPreferences | undefined>;
+  createClientPreferences(preferences: InsertClientPreferences): Promise<ClientPreferences>;
+  updateClientPreferences(clientId: number, preferences: Partial<InsertClientPreferences>): Promise<ClientPreferences>;
+
+  // Advanced booking operations
+  getAvailableTimeSlots(userId: string, serviceId: number, staffId: number | null, date: string): Promise<string[]>;
+  checkSlotAvailability(userId: string, date: string, startTime: string, endTime: string, staffId?: number): Promise<boolean>;
+  
+  // Online marketplace features (like Treatwell)
+  searchSalons(query: string, location?: string, service?: string): Promise<User[]>;
+  getSalonProfile(userId: string): Promise<{
+    user: User;
+    services: Service[];
+    staff: Staff[];
+    reviews: (Review & { client: Client })[];
+    businessSettings: BusinessSettings | undefined;
+  }>;
+
+  // Revenue and financial reporting
+  getRevenueByPeriod(userId: string, startDate: string, endDate: string): Promise<{ period: string; revenue: number }[]>;
+  getPaymentSummary(userId: string, startDate: string, endDate: string): Promise<{
+    totalRevenue: number;
+    paidAmount: number;
+    pendingAmount: number;
+    refundedAmount: number;
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -756,6 +874,550 @@ export class DatabaseStorage implements IStorage {
         lastActivity: new Date()
       })
       .where(eq(loyaltyProgram.clientId, clientId));
+  }
+
+  // Business Settings operations (like Planity's business configuration)
+  async getBusinessSettings(userId: string): Promise<BusinessSettings | undefined> {
+    const [settings] = await db
+      .select()
+      .from(businessSettings)
+      .where(eq(businessSettings.userId, userId));
+    return settings;
+  }
+
+  async createBusinessSettings(settings: InsertBusinessSettings): Promise<BusinessSettings> {
+    const [newSettings] = await db.insert(businessSettings).values(settings).returning();
+    return newSettings;
+  }
+
+  async updateBusinessSettings(userId: string, settings: Partial<InsertBusinessSettings>): Promise<BusinessSettings> {
+    const [updatedSettings] = await db
+      .update(businessSettings)
+      .set({ ...settings, updatedAt: new Date() })
+      .where(eq(businessSettings.userId, userId))
+      .returning();
+    return updatedSettings;
+  }
+
+  // Service Categories operations (like Treatwell's service organization)
+  async getServiceCategories(userId: string): Promise<ServiceCategory[]> {
+    return db
+      .select()
+      .from(serviceCategories)
+      .where(eq(serviceCategories.userId, userId))
+      .orderBy(serviceCategories.sortOrder);
+  }
+
+  async createServiceCategory(category: InsertServiceCategory): Promise<ServiceCategory> {
+    const [newCategory] = await db.insert(serviceCategories).values(category).returning();
+    return newCategory;
+  }
+
+  async updateServiceCategory(id: number, category: Partial<InsertServiceCategory>): Promise<ServiceCategory> {
+    const [updatedCategory] = await db
+      .update(serviceCategories)
+      .set(category)
+      .where(eq(serviceCategories.id, id))
+      .returning();
+    return updatedCategory;
+  }
+
+  async deleteServiceCategory(id: number): Promise<void> {
+    await db.delete(serviceCategories).where(eq(serviceCategories.id, id));
+  }
+
+  // Payment Methods and Transactions (POS functionality like Planity)
+  async getPaymentMethods(userId: string): Promise<PaymentMethod[]> {
+    return db
+      .select()
+      .from(paymentMethods)
+      .where(eq(paymentMethods.userId, userId))
+      .orderBy(paymentMethods.name);
+  }
+
+  async createPaymentMethod(method: InsertPaymentMethod): Promise<PaymentMethod> {
+    const [newMethod] = await db.insert(paymentMethods).values(method).returning();
+    return newMethod;
+  }
+
+  async updatePaymentMethod(id: number, method: Partial<InsertPaymentMethod>): Promise<PaymentMethod> {
+    const [updatedMethod] = await db
+      .update(paymentMethods)
+      .set(method)
+      .where(eq(paymentMethods.id, id))
+      .returning();
+    return updatedMethod;
+  }
+
+  async deletePaymentMethod(id: number): Promise<void> {
+    await db.delete(paymentMethods).where(eq(paymentMethods.id, id));
+  }
+
+  async getTransactions(userId: string, limit = 50): Promise<(Transaction & { client?: Client; appointment?: Appointment })[]> {
+    const results = await db
+      .select({
+        transaction: transactions,
+        client: clients,
+        appointment: appointments,
+      })
+      .from(transactions)
+      .leftJoin(clients, eq(transactions.clientId, clients.id))
+      .leftJoin(appointments, eq(transactions.appointmentId, appointments.id))
+      .where(eq(transactions.userId, userId))
+      .orderBy(desc(transactions.createdAt))
+      .limit(limit);
+
+    return results.map(row => ({
+      ...row.transaction,
+      client: row.client || undefined,
+      appointment: row.appointment || undefined,
+    }));
+  }
+
+  async createTransaction(transaction: InsertTransaction): Promise<Transaction> {
+    const [newTransaction] = await db.insert(transactions).values(transaction).returning();
+    return newTransaction;
+  }
+
+  async updateTransaction(id: number, transaction: Partial<InsertTransaction>): Promise<Transaction> {
+    const [updatedTransaction] = await db
+      .update(transactions)
+      .set(transaction)
+      .where(eq(transactions.id, id))
+      .returning();
+    return updatedTransaction;
+  }
+
+  // Booking Pages operations (custom booking pages like Treatwell)
+  async getBookingPages(userId: string): Promise<BookingPage[]> {
+    return db
+      .select()
+      .from(bookingPages)
+      .where(eq(bookingPages.userId, userId))
+      .orderBy(desc(bookingPages.createdAt));
+  }
+
+  async getBookingPageBySlug(slug: string): Promise<BookingPage | undefined> {
+    const [page] = await db
+      .select()
+      .from(bookingPages)
+      .where(eq(bookingPages.slug, slug));
+    return page;
+  }
+
+  async createBookingPage(page: InsertBookingPage): Promise<BookingPage> {
+    const [newPage] = await db.insert(bookingPages).values(page).returning();
+    return newPage;
+  }
+
+  async updateBookingPage(id: number, page: Partial<InsertBookingPage>): Promise<BookingPage> {
+    const [updatedPage] = await db
+      .update(bookingPages)
+      .set({ ...page, updatedAt: new Date() })
+      .where(eq(bookingPages.id, id))
+      .returning();
+    return updatedPage;
+  }
+
+  async deleteBookingPage(id: number): Promise<void> {
+    await db.delete(bookingPages).where(eq(bookingPages.id, id));
+  }
+
+  // Client Communication History
+  async getClientCommunications(clientId: number): Promise<ClientCommunication[]> {
+    return db
+      .select()
+      .from(clientCommunications)
+      .where(eq(clientCommunications.clientId, clientId))
+      .orderBy(desc(clientCommunications.createdAt));
+  }
+
+  async createClientCommunication(communication: InsertClientCommunication): Promise<ClientCommunication> {
+    const [newCommunication] = await db.insert(clientCommunications).values(communication).returning();
+    return newCommunication;
+  }
+
+  // Staff Availability and Time Off (advanced scheduling like Planity)
+  async getStaffAvailability(staffId: number): Promise<StaffAvailability[]> {
+    return db
+      .select()
+      .from(staffAvailability)
+      .where(eq(staffAvailability.staffId, staffId))
+      .orderBy(staffAvailability.dayOfWeek, staffAvailability.startTime);
+  }
+
+  async createStaffAvailability(availability: InsertStaffAvailability): Promise<StaffAvailability> {
+    const [newAvailability] = await db.insert(staffAvailability).values(availability).returning();
+    return newAvailability;
+  }
+
+  async updateStaffAvailability(id: number, availability: Partial<InsertStaffAvailability>): Promise<StaffAvailability> {
+    const [updatedAvailability] = await db
+      .update(staffAvailability)
+      .set(availability)
+      .where(eq(staffAvailability.id, id))
+      .returning();
+    return updatedAvailability;
+  }
+
+  async deleteStaffAvailability(id: number): Promise<void> {
+    await db.delete(staffAvailability).where(eq(staffAvailability.id, id));
+  }
+
+  async getStaffTimeOff(staffId: number): Promise<StaffTimeOff[]> {
+    return db
+      .select()
+      .from(staffTimeOff)
+      .where(eq(staffTimeOff.staffId, staffId))
+      .orderBy(desc(staffTimeOff.startDate));
+  }
+
+  async createStaffTimeOff(timeOff: InsertStaffTimeOff): Promise<StaffTimeOff> {
+    const [newTimeOff] = await db.insert(staffTimeOff).values(timeOff).returning();
+    return newTimeOff;
+  }
+
+  async updateStaffTimeOff(id: number, timeOff: Partial<InsertStaffTimeOff>): Promise<StaffTimeOff> {
+    const [updatedTimeOff] = await db
+      .update(staffTimeOff)
+      .set(timeOff)
+      .where(eq(staffTimeOff.id, id))
+      .returning();
+    return updatedTimeOff;
+  }
+
+  async deleteStaffTimeOff(id: number): Promise<void> {
+    await db.delete(staffTimeOff).where(eq(staffTimeOff.id, id));
+  }
+
+  // Inventory Management (for beauty products)
+  async getInventory(userId: string): Promise<Inventory[]> {
+    return db
+      .select()
+      .from(inventory)
+      .where(eq(inventory.userId, userId))
+      .orderBy(inventory.name);
+  }
+
+  async getInventoryItem(id: number): Promise<Inventory | undefined> {
+    const [item] = await db
+      .select()
+      .from(inventory)
+      .where(eq(inventory.id, id));
+    return item;
+  }
+
+  async createInventoryItem(item: InsertInventory): Promise<Inventory> {
+    const [newItem] = await db.insert(inventory).values(item).returning();
+    return newItem;
+  }
+
+  async updateInventoryItem(id: number, item: Partial<InsertInventory>): Promise<Inventory> {
+    const [updatedItem] = await db
+      .update(inventory)
+      .set({ ...item, updatedAt: new Date() })
+      .where(eq(inventory.id, id))
+      .returning();
+    return updatedItem;
+  }
+
+  async deleteInventoryItem(id: number): Promise<void> {
+    await db.delete(inventory).where(eq(inventory.id, id));
+  }
+
+  async getLowStockItems(userId: string): Promise<Inventory[]> {
+    return db
+      .select()
+      .from(inventory)
+      .where(
+        and(
+          eq(inventory.userId, userId),
+          sql`${inventory.currentStock} <= ${inventory.minStock}`
+        )
+      )
+      .orderBy(inventory.name);
+  }
+
+  // Marketing Campaigns (like Treatwell's marketing tools)
+  async getMarketingCampaigns(userId: string): Promise<MarketingCampaign[]> {
+    return db
+      .select()
+      .from(marketingCampaigns)
+      .where(eq(marketingCampaigns.userId, userId))
+      .orderBy(desc(marketingCampaigns.createdAt));
+  }
+
+  async createMarketingCampaign(campaign: InsertMarketingCampaign): Promise<MarketingCampaign> {
+    const [newCampaign] = await db.insert(marketingCampaigns).values(campaign).returning();
+    return newCampaign;
+  }
+
+  async updateMarketingCampaign(id: number, campaign: Partial<InsertMarketingCampaign>): Promise<MarketingCampaign> {
+    const [updatedCampaign] = await db
+      .update(marketingCampaigns)
+      .set(campaign)
+      .where(eq(marketingCampaigns.id, id))
+      .returning();
+    return updatedCampaign;
+  }
+
+  async deleteMarketingCampaign(id: number): Promise<void> {
+    await db.delete(marketingCampaigns).where(eq(marketingCampaigns.id, id));
+  }
+
+  // Client Preferences and Notes
+  async getClientPreferences(clientId: number): Promise<ClientPreferences | undefined> {
+    const [preferences] = await db
+      .select()
+      .from(clientPreferences)
+      .where(eq(clientPreferences.clientId, clientId));
+    return preferences;
+  }
+
+  async createClientPreferences(preferences: InsertClientPreferences): Promise<ClientPreferences> {
+    const [newPreferences] = await db.insert(clientPreferences).values(preferences).returning();
+    return newPreferences;
+  }
+
+  async updateClientPreferences(clientId: number, preferences: Partial<InsertClientPreferences>): Promise<ClientPreferences> {
+    const [updatedPreferences] = await db
+      .update(clientPreferences)
+      .set({ ...preferences, updatedAt: new Date() })
+      .where(eq(clientPreferences.clientId, clientId))
+      .returning();
+    return updatedPreferences;
+  }
+
+  // Advanced booking operations
+  async getAvailableTimeSlots(userId: string, serviceId: number, staffId: number | null, date: string): Promise<string[]> {
+    // Get business settings for working hours
+    const businessSettings = await this.getBusinessSettings(userId);
+    
+    // Get service duration
+    const service = await this.getServices(userId).then(services => 
+      services.find(s => s.id === serviceId)
+    );
+    
+    if (!service) return [];
+    
+    const duration = service.duration;
+    const dayOfWeek = new Date(date).getDay(); // 0 = Sunday, 1 = Monday, etc.
+    
+    // Default working hours if no business settings
+    let startHour = 9;
+    let endHour = 18;
+    
+    if (businessSettings) {
+      // Map day of week to business settings columns
+      const dayColumns = [
+        { open: businessSettings.sundayOpen, close: businessSettings.sundayClose },
+        { open: businessSettings.mondayOpen, close: businessSettings.mondayClose },
+        { open: businessSettings.tuesdayOpen, close: businessSettings.tuesdayClose },
+        { open: businessSettings.wednesdayOpen, close: businessSettings.wednesdayClose },
+        { open: businessSettings.thursdayOpen, close: businessSettings.thursdayClose },
+        { open: businessSettings.fridayOpen, close: businessSettings.fridayClose },
+        { open: businessSettings.saturdayOpen, close: businessSettings.saturdayClose },
+      ];
+      
+      const daySchedule = dayColumns[dayOfWeek];
+      if (!daySchedule.open || !daySchedule.close) return []; // Closed day
+      
+      startHour = parseInt(daySchedule.open.split(':')[0]);
+      endHour = parseInt(daySchedule.close.split(':')[0]);
+    }
+    
+    // Get existing appointments for the date
+    const existingAppointments = await db
+      .select()
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.userId, userId),
+          eq(appointments.appointmentDate, date),
+          staffId ? eq(appointments.staffId, staffId) : undefined
+        )
+      );
+    
+    // Generate available slots
+    const slots: string[] = [];
+    const slotInterval = 30; // minutes
+    
+    for (let hour = startHour; hour < endHour; hour++) {
+      for (let minute = 0; minute < 60; minute += slotInterval) {
+        const slotTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        const slotEndTime = new Date(`2000-01-01 ${slotTime}`);
+        slotEndTime.setMinutes(slotEndTime.getMinutes() + duration);
+        const endTimeStr = `${slotEndTime.getHours().toString().padStart(2, '0')}:${slotEndTime.getMinutes().toString().padStart(2, '0')}`;
+        
+        // Check if this slot conflicts with existing appointments
+        const hasConflict = existingAppointments.some(apt => {
+          return (slotTime >= apt.startTime && slotTime < apt.endTime) ||
+                 (endTimeStr > apt.startTime && endTimeStr <= apt.endTime) ||
+                 (slotTime <= apt.startTime && endTimeStr >= apt.endTime);
+        });
+        
+        if (!hasConflict && slotEndTime.getHours() <= endHour) {
+          slots.push(slotTime);
+        }
+      }
+    }
+    
+    return slots;
+  }
+
+  async checkSlotAvailability(userId: string, date: string, startTime: string, endTime: string, staffId?: number): Promise<boolean> {
+    const existingAppointment = await db
+      .select()
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.userId, userId),
+          eq(appointments.appointmentDate, date),
+          staffId ? eq(appointments.staffId, staffId) : undefined,
+          sql`(
+            (${startTime} >= ${appointments.startTime} AND ${startTime} < ${appointments.endTime}) OR
+            (${endTime} > ${appointments.startTime} AND ${endTime} <= ${appointments.endTime}) OR
+            (${startTime} <= ${appointments.startTime} AND ${endTime} >= ${appointments.endTime})
+          )`
+        )
+      )
+      .limit(1);
+    
+    return existingAppointment.length === 0;
+  }
+
+  // Online marketplace features (like Treatwell)
+  async searchSalons(query: string, location?: string, service?: string): Promise<User[]> {
+    return db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.isProfessional, true),
+          sql`(
+            ${users.businessName} ILIKE ${'%' + query + '%'} OR
+            ${users.firstName} ILIKE ${'%' + query + '%'} OR
+            ${users.lastName} ILIKE ${'%' + query + '%'}
+          )`,
+          location ? sql`${users.address} ILIKE ${'%' + location + '%'}` : undefined
+        )
+      )
+      .limit(20);
+  }
+
+  async getSalonProfile(userId: string): Promise<{
+    user: User;
+    services: Service[];
+    staff: Staff[];
+    reviews: (Review & { client: Client })[];
+    businessSettings: BusinessSettings | undefined;
+  }> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (!user) throw new Error('Salon not found');
+
+    const [services, staff, businessSettings] = await Promise.all([
+      this.getServices(userId),
+      this.getStaff(userId),
+      this.getBusinessSettings(userId),
+    ]);
+
+    const reviewResults = await db
+      .select({
+        review: reviews,
+        client: clients,
+      })
+      .from(reviews)
+      .leftJoin(clients, eq(reviews.clientId, clients.id))
+      .where(eq(reviews.userId, userId))
+      .orderBy(desc(reviews.createdAt))
+      .limit(10);
+
+    const reviewsWithClients = reviewResults.map(row => ({
+      ...row.review,
+      client: row.client!,
+    }));
+
+    return {
+      user,
+      services,
+      staff,
+      reviews: reviewsWithClients,
+      businessSettings,
+    };
+  }
+
+  // Revenue and financial reporting
+  async getRevenueByPeriod(userId: string, startDate: string, endDate: string): Promise<{ period: string; revenue: number }[]> {
+    const results = await db
+      .select({
+        date: appointments.appointmentDate,
+        revenue: sql<number>`COALESCE(SUM(CAST(${appointments.totalPrice} AS NUMERIC)), 0)`,
+      })
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.userId, userId),
+          eq(appointments.status, 'completed'),
+          gte(appointments.appointmentDate, startDate),
+          lte(appointments.appointmentDate, endDate)
+        )
+      )
+      .groupBy(appointments.appointmentDate)
+      .orderBy(appointments.appointmentDate);
+
+    return results.map(row => ({
+      period: row.date,
+      revenue: Number(row.revenue),
+    }));
+  }
+
+  async getPaymentSummary(userId: string, startDate: string, endDate: string): Promise<{
+    totalRevenue: number;
+    paidAmount: number;
+    pendingAmount: number;
+    refundedAmount: number;
+  }> {
+    const results = await db
+      .select({
+        totalAmount: sql<number>`COALESCE(SUM(CAST(${transactions.amount} AS NUMERIC)), 0)`,
+        status: transactions.status,
+        type: transactions.type,
+      })
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.userId, userId),
+          gte(transactions.createdAt, startDate),
+          lte(transactions.createdAt, endDate)
+        )
+      )
+      .groupBy(transactions.status, transactions.type);
+
+    let totalRevenue = 0;
+    let paidAmount = 0;
+    let pendingAmount = 0;
+    let refundedAmount = 0;
+
+    results.forEach(row => {
+      const amount = Number(row.totalAmount);
+      if (row.type === 'payment') {
+        totalRevenue += amount;
+        if (row.status === 'completed') {
+          paidAmount += amount;
+        } else if (row.status === 'pending') {
+          pendingAmount += amount;
+        }
+      } else if (row.type === 'refund' && row.status === 'completed') {
+        refundedAmount += amount;
+      }
+    });
+
+    return {
+      totalRevenue,
+      paidAmount,
+      pendingAmount,
+      refundedAmount,
+    };
   }
 }
 

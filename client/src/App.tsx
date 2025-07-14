@@ -25,6 +25,7 @@ import ProLogin from "@/pages/ProLogin";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
+import BusinessFeatures from "@/pages/BusinessFeatures";
 
 
 function Router() {
@@ -75,6 +76,7 @@ function Router() {
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
+          <Route path="/business-features" component={BusinessFeatures} />
 
           <Route path="/booking" component={Booking} />
           <Route path="/share-booking" component={ShareBooking} />

@@ -109,11 +109,11 @@ Génération automatique :
 ## Navigation Simple
 
 ### Menu Principal (BottomNavigation)
-1. **Accueil** : Dashboard principal
-2. **Planning** : Gestion des rendez-vous
-3. **Clients** : Base de données clientèle
-4. **Services** : Configuration des prestations
-5. **IA Pro** : Fonctionnalités d'assistance intelligente
+1. **Accueil** : Dashboard principal avec métriques clés
+2. **Planning** : Gestion avancée des rendez-vous et planning optimisé
+3. **Clients** : Base de données clientèle avec historique et préférences
+4. **Pro Tools** : Suite complète Planity/Treatwell (paramètres, paiements, inventaire, marketing)
+5. **IA Pro** : Fonctionnalités d'assistance intelligente et prédictions
 
 ### Architecture de Navigation
 - Interface mobile-first
@@ -123,6 +123,17 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - ÉVOLUTION MAJEURE : FONCTIONNALITÉS PLANITY & TREATWELL
+- ✅ **Base de données étendue** : 34+ tables couvrant tous les aspects métier
+- ✅ **Configuration Business** : Paramètres salon complets (horaires, politiques, contact)
+- ✅ **Système de paiement POS** : Méthodes de paiement multiples, transactions, reporting financier
+- ✅ **Pages de réservation personnalisées** : Création de landing pages comme Treatwell
+- ✅ **Gestion d'inventaire** : Suivi stocks produits beauté, alertes rupture
+- ✅ **Campagnes marketing** : Outils de promotion et fidélisation automatisés
+- ✅ **Analytics avancés** : Segments clients, prédictions IA, optimisation planning
+- ✅ **Marketplace fonctionnalités** : Recherche salons, profils publics, réservation externe
+- ✅ **Interface Pro Tools** : Page dédiée regroupant toutes les fonctionnalités avancées
+
 ### Décembre 2024
 - ✅ Navigation simplifiée avec 5 sections principales
 - ✅ Interface utilisateur épurée et professionnelle
@@ -130,11 +141,16 @@ Génération automatique :
 - ✅ Architecture backend robuste
 - ✅ Documentation projet mise à jour
 
-### Fonctionnalités en Développement
-- 🔄 Intégration Stripe pour paiements
-- 🔄 Notifications push mobiles
-- 🔄 Synchronisation calendriers externes
-- 🔄 API publique pour intégrations
+### Fonctionnalités Nouvelles (Janvier 2025)
+- ✅ Gestion catégories de services
+- ✅ Disponibilités staff avancées
+- ✅ Historique communications client
+- ✅ Préférences client personnalisées
+- ✅ Créneaux horaires intelligents
+- ✅ Reporting revenus par période
+- ✅ Intégration calendriers externes (Google, Outlook)
+- ✅ QR codes et liens de partage
+- ✅ Pages de réservation branded
 
 ## Préférences Utilisateur
 

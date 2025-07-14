@@ -48,11 +48,17 @@ export const users = pgTable("users", {
 export const services = pgTable("services", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
+  categoryId: integer("category_id").references(() => serviceCategories.id),
   name: varchar("name").notNull(),
   description: text("description"),
   duration: integer("duration").notNull(), // in minutes
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   isActive: boolean("is_active").default(true),
+  isOnlineBookable: boolean("is_online_bookable").default(true),
+  requiresDeposit: boolean("requires_deposit").default(false),
+  depositAmount: decimal("deposit_amount", { precision: 10, scale: 2 }),
+  maxAdvanceBooking: integer("max_advance_booking").default(30), // days
+  color: text("color").default("#8B5CF6"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -327,8 +333,204 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Business Settings (like Planity's business configuration)
+export const businessSettings = pgTable("business_settings", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  businessType: text("business_type").default("salon"), // salon, spa, barbershop, wellness
+  timeZone: text("time_zone").default("Europe/Paris"),
+  language: text("language").default("fr"),
+  currency: text("currency").default("EUR"),
+  // Working hours configuration
+  mondayOpen: time("monday_open"),
+  mondayClose: time("monday_close"),
+  tuesdayOpen: time("tuesday_open"),
+  tuesdayClose: time("tuesday_close"),
+  wednesdayOpen: time("wednesday_open"),
+  wednesdayClose: time("wednesday_close"),
+  thursdayOpen: time("thursday_open"),
+  thursdayClose: time("thursday_close"),
+  fridayOpen: time("friday_open"),
+  fridayClose: time("friday_close"),
+  saturdayOpen: time("saturday_open"),
+  saturdayClose: time("saturday_close"),
+  sundayOpen: time("sunday_open"),
+  sundayClose: time("sunday_close"),
+  // Appointment settings
+  defaultAppointmentDuration: integer("default_appointment_duration").default(60),
+  bookingAdvanceLimit: integer("booking_advance_limit").default(30), // days
+  bufferTimeBetweenAppointments: integer("buffer_time").default(15), // minutes
+  allowOnlineBooking: boolean("allow_online_booking").default(true),
+  requireDeposit: boolean("require_deposit").default(false),
+  defaultDepositAmount: numeric("default_deposit_amount", { precision: 10, scale: 2 }).default("20.00"),
+  // Notification preferences
+  sendSmsReminders: boolean("send_sms_reminders").default(true),
+  sendEmailReminders: boolean("send_email_reminders").default(true),
+  reminderHoursBefore: integer("reminder_hours_before").default(24),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Service Categories (like Treatwell's service organization)
+export const serviceCategories = pgTable("service_categories", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  icon: text("icon"),
+  color: text("color").default("#8B5CF6"),
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Payment Methods and Transactions
+export const paymentMethods = pgTable("payment_methods", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  type: text("type").notNull(), // stripe, cash, bank_transfer, paypal
+  name: text("name").notNull(),
+  isActive: boolean("is_active").default(true),
+  settings: text("settings"), // JSON configuration
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const transactions = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  clientId: integer("client_id").references(() => clients.id),
+  amount: numeric("amount", { precision: 10, scale: 2 }).notNull(),
+  currency: text("currency").default("EUR"),
+  type: text("type").notNull(), // payment, refund, deposit
+  status: text("status").notNull(), // pending, completed, failed, cancelled
+  paymentMethod: text("payment_method").notNull(),
+  paymentIntentId: text("payment_intent_id"), // Stripe payment intent ID
+  description: text("description"),
+  metadata: text("metadata"), // JSON for additional data
+  processedAt: timestamp("processed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Online Booking Public Pages
+export const bookingPages = pgTable("booking_pages", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  description: text("description"),
+  welcomeMessage: text("welcome_message"),
+  termsAndConditions: text("terms_and_conditions"),
+  customCss: text("custom_css"),
+  logoUrl: text("logo_url"),
+  backgroundImageUrl: text("background_image_url"),
+  primaryColor: text("primary_color").default("#8B5CF6"),
+  isActive: boolean("is_active").default(true),
+  allowGuestBooking: boolean("allow_guest_booking").default(true),
+  requirePhoneNumber: boolean("require_phone_number").default(true),
+  showStaffSelection: boolean("show_staff_selection").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Client Communication History
+export const clientCommunications = pgTable("client_communications", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  type: text("type").notNull(), // sms, email, phone_call, in_person
+  subject: text("subject"),
+  content: text("content").notNull(),
+  status: text("status").default("sent"), // sent, delivered, failed, read
+  sentAt: timestamp("sent_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Staff Availability and Time Off
+export const staffAvailability = pgTable("staff_availability", {
+  id: serial("id").primaryKey(),
+  staffId: integer("staff_id").notNull().references(() => staff.id),
+  dayOfWeek: integer("day_of_week").notNull(), // 0=Sunday, 1=Monday, etc.
+  startTime: time("start_time").notNull(),
+  endTime: time("end_time").notNull(),
+  isAvailable: boolean("is_available").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const staffTimeOff = pgTable("staff_time_off", {
+  id: serial("id").primaryKey(),
+  staffId: integer("staff_id").notNull().references(() => staff.id),
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date").notNull(),
+  reason: text("reason"),
+  type: text("type").default("vacation"), // vacation, sick, personal, training
+  isApproved: boolean("is_approved").default(false),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Inventory Management (for beauty products)
+export const inventory = pgTable("inventory", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  category: text("category"), // hair_care, skin_care, tools, etc.
+  brand: text("brand"),
+  sku: text("sku"),
+  barcode: text("barcode"),
+  currentStock: integer("current_stock").default(0),
+  minStock: integer("min_stock").default(0),
+  maxStock: integer("max_stock"),
+  unitCost: numeric("unit_cost", { precision: 10, scale: 2 }),
+  sellingPrice: numeric("selling_price", { precision: 10, scale: 2 }),
+  supplier: text("supplier"),
+  expiryDate: date("expiry_date"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Marketing Campaigns
+export const marketingCampaigns = pgTable("marketing_campaigns", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // email, sms, social_media
+  subject: text("subject"),
+  content: text("content").notNull(),
+  targetAudience: text("target_audience"), // all_clients, new_clients, loyal_clients, etc.
+  scheduledFor: timestamp("scheduled_for"),
+  sentAt: timestamp("sent_at"),
+  status: text("status").default("draft"), // draft, scheduled, sent, failed
+  recipientCount: integer("recipient_count").default(0),
+  openRate: numeric("open_rate", { precision: 5, scale: 2 }),
+  clickRate: numeric("click_rate", { precision: 5, scale: 2 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Client Preferences and Notes
+export const clientPreferences = pgTable("client_preferences", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  preferredStaffId: integer("preferred_staff_id").references(() => staff.id),
+  preferredTimeSlots: text("preferred_time_slots").array(), // ["09:00-12:00", "14:00-17:00"]
+  preferredDays: text("preferred_days").array(), // ["monday", "tuesday"]
+  allergies: text("allergies"),
+  skinType: text("skin_type"),
+  hairType: text("hair_type"),
+  previousTreatments: text("previous_treatments"),
+  avoidIngredients: text("avoid_ingredients"),
+  communicationPreference: text("communication_preference").default("email"), // email, sms, phone
+  marketingOptIn: boolean("marketing_opt_in").default(true),
+  reminderOptIn: boolean("reminder_opt_in").default(true),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many, one }) => ({
   services: many(services),
   clients: many(clients),
   appointments: many(appointments),
@@ -340,6 +542,13 @@ export const usersRelations = relations(users, ({ many }) => ({
   loyaltyPrograms: many(loyaltyProgram),
   promotions: many(promotions),
   notifications: many(notifications),
+  businessSettings: one(businessSettings),
+  serviceCategories: many(serviceCategories),
+  paymentMethods: many(paymentMethods),
+  transactions: many(transactions),
+  bookingPages: many(bookingPages),
+  inventory: many(inventory),
+  marketingCampaigns: many(marketingCampaigns),
 }));
 
 export const servicesRelations = relations(services, ({ one, many }) => ({
@@ -518,4 +727,99 @@ export const insertPromotionSchema = createInsertSchema(promotions).omit({
   id: true,
   usageCount: true,
   createdAt: true,
+});
+
+// New types for extended functionality
+export type BusinessSettings = typeof businessSettings.$inferSelect;
+export type InsertBusinessSettings = typeof businessSettings.$inferInsert;
+
+export type ServiceCategory = typeof serviceCategories.$inferSelect;
+export type InsertServiceCategory = typeof serviceCategories.$inferInsert;
+
+export type PaymentMethod = typeof paymentMethods.$inferSelect;
+export type InsertPaymentMethod = typeof paymentMethods.$inferInsert;
+
+export type Transaction = typeof transactions.$inferSelect;
+export type InsertTransaction = typeof transactions.$inferInsert;
+
+export type BookingPage = typeof bookingPages.$inferSelect;
+export type InsertBookingPage = typeof bookingPages.$inferInsert;
+
+export type ClientCommunication = typeof clientCommunications.$inferSelect;
+export type InsertClientCommunication = typeof clientCommunications.$inferInsert;
+
+export type StaffAvailability = typeof staffAvailability.$inferSelect;
+export type InsertStaffAvailability = typeof staffAvailability.$inferInsert;
+
+export type StaffTimeOff = typeof staffTimeOff.$inferSelect;
+export type InsertStaffTimeOff = typeof staffTimeOff.$inferInsert;
+
+export type Inventory = typeof inventory.$inferSelect;
+export type InsertInventory = typeof inventory.$inferInsert;
+
+export type MarketingCampaign = typeof marketingCampaigns.$inferSelect;
+export type InsertMarketingCampaign = typeof marketingCampaigns.$inferInsert;
+
+export type ClientPreferences = typeof clientPreferences.$inferSelect;
+export type InsertClientPreferences = typeof clientPreferences.$inferInsert;
+
+// New validation schemas
+export const insertBusinessSettingsSchema = createInsertSchema(businessSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertServiceCategorySchema = createInsertSchema(serviceCategories).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPaymentMethodSchema = createInsertSchema(paymentMethods).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertTransactionSchema = createInsertSchema(transactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertBookingPageSchema = createInsertSchema(bookingPages).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertClientCommunicationSchema = createInsertSchema(clientCommunications).omit({
+  id: true,
+  sentAt: true,
+  createdAt: true,
+});
+
+export const insertStaffAvailabilitySchema = createInsertSchema(staffAvailability).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertStaffTimeOffSchema = createInsertSchema(staffTimeOff).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertInventorySchema = createInsertSchema(inventory).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertMarketingCampaignSchema = createInsertSchema(marketingCampaigns).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertClientPreferencesSchema = createInsertSchema(clientPreferences).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });

@@ -2,9 +2,12 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
+import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { appointmentHistory, cancellationPredictions, appointments, clients } from "@shared/schema";
+import { eq, desc } from "drizzle-orm";
 import {
   insertServiceSchema,
   insertClientSchema,
@@ -14,6 +17,17 @@ import {
   insertForumReplySchema,
   insertReviewSchema,
   insertPromotionSchema,
+  insertBusinessSettingsSchema,
+  insertServiceCategorySchema,
+  insertPaymentMethodSchema,
+  insertTransactionSchema,
+  insertBookingPageSchema,
+  insertClientCommunicationSchema,
+  insertStaffAvailabilitySchema,
+  insertStaffTimeOffSchema,
+  insertInventorySchema,
+  insertMarketingCampaignSchema,
+  insertClientPreferencesSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -1016,23 +1030,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Créer les données nécessaires pour la prédiction
       const appointmentData = {
         id: appointment.id,
-        date: appointment.date,
-        time: appointment.time,
-        duration: appointment.duration || 60,
-        clientName: client.name,
+        date: appointment.appointmentDate,
+        time: appointment.startTime,
+        duration: 60,
+        clientName: `${client.firstName} ${client.lastName}`,
         serviceName: appointment.serviceId ? 'Service' : 'Service inconnu',
-        price: appointment.price || 0,
+        price: parseFloat(appointment.totalPrice || '0'),
         status: appointment.status
       };
       
       const clientBehavior = {
         id: client.id,
-        name: client.name,
+        name: `${client.firstName} ${client.lastName}`,
         totalAppointments: appointmentHistory.length || 1,
         noShowCount: appointmentHistory.filter(h => h.actionType === 'no_show').length,
         cancelCount: appointmentHistory.filter(h => h.actionType === 'cancelled').length,
         avgDaysBetweenVisits: 30,
-        lastVisit: new Date(appointment.date),
+        lastVisit: new Date(appointment.appointmentDate),
         totalSpent: appointmentHistory.length * 50,
         preferredTimeSlots: ['09:00-12:00', '14:00-17:00']
       };
@@ -1136,6 +1150,424 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching AI promotions:", error);
       res.status(500).json({ message: "Failed to fetch AI promotions" });
+    }
+  });
+
+  // Business Settings routes (like Planity's business configuration)
+  app.get('/api/business-settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const settings = await storage.getBusinessSettings(userId);
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching business settings:", error);
+      res.status(500).json({ message: "Failed to fetch business settings" });
+    }
+  });
+
+  app.post('/api/business-settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const settingsData = insertBusinessSettingsSchema.parse({ ...req.body, userId });
+      const settings = await storage.createBusinessSettings(settingsData);
+      res.json(settings);
+    } catch (error) {
+      console.error("Error creating business settings:", error);
+      res.status(400).json({ message: "Failed to create business settings" });
+    }
+  });
+
+  app.patch('/api/business-settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const settingsData = insertBusinessSettingsSchema.partial().parse(req.body);
+      const settings = await storage.updateBusinessSettings(userId, settingsData);
+      res.json(settings);
+    } catch (error) {
+      console.error("Error updating business settings:", error);
+      res.status(400).json({ message: "Failed to update business settings" });
+    }
+  });
+
+  // Service Categories routes (like Treatwell's service organization)
+  app.get('/api/service-categories', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const categories = await storage.getServiceCategories(userId);
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching service categories:", error);
+      res.status(500).json({ message: "Failed to fetch service categories" });
+    }
+  });
+
+  app.post('/api/service-categories', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const categoryData = insertServiceCategorySchema.parse({ ...req.body, userId });
+      const category = await storage.createServiceCategory(categoryData);
+      res.json(category);
+    } catch (error) {
+      console.error("Error creating service category:", error);
+      res.status(400).json({ message: "Failed to create service category" });
+    }
+  });
+
+  app.patch('/api/service-categories/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const categoryData = insertServiceCategorySchema.partial().parse(req.body);
+      const category = await storage.updateServiceCategory(id, categoryData);
+      res.json(category);
+    } catch (error) {
+      console.error("Error updating service category:", error);
+      res.status(400).json({ message: "Failed to update service category" });
+    }
+  });
+
+  app.delete('/api/service-categories/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteServiceCategory(id);
+      res.json({ message: "Service category deleted" });
+    } catch (error) {
+      console.error("Error deleting service category:", error);
+      res.status(500).json({ message: "Failed to delete service category" });
+    }
+  });
+
+  // Payment Methods routes (POS functionality like Planity)
+  app.get('/api/payment-methods', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const methods = await storage.getPaymentMethods(userId);
+      res.json(methods);
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+      res.status(500).json({ message: "Failed to fetch payment methods" });
+    }
+  });
+
+  app.post('/api/payment-methods', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const methodData = insertPaymentMethodSchema.parse({ ...req.body, userId });
+      const method = await storage.createPaymentMethod(methodData);
+      res.json(method);
+    } catch (error) {
+      console.error("Error creating payment method:", error);
+      res.status(400).json({ message: "Failed to create payment method" });
+    }
+  });
+
+  // Transactions routes (financial tracking like Planity)
+  app.get('/api/transactions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const transactions = await storage.getTransactions(userId, limit);
+      res.json(transactions);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+      res.status(500).json({ message: "Failed to fetch transactions" });
+    }
+  });
+
+  app.post('/api/transactions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const transactionData = insertTransactionSchema.parse({ ...req.body, userId });
+      const transaction = await storage.createTransaction(transactionData);
+      res.json(transaction);
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      res.status(400).json({ message: "Failed to create transaction" });
+    }
+  });
+
+  // Booking Pages routes (custom booking pages like Treatwell)
+  app.get('/api/booking-pages', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const pages = await storage.getBookingPages(userId);
+      res.json(pages);
+    } catch (error) {
+      console.error("Error fetching booking pages:", error);
+      res.status(500).json({ message: "Failed to fetch booking pages" });
+    }
+  });
+
+  app.post('/api/booking-pages', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const pageData = insertBookingPageSchema.parse({ ...req.body, userId });
+      const page = await storage.createBookingPage(pageData);
+      res.json(page);
+    } catch (error) {
+      console.error("Error creating booking page:", error);
+      res.status(400).json({ message: "Failed to create booking page" });
+    }
+  });
+
+  // Public booking page access
+  app.get('/booking/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const page = await storage.getBookingPageBySlug(slug);
+      
+      if (!page) {
+        return res.status(404).send("Page de réservation non trouvée");
+      }
+
+      // Get salon profile for public booking
+      const salonProfile = await storage.getSalonProfile(page.userId);
+      
+      // Render booking page with salon info
+      res.send(`
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Réserver chez ${salonProfile.user.businessName}</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            .salon-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 15px; text-align: center; margin-bottom: 30px; }
+            .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+            .service-card { background: #f8f9fa; padding: 20px; border-radius: 10px; border: 1px solid #e9ecef; }
+            .btn { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 6px; text-decoration: none; display: inline-block; }
+          </style>
+        </head>
+        <body>
+          <div class="salon-header">
+            <h1>${salonProfile.user.businessName || 'Salon de Beauté'}</h1>
+            <p>${salonProfile.user.address || ''}</p>
+            <p>📞 ${salonProfile.user.phone || ''}</p>
+          </div>
+          
+          <h2>🌟 Nos Services</h2>
+          <div class="services-grid">
+            ${salonProfile.services.map(service => `
+              <div class="service-card">
+                <h3>${service.name}</h3>
+                <p><strong>Prix:</strong> ${service.price}€</p>
+                <p><strong>Durée:</strong> ${service.duration} min</p>
+                <p>${service.description || ''}</p>
+                <a href="/book-service/${service.id}?page=${slug}" class="btn">Réserver maintenant</a>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div style="margin-top: 40px; text-align: center; color: #666;">
+            <p>Powered by Beauty Pro - Votre plateforme de réservation</p>
+          </div>
+        </body>
+        </html>
+      `);
+    } catch (error) {
+      console.error("Error loading booking page:", error);
+      res.status(500).send("Erreur lors du chargement de la page");
+    }
+  });
+
+  // Staff Availability routes (advanced scheduling like Planity)
+  app.get('/api/staff/:staffId/availability', isAuthenticated, async (req: any, res) => {
+    try {
+      const staffId = parseInt(req.params.staffId);
+      const availability = await storage.getStaffAvailability(staffId);
+      res.json(availability);
+    } catch (error) {
+      console.error("Error fetching staff availability:", error);
+      res.status(500).json({ message: "Failed to fetch staff availability" });
+    }
+  });
+
+  app.post('/api/staff/:staffId/availability', isAuthenticated, async (req: any, res) => {
+    try {
+      const staffId = parseInt(req.params.staffId);
+      const availabilityData = insertStaffAvailabilitySchema.parse({ ...req.body, staffId });
+      const availability = await storage.createStaffAvailability(availabilityData);
+      res.json(availability);
+    } catch (error) {
+      console.error("Error creating staff availability:", error);
+      res.status(400).json({ message: "Failed to create staff availability" });
+    }
+  });
+
+  // Inventory Management routes (for beauty products)
+  app.get('/api/inventory', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const inventory = await storage.getInventory(userId);
+      res.json(inventory);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      res.status(500).json({ message: "Failed to fetch inventory" });
+    }
+  });
+
+  app.post('/api/inventory', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const itemData = insertInventorySchema.parse({ ...req.body, userId });
+      const item = await storage.createInventoryItem(itemData);
+      res.json(item);
+    } catch (error) {
+      console.error("Error creating inventory item:", error);
+      res.status(400).json({ message: "Failed to create inventory item" });
+    }
+  });
+
+  app.get('/api/inventory/low-stock', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const lowStockItems = await storage.getLowStockItems(userId);
+      res.json(lowStockItems);
+    } catch (error) {
+      console.error("Error fetching low stock items:", error);
+      res.status(500).json({ message: "Failed to fetch low stock items" });
+    }
+  });
+
+  // Marketing Campaigns routes (like Treatwell's marketing tools)
+  app.get('/api/marketing-campaigns', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const campaigns = await storage.getMarketingCampaigns(userId);
+      res.json(campaigns);
+    } catch (error) {
+      console.error("Error fetching marketing campaigns:", error);
+      res.status(500).json({ message: "Failed to fetch marketing campaigns" });
+    }
+  });
+
+  app.post('/api/marketing-campaigns', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const campaignData = insertMarketingCampaignSchema.parse({ ...req.body, userId });
+      const campaign = await storage.createMarketingCampaign(campaignData);
+      res.json(campaign);
+    } catch (error) {
+      console.error("Error creating marketing campaign:", error);
+      res.status(400).json({ message: "Failed to create marketing campaign" });
+    }
+  });
+
+  // Available time slots route (smart scheduling)
+  app.get('/api/services/:serviceId/available-slots', async (req, res) => {
+    try {
+      const serviceId = parseInt(req.params.serviceId);
+      const { userId, staffId, date } = req.query;
+      
+      const slots = await storage.getAvailableTimeSlots(
+        userId as string, 
+        serviceId, 
+        staffId ? parseInt(staffId as string) : null, 
+        date as string
+      );
+      res.json(slots);
+    } catch (error) {
+      console.error("Error fetching available slots:", error);
+      res.status(500).json({ message: "Failed to fetch available slots" });
+    }
+  });
+
+  // Salon search and marketplace (like Treatwell)
+  app.get('/api/search/salons', async (req, res) => {
+    try {
+      const { query, location, service } = req.query;
+      const salons = await storage.searchSalons(
+        query as string, 
+        location as string, 
+        service as string
+      );
+      res.json(salons);
+    } catch (error) {
+      console.error("Error searching salons:", error);
+      res.status(500).json({ message: "Failed to search salons" });
+    }
+  });
+
+  app.get('/api/salon/:userId/profile', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const profile = await storage.getSalonProfile(userId);
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching salon profile:", error);
+      res.status(500).json({ message: "Failed to fetch salon profile" });
+    }
+  });
+
+  // Revenue and financial reporting routes
+  app.get('/api/reports/revenue', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { startDate, endDate } = req.query;
+      const revenue = await storage.getRevenueByPeriod(userId, startDate as string, endDate as string);
+      res.json(revenue);
+    } catch (error) {
+      console.error("Error fetching revenue report:", error);
+      res.status(500).json({ message: "Failed to fetch revenue report" });
+    }
+  });
+
+  app.get('/api/reports/payments', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { startDate, endDate } = req.query;
+      const summary = await storage.getPaymentSummary(userId, startDate as string, endDate as string);
+      res.json(summary);
+    } catch (error) {
+      console.error("Error fetching payment summary:", error);
+      res.status(500).json({ message: "Failed to fetch payment summary" });
+    }
+  });
+
+  // Client Preferences routes
+  app.get('/api/clients/:clientId/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const clientId = parseInt(req.params.clientId);
+      const preferences = await storage.getClientPreferences(clientId);
+      res.json(preferences);
+    } catch (error) {
+      console.error("Error fetching client preferences:", error);
+      res.status(500).json({ message: "Failed to fetch client preferences" });
+    }
+  });
+
+  app.post('/api/clients/:clientId/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const clientId = parseInt(req.params.clientId);
+      const preferencesData = insertClientPreferencesSchema.parse({ ...req.body, clientId });
+      const preferences = await storage.createClientPreferences(preferencesData);
+      res.json(preferences);
+    } catch (error) {
+      console.error("Error creating client preferences:", error);
+      res.status(400).json({ message: "Failed to create client preferences" });
+    }
+  });
+
+  // Client Communication History routes
+  app.get('/api/clients/:clientId/communications', isAuthenticated, async (req: any, res) => {
+    try {
+      const clientId = parseInt(req.params.clientId);
+      const communications = await storage.getClientCommunications(clientId);
+      res.json(communications);
+    } catch (error) {
+      console.error("Error fetching client communications:", error);
+      res.status(500).json({ message: "Failed to fetch client communications" });
+    }
+  });
+
+  app.post('/api/clients/:clientId/communications', isAuthenticated, async (req: any, res) => {
+    try {
+      const clientId = parseInt(req.params.clientId);
+      const communicationData = insertClientCommunicationSchema.parse({ ...req.body, clientId });
+      const communication = await storage.createClientCommunication(communicationData);
+      res.json(communication);
+    } catch (error) {
+      console.error("Error creating client communication:", error);
+      res.status(400).json({ message: "Failed to create client communication" });
     }
   });
 
