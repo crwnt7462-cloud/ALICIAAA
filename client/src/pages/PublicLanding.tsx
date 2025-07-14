@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone } from "lucide-react";
+import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -176,7 +176,18 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero section épuré */}
-      <section className="bg-gradient-to-b from-violet-50/30 to-white py-16 lg:py-20">
+      <section className="bg-gradient-to-b from-violet-50/30 to-white py-16 lg:py-20 relative">
+        {/* Notification flottante */}
+        <div className="absolute top-8 right-8 hidden lg:block">
+          <div className="bg-white border border-violet-200 rounded-lg p-3 shadow-lg animate-bounce">
+            <div className="flex items-center gap-2 text-sm">
+              <Bell className="w-4 h-4 text-violet-600" />
+              <span className="text-gray-700">Marie vient de réserver</span>
+            </div>
+            <div className="text-xs text-gray-500 mt-1">Salon Excellence • il y a 2 min</div>
+          </div>
+        </div>
+        
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
@@ -258,9 +269,21 @@ export default function PublicLanding() {
               </Button>
             </div>
 
-            {/* Recherches populaires */}
+            {/* Recherches populaires et filtres */}
             <div className="max-w-2xl mx-auto">
-              <p className="text-sm text-gray-500 mb-3">Recherches populaires :</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm text-gray-500">Recherches populaires :</p>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="text-xs">
+                    <Filter className="w-3 h-3 mr-1" />
+                    Filtres
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs">
+                    <SortAsc className="w-3 h-3 mr-1" />
+                    Trier
+                  </Button>
+                </div>
+              </div>
               <div className="flex flex-wrap gap-2 justify-center">
                 {['Coiffure femme', 'Massage relaxant', 'Manucure', 'Soin visage', 'Épilation'].map((search) => (
                   <button
@@ -269,7 +292,7 @@ export default function PublicLanding() {
                       setSearchQuery(search);
                       handleSearch();
                     }}
-                    className="px-3 py-1 bg-gray-100 hover:bg-violet-100 text-sm rounded-full transition-colors"
+                    className="px-3 py-1 bg-gray-100 hover:bg-violet-100 text-sm rounded-full transition-colors hover:scale-105"
                   >
                     {search}
                   </button>
@@ -317,10 +340,10 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Statistiques simples */}
-      <section className="py-8 bg-white">
+      {/* Statistiques et garanties */}
+      <section className="py-8 bg-white border-y border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-8">
             {stats.map((stat, index) => (
               <div key={index}>
                 <div className="text-2xl font-bold text-gray-900 mb-1">
@@ -331,6 +354,28 @@ export default function PublicLanding() {
                 </div>
               </div>
             ))}
+          </div>
+          
+          {/* Garanties professionnelles */}
+          <div className="border-t pt-6">
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-green-600" />
+                <span>Paiement sécurisé SSL</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-blue-600" />
+                <span>Professionnels certifiés</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Truck className="w-4 h-4 text-violet-600" />
+                <span>Service client 7j/7</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-green-600" />
+                <span>Satisfaction garantie</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -343,14 +388,14 @@ export default function PublicLanding() {
           </h2>
           <div className="grid grid-cols-4 gap-4">
             {[
-              { name: "Coiffure", icon: "💇‍♀️" },
-              { name: "Esthétique", icon: "✨" },
-              { name: "Massage", icon: "💆‍♀️" },
-              { name: "Onglerie", icon: "💅" }
+              { name: "Coiffure", icon: <Scissors className="w-6 h-6" /> },
+              { name: "Esthétique", icon: <Sparkles className="w-6 h-6" /> },
+              { name: "Massage", icon: <Heart className="w-6 h-6" /> },
+              { name: "Onglerie", icon: <Star className="w-6 h-6" /> }
             ].map((service, index) => (
-              <div key={index} className="text-center p-4 rounded-lg hover:bg-gray-50">
-                <div className="text-2xl mb-2">{service.icon}</div>
-                <div className="text-sm text-gray-700">{service.name}</div>
+              <div key={index} className="text-center p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                <div className="text-violet-600 mb-2 flex justify-center">{service.icon}</div>
+                <div className="text-sm text-gray-700 font-medium">{service.name}</div>
               </div>
             ))}
           </div>
@@ -518,18 +563,18 @@ export default function PublicLanding() {
               Réservez encore plus facilement depuis votre téléphone
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 hover:bg-white/20 transition-colors cursor-pointer">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-violet-600 font-bold">📱</span>
+                  <Phone className="w-4 h-4 text-violet-600" />
                 </div>
                 <div className="text-left">
                   <div className="text-white font-medium">App Store</div>
                   <div className="text-violet-100 text-sm">Télécharger sur iOS</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 hover:bg-white/20 transition-colors cursor-pointer">
                 <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-violet-600 font-bold">🤖</span>
+                  <Phone className="w-4 h-4 text-violet-600" />
                 </div>
                 <div className="text-left">
                   <div className="text-white font-medium">Google Play</div>
@@ -541,8 +586,23 @@ export default function PublicLanding() {
         </div>
       </section>
 
+      {/* Partenaires et certifications */}
+      <section className="py-8 bg-gray-50 border-t">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6">
+            <p className="text-sm text-gray-500 mb-4">Ils nous font confiance</p>
+            <div className="flex justify-center items-center gap-8 opacity-60">
+              <div className="text-lg font-bold text-gray-400">L'ORÉAL</div>
+              <div className="text-lg font-bold text-gray-400">SEPHORA</div>
+              <div className="text-lg font-bold text-gray-400">YVES ROCHER</div>
+              <div className="text-lg font-bold text-gray-400">MARIONNAUD</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Professionnels */}
-      <section className="py-12 bg-white border-t">
+      <section className="py-12 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Professionnel de la beauté ?
@@ -550,12 +610,20 @@ export default function PublicLanding() {
           <p className="text-gray-600 mb-6">
             Rejoignez notre réseau de 2,500+ salons partenaires
           </p>
-          <Button 
-            onClick={() => setLocation("/pro-login")}
-            className="gradient-bg hover:opacity-90 text-white"
-          >
-            Rejoindre le réseau
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              onClick={() => setLocation("/pro-login")}
+              className="gradient-bg text-white hover:opacity-90"
+            >
+              Rejoindre le réseau
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-violet-200 text-violet-600 hover:bg-violet-50"
+            >
+              En savoir plus
+            </Button>
+          </div>
         </div>
       </section>
 
