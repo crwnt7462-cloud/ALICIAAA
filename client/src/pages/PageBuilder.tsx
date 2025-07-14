@@ -250,7 +250,7 @@ export default function PageBuilder() {
   return (
     <div className="flex h-screen bg-gray-50 w-full">
       {/* Sidebar - Block Library */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+      <div className="w-80 lg:w-80 md:w-72 sm:w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <Button 
@@ -405,9 +405,52 @@ export default function PageBuilder() {
       </div>
 
       {/* Main Content - Preview */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex flex-col md:flex-row">
+        {/* Mobile Toolbar - Visible only on mobile */}
+        <div className="md:hidden bg-white border-b border-gray-200 p-3">
+          <div className="flex items-center justify-between">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.close()}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Fermer
+            </Button>
+            
+            <div className="flex space-x-1">
+              <Button
+                variant={activeView === 'desktop' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveView('desktop')}
+              >
+                <Monitor className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={activeView === 'mobile' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setActiveView('mobile')}
+              >
+                <Smartphone className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => savePageMutation.mutate(pageDesign)}
+              disabled={savePageMutation.isPending}
+              size="sm"
+            >
+              {savePageMutation.isPending ? (
+                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
+        </div>
+
         {/* Preview Area */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-3 md:p-6 overflow-y-auto">
           <div className={`mx-auto bg-white shadow-xl rounded-lg overflow-hidden ${
             activeView === 'mobile' ? 'max-w-sm' : 'max-w-5xl'
           }`}>
@@ -418,7 +461,7 @@ export default function PageBuilder() {
                   key={block.id}
                   className={`relative cursor-pointer transition-all ${
                     selectedBlock === block.id ? 'ring-2 ring-blue-500' : ''
-                  }`}
+                  } ${activeView === 'mobile' ? 'text-sm' : ''}`}
                   onClick={() => setSelectedBlock(block.id)}
                   style={{
                     backgroundColor: block.style.backgroundColor,
@@ -448,10 +491,10 @@ export default function PageBuilder() {
                     >
                       <div className="flex flex-col items-center justify-center h-full">
                         {block.content.logoUrl && (
-                          <img src={block.content.logoUrl} alt="Logo" className="h-16 mb-4" />
+                          <img src={block.content.logoUrl} alt="Logo" className={`mb-4 ${activeView === 'mobile' ? 'h-12' : 'h-16'}`} />
                         )}
-                        <h1 className="text-4xl font-bold mb-2">{block.content.title}</h1>
-                        <p className="text-xl opacity-90">{block.content.subtitle}</p>
+                        <h1 className={`font-bold mb-2 ${activeView === 'mobile' ? 'text-2xl' : 'text-4xl'}`}>{block.content.title}</h1>
+                        <p className={`opacity-90 ${activeView === 'mobile' ? 'text-lg' : 'text-xl'}`}>{block.content.subtitle}</p>
                       </div>
                     </div>
                   )}
@@ -464,8 +507,8 @@ export default function PageBuilder() {
 
                   {block.type === 'services' && (
                     <div>
-                      <h2 className="text-2xl font-bold mb-6 text-center">{block.content.title}</h2>
-                      <div className={`grid gap-4 ${block.content.layout === 'grid' ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                      <h2 className={`font-bold mb-6 text-center ${activeView === 'mobile' ? 'text-xl mb-4' : 'text-2xl'}`}>{block.content.title}</h2>
+                      <div className={`grid gap-4 ${block.content.layout === 'grid' && activeView !== 'mobile' ? 'grid-cols-2' : 'grid-cols-1'}`}>
                         {[
                           { name: "Coupe femme", price: 45, duration: 60 },
                           { name: "Coloration", price: 80, duration: 120 },
@@ -545,9 +588,172 @@ export default function PageBuilder() {
           </div>
         </div>
 
+        {/* Mobile Bottom Sheet for Block Properties */}
+        {selectedBlockData && (
+          <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-h-96 overflow-y-auto z-50">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-gray-900">
+                  {blockTypes.find(t => t.type === selectedBlockData.type)?.label}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedBlock(null)}
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Same properties as desktop but condensed */}
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Contenu</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {selectedBlockData.type === 'header' && (
+                      <>
+                        <div>
+                          <Label className="text-xs">Titre</Label>
+                          <Input
+                            value={selectedBlockData.content.title}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              content: { ...selectedBlockData.content, title: e.target.value }
+                            })}
+                            className="h-8 text-sm"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Sous-titre</Label>
+                          <Input
+                            value={selectedBlockData.content.subtitle}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              content: { ...selectedBlockData.content, subtitle: e.target.value }
+                            })}
+                            className="h-8 text-sm"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {selectedBlockData.type === 'text' && (
+                      <div>
+                        <Label className="text-xs">Contenu</Label>
+                        <Textarea
+                          value={selectedBlockData.content.content}
+                          onChange={(e) => updateBlock(selectedBlockData.id, {
+                            content: { ...selectedBlockData.content, content: e.target.value }
+                          })}
+                          rows={3}
+                          className="text-sm"
+                        />
+                      </div>
+                    )}
+
+                    {selectedBlockData.type === 'services' && (
+                      <>
+                        <div>
+                          <Label className="text-xs">Titre</Label>
+                          <Input
+                            value={selectedBlockData.content.title}
+                            onChange={(e) => updateBlock(selectedBlockData.id, {
+                              content: { ...selectedBlockData.content, title: e.target.value }
+                            })}
+                            className="h-8 text-sm"
+                          />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs">Afficher les prix</Label>
+                          <Switch
+                            checked={selectedBlockData.content.showPrices}
+                            onCheckedChange={(checked) => updateBlock(selectedBlockData.id, {
+                              content: { ...selectedBlockData.content, showPrices: checked }
+                            })}
+                          />
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+                
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Couleurs</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="flex space-x-2">
+                      <Input
+                        type="color"
+                        value={selectedBlockData.style.backgroundColor}
+                        onChange={(e) => updateBlock(selectedBlockData.id, {
+                          style: { ...selectedBlockData.style, backgroundColor: e.target.value }
+                        })}
+                        className="w-12 h-8 p-1"
+                      />
+                      <Input
+                        type="color"
+                        value={selectedBlockData.style.textColor}
+                        onChange={(e) => updateBlock(selectedBlockData.id, {
+                          style: { ...selectedBlockData.style, textColor: e.target.value }
+                        })}
+                        className="w-12 h-8 p-1"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile Block Menu - Swipe up bottom sheet */}
+        <div className="md:hidden">
+          <input type="checkbox" id="mobile-blocks-toggle" className="hidden peer" />
+          
+          {/* Floating Action Button */}
+          <label 
+            htmlFor="mobile-blocks-toggle" 
+            className="fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full shadow-lg bg-purple-600 hover:bg-purple-700 flex items-center justify-center cursor-pointer"
+          >
+            <Plus className="w-6 h-6 text-white" />
+          </label>
+
+          {/* Bottom Sheet for Block Selection */}
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-30 opacity-0 pointer-events-none peer-checked:opacity-100 peer-checked:pointer-events-auto transition-opacity">
+            <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl transform translate-y-full peer-checked:translate-y-0 transition-transform duration-300">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">Ajouter un bloc</h3>
+                  <label htmlFor="mobile-blocks-toggle" className="cursor-pointer">
+                    <Button variant="ghost" size="sm">✕</Button>
+                  </label>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  {blockTypes.map((blockType) => (
+                    <label 
+                      key={blockType.type}
+                      htmlFor="mobile-blocks-toggle"
+                      className="cursor-pointer"
+                      onClick={() => addBlock(blockType.type)}
+                    >
+                      <div className="p-4 border border-gray-200 rounded-lg text-center hover:bg-gray-50">
+                        <blockType.icon className="w-8 h-8 mx-auto mb-2 text-purple-600" />
+                        <p className="text-sm font-medium">{blockType.label}</p>
+                        <p className="text-xs text-gray-500">{blockType.description}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Properties Panel */}
         {selectedBlockData && (
-          <div className="w-80 bg-white border-l border-gray-200 p-4 overflow-y-auto">
+          <div className="w-80 lg:w-80 md:w-72 bg-white border-l border-gray-200 p-4 overflow-y-auto hidden md:block">
             <h3 className="font-semibold text-gray-900 mb-4">
               Propriétés - {blockTypes.find(t => t.type === selectedBlockData.type)?.label}
             </h3>
