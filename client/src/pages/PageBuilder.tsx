@@ -64,28 +64,28 @@ export default function PageBuilder() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Template professionnel complet
+  // Template "Réservation Express" - Page de réservation en 3 étapes
   const loadProTemplate = () => {
     const proTemplate: PageDesign = {
-      name: "Salon Beauté Elite",
-      slug: "salon-beaute-elite",
+      name: "Réservation Express",
+      slug: "reservation-express",
       blocks: [
         {
           id: "header-1",
           type: "header",
           content: {
-            title: "Salon Beauté Elite",
-            subtitle: "L'excellence au service de votre beauté depuis 1995",
+            title: "Réservation Express",
+            subtitle: "Réservez votre rendez-vous en 3 étapes simples",
             backgroundImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200",
             logoUrl: "",
-            ctaText: "Réserver maintenant",
+            ctaText: "Commencer la réservation",
             showCta: true
           },
           style: {
             backgroundColor: "#8B5CF6",
             textColor: "#FFFFFF",
             alignment: "center",
-            height: "500px",
+            height: "400px",
             gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             borderRadius: "0px",
             animation: "fadeIn"
@@ -93,49 +93,79 @@ export default function PageBuilder() {
           order: 0
         },
         {
-          id: "services-1",
-          type: "services",
+          id: "booking-form-1",
+          type: "booking-form",
           content: {
-            title: "Nos Services Premium",
-            subtitle: "Des prestations d'exception pour sublimer votre beauté",
-            showPrices: true,
-            showDuration: true,
-            layout: "grid",
-            showBookingButton: true
+            title: "Étape 1 - Choisissez votre service",
+            subtitle: "Sélectionnez la prestation qui vous intéresse",
+            buttonText: "Continuer →",
+            showInstantBooking: true,
+            requireDeposit: true,
+            depositAmount: 20,
+            stepByStep: true
           },
           style: {
             backgroundColor: "#FFFFFF",
             textColor: "#1F2937",
-            padding: "60px 40px",
-            borderRadius: "0px",
-            animation: "slideUp"
+            padding: "40px",
+            borderRadius: "12px",
+            shadow: "lg",
+            border: "1px solid #E5E7EB"
           },
           order: 1
         },
         {
-          id: "team-1",
-          type: "team",
+          id: "services-1",
+          type: "services",
           content: {
-            title: "Notre Équipe d'Experts",
-            subtitle: "Des professionnels passionnés à votre service",
-            layout: "cards",
-            showSpecialties: true
+            title: "Nos Services Disponibles",
+            subtitle: "Choisissez parmi nos prestations premium",
+            showPrices: true,
+            showDuration: true,
+            layout: "list",
+            showBookingButton: true,
+            quickSelect: true
           },
           style: {
             backgroundColor: "#F8FAFC",
             textColor: "#1F2937",
-            padding: "60px 40px",
-            animation: "fadeIn"
+            padding: "40px",
+            borderRadius: "0px"
           },
           order: 2
         },
         {
-          id: "gallery-1",
-          type: "gallery",
+          id: "text-1",
+          type: "text",
           content: {
-            title: "Découvrez Notre Salon",
-            subtitle: "Un cadre luxueux et apaisant",
-            layout: "masonry"
+            content: `<div class="text-center space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                  <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-purple-600 font-bold text-xl">1</span>
+                  </div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Choisissez</h3>
+                  <p class="text-gray-600 text-sm">Sélectionnez votre service parmi nos prestations</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                  <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-blue-600 font-bold text-xl">2</span>
+                  </div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Planifiez</h3>
+                  <p class="text-gray-600 text-sm">Choisissez votre créneau préféré</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm border">
+                  <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-green-600 font-bold text-xl">3</span>
+                  </div>
+                  <h3 class="font-semibold text-gray-900 mb-2">Confirmez</h3>
+                  <p class="text-gray-600 text-sm">Finalisez votre réservation</p>
+                </div>
+              </div>
+            </div>`,
+            alignment: "center"
           },
           style: {
             backgroundColor: "#FFFFFF",
@@ -145,13 +175,13 @@ export default function PageBuilder() {
           order: 3
         },
         {
-          id: "promotions-1",
-          type: "promotions",
+          id: "testimonials-1",
+          type: "testimonials",
           content: {
-            title: "Offres Spéciales du Moment",
-            subtitle: "Ne manquez pas nos promotions exceptionnelles",
-            layout: "cards",
-            showCountdown: true
+            title: "Ce que disent nos clients",
+            subtitle: "Plus de 1000 clients satisfaits",
+            layout: "carousel",
+            autoplay: true
           },
           style: {
             backgroundColor: "#F8FAFC",
@@ -159,43 +189,6 @@ export default function PageBuilder() {
             padding: "60px 40px"
           },
           order: 4
-        },
-        {
-          id: "pricing-1",
-          type: "pricing",
-          content: {
-            title: "Nos Tarifs",
-            subtitle: "Des prix transparents pour tous nos services",
-            layout: "table",
-            showPromotions: true
-          },
-          style: {
-            backgroundColor: "#FFFFFF",
-            textColor: "#1F2937",
-            padding: "60px 40px"
-          },
-          order: 5
-        },
-        {
-          id: "booking-form-1",
-          type: "booking-form",
-          content: {
-            title: "Réservation Express",
-            subtitle: "Réservez votre rendez-vous en 30 secondes",
-            buttonText: "Réserver & Confirmer",
-            showInstantBooking: true,
-            requireDeposit: true,
-            depositAmount: 25
-          },
-          style: {
-            backgroundColor: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            textColor: "#FFFFFF",
-            padding: "60px",
-            buttonColor: "#10B981",
-            buttonStyle: "rounded-lg",
-            animation: "pulse"
-          },
-          order: 6
         }
       ],
       theme: {
@@ -206,15 +199,15 @@ export default function PageBuilder() {
       },
       settings: {
         isPublished: true,
-        metaTitle: "Salon Beauté Elite - Réservation en ligne",
-        metaDescription: "Réservez votre rendez-vous dans notre salon de beauté premium. Services de coiffure, coloration, soins. Équipe d'experts."
+        metaTitle: "Réservation Express - Prenez RDV en 3 étapes",
+        metaDescription: "Réservez votre rendez-vous rapidement en 3 étapes simples. Choisissez, planifiez, confirmez."
       }
     };
     
     setPageDesign(proTemplate);
     toast({
-      title: "Template Pro chargé",
-      description: "Page professionnelle complète chargée avec succès",
+      title: "Réservation Express chargée",
+      description: "Page de réservation en 3 étapes chargée avec succès",
     });
   };
 
@@ -594,7 +587,7 @@ export default function PageBuilder() {
             className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
           >
             <Star className="w-4 h-4 mr-2" />
-            Charger Template Pro
+            Réservation Express
           </Button>
           
           <Button
