@@ -177,7 +177,7 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero section épuré */}
-      <section className="bg-gradient-to-b from-violet-50/30 to-white py-16 lg:py-20 relative">
+      <section className="bg-gradient-to-b from-violet-50/30 to-white py-8 md:py-12 lg:py-16 relative">
         {/* Notification flottante */}
         <div className="absolute top-8 right-8 hidden lg:block">
           <div className="bg-white border border-violet-200 rounded-lg p-3 shadow-lg animate-bounce">
@@ -195,32 +195,32 @@ export default function PublicLanding() {
               <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
               <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 px-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous beauté
             </h1>
-            <p className="text-base md:text-lg text-gray-600 mb-10 px-4">
+            <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
               Trouvez et réservez chez les meilleurs professionnels près de chez vous
             </p>
             
-            {/* Barre de recherche mobile-optimized */}
-            <div className="max-w-lg mx-auto mb-6">
-              <div className="space-y-3">
+            {/* Barre de recherche compacte */}
+            <div className="max-w-md mx-auto mb-5">
+              <div className="space-y-2">
                 <div className="relative">
                   <Input
                     placeholder="Service (coiffure, massage...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-14 pl-4 pr-12 text-base rounded-xl border-2 border-gray-200 focus:border-violet-500"
+                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <Search className="absolute right-4 top-4 w-6 h-6 text-gray-400" />
+                  <Search className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
                 </div>
                 <div className="relative">
                   <Input
                     placeholder="Ville"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="h-14 pl-4 pr-12 text-base rounded-xl border-2 border-gray-200 focus:border-violet-500"
+                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <button
@@ -234,15 +234,15 @@ export default function PublicLanding() {
                         );
                       }
                     }}
-                    className="absolute right-4 top-4 text-violet-500 active:text-violet-700 touch-manipulation"
+                    className="absolute right-3 top-3 text-violet-500 active:text-violet-700 touch-manipulation"
                     title="Utiliser ma position"
                   >
-                    <MapPin className="w-6 h-6" />
+                    <MapPin className="w-5 h-5" />
                   </button>
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full h-14 gradient-bg text-white text-base font-medium rounded-xl touch-manipulation"
+                  className="w-full h-11 gradient-bg text-white text-sm font-medium rounded-lg touch-manipulation"
                 >
                   Rechercher
                 </Button>
@@ -251,18 +251,18 @@ export default function PublicLanding() {
             
 
 
-            {/* Recherches populaires mobile-friendly */}
-            <div className="max-w-lg mx-auto mb-8">
-              <p className="text-sm text-gray-500 mb-3 text-center">Recherches populaires :</p>
-              <div className="grid grid-cols-2 gap-2">
-                {['Coiffure femme', 'Massage relaxant', 'Manucure', 'Soin visage', 'Épilation'].map((search) => (
+            {/* Recherches populaires compactes */}
+            <div className="max-w-md mx-auto mb-6">
+              <p className="text-xs text-gray-500 mb-2 text-center">Recherches populaires :</p>
+              <div className="flex flex-wrap gap-1 justify-center">
+                {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((search) => (
                   <button
                     key={search}
                     onClick={() => {
                       setSearchQuery(search);
                       handleSearch();
                     }}
-                    className="h-12 bg-gray-100 active:bg-violet-100 text-sm rounded-xl transition-colors touch-manipulation font-medium"
+                    className="px-3 py-1 bg-gray-100 active:bg-violet-100 text-xs rounded-full transition-colors touch-manipulation"
                   >
                     {search}
                   </button>
@@ -274,34 +274,34 @@ export default function PublicLanding() {
       </section>
 
       {/* Créneaux disponibles aujourd'hui */}
-      <section className="py-8 md:py-12 bg-gradient-to-r from-violet-50 to-pink-50">
+      <section className="py-6 md:py-8 bg-gradient-to-r from-violet-50 to-pink-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-4">
+            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
               Créneaux disponibles aujourd'hui
             </h2>
-            <p className="text-sm md:text-base text-gray-600">Réservation immédiate possible</p>
+            <p className="text-xs md:text-sm text-gray-600">Réservation immédiate possible</p>
           </div>
           
-          <div className="space-y-3 md:grid md:grid-cols-3 md:gap-4 md:space-y-0">
+          <div className="space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
             {[
               { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e" },
               { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e" },
               { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e" }
             ].map((slot, index) => (
-              <div key={index} className="bg-white rounded-xl p-4 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation">
-                <div className="flex justify-between items-start mb-3">
-                  <div className="bg-violet-100 text-violet-700 px-3 py-2 rounded-full text-sm font-medium">
+              <div key={index} className="bg-white rounded-lg p-3 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="bg-violet-100 text-violet-700 px-2 py-1 rounded-full text-xs font-medium">
                     {slot.time}
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold text-gray-900">{slot.price}</div>
+                    <div className="font-semibold text-gray-900 text-sm">{slot.price}</div>
                   </div>
                 </div>
-                <h3 className="font-medium text-gray-900 mb-1">{slot.salon}</h3>
-                <p className="text-sm text-gray-600 mb-1">{slot.service}</p>
-                <p className="text-xs text-gray-500 mb-3">{slot.location}</p>
-                <Button className="w-full h-12 gradient-bg text-white rounded-xl touch-manipulation">
+                <h3 className="font-medium text-gray-900 mb-1 text-sm">{slot.salon}</h3>
+                <p className="text-xs text-gray-600 mb-1">{slot.service}</p>
+                <p className="text-xs text-gray-500 mb-2">{slot.location}</p>
+                <Button className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs">
                   Réserver
                 </Button>
               </div>
@@ -523,32 +523,32 @@ export default function PublicLanding() {
       </section>
 
       {/* Application mobile */}
-      <section className="py-12 gradient-bg">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-6 gradient-bg">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Téléchargez l'application mobile
+            <h2 className="text-lg md:text-xl font-bold text-white mb-2">
+              Application mobile
             </h2>
-            <p className="text-violet-100 mb-8">
+            <p className="text-violet-100 mb-4 text-sm">
               Réservez encore plus facilement depuis votre téléphone
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 hover:bg-white/20 transition-colors cursor-pointer">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-violet-600" />
+            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation">
+                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
+                  <Phone className="w-3 h-3 text-violet-600" />
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-medium">App Store</div>
-                  <div className="text-violet-100 text-sm">Télécharger sur iOS</div>
+                  <div className="text-white font-medium text-sm">App Store</div>
+                  <div className="text-violet-100 text-xs">iOS</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20 hover:bg-white/20 transition-colors cursor-pointer">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-violet-600" />
+              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation">
+                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
+                  <Phone className="w-3 h-3 text-violet-600" />
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-medium">Google Play</div>
-                  <div className="text-violet-100 text-sm">Télécharger sur Android</div>
+                  <div className="text-white font-medium text-sm">Google Play</div>
+                  <div className="text-violet-100 text-xs">Android</div>
                 </div>
               </div>
             </div>
@@ -559,24 +559,24 @@ export default function PublicLanding() {
 
 
       {/* CTA Professionnels */}
-      <section className="py-12 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+      <section className="py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
             Professionnel de la beauté ?
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-sm text-gray-600 mb-4">
             Rejoignez notre réseau de 2,500+ salons partenaires
           </p>
-          <div className="space-y-3 md:flex md:flex-row md:gap-4 md:justify-center md:space-y-0">
+          <div className="space-y-2 md:flex md:flex-row md:gap-3 md:justify-center md:space-y-0">
             <Button 
               onClick={() => setLocation("/pro-login")}
-              className="w-full md:w-auto h-12 gradient-bg text-white rounded-xl touch-manipulation font-medium"
+              className="w-full md:w-auto h-10 gradient-bg text-white rounded-lg touch-manipulation text-sm"
             >
               Rejoindre le réseau
             </Button>
             <Button 
               variant="outline"
-              className="w-full md:w-auto h-12 border-violet-200 text-violet-600 active:bg-violet-50 rounded-xl touch-manipulation font-medium"
+              className="w-full md:w-auto h-10 border-violet-200 text-violet-600 active:bg-violet-50 rounded-lg touch-manipulation text-sm"
             >
               En savoir plus
             </Button>
