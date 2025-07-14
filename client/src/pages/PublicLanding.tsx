@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp } from "lucide-react";
+import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -176,16 +176,42 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero section épuré */}
-      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-16 lg:py-24 relative overflow-hidden">
+        {/* Éléments décoratifs animés */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-purple-200/30 rounded-full animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-pink-200/30 rounded-full animate-bounce delay-1000"></div>
+        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-orange-200/30 rounded-full animate-pulse delay-500"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-purple-100">
+              <Sparkles className="w-4 h-4 text-purple-600" />
+              <span className="text-sm font-medium text-purple-700">✨ Nouveau : Réservation instantanée</span>
+            </div>
+            
             <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Réservez votre 
-              <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">rendez-vous beauté</span>
+              <span className="block bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 bg-clip-text text-transparent animate-gradient">rendez-vous beauté</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
               Accédez aux meilleurs salons de votre région. Réservation en ligne simple, rapide et sécurisée.
             </p>
+            
+            {/* Stats rapides */}
+            <div className="flex flex-wrap justify-center gap-8 mb-12">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span>2,500+ salons partenaires</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-300"></div>
+                <span>50,000+ réservations/mois</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-700"></div>
+                <span>4.9/5 satisfaction client</span>
+              </div>
+            </div>
             
             {/* Barre de recherche premium */}
             <div className="max-w-2xl mx-auto">
@@ -232,20 +258,74 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Statistiques */}
+      {/* Statistiques avec animations */}
       <section className="py-16 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl lg:text-4xl font-bold text-purple-600 mb-2">
-                  {stat.number}
+              <div key={index} className="text-center group">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 mb-4 group-hover:from-purple-100 group-hover:to-purple-200 transition-all duration-300 transform group-hover:scale-105">
+                  <div className="text-3xl lg:text-4xl font-bold text-transparent bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text mb-2">
+                    {stat.number}
+                  </div>
+                  <div className="text-gray-600 font-medium group-hover:text-gray-700">
+                    {stat.label}
+                  </div>
                 </div>
-                <div className="text-gray-600 font-medium">
-                  {stat.label}
-                </div>
+                {index === 0 && <Zap className="w-6 h-6 text-purple-500 mx-auto animate-pulse" />}
+                {index === 1 && <Heart className="w-6 h-6 text-pink-500 mx-auto animate-pulse delay-300" />}
+                {index === 2 && <Star className="w-6 h-6 text-yellow-500 mx-auto animate-pulse delay-500" />}
+                {index === 3 && <Clock className="w-6 h-6 text-blue-500 mx-auto animate-pulse delay-700" />}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Galerie visuelle des services */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              Découvrez nos services
+            </h2>
+            <p className="text-xl text-gray-600">
+              Une expérience beauté complète à portée de clic
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { name: "Coiffure", icon: "💇‍♀️", color: "from-pink-400 to-pink-600" },
+              { name: "Esthétique", icon: "✨", color: "from-purple-400 to-purple-600" },
+              { name: "Massage", icon: "💆‍♀️", color: "from-blue-400 to-blue-600" },
+              { name: "Onglerie", icon: "💅", color: "from-green-400 to-green-600" },
+              { name: "Épilation", icon: "🪒", color: "from-orange-400 to-orange-600" },
+              { name: "Maquillage", icon: "💄", color: "from-red-400 to-red-600" },
+              { name: "Soins visage", icon: "🧴", color: "from-teal-400 to-teal-600" },
+              { name: "Barbier", icon: "✂️", color: "from-gray-400 to-gray-600" }
+            ].map((service, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white overflow-hidden group cursor-pointer">
+                <CardContent className="p-6 text-center">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${service.color} rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <span className="text-2xl">{service.icon}</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors duration-200">
+                    {service.name}
+                  </h3>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Button 
+              className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+              size="lg"
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              Voir tous les services
+            </Button>
           </div>
         </div>
       </section>
@@ -266,16 +346,27 @@ export default function PublicLanding() {
             {topSalons.map((salon, index) => (
               <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white overflow-hidden group">
                 <CardContent className="p-0">
-                  <div className="aspect-video bg-gradient-to-br from-purple-100 to-purple-200 relative overflow-hidden">
+                  <div className="aspect-video bg-gradient-to-br from-purple-100 via-pink-100 to-purple-200 relative overflow-hidden">
+                    {/* Pattern décoratif */}
+                    <div className="absolute inset-0 opacity-10">
+                      <div className="absolute top-4 left-4 w-8 h-8 border-2 border-white rounded-full"></div>
+                      <div className="absolute bottom-4 right-4 w-6 h-6 border-2 border-white rounded-full"></div>
+                      <div className="absolute top-1/2 left-1/2 w-4 h-4 border-2 border-white rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+                    </div>
+                    
                     <div className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                        <span className="text-2xl font-bold text-purple-600">
+                      <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl border-4 border-white/50">
+                        <span className="text-2xl font-bold text-purple-600 group-hover:text-purple-700">
                           {salon.name.charAt(0)}
                         </span>
                       </div>
                     </div>
+                    
+                    {/* Gradient overlay au hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-purple-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
                     {salon.verified && (
-                      <Badge className="absolute top-4 right-4 bg-green-100 text-green-800 border-0 animate-pulse">
+                      <Badge className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-green-600 text-white border-0 animate-float">
                         <CheckCircle2 className="w-3 h-3 mr-1" />
                         Vérifié
                       </Badge>
@@ -342,13 +433,13 @@ export default function PublicLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((benefit, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <div className="text-purple-600">
+              <div key={index} className="text-center group">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                  <div className="text-purple-600 group-hover:text-purple-700">
                     {benefit.icon}
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-200">
                   {benefit.title}
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
@@ -409,9 +500,19 @@ export default function PublicLanding() {
           </div>
 
           <div className="text-center mt-12">
-            <div className="inline-flex items-center gap-2 text-purple-600">
-              <ThumbsUp className="w-5 h-5" />
-              <span className="font-semibold">98% de satisfaction client</span>
+            <div className="flex flex-wrap justify-center gap-6">
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-lg">
+                <ThumbsUp className="w-5 h-5 text-green-600" />
+                <span className="font-semibold text-gray-900">98% de satisfaction</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-lg">
+                <Heart className="w-5 h-5 text-red-500" />
+                <span className="font-semibold text-gray-900">50,000+ clients heureux</span>
+              </div>
+              <div className="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-lg">
+                <Star className="w-5 h-5 text-yellow-500" />
+                <span className="font-semibold text-gray-900">Note moyenne 4.9/5</span>
+              </div>
             </div>
           </div>
         </div>
@@ -493,15 +594,28 @@ export default function PublicLanding() {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-gray-600 mb-4">
-              Une autre question ? Contactez notre équipe support
-            </p>
-            <Button 
-              variant="outline" 
-              className="border-purple-200 text-purple-600 hover:bg-purple-50"
-            >
-              Nous contacter
-            </Button>
+            <div className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Besoin d'aide ? Notre équipe est là pour vous
+              </h3>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Button 
+                  variant="outline" 
+                  className="border-purple-200 text-purple-600 hover:bg-purple-50 bg-white"
+                >
+                  <Phone className="w-4 h-4 mr-2" />
+                  01 42 34 56 78
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+                >
+                  Chat en ligne
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">
+                Support client disponible 7j/7 de 9h à 20h
+              </p>
+            </div>
           </div>
         </div>
       </section>
