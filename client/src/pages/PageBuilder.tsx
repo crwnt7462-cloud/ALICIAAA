@@ -65,16 +65,20 @@ export default function PageBuilder() {
   const queryClient = useQueryClient();
 
   const [pageDesign, setPageDesign] = useState<PageDesign>({
-    name: "Réservation Express",
-    slug: "reservation-express",
+    name: "Réservation Rapide",
+    slug: "reservation-rapide",
     blocks: [
       {
-        id: "header-1",
+        id: "hero-section",
         type: "text",
         content: {
-          content: `<div class="text-center bg-gradient-to-r from-purple-600 to-pink-600 text-white p-8">
-            <h1 class="text-4xl font-bold mb-4">Réservation Express</h1>
-            <p class="text-xl opacity-90">Réservez votre rendez-vous en 3 étapes simples</p>
+          content: `<div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-8 text-center">
+            <h1 class="text-4xl font-bold mb-2">Réservation Rapide</h1>
+            <p class="text-xl opacity-90 mb-6">Prenez rendez-vous en 2 minutes</p>
+            <div class="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+              <span class="text-green-300 mr-2">✓</span>
+              <span class="text-sm">Confirmation instantanée</span>
+            </div>
           </div>`,
           alignment: "center"
         },
@@ -86,15 +90,100 @@ export default function PageBuilder() {
         order: 0
       },
       {
-        id: "progress-steps",
+        id: "booking-form",
+        type: "booking-form",
+        content: {
+          title: "Réservez votre créneau",
+          subtitle: "Choisissez votre service et votre horaire préféré",
+          buttonText: "Confirmer ma réservation",
+          requireDeposit: true,
+          depositAmount: 15,
+          services: [
+            {
+              name: "Coupe + Brushing",
+              price: 45,
+              duration: 60,
+              popular: true,
+              depositRequired: 15
+            },
+            {
+              name: "Coloration complète",
+              price: 85,
+              duration: 120,
+              popular: false,
+              depositRequired: 20
+            },
+            {
+              name: "Mèches + Brushing",
+              price: 75,
+              duration: 90,
+              popular: false,
+              depositRequired: 20
+            },
+            {
+              name: "Brushing seul",
+              price: 25,
+              duration: 30,
+              popular: false,
+              depositRequired: 10
+            },
+            {
+              name: "Soin capillaire",
+              price: 35,
+              duration: 45,
+              popular: false,
+              depositRequired: 10
+            }
+          ],
+          availableSlots: [
+            "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+            "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
+          ]
+        },
+        style: {
+          backgroundColor: "#FFFFFF",
+          textColor: "#1F2937",
+          padding: "32px",
+          buttonColor: "#A855F7",
+          buttonStyle: "rounded-lg"
+        },
+        order: 1
+      },
+      {
+        id: "guarantees",
         type: "text",
         content: {
-          content: `<div class="flex items-center justify-center space-x-4 py-8 bg-gray-50">
-            <div class="flex items-center justify-center w-12 h-12 bg-purple-600 text-white rounded-full font-bold text-lg">1</div>
-            <div class="w-16 h-1 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-12 h-12 bg-gray-300 text-gray-600 rounded-full font-bold text-lg">2</div>
-            <div class="w-16 h-1 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-12 h-12 bg-gray-300 text-gray-600 rounded-full font-bold text-lg">3</div>
+          content: `<div class="bg-gray-50 p-6">
+            <h3 class="text-xl font-semibold text-center mb-6 text-gray-800">Nos garanties</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <span class="text-green-600 font-bold">✓</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Confirmation immédiate</h4>
+                  <p class="text-xs text-gray-600">Votre RDV confirmé en temps réel</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span class="text-blue-600 font-bold">↻</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Annulation gratuite</h4>
+                  <p class="text-xs text-gray-600">Jusqu'à 24h avant le RDV</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 bg-white p-4 rounded-lg shadow-sm">
+                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                  <span class="text-purple-600 font-bold">€</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-sm">Acompte sécurisé</h4>
+                  <p class="text-xs text-gray-600">Paiement 100% sécurisé</p>
+                </div>
+              </div>
+            </div>
           </div>`,
           alignment: "center"
         },
@@ -103,81 +192,38 @@ export default function PageBuilder() {
           textColor: "#1F2937",
           padding: "0px"
         },
-        order: 1
+        order: 2
       },
       {
-        id: "service-selector",
+        id: "contact-info",
         type: "text",
         content: {
-          content: `<div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 text-center">
-            <h2 class="text-2xl font-semibold">Choisissez votre service</h2>
+          content: `<div class="bg-white p-6 text-center border-t">
+            <h3 class="text-lg font-semibold mb-4">Salon Belle Époque</h3>
+            <div class="space-y-2 text-sm text-gray-600">
+              <p class="flex items-center justify-center gap-2">
+                <span>📍</span>
+                <span>123 Rue de la Beauté, 75001 Paris</span>
+              </p>
+              <p class="flex items-center justify-center gap-2">
+                <span>📞</span>
+                <span>01 23 45 67 89</span>
+              </p>
+              <p class="flex items-center justify-center gap-2">
+                <span>🕒</span>
+                <span>Ouvert du mardi au samedi, 9h-19h</span>
+              </p>
+            </div>
+            <div class="mt-4 pt-4 border-t text-xs text-gray-500">
+              <p>En cas d'urgence, contactez-nous directement au 01 23 45 67 89</p>
+            </div>
           </div>`,
           alignment: "center"
         },
         style: {
-          backgroundColor: "#A855F7",
-          textColor: "#FFFFFF",
-          padding: "0px"
-        },
-        order: 2
-      },
-      {
-        id: "services-list",
-        type: "text",
-        content: {
-          content: `<div class="space-y-4 p-4 bg-white">
-            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
-              <div>
-                <div class="flex items-center gap-3 mb-2">
-                  <h3 class="font-semibold text-xl">Coupe femme</h3>
-                  <span class="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">Populaire</span>
-                </div>
-                <p class="text-gray-600 flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12,6 12,12 16,14"></polyline>
-                  </svg>
-                  60 min
-                </p>
-              </div>
-              <span class="text-3xl font-bold text-purple-600">45€</span>
-            </div>
-
-            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
-              <div>
-                <h3 class="font-semibold text-xl mb-2">Coloration</h3>
-                <p class="text-gray-600 flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12,6 12,12 16,14"></polyline>
-                  </svg>
-                  120 min
-                </p>
-              </div>
-              <span class="text-3xl font-bold text-purple-600">80€</span>
-            </div>
-
-            <div class="bg-white border border-gray-200 rounded-xl p-6 flex justify-between items-center shadow-sm">
-              <div>
-                <h3 class="font-semibold text-xl mb-2">Brushing</h3>
-                <p class="text-gray-600 flex items-center gap-1">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12,6 12,12 16,14"></polyline>
-                  </svg>
-                  45 min
-                </p>
-              </div>
-              <span class="text-3xl font-bold text-purple-600">30€</span>
-            </div>
-          </div>`,
-          alignment: "left"
-        },
-        style: {
           backgroundColor: "#FFFFFF",
           textColor: "#1F2937",
-          padding: "0px",
-          borderRadius: "0px"
+          padding: "0px"
         },
         order: 3
       }
@@ -678,54 +724,123 @@ export default function PageBuilder() {
                   )}
 
                   {block.type === 'booking-form' && (
-                    <div className="text-center">
-                      <h2 className={`font-bold mb-2 ${activeView === 'mobile' ? 'text-xl' : 'text-3xl'}`}>{block.content.title}</h2>
-                      {block.content.subtitle && (
-                        <p className={`opacity-90 mb-6 ${activeView === 'mobile' ? 'text-sm' : 'text-lg'}`}>{block.content.subtitle}</p>
-                      )}
+                    <div className="max-w-2xl mx-auto">
+                      <div className="text-center mb-8">
+                        <h2 className={`font-bold mb-2 ${activeView === 'mobile' ? 'text-xl' : 'text-3xl'}`}>{block.content.title}</h2>
+                        {block.content.subtitle && (
+                          <p className={`opacity-90 mb-6 ${activeView === 'mobile' ? 'text-sm' : 'text-lg'}`}>{block.content.subtitle}</p>
+                        )}
+                      </div>
                       
-                      <div className="max-w-md mx-auto space-y-4">
-                        <div className="grid grid-cols-2 gap-3">
-                          <Input placeholder="Prénom" className="bg-white/90" />
-                          <Input placeholder="Nom" className="bg-white/90" />
+                      {/* Service Selection */}
+                      <div className="mb-6">
+                        <h3 className="font-semibold mb-3 text-lg">1. Choisissez votre service</h3>
+                        <div className="grid gap-3">
+                          {block.content.services?.map((service, index) => (
+                            <div key={index} className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${service.popular ? 'border-purple-300 bg-purple-50' : 'border-gray-200 bg-white'}`}>
+                              <div className="flex justify-between items-center">
+                                <div className="flex-1">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-semibold text-lg">{service.name}</span>
+                                    {service.popular && (
+                                      <span className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-medium">Populaire</span>
+                                    )}
+                                  </div>
+                                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                                    <span>⏱️ {service.duration} min</span>
+                                    <span>💰 Acompte: {service.depositRequired}€</span>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-2xl font-bold text-purple-600">{service.price}€</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <Input placeholder="Email" className="bg-white/90" />
-                        <Input placeholder="Téléphone" className="bg-white/90" />
-                        
-                        <div className="bg-white/10 rounded-lg p-4 mb-4">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm opacity-80">Service sélectionné</span>
-                            <span className="font-semibold">Coupe + Brushing</span>
+                      </div>
+
+                      {/* Time Selection */}
+                      <div className="mb-6">
+                        <h3 className="font-semibold mb-3 text-lg">2. Sélectionnez votre créneau</h3>
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-sm text-gray-600">Aujourd'hui</span>
+                            <span className="font-semibold">{new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
                           </div>
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm opacity-80">Date souhaitée</span>
-                            <span className="font-semibold">Aujourd'hui 14h30</span>
+                          <div className="grid grid-cols-4 gap-2">
+                            {block.content.availableSlots?.map((slot, index) => (
+                              <button key={index} className="bg-white border border-gray-300 rounded-lg py-2 px-3 text-sm font-medium hover:bg-purple-50 hover:border-purple-300 transition-colors">
+                                {slot}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Contact Form */}
+                      <div className="mb-6">
+                        <h3 className="font-semibold mb-3 text-lg">3. Vos informations</h3>
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-2 gap-3">
+                            <Input placeholder="Prénom" className="bg-white" />
+                            <Input placeholder="Nom" className="bg-white" />
+                          </div>
+                          <Input placeholder="Email" className="bg-white" />
+                          <Input placeholder="Téléphone" className="bg-white" />
+                          <textarea 
+                            placeholder="Message ou demande particulière (optionnel)"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
+                            rows={3}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Summary */}
+                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-6">
+                        <h4 className="font-semibold mb-3">Récapitulatif de votre réservation</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span>Service sélectionné</span>
+                            <span className="font-medium">Coupe + Brushing</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Date et heure</span>
+                            <span className="font-medium">Aujourd'hui 14h30</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Durée</span>
+                            <span className="font-medium">60 min</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Prix total</span>
+                            <span className="font-medium">45€</span>
                           </div>
                           {block.content.requireDeposit && (
-                            <div className="flex justify-between items-center border-t border-white/20 pt-2">
-                              <span className="text-sm opacity-80">Acompte à régler</span>
-                              <span className="font-bold text-lg">{block.content.depositAmount}€</span>
+                            <div className="flex justify-between border-t pt-2 font-semibold">
+                              <span>Acompte à régler maintenant</span>
+                              <span className="text-purple-600">{block.content.depositAmount}€</span>
                             </div>
                           )}
                         </div>
-                        
-                        <Button 
-                          className={`w-full text-lg py-6 ${block.style.buttonStyle === 'rounded-full' ? 'rounded-full' : 'rounded-lg'} shadow-xl transform hover:scale-105 transition-all duration-200`}
-                          style={{ backgroundColor: block.style.buttonColor }}
-                          onClick={() => window.open('/quick-booking', '_blank')}
-                        >
-                          ⚡ {block.content.buttonText}
-                          {block.content.requireDeposit && (
-                            <span className="ml-2 bg-white/20 px-2 py-1 rounded text-sm">
-                              Acompte {block.content.depositAmount}€
-                            </span>
-                          )}
-                        </Button>
-                        
-                        <p className="text-xs opacity-70 mt-3">
-                          🔒 Paiement sécurisé • Confirmation immédiate • Annulation gratuite 24h avant
-                        </p>
                       </div>
+                        
+                      <Button 
+                        className={`w-full text-lg py-6 ${block.style.buttonStyle === 'rounded-full' ? 'rounded-full' : 'rounded-lg'} shadow-xl transform hover:scale-105 transition-all duration-200`}
+                        style={{ backgroundColor: block.style.buttonColor }}
+                        onClick={() => window.open('/quick-booking', '_blank')}
+                      >
+                        ⚡ {block.content.buttonText}
+                        {block.content.requireDeposit && (
+                          <span className="ml-2 bg-white/20 px-2 py-1 rounded text-sm">
+                            Acompte {block.content.depositAmount}€
+                          </span>
+                        )}
+                      </Button>
+                      
+                      <p className="text-xs text-gray-600 mt-3 text-center">
+                        🔒 Paiement sécurisé • Confirmation immédiate • Annulation gratuite 24h avant
+                      </p>
                     </div>
                   )}
 
