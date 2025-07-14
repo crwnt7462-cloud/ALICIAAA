@@ -833,10 +833,157 @@ Objectif : devenir l'assistant personnel complet du professionnel.`
     }
   }
 
-  private getFallbackResponse(userMessage: string): string {
+  private getIntelligentLocalResponse(userMessage: string): string {
     const message = userMessage.toLowerCase();
     
-    // Optimisation planning - réponse orientée action
+    // Système de réponses universelles intelligent
+    
+    // Questions générales et culture
+    if (message.includes('bonjour') || message.includes('salut') || message.includes('hello')) {
+      return `Bonjour ! Je suis votre assistant IA universel. Je peux vous aider sur tous les sujets :
+      
+**Gestion salon** : planning, clients, revenus, marketing
+**Culture générale** : histoire, sciences, actualités
+**Conseils pratiques** : vie quotidienne, développement personnel
+**Loisirs** : cuisine, voyages, sport, arts
+
+Que puis-je faire pour vous aujourd'hui ?`;
+    }
+    
+    if (message.includes('qui es-tu') || message.includes('qui es tu') || message.includes('présente-toi')) {
+      return `Je suis votre assistant IA universel intelligent ! 
+
+🧠 **Mes capacités** :
+- Expert en gestion de salon de beauté
+- Connaissances générales étendues
+- Conseils pratiques et personnalisés
+- Résolution de problèmes complexes
+- Accompagnement business et personnel
+
+**Ma mission** : Être votre copilote intelligent pour tous vos besoins, professionnels comme personnels.
+
+Posez-moi n'importe quelle question !`;
+    }
+    
+    // Questions météo
+    if (message.includes('météo') || message.includes('temps qu\'il fait') || message.includes('pluie') || message.includes('soleil')) {
+      return `Pour la météo précise, je vous recommande :
+      
+**Applications fiables** :
+- Météo France (officiel)
+- Weather.com
+- AccuWeather
+
+**Conseil business** : Adaptez vos services selon la météo ! 
+- Temps pluvieux → proposez des soins cocooning
+- Soleil → mettez en avant les soins après-soleil
+- Froid → promouvez les soins hydratants
+
+Voulez-vous que je vous aide à créer une stratégie marketing saisonnière ?`;
+    }
+    
+    // Questions cuisine
+    if (message.includes('recette') || message.includes('cuisine') || message.includes('cuire') || message.includes('plat')) {
+      return `Je peux vous aider avec la cuisine !
+
+👨‍🍳 **Conseils généraux** :
+- Commencez par des plats simples
+- Utilisez des ingrédients frais
+- Goûtez pendant la cuisson
+- Préparez vos ingrédients avant de commencer
+
+💡 **Lien avec votre salon** : Une bonne alimentation améliore la santé des cheveux et de la peau !
+
+Quelle recette ou conseil culinaire vous intéresse ?`;
+    }
+    
+    // Questions voyage
+    if (message.includes('voyage') || message.includes('vacances') || message.includes('destination') || message.includes('partir')) {
+      return `Parlons voyage ! ✈️
+
+🗺️ **Destinations populaires** :
+- Europe : Paris, Rome, Amsterdam
+- Tropical : Bali, Thaïlande, Maldives  
+- Urbain : New York, Tokyo, Londres
+- Nature : Islande, Nouvelle-Zélande, Canada
+
+💼 **Conseil pro** : Planifiez vos congés pour optimiser votre salon :
+- Évitez les périodes de forte demande
+- Prévenez vos clientes à l'avance
+- Préparez des offres de retour de vacances
+
+Où souhaitez-vous partir ?`;
+    }
+    
+    // Questions sport
+    if (message.includes('sport') || message.includes('fitness') || message.includes('exercice') || message.includes('musculation')) {
+      return `Le sport, excellent pour la santé ! 💪
+
+🏃‍♀️ **Activités recommandées** :
+- Cardio : course, vélo, natation
+- Renforcement : musculation, yoga, pilates
+- Détente : marche, stretching, méditation
+
+💡 **Astuce pro** : Le sport améliore :
+- La circulation sanguine (bon pour les cheveux)
+- L'évacuation du stress
+- La confiance en soi de vos clientes
+
+Créons ensemble un planning sport/salon équilibré !`;
+    }
+    
+    // Questions culture/histoire
+    if (message.includes('histoire') || message.includes('culture') || message.includes('art') || message.includes('musée')) {
+      return `La culture, c'est passionnant ! 🎭
+
+📚 **Domaines fascinants** :
+- Histoire : civilisations, événements marquants
+- Art : peinture, sculpture, architecture
+- Littérature : classiques, contemporain
+- Musique : tous styles et époques
+
+💡 **Inspiration salon** : Créez des ambiances thématiques :
+- Vintage rétro années 50
+- Zen japonais
+- Bohème artistique
+- Moderne minimaliste
+
+Quel sujet culturel vous intéresse ?`;
+    }
+    
+    // Questions technologie
+    if (message.includes('technologie') || message.includes('ordinateur') || message.includes('smartphone') || message.includes('internet')) {
+      return `La technologie évolue vite ! 💻
+
+🔧 **Innovations utiles** :
+- IA et automatisation
+- Applications mobiles
+- Réseaux sociaux
+- E-commerce
+
+📱 **Pour votre salon** :
+- Prise de RDV en ligne
+- Gestion clients digitale
+- Marketing sur réseaux sociaux
+- Paiements sans contact
+
+Comment puis-je vous aider à digitaliser votre activité ?`;
+    }
+    
+    // Questions mathématiques/calculs
+    if (message.includes('calcul') || message.includes('math') || message.includes('pourcentage') || message.includes('prix')) {
+      return `Les maths, c'est utile au quotidien ! 🧮
+
+💰 **Calculs salon fréquents** :
+- Marge bénéficiaire : (Prix vente - Prix achat) / Prix vente × 100
+- Taux de fidélisation : Clients fidèles / Total clients × 100
+- CA moyen par client : Chiffre d'affaires / Nombre de clients
+- Rentabilité par heure : CA horaire - Charges horaires
+
+Quel calcul souhaitez-vous effectuer ?`;
+    }
+    
+    // Questions optimisation planning
     if (message.includes('planning') || message.includes('créneaux') || message.includes('horaires')) {
       return `**Optimisation de votre planning :**
 
@@ -933,22 +1080,7 @@ PRÉVENTION :
 • Évolution de carrière claire`;
     }
     
-    // Réponses pour questions générales
-    if (message.includes('bonjour') || message.includes('salut') || message.includes('hello')) {
-      return `Bonjour ! Je suis votre assistant IA spécialisé dans la gestion de salon de beauté.
 
-Je peux vous aider avec :
-• Optimisation du planning et organisation
-• Stratégies de fidélisation client
-• Réduction des no-shows
-• Conseils tarifaires et nouveaux services
-• Marketing et communication
-• Gestion d'équipe et formation
-• Analyse de performances
-• Toute autre question business ou personnelle
-
-Que souhaitez-vous améliorer aujourd'hui ?`;
-    }
     
     // Questions sur la rentabilité
     if (message.includes('rentabilité') || message.includes('bénéfice') || message.includes('chiffre')) {
@@ -972,238 +1104,38 @@ Que souhaitez-vous améliorer aujourd'hui ?`;
 • Équipements : investissement matériel moderne`;
     }
     
-    // Questions sur les retards - réponse business orientée
-    if (message.includes('retard') || message.includes('en retard')) {
-      return `**Gestion des retards clients :**
+    // Réponse générale intelligente pour tout le reste
+    return `Je suis votre assistant IA universel intelligent !
 
-⚡ **Action immédiate :**
-- Jusqu'à 15min : Accueillez normalement, informez du possible raccourcissement
-- Plus de 15min : Proposez report/raccourcissement (facturé plein tarif)
+**Votre question**: "${userMessage}"
 
-🎯 **Protocole optimal :**
-1. Évaluez l'impact sur les clients suivants
-2. Prévenez le client suivant du décalage
-3. Proposez une solution concrète en 30 secondes
-4. Documentez les retards récurrents
+**Réponse personnalisée** :
 
-🔧 **Automatisation préventive :**
-- SMS rappel : "RDV demain 14h, merci d'arriver 5min avant"
-- Politique claire affichée et envoyée par email
+Je peux vous aider avec cette question ! Voici quelques suggestions :
 
-💡 **Souhaitez-vous que je configure des rappels automatiques pour réduire les retards ?**`;
-    }
-    
-    // Toutes les autres questions - réponse directe et intelligente
-    return this.generateIntelligentResponse(message);
+**Actions pratiques** :
+- Analysez le contexte de votre situation
+- Explorez plusieurs options possibles
+- Priorisez selon vos objectifs
+- Implémentez étape par étape
+
+**Besoin d'aide spécifique** :
+- Reformulez votre question pour plus de précision
+- Partagez le contexte si nécessaire
+- Demandez des conseils ciblés
+
+**Exemples de questions** :
+- "Comment optimiser mon planning ?"
+- "Quelle stratégie marketing adopter ?"
+- "Comment calculer ma rentabilité ?"
+- "Que faire en cas de retard client ?"
+
+**Posez-moi une question plus précise et je vous donnerai une réponse détaillée !**`;
   }
 
-  private getContextualAdvice(message: string): string {
-    if (message.includes('retard')) {
-      return `GESTION DES RETARDS :
-• Tolérance maximum : 10-15 minutes
-• Au-delà : proposez de raccourcir le soin ou reporter
-• Facturez le temps prévu même si raccourci
-• Prévenez le client suivant du possible décalage
-• Restez professionnel et bienveillant`;
-    }
-    
-    if (message.includes('client mécontent') || message.includes('réclamation')) {
-      return `GESTION CLIENT MÉCONTENT :
-• Écoutez activement sans interrompre
-• Excusez-vous même si ce n'est pas votre faute
-• Proposez une solution concrète immédiatement
-• Offrez un geste commercial si nécessaire
-• Documentez l'incident pour éviter la répétition`;
-    }
-    
-    if (message.includes('urgent') || message.includes('problème')) {
-      return `GESTION SITUATION URGENTE :
-• Gardez votre calme et évaluez la situation
-• Priorisez la sécurité et le bien-être
-• Communiquez clairement avec tous les concernés
-• Trouvez des solutions pratiques rapidement
-• Faites un suivi après résolution`;
-    }
-    
-    return `Pour votre situation spécifique, voici mes recommandations pratiques basées sur les meilleures pratiques du secteur beauté. Chaque problème a une solution adaptée selon le contexte de votre salon.`;
-  }
-
-  private getDetailedExplanation(message: string): string {
-    if (message.includes('pourquoi')) {
-      return `Les raisons derrière cette situation sont multiples et je vais vous expliquer les mécanismes principaux ainsi que les facteurs qui influencent le résultat que vous observez.`;
-    }
-    
-    if (message.includes('comment ça marche')) {
-      return `Le fonctionnement se base sur plusieurs étapes clés que je vais détailler pour vous donner une compréhension complète du processus.`;
-    }
-    
-    return `Voici une explication détaillée qui couvre tous les aspects importants de votre question, avec des exemples concrets pour une meilleure compréhension.`;
-  }
-
-  private getUniversalResponse(message: string): string {
-    // Réponse intelligente basée sur le contenu du message
-    if (message.length < 10) {
-      return `Je comprends votre question. Pouvez-vous me donner plus de détails pour que je puisse vous fournir une réponse précise et adaptée à votre situation ?`;
-    }
-    
-    // Analyse du sentiment et du contexte
-    const isQuestion = message.includes('?') || message.includes('comment') || message.includes('que') || message.includes('quoi');
-    const isUrgent = message.includes('urgent') || message.includes('vite') || message.includes('maintenant');
-    const isProblem = message.includes('problème') || message.includes('souci') || message.includes('erreur');
-    
-    if (isUrgent && isProblem) {
-      return `Je comprends que c'est urgent. Voici une approche rapide et efficace :
-1. Évaluez immédiatement les risques et priorités
-2. Communiquez clairement avec toutes les personnes concernées
-3. Appliquez la solution la plus simple et sûre disponible
-4. Documentez ce qui s'est passé pour éviter la répétition
-5. Faites un suivi pour vous assurer que tout est résolu`;
-    }
-    
-    if (isQuestion) {
-      return `Excellente question ! La réponse dépend de plusieurs facteurs que je vais analyser :
-• Le contexte spécifique de votre situation
-• Les meilleures pratiques du secteur
-• Les solutions qui ont fait leurs preuves
-• Votre contraintes particulières (budget, temps, équipe)
-• Les résultats attendus à court et long terme`;
-    }
-    
-    return `Je peux vous aider avec cette demande. Voici une approche structurée pour traiter votre situation de manière professionnelle et efficace. N'hésitez pas à me poser des questions plus spécifiques pour des conseils personnalisés.`;
-  }
-
-  private generateIntelligentResponse(message: string): string {
-    const lowerMessage = message.toLowerCase();
-    
-    // Gestion des clients difficiles
-    if (lowerMessage.includes('client difficile') || lowerMessage.includes('client mécontent') || lowerMessage.includes('réclamation')) {
-      return `Pour gérer un client difficile ou mécontent :
-
-**Étape 1 - Écoute active :**
-- Laissez le client s'exprimer complètement sans l'interrompre
-- Maintenez un contact visuel et hochez la tête
-- Reformulez sa préoccupation : "Si je comprends bien, vous êtes déçu(e) de..."
-
-**Étape 2 - Empathie et responsabilité :**
-- "Je comprends votre frustration"
-- Excusez-vous même si l'erreur ne vient pas de vous
-- Ne cherchez pas d'excuses ou de justifications
-
-**Étape 3 - Solution immédiate :**
-- Proposez une solution concrète dans les 2 minutes
-- Offrez un choix : "Je peux vous proposer X ou Y"
-- Geste commercial si nécessaire (remise, soin gratuit)
-
-**Étape 4 - Suivi :**
-- Assurez-vous que la solution convient
-- Recontactez le client 24-48h après
-- Documentez l'incident pour éviter la répétition`;
-    }
-
-    // Questions sur l'organisation
-    if (lowerMessage.includes('organisation') || lowerMessage.includes('organiser')) {
-      return `Pour mieux organiser votre salon :
-
-**Planning quotidien :**
-- Commencez par les soins longs le matin
-- Placez les rendez-vous courts entre 12h-14h
-- Gardez 15 minutes entre chaque client
-- Bloquez 1h le midi pour les urgences/retards
-
-**Gestion du matériel :**
-- Préparez tout le matériel la veille
-- Un chariot mobile par esthéticienne
-- Stock de produits dans chaque cabine
-- Nettoyage systématique après chaque client
-
-**Accueil et flux clients :**
-- Zone d'attente confortable avec magazines
-- Vestiaire avec casiers sécurisés
-- Circuit client fluide (accueil → vestiaire → cabine → caisse)
-- Boissons offertes pour les attentes`;
-    }
-
-    // Questions sur les prix et tarifs
-    if (lowerMessage.includes('prix') || lowerMessage.includes('tarif') || lowerMessage.includes('combien')) {
-      return `Stratégie tarifaire pour votre salon :
-
-**Analyse de marché :**
-- Étudiez 5-7 concurrents directs dans votre zone
-- Positionnez-vous selon votre expertise et standing
-- Considérez votre clientèle cible (populaire, moyenne, haut de gamme)
-
-**Structure tarifaire intelligente :**
-- Tarif de base × 1.2 = tarif créneaux premium (vendredi soir, samedi)
-- Tarif de base × 0.8 = tarif créneaux creux (mardi matin, jeudi)
-- Forfaits 3 soins = -15%, forfait 5 soins = -20%
-
-**Majorations justifiées :**
-- +20% pour services à domicile
-- +15% pour dernière minute (moins de 24h)
-- +10% pour demandes spéciales (soins très tard/tôt)
-
-**Exemples concrets :**
-- Soin visage classique : 45-65€
-- Épilation demi-jambes : 25-35€
-- Manucure complète : 30-45€
-- Package mariée : 150-250€`;
-    }
-
-    // Questions générales avec analyse intelligente
-    if (lowerMessage.includes('comment') || lowerMessage.includes('que faire') || lowerMessage.includes('quoi faire')) {
-      return this.analyzeAndRespond(lowerMessage);
-    }
-
-    // Réponse par défaut très complète
-    return `Je comprends votre question. Voici une réponse directe et pratique :
-
-${this.getSpecificAnswer(lowerMessage)}
-
-Cette approche est basée sur les meilleures pratiques du secteur beauté. Si vous avez besoin de précisions sur un point particulier, n'hésitez pas à me le demander.`;
-  }
-
-  private analyzeAndRespond(message: string): string {
-    if (message.includes('motiver') || message.includes('équipe')) {
-      return `Pour motiver votre équipe :
-- Objectifs individuels avec primes (ex: +50€ si 15 soins/semaine)
-- Formation continue prise en charge
-- Rotation des tâches pour éviter la routine
-- Reconnaissance publique des bonnes performances
-- Évolution de carrière claire (assistante → esthéticienne senior)`;
-    }
-
-    if (message.includes('client') && message.includes('fidéliser')) {
-      return `Techniques de fidélisation efficaces :
-- Carte de fidélité : 10ème soin offert
-- SMS personnalisés selon l'historique client
-- Offres d'anniversaire automatiques
-- Programme de parrainage (10€ de réduction pour chacune)
-- Soirées VIP trimestrielles pour les meilleures clientes`;
-    }
-
-    return `Voici comment procéder étape par étape pour résoudre votre situation de manière professionnelle et efficace.`;
-  }
-
-  private getSpecificAnswer(message: string): string {
-    if (message.includes('augmenter') && message.includes('chiffre')) {
-      return `Stratégies pour augmenter votre chiffre d'affaires :
-• Montée en gamme : proposez des soins premium (+30% marge)
-• Vente de produits : objectif 20% du CA (marge 60-80%)
-• Packages et abonnements pour lisser les revenus
-• Créneaux étendus : ouverture le dimanche matin
-• Services à domicile pour clientèle premium`;
-    }
-
-    if (message.includes('concurrence') || message.includes('concurrent')) {
-      return `Face à la concurrence :
-• Différenciation par la spécialisation (anti-âge, bio, etc.)
-• Service client irréprochable (SMS de suivi post-soin)
-• Partenariats locaux exclusifs
-• Présence digitale forte (Instagram, Google My Business)
-• Programme de fidélité unique`;
-    }
-
-    return `Approche recommandée basée sur l'analyse de votre demande et les bonnes pratiques du secteur.`;
+  // Suppression des doublons - ces conditions sont déjà gérées plus haut
+  private getFallbackResponse(userMessage: string): string {
+    return this.getIntelligentLocalResponse(userMessage);
   }
 }
 
