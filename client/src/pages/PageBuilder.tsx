@@ -73,8 +73,30 @@ export default function PageBuilder() {
         type: "text",
         content: {
           content: `<div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-8 text-center">
-            <h1 class="text-4xl font-bold mb-2">Réservation Rapide</h1>
-            <p class="text-xl opacity-90 mb-6">Prenez rendez-vous en 2 minutes</p>
+            <h1 class="text-4xl font-bold mb-2">Réservation Express</h1>
+            <p class="text-xl opacity-90 mb-6">Prenez rendez-vous en 3 étapes simples</p>
+            <div class="flex items-center justify-center space-x-4 mb-6">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span class="text-sm font-bold">1</span>
+                </div>
+                <span class="text-sm">Service</span>
+              </div>
+              <div class="w-8 h-0.5 bg-white/30"></div>
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span class="text-sm font-bold">2</span>
+                </div>
+                <span class="text-sm">Créneau</span>
+              </div>
+              <div class="w-8 h-0.5 bg-white/30"></div>
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                  <span class="text-sm font-bold">3</span>
+                </div>
+                <span class="text-sm">Confirmation</span>
+              </div>
+            </div>
             <div class="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
               <span class="text-green-300 mr-2">✓</span>
               <span class="text-sm">Confirmation instantanée</span>
@@ -732,12 +754,23 @@ export default function PageBuilder() {
                         )}
                       </div>
                       
-                      {/* Service Selection */}
-                      <div className="mb-6">
-                        <h3 className="font-semibold mb-3 text-lg">1. Choisissez votre service</h3>
-                        <div className="grid gap-3">
+                      {/* Progress Steps */}
+                      <div className="flex items-center justify-center mb-8">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center justify-center w-10 h-10 bg-purple-600 text-white rounded-full font-bold text-sm">1</div>
+                          <div className="w-16 h-1 bg-purple-600"></div>
+                          <div className="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">2</div>
+                          <div className="w-16 h-1 bg-gray-300"></div>
+                          <div className="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">3</div>
+                        </div>
+                      </div>
+
+                      {/* Step 1: Service Selection */}
+                      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                        <h3 className="text-xl font-bold mb-4 text-center">Choisissez votre service</h3>
+                        <div className="space-y-3">
                           {block.content.services?.map((service, index) => (
-                            <div key={index} className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${service.popular ? 'border-purple-300 bg-purple-50' : 'border-gray-200 bg-white'}`}>
+                            <div key={index} className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${service.popular ? 'border-purple-300 bg-purple-50' : 'border-gray-200 bg-white hover:border-purple-200'}`}>
                               <div className="flex justify-between items-center">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1">
@@ -758,11 +791,16 @@ export default function PageBuilder() {
                             </div>
                           ))}
                         </div>
+                        <div className="text-center mt-6">
+                          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
+                            Continuer → Choisir l'horaire
+                          </Button>
+                        </div>
                       </div>
 
-                      {/* Time Selection */}
-                      <div className="mb-6">
-                        <h3 className="font-semibold mb-3 text-lg">2. Sélectionnez votre créneau</h3>
+                      {/* Step 2: Time Selection (Initially Hidden) */}
+                      <div className="bg-white rounded-xl shadow-lg p-6 mb-6 opacity-50 pointer-events-none">
+                        <h3 className="text-xl font-bold mb-4 text-center">Sélectionnez votre créneau</h3>
                         <div className="bg-gray-50 rounded-lg p-4">
                           <div className="flex items-center gap-2 mb-3">
                             <span className="text-sm text-gray-600">Aujourd'hui</span>
@@ -776,11 +814,16 @@ export default function PageBuilder() {
                             ))}
                           </div>
                         </div>
+                        <div className="text-center mt-6">
+                          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
+                            Continuer → Vos informations
+                          </Button>
+                        </div>
                       </div>
 
-                      {/* Contact Form */}
-                      <div className="mb-6">
-                        <h3 className="font-semibold mb-3 text-lg">3. Vos informations</h3>
+                      {/* Step 3: Contact Form (Initially Hidden) */}
+                      <div className="bg-white rounded-xl shadow-lg p-6 mb-6 opacity-50 pointer-events-none">
+                        <h3 className="text-xl font-bold mb-4 text-center">Vos informations</h3>
                         <div className="space-y-3">
                           <div className="grid grid-cols-2 gap-3">
                             <Input placeholder="Prénom" className="bg-white" />
@@ -794,53 +837,53 @@ export default function PageBuilder() {
                             rows={3}
                           />
                         </div>
-                      </div>
 
-                      {/* Summary */}
-                      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mb-6">
-                        <h4 className="font-semibold mb-3">Récapitulatif de votre réservation</h4>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex justify-between">
-                            <span>Service sélectionné</span>
-                            <span className="font-medium">Coupe + Brushing</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Date et heure</span>
-                            <span className="font-medium">Aujourd'hui 14h30</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Durée</span>
-                            <span className="font-medium">60 min</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>Prix total</span>
-                            <span className="font-medium">45€</span>
-                          </div>
-                          {block.content.requireDeposit && (
-                            <div className="flex justify-between border-t pt-2 font-semibold">
-                              <span>Acompte à régler maintenant</span>
-                              <span className="text-purple-600">{block.content.depositAmount}€</span>
+                        {/* Summary */}
+                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 mt-6 mb-6">
+                          <h4 className="font-semibold mb-3">Récapitulatif de votre réservation</h4>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex justify-between">
+                              <span>Service sélectionné</span>
+                              <span className="font-medium">Coupe + Brushing</span>
                             </div>
-                          )}
+                            <div className="flex justify-between">
+                              <span>Date et heure</span>
+                              <span className="font-medium">Aujourd'hui 14h30</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Durée</span>
+                              <span className="font-medium">60 min</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>Prix total</span>
+                              <span className="font-medium">45€</span>
+                            </div>
+                            {block.content.requireDeposit && (
+                              <div className="flex justify-between border-t pt-2 font-semibold">
+                                <span>Acompte à régler maintenant</span>
+                                <span className="text-purple-600">{block.content.depositAmount}€</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
                         
-                      <Button 
-                        className={`w-full text-lg py-6 ${block.style.buttonStyle === 'rounded-full' ? 'rounded-full' : 'rounded-lg'} shadow-xl transform hover:scale-105 transition-all duration-200`}
-                        style={{ backgroundColor: block.style.buttonColor }}
-                        onClick={() => window.open('/quick-booking', '_blank')}
-                      >
-                        ⚡ {block.content.buttonText}
-                        {block.content.requireDeposit && (
-                          <span className="ml-2 bg-white/20 px-2 py-1 rounded text-sm">
-                            Acompte {block.content.depositAmount}€
-                          </span>
-                        )}
-                      </Button>
-                      
-                      <p className="text-xs text-gray-600 mt-3 text-center">
-                        🔒 Paiement sécurisé • Confirmation immédiate • Annulation gratuite 24h avant
-                      </p>
+                        <Button 
+                          className={`w-full text-lg py-6 ${block.style.buttonStyle === 'rounded-full' ? 'rounded-full' : 'rounded-lg'} shadow-xl transform hover:scale-105 transition-all duration-200`}
+                          style={{ backgroundColor: block.style.buttonColor }}
+                          onClick={() => window.open('/quick-booking', '_blank')}
+                        >
+                          ⚡ {block.content.buttonText}
+                          {block.content.requireDeposit && (
+                            <span className="ml-2 bg-white/20 px-2 py-1 rounded text-sm">
+                              Acompte {block.content.depositAmount}€
+                            </span>
+                          )}
+                        </Button>
+                        
+                        <p className="text-xs text-gray-600 mt-3 text-center">
+                          🔒 Paiement sécurisé • Confirmation immédiate • Annulation gratuite 24h avant
+                        </p>
+                      </div>
                     </div>
                   )}
 
