@@ -83,13 +83,7 @@ export default function Dashboard() {
 
       {/* Quick Access Menu */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <Button 
-          className="h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg rounded-xl"
-          onClick={() => setLocation("/share-booking")}
-        >
-          <Share2 className="w-5 h-5 mr-2" />
-          Partager lien réservation
-        </Button>
+
         <Button 
           variant="outline"
           className="h-14 border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl"

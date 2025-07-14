@@ -160,13 +160,7 @@ ${businessName}`;
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button
-              onClick={shareViaWhatsApp}
-              className="w-full justify-start bg-green-600 hover:bg-green-700 text-white"
-            >
-              <MessageCircle className="w-5 h-5 mr-3" />
-              Partager sur WhatsApp
-            </Button>
+
             
             <Button
               onClick={shareViaSMS}
