@@ -253,19 +253,43 @@ export default function BusinessFeatures() {
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Target className="h-4 w-4" />
-                QR Code & Partage
+                Partage & QR Code
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
+              <div className="space-y-2">
+                <Label className="text-sm">Lien de réservation</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    value="https://beauty.app/book/monsalon" 
+                    readOnly 
+                    className="h-9 text-xs"
+                  />
+                  <Button 
+                    size="sm" 
+                    onClick={() => {
+                      navigator.clipboard.writeText("https://beauty.app/book/monsalon");
+                      toast({ title: "Lien copié !", description: "Le lien a été copié dans le presse-papiers" });
+                    }}
+                  >
+                    Copier
+                  </Button>
+                </div>
+              </div>
               <div className="text-center p-4 border rounded-lg">
-                <div className="w-24 h-24 bg-gray-200 rounded mx-auto mb-2 flex items-center justify-center">
+                <div className="w-20 h-20 bg-gray-200 rounded mx-auto mb-2 flex items-center justify-center">
                   <span className="text-xs">QR Code</span>
                 </div>
-                <p className="text-sm">Code de réservation</p>
+                <p className="text-xs">Scan pour réserver</p>
               </div>
-              <Button size="sm" className="w-full">
-                Télécharger QR Code
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button size="sm" variant="outline">
+                  Télécharger QR
+                </Button>
+                <Button size="sm">
+                  Partager
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
