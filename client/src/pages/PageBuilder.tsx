@@ -632,9 +632,10 @@ export default function PageBuilder() {
                   )}
 
                   {block.type === 'text' && (
-                    <div className="prose max-w-none">
-                      <p>{block.content.content}</p>
-                    </div>
+                    <div 
+                      className="prose max-w-none" 
+                      dangerouslySetInnerHTML={{ __html: block.content.content }}
+                    />
                   )}
 
                   {block.type === 'services' && (
@@ -1090,14 +1091,16 @@ export default function PageBuilder() {
 
                   {selectedBlockData.type === 'text' && (
                     <div>
-                      <Label>Contenu</Label>
+                      <Label>Texte à afficher</Label>
                       <Textarea
-                        value={selectedBlockData.content.content}
+                        value={selectedBlockData.content.content.replace(/<[^>]*>/g, '')}
                         onChange={(e) => updateBlock(selectedBlockData.id, {
                           content: { ...selectedBlockData.content, content: e.target.value }
                         })}
                         rows={4}
+                        placeholder="Votre texte ici..."
                       />
+                      <p className="text-xs text-gray-500 mt-1">Le texte sera affiché tel quel sur votre page</p>
                     </div>
                   )}
 
