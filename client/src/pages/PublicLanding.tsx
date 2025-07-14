@@ -146,7 +146,7 @@ export default function PublicLanding() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-violet-700 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">B</span>
                 </div>
                 <div>
@@ -159,13 +159,13 @@ export default function PublicLanding() {
             <div className="flex items-center gap-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-purple-600"
+                className="text-gray-600 hover:text-violet-600"
                 onClick={() => setLocation("/pro-login")}
               >
                 Espace Professionnel
               </Button>
               <Button 
-                className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white"
+                className="bg-gradient-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 text-white"
                 onClick={() => setLocation("/pro-login")}
               >
                 Connexion
@@ -176,9 +176,13 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero section épuré */}
-      <section className="bg-white py-16 lg:py-20">
+      <section className="bg-gradient-to-b from-violet-50/30 to-white py-16 lg:py-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
+            <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
+              <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
+              <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
+            </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
               Réservez votre rendez-vous beauté
             </h1>
@@ -187,7 +191,7 @@ export default function PublicLanding() {
             </p>
             
             {/* Barre de recherche simple */}
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto mb-6">
               <div className="flex gap-3">
                 <div className="flex-1">
                   <Input
@@ -198,29 +202,123 @@ export default function PublicLanding() {
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 relative">
                   <Input
                     placeholder="Ville"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="h-12"
+                    className="h-12 pr-10"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
+                  <button
+                    onClick={() => {
+                      if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                          (position) => {
+                            setSearchLocation("Près de moi");
+                          },
+                          (error) => console.log("Géolocalisation non disponible")
+                        );
+                      }
+                    }}
+                    className="absolute right-2 top-3 text-violet-500 hover:text-violet-700"
+                    title="Utiliser ma position"
+                  >
+                    <MapPin className="w-5 h-5" />
+                  </button>
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="h-12 px-6 bg-purple-600 hover:bg-purple-700"
+                  className="h-12 px-6 bg-violet-600 hover:bg-violet-700"
                 >
                   <Search className="w-4 h-4" />
                 </Button>
+              </div>
+            </div>
+            
+            {/* Bouton géolocalisation rapide */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                      (position) => {
+                        setSearchLocation("Près de moi");
+                        handleSearch();
+                      },
+                      (error) => console.log("Géolocalisation non disponible")
+                    );
+                  }
+                }}
+                className="w-full h-10 border-violet-200 text-violet-600 hover:bg-violet-50"
+              >
+                <MapPin className="w-4 h-4 mr-2" />
+                Trouver près de moi
+              </Button>
+            </div>
+
+            {/* Recherches populaires */}
+            <div className="max-w-2xl mx-auto">
+              <p className="text-sm text-gray-500 mb-3">Recherches populaires :</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {['Coiffure femme', 'Massage relaxant', 'Manucure', 'Soin visage', 'Épilation'].map((search) => (
+                  <button
+                    key={search}
+                    onClick={() => {
+                      setSearchQuery(search);
+                      handleSearch();
+                    }}
+                    className="px-3 py-1 bg-gray-100 hover:bg-violet-100 text-sm rounded-full transition-colors"
+                  >
+                    {search}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Créneaux disponibles aujourd'hui */}
+      <section className="py-12 bg-gradient-to-r from-violet-50 to-pink-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Créneaux disponibles aujourd'hui
+            </h2>
+            <p className="text-gray-600">Réservation immédiate possible</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e" },
+              { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e" },
+              { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e" }
+            ].map((slot, index) => (
+              <div key={index} className="bg-white rounded-lg p-4 border border-violet-100 hover:border-violet-200 transition-colors">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-sm font-medium">
+                    {slot.time}
+                  </div>
+                  <div className="text-right">
+                    <div className="font-semibold text-gray-900">{slot.price}</div>
+                  </div>
+                </div>
+                <h3 className="font-medium text-gray-900 mb-1">{slot.salon}</h3>
+                <p className="text-sm text-gray-600 mb-1">{slot.service}</p>
+                <p className="text-xs text-gray-500 mb-3">{slot.location}</p>
+                <Button size="sm" className="w-full bg-violet-600 hover:bg-violet-700">
+                  Réserver
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Statistiques simples */}
-      <section className="py-12 bg-gray-50">
+      <section className="py-8 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
             {stats.map((stat, index) => (
@@ -312,13 +410,44 @@ export default function PublicLanding() {
                   
                   <Button 
                     onClick={() => handleBookSalon(salon.id)}
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-violet-600 hover:bg-violet-700"
                     size="sm"
                   >
                     Réserver
                   </Button>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comment ça marche */}
+      <section className="py-12 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            Comment ça marche ?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { step: "1", title: "Recherchez", description: "Trouvez le service et le professionnel près de chez vous", icon: <Search className="w-6 h-6" /> },
+              { step: "2", title: "Réservez", description: "Choisissez votre créneau et confirmez en quelques clics", icon: <Calendar className="w-6 h-6" /> },
+              { step: "3", title: "Profitez", description: "Rendez-vous directement au salon, tout est organisé", icon: <Heart className="w-6 h-6" /> }
+            ].map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-violet-100 to-violet-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="text-violet-600">
+                    {item.icon}
+                  </div>
+                </div>
+                <div className="text-sm font-medium text-violet-600 mb-2">Étape {item.step}</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600">
+                  {item.description}
+                </p>
+              </div>
             ))}
           </div>
         </div>
@@ -333,8 +462,8 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, index) => (
               <div key={index} className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  <div className="text-purple-600">
+                <div className="w-12 h-12 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <div className="text-violet-600">
                     {benefit.icon}
                   </div>
                 </div>
@@ -378,18 +507,52 @@ export default function PublicLanding() {
         </div>
       </section>
 
+      {/* Application mobile */}
+      <section className="py-12 bg-gradient-to-r from-violet-600 to-pink-600">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Téléchargez l'application mobile
+            </h2>
+            <p className="text-violet-100 mb-8">
+              Réservez encore plus facilement depuis votre téléphone
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <span className="text-violet-600 font-bold">📱</span>
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-medium">App Store</div>
+                  <div className="text-violet-100 text-sm">Télécharger sur iOS</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <span className="text-violet-600 font-bold">🤖</span>
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-medium">Google Play</div>
+                  <div className="text-violet-100 text-sm">Télécharger sur Android</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Professionnels */}
-      <section className="py-12 bg-purple-600">
+      <section className="py-12 bg-white border-t">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Professionnel de la beauté ?
           </h2>
-          <p className="text-purple-100 mb-6">
+          <p className="text-gray-600 mb-6">
             Rejoignez notre réseau de 2,500+ salons partenaires
           </p>
           <Button 
             onClick={() => setLocation("/pro-login")}
-            className="bg-white text-purple-600 hover:bg-gray-50"
+            className="bg-violet-600 hover:bg-violet-700 text-white"
           >
             Rejoindre le réseau
           </Button>
@@ -450,7 +613,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-violet-700 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">B</span>
                 </div>
                 <div>
@@ -467,20 +630,20 @@ export default function PublicLanding() {
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Services</h4>
               <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-purple-600">Coiffure</a></li>
-                <li><a href="#" className="hover:text-purple-600">Esthétique</a></li>
-                <li><a href="#" className="hover:text-purple-600">Massage</a></li>
-                <li><a href="#" className="hover:text-purple-600">Onglerie</a></li>
+                <li><a href="#" className="hover:text-violet-600">Coiffure</a></li>
+                <li><a href="#" className="hover:text-violet-600">Esthétique</a></li>
+                <li><a href="#" className="hover:text-violet-600">Massage</a></li>
+                <li><a href="#" className="hover:text-violet-600">Onglerie</a></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Support</h4>
               <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-purple-600">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-purple-600">Contact</a></li>
-                <li><a href="#" className="hover:text-purple-600">Conditions</a></li>
-                <li><a href="#" className="hover:text-purple-600">Confidentialité</a></li>
+                <li><a href="#" className="hover:text-violet-600">Centre d'aide</a></li>
+                <li><a href="#" className="hover:text-violet-600">Contact</a></li>
+                <li><a href="#" className="hover:text-violet-600">Conditions</a></li>
+                <li><a href="#" className="hover:text-violet-600">Confidentialité</a></li>
               </ul>
             </div>
           </div>

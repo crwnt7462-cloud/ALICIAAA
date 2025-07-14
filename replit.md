@@ -123,6 +123,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - DESIGN ÉPURÉ ET AMÉLIORATIONS UX (14 Janvier)
+- ✅ **Harmonisation couleurs** : Interface publique alignée avec site pro (violet au lieu de purple)
+- ✅ **Design épuré** : Suppression éléments décoratifs, animations excessives, espacement réduit
+- ✅ **Recherches populaires** : Boutons de recherche rapide pour services courants
+- ✅ **Créneaux temps réel** : Section "Disponible aujourd'hui" avec réservation immédiate
+- ✅ **Géolocalisation** : Bouton "Trouver près de moi" et icône GPS dans recherche
+- ✅ **Étapes explicites** : Section "Comment ça marche" en 3 étapes claires
+- ✅ **App mobile** : Section téléchargement App Store/Google Play
+- ✅ **Interface simplifiée** : Barre recherche, statistiques et services plus discrets
+
 ### Janvier 2025 - ÉVOLUTION MAJEURE : FONCTIONNALITÉS PLANITY & TREATWELL
 - ✅ **Base de données étendue** : 34+ tables couvrant tous les aspects métier
 - ✅ **Configuration Business** : Paramètres salon complets (horaires, politiques, contact)
