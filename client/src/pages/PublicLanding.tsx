@@ -260,35 +260,7 @@ export default function PublicLanding() {
               </div>
             </div>
 
-            {/* Partage lien de réservation */}
-            <div className="max-w-md mx-auto mb-6">
-              <div className="bg-violet-50 border border-violet-200 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <Share2 className="w-4 h-4 text-violet-600" />
-                  <span className="text-sm font-medium text-violet-700">Partager votre lien</span>
-                </div>
-                <p className="text-xs text-gray-600 mb-3">
-                  Professionnels : partagez votre lien de réservation personnalisé
-                </p>
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={() => setLocation("/share-booking")}
-                    className="flex-1 h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
-                  >
-                    Créer mon lien
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="h-9 px-3 border-violet-200 text-violet-600 rounded-lg touch-manipulation"
-                    onClick={() => {
-                      navigator.clipboard?.writeText(window.location.origin + '/book/demo-salon');
-                    }}
-                  >
-                    <Copy className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>

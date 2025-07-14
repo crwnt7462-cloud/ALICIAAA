@@ -24,7 +24,10 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  Calendar
+  Calendar,
+  Share2,
+  Copy,
+  QrCode
 } from "lucide-react";
 
 export default function BusinessFeatures() {
@@ -216,6 +219,66 @@ export default function BusinessFeatures() {
 
         {/* Pages Tab */}
         <TabsContent value="pages" className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Share2 className="h-4 w-4" />
+                Partage de lien
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 pt-0">
+              <div className="space-y-2">
+                <Label className="text-sm">Lien de réservation personnalisé</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    value="beautybook.com/book/mon-salon"
+                    readOnly
+                    className="h-9 text-sm"
+                  />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      navigator.clipboard?.writeText('https://beautybook.com/book/mon-salon');
+                      toast({ title: "Lien copié!" });
+                    }}
+                  >
+                    <Copy className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-sm">QR Code</Label>
+                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="w-12 h-12 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center">
+                    <QrCode className="h-6 w-6 text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">QR Code généré</p>
+                    <p className="text-xs text-gray-600">Pour impression ou affichage</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Télécharger
+                  </Button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm">Partage rapide</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button variant="outline" size="sm" className="h-9">
+                    <Share2 className="h-3 w-3 mr-1" />
+                    WhatsApp
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-9">
+                    <Share2 className="h-3 w-3 mr-1" />
+                    Email
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
