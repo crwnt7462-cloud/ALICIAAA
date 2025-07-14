@@ -194,31 +194,32 @@ export default function PublicLanding() {
               <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
               <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 px-4">
               Réservez votre rendez-vous beauté
             </h1>
-            <p className="text-lg text-gray-600 mb-10">
+            <p className="text-base md:text-lg text-gray-600 mb-10 px-4">
               Trouvez et réservez chez les meilleurs professionnels près de chez vous
             </p>
             
-            {/* Barre de recherche simple */}
-            <div className="max-w-2xl mx-auto mb-6">
-              <div className="flex gap-3">
-                <div className="flex-1">
+            {/* Barre de recherche mobile-optimized */}
+            <div className="max-w-lg mx-auto mb-6">
+              <div className="space-y-3">
+                <div className="relative">
                   <Input
                     placeholder="Service (coiffure, massage...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-12"
+                    className="h-14 pl-4 pr-12 text-base rounded-xl border-2 border-gray-200 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
+                  <Search className="absolute right-4 top-4 w-6 h-6 text-gray-400" />
                 </div>
-                <div className="flex-1 relative">
+                <div className="relative">
                   <Input
                     placeholder="Ville"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="h-12 pr-10"
+                    className="h-14 pl-4 pr-12 text-base rounded-xl border-2 border-gray-200 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <button
@@ -232,59 +233,27 @@ export default function PublicLanding() {
                         );
                       }
                     }}
-                    className="absolute right-2 top-3 text-violet-500 hover:text-violet-700"
+                    className="absolute right-4 top-4 text-violet-500 active:text-violet-700 touch-manipulation"
                     title="Utiliser ma position"
                   >
-                    <MapPin className="w-5 h-5" />
+                    <MapPin className="w-6 h-6" />
                   </button>
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="h-12 px-6 gradient-bg hover:opacity-90"
+                  className="w-full h-14 gradient-bg text-white text-base font-medium rounded-xl touch-manipulation"
                 >
-                  <Search className="w-4 h-4" />
+                  Rechercher
                 </Button>
               </div>
             </div>
             
-            {/* Bouton géolocalisation rapide */}
-            <div className="max-w-2xl mx-auto mb-8">
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                      (position) => {
-                        setSearchLocation("Près de moi");
-                        handleSearch();
-                      },
-                      (error) => console.log("Géolocalisation non disponible")
-                    );
-                  }
-                }}
-                className="w-full h-10 border-violet-200 text-violet-600 hover:bg-violet-50"
-              >
-                <MapPin className="w-4 h-4 mr-2" />
-                Trouver près de moi
-              </Button>
-            </div>
 
-            {/* Recherches populaires et filtres */}
-            <div className="max-w-2xl mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-gray-500">Recherches populaires :</p>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="text-xs">
-                    <Filter className="w-3 h-3 mr-1" />
-                    Filtres
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-xs">
-                    <SortAsc className="w-3 h-3 mr-1" />
-                    Trier
-                  </Button>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 justify-center">
+
+            {/* Recherches populaires mobile-friendly */}
+            <div className="max-w-lg mx-auto mb-8">
+              <p className="text-sm text-gray-500 mb-3 text-center">Recherches populaires :</p>
+              <div className="grid grid-cols-2 gap-2">
                 {['Coiffure femme', 'Massage relaxant', 'Manucure', 'Soin visage', 'Épilation'].map((search) => (
                   <button
                     key={search}
@@ -292,7 +261,7 @@ export default function PublicLanding() {
                       setSearchQuery(search);
                       handleSearch();
                     }}
-                    className="px-3 py-1 bg-gray-100 hover:bg-violet-100 text-sm rounded-full transition-colors hover:scale-105"
+                    className="h-12 bg-gray-100 active:bg-violet-100 text-sm rounded-xl transition-colors touch-manipulation font-medium"
                   >
                     {search}
                   </button>
@@ -304,24 +273,24 @@ export default function PublicLanding() {
       </section>
 
       {/* Créneaux disponibles aujourd'hui */}
-      <section className="py-12 bg-gradient-to-r from-violet-50 to-pink-50">
+      <section className="py-8 md:py-12 bg-gradient-to-r from-violet-50 to-pink-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
               Créneaux disponibles aujourd'hui
             </h2>
-            <p className="text-gray-600">Réservation immédiate possible</p>
+            <p className="text-sm md:text-base text-gray-600">Réservation immédiate possible</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-3 md:grid md:grid-cols-3 md:gap-4 md:space-y-0">
             {[
               { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e" },
               { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e" },
               { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e" }
             ].map((slot, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 border border-violet-100 hover:border-violet-200 transition-colors">
+              <div key={index} className="bg-white rounded-xl p-4 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation">
                 <div className="flex justify-between items-start mb-3">
-                  <div className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="bg-violet-100 text-violet-700 px-3 py-2 rounded-full text-sm font-medium">
                     {slot.time}
                   </div>
                   <div className="text-right">
@@ -331,7 +300,7 @@ export default function PublicLanding() {
                 <h3 className="font-medium text-gray-900 mb-1">{slot.salon}</h3>
                 <p className="text-sm text-gray-600 mb-1">{slot.service}</p>
                 <p className="text-xs text-gray-500 mb-3">{slot.location}</p>
-                <Button size="sm" className="w-full gradient-bg hover:opacity-90">
+                <Button className="w-full h-12 gradient-bg text-white rounded-xl touch-manipulation">
                   Réserver
                 </Button>
               </div>
@@ -341,15 +310,15 @@ export default function PublicLanding() {
       </section>
 
       {/* Statistiques et garanties */}
-      <section className="py-8 bg-white border-y border-gray-100">
+      <section className="py-6 md:py-8 bg-white border-y border-gray-100">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center mb-6">
             {stats.map((stat, index) => (
-              <div key={index}>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
+              <div key={index} className="p-2">
+                <div className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
                   {stat.number}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-xs md:text-sm text-gray-600">
                   {stat.label}
                 </div>
               </div>
@@ -357,23 +326,23 @@ export default function PublicLanding() {
           </div>
           
           {/* Garanties professionnelles */}
-          <div className="border-t pt-6">
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600">
+          <div className="border-t pt-4">
+            <div className="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-3 md:gap-6 text-xs md:text-sm text-gray-600">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-600" />
-                <span>Paiement sécurisé SSL</span>
+                <Shield className="w-4 h-4 text-green-600 flex-shrink-0" />
+                <span>SSL sécurisé</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-blue-600" />
-                <span>Professionnels certifiés</span>
+                <Award className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                <span>Pros certifiés</span>
               </div>
               <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-violet-600" />
-                <span>Service client 7j/7</span>
+                <Truck className="w-4 h-4 text-violet-600 flex-shrink-0" />
+                <span>Support 7j/7</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-600" />
-                <span>Satisfaction garantie</span>
+                <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
+                <span>Satisfait ou remboursé</span>
               </div>
             </div>
           </div>
@@ -586,20 +555,7 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Partenaires et certifications */}
-      <section className="py-8 bg-gray-50 border-t">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6">
-            <p className="text-sm text-gray-500 mb-4">Ils nous font confiance</p>
-            <div className="flex justify-center items-center gap-8 opacity-60">
-              <div className="text-lg font-bold text-gray-400">L'ORÉAL</div>
-              <div className="text-lg font-bold text-gray-400">SEPHORA</div>
-              <div className="text-lg font-bold text-gray-400">YVES ROCHER</div>
-              <div className="text-lg font-bold text-gray-400">MARIONNAUD</div>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* CTA Professionnels */}
       <section className="py-12 bg-white">
@@ -610,16 +566,16 @@ export default function PublicLanding() {
           <p className="text-gray-600 mb-6">
             Rejoignez notre réseau de 2,500+ salons partenaires
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="space-y-3 md:flex md:flex-row md:gap-4 md:justify-center md:space-y-0">
             <Button 
               onClick={() => setLocation("/pro-login")}
-              className="gradient-bg text-white hover:opacity-90"
+              className="w-full md:w-auto h-12 gradient-bg text-white rounded-xl touch-manipulation font-medium"
             >
               Rejoindre le réseau
             </Button>
             <Button 
               variant="outline"
-              className="border-violet-200 text-violet-600 hover:bg-violet-50"
+              className="w-full md:w-auto h-12 border-violet-200 text-violet-600 active:bg-violet-50 rounded-xl touch-manipulation font-medium"
             >
               En savoir plus
             </Button>
