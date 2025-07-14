@@ -146,7 +146,7 @@ export default function PublicLanding() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-violet-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">B</span>
                 </div>
                 <div>
@@ -229,7 +229,7 @@ export default function PublicLanding() {
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="h-12 px-6 bg-violet-600 hover:bg-violet-700"
+                  className="h-12 px-6 gradient-bg hover:opacity-90"
                 >
                   <Search className="w-4 h-4" />
                 </Button>
@@ -308,7 +308,7 @@ export default function PublicLanding() {
                 <h3 className="font-medium text-gray-900 mb-1">{slot.salon}</h3>
                 <p className="text-sm text-gray-600 mb-1">{slot.service}</p>
                 <p className="text-xs text-gray-500 mb-3">{slot.location}</p>
-                <Button size="sm" className="w-full bg-violet-600 hover:bg-violet-700">
+                <Button size="sm" className="w-full gradient-bg hover:opacity-90">
                   Réserver
                 </Button>
               </div>
@@ -410,7 +410,7 @@ export default function PublicLanding() {
                   
                   <Button 
                     onClick={() => handleBookSalon(salon.id)}
-                    className="w-full bg-violet-600 hover:bg-violet-700"
+                    className="w-full gradient-bg hover:opacity-90"
                     size="sm"
                   >
                     Réserver
@@ -508,7 +508,7 @@ export default function PublicLanding() {
       </section>
 
       {/* Application mobile */}
-      <section className="py-12 bg-gradient-to-r from-violet-600 to-pink-600">
+      <section className="py-12 gradient-bg">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-white mb-4">
@@ -552,7 +552,7 @@ export default function PublicLanding() {
           </p>
           <Button 
             onClick={() => setLocation("/pro-login")}
-            className="bg-violet-600 hover:bg-violet-700 text-white"
+            className="gradient-bg hover:opacity-90 text-white"
           >
             Rejoindre le réseau
           </Button>
@@ -613,7 +613,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-violet-700 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">B</span>
                 </div>
                 <div>
