@@ -66,7 +66,7 @@ export default function PageBuilder() {
 
   const [pageDesign, setPageDesign] = useState<PageDesign>({
     name: "Réservation Express",
-    slug: "reservation-express", 
+    slug: "quick-booking",
     blocks: [
       {
         id: "header-1",
@@ -83,70 +83,105 @@ export default function PageBuilder() {
           backgroundColor: "#A855F7",
           textColor: "#FFFFFF",
           alignment: "center",
-          height: "200px",
-          gradient: "linear-gradient(135deg, #A855F7 0%, #C084FC 100%)",
-          borderRadius: "0px"
+          height: "150px",
+          borderRadius: "0px",
+          fontFamily: "system-ui"
         },
         order: 0
       },
       {
-        id: "text-1", 
+        id: "progress-1",
         type: "text",
         content: {
-          content: `<div class="flex justify-center items-center space-x-4 my-8">
-            <div class="flex items-center justify-center w-10 h-10 bg-purple-600 text-white rounded-full font-bold">1</div>
+          content: `<div class="flex items-center justify-center space-x-4 py-8">
+            <div class="flex items-center justify-center w-10 h-10 bg-purple-600 text-white rounded-full font-bold text-sm">1</div>
             <div class="w-16 h-0.5 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold">2</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">2</div>
             <div class="w-16 h-0.5 bg-gray-300"></div>
-            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold">3</div>
+            <div class="flex items-center justify-center w-10 h-10 bg-gray-300 text-gray-600 rounded-full font-bold text-sm">3</div>
           </div>`,
           alignment: "center"
         },
         style: {
           backgroundColor: "#FFFFFF",
           textColor: "#1F2937",
-          padding: "20px"
+          padding: "0px"
         },
         order: 1
       },
       {
-        id: "booking-form-1",
-        type: "booking-form", 
+        id: "service-header",
+        type: "text",
         content: {
-          title: "Choisissez votre service",
-          subtitle: "",
-          buttonText: "Continuer",
-          showInstantBooking: true,
-          requireDeposit: false,
-          stepByStep: true
+          content: `<div class="bg-purple-600 text-white p-6 text-center">
+            <h2 class="text-xl font-semibold">Choisissez votre service</h2>
+          </div>`,
+          alignment: "center"
         },
         style: {
           backgroundColor: "#A855F7",
           textColor: "#FFFFFF",
-          padding: "30px 20px",
-          borderRadius: "0px",
-          buttonColor: "#FFFFFF",
-          buttonTextColor: "#A855F7"
+          padding: "0px",
+          borderRadius: "0px"
         },
         order: 2
       },
       {
-        id: "services-1",
-        type: "services",
+        id: "services-list",
+        type: "text",
         content: {
-          title: "",
-          subtitle: "",
-          showPrices: true,
-          showDuration: true,
-          layout: "list",
-          showBookingButton: false,
-          quickSelect: true,
-          compactView: true
+          content: `<div class="space-y-4 p-4">
+            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-semibold text-lg">Coupe femme</h3>
+                  <span class="bg-orange-500 text-white px-2 py-1 rounded text-xs font-medium">Populaire</span>
+                </div>
+                <p class="text-gray-600 text-sm flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                  </svg>
+                  60 min
+                </p>
+              </div>
+              <span class="text-2xl font-bold text-purple-600">45€</span>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+              <div>
+                <h3 class="font-semibold text-lg">Coloration</h3>
+                <p class="text-gray-600 text-sm flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                  </svg>
+                  120 min
+                </p>
+              </div>
+              <span class="text-2xl font-bold text-purple-600">80€</span>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-lg p-4 flex justify-between items-center">
+              <div>
+                <h3 class="font-semibold text-lg">Brushing</h3>
+                <p class="text-gray-600 text-sm flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12,6 12,12 16,14"></polyline>
+                  </svg>
+                  45 min
+                </p>
+              </div>
+              <span class="text-2xl font-bold text-purple-600">30€</span>
+            </div>
+          </div>`,
+          alignment: "left"
         },
         style: {
           backgroundColor: "#FFFFFF",
-          textColor: "#1F2937", 
-          padding: "0px 20px 20px 20px",
+          textColor: "#1F2937",
+          padding: "0px",
           borderRadius: "0px"
         },
         order: 3
