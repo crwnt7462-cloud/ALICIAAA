@@ -212,67 +212,140 @@ export default function PageBuilder() {
   };
 
   const [pageDesign, setPageDesign] = useState<PageDesign>({
-    name: "Ma Page de Réservation",
-    slug: "ma-page-reservation",
+    name: "Réservation Express",
+    slug: "reservation-express",
     blocks: [
       {
         id: "header-1",
         type: "header",
         content: {
-          title: "Prenez rendez-vous",
-          subtitle: "Réservez en ligne en quelques clics",
-          backgroundImage: "",
-          logoUrl: ""
+          title: "Réservation Express",
+          subtitle: "Réservez votre rendez-vous en 3 étapes simples",
+          backgroundImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200",
+          logoUrl: "",
+          ctaText: "Commencer la réservation",
+          showCta: true
         },
         style: {
           backgroundColor: "#8B5CF6",
           textColor: "#FFFFFF",
           alignment: "center",
-          height: "300px"
+          height: "400px",
+          gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          borderRadius: "0px",
+          animation: "fadeIn"
         },
         order: 0
-      },
-      {
-        id: "services-1",
-        type: "services",
-        content: {
-          title: "Nos Services",
-          showPrices: true,
-          showDuration: true,
-          layout: "grid"
-        },
-        style: {
-          backgroundColor: "#FFFFFF",
-          textColor: "#1F2937",
-          padding: "40px"
-        },
-        order: 1
       },
       {
         id: "booking-form-1",
         type: "booking-form",
         content: {
-          title: "Prendre rendez-vous",
-          buttonText: "Réserver maintenant"
+          title: "Étape 1 - Choisissez votre service",
+          subtitle: "Sélectionnez la prestation qui vous intéresse",
+          buttonText: "Continuer →",
+          showInstantBooking: true,
+          requireDeposit: true,
+          depositAmount: 20,
+          stepByStep: true
         },
         style: {
-          backgroundColor: "#F9FAFB",
-          buttonColor: "#8B5CF6",
-          padding: "40px"
+          backgroundColor: "#FFFFFF",
+          textColor: "#1F2937",
+          padding: "40px",
+          borderRadius: "12px",
+          shadow: "lg",
+          border: "1px solid #E5E7EB"
+        },
+        order: 1
+      },
+      {
+        id: "services-1",
+        type: "services",
+        content: {
+          title: "Nos Services Disponibles",
+          subtitle: "Choisissez parmi nos prestations premium",
+          showPrices: true,
+          showDuration: true,
+          layout: "list",
+          showBookingButton: true,
+          quickSelect: true
+        },
+        style: {
+          backgroundColor: "#F8FAFC",
+          textColor: "#1F2937",
+          padding: "40px",
+          borderRadius: "0px"
         },
         order: 2
+      },
+      {
+        id: "text-1",
+        type: "text",
+        content: {
+          content: `<div class="text-center space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-white p-6 rounded-lg shadow-sm border">
+                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span class="text-purple-600 font-bold text-xl">1</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Choisissez</h3>
+                <p class="text-gray-600 text-sm">Sélectionnez votre service parmi nos prestations</p>
+              </div>
+              
+              <div class="bg-white p-6 rounded-lg shadow-sm border">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span class="text-blue-600 font-bold text-xl">2</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Planifiez</h3>
+                <p class="text-gray-600 text-sm">Choisissez votre créneau préféré</p>
+              </div>
+              
+              <div class="bg-white p-6 rounded-lg shadow-sm border">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span class="text-green-600 font-bold text-xl">3</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-2">Confirmez</h3>
+                <p class="text-gray-600 text-sm">Finalisez votre réservation</p>
+              </div>
+            </div>
+          </div>`,
+          alignment: "center"
+        },
+        style: {
+          backgroundColor: "#FFFFFF",
+          textColor: "#1F2937",
+          padding: "60px 40px"
+        },
+        order: 3
+      },
+      {
+        id: "testimonials-1",
+        type: "testimonials",
+        content: {
+          title: "Ce que disent nos clients",
+          subtitle: "Plus de 1000 clients satisfaits",
+          layout: "carousel",
+          autoplay: true
+        },
+        style: {
+          backgroundColor: "#F8FAFC",
+          textColor: "#1F2937",
+          padding: "60px 40px"
+        },
+        order: 4
       }
     ],
     theme: {
-      primaryColor: "#8B5CF6",
-      secondaryColor: "#F3F4F6",
+      primaryColor: "#667eea",
+      secondaryColor: "#764ba2",
       fontFamily: "Inter",
       buttonStyle: "rounded"
     },
     settings: {
-      isPublished: false,
-      metaTitle: "",
-      metaDescription: ""
+      isPublished: true,
+      metaTitle: "Réservation Express - Prenez RDV en 3 étapes",
+      metaDescription: "Réservez votre rendez-vous rapidement en 3 étapes simples. Choisissez, planifiez, confirmez."
     }
   });
 
@@ -580,16 +653,7 @@ export default function PageBuilder() {
         </div>
 
         {/* Save Button */}
-        <div className="p-4 border-t border-gray-200 space-y-3">
-          <Button
-            onClick={loadProTemplate}
-            variant="outline"
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
-          >
-            <Star className="w-4 h-4 mr-2" />
-            Réservation Express
-          </Button>
-          
+        <div className="p-4 border-t border-gray-200">
           <Button
             onClick={() => savePageMutation.mutate(pageDesign)}
             disabled={savePageMutation.isPending}
@@ -641,28 +705,17 @@ export default function PageBuilder() {
               </Button>
             </div>
             
-            <div className="flex space-x-1">
-              <Button
-                onClick={loadProTemplate}
-                variant="outline"
-                size="sm"
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700"
-              >
-                <Star className="w-4 h-4" />
-              </Button>
-              
-              <Button
-                onClick={() => savePageMutation.mutate(pageDesign)}
-                disabled={savePageMutation.isPending}
-                size="sm"
-              >
-                {savePageMutation.isPending ? (
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
+            <Button
+              onClick={() => savePageMutation.mutate(pageDesign)}
+              disabled={savePageMutation.isPending}
+              size="sm"
+            >
+              {savePageMutation.isPending ? (
+                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+            </Button>
           </div>
         </div>
 
