@@ -156,16 +156,17 @@ export default function PublicLanding() {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-violet-600"
+                className="text-gray-600 hover:text-violet-600 text-sm md:text-base px-2 md:px-4"
                 onClick={() => setLocation("/pro-login")}
               >
-                Espace Professionnel
+                <span className="hidden md:inline">Espace Professionnel</span>
+                <span className="md:hidden">Pro</span>
               </Button>
               <Button 
-                className="bg-gradient-to-r from-violet-600 to-violet-700 hover:from-violet-700 hover:to-violet-800 text-white"
+                className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg"
                 onClick={() => setLocation("/pro-login")}
               >
                 Connexion
