@@ -243,32 +243,70 @@ export default function BookingPage() {
           </Card>
         )}
 
-        {/* Résumé et confirmation */}
+        {/* Étape 5: Acompte et paiement */}
         {selectedTime && customerInfo.firstName && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Résumé de votre réservation</CardTitle>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="bg-violet-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">5</span>
+                Acompte et confirmation
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span>Service:</span>
-                <span className="font-medium">{selectedServiceData?.name}</span>
+            <CardContent className="space-y-4">
+              <div className="bg-violet-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <CreditCard className="w-4 h-4 text-violet-600" />
+                  <span className="font-medium text-violet-800">Acompte requis</span>
+                </div>
+                <p className="text-sm text-violet-700">
+                  Un acompte de 30% est requis pour confirmer votre réservation
+                </p>
               </div>
-              <div className="flex justify-between">
-                <span>Date:</span>
-                <span className="font-medium">{selectedDate?.toLocaleDateString()}</span>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span>Service:</span>
+                  <span className="font-medium">{selectedServiceData?.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Date:</span>
+                  <span className="font-medium">{selectedDate?.toLocaleDateString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Heure:</span>
+                  <span className="font-medium">{selectedTime}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Durée:</span>
+                  <span className="font-medium">{selectedServiceData?.duration} min</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span>Heure:</span>
-                <span className="font-medium">{selectedTime}</span>
+              
+              <div className="border-t pt-3 space-y-2">
+                <div className="flex justify-between text-lg">
+                  <span>Total service:</span>
+                  <span className="font-medium">{selectedServiceData?.price}€</span>
+                </div>
+                <div className="flex justify-between text-violet-600 font-semibold">
+                  <span>Acompte à payer:</span>
+                  <span>{selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€</span>
+                </div>
+                <div className="flex justify-between text-sm text-gray-600">
+                  <span>Solde à régler sur place:</span>
+                  <span>{selectedServiceData ? selectedServiceData.price - Math.round(selectedServiceData.price * 0.3) : 0}€</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span>Durée:</span>
-                <span className="font-medium">{selectedServiceData?.duration} min</span>
-              </div>
-              <div className="flex justify-between text-lg font-semibold">
-                <span>Total:</span>
-                <span>{selectedServiceData?.price}€</span>
+              
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span className="font-medium text-gray-800">Moyens de paiement acceptés</span>
+                </div>
+                <div className="flex gap-2 text-xs">
+                  <span className="bg-white px-2 py-1 rounded border">💳 Carte bancaire</span>
+                  <span className="bg-white px-2 py-1 rounded border">📱 Apple Pay</span>
+                  <span className="bg-white px-2 py-1 rounded border">🔐 PayPal</span>
+                </div>
               </div>
               
               <Button 
@@ -276,9 +314,13 @@ export default function BookingPage() {
                 className="w-full mt-4 bg-violet-500 hover:bg-violet-600"
                 size="lg"
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Confirmer la réservation
+                <CreditCard className="w-4 h-4 mr-2" />
+                Payer l'acompte {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
               </Button>
+              
+              <p className="text-xs text-gray-500 text-center">
+                Paiement sécurisé • Annulation gratuite jusqu'à 24h avant
+              </p>
             </CardContent>
           </Card>
         )}

@@ -123,6 +123,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - SYSTÈME D'ACOMPTE ET CRÉATEUR DE PAGES (15 Janvier)
+- ✅ **Étape acompte intégrée** : Processus de réservation avec paiement d'acompte 30%
+- ✅ **Créateur de pages professionnel** : Interface élégante avec design BookingPage
+- ✅ **Gestion paiements** : Carte bancaire, Apple Pay, PayPal avec solde restant calculé
+- ✅ **Templates personnalisables** : Moderne, Classique, Minimaliste, Luxe
+- ✅ **Aperçu temps réel** : Visualisation mobile/desktop instantanée
+- ✅ **Navigation Pro Tools** : Bouton "Créer nouvelle page" vers PageBuilder fonctionnel
+- ✅ **Design cohérent** : Étapes numérotées identiques à la page de réservation
+- ✅ **Politique annulation** : Information claire sur annulation gratuite 24h
+
 ### Janvier 2025 - MESSAGERIE DIRECTE PREMIUM INTÉGRÉE (15 Janvier)
 - ✅ **Messagerie Pro complète** : Interface ChatGPT-like pour communication directe clients
 - ✅ **Intégration Premium 149€** : Fonctionnalité exclusive abonnés Premium dans Pro Tools
