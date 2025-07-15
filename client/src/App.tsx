@@ -87,11 +87,14 @@ function Router() {
     );
   }
 
-  // Page IA en plein écran (sans header global)
+  // Page IA avec navigation en bas mais sans header
   if (location === '/ai') {
     return (
-      <div className="h-full">
-        <AIAutomation />
+      <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
+          <AIAutomation />
+        </main>
+        <BottomNavigation />
       </div>
     );
   }
