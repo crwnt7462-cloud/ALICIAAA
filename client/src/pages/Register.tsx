@@ -266,23 +266,14 @@ export default function Register() {
           </Card>
 
           <div className="text-center mt-8">
-            <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-4">
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                Gratuit 14 jours
-              </span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                Sans engagement
-              </span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                Support inclus
-              </span>
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-2xl">
+              <p className="text-base text-gray-700 mb-2">
+                <span className="font-semibold">Besoin d'aide ?</span>
+              </p>
+              <a href="#" className="text-violet-600 hover:text-violet-800 font-semibold text-lg hover:underline transition-all duration-200">
+                Contactez notre équipe support →
+              </a>
             </div>
-            <p className="text-sm text-gray-600">
-              Besoin d'aide ? <a href="#" className="text-violet-600 hover:text-violet-800 font-medium">Contactez notre support</a>
-            </p>
           </div>
         </div>
       </div>

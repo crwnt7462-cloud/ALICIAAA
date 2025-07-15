@@ -358,21 +358,7 @@ export default function ProLogin() {
             </CardContent>
           </Card>
 
-          <div className="text-center mt-10">
-            <div className="flex items-center justify-center gap-6 text-base text-gray-500 mb-6">
-              <span className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-full">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                <span className="font-medium">Sécurisé SSL</span>
-              </span>
-              <span className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-full">
-                <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-300" />
-                <span className="font-medium">Connexion rapide</span>
-              </span>
-              <span className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-full">
-                <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse delay-500" />
-                <span className="font-medium">Support 24/7</span>
-              </span>
-            </div>
+          <div className="text-center mt-8">
             <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-2xl">
               <p className="text-base text-gray-700 mb-2">
                 <span className="font-semibold">Besoin d'aide ?</span>
