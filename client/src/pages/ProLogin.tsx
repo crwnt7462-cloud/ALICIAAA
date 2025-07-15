@@ -118,7 +118,7 @@ export default function ProLogin() {
             <Button 
               variant="ghost" 
               onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-600 hover:text-violet-600"
             >
               Retour à l'accueil
             </Button>
@@ -190,7 +190,7 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" disabled={isLoading}>
+                      <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white" disabled={isLoading}>
                         {isLoading ? "Connexion..." : "Se connecter"}
                       </Button>
                     </form>
@@ -318,7 +318,7 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" disabled={isLoading}>
+                      <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white" disabled={isLoading}>
                         {isLoading ? "Création..." : "Créer mon compte"}
                       </Button>
                     </form>
@@ -330,7 +330,7 @@ export default function ProLogin() {
 
           <div className="text-center mt-6">
             <p className="text-sm text-gray-600">
-              Besoin d'aide ? <a href="#" className="text-gray-900 hover:underline">Contactez notre support</a>
+              Besoin d'aide ? <a href="#" className="text-violet-600 hover:underline">Contactez notre support</a>
             </p>
           </div>
         </div>
