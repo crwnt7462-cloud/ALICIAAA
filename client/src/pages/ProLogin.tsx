@@ -106,20 +106,19 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
-              <Sparkles className="w-7 h-7 text-purple-600" />
-              <span className="text-lg font-bold text-gray-900">Rendly</span>
+              <span className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
             </div>
             
             <Button 
               variant="ghost" 
               onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-purple-600"
+              className="text-gray-600 hover:text-gray-900"
             >
               Retour à l'accueil
             </Button>
@@ -139,7 +138,7 @@ export default function ProLogin() {
             </p>
           </div>
 
-          <Card className="shadow-xl">
+          <Card className="shadow-sm border border-gray-200">
             <CardHeader className="text-center">
               <CardTitle className="text-xl">Accès Professionnel</CardTitle>
               <CardDescription>
@@ -191,7 +190,7 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
+                      <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" disabled={isLoading}>
                         {isLoading ? "Connexion..." : "Se connecter"}
                       </Button>
                     </form>
@@ -319,7 +318,7 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
+                      <Button type="submit" className="w-full bg-gray-900 hover:bg-gray-800 text-white" disabled={isLoading}>
                         {isLoading ? "Création..." : "Créer mon compte"}
                       </Button>
                     </form>
@@ -331,7 +330,7 @@ export default function ProLogin() {
 
           <div className="text-center mt-6">
             <p className="text-sm text-gray-600">
-              Besoin d'aide ? <a href="#" className="text-purple-600 hover:underline">Contactez notre support</a>
+              Besoin d'aide ? <a href="#" className="text-gray-900 hover:underline">Contactez notre support</a>
             </p>
           </div>
         </div>
