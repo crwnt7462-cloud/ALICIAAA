@@ -123,6 +123,14 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - MENU HAMBURGER & PLANS PROFESSIONNELS (15 Janvier)
+- ✅ **Menu hamburger responsive** : Créé sur la page d'accueil publique avec 6 éléments
+- ✅ **Page Plans Professionnels** : 3 abonnements complets (Essentiel 29€, Professionnel 79€, Premium 149€)
+- ✅ **Page d'inscription Subscribe** : Formulaire complet avec récapitulatif plan et garanties
+- ✅ **Navigation fluide** : Menu hamburger redirige vers les plans professionnels
+- ✅ **Design mobile-first** : Interface responsive avec animations CSS fluides
+- ✅ **Intégration seamless** : Toutes les pages connectées via le routing wouter
+
 ### Janvier 2025 - OPTIMISATION COMPLÈTE NAVIGATION & FONCTIONNALITÉS (15 Janvier)
 - ✅ **Header Rendly AI fixe** : Interface ChatGPT stable avec header fixe en haut et zone de saisie en bas
 - ✅ **Tous les boutons fonctionnels** : Correction complète de tous les boutons cassés et handlers manquants

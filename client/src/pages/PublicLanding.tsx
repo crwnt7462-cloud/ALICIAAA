@@ -150,7 +150,7 @@ export default function PublicLanding() {
       id: 'pro', 
       label: 'Je suis un professionnel de beauté', 
       icon: <UserCheck className="w-5 h-5" />,
-      action: () => setLocation("/pro-login")
+      action: () => setLocation("/professional-plans")
     },
     { 
       id: 'coiffeur', 

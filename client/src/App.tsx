@@ -28,6 +28,8 @@ import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeatures from "@/pages/BusinessFeatures";
 import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
+import ProfessionalPlans from "@/pages/ProfessionalPlans";
+import Subscribe from "@/pages/Subscribe";
 
 
 function Router() {
@@ -65,6 +67,24 @@ function Router() {
     return (
       <div className="h-full">
         <ProLogin />
+      </div>
+    );
+  }
+
+  // Page des plans professionnels
+  if (location === '/professional-plans') {
+    return (
+      <div className="h-full">
+        <ProfessionalPlans />
+      </div>
+    );
+  }
+
+  // Page d'inscription/abonnement
+  if (location.startsWith('/subscribe')) {
+    return (
+      <div className="h-full">
+        <Subscribe />
       </div>
     );
   }
