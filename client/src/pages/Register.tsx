@@ -66,19 +66,29 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-blue-100 to-violet-100 rounded-full opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-10 animate-spin" style={{ animationDuration: '20s' }}></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-violet-100">
+      <header className="relative bg-white/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
-              <span className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setLocation("/")}>
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <span className="text-white font-bold text-sm">R</span>
+              </div>
+              <span className="text-xl font-semibold text-gray-900 tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
             </div>
             
             <Button 
               variant="ghost" 
               onClick={() => setLocation("/pro-login")}
-              className="text-gray-600 hover:text-violet-600 font-medium"
+              className="text-gray-600 hover:text-violet-600 hover:bg-violet-50 font-medium transition-all duration-200"
             >
               Se connecter
             </Button>
@@ -87,24 +97,25 @@ export default function Register() {
       </header>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center py-12 px-4">
+      <div className="relative flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mb-4">
-              <User className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-violet-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-bounce" style={{ animationDuration: '3s' }}>
+              <User className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-3">
               Inscription
             </h1>
-            <p className="text-gray-600">
-              Créez votre compte professionnel en quelques minutes
+            <p className="text-gray-600 text-lg">
+              Rejoignez la révolution beauté digitale
             </p>
           </div>
 
-          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-md">
-            <CardHeader className="text-center pb-6">
-              <CardTitle className="text-xl font-semibold text-gray-900">Nouveau compte</CardTitle>
-              <CardDescription className="text-gray-600">
+          <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-xl rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600"></div>
+            <CardHeader className="text-center pb-6 pt-8">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Nouveau compte</CardTitle>
+              <CardDescription className="text-gray-600 text-base">
                 Rejoignez la communauté Rendly et digitalisez votre salon
               </CardDescription>
             </CardHeader>
@@ -121,8 +132,8 @@ export default function Register() {
                           <FormLabel>Votre nom</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                              <Input {...field} placeholder="John Doe" className="pl-10" />
+                              <User className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                              <Input {...field} placeholder="John Doe" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -138,8 +149,8 @@ export default function Register() {
                           <FormLabel>Nom du salon</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Building className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                              <Input {...field} placeholder="Salon Beauty" className="pl-10" />
+                              <Building className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                              <Input {...field} placeholder="Salon Beauty" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -156,8 +167,8 @@ export default function Register() {
                         <FormLabel>Email</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                            <Input {...field} type="email" placeholder="contact@salon.com" className="pl-10" />
+                            <Mail className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                            <Input {...field} type="email" placeholder="contact@salon.com" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -173,8 +184,8 @@ export default function Register() {
                         <FormLabel>Téléphone</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                            <Input {...field} placeholder="01 23 45 67 89" className="pl-10" />
+                            <Phone className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                            <Input {...field} placeholder="01 23 45 67 89" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -190,8 +201,8 @@ export default function Register() {
                         <FormLabel>Adresse</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                            <Input {...field} placeholder="123 rue de la Beauté" className="pl-10" />
+                            <MapPin className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                            <Input {...field} placeholder="123 rue de la Beauté" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -206,7 +217,7 @@ export default function Register() {
                       <FormItem>
                         <FormLabel>Ville</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Paris" />
+                          <Input {...field} placeholder="Paris" className="h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -221,8 +232,8 @@ export default function Register() {
                         <FormLabel>Mot de passe</FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                            <Input {...field} type="password" placeholder="••••••••" className="pl-10" />
+                            <Lock className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                            <Input {...field} type="password" placeholder="••••••••" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                           </div>
                         </FormControl>
                         <FormMessage />

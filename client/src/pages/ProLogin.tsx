@@ -106,19 +106,29 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-blue-100 to-violet-100 rounded-full opacity-20 animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-10 animate-spin" style={{ animationDuration: '20s' }}></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-violet-100">
+      <header className="relative bg-white/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
-              <span className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setLocation("/")}>
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <span className="text-white font-bold text-sm">R</span>
+              </div>
+              <span className="text-xl font-semibold text-gray-900 tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
             </div>
             
             <Button 
               variant="ghost" 
               onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-violet-600 font-medium"
+              className="text-gray-600 hover:text-violet-600 hover:bg-violet-50 font-medium transition-all duration-200"
             >
               Retour à l'accueil
             </Button>
@@ -127,24 +137,25 @@ export default function ProLogin() {
       </header>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center py-12 px-4">
+      <div className="relative flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mb-4">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-violet-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-bounce" style={{ animationDuration: '3s' }}>
+              <Lock className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-3">
               Connexion
             </h1>
-            <p className="text-gray-600">
-              Accédez à votre espace de gestion
+            <p className="text-gray-600 text-lg">
+              Accédez à votre espace de gestion professionnel
             </p>
           </div>
 
-          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-md">
-            <CardHeader className="text-center pb-6">
-              <CardTitle className="text-xl font-semibold text-gray-900">Accès Sécurisé</CardTitle>
-              <CardDescription className="text-gray-600">
+          <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-xl rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600"></div>
+            <CardHeader className="text-center pb-6 pt-8">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Accès Sécurisé</CardTitle>
+              <CardDescription className="text-gray-600 text-base">
                 Connectez-vous à votre plateforme de gestion
               </CardDescription>
             </CardHeader>
@@ -167,8 +178,8 @@ export default function ProLogin() {
                             <FormLabel>Email</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                                <Input {...field} type="email" placeholder="votre@email.com" className="pl-10" />
+                                <Mail className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                                <Input {...field} type="email" placeholder="votre@email.com" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -184,8 +195,8 @@ export default function ProLogin() {
                             <FormLabel>Mot de passe</FormLabel>
                             <FormControl>
                               <div className="relative">
-                                <Lock className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                                <Input {...field} type="password" placeholder="••••••••" className="pl-10" />
+                                <Lock className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
+                                <Input {...field} type="password" placeholder="••••••••" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -193,23 +204,23 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium py-3 shadow-lg" disabled={isLoading}>
+                      <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold py-4 rounded-xl shadow-2xl hover:shadow-violet-500/25 transform hover:scale-105 transition-all duration-200" disabled={isLoading}>
                         {isLoading ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            Connexion...
+                          <div className="flex items-center gap-3">
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span className="text-lg">Connexion en cours...</span>
                           </div>
                         ) : (
-                          "Se connecter"
+                          <span className="text-lg">Se connecter</span>
                         )}
                       </Button>
                       
-                      <div className="text-center pt-6 border-t border-violet-100">
-                        <p className="text-sm text-gray-600 mb-3">Pas encore de compte ?</p>
+                      <div className="text-center pt-8 border-t border-violet-100">
+                        <p className="text-base text-gray-600 mb-4">Pas encore de compte ?</p>
                         <Button 
                           type="button" 
                           variant="outline" 
-                          className="w-full border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 font-medium"
+                          className="w-full border-2 border-violet-300 text-violet-600 hover:bg-violet-50 hover:border-violet-400 font-semibold py-3 rounded-xl transition-all duration-200 hover:scale-105"
                           onClick={() => setLocation("/register")}
                         >
                           Créer un compte
@@ -350,24 +361,29 @@ export default function ProLogin() {
             </CardContent>
           </Card>
 
-          <div className="text-center mt-8">
-            <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-4">
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full" />
-                Sécurisé
+          <div className="text-center mt-10">
+            <div className="flex items-center justify-center gap-6 text-base text-gray-500 mb-6">
+              <span className="flex items-center gap-2 bg-green-50 px-3 py-2 rounded-full">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                <span className="font-medium">Sécurisé SSL</span>
               </span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                Rapide
+              <span className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-full">
+                <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-300" />
+                <span className="font-medium">Connexion rapide</span>
               </span>
-              <span className="flex items-center gap-1">
-                <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                Fiable
+              <span className="flex items-center gap-2 bg-purple-50 px-3 py-2 rounded-full">
+                <div className="w-3 h-3 bg-purple-500 rounded-full animate-pulse delay-500" />
+                <span className="font-medium">Support 24/7</span>
               </span>
             </div>
-            <p className="text-sm text-gray-600">
-              Besoin d'aide ? <a href="#" className="text-violet-600 hover:text-violet-800 font-medium">Contactez notre support</a>
-            </p>
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-2xl">
+              <p className="text-base text-gray-700 mb-2">
+                <span className="font-semibold">Besoin d'aide ?</span>
+              </p>
+              <a href="#" className="text-violet-600 hover:text-violet-800 font-semibold text-lg hover:underline transition-all duration-200">
+                Contactez notre équipe support →
+              </a>
+            </div>
           </div>
         </div>
       </div>
