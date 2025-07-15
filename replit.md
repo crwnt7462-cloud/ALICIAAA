@@ -130,6 +130,8 @@ Génération automatique :
 - ✅ **Navigation fluide** : Menu hamburger redirige vers les plans professionnels
 - ✅ **Design mobile-first** : Interface responsive avec animations CSS fluides
 - ✅ **Intégration seamless** : Toutes les pages connectées via le routing wouter
+- ✅ **Branding Rendly** : Remplacement BeautyBook Pro par Rendly sur toutes les pages
+- ✅ **Design ultra-compact** : Optimisation maximale de l'espace sans éléments superflus
 
 ### Janvier 2025 - OPTIMISATION COMPLÈTE NAVIGATION & FONCTIONNALITÉS (15 Janvier)
 - ✅ **Header Rendly AI fixe** : Interface ChatGPT stable avec header fixe en haut et zone de saisie en bas

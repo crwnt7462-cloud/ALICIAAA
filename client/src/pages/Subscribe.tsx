@@ -93,7 +93,7 @@ export default function Subscribe() {
                 <span className="text-white font-bold text-lg">B</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">BeautyBook Pro</h1>
+                <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
                 <p className="text-xs text-gray-500 -mt-1">Inscription</p>
               </div>
             </div>
