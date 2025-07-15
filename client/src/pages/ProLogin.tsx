@@ -131,18 +131,15 @@ export default function ProLogin() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Espace Professionnel
+              Connexion
             </h1>
-            <p className="text-gray-600">
-              Gérez votre salon et développez votre clientèle
-            </p>
           </div>
 
           <Card className="shadow-sm border border-gray-200">
             <CardHeader className="text-center">
-              <CardTitle className="text-xl">Accès Professionnel</CardTitle>
+              <CardTitle className="text-xl">Accès</CardTitle>
               <CardDescription>
-                Connectez-vous ou créez votre compte professionnel
+                Connectez-vous ou créez votre compte
               </CardDescription>
             </CardHeader>
             
