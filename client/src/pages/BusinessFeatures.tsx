@@ -387,7 +387,7 @@ export default function BusinessFeatures() {
                 size="sm" 
                 variant="outline" 
                 className="w-full"
-                onClick={() => window.open('/page-builder', '_blank')}
+                onClick={() => setLocation('/page-builder')}
               >
                 + Créer nouvelle page
               </Button>
