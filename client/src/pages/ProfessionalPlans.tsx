@@ -92,22 +92,22 @@ export default function ProfessionalPlans() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30">
-      {/* Header */}
+      {/* Header compact */}
       <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">B</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">BeautyBook Pro</h1>
-                <p className="text-xs text-gray-500 -mt-1">Abonnements professionnels</p>
+                <h1 className="text-lg font-bold text-gray-900">BeautyBook Pro</h1>
               </div>
             </div>
             
             <Button 
               variant="ghost" 
+              size="sm"
               onClick={() => setLocation("/")}
               className="text-gray-600 hover:text-violet-600"
             >
@@ -117,208 +117,175 @@ export default function ProfessionalPlans() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
-            <Shield className="w-4 h-4 text-violet-600" />
-            <span className="text-sm font-medium text-violet-700">14 jours d'essai gratuit</span>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Hero Section compact */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-3 py-1 mb-4">
+            <Shield className="w-3 h-3 text-violet-600" />
+            <span className="text-xs font-medium text-violet-700">14 jours gratuits</span>
           </div>
           
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            Choisissez votre plan
-            <span className="block text-gradient mt-2">professionnel</span>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            Choisissez votre plan <span className="text-gradient">professionnel</span>
           </h1>
           
-          <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-            Développez votre salon avec nos outils professionnels. Commencez votre essai gratuit aujourd'hui.
+          <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+            Développez votre salon avec nos outils professionnels
           </p>
 
-          {/* Toggle de facturation */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-gray-900' : 'text-gray-500'}`}>
+          {/* Toggle de facturation compact */}
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <span className={`text-sm ${billingCycle === 'monthly' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
               Mensuel
             </span>
             <button
               onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
                 billingCycle === 'annual' ? 'bg-violet-600' : 'bg-gray-300'
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  billingCycle === 'annual' ? 'translate-x-6' : 'translate-x-1'
+                className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${
+                  billingCycle === 'annual' ? 'translate-x-5' : 'translate-x-1'
                 }`}
               />
             </button>
-            <span className={`text-sm font-medium ${billingCycle === 'annual' ? 'text-gray-900' : 'text-gray-500'}`}>
+            <span className={`text-sm ${billingCycle === 'annual' ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
               Annuel
             </span>
             {billingCycle === 'annual' && (
-              <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200">
-                Économisez jusqu'à 25%
+              <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 text-xs">
+                -25%
               </Badge>
             )}
           </div>
         </div>
 
-        {/* Plans de tarification */}
-        <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Plans de tarification compacts */}
+        <div className="grid lg:grid-cols-3 gap-6 mb-8">
           {plans.map((plan) => (
             <Card 
               key={plan.id}
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl ${
-                plan.popular ? 'ring-2 ring-violet-500 shadow-xl scale-105' : 'hover:scale-105'
+              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${
+                plan.popular ? 'ring-2 ring-violet-500 shadow-lg' : 'hover:scale-[1.02]'
               } ${selectedPlan === plan.id ? 'ring-2 ring-violet-500' : ''}`}
             >
               {plan.popular && (
                 <div className="absolute top-0 left-0 right-0">
-                  <div className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-center py-2 text-sm font-semibold">
+                  <div className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-center py-1 text-xs font-semibold">
                     Le plus populaire
                   </div>
                 </div>
               )}
               
-              <CardHeader className={`text-center ${plan.popular ? 'pt-12' : 'pt-6'}`}>
-                <div className="flex items-center justify-center mb-4">
-                  <div className={`p-4 rounded-xl bg-gradient-to-r ${plan.color}`}>
+              <CardHeader className={`text-center ${plan.popular ? 'pt-8' : 'pt-4'} pb-3`}>
+                <div className="flex items-center justify-center mb-3">
+                  <div className={`p-2 rounded-lg bg-gradient-to-r ${plan.color}`}>
                     <div className="text-white">{plan.icon}</div>
                   </div>
                 </div>
                 
-                <CardTitle className="text-2xl font-bold text-gray-900">
+                <CardTitle className="text-xl font-bold text-gray-900 mb-1">
                   {plan.name}
                 </CardTitle>
                 
-                <p className="text-gray-600 mb-6">{plan.tagline}</p>
+                <p className="text-gray-600 text-sm mb-3">{plan.tagline}</p>
                 
-                <div className="space-y-2">
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-4xl font-bold text-gray-900">
+                <div className="space-y-1">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="text-3xl font-bold text-gray-900">
                       {getPrice(plan)}€
                     </span>
-                    <span className="text-gray-500">/mois</span>
+                    <span className="text-gray-500 text-sm">/mois</span>
                   </div>
                   
                   {billingCycle === 'annual' && (
-                    <div className="text-sm text-green-600 font-medium">
+                    <div className="text-xs text-green-600 font-medium">
                       Économisez {getSavings(plan)}€/an
                     </div>
                   )}
                   
-                  <div className="text-sm text-gray-500">
+                  <div className="text-xs text-gray-500">
                     {plan.limits}
                   </div>
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  {plan.features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 text-sm leading-relaxed">{feature}</span>
+              <CardContent className="space-y-4 px-4 pb-4">
+                <div className="space-y-2">
+                  {plan.features.slice(0, 4).map((feature, index) => (
+                    <div key={index} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700 text-xs leading-relaxed">{feature}</span>
                     </div>
                   ))}
+                  {plan.features.length > 4 && (
+                    <div className="text-xs text-gray-500 text-center">
+                      +{plan.features.length - 4} autres fonctionnalités
+                    </div>
+                  )}
                 </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan(plan.id)}
-                  className={`w-full h-12 font-semibold transition-all duration-300 ${
+                  size="sm"
+                  className={`w-full font-semibold transition-all duration-300 ${
                     plan.popular 
-                      ? 'gradient-bg text-white hover:opacity-90 shadow-lg hover:shadow-xl' 
-                      : 'border-2 border-gray-300 text-gray-700 hover:border-violet-500 hover:text-violet-600 bg-white hover:bg-violet-50'
+                      ? 'gradient-bg text-white hover:opacity-90' 
+                      : 'border border-gray-300 text-gray-700 hover:border-violet-500 hover:text-violet-600 bg-white hover:bg-violet-50'
                   }`}
                 >
-                  <span>Commencer l'essai gratuit</span>
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <span>Essai gratuit</span>
+                  <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
                 
                 <p className="text-xs text-gray-500 text-center">
-                  14 jours gratuits • Annulation à tout moment
+                  14 jours gratuits
                 </p>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Section garanties et support */}
-        <div className="mt-16 bg-white rounded-2xl p-8 shadow-lg">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Pourquoi choisir BeautyBook Pro ?
-            </h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
+        {/* Section garanties compacte */}
+        <div className="bg-white rounded-xl p-6 shadow-sm">
+          <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Shield className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Sécurité garantie</h3>
-              <p className="text-gray-600 text-sm">Conformité RGPD, données chiffrées et sauvegardes automatiques</p>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">Sécurité garantie</h3>
+              <p className="text-gray-600 text-xs">Conformité RGPD et chiffrement SSL</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center mx-auto mb-3">
+                <Users className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Support expert</h3>
-              <p className="text-gray-600 text-sm">Équipe dédiée aux professionnels de la beauté disponible 7j/7</p>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">Support expert</h3>
+              <p className="text-gray-600 text-xs">Équipe dédiée beauté 7j/7</p>
             </div>
             
             <div className="text-center">
-              <div className="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mx-auto mb-4">
-                <BarChart3 className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center mx-auto mb-3">
+                <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">ROI prouvé</h3>
-              <p className="text-gray-600 text-sm">+35% de réservations en moyenne avec nos outils IA</p>
+              <h3 className="font-semibold text-gray-900 mb-1 text-sm">ROI prouvé</h3>
+              <p className="text-gray-600 text-xs">+35% de réservations en moyenne</p>
             </div>
           </div>
-        </div>
-
-        {/* FAQ Section */}
-        <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">Questions fréquentes</h2>
           
-          <div className="max-w-3xl mx-auto space-y-6">
-            <details className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <summary className="font-semibold text-gray-900 cursor-pointer">
-                Puis-je changer de plan à tout moment ?
-              </summary>
-              <p className="text-gray-600 mt-3 text-left">
-                Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Les changements prennent effet immédiatement.
-              </p>
-            </details>
-            
-            <details className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <summary className="font-semibold text-gray-900 cursor-pointer">
-                L'essai gratuit nécessite-t-il une carte bancaire ?
-              </summary>
-              <p className="text-gray-600 mt-3 text-left">
-                Non, aucune carte bancaire n'est requise pour commencer votre essai de 14 jours. Vous ne serez facturé qu'après la période d'essai.
-              </p>
-            </details>
-            
-            <details className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <summary className="font-semibold text-gray-900 cursor-pointer">
-                Mes données sont-elles transférables ?
-              </summary>
-              <p className="text-gray-600 mt-3 text-left">
-                Absolument. Nous proposons un service de migration gratuit et vos données vous appartiennent toujours.
-              </p>
-            </details>
-          </div>
-          
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <Button variant="outline" className="gap-2">
-              <Phone className="w-4 h-4" />
-              Nous appeler
-            </Button>
-            <Button variant="outline" className="gap-2">
-              <MessageCircle className="w-4 h-4" />
-              Chat en direct
-            </Button>
+          <div className="mt-6 text-center">
+            <div className="flex items-center justify-center gap-3">
+              <Button variant="outline" size="sm" className="gap-2">
+                <Phone className="w-3 h-3" />
+                Contact
+              </Button>
+              <Button variant="outline" size="sm" className="gap-2">
+                <MessageCircle className="w-3 h-3" />
+                Chat
+              </Button>
+            </div>
           </div>
         </div>
       </div>
