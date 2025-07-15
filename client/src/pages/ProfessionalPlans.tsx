@@ -15,7 +15,6 @@ export default function ProfessionalPlans() {
       id: 'essentiel',
       name: 'ESSENTIEL',
       icon: <Sparkles className="w-6 h-6" />,
-      emoji: '🌱',
       tagline: 'Pour démarrer sereinement',
       monthlyPrice: 29,
       yearlyPrice: 24,
@@ -35,7 +34,6 @@ export default function ProfessionalPlans() {
       id: 'professionnel',
       name: 'PROFESSIONNEL',
       icon: <Zap className="w-6 h-6" />,
-      emoji: '🚀',
       tagline: 'Pour développer son business',
       monthlyPrice: 79,
       yearlyPrice: 65,
@@ -57,7 +55,6 @@ export default function ProfessionalPlans() {
       id: 'premium',
       name: 'PREMIUM',
       icon: <Star className="w-6 h-6" />,
-      emoji: '⭐',
       tagline: 'L\'arsenal complet du pro moderne',
       monthlyPrice: 149,
       yearlyPrice: 125,
@@ -177,15 +174,14 @@ export default function ProfessionalPlans() {
               {plan.popular && (
                 <div className="absolute top-0 left-0 right-0">
                   <div className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-center py-2 text-sm font-semibold">
-                    ⭐ Le plus populaire
+                    Le plus populaire
                   </div>
                 </div>
               )}
               
               <CardHeader className={`text-center ${plan.popular ? 'pt-12' : 'pt-6'}`}>
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <span className="text-3xl">{plan.emoji}</span>
-                  <div className={`p-3 rounded-full bg-gradient-to-r ${plan.color}`}>
+                <div className="flex items-center justify-center mb-4">
+                  <div className={`p-4 rounded-xl bg-gradient-to-r ${plan.color}`}>
                     <div className="text-white">{plan.icon}</div>
                   </div>
                 </div>

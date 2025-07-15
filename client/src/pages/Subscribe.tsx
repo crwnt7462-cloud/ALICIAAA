@@ -31,21 +31,18 @@ export default function Subscribe() {
   const planDetails = {
     essentiel: {
       name: 'Essentiel',
-      emoji: '🌱',
       monthlyPrice: 29,
       yearlyPrice: 24,
       features: ['Gestion planning', 'Gestion clientèle', 'Réservations', 'Support email']
     },
     professionnel: {
       name: 'Professionnel',
-      emoji: '🚀',
       monthlyPrice: 79,
       yearlyPrice: 65,
       features: ['Tout l\'Essentiel', 'Analytics avancés', 'IA Smart planning', 'Multi-établissements']
     },
     premium: {
       name: 'Premium',
-      emoji: '⭐',
       monthlyPrice: 149,
       yearlyPrice: 125,
       features: ['Tout le Professionnel', 'IA complète', 'Marketing intelligent', 'Support prioritaire']
@@ -278,7 +275,9 @@ export default function Subscribe() {
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-violet-50 to-purple-50">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{currentPlan.emoji}</span>
+                  <div className="w-10 h-10 gradient-bg rounded-lg flex items-center justify-center">
+                    <CreditCard className="w-5 h-5 text-white" />
+                  </div>
                   <div>
                     <CardTitle className="text-xl">Plan {currentPlan.name}</CardTitle>
                     <p className="text-sm text-gray-600">
