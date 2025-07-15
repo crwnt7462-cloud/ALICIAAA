@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   ArrowLeft,
   Send,
@@ -22,11 +21,10 @@ import {
   CheckCheck,
   Star,
   Calendar,
-  MapPin,
-  Filter,
-  Plus,
   Archive,
-  Trash2
+  Crown,
+  Plus,
+  Filter
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -61,21 +59,6 @@ interface Conversation {
   tags: string[];
 }
 
-interface Client {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  avatar?: string;
-  isOnline: boolean;
-  lastSeen: string;
-  totalAppointments: number;
-  totalSpent: number;
-  averageRating: number;
-  preferredServices: string[];
-  notes: string;
-}
-
 export default function DirectMessaging() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState<'conversations' | 'clients' | 'archived'>('conversations');
@@ -84,7 +67,7 @@ export default function DirectMessaging() {
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Simulation de données - Dans la vraie app, ces données viendraient de l'API
+  // Simulation de données
   const { data: conversations } = useQuery({
     queryKey: ['/api/conversations'],
     queryFn: async () => {
@@ -245,140 +228,182 @@ export default function DirectMessaging() {
   const selectedConversationData = conversations?.find(c => c.id === selectedConversation);
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="h-screen bg-gradient-to-br from-slate-50 to-violet-50 flex flex-col">
+      {/* Header moderne */}
+      <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/50 shadow-sm">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setLocation("/business-features")}
-              className="text-gray-600"
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Retour
             </Button>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Messagerie Pro</h1>
-              <p className="text-sm text-gray-600">Communiquez directement avec vos clients</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                <MessageCircle className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                  Messagerie Pro
+                </h1>
+                <p className="text-sm text-gray-600">Communication directe avec vos clients</p>
+              </div>
             </div>
           </div>
-          <Badge className="bg-violet-100 text-violet-700">Premium</Badge>
+          <div className="flex items-center gap-2">
+            <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white border-0 shadow-sm">
+              <Crown className="w-3 h-3 mr-1" />
+              Premium
+            </Badge>
+          </div>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar - Liste des conversations */}
-        <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-          {/* Onglets et recherche */}
-          <div className="p-4 border-b border-gray-200">
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="conversations">
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Messages
-                </TabsTrigger>
-                <TabsTrigger value="clients">
-                  <Users className="w-4 h-4 mr-2" />
-                  Clients
-                </TabsTrigger>
-                <TabsTrigger value="archived">
-                  <Archive className="w-4 h-4 mr-2" />
-                  Archives
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+        {/* Sidebar moderne */}
+        <div className="w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200/50 flex flex-col shadow-sm">
+          {/* Navigation par onglets */}
+          <div className="p-4 border-b border-gray-100">
+            <div className="flex rounded-xl bg-gray-50/80 p-1 mb-4 shadow-inner">
+              <button
+                onClick={() => setActiveTab('conversations')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'conversations'
+                    ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+              >
+                <MessageCircle className="w-4 h-4" />
+                Messages
+                <Badge className="bg-violet-500 text-white text-xs">3</Badge>
+              </button>
+              <button
+                onClick={() => setActiveTab('clients')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'clients'
+                    ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                Clients
+              </button>
+              <button
+                onClick={() => setActiveTab('archived')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  activeTab === 'archived'
+                    ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                }`}
+              >
+                <Archive className="w-4 h-4" />
+                Archives
+              </button>
+            </div>
             
-            <div className="mt-3 relative">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <div className="relative">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Rechercher..."
+                placeholder="Rechercher une conversation..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="pl-10 border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50"
               />
             </div>
           </div>
 
           {/* Liste des conversations */}
           <div className="flex-1 overflow-y-auto">
-            <TabsContent value="conversations" className="mt-0">
-              {conversations?.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  onClick={() => setSelectedConversation(conversation.id)}
-                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                    selectedConversation === conversation.id ? 'bg-violet-50 border-violet-200' : ''
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="relative">
-                      <Avatar className="w-12 h-12">
-                        <AvatarFallback className="bg-violet-100 text-violet-600 font-semibold">
-                          {conversation.clientName.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      {conversation.isOnline && (
-                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-gray-900 truncate">
-                          {conversation.clientName}
-                        </h3>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs text-gray-500">
-                            {formatTime(conversation.lastMessageTime)}
-                          </span>
-                          {conversation.unreadCount > 0 && (
-                            <Badge className="bg-violet-600 text-white min-w-[20px] h-5 text-xs">
-                              {conversation.unreadCount}
-                            </Badge>
-                          )}
-                        </div>
+            {activeTab === 'conversations' && (
+              <div className="space-y-1 p-2">
+                {conversations?.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    onClick={() => setSelectedConversation(conversation.id)}
+                    className={`p-4 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-sm ${
+                      selectedConversation === conversation.id 
+                        ? 'bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200/50 shadow-sm' 
+                        : 'hover:bg-gray-50/80'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="relative">
+                        <Avatar className="w-12 h-12 ring-2 ring-white shadow-sm">
+                          <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold">
+                            {conversation.clientName.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {conversation.isOnline && (
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm" />
+                        )}
                       </div>
                       
-                      <p className="text-sm text-gray-600 truncate mb-2">
-                        {conversation.lastMessage}
-                      </p>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span className="text-xs text-gray-500">{conversation.clientRating}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-semibold text-gray-900 truncate">
+                            {conversation.clientName}
+                          </h3>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-gray-500">
+                              {formatTime(conversation.lastMessageTime)}
+                            </span>
+                            {conversation.unreadCount > 0 && (
+                              <Badge className="bg-violet-500 text-white min-w-[20px] h-5 text-xs rounded-full">
+                                {conversation.unreadCount}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        <span className="text-xs text-gray-500">•</span>
-                        <span className="text-xs text-gray-500">{conversation.totalAppointments} RDV</span>
                         
-                        <div className="flex gap-1 ml-auto">
-                          {conversation.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs px-1 py-0">
-                              {tag}
-                            </Badge>
-                          ))}
+                        <p className="text-sm text-gray-600 truncate mb-2 leading-relaxed">
+                          {conversation.lastMessage}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-xs text-gray-500">
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <span>{conversation.clientRating}</span>
+                            </div>
+                            <span>•</span>
+                            <span>{conversation.totalAppointments} RDV</span>
+                          </div>
+                          
+                          <div className="flex gap-1">
+                            {conversation.tags.map((tag) => (
+                              <Badge 
+                                key={tag} 
+                                variant="outline" 
+                                className="text-xs px-2 py-0 bg-white/80 border-violet-200 text-violet-700"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </TabsContent>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
         {/* Zone de conversation */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col bg-white/40">
           {selectedConversation && selectedConversationData ? (
             <>
               {/* Header conversation */}
-              <div className="bg-white border-b border-gray-200 p-4">
+              <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/50 p-4 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Avatar className="w-10 h-10">
-                      <AvatarFallback className="bg-violet-100 text-violet-600 font-semibold">
+                    <Avatar className="w-10 h-10 ring-2 ring-violet-100">
+                      <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold">
                         {selectedConversationData.clientName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
@@ -394,16 +419,16 @@ export default function DirectMessaging() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
                       <Phone className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
                       <Video className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
                       <Calendar className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
                       <MoreVertical className="w-4 h-4" />
                     </Button>
                   </div>
@@ -411,19 +436,19 @@ export default function DirectMessaging() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {messages?.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.senderType === 'business' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
                       message.senderType === 'business'
-                        ? 'bg-violet-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                        ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white'
+                        : 'bg-white border border-gray-200 text-gray-900'
                     }`}>
-                      <p className="text-sm">{message.content}</p>
-                      <div className={`flex items-center justify-end gap-1 mt-1 text-xs ${
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <div className={`flex items-center justify-end gap-1 mt-2 text-xs ${
                         message.senderType === 'business' ? 'text-violet-200' : 'text-gray-500'
                       }`}>
                         <span>{formatTime(message.timestamp)}</span>
@@ -437,11 +462,11 @@ export default function DirectMessaging() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Zone de saisie */}
-              <div className="bg-white border-t border-gray-200 p-4">
-                <div className="flex items-end gap-2">
-                  <Button variant="ghost" size="sm" className="mb-2">
-                    <Paperclip className="w-4 h-4" />
+              {/* Zone de saisie moderne */}
+              <div className="bg-white/95 backdrop-blur-sm border-t border-gray-200/50 p-4 shadow-sm">
+                <div className="flex items-end gap-3">
+                  <Button variant="ghost" size="sm" className="mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                    <Paperclip className="w-5 h-5" />
                   </Button>
                   <div className="flex-1">
                     <Textarea
@@ -454,33 +479,39 @@ export default function DirectMessaging() {
                           handleSendMessage();
                         }
                       }}
-                      className="min-h-[40px] max-h-[120px] resize-none"
+                      className="min-h-[44px] max-h-[120px] resize-none border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50"
                     />
                   </div>
-                  <Button variant="ghost" size="sm" className="mb-2">
-                    <Smile className="w-4 h-4" />
+                  <Button variant="ghost" size="sm" className="mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                    <Smile className="w-5 h-5" />
                   </Button>
                   <Button 
                     onClick={handleSendMessage}
                     disabled={!messageText.trim() || sendMessageMutation.isPending}
-                    className="bg-violet-600 hover:bg-violet-700 text-white mb-2"
+                    className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white mb-2 rounded-full w-11 h-11 p-0 shadow-lg"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
             </>
           ) : (
-            /* État vide */
+            /* État vide moderne */
             <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <div className="text-center max-w-sm mx-auto">
+                <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <MessageCircle className="w-10 h-10 text-violet-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   Sélectionnez une conversation
                 </h3>
-                <p className="text-gray-600">
-                  Choisissez un client pour commencer à discuter
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  Choisissez un client dans la liste pour commencer à discuter et gérer vos rendez-vous
                 </p>
+                <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-full">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nouvelle conversation
+                </Button>
               </div>
             </div>
           )}
