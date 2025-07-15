@@ -209,13 +209,13 @@ export default function BookingPage() {
         </div>
       </div>
 
-      <div className="p-4 space-y-4 max-w-md mx-auto">
+      <div className="p-4 space-y-3 max-w-md mx-auto">
         {/* Indicateur d'étapes */}
-        <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center justify-center mb-4">
           <div className="flex items-center space-x-2">
             {[1, 2, 3].map((step) => (
               <div key={step} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
                   step <= currentStep 
                     ? 'bg-violet-500 text-white' 
                     : 'bg-gray-200 text-gray-500'
@@ -223,7 +223,7 @@ export default function BookingPage() {
                   {step}
                 </div>
                 {step < 3 && (
-                  <div className={`w-12 h-1 ${
+                  <div className={`w-8 h-1 ${
                     step < currentStep ? 'bg-violet-500' : 'bg-gray-200'
                   }`} />
                 )}
@@ -233,13 +233,13 @@ export default function BookingPage() {
         </div>
 
         {/* Titres des étapes */}
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="text-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">
             {currentStep === 1 && "Service & Professionnel"}
             {currentStep === 2 && "Date & Créneau"}
             {currentStep === 3 && "Informations & Paiement"}
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 mt-1">
             {currentStep === 1 && "Choisissez votre service et votre professionnel"}
             {currentStep === 2 && "Sélectionnez votre date et heure"}
             {currentStep === 3 && "Finalisez votre réservation"}
@@ -248,10 +248,10 @@ export default function BookingPage() {
 
         {/* Étape 1: Service & Professionnel */}
         {currentStep === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {/* Services */}
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Choisir un service</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -267,31 +267,35 @@ export default function BookingPage() {
                   >
                     <div className="flex justify-between items-center">
                       <div>
-                        <div className="font-medium">{service.name}</div>
-                        <div className="text-sm text-gray-600">{service.duration} min</div>
+                        <div className="font-medium text-sm">{service.name}</div>
+                        <div className="text-xs text-gray-600">{service.duration} min</div>
                       </div>
-                      <div className="text-lg font-semibold">{service.price}€</div>
+                      <div className="text-base font-semibold">{service.price}€</div>
                     </div>
                   </div>
                 ))}
               </CardContent>
             </Card>
 
-            {/* Professionnels */}
-            {selectedService && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Choisir votre professionnel</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {professionals.map((pro) => (
+            {/* Professionnels - toujours visibles */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Choisir votre professionnel</CardTitle>
+                {!selectedService && (
+                  <p className="text-xs text-gray-500">Sélectionnez d'abord un service</p>
+                )}
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {professionals.map((pro) => (
                     <div
                       key={pro.id}
-                      onClick={() => setSelectedProfessional(pro.id)}
-                      className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                        selectedProfessional === pro.id 
-                          ? 'border-violet-500 bg-violet-50' 
-                          : 'hover:bg-gray-50'
+                      onClick={() => selectedService && setSelectedProfessional(pro.id)}
+                      className={`p-3 border rounded-lg transition-colors ${
+                        !selectedService 
+                          ? 'opacity-50 cursor-not-allowed bg-gray-50' 
+                          : selectedProfessional === pro.id 
+                            ? 'border-violet-500 bg-violet-50 cursor-pointer' 
+                            : 'hover:bg-gray-50 cursor-pointer'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -327,7 +331,6 @@ export default function BookingPage() {
                   ))}
                 </CardContent>
               </Card>
-            )}
             
             {selectedService && selectedProfessional && (
               <Button 
