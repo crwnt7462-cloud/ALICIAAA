@@ -123,15 +123,15 @@ Génération automatique :
 
 ## Changements Récents
 
-### Janvier 2025 - MENU HAMBURGER & PLANS PROFESSIONNELS (15 Janvier)
-- ✅ **Menu hamburger responsive** : Créé sur la page d'accueil publique avec 6 éléments
-- ✅ **Page Plans Professionnels** : 3 abonnements complets (Essentiel 29€, Professionnel 79€, Premium 149€)
-- ✅ **Page d'inscription Subscribe** : Formulaire complet avec récapitulatif plan et garanties
-- ✅ **Navigation fluide** : Menu hamburger redirige vers les plans professionnels
-- ✅ **Design mobile-first** : Interface responsive avec animations CSS fluides
-- ✅ **Intégration seamless** : Toutes les pages connectées via le routing wouter
-- ✅ **Branding Rendly** : Remplacement BeautyBook Pro par Rendly sur toutes les pages
-- ✅ **Design ultra-compact** : Optimisation maximale de l'espace sans éléments superflus
+### Janvier 2025 - REFONTE SALON DETAIL & DESIGN ÉPURÉ (15 Janvier)
+- ✅ **Page SalonDetail complètement refaite** : Design moderne, épuré et professionnel
+- ✅ **Navigation corrigée** : Cartes salon mènent aux détails, bouton "Réserver" pour booking direct
+- ✅ **Interface simplifiée** : Suppression encombrement visuel, focus sur essentiel
+- ✅ **Onglets navigation sticky** : Infos/Services/Avis avec transitions fluides
+- ✅ **Avis professionnels** : Commentaires détaillés, stats simplifiées, design épuré
+- ✅ **Mobile-first optimisé** : Layout compact, cards modernes, espacement cohérent
+- ✅ **Header minimaliste** : Boutons flottants discrets, gradient subtil
+- ✅ **Branding cohérent** : Couleurs violet/amber, badges modernes, typographie claire
 
 ### Janvier 2025 - OPTIMISATION COMPLÈTE NAVIGATION & FONCTIONNALITÉS (15 Janvier)
 - ✅ **Header Rendly AI fixe** : Interface ChatGPT stable avec header fixe en haut et zone de saisie en bas
