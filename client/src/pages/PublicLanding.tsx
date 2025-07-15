@@ -292,7 +292,7 @@ export default function PublicLanding() {
               </button>
 
               <div>
-                <h1 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 900 }}>Rendly</h1>
+                <h1 className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</h1>
                 <p className="text-xs text-gray-500 -mt-1">Réservation beauté</p>
               </div>
             </div>
@@ -786,7 +786,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="mb-4">
-                <h3 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 900 }}>Rendly</h3>
+                <h3 className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</h3>
                 <p className="text-sm text-gray-500">Réservation beauté</p>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
