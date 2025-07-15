@@ -134,23 +134,22 @@ export default function AIAutomation() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto h-screen flex flex-col">
-        {/* Header simple */}
-        <div className="bg-white border-b border-gray-200 px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
-                <Brain className="h-5 w-5 text-white" />
-              </div>
-              <h1 className="text-lg font-semibold text-gray-900">Rendly AI</h1>
+    <div className="h-screen bg-gray-50 flex flex-col">
+      {/* Header fixe en haut */}
+      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+              <Brain className="h-5 w-5 text-white" />
             </div>
-            <div className="text-sm text-gray-500">GPT-4o</div>
+            <h1 className="text-lg font-semibold text-gray-900">Rendly AI</h1>
           </div>
+          <div className="text-sm text-gray-500">GPT-4o</div>
         </div>
+      </div>
 
-        {/* Zone de conversation */}
-        <div className="flex-1 flex flex-col">
+      {/* Zone de conversation avec scroll */}
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
           {/* Messages */}
           <div className="flex-1 overflow-y-auto bg-white">
             {chatHistory.length === 0 ? (
@@ -224,54 +223,51 @@ export default function AIAutomation() {
             )}
           </div>
 
-          {/* Zone de saisie */}
-          <div className="border-t border-gray-200 bg-white p-4">
-            <div className="max-w-3xl mx-auto">
-              <form onSubmit={handleChatSubmit} className="relative">
-                <div className="flex items-end gap-2 bg-gray-100 rounded-2xl p-3">
-                  <div className="flex-1">
-                    <textarea
-                      value={chatMessage}
-                      onChange={(e) => setChatMessage(e.target.value)}
-                      placeholder="Envoyez un message à Rendly AI"
-                      disabled={chatMutation.isPending}
-                      className="w-full bg-transparent border-0 resize-none focus:outline-none placeholder-gray-500 text-gray-900 max-h-32"
-                      rows={1}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleChatSubmit(e);
-                        }
-                      }}
-                      style={{
-                        minHeight: '24px',
-                        height: 'auto',
-                      }}
-                      onInput={(e) => {
-                        const target = e.target as HTMLTextAreaElement;
-                        target.style.height = 'auto';
-                        target.style.height = target.scrollHeight + 'px';
-                      }}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={chatMutation.isPending || !chatMessage.trim()}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                      chatMessage.trim() && !chatMutation.isPending
-                        ? 'bg-gray-900 hover:bg-gray-800 text-white'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    <Send className="h-4 w-4" />
-                  </button>
-                </div>
-              </form>
-              <p className="text-xs text-gray-500 mt-2 text-center">
-                Rendly AI peut faire des erreurs. Pensez à vérifier les informations importantes.
-              </p>
+        {/* Zone de saisie fixe en bas */}
+        <div className="flex-shrink-0 border-t border-gray-200 bg-white p-4 sticky bottom-0">
+          <form onSubmit={handleChatSubmit} className="relative">
+            <div className="flex items-end gap-2 bg-gray-100 rounded-2xl p-3">
+              <div className="flex-1">
+                <textarea
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  placeholder="Envoyez un message à Rendly AI"
+                  disabled={chatMutation.isPending}
+                  className="w-full bg-transparent border-0 resize-none focus:outline-none placeholder-gray-500 text-gray-900 max-h-32"
+                  rows={1}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleChatSubmit(e);
+                    }
+                  }}
+                  style={{
+                    minHeight: '24px',
+                    height: 'auto',
+                  }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = target.scrollHeight + 'px';
+                  }}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={chatMutation.isPending || !chatMessage.trim()}
+                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                  chatMessage.trim() && !chatMutation.isPending
+                    ? 'bg-gray-900 hover:bg-gray-800 text-white'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                <Send className="h-4 w-4" />
+              </button>
             </div>
-          </div>
+          </form>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Rendly AI peut faire des erreurs. Pensez à vérifier les informations importantes.
+          </p>
         </div>
       </div>
     </div>
