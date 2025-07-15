@@ -228,7 +228,7 @@ export default function SearchResults() {
             <Card 
               key={salon.id}
               className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
-              onClick={() => setLocation(`/book/${salon.id}`)}
+              onClick={() => setLocation(`/salon/${salon.id}`)}
             >
               <div className="flex">
                 <div className="w-40 h-32 flex-shrink-0">
@@ -285,7 +285,14 @@ export default function SearchResults() {
                       <span className="text-sm text-gray-500">{salon.reviews} avis</span>
                       <span className="text-sm font-medium text-gray-700">{salon.priceRange}</span>
                     </div>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button 
+                      size="sm" 
+                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocation(`/book/${salon.id}`);
+                      }}
+                    >
                       Réserver
                     </Button>
                   </div>

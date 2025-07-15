@@ -519,7 +519,7 @@ export default function PublicLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topSalons.map((salon, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleSalonClick(salon.id)}>
+              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setLocation(`/salon/${salon.id}`)}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold text-gray-900">
@@ -559,7 +559,7 @@ export default function PublicLanding() {
                   <Button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleBookSalon(salon.id);
+                      setLocation(`/book/${salon.id}`);
                     }}
                     className="w-full gradient-bg hover:opacity-90"
                     size="sm"
