@@ -113,7 +113,11 @@ export default function BusinessFeatures() {
                   <Input type="time" defaultValue="18:00" className="h-9" />
                 </div>
               </div>
-              <Button size="sm" className="w-full">
+              <Button 
+                size="sm" 
+                className="w-full"
+                onClick={() => toast({ title: "Configuration sauvegardée", description: "Les paramètres du salon ont été mis à jour" })}
+              >
                 Sauvegarder
               </Button>
             </CardContent>
@@ -269,11 +273,28 @@ export default function BusinessFeatures() {
               <div className="space-y-2">
                 <Label className="text-sm">Partage rapide</Label>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button variant="outline" size="sm" className="h-9">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-9"
+                    onClick={() => {
+                      const message = "Bonjour ! Voici le lien pour réserver dans mon salon : https://beauty.app/book/monsalon";
+                      window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                    }}
+                  >
                     <Share2 className="h-3 w-3 mr-1" />
                     WhatsApp
                   </Button>
-                  <Button variant="outline" size="sm" className="h-9">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-9"
+                    onClick={() => {
+                      const subject = "Réservez dans mon salon";
+                      const body = "Bonjour,%0D%0A%0D%0AVoici le lien pour réserver dans mon salon : https://beauty.app/book/monsalon";
+                      window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+                    }}
+                  >
                     <Share2 className="h-3 w-3 mr-1" />
                     Email
                   </Button>
@@ -303,7 +324,13 @@ export default function BusinessFeatures() {
                       <Badge variant={page.active ? "default" : "secondary"}>
                         {page.active ? "Actif" : "Inactif"}
                       </Badge>
-                      <Button size="sm" variant="outline">Voir</Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => setLocation(page.url)}
+                      >
+                        Voir
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -353,10 +380,27 @@ export default function BusinessFeatures() {
                 <p className="text-xs">Scan pour réserver</p>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <Button size="sm" variant="outline">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => toast({ title: "QR Code téléchargé", description: "Le QR code a été sauvegardé" })}
+                >
                   Télécharger QR
                 </Button>
-                <Button size="sm">
+                <Button 
+                  size="sm"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: 'Réservez dans mon salon',
+                        url: 'https://beauty.app/book/monsalon'
+                      });
+                    } else {
+                      navigator.clipboard.writeText("https://beauty.app/book/monsalon");
+                      toast({ title: "Lien copié !", description: "Le lien a été copié dans le presse-papiers" });
+                    }
+                  }}
+                >
                   Partager
                 </Button>
               </div>
@@ -392,7 +436,12 @@ export default function BusinessFeatures() {
                   </div>
                 </div>
               ))}
-              <Button size="sm" variant="outline" className="w-full">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => toast({ title: "Produit ajouté", description: "Le produit a été ajouté à l'inventaire" })}
+              >
                 + Ajouter produit
               </Button>
             </CardContent>

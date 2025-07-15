@@ -802,7 +802,10 @@ export default function PageBuilder() {
                           ))}
                         </div>
                         <div className="text-center mt-6">
-                          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
+                          <Button 
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold"
+                            onClick={() => window.open('/quick-booking', '_blank')}
+                          >
                             Continuer → Choisir l'horaire
                           </Button>
                         </div>
@@ -825,7 +828,10 @@ export default function PageBuilder() {
                           </div>
                         </div>
                         <div className="text-center mt-6">
-                          <Button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold">
+                          <Button 
+                            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold"
+                            onClick={() => window.open('/quick-booking', '_blank')}
+                          >
                             Continuer → Vos informations
                           </Button>
                         </div>

@@ -114,7 +114,7 @@ export default function Landing() {
           <Button 
             variant="outline" 
             className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl py-3"
-            onClick={() => setLocation('/book')}
+            onClick={() => setLocation('/booking')}
           >
             Prendre rendez-vous en ligne
           </Button>

@@ -293,7 +293,10 @@ export default function PublicLanding() {
                 <h3 className="font-medium text-gray-900 mb-1 text-sm">{slot.salon}</h3>
                 <p className="text-xs text-gray-600 mb-1">{slot.service}</p>
                 <p className="text-xs text-gray-500 mb-2">{slot.location}</p>
-                <Button className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs">
+                <Button 
+                  className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
+                  onClick={() => handleBookSalon("demo-user")}
+                >
                   Réserver
                 </Button>
               </div>
@@ -430,7 +433,7 @@ export default function PublicLanding() {
       </section>
 
       {/* Comment ça marche */}
-      <section className="py-12 bg-white">
+      <section id="how-it-works" className="py-12 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
             Comment ça marche ?
@@ -525,7 +528,10 @@ export default function PublicLanding() {
               Réservez encore plus facilement depuis votre téléphone
             </p>
             <div className="flex flex-col sm:flex-row gap-2 justify-center">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation">
+              <button
+                onClick={() => window.open('https://apps.apple.com/app/beautybook', '_blank')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation"
+              >
                 <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
                   <Phone className="w-3 h-3 text-violet-600" />
                 </div>
@@ -533,8 +539,11 @@ export default function PublicLanding() {
                   <div className="text-white font-medium text-sm">App Store</div>
                   <div className="text-violet-100 text-xs">iOS</div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation">
+              </button>
+              <button
+                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.beautybook', '_blank')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation"
+              >
                 <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
                   <Phone className="w-3 h-3 text-violet-600" />
                 </div>
@@ -542,7 +551,7 @@ export default function PublicLanding() {
                   <div className="text-white font-medium text-sm">Google Play</div>
                   <div className="text-violet-100 text-xs">Android</div>
                 </div>
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -569,6 +578,12 @@ export default function PublicLanding() {
             <Button 
               variant="outline"
               className="w-full md:w-auto h-10 border-violet-200 text-violet-600 active:bg-violet-50 rounded-lg touch-manipulation text-sm"
+              onClick={() => {
+                const element = document.querySelector('#how-it-works');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
               En savoir plus
             </Button>
