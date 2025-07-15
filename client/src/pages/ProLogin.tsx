@@ -106,9 +106,9 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-violet-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
@@ -118,7 +118,7 @@ export default function ProLogin() {
             <Button 
               variant="ghost" 
               onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-violet-600"
+              className="text-gray-600 hover:text-violet-600 font-medium"
             >
               Retour à l'accueil
             </Button>
@@ -130,16 +130,22 @@ export default function ProLogin() {
       <div className="flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Connexion
             </h1>
+            <p className="text-gray-600">
+              Accédez à votre espace de gestion
+            </p>
           </div>
 
-          <Card className="shadow-sm border border-gray-200">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Accès</CardTitle>
-              <CardDescription>
-                Connectez-vous ou créez votre compte
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-md">
+            <CardHeader className="text-center pb-6">
+              <CardTitle className="text-xl font-semibold text-gray-900">Accès Sécurisé</CardTitle>
+              <CardDescription className="text-gray-600">
+                Connectez-vous à votre plateforme de gestion
               </CardDescription>
             </CardHeader>
             
@@ -187,16 +193,23 @@ export default function ProLogin() {
                         )}
                       />
                       
-                      <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white" disabled={isLoading}>
-                        {isLoading ? "Connexion..." : "Se connecter"}
+                      <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium py-3 shadow-lg" disabled={isLoading}>
+                        {isLoading ? (
+                          <div className="flex items-center gap-2">
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Connexion...
+                          </div>
+                        ) : (
+                          "Se connecter"
+                        )}
                       </Button>
                       
-                      <div className="text-center pt-4 border-t border-gray-200">
-                        <p className="text-sm text-gray-600 mb-2">Pas encore de compte ?</p>
+                      <div className="text-center pt-6 border-t border-violet-100">
+                        <p className="text-sm text-gray-600 mb-3">Pas encore de compte ?</p>
                         <Button 
                           type="button" 
                           variant="outline" 
-                          className="w-full border-violet-600 text-violet-600 hover:bg-violet-50"
+                          className="w-full border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 font-medium"
                           onClick={() => setLocation("/register")}
                         >
                           Créer un compte
@@ -337,9 +350,23 @@ export default function ProLogin() {
             </CardContent>
           </Card>
 
-          <div className="text-center mt-6">
+          <div className="text-center mt-8">
+            <div className="flex items-center justify-center gap-4 text-sm text-gray-500 mb-4">
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                Sécurisé
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                Rapide
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                Fiable
+              </span>
+            </div>
             <p className="text-sm text-gray-600">
-              Besoin d'aide ? <a href="#" className="text-violet-600 hover:underline">Contactez notre support</a>
+              Besoin d'aide ? <a href="#" className="text-violet-600 hover:text-violet-800 font-medium">Contactez notre support</a>
             </p>
           </div>
         </div>
