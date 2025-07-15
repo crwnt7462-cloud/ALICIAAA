@@ -36,6 +36,7 @@ import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import SalonSearch from "@/pages/SalonSearch";
 import BookingPage from "@/pages/BookingPage";
+import AdvancedBookingBuilder from "@/pages/AdvancedBookingBuilder";
 
 
 function Router() {
@@ -171,6 +172,7 @@ function Router() {
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
           <Route path="/test-booking" component={BookingTest} />
+          <Route path="/advanced-booking-builder" component={AdvancedBookingBuilder} />
           <Route path="/pro" component={Landing} />
           <Route component={NotFound} />
         </Switch>

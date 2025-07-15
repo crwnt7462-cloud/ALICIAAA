@@ -383,14 +383,22 @@ export default function BusinessFeatures() {
                   </div>
                 ))}
               </div>
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => window.open('/page-builder', '_blank')}
-              >
-                + Créer nouvelle page
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => window.open('/page-builder', '_blank')}
+                >
+                  + Page simple
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-violet-600 hover:bg-violet-700 text-white"
+                  onClick={() => setLocation('/advanced-booking-builder')}
+                >
+                  🔥 Page Pro
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
