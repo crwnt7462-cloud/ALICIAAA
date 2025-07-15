@@ -91,7 +91,7 @@ export default function PublicLanding() {
       name: "Sophie M.",
       location: "Lyon",
       rating: 5,
-      comment: "Excellent service ! Le salon était exactement comme décrit, et le processus de réservation très simple. Je recommande vivement BeautyBook.",
+      comment: "Excellent service ! Le salon était exactement comme décrit, et le processus de réservation très simple. Je recommande vivement Rendly.",
       service: "Soins visage",
       date: "Il y a 1 semaine"
     },
@@ -293,10 +293,10 @@ export default function PublicLanding() {
 
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">B</span>
+                  <span className="text-white font-bold text-lg">R</span>
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">BeautyBook</h1>
+                  <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
                   <p className="text-xs text-gray-500 -mt-1">Réservation beauté</p>
                 </div>
               </div>
@@ -792,10 +792,10 @@ export default function PublicLanding() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">B</span>
+                  <span className="text-white font-bold text-lg">R</span>
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">BeautyBook</h3>
+                  <h3 className="text-xl font-bold text-gray-900">Rendly</h3>
                   <p className="text-sm text-gray-500">Réservation beauté</p>
                 </div>
               </div>
@@ -827,7 +827,7 @@ export default function PublicLanding() {
           </div>
           
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
-            <p>&copy; 2025 BeautyBook. Tous droits réservés.</p>
+            <p>&copy; 2025 Rendly. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

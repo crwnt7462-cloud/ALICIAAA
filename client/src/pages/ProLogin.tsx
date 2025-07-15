@@ -113,7 +113,7 @@ export default function ProLogin() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
               <Sparkles className="w-7 h-7 text-purple-600" />
-              <span className="text-lg font-bold text-gray-900">BeautyBook</span>
+              <span className="text-lg font-bold text-gray-900">Rendly</span>
             </div>
             
             <Button 

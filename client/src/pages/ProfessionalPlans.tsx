@@ -98,7 +98,7 @@ export default function ProfessionalPlans() {
           <div className="flex justify-between items-center h-14">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">B</span>
+                <span className="text-white font-bold text-sm">R</span>
               </div>
               <div>
                 <h1 className="text-lg font-bold text-gray-900">Rendly</h1>

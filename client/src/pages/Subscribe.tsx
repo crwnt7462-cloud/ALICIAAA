@@ -90,7 +90,7 @@ export default function Subscribe() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
+                <span className="text-white font-bold text-lg">R</span>
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
