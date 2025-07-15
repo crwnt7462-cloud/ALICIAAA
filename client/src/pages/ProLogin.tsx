@@ -5,13 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Mail, Lock, User, Phone, MapPin, Building } from "lucide-react";
+import { Sparkles, Mail, Lock, User, Phone, MapPin, Building, Moon, Sun } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useTheme } from "@/components/ThemeProvider";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -35,6 +36,7 @@ export default function ProLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -106,7 +108,7 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full opacity-30 animate-pulse"></div>
@@ -115,20 +117,30 @@ export default function ProLogin() {
       </div>
 
       {/* Header */}
-      <header className="relative bg-white/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50">
+      <header className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50 dark:border-gray-700/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setLocation("/")}>
-              <span className="text-xl font-semibold text-black tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
+              <span className="text-xl font-semibold text-black dark:text-white tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
             </div>
             
-            <Button 
-              variant="ghost" 
-              onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-violet-600 hover:bg-violet-50 font-medium transition-all duration-200"
-            >
-              Retour à l'accueil
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleTheme}
+                className="text-gray-600 dark:text-gray-300 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-gray-800 transition-all duration-200"
+              >
+                {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </Button>
+              <Button 
+                variant="ghost" 
+                onClick={() => setLocation("/")}
+                className="text-gray-600 dark:text-gray-300 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-gray-800 font-medium transition-all duration-200"
+              >
+                Retour à l'accueil
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -143,16 +155,16 @@ export default function ProLogin() {
             <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-2">
               Connexion
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Accédez à votre espace de gestion professionnel
             </p>
           </div>
 
-          <Card className="shadow-2xl border-0 bg-white/90 backdrop-blur-xl rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
+          <Card className="shadow-2xl border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600"></div>
             <CardHeader className="text-center pb-6 pt-8">
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">Accès Sécurisé</CardTitle>
-              <CardDescription className="text-gray-600 text-base">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">Accès Sécurisé</CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-300 text-base">
                 Connectez-vous à votre plateforme de gestion
               </CardDescription>
             </CardHeader>
@@ -176,7 +188,7 @@ export default function ProLogin() {
                             <FormControl>
                               <div className="relative">
                                 <Mail className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                                <Input {...field} type="email" placeholder="votre@email.com" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
+                                <Input {...field} type="email" placeholder="votre@email.com" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -193,7 +205,7 @@ export default function ProLogin() {
                             <FormControl>
                               <div className="relative">
                                 <Lock className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                                <Input {...field} type="password" placeholder="••••••••" className="pl-12 h-12 border-gray-200 focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
+                                <Input {...field} type="password" placeholder="••••••••" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
                               </div>
                             </FormControl>
                             <FormMessage />
@@ -359,8 +371,8 @@ export default function ProLogin() {
           </Card>
 
           <div className="text-center mt-8">
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-6 rounded-2xl">
-              <p className="text-base text-gray-700 mb-2">
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-2xl">
+              <p className="text-base text-gray-700 dark:text-gray-300 mb-2">
                 <span className="font-semibold">Besoin d'aide ?</span>
               </p>
               <a href="#" className="text-violet-600 hover:text-violet-800 font-semibold text-lg hover:underline transition-all duration-200">
