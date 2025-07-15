@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { Search, MapPin, Star, Clock, Filter, SlidersHorizontal } from "lucide-react";
+import { 
+  Search, MapPin, Star, Clock, Filter, SlidersHorizontal, ArrowLeft, 
+  CheckCircle, Heart, Share2, Navigation, TrendingUp, Award, Users,
+  Sparkles, Calendar, ChevronRight, Eye, Verified
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 export default function SearchResults() {
   const [, setLocation] = useLocation();
@@ -26,16 +32,21 @@ export default function SearchResults() {
   const searchResults = [
     {
       id: "demo-user",
-      name: "Salon Belle Époque",
+      name: "Studio Élégance Paris",
       rating: 4.8,
       reviews: 247,
       image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
-      location: "Paris 15ème",
+      location: "Paris 1er",
       distance: "1.2 km",
       nextSlot: "Aujourd'hui 14h30",
-      services: ["Coiffure", "Coloration", "Soins"],
-      priceRange: "€€",
-      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Soins du visage']
+      services: ["Coupe & Styling", "Coloration", "Soins Capillaires"],
+      priceRange: "€€€",
+      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Soins du visage'],
+      verified: true,
+      popular: true,
+      newClient: false,
+      responseTime: "2h",
+      awards: ["Prix Excellence 2024"]
     },
     {
       id: "salon-2",

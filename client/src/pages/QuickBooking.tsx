@@ -4,10 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, Phone, Mail, CheckCircle } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { 
+  Calendar, Clock, User, Phone, Mail, CheckCircle, ArrowLeft, ArrowRight,
+  Star, MapPin, Scissors, Palette, Sparkles, CreditCard, Heart, Gift,
+  Shield, Award, Users, ChevronRight, Zap
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 
 interface BookingData {
   firstName: string;
@@ -22,6 +29,7 @@ interface BookingData {
 
 export default function QuickBooking() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [bookingData, setBookingData] = useState<BookingData>({
     firstName: '',
@@ -34,11 +42,56 @@ export default function QuickBooking() {
     notes: ''
   });
 
+  const salonInfo = {
+    name: "Studio Élégance Paris",
+    rating: 4.8,
+    reviews: 247,
+    address: "42 rue de Rivoli, Paris 1er",
+    phone: "01 42 36 89 12",
+    responseTime: "Répond en moins de 2h"
+  };
+
   const services = [
-    { id: '1', name: 'Coupe femme', price: 45, duration: 60, popular: true },
-    { id: '2', name: 'Coloration', price: 80, duration: 120, popular: false },
-    { id: '3', name: 'Brushing', price: 30, duration: 45, popular: false },
-    { id: '4', name: 'Balayage', price: 120, duration: 180, popular: true }
+    { 
+      id: '1', 
+      name: 'Coupe Femme', 
+      description: 'Coupe personnalisée avec shampoing et brushing inclus',
+      price: 65, 
+      duration: 60, 
+      popular: true,
+      category: 'Coupe',
+      icon: <Scissors className="w-5 h-5" />
+    },
+    { 
+      id: '2', 
+      name: 'Coloration Complète', 
+      description: 'Coloration racines + longueurs avec soin protecteur',
+      price: 95, 
+      duration: 120, 
+      popular: false,
+      category: 'Coloration',
+      icon: <Palette className="w-5 h-5" />
+    },
+    { 
+      id: '3', 
+      name: 'Balayage Premium', 
+      description: 'Technique de mèches naturelles avec tonalisation',
+      price: 140, 
+      duration: 180, 
+      popular: true,
+      category: 'Coloration',
+      icon: <Sparkles className="w-5 h-5" />
+    },
+    { 
+      id: '4', 
+      name: 'Soin Hydratant Intense', 
+      description: 'Masque réparateur pour cheveux secs et abîmés',
+      price: 35, 
+      duration: 30, 
+      popular: false,
+      category: 'Soin',
+      icon: <Sparkles className="w-5 h-5" />
+    }
   ];
 
   const timeSlots = [

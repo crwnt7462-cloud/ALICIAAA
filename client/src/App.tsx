@@ -16,6 +16,7 @@ import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
 import AIAutomation from "@/pages/AIAutomationNew";
+import AIAssistant from "@/pages/AIAssistant";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
@@ -132,7 +133,7 @@ function Router() {
     return (
       <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
         <main className="flex-1 overflow-y-auto">
-          <AIAutomation />
+          <AIAssistant />
         </main>
         <BottomNavigation />
       </div>
