@@ -135,10 +135,16 @@ export default function AIAutomation() {
 
   return (
     <div className="h-screen bg-gray-50 flex flex-col">
-      {/* Header simple fixe en haut */}
+      {/* Header fixe en haut */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-xl font-semibold text-gray-900">Rendly IA</h1>
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
+              <Brain className="h-5 w-5 text-white" />
+            </div>
+            <h1 className="text-lg font-semibold text-gray-900">Rendly IA</h1>
+          </div>
+          <div className="text-sm text-gray-500">GPT-4o</div>
         </div>
       </div>
 
