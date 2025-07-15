@@ -22,6 +22,7 @@ import ShareBooking from "@/pages/ShareBooking";
 import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
+import Register from "@/pages/Register";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
@@ -67,6 +68,15 @@ function Router() {
     return (
       <div className="h-full">
         <ProLogin />
+      </div>
+    );
+  }
+
+  // Page d'inscription
+  if (location === '/register') {
+    return (
+      <div className="h-full">
+        <Register />
       </div>
     );
   }

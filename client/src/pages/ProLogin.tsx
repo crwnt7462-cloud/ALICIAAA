@@ -197,10 +197,7 @@ export default function ProLogin() {
                           type="button" 
                           variant="outline" 
                           className="w-full border-violet-600 text-violet-600 hover:bg-violet-50"
-                          onClick={() => {
-                            const registerTab = document.querySelector('[data-state="inactive"][value="register"]') as HTMLElement;
-                            if (registerTab) registerTab.click();
-                          }}
+                          onClick={() => setLocation("/register")}
                         >
                           Créer un compte
                         </Button>

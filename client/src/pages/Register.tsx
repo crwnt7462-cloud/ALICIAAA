@@ -1,0 +1,259 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useLocation } from "wouter";
+import { Mail, Lock, User, Phone, MapPin, Building } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+
+const registerSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Mot de passe trop court"),
+  businessName: z.string().min(2, "Nom du salon requis"),
+  ownerName: z.string().min(2, "Nom du propriétaire requis"),
+  phone: z.string().min(10, "Numéro de téléphone requis"),
+  address: z.string().min(5, "Adresse complète requise"),
+  city: z.string().min(2, "Ville requise")
+});
+
+type RegisterForm = z.infer<typeof registerSchema>;
+
+export default function Register() {
+  const [, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const registerForm = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      businessName: "",
+      ownerName: "",
+      phone: "",
+      address: "",
+      city: ""
+    }
+  });
+
+  const onRegister = async (data: RegisterForm) => {
+    setIsLoading(true);
+    try {
+      const response = await apiRequest("POST", "/api/auth/register", data);
+      if (response.ok) {
+        toast({
+          title: "Inscription réussie",
+          description: "Votre compte a été créé avec succès"
+        });
+        setLocation("/dashboard");
+      } else {
+        throw new Error("Erreur lors de l'inscription");
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur d'inscription",
+        description: "Veuillez réessayer",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setLocation("/")}>
+              <span className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              onClick={() => setLocation("/pro-login")}
+              className="text-gray-600 hover:text-violet-600"
+            >
+              Se connecter
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex items-center justify-center py-12 px-4">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Inscription
+            </h1>
+            <p className="text-gray-600">
+              Créez votre compte en quelques minutes
+            </p>
+          </div>
+
+          <Card className="shadow-sm border border-gray-200">
+            <CardHeader className="text-center">
+              <CardTitle className="text-xl">Nouveau compte</CardTitle>
+              <CardDescription>
+                Remplissez vos informations pour commencer
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={registerForm.control}
+                      name="ownerName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Votre nom</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                              <Input {...field} placeholder="John Doe" className="pl-10" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={registerForm.control}
+                      name="businessName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Nom du salon</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Building className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                              <Input {...field} placeholder="Salon Beauty" className="pl-10" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <Input {...field} type="email" placeholder="contact@salon.com" className="pl-10" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Téléphone</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Phone className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <Input {...field} placeholder="01 23 45 67 89" className="pl-10" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Adresse</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <Input {...field} placeholder="123 rue de la Beauté" className="pl-10" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Ville</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Paris" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={registerForm.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mot de passe</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                            <Input {...field} type="password" placeholder="••••••••" className="pl-10" />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white" disabled={isLoading}>
+                    {isLoading ? "Création..." : "Créer mon compte"}
+                  </Button>
+
+                  <div className="text-center pt-4 border-t border-gray-200">
+                    <p className="text-sm text-gray-600 mb-2">Déjà un compte ?</p>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="w-full border-violet-600 text-violet-600 hover:bg-violet-50"
+                      onClick={() => setLocation("/pro-login")}
+                    >
+                      Se connecter
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600">
+              Besoin d'aide ? <a href="#" className="text-violet-600 hover:underline">Contactez notre support</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
