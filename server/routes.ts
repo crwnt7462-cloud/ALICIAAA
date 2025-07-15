@@ -1038,12 +1038,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Chat général
   app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
     try {
-      const { message } = req.body;
-      const response = await aiService.generateChatResponse(message);
+      const { message, conversationHistory } = req.body;
+      const response = await aiService.generateChatResponse(message, conversationHistory || []);
       res.json({ response });
     } catch (error) {
       console.error('Erreur chat IA:', error);
-      res.json({ response: "Je suis votre assistant IA. Comment puis-je vous aider aujourd'hui ?" });
+      res.json({ response: "Reformulez votre question, je peux sûrement vous aider autrement." });
     }
   });
 

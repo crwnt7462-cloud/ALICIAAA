@@ -785,48 +785,48 @@ Répondez en JSON:
     }
   }
 
-  async generateChatResponse(userMessage: string) {
+  async generateChatResponse(userMessage: string, conversationHistory: Array<{role: string, content: string}> = []) {
     try {
+      // Construire l'historique de conversation pour éviter les répétitions
+      const messages = [
+        {
+          role: "system",
+          content: `Tu es Rendly AI, un assistant intelligent universel spécialisé dans la beauté mais capable de répondre à TOUT.
+
+RÈGLES IMPORTANTES :
+- JAMAIS de répétitions - varie tes réponses même pour des questions similaires
+- Sois créatif, spontané et adapte ton style à chaque question
+- Réponds à TOUTES les questions : beauté, culture, science, actualités, vie pratique
+- Reste concis mais informatif (max 150 mots)
+- Adapte ton ton : professionnel pour le business, décontracté pour le quotidien
+- Si on te repose la même question, explore un angle différent
+
+DOMAINES D'EXPERTISE :
+🏪 Business beauté : stratégies, fidélisation, marketing, planning
+🌍 Culture générale : histoire, sciences, actualités, géographie  
+💡 Pratique : conseils vie, technologie, cuisine, voyage
+🎨 Créatif : arts, mode, tendances, design
+📚 Académique : maths, physique, littérature, langues
+
+STYLE : Direct, intelligent, utile. Pas de formules toutes faites.`
+        },
+        ...conversationHistory.slice(-6), // Garde les 6 derniers échanges pour le contexte
+        {
+          role: "user",
+          content: userMessage
+        }
+      ];
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: `Tu es l'assistant IA universel intelligent d'une application mobile dédiée aux professionnels de la beauté.
-
-Tu dois répondre à TOUTES les questions, même celles qui sortent du domaine beauté/business. Tu es polyvalent et intelligent.
-
-Domaines d'expertise :
-- Gestion salon beauté (planning, clients, CA, marketing)
-- Culture générale et connaissances
-- Technologie et science
-- Actualités et société
-- Conseils de vie et développement personnel
-- Cuisine, voyage, sport, loisirs
-- Littérature, histoire, arts
-- Mathématiques, physique, chimie
-- Toute question existentielle ou pratique
-
-Tu as accès à :
-- L'agenda des rendez-vous
-- Les fiches client (habitudes, historiques, fidélité)
-- Les performances du salon (CA, heures creuses, annulations)
-- Les campagnes marketing et les préférences des clientes
-
-Format de réponse : concis, orienté action, clair et utile.
-
-Objectif : devenir l'assistant personnel complet du professionnel.`
-          },
-          {
-            role: "user",
-            content: userMessage
-          }
-        ],
-        max_tokens: 800,
-        temperature: 0.7
+        messages: messages,
+        max_tokens: 400,
+        temperature: 0.8, // Plus créatif pour éviter les répétitions
+        presence_penalty: 0.6, // Pénalise les répétitions
+        frequency_penalty: 0.4 // Encourage la diversité
       });
 
-      return response.choices[0].message.content || "Comment puis-je vous aider aujourd'hui ?";
+      return response.choices[0].message.content || "Reformulez votre question, je peux sûrement vous aider autrement.";
     } catch (error) {
       console.error('Erreur génération réponse chat:', error);
       return this.getIntelligentLocalResponse(userMessage);

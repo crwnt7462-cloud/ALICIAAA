@@ -27,10 +27,13 @@ export default function AIAutomation() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Chat IA - Défini en premier
+  // Chat IA avec historique pour éviter les répétitions
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/ai/chat", { message });
+      const response = await apiRequest("POST", "/api/ai/chat", { 
+        message,
+        conversationHistory: chatHistory
+      });
       return response.json();
     },
     onSuccess: (data) => {
