@@ -139,6 +139,10 @@ export default function PublicLanding() {
     setLocation(`/book/${salonId}`);
   };
 
+  const handleSalonClick = (salonId: string) => {
+    setLocation(`/salon/${salonId}`);
+  };
+
   const menuItems = [
     { 
       id: 'login', 
@@ -407,11 +411,15 @@ export default function PublicLanding() {
           
           <div className="space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
             {[
-              { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e" },
-              { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e" },
-              { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e" }
+              { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e", id: "salon-elegance" },
+              { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e", id: "beauty-center" },
+              { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e", id: "nail-art-studio" }
             ].map((slot, index) => (
-              <div key={index} className="bg-white rounded-lg p-3 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation">
+              <div 
+                key={index} 
+                className="bg-white rounded-lg p-3 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation cursor-pointer hover:shadow-md"
+                onClick={() => handleSalonClick(slot.id)}
+              >
                 <div className="flex justify-between items-start mb-2">
                   <div className="bg-violet-100 text-violet-700 px-2 py-1 rounded-full text-xs font-medium">
                     {slot.time}
@@ -511,7 +519,7 @@ export default function PublicLanding() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topSalons.map((salon, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
+              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleSalonClick(salon.id)}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold text-gray-900">
@@ -549,7 +557,10 @@ export default function PublicLanding() {
                   </div>
                   
                   <Button 
-                    onClick={() => handleBookSalon(salon.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookSalon(salon.id);
+                    }}
                     className="w-full gradient-bg hover:opacity-90"
                     size="sm"
                   >

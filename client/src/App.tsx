@@ -23,6 +23,7 @@ import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
 import Register from "@/pages/Register";
+import SalonDetail from "@/pages/SalonDetail";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
@@ -59,6 +60,15 @@ function Router() {
     return (
       <div className="h-full">
         <SearchResults />
+      </div>
+    );
+  }
+
+  // Page détail d'un salon
+  if (location.startsWith('/salon/')) {
+    return (
+      <div className="h-full">
+        <SalonDetail />
       </div>
     );
   }
