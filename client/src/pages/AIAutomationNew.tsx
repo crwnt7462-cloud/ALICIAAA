@@ -142,7 +142,7 @@ export default function AIAutomation() {
             <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
               <Brain className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-lg font-semibold text-gray-900">Rendly AI</h1>
+            <h1 className="text-lg font-semibold text-gray-900">Rendly IA</h1>
           </div>
           <div className="text-sm text-gray-500">GPT-4o</div>
         </div>
