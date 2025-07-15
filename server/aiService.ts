@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { format, addDays, subDays, isWithinInterval } from "date-fns";
 import { fr } from "date-fns/locale";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEYY });
 
 interface AppointmentData {
   id: number;
