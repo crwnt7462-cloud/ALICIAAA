@@ -96,13 +96,8 @@ export default function ProfessionalPlans() {
       <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">R</span>
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-gray-900">Rendly</h1>
-              </div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">Rendly</h1>
             </div>
             
             <Button 

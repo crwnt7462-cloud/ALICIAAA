@@ -291,14 +291,9 @@ export default function PublicLanding() {
                 <Menu className="w-6 h-6 text-gray-700" />
               </button>
 
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">R</span>
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
-                  <p className="text-xs text-gray-500 -mt-1">Réservation beauté</p>
-                </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
+                <p className="text-xs text-gray-500 -mt-1">Réservation beauté</p>
               </div>
             </div>
             
@@ -790,14 +785,9 @@ export default function PublicLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">R</span>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">Rendly</h3>
-                  <p className="text-sm text-gray-500">Réservation beauté</p>
-                </div>
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-gray-900">Rendly</h3>
+                <p className="text-sm text-gray-500">Réservation beauté</p>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 La plateforme de référence pour réserver vos rendez-vous beauté en France. 

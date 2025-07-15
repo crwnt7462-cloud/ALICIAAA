@@ -88,14 +88,9 @@ export default function Subscribe() {
       <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">R</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
-                <p className="text-xs text-gray-500 -mt-1">Inscription</p>
-              </div>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
+              <p className="text-xs text-gray-500 -mt-1">Inscription</p>
             </div>
             
             <Button 
