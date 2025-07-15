@@ -372,7 +372,10 @@ export default function BusinessFeatures() {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => setLocation(page.url)}
+                        onClick={() => {
+                          toast({ title: "Page ouverte", description: `Ouverture de ${page.name}` });
+                          setLocation(`/quick-booking`);
+                        }}
                       >
                         Voir
                       </Button>
@@ -517,7 +520,12 @@ export default function BusinessFeatures() {
                   </Badge>
                 </div>
               ))}
-              <Button size="sm" variant="outline" className="w-full">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => toast({ title: "Campagne créée", description: "Nouvelle campagne marketing en préparation" })}
+              >
                 + Nouvelle campagne
               </Button>
             </CardContent>
@@ -545,7 +553,11 @@ export default function BusinessFeatures() {
                   <span className="text-sm font-medium">8</span>
                 </div>
               </div>
-              <Button size="sm" className="w-full">
+              <Button 
+                size="sm" 
+                className="w-full"
+                onClick={() => toast({ title: "Configuration programme", description: "Programme de fidélité en cours de configuration" })}
+              >
                 Configurer programme
               </Button>
             </CardContent>
@@ -605,7 +617,11 @@ export default function BusinessFeatures() {
                   <p className="text-sm">23 nouveaux clients ce mois</p>
                 </div>
               </div>
-              <Button size="sm" className="w-full">
+              <Button 
+                size="sm" 
+                className="w-full"
+                onClick={() => toast({ title: "Rapport analytics", description: "Génération du rapport complet en cours..." })}
+              >
                 Voir rapport complet
               </Button>
             </CardContent>

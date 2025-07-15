@@ -107,6 +107,11 @@ export default function AIAssistant() {
     { icon: <Heart className="w-4 h-4" />, label: "Tendances beauté", action: "Quelles sont les tendances beauté actuelles ?" }
   ];
 
+  const handleQuickAction = (action: string) => {
+    setInputMessage(action);
+    handleSendMessage();
+  };
+
   const entrepreneurFeatures = [
     {
       icon: <TrendingUp className="w-5 h-5 text-blue-500" />,

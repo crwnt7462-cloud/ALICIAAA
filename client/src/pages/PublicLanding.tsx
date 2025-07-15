@@ -433,7 +433,10 @@ export default function PublicLanding() {
                 <p className="text-xs text-gray-500 mb-2">{slot.location}</p>
                 <Button 
                   className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
-                  onClick={() => handleBookSalon("demo-user")}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBookSalon(slot.id);
+                  }}
                 >
                   Réserver
                 </Button>
@@ -496,7 +499,14 @@ export default function PublicLanding() {
               { name: "Massage", icon: <Heart className="w-6 h-6" /> },
               { name: "Onglerie", icon: <Star className="w-6 h-6" /> }
             ].map((service, index) => (
-              <div key={index} className="text-center p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+              <div 
+                key={index} 
+                className="text-center p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                onClick={() => {
+                  setSearchQuery(service.name.toLowerCase());
+                  handleSearch();
+                }}
+              >
                 <div className="text-violet-600 mb-2 flex justify-center">{service.icon}</div>
                 <div className="text-sm text-gray-700 font-medium">{service.name}</div>
               </div>

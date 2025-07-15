@@ -51,7 +51,15 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-2">
-          <Button size="sm" variant="ghost" className="h-8 w-8 p-0 relative">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            className="h-8 w-8 p-0 relative"
+            onClick={() => {
+              // Simuler ouverture notifications
+              console.log("Ouverture notifications");
+            }}
+          >
             <Bell className="w-4 h-4 text-gray-600" />
             <Badge 
               variant="destructive" 
@@ -61,7 +69,15 @@ export function Header() {
             </Badge>
           </Button>
           
-          <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+          <Button 
+            size="sm" 
+            variant="ghost" 
+            className="h-8 w-8 p-0"
+            onClick={() => {
+              // Rediriger vers paramètres
+              window.location.href = "/business-features";
+            }}
+          >
             <Settings className="w-4 h-4 text-gray-600" />
           </Button>
         </div>

@@ -34,6 +34,8 @@ import QuickBooking from "@/pages/QuickBooking";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
+import SalonSearch from "@/pages/SalonSearch";
+import BookingPage from "@/pages/BookingPage";
 
 
 function Router() {
@@ -43,7 +45,7 @@ function Router() {
   if (location.startsWith('/book/')) {
     return (
       <div className="h-full">
-        <ClientBooking />
+        <BookingPage />
       </div>
     );
   }
@@ -61,7 +63,7 @@ function Router() {
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SearchResults />
+        <SalonSearch />
       </div>
     );
   }
