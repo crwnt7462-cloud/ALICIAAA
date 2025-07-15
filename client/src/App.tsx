@@ -15,7 +15,7 @@ import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
-import AIAutomation from "@/pages/AIAutomation";
+import AIAutomation from "@/pages/AIAutomationNew";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
