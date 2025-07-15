@@ -87,6 +87,15 @@ function Router() {
     );
   }
 
+  // Page IA en plein écran (sans header global)
+  if (location === '/ai') {
+    return (
+      <div className="h-full">
+        <AIAutomation />
+      </div>
+    );
+  }
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
@@ -102,7 +111,7 @@ function Router() {
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
-          <Route path="/ai" component={AIAutomation} />
+
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
           <Route path="/test-booking" component={BookingTest} />
