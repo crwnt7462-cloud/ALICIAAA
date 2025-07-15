@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function BookingPage() {
   const [, setLocation] = useLocation();
+  const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedService, setSelectedService] = useState("");
@@ -102,39 +103,72 @@ export default function BookingPage() {
       </div>
 
       <div className="p-4 space-y-4 max-w-md mx-auto">
-        {/* Étape 1: Service */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <span className="bg-violet-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
-              Choisir un service
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                onClick={() => setSelectedService(service.id)}
-                className={`p-3 border rounded-lg cursor-pointer transition-colors ${
-                  selectedService === service.id 
-                    ? 'border-violet-500 bg-violet-50' 
-                    : 'hover:bg-gray-50'
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="font-medium">{service.name}</div>
-                    <div className="text-sm text-gray-600">{service.duration} min</div>
-                  </div>
-                  <div className="text-lg font-semibold">{service.price}€</div>
+        {/* Indicateur d'étapes */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex items-center space-x-2">
+            {[1, 2, 3, 4, 5].map((step) => (
+              <div key={step} className="flex items-center">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step <= currentStep 
+                    ? 'bg-violet-500 text-white' 
+                    : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {step}
                 </div>
+                {step < 5 && (
+                  <div className={`w-8 h-1 ${
+                    step < currentStep ? 'bg-violet-500' : 'bg-gray-200'
+                  }`} />
+                )}
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+
+        {/* Étape 1: Service */}
+        {currentStep === 1 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <span className="bg-violet-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">1</span>
+                Choisir un service
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {services.map((service) => (
+                <div
+                  key={service.id}
+                  onClick={() => setSelectedService(service.id)}
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                    selectedService === service.id 
+                      ? 'border-violet-500 bg-violet-50' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-medium">{service.name}</div>
+                      <div className="text-sm text-gray-600">{service.duration} min</div>
+                    </div>
+                    <div className="text-lg font-semibold">{service.price}€</div>
+                  </div>
+                </div>
+              ))}
+              
+              {selectedService && (
+                <Button 
+                  onClick={() => setCurrentStep(2)}
+                  className="w-full mt-4 bg-violet-500 hover:bg-violet-600"
+                >
+                  Continuer
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* Étape 2: Date */}
-        {selectedService && (
+        {currentStep === 2 && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -142,7 +176,7 @@ export default function BookingPage() {
                 Choisir une date
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <Calendar
                 mode="single"
                 selected={selectedDate}
@@ -150,12 +184,30 @@ export default function BookingPage() {
                 disabled={(date) => date < new Date()}
                 className="rounded-md border"
               />
+              
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentStep(1)}
+                  className="flex-1"
+                >
+                  Retour
+                </Button>
+                {selectedDate && (
+                  <Button 
+                    onClick={() => setCurrentStep(3)}
+                    className="flex-1 bg-violet-500 hover:bg-violet-600"
+                  >
+                    Continuer
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
 
         {/* Étape 3: Heure */}
-        {selectedDate && (
+        {currentStep === 3 && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -163,7 +215,7 @@ export default function BookingPage() {
                 Choisir un créneau
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-2">
                 {timeSlots.map((time) => (
                   <Button
@@ -177,12 +229,30 @@ export default function BookingPage() {
                   </Button>
                 ))}
               </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentStep(2)}
+                  className="flex-1"
+                >
+                  Retour
+                </Button>
+                {selectedTime && (
+                  <Button 
+                    onClick={() => setCurrentStep(4)}
+                    className="flex-1 bg-violet-500 hover:bg-violet-600"
+                  >
+                    Continuer
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
 
         {/* Étape 4: Informations client */}
-        {selectedTime && (
+        {currentStep === 4 && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -239,12 +309,30 @@ export default function BookingPage() {
                   rows={3}
                 />
               </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentStep(3)}
+                  className="flex-1"
+                >
+                  Retour
+                </Button>
+                {customerInfo.firstName && customerInfo.email && (
+                  <Button 
+                    onClick={() => setCurrentStep(5)}
+                    className="flex-1 bg-violet-500 hover:bg-violet-600"
+                  >
+                    Continuer
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
         )}
 
         {/* Étape 5: Acompte et paiement */}
-        {selectedTime && customerInfo.firstName && (
+        {currentStep === 5 && (
           <Card>
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
@@ -309,14 +397,23 @@ export default function BookingPage() {
                 </div>
               </div>
               
-              <Button 
-                onClick={handleBooking}
-                className="w-full mt-4 bg-violet-500 hover:bg-violet-600"
-                size="lg"
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                Payer l'acompte {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline"
+                  onClick={() => setCurrentStep(4)}
+                  className="flex-1"
+                >
+                  Retour
+                </Button>
+                <Button 
+                  onClick={handleBooking}
+                  className="flex-1 bg-violet-500 hover:bg-violet-600"
+                  size="lg"
+                >
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Payer {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
+                </Button>
+              </div>
               
               <p className="text-xs text-gray-500 text-center">
                 Paiement sécurisé • Annulation gratuite jusqu'à 24h avant
