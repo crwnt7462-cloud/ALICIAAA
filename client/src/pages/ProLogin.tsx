@@ -118,11 +118,8 @@ export default function ProLogin() {
       <header className="relative bg-white/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => setLocation("/")}>
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                <span className="text-white font-bold text-sm">R</span>
-              </div>
-              <span className="text-xl font-semibold text-gray-900 tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
+            <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setLocation("/")}>
+              <span className="text-xl font-semibold text-black tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
             </div>
             
             <Button 
@@ -140,13 +137,13 @@ export default function ProLogin() {
       <div className="relative flex items-center justify-center py-12 px-4">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-violet-600 to-purple-600 rounded-3xl mb-6 shadow-2xl animate-bounce" style={{ animationDuration: '3s' }}>
-              <Lock className="w-10 h-10 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mb-4 shadow-xl animate-bounce" style={{ animationDuration: '3s' }}>
+              <Lock className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-3">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-2">
               Connexion
             </h1>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600">
               Accédez à votre espace de gestion professionnel
             </p>
           </div>
