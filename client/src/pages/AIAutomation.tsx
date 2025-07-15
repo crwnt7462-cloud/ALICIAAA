@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { 
   Brain, MessageCircle, TrendingUp, Calendar, Users, Zap, Send, 
@@ -21,6 +21,15 @@ export default function AIAutomation() {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("entrepreneur");
   const { toast } = useToast();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory, chatMutation.isPending]);
 
   // 🎯 IA POUR L'ENTREPRENEUR
   const { data: clientTrends, isLoading: trendsLoading } = useQuery({
@@ -94,6 +103,16 @@ export default function AIAutomation() {
     e.preventDefault();
     if (!chatMessage.trim()) return;
     chatMutation.mutate(chatMessage);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setChatMessage(suggestion);
+    // Auto-submit suggestion
+    setTimeout(() => {
+      if (suggestion.trim()) {
+        chatMutation.mutate(suggestion);
+      }
+    }, 100);
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -439,67 +458,140 @@ export default function AIAutomation() {
         </TabsContent>
 
         <TabsContent value="chat" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5 text-purple-600" />
-                Assistant IA Conversationnel
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Chat History */}
-                <div className="max-h-60 overflow-y-auto space-y-2">
-                  {chatHistory.length === 0 ? (
-                    <div className="text-center py-8">
-                      <Brain className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p className="text-gray-500">
-                        Démarrez une conversation avec votre assistant IA
-                      </p>
-                      <p className="text-sm text-gray-400 mt-1">
-                        Posez vos questions sur l'optimisation, les tendances, ou la gestion
-                      </p>
-                    </div>
-                  ) : (
-                    chatHistory.map((msg, idx) => (
-                      <div
+          <div className="flex flex-col h-[calc(100vh-280px)] bg-white rounded-lg shadow-sm">
+            {/* Chat Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full">
+                  <Brain className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">Assistant IA Universel</h3>
+                  <p className="text-sm text-gray-500">Posez-moi n'importe quelle question !</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                <span className="text-sm text-green-600 font-medium">En ligne</span>
+              </div>
+            </div>
+
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {chatHistory.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                  <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-full mb-6">
+                    <Brain className="h-16 w-16 text-purple-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    Bonjour ! Je suis votre assistant IA
+                  </h3>
+                  <p className="text-gray-600 text-center max-w-md mb-6">
+                    Je peux vous aider avec la gestion de votre salon, répondre à vos questions générales, 
+                    donner des conseils et bien plus encore !
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
+                    {[
+                      { text: "Comment fidéliser mes clients ?", icon: "👥" },
+                      { text: "Quelle recette pour ce soir ?", icon: "🍳" },
+                      { text: "Comment optimiser mon planning ?", icon: "📅" },
+                      { text: "Explique-moi l'intelligence artificielle", icon: "🤖" }
+                    ].map((suggestion, idx) => (
+                      <button
                         key={idx}
-                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                        onClick={() => handleSuggestionClick(suggestion.text)}
+                        className="flex items-center gap-3 p-3 text-left bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
                       >
-                        <div
-                          className={`max-w-[70%] p-3 rounded-lg ${
-                            msg.role === 'user'
-                              ? 'bg-purple-600 text-white'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
+                        <span className="text-xl">{suggestion.icon}</span>
+                        <span className="text-sm text-gray-700 group-hover:text-gray-900">{suggestion.text}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                chatHistory.map((msg, idx) => (
+                  <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {msg.role === 'assistant' && (
+                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                        <Brain className="h-4 w-4 text-white" />
+                      </div>
+                    )}
+                    <div className={`max-w-[75%] ${msg.role === 'user' ? 'order-1' : ''}`}>
+                      <div
+                        className={`p-4 rounded-2xl ${
+                          msg.role === 'user'
+                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-br-sm'
+                            : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                        }`}
+                      >
+                        <div className="whitespace-pre-wrap text-sm leading-relaxed">
                           {msg.content}
                         </div>
                       </div>
-                    ))
-                  )}
+                      <div className={`text-xs text-gray-500 mt-1 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                        {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                    {msg.role === 'user' && (
+                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-semibold text-sm">U</span>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+              
+              {/* Typing indicator */}
+              {chatMutation.isPending && (
+                <div className="flex gap-3 justify-start">
+                  <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 rounded-full h-8 w-8 flex items-center justify-center flex-shrink-0">
+                    <Brain className="h-4 w-4 text-white" />
+                  </div>
+                  <div className="bg-gray-100 p-4 rounded-2xl rounded-bl-sm">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
                 </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
 
-                {/* Chat Input */}
-                <form onSubmit={handleChatSubmit} className="flex gap-2">
+            {/* Chat Input */}
+            <div className="border-t border-gray-200 p-4">
+              <form onSubmit={handleChatSubmit} className="flex gap-2">
+                <div className="flex-1 relative">
                   <Input
                     value={chatMessage}
                     onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Posez votre question à l'IA..."
+                    placeholder="Tapez votre message..."
                     disabled={chatMutation.isPending}
-                    className="flex-1"
+                    className="pr-12 h-12 rounded-xl border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleChatSubmit(e);
+                      }
+                    }}
+                    autoFocus
                   />
                   <Button
                     type="submit"
                     disabled={chatMutation.isPending || !chatMessage.trim()}
                     size="sm"
+                    className="absolute right-2 top-2 h-8 w-8 p-0 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg"
                   >
                     <Send className="h-4 w-4" />
                   </Button>
-                </form>
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </form>
+              <p className="text-xs text-gray-500 mt-2 text-center">
+                L'IA peut faire des erreurs. Vérifiez les informations importantes.
+              </p>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
 
