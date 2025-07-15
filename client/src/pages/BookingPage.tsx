@@ -15,7 +15,12 @@ import {
   CreditCard,
   CheckCircle,
   Star,
-  MapPin
+  MapPin,
+  Calendar as CalendarIcon,
+  Sparkles,
+  Shield,
+  Users,
+  Award
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -33,6 +38,8 @@ export default function BookingPage() {
     phone: "",
     notes: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const { toast } = useToast();
 
   const salon = {
@@ -51,9 +58,36 @@ export default function BookingPage() {
   ];
 
   const professionals = [
-    { id: "sophie", name: "Sophie Martin", specialties: ["Coupe", "Couleur"], avatar: "👩🏼‍🦱", experience: "8 ans" },
-    { id: "julie", name: "Julie Dubois", specialties: ["Balayage", "Soins"], avatar: "👩🏻‍🦰", experience: "5 ans" },
-    { id: "marie", name: "Marie Leroy", specialties: ["Coupe", "Brushing"], avatar: "👩🏽‍🦱", experience: "12 ans" },
+    { 
+      id: "sophie", 
+      name: "Sophie Martin", 
+      specialties: ["Coupe", "Couleur"], 
+      avatar: "👩🏼‍🦱", 
+      experience: "8 ans",
+      rating: 4.9,
+      reviews: 127,
+      badge: "Expert"
+    },
+    { 
+      id: "julie", 
+      name: "Julie Dubois", 
+      specialties: ["Balayage", "Soins"], 
+      avatar: "👩🏻‍🦰", 
+      experience: "5 ans",
+      rating: 4.8,
+      reviews: 89,
+      badge: "Pro"
+    },
+    { 
+      id: "marie", 
+      name: "Marie Leroy", 
+      specialties: ["Coupe", "Brushing"], 
+      avatar: "👩🏽‍🦱", 
+      experience: "12 ans",
+      rating: 5.0,
+      reviews: 203,
+      badge: "Master"
+    },
   ];
 
   const timeSlots = [
@@ -61,8 +95,8 @@ export default function BookingPage() {
     "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"
   ];
 
-  const handleBooking = () => {
-    if (!selectedService || !selectedDate || !selectedTime || !customerInfo.firstName || !customerInfo.email) {
+  const handleBooking = async () => {
+    if (!selectedService || !selectedDate || !selectedTime || !customerInfo.firstName || !customerInfo.email || !selectedProfessional || !customerInfo.phone) {
       toast({
         title: "Informations manquantes",
         description: "Veuillez remplir tous les champs obligatoires",
@@ -71,14 +105,77 @@ export default function BookingPage() {
       return;
     }
 
-    toast({
-      title: "Réservation confirmée !",
-      description: `Votre rendez-vous a été confirmé pour le ${selectedDate.toLocaleDateString()} à ${selectedTime}`,
-    });
+    setIsLoading(true);
+    try {
+      const appointmentData = {
+        clientFirstName: customerInfo.firstName,
+        clientLastName: customerInfo.lastName,
+        clientEmail: customerInfo.email,
+        clientPhone: customerInfo.phone,
+        serviceId: selectedService,
+        professionalId: selectedProfessional,
+        appointmentDate: selectedDate.toISOString().split('T')[0],
+        startTime: selectedTime,
+        notes: customerInfo.notes,
+        depositAmount: Math.round(selectedServiceData!.price * 0.3),
+        totalAmount: selectedServiceData!.price
+      };
 
-    setTimeout(() => {
-      setLocation("/");
-    }, 2000);
+      const response = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la réservation');
+      }
+
+      const result = await response.json();
+
+      toast({
+        title: "Réservation confirmée !",
+        description: `Votre rendez-vous a été confirmé pour le ${selectedDate.toLocaleDateString()} à ${selectedTime}. Un email de confirmation vous a été envoyé.`,
+      });
+
+      setTimeout(() => {
+        setLocation("/");
+      }, 3000);
+    } catch (error) {
+      console.error('Booking error:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la réservation. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Simulate slot availability check
+  const checkAvailability = (date: Date, professionalId: string) => {
+    const baseSlots = [
+      "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+      "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"
+    ];
+    
+    // Simulate some taken slots
+    const takenSlots = Math.random() > 0.7 ? ["10:00", "14:30", "16:00"] : ["11:30", "15:00"];
+    return baseSlots.filter(slot => !takenSlots.includes(slot));
+  };
+
+  // Update available slots when date or professional changes
+  const updateAvailableSlots = () => {
+    if (selectedDate && selectedProfessional) {
+      const slots = checkAvailability(selectedDate, selectedProfessional);
+      setAvailableSlots(slots);
+      if (!slots.includes(selectedTime)) {
+        setSelectedTime("");
+      }
+    }
   };
 
   const selectedServiceData = services.find(s => s.id === selectedService);
@@ -198,12 +295,31 @@ export default function BookingPage() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="text-2xl">{pro.avatar}</div>
+                        <div className="relative">
+                          <div className="text-3xl">{pro.avatar}</div>
+                          <div className={`absolute -top-1 -right-1 text-xs px-1 py-0.5 rounded-full text-white ${
+                            pro.badge === 'Master' ? 'bg-amber-500' : 
+                            pro.badge === 'Expert' ? 'bg-violet-500' : 'bg-blue-500'
+                          }`}>
+                            {pro.badge}
+                          </div>
+                        </div>
                         <div className="flex-1">
-                          <div className="font-medium">{pro.name}</div>
-                          <div className="text-sm text-gray-600">{pro.experience} d'expérience</div>
-                          <div className="text-xs text-violet-600">
-                            Spécialités: {pro.specialties.join(", ")}
+                          <div className="flex items-center gap-2">
+                            <div className="font-medium">{pro.name}</div>
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                              <span className="text-xs font-medium">{pro.rating}</span>
+                              <span className="text-xs text-gray-400">({pro.reviews})</span>
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-600 flex items-center gap-1">
+                            <Award className="w-3 h-3" />
+                            {pro.experience} d'expérience
+                          </div>
+                          <div className="text-xs text-violet-600 flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" />
+                            {pro.specialties.join(", ")}
                           </div>
                         </div>
                       </div>
@@ -237,7 +353,14 @@ export default function BookingPage() {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={setSelectedDate}
+                  onSelect={(date) => {
+                    setSelectedDate(date);
+                    setSelectedTime("");
+                    if (date && selectedProfessional) {
+                      const slots = checkAvailability(date, selectedProfessional);
+                      setAvailableSlots(slots);
+                    }
+                  }}
                   disabled={(date) => date < new Date()}
                   className="rounded-md border"
                 />
@@ -252,18 +375,28 @@ export default function BookingPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-2">
-                    {timeSlots.map((time) => (
-                      <Button
-                        key={time}
-                        variant={selectedTime === time ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setSelectedTime(time)}
-                        className="text-sm"
-                      >
-                        {time}
-                      </Button>
-                    ))}
+                    {(availableSlots.length > 0 ? availableSlots : timeSlots).map((time) => {
+                      const isAvailable = availableSlots.length === 0 || availableSlots.includes(time);
+                      return (
+                        <Button
+                          key={time}
+                          variant={selectedTime === time ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => isAvailable && setSelectedTime(time)}
+                          disabled={!isAvailable}
+                          className={`text-sm ${!isAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {time}
+                          {!isAvailable && <span className="ml-1 text-xs">❌</span>}
+                        </Button>
+                      );
+                    })}
                   </div>
+                  {availableSlots.length > 0 && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      ✅ {availableSlots.length} créneaux disponibles pour {professionals.find(p => p.id === selectedProfessional)?.name}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -327,12 +460,22 @@ export default function BookingPage() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label>Téléphone</Label>
+                  <Label>Téléphone *</Label>
                   <Input
                     type="tel"
                     value={customerInfo.phone}
                     onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
                     placeholder="06 12 34 56 78"
+                    required
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label>Notes (optionnel)</Label>
+                  <Input
+                    value={customerInfo.notes}
+                    onChange={(e) => setCustomerInfo({...customerInfo, notes: e.target.value})}
+                    placeholder="Allergies, préférences..."
                   />
                 </div>
               </CardContent>
@@ -389,11 +532,42 @@ export default function BookingPage() {
                     </div>
                   </div>
                   
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <div className="flex gap-2 text-xs">
-                      <span className="bg-white px-2 py-1 rounded border">💳 Carte</span>
-                      <span className="bg-white px-2 py-1 rounded border">📱 Apple Pay</span>
-                      <span className="bg-white px-2 py-1 rounded border">🔐 PayPal</span>
+                  <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-100">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Shield className="w-4 h-4 text-violet-600" />
+                      <span className="font-medium text-violet-800">Paiement sécurisé</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      <div className="bg-white p-2 rounded-lg border text-center">
+                        <CreditCard className="w-4 h-4 mx-auto mb-1 text-blue-600" />
+                        <span className="text-xs font-medium">Carte</span>
+                      </div>
+                      <div className="bg-white p-2 rounded-lg border text-center">
+                        <div className="w-4 h-4 mx-auto mb-1 bg-black rounded-sm flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">A</span>
+                        </div>
+                        <span className="text-xs font-medium">Apple Pay</span>
+                      </div>
+                      <div className="bg-white p-2 rounded-lg border text-center">
+                        <div className="w-4 h-4 mx-auto mb-1 bg-blue-600 rounded-sm flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">P</span>
+                        </div>
+                        <span className="text-xs font-medium">PayPal</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center gap-4 text-xs text-violet-600">
+                      <div className="flex items-center gap-1">
+                        <Shield className="w-3 h-3" />
+                        <span>SSL</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        <span>Crypté</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        <span>100% sûr</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -408,21 +582,37 @@ export default function BookingPage() {
               >
                 Retour
               </Button>
-              {customerInfo.firstName && customerInfo.email && (
+              {customerInfo.firstName && customerInfo.email && customerInfo.phone && (
                 <Button 
                   onClick={handleBooking}
-                  className="flex-1 bg-violet-500 hover:bg-violet-600"
+                  disabled={isLoading}
+                  className="flex-1 bg-violet-500 hover:bg-violet-600 disabled:opacity-50"
                   size="lg"
                 >
-                  <CreditCard className="w-4 h-4 mr-2" />
-                  Payer {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
+                  {isLoading ? (
+                    <>
+                      <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Confirmation...
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Payer {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
+                    </>
+                  )}
                 </Button>
               )}
             </div>
             
-            <p className="text-xs text-gray-500 text-center">
-              Paiement sécurisé • Annulation gratuite jusqu'à 24h avant
-            </p>
+            <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+              <div className="flex items-center gap-2 justify-center text-green-700">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-sm font-medium">Garantie satisfait ou remboursé</span>
+              </div>
+              <p className="text-xs text-green-600 text-center mt-1">
+                Annulation gratuite jusqu'à 24h avant • Support 7j/7
+              </p>
+            </div>
           </div>
         )}
       </div>

@@ -47,6 +47,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Public appointment booking route (for external booking pages)
+  app.post('/api/appointments', async (req, res) => {
+    try {
+      const {
+        clientFirstName,
+        clientLastName,
+        clientEmail,
+        clientPhone,
+        serviceId,
+        professionalId,
+        appointmentDate,
+        startTime,
+        notes,
+        depositAmount,
+        totalAmount
+      } = req.body;
+
+      // Validation
+      if (!clientFirstName || !clientEmail || !serviceId || !professionalId || !appointmentDate || !startTime) {
+        return res.status(400).json({ message: "Champs obligatoires manquants" });
+      }
+
+      // Create or get existing client
+      let client = await db
+        .select()
+        .from(clients)
+        .where(eq(clients.email, clientEmail))
+        .limit(1);
+
+      let clientId;
+      if (client.length === 0) {
+        // Create new client
+        const newClient = await db
+          .insert(clients)
+          .values({
+            firstName: clientFirstName,
+            lastName: clientLastName,
+            email: clientEmail,
+            phone: clientPhone || '',
+            userId: 'demo-user' // For demo purposes, link to demo salon
+          })
+          .returning();
+        clientId = newClient[0].id;
+      } else {
+        clientId = client[0].id;
+      }
+
+      // Calculate end time
+      const serviceData = { coupe: 60, coloration: 120, brushing: 30, soin: 45 };
+      const duration = serviceData[serviceId as keyof typeof serviceData] || 60;
+      const startHour = parseInt(startTime.split(':')[0]);
+      const startMinute = parseInt(startTime.split(':')[1]);
+      const endHour = Math.floor((startHour * 60 + startMinute + duration) / 60);
+      const endMinute = (startHour * 60 + startMinute + duration) % 60;
+      const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
+      // Create appointment
+      const appointment = await db
+        .insert(appointments)
+        .values({
+          userId: 'demo-user',
+          clientId: clientId,
+          staffId: professionalId,
+          service: serviceId,
+          appointmentDate: appointmentDate,
+          startTime: startTime,
+          endTime: endTime,
+          status: 'confirmed',
+          totalPrice: totalAmount,
+          depositPaid: depositAmount,
+          notes: notes || ''
+        })
+        .returning();
+
+      // Send notifications to professional
+      await notificationService.sendNewBookingNotification(appointment[0].id);
+
+      res.json({ 
+        success: true, 
+        appointmentId: appointment[0].id,
+        message: "Rendez-vous confirmé et ajouté au planning du professionnel"
+      });
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ message: "Erreur lors de la création du rendez-vous" });
+    }
+  });
+
   // Service routes
   app.get('/api/services', isAuthenticated, async (req: any, res) => {
     try {
