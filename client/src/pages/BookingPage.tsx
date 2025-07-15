@@ -258,7 +258,17 @@ export default function BookingPage() {
                 {services.map((service) => (
                   <div
                     key={service.id}
-                    onClick={() => setSelectedService(service.id)}
+                    onClick={() => {
+                      setSelectedService(service.id);
+                      setSelectedProfessional(""); // Reset professional selection
+                      // Scroll to professionals after a short delay
+                      setTimeout(() => {
+                        const professionalSection = document.querySelector('[data-section="professionals"]');
+                        if (professionalSection) {
+                          professionalSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                      }, 100);
+                    }}
                     className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                       selectedService === service.id 
                         ? 'border-violet-500 bg-violet-50' 
@@ -277,27 +287,24 @@ export default function BookingPage() {
               </CardContent>
             </Card>
 
-            {/* Professionnels - toujours visibles */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Choisir votre professionnel</CardTitle>
-                {!selectedService && (
-                  <p className="text-xs text-gray-500">Sélectionnez d'abord un service</p>
-                )}
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {professionals.map((pro) => (
-                    <div
-                      key={pro.id}
-                      onClick={() => selectedService && setSelectedProfessional(pro.id)}
-                      className={`p-3 border rounded-lg transition-colors ${
-                        !selectedService 
-                          ? 'opacity-50 cursor-not-allowed bg-gray-50' 
-                          : selectedProfessional === pro.id 
-                            ? 'border-violet-500 bg-violet-50 cursor-pointer' 
-                            : 'hover:bg-gray-50 cursor-pointer'
-                      }`}
-                    >
+            {/* Professionnels - apparaissent après sélection service */}
+            {selectedService && (
+              <Card data-section="professionals">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Choisir votre professionnel</CardTitle>
+                  <p className="text-xs text-violet-600">Service sélectionné : {services.find(s => s.id === selectedService)?.name}</p>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {professionals.map((pro) => (
+                      <div
+                        key={pro.id}
+                        onClick={() => setSelectedProfessional(pro.id)}
+                        className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                          selectedProfessional === pro.id 
+                            ? 'border-violet-500 bg-violet-50' 
+                            : 'hover:bg-gray-50'
+                        }`}
+                      >
                       <div className="flex items-center gap-3">
                         <div className="relative">
                           <div className="text-3xl">{pro.avatar}</div>
@@ -331,6 +338,7 @@ export default function BookingPage() {
                   ))}
                 </CardContent>
               </Card>
+            )}
             
             {selectedService && selectedProfessional && (
               <Button 
