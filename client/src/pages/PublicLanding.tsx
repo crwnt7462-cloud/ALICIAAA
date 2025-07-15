@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell, Share2, Copy } from "lucide-react";
+import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell, Share2, Copy, Menu, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ export default function PublicLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
@@ -138,13 +139,158 @@ export default function PublicLanding() {
     setLocation(`/book/${salonId}`);
   };
 
+  const menuItems = [
+    { 
+      id: 'login', 
+      label: 'Se connecter', 
+      icon: <LogIn className="w-5 h-5" />,
+      action: () => setLocation("/pro-login")
+    },
+    { 
+      id: 'pro', 
+      label: 'Je suis un professionnel de beauté', 
+      icon: <UserCheck className="w-5 h-5" />,
+      action: () => setLocation("/pro-login")
+    },
+    { 
+      id: 'coiffeur', 
+      label: 'Coiffeur', 
+      icon: <ScissorsIcon className="w-5 h-5" />,
+      action: () => handleSearch()
+    },
+    { 
+      id: 'barbier', 
+      label: 'Barbier', 
+      icon: <UsersIcon className="w-5 h-5" />,
+      action: () => handleSearch()
+    },
+    { 
+      id: 'manucure', 
+      label: 'Manucure', 
+      icon: <Palette className="w-5 h-5" />,
+      action: () => handleSearch()
+    },
+    { 
+      id: 'institut', 
+      label: 'Institut de beauté', 
+      icon: <SparklesIcon className="w-5 h-5" />,
+      action: () => handleSearch()
+    }
+  ];
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const handleMenuItemClick = (item: typeof menuItems[0]) => {
+    if (item.id === 'coiffeur') {
+      setSearchQuery('coiffure');
+    } else if (item.id === 'barbier') {
+      setSearchQuery('barbier');
+    } else if (item.id === 'manucure') {
+      setSearchQuery('manucure');
+    } else if (item.id === 'institut') {
+      setSearchQuery('institut de beauté');
+    }
+    item.action();
+    closeMenu();
+  };
+
+  // Effet pour fermer le menu si on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isMenuOpen && !target.closest('#hamburger-menu') && !target.closest('#hamburger-button')) {
+        closeMenu();
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'hidden'; // Empêcher le scroll du body
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   return (
     <div className="min-h-screen bg-white">
+      {/* Menu hamburger overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 transition-opacity duration-300">
+          <div 
+            id="hamburger-menu"
+            className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 ease-in-out ${
+              isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+          >
+            {/* Header du menu */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">B</span>
+                </div>
+                <div>
+                  <h2 className="font-semibold text-gray-900">BeautyBook</h2>
+                  <p className="text-xs text-gray-500">Menu</p>
+                </div>
+              </div>
+              <button
+                onClick={closeMenu}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                aria-label="Fermer le menu"
+              >
+                <X className="w-5 h-5 text-gray-600" />
+              </button>
+            </div>
+
+            {/* Items du menu */}
+            <div className="py-4">
+              {menuItems.map((item, index) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleMenuItemClick(item)}
+                  className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors duration-200 text-left"
+                  style={{
+                    animationDelay: `${index * 50}ms`,
+                    animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
+                  }}
+                >
+                  <div className="text-gray-600">
+                    {item.icon}
+                  </div>
+                  <span className="text-gray-900 font-medium">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header professionnel */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-50 backdrop-blur-lg bg-white/95">
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+            <div className="flex items-center gap-4">
+              {/* Bouton hamburger */}
+              <button
+                id="hamburger-button"
+                onClick={toggleMenu}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200 lg:hidden"
+                aria-label="Ouvrir le menu"
+              >
+                <Menu className="w-6 h-6 text-gray-700" />
+              </button>
+
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">B</span>
@@ -159,14 +305,14 @@ export default function PublicLanding() {
             <div className="flex items-center gap-2 md:gap-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-violet-600 text-sm md:text-base px-2 md:px-4"
+                className="text-gray-600 hover:text-violet-600 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
                 onClick={() => setLocation("/pro-login")}
               >
                 <span className="hidden md:inline">Espace Professionnel</span>
                 <span className="md:hidden">Pro</span>
               </Button>
               <Button 
-                className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg"
+                className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
                 onClick={() => setLocation("/pro-login")}
               >
                 Connexion
