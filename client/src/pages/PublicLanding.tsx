@@ -233,25 +233,7 @@ export default function PublicLanding() {
               isMenuOpen ? 'translate-x-0' : '-translate-x-full'
             }`}
           >
-            {/* Header du menu */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">B</span>
-                </div>
-                <div>
-                  <h2 className="font-semibold text-gray-900">BeautyBook</h2>
-                  <p className="text-xs text-gray-500">Menu</p>
-                </div>
-              </div>
-              <button
-                onClick={closeMenu}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-                aria-label="Fermer le menu"
-              >
-                <X className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
+
 
             {/* Items du menu */}
             <div className="py-4">
@@ -259,13 +241,13 @@ export default function PublicLanding() {
                 <button
                   key={item.id}
                   onClick={() => handleMenuItemClick(item)}
-                  className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-50 transition-colors duration-200 text-left"
+                  className="w-full flex items-center gap-4 px-6 py-4 hover:bg-gray-100 transition-colors duration-200 text-left"
                   style={{
                     animationDelay: `${index * 50}ms`,
                     animation: isMenuOpen ? 'slideInLeft 0.3s ease-out forwards' : 'none'
                   }}
                 >
-                  <div className="text-gray-600">
+                  <div className="text-gray-800">
                     {item.icon}
                   </div>
                   <span className="text-gray-900 font-medium">{item.label}</span>
@@ -299,7 +281,7 @@ export default function PublicLanding() {
             <div className="flex items-center gap-2 md:gap-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-600 hover:text-violet-600 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
+                className="text-gray-600 hover:text-gray-900 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
                 onClick={() => setLocation("/pro-login")}
               >
                 <span className="hidden md:inline">Espace Professionnel</span>
