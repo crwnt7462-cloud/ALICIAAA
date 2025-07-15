@@ -123,6 +123,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - MESSAGERIE DIRECTE PREMIUM INTÉGRÉE (15 Janvier)
+- ✅ **Messagerie Pro complète** : Interface ChatGPT-like pour communication directe clients
+- ✅ **Intégration Premium 149€** : Fonctionnalité exclusive abonnés Premium dans Pro Tools
+- ✅ **Interface professionnelle** : Design épuré avec onglets Conversations/Clients/Archives
+- ✅ **Fonctionnalités avancées** : Messages illimités, temps de réponse 24h, sécurisé 100%
+- ✅ **Navigation optimisée** : Sidebar conversations + zone chat en temps réel
+- ✅ **Responsive design** : Interface mobile-first adaptée écrans tactiles
+- ✅ **Badges clients** : VIP, Fidèle, Régulière avec historique rendez-vous
+- ✅ **Actions rapides** : Appel, vidéo, prise de rendez-vous depuis la messagerie
+
 ### Janvier 2025 - REFONTE SALON DETAIL & DESIGN ÉPURÉ (15 Janvier)
 - ✅ **Page SalonDetail complètement refaite** : Design moderne, épuré et professionnel
 - ✅ **Navigation corrigée** : Cartes salon mènent aux détails, bouton "Réserver" pour booking direct

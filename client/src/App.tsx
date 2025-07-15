@@ -33,6 +33,7 @@ import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
+import DirectMessaging from "@/pages/DirectMessaging";
 
 
 function Router() {
@@ -136,6 +137,15 @@ function Router() {
           <AIAssistant />
         </main>
         <BottomNavigation />
+      </div>
+    );
+  }
+
+  // Messagerie directe en plein écran
+  if (location === '/direct-messaging') {
+    return (
+      <div className="h-full">
+        <DirectMessaging />
       </div>
     );
   }

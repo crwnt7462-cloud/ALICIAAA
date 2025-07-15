@@ -28,7 +28,9 @@ import {
   Calendar,
   Share2,
   Copy,
-  QrCode
+  QrCode,
+  MessageCircle,
+  Crown
 } from "lucide-react";
 
 export default function BusinessFeatures() {
@@ -46,6 +48,49 @@ export default function BusinessFeatures() {
           Fonctionnalités avancées Planity & Treatwell
         </p>
       </div>
+
+      {/* Messagerie Premium - Section spéciale */}
+      <Card className="mb-6 border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center">
+                <MessageCircle className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  Messagerie Pro
+                  <Crown className="w-4 h-4 text-violet-600" />
+                </h3>
+                <p className="text-sm text-gray-600">Communiquez directement avec vos clients</p>
+              </div>
+            </div>
+            <Badge className="bg-violet-600 text-white">Premium</Badge>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-4 mb-4 text-center">
+            <div>
+              <div className="text-lg font-bold text-violet-600">24h</div>
+              <div className="text-xs text-gray-600">Réponse rapide</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-violet-600">∞</div>
+              <div className="text-xs text-gray-600">Messages illimités</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-violet-600">100%</div>
+              <div className="text-xs text-gray-600">Sécurisé</div>
+            </div>
+          </div>
+          
+          <Button 
+            onClick={() => setLocation("/direct-messaging")}
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white"
+          >
+            Ouvrir la messagerie
+          </Button>
+        </CardContent>
+      </Card>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 mb-4">
