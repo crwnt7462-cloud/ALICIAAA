@@ -229,102 +229,107 @@ export default function DirectMessaging() {
 
   return (
     <div className="h-screen bg-gradient-to-br from-slate-50 to-violet-50 flex flex-col">
-      {/* Header moderne */}
+      {/* Header mobile optimisé */}
       <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/50 shadow-sm">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between p-3 sm:p-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setLocation("/business-features")}
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full p-2"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
-              Retour
+              <ArrowLeft className="w-5 h-5" />
+              <span className="hidden sm:inline ml-2">Retour</span>
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                <MessageCircle className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+              <div className="hidden sm:block">
+                <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                   Messagerie Pro
                 </h1>
-                <p className="text-sm text-gray-600">Communication directe avec vos clients</p>
+                <p className="text-xs sm:text-sm text-gray-600">Communication directe avec vos clients</p>
+              </div>
+              <div className="sm:hidden">
+                <h1 className="text-lg font-bold text-gray-900">Messages</h1>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white border-0 shadow-sm">
+            <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white border-0 shadow-sm text-xs">
               <Crown className="w-3 h-3 mr-1" />
-              Premium
+              <span className="hidden sm:inline">Premium</span>
             </Badge>
           </div>
         </div>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar moderne */}
-        <div className="w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200/50 flex flex-col shadow-sm">
-          {/* Navigation par onglets */}
-          <div className="p-4 border-b border-gray-100">
-            <div className="flex rounded-xl bg-gray-50/80 p-1 mb-4 shadow-inner">
+        {/* Sidebar responsive */}
+        <div className={`${selectedConversation ? 'hidden sm:flex' : 'flex'} w-full sm:w-80 bg-white/95 backdrop-blur-sm border-r border-gray-200/50 flex-col shadow-sm`}>
+          {/* Navigation par onglets mobile */}
+          <div className="p-3 sm:p-4 border-b border-gray-100">
+            <div className="flex rounded-xl bg-gray-50/80 p-1 mb-3 sm:mb-4 shadow-inner">
               <button
                 onClick={() => setActiveTab('conversations')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
                   activeTab === 'conversations'
                     ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                <MessageCircle className="w-4 h-4" />
-                Messages
+                <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Messages</span>
+                <span className="sm:hidden">Chat</span>
                 <Badge className="bg-violet-500 text-white text-xs">3</Badge>
               </button>
               <button
                 onClick={() => setActiveTab('clients')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
                   activeTab === 'clients'
                     ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                <Users className="w-4 h-4" />
+                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                 Clients
               </button>
               <button
                 onClick={() => setActiveTab('archived')}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-2 sm:py-2.5 px-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
                   activeTab === 'archived'
                     ? 'bg-white text-violet-600 shadow-sm transform scale-[0.98]'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                 }`}
               >
-                <Archive className="w-4 h-4" />
-                Archives
+                <Archive className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Archives</span>
+                <span className="sm:hidden">Arch</span>
               </button>
             </div>
             
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-2.5 sm:top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Rechercher une conversation..."
+                placeholder="Rechercher..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50"
+                className="pl-10 border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50 h-10 sm:h-12 text-sm"
               />
             </div>
           </div>
 
-          {/* Liste des conversations */}
+          {/* Liste des conversations mobile */}
           <div className="flex-1 overflow-y-auto">
             {activeTab === 'conversations' && (
-              <div className="space-y-1 p-2">
+              <div className="space-y-1 p-1 sm:p-2">
                 {conversations?.map((conversation) => (
                   <div
                     key={conversation.id}
                     onClick={() => setSelectedConversation(conversation.id)}
-                    className={`p-4 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-sm ${
+                    className={`p-3 sm:p-4 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-sm active:scale-[0.98] ${
                       selectedConversation === conversation.id 
                         ? 'bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200/50 shadow-sm' 
                         : 'hover:bg-gray-50/80'
@@ -332,19 +337,19 @@ export default function DirectMessaging() {
                   >
                     <div className="flex items-start gap-3">
                       <div className="relative">
-                        <Avatar className="w-12 h-12 ring-2 ring-white shadow-sm">
-                          <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold">
+                        <Avatar className="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-white shadow-sm">
+                          <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold text-sm sm:text-base">
                             {conversation.clientName.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         {conversation.isOnline && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full shadow-sm" />
+                          <div className="absolute -bottom-0.5 -right-0.5 sm:-bottom-1 sm:-right-1 w-3 h-3 sm:w-4 sm:h-4 bg-green-500 border-2 border-white rounded-full shadow-sm" />
                         )}
                       </div>
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-gray-900 truncate">
+                          <h3 className="font-semibold text-gray-900 truncate text-sm sm:text-base">
                             {conversation.clientName}
                           </h3>
                           <div className="flex items-center gap-1">
@@ -352,14 +357,14 @@ export default function DirectMessaging() {
                               {formatTime(conversation.lastMessageTime)}
                             </span>
                             {conversation.unreadCount > 0 && (
-                              <Badge className="bg-violet-500 text-white min-w-[20px] h-5 text-xs rounded-full">
+                              <Badge className="bg-violet-500 text-white min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 text-xs rounded-full">
                                 {conversation.unreadCount}
                               </Badge>
                             )}
                           </div>
                         </div>
                         
-                        <p className="text-sm text-gray-600 truncate mb-2 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-gray-600 truncate mb-2 leading-relaxed">
                           {conversation.lastMessage}
                         </p>
                         
@@ -369,8 +374,8 @@ export default function DirectMessaging() {
                               <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                               <span>{conversation.clientRating}</span>
                             </div>
-                            <span>•</span>
-                            <span>{conversation.totalAppointments} RDV</span>
+                            <span className="hidden sm:inline">•</span>
+                            <span className="hidden sm:inline">{conversation.totalAppointments} RDV</span>
                           </div>
                           
                           <div className="flex gap-1">
@@ -378,7 +383,7 @@ export default function DirectMessaging() {
                               <Badge 
                                 key={tag} 
                                 variant="outline" 
-                                className="text-xs px-2 py-0 bg-white/80 border-violet-200 text-violet-700"
+                                className="text-xs px-1.5 sm:px-2 py-0 bg-white/80 border-violet-200 text-violet-700"
                               >
                                 {tag}
                               </Badge>
@@ -394,61 +399,69 @@ export default function DirectMessaging() {
           </div>
         </div>
 
-        {/* Zone de conversation */}
-        <div className="flex-1 flex flex-col bg-white/40">
+        {/* Zone de conversation mobile */}
+        <div className={`${selectedConversation ? 'flex' : 'hidden sm:flex'} flex-1 flex-col bg-white/40`}>
           {selectedConversation && selectedConversationData ? (
             <>
-              {/* Header conversation */}
-              <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/50 p-4 shadow-sm">
+              {/* Header conversation mobile */}
+              <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200/50 p-3 sm:p-4 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-10 h-10 ring-2 ring-violet-100">
-                      <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedConversation(null)}
+                      className="sm:hidden text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full p-1"
+                    >
+                      <ArrowLeft className="w-5 h-5" />
+                    </Button>
+                    <Avatar className="w-8 h-8 sm:w-10 sm:h-10 ring-2 ring-violet-100">
+                      <AvatarFallback className="bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 font-semibold text-sm sm:text-base">
                         {selectedConversationData.clientName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h2 className="font-semibold text-gray-900">{selectedConversationData.clientName}</h2>
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
+                      <h2 className="font-semibold text-gray-900 text-sm sm:text-base">{selectedConversationData.clientName}</h2>
+                      <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-500">
                         <div className={`w-2 h-2 rounded-full ${selectedConversationData.isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
                         <span>{selectedConversationData.isOnline ? 'En ligne' : 'Hors ligne'}</span>
-                        <span>•</span>
-                        <span>{selectedConversationData.totalAppointments} rendez-vous</span>
+                        <span className="hidden sm:inline">•</span>
+                        <span className="hidden sm:inline">{selectedConversationData.totalAppointments} rendez-vous</span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full p-2">
                       <Phone className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full p-2">
                       <Video className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                    <Button variant="ghost" size="sm" className="hidden sm:flex hover:bg-violet-50 hover:text-violet-600 rounded-full p-2">
                       <Calendar className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full">
+                    <Button variant="ghost" size="sm" className="hover:bg-violet-50 hover:text-violet-600 rounded-full p-2">
                       <MoreVertical className="w-4 h-4" />
                     </Button>
                   </div>
                 </div>
               </div>
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {/* Messages mobile */}
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4">
                 {messages?.map((message) => (
                   <div
                     key={message.id}
                     className={`flex ${message.senderType === 'business' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+                    <div className={`max-w-[280px] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 sm:py-3 rounded-2xl shadow-sm ${
                       message.senderType === 'business'
                         ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white'
                         : 'bg-white border border-gray-200 text-gray-900'
                     }`}>
                       <p className="text-sm leading-relaxed">{message.content}</p>
-                      <div className={`flex items-center justify-end gap-1 mt-2 text-xs ${
+                      <div className={`flex items-center justify-end gap-1 mt-1 sm:mt-2 text-xs ${
                         message.senderType === 'business' ? 'text-violet-200' : 'text-gray-500'
                       }`}>
                         <span>{formatTime(message.timestamp)}</span>
@@ -462,13 +475,13 @@ export default function DirectMessaging() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Zone de saisie moderne */}
-              <div className="bg-white/95 backdrop-blur-sm border-t border-gray-200/50 p-4 shadow-sm">
-                <div className="flex items-end gap-3">
-                  <Button variant="ghost" size="sm" className="mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full">
-                    <Paperclip className="w-5 h-5" />
+              {/* Zone de saisie mobile */}
+              <div className="bg-white/95 backdrop-blur-sm border-t border-gray-200/50 p-3 sm:p-4 shadow-sm">
+                <div className="flex items-end gap-2 sm:gap-3">
+                  <Button variant="ghost" size="sm" className="mb-1 sm:mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full p-2 flex-shrink-0">
+                    <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <Textarea
                       placeholder="Tapez votre message..."
                       value={messageText}
@@ -479,36 +492,36 @@ export default function DirectMessaging() {
                           handleSendMessage();
                         }
                       }}
-                      className="min-h-[44px] max-h-[120px] resize-none border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50"
+                      className="min-h-[40px] sm:min-h-[44px] max-h-[100px] sm:max-h-[120px] resize-none border-gray-200/60 focus:border-violet-300 focus:ring-violet-200/30 rounded-xl bg-gray-50/50 text-sm"
                     />
                   </div>
-                  <Button variant="ghost" size="sm" className="mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full">
-                    <Smile className="w-5 h-5" />
+                  <Button variant="ghost" size="sm" className="mb-1 sm:mb-2 hover:bg-violet-50 hover:text-violet-600 rounded-full p-2 flex-shrink-0 sm:flex hidden">
+                    <Smile className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                   <Button 
                     onClick={handleSendMessage}
                     disabled={!messageText.trim() || sendMessageMutation.isPending}
-                    className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white mb-2 rounded-full w-11 h-11 p-0 shadow-lg"
+                    className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white mb-1 sm:mb-2 rounded-full w-10 h-10 sm:w-11 sm:h-11 p-0 shadow-lg flex-shrink-0 active:scale-95 transition-transform"
                   >
-                    <Send className="w-5 h-5" />
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
                 </div>
               </div>
             </>
           ) : (
-            /* État vide moderne */
-            <div className="flex-1 flex items-center justify-center">
+            /* État vide mobile */
+            <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-center max-w-sm mx-auto">
-                <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                  <MessageCircle className="w-10 h-10 text-violet-600" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-violet-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
+                  <MessageCircle className="w-8 h-8 sm:w-10 sm:h-10 text-violet-600" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3">
                   Sélectionnez une conversation
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                   Choisissez un client dans la liste pour commencer à discuter et gérer vos rendez-vous
                 </p>
-                <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-full">
+                <Button className="bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-full text-sm sm:text-base active:scale-95 transition-transform">
                   <Plus className="w-4 h-4 mr-2" />
                   Nouvelle conversation
                 </Button>
