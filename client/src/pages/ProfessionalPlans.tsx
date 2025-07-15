@@ -97,7 +97,7 @@ export default function ProfessionalPlans() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14">
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Rendly</h1>
+              <h1 className="text-xl font-black text-gray-900 tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 900 }}>Rendly</h1>
             </div>
             
             <Button 

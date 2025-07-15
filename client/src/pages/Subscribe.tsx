@@ -89,7 +89,7 @@ export default function Subscribe() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Rendly</h1>
+              <h1 className="text-2xl font-black text-gray-900 tracking-tight" style={{ fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 900 }}>Rendly</h1>
               <p className="text-xs text-gray-500 -mt-1">Inscription</p>
             </div>
             
