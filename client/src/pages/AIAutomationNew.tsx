@@ -131,57 +131,54 @@ export default function AIAutomation() {
   });
 
   return (
-    <div className="h-screen bg-white flex flex-col overflow-hidden">
+    <div className="h-[100dvh] bg-white flex flex-col overflow-hidden">
       {/* Interface Rendly AI - Mobile First */}
       <div className="max-w-4xl mx-auto h-full flex flex-col">
-        {/* Header Rendly AI - Compact pour mobile */}
-        <div className="flex-shrink-0 bg-white border-b border-gray-200 px-3 py-3">
+        {/* Header Rendly AI - Ultra compact */}
+        <div className="flex-shrink-0 bg-white border-b border-gray-200 px-3 py-2">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center shadow-md">
-                <Brain className="h-5 w-5 text-white" />
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                <Brain className="h-4 w-4 text-white" />
               </div>
-              <div>
-                <h1 className="text-base font-bold text-gray-900">Rendly AI</h1>
-                <p className="text-xs text-gray-500">Assistant beauté</p>
-              </div>
+              <h1 className="text-sm font-bold text-gray-900">Rendly AI</h1>
             </div>
-            <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded-full">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs font-medium text-green-700">En ligne</span>
+            <div className="flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">
+              <div className="w-1 h-1 bg-green-500 rounded-full" />
+              <span className="text-xs text-green-700">En ligne</span>
             </div>
           </div>
         </div>
 
-        {/* Zone de conversation - Hauteur calculée précisément */}
+        {/* Zone de conversation */}
         <div className="flex-1 flex flex-col min-h-0">
-          {/* Messages - Prend tout l'espace disponible */}
-          <div className="flex-1 overflow-y-auto overscroll-bounce">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto">
             {chatHistory.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full px-4 pb-8">
-                <div className="text-center max-w-sm mx-auto">
-                  <div className="mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                      <Brain className="h-8 w-8 text-white" />
+              <div className="flex flex-col items-center justify-center h-full px-3 py-4">
+                <div className="text-center max-w-xs mx-auto">
+                  <div className="mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                      <Brain className="h-6 w-6 text-white" />
                     </div>
-                    <h2 className="text-lg font-bold text-gray-900 mb-2">Comment puis-je vous aider ?</h2>
-                    <p className="text-sm text-gray-600 mb-6">Votre assistant beauté intelligent</p>
+                    <h2 className="text-base font-bold text-gray-900 mb-1">Comment puis-je vous aider ?</h2>
+                    <p className="text-xs text-gray-600 mb-4">Votre assistant beauté intelligent</p>
                   </div>
-                  <div className="grid grid-cols-1 gap-2.5">
+                  <div className="grid grid-cols-1 gap-2">
                     {[
-                      { text: "Conseils fidélisation clients", icon: "💼", gradient: "from-blue-500 to-purple-600" },
+                      { text: "Conseils fidélisation", icon: "💼", gradient: "from-blue-500 to-purple-600" },
                       { text: "Optimiser mon salon", icon: "✨", gradient: "from-purple-500 to-pink-600" },
-                      { text: "Tendances beauté 2025", icon: "🎨", gradient: "from-pink-500 to-rose-600" },
+                      { text: "Tendances beauté", icon: "🎨", gradient: "from-pink-500 to-rose-600" },
                       { text: "Stratégies marketing", icon: "📈", gradient: "from-green-500 to-emerald-600" }
                     ].map((suggestion, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleSuggestionClick(suggestion.text)}
-                        className={`bg-gradient-to-r ${suggestion.gradient} text-white p-3.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 transform active:scale-95`}
+                        className={`bg-gradient-to-r ${suggestion.gradient} text-white p-3 rounded-lg shadow-sm active:scale-95 transition-transform`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="text-lg">{suggestion.icon}</span>
-                          <span className="text-sm font-medium text-left">{suggestion.text}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{suggestion.icon}</span>
+                          <span className="text-xs font-medium">{suggestion.text}</span>
                         </div>
                       </button>
                     ))}
@@ -189,7 +186,7 @@ export default function AIAutomation() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-3 px-3 py-3 pb-4">
+              <div className="space-y-2 px-3 py-2">
                 {chatHistory.map((msg, idx) => (
                   <div key={idx} className="group">
                     <div className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -245,55 +242,50 @@ export default function AIAutomation() {
             )}
           </div>
 
-          {/* Zone de saisie fixe en bas - Toujours visible */}
-          <div className="flex-shrink-0 border-t border-gray-200 bg-white p-3 env(safe-area-inset-bottom)">
-            <form onSubmit={handleChatSubmit} className="relative">
-              <div className="flex items-end gap-2 bg-gray-100 rounded-2xl p-2.5">
-                <div className="flex-1">
-                  <textarea
-                    value={chatMessage}
-                    onChange={(e) => setChatMessage(e.target.value)}
-                    placeholder="Message Rendly AI..."
-                    disabled={chatMutation.isPending}
-                    className="w-full bg-transparent border-0 resize-none focus:outline-none placeholder-gray-500 text-gray-900 max-h-24 text-base leading-tight"
-                    rows={1}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleChatSubmit(e);
-                      }
-                    }}
-                    style={{
-                      minHeight: '20px',
-                      height: 'auto',
-                    }}
-                    onInput={(e) => {
-                      const target = e.target as HTMLTextAreaElement;
-                      target.style.height = 'auto';
-                      target.style.height = Math.min(target.scrollHeight, 96) + 'px';
-                    }}
-                  />
-                </div>
+          {/* Zone de saisie fixe - Ultra compacte */}
+          <div className="flex-shrink-0 border-t border-gray-200 bg-white p-2">
+            <form onSubmit={handleChatSubmit}>
+              <div className="flex items-center gap-2 bg-gray-100 rounded-full p-2">
+                <textarea
+                  value={chatMessage}
+                  onChange={(e) => setChatMessage(e.target.value)}
+                  placeholder="Message Rendly AI..."
+                  disabled={chatMutation.isPending}
+                  className="flex-1 bg-transparent border-0 resize-none focus:outline-none placeholder-gray-500 text-gray-900 text-sm max-h-20"
+                  rows={1}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleChatSubmit(e);
+                    }
+                  }}
+                  style={{
+                    minHeight: '18px',
+                    height: 'auto',
+                  }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 80) + 'px';
+                  }}
+                />
                 <button
                   type="submit"
                   disabled={chatMutation.isPending || !chatMessage.trim()}
-                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
                     chatMessage.trim() && !chatMutation.isPending
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md active:scale-95'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                      : 'bg-gray-300 text-gray-500'
                   }`}
                 >
                   {chatMutation.isPending ? (
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <Send className="h-4 w-4" />
                   )}
                 </button>
               </div>
             </form>
-            <p className="text-xs text-gray-400 mt-2 text-center">
-              Rendly AI peut faire des erreurs. Vérifiez les informations importantes.
-            </p>
           </div>
         </div>
       </div>
