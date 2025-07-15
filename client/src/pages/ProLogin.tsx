@@ -190,6 +190,21 @@ export default function ProLogin() {
                       <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white" disabled={isLoading}>
                         {isLoading ? "Connexion..." : "Se connecter"}
                       </Button>
+                      
+                      <div className="text-center pt-4 border-t border-gray-200">
+                        <p className="text-sm text-gray-600 mb-2">Pas encore de compte ?</p>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          className="w-full border-violet-600 text-violet-600 hover:bg-violet-50"
+                          onClick={() => {
+                            const registerTab = document.querySelector('[data-state="inactive"][value="register"]') as HTMLElement;
+                            if (registerTab) registerTab.click();
+                          }}
+                        >
+                          Créer un compte
+                        </Button>
+                      </div>
                     </form>
                   </Form>
                 </TabsContent>
