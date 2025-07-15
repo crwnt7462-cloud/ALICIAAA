@@ -27,6 +27,29 @@ export default function AIAutomation() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Chat général
+  const chatMutation = useMutation({
+    mutationFn: async (message: string) => {
+      const response = await apiRequest("POST", "/api/ai/chat", { message });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setChatHistory(prev => [
+        ...prev,
+        { role: "user", content: chatMessage },
+        { role: "assistant", content: data.response }
+      ]);
+      setChatMessage("");
+    },
+    onError: () => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de contacter l'assistant IA.",
+        variant: "destructive",
+      });
+    },
+  });
+
   useEffect(() => {
     scrollToBottom();
   }, [chatHistory, chatMutation.isPending]);
@@ -74,29 +97,6 @@ export default function AIAutomation() {
   const { data: trendyLooks, isLoading: looksLoading } = useQuery({
     queryKey: ["/api/ai/suggest-looks"],
     enabled: activeTab === "client"
-  });
-
-  // Chat général
-  const chatMutation = useMutation({
-    mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/ai/chat", { message });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setChatHistory(prev => [
-        ...prev,
-        { role: "user", content: chatMessage },
-        { role: "assistant", content: data.response }
-      ]);
-      setChatMessage("");
-    },
-    onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de contacter l'assistant IA.",
-        variant: "destructive",
-      });
-    },
   });
 
   const handleChatSubmit = (e: React.FormEvent) => {
