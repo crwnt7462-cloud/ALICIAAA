@@ -40,6 +40,7 @@ export default function BookingPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const { toast } = useToast();
 
   const salon = {
@@ -543,33 +544,144 @@ export default function BookingPage() {
                     </div>
                   </div>
                   
+                  {/* Sélection mode de paiement */}
                   <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl border border-violet-100">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-4">
                       <Shield className="w-4 h-4 text-violet-600" />
-                      <span className="font-medium text-violet-800">Paiement sécurisé</span>
+                      <span className="font-medium text-violet-800">Choisir votre mode de paiement</span>
                     </div>
-                    <div className="grid grid-cols-3 gap-2 mb-3">
-                      <div className="bg-white p-2 rounded-lg border text-center">
-                        <CreditCard className="w-4 h-4 mx-auto mb-1 text-blue-600" />
-                        <span className="text-xs font-medium">Carte</span>
-                      </div>
-                      <div className="bg-white p-2 rounded-lg border text-center">
-                        <div className="w-4 h-4 mx-auto mb-1 bg-black rounded-sm flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">A</span>
+                    
+                    <div className="space-y-3 mb-4">
+                      {/* Carte bancaire */}
+                      <div
+                        onClick={() => setSelectedPaymentMethod("card")}
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                          selectedPaymentMethod === "card"
+                            ? "border-violet-500 bg-violet-100 shadow-md"
+                            : "border-gray-200 bg-white hover:border-violet-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                            <CreditCard className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">Carte bancaire</div>
+                            <div className="text-xs text-gray-500">Visa, Mastercard, CB</div>
+                          </div>
+                          <div className="flex gap-1">
+                            <div className="w-6 h-4 bg-blue-600 rounded-sm flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">V</span>
+                            </div>
+                            <div className="w-6 h-4 bg-red-500 rounded-sm flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">M</span>
+                            </div>
+                          </div>
+                          {selectedPaymentMethod === "card" && (
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
+                          )}
                         </div>
-                        <span className="text-xs font-medium">Apple Pay</span>
                       </div>
-                      <div className="bg-white p-2 rounded-lg border text-center">
-                        <div className="w-4 h-4 mx-auto mb-1 bg-blue-600 rounded-sm flex items-center justify-center">
-                          <span className="text-white text-xs font-bold">P</span>
+
+                      {/* Apple Pay */}
+                      <div
+                        onClick={() => setSelectedPaymentMethod("apple")}
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                          selectedPaymentMethod === "apple"
+                            ? "border-violet-500 bg-violet-100 shadow-md"
+                            : "border-gray-200 bg-white hover:border-violet-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-gray-800 to-black rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">􀂊</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">Apple Pay</div>
+                            <div className="text-xs text-gray-500">Touch ID, Face ID</div>
+                          </div>
+                          <div className="w-8 h-5 bg-black rounded-md flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">🍎</span>
+                          </div>
+                          {selectedPaymentMethod === "apple" && (
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
+                          )}
                         </div>
-                        <span className="text-xs font-medium">PayPal</span>
+                      </div>
+
+                      {/* PayPal */}
+                      <div
+                        onClick={() => setSelectedPaymentMethod("paypal")}
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                          selectedPaymentMethod === "paypal"
+                            ? "border-violet-500 bg-violet-100 shadow-md"
+                            : "border-gray-200 bg-white hover:border-violet-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">P</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">PayPal</div>
+                            <div className="text-xs text-gray-500">Compte PayPal</div>
+                          </div>
+                          <div className="w-8 h-5 bg-blue-600 rounded-md flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">PP</span>
+                          </div>
+                          {selectedPaymentMethod === "paypal" && (
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Google Pay */}
+                      <div
+                        onClick={() => setSelectedPaymentMethod("google")}
+                        className={`p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                          selectedPaymentMethod === "google"
+                            ? "border-violet-500 bg-violet-100 shadow-md"
+                            : "border-gray-200 bg-white hover:border-violet-300"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                            <span className="text-white text-sm font-bold">G</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">Google Pay</div>
+                            <div className="text-xs text-gray-500">Paiement rapide</div>
+                          </div>
+                          <div className="w-8 h-5 bg-gradient-to-r from-green-500 to-blue-500 rounded-md flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">G</span>
+                          </div>
+                          {selectedPaymentMethod === "google" && (
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-center gap-4 text-xs text-violet-600">
+                    
+                    {selectedPaymentMethod && (
+                      <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-2 text-green-700">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            Mode de paiement sélectionné : {
+                              selectedPaymentMethod === "card" ? "Carte bancaire" :
+                              selectedPaymentMethod === "apple" ? "Apple Pay" :
+                              selectedPaymentMethod === "paypal" ? "PayPal" :
+                              selectedPaymentMethod === "google" ? "Google Pay" : ""
+                            }
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-center gap-4 text-xs text-violet-600 mt-4">
                       <div className="flex items-center gap-1">
                         <Shield className="w-3 h-3" />
-                        <span>SSL</span>
+                        <span>SSL 256-bit</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <CheckCircle className="w-3 h-3" />
@@ -577,7 +689,7 @@ export default function BookingPage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <Users className="w-3 h-3" />
-                        <span>100% sûr</span>
+                        <span>100% sécurisé</span>
                       </div>
                     </div>
                   </div>
@@ -593,25 +705,34 @@ export default function BookingPage() {
               >
                 Retour
               </Button>
-              {customerInfo.firstName && customerInfo.email && customerInfo.phone && (
+              {customerInfo.firstName && customerInfo.email && customerInfo.phone && selectedPaymentMethod && (
                 <Button 
                   onClick={handleBooking}
                   disabled={isLoading}
-                  className="flex-1 bg-violet-500 hover:bg-violet-600 disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 disabled:opacity-50 text-white font-semibold"
                   size="lg"
                 >
                   {isLoading ? (
                     <>
                       <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Confirmation...
+                      Confirmation en cours...
                     </>
                   ) : (
                     <>
-                      <CreditCard className="w-4 h-4 mr-2" />
+                      {selectedPaymentMethod === "card" && <CreditCard className="w-4 h-4 mr-2" />}
+                      {selectedPaymentMethod === "apple" && <span className="mr-2">🍎</span>}
+                      {selectedPaymentMethod === "paypal" && <span className="mr-2 text-sm font-bold">PP</span>}
+                      {selectedPaymentMethod === "google" && <span className="mr-2 text-sm font-bold">G</span>}
                       Payer {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
                     </>
                   )}
                 </Button>
+              )}
+              
+              {customerInfo.firstName && customerInfo.email && customerInfo.phone && !selectedPaymentMethod && (
+                <div className="flex-1 bg-gray-100 text-gray-500 px-4 py-3 rounded-lg text-center text-sm">
+                  Sélectionnez un mode de paiement
+                </div>
               )}
             </div>
             
