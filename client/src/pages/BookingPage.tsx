@@ -41,6 +41,8 @@ export default function BookingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentStep, setPaymentStep] = useState("");
   const { toast } = useToast();
 
   const salon = {
@@ -97,63 +99,141 @@ export default function BookingPage() {
   ];
 
   const handleBooking = async () => {
-    if (!selectedService || !selectedDate || !selectedTime || !customerInfo.firstName || !customerInfo.email || !selectedProfessional || !customerInfo.phone) {
+    if (!selectedService || !selectedDate || !selectedTime || !customerInfo.firstName || !customerInfo.email || !selectedProfessional || !customerInfo.phone || !selectedPaymentMethod) {
       toast({
         title: "Informations manquantes",
-        description: "Veuillez remplir tous les champs obligatoires",
+        description: "Veuillez remplir tous les champs obligatoires et choisir un mode de paiement",
         variant: "destructive"
       });
       return;
     }
 
     setIsLoading(true);
+    
+    // Simulation du processus de paiement
+    await simulatePayment();
+  };
+
+  const simulatePayment = async () => {
     try {
-      const appointmentData = {
-        clientFirstName: customerInfo.firstName,
-        clientLastName: customerInfo.lastName,
+      // Étape 1: Validation des informations
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Étape 2: Simulation paiement selon la méthode
+      if (selectedPaymentMethod === "card") {
+        await simulateCardPayment();
+      } else if (selectedPaymentMethod === "apple") {
+        await simulateApplePayment();
+      } else if (selectedPaymentMethod === "paypal") {
+        await simulatePayPalPayment();
+      } else if (selectedPaymentMethod === "google") {
+        await simulateGooglePayment();
+      }
+      
+      // Succès du paiement
+      toast({
+        title: "💳 Paiement réussi !",
+        description: `Acompte de ${selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€ payé avec ${
+          selectedPaymentMethod === "card" ? "Carte bancaire" :
+          selectedPaymentMethod === "apple" ? "Apple Pay" :
+          selectedPaymentMethod === "paypal" ? "PayPal" :
+          selectedPaymentMethod === "google" ? "Google Pay" : ""
+        }`,
+      });
+
+      // Simulation sauvegarde locale
+      const booking = {
+        id: Date.now(),
+        serviceId: selectedService,
+        serviceName: selectedServiceData?.name,
+        professionalId: selectedProfessional,
+        professionalName: professionals.find(p => p.id === selectedProfessional)?.name,
+        appointmentDate: selectedDate.toLocaleDateString(),
+        startTime: selectedTime,
+        clientName: `${customerInfo.firstName} ${customerInfo.lastName}`,
         clientEmail: customerInfo.email,
         clientPhone: customerInfo.phone,
-        serviceId: selectedService,
-        professionalId: selectedProfessional,
-        appointmentDate: selectedDate.toISOString().split('T')[0],
-        startTime: selectedTime,
-        notes: customerInfo.notes,
-        depositAmount: Math.round(selectedServiceData!.price * 0.3),
-        totalAmount: selectedServiceData!.price
+        depositPaid: selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0,
+        totalAmount: selectedServiceData?.price || 0,
+        paymentMethod: selectedPaymentMethod,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
       };
+      
+      // Sauvegarde locale
+      const existingBookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+      existingBookings.push(booking);
+      localStorage.setItem('bookings', JSON.stringify(existingBookings));
 
-      const response = await fetch('/api/appointments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(appointmentData),
-      });
+      // Confirmation finale
+      setTimeout(() => {
+        toast({
+          title: "✅ Rendez-vous confirmé !",
+          description: `Votre rendez-vous a été confirmé pour le ${selectedDate.toLocaleDateString()} à ${selectedTime}. Un email de confirmation vous a été envoyé.`,
+        });
+      }, 1000);
 
-      if (!response.ok) {
-        throw new Error('Erreur lors de la réservation');
-      }
-
-      const result = await response.json();
-
-      toast({
-        title: "Réservation confirmée !",
-        description: `Votre rendez-vous a été confirmé pour le ${selectedDate.toLocaleDateString()} à ${selectedTime}. Un email de confirmation vous a été envoyé.`,
-      });
-
+      // Redirection après succès
       setTimeout(() => {
         setLocation("/");
       }, 3000);
+      
     } catch (error) {
-      console.error('Booking error:', error);
+      console.error('Payment error:', error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la réservation. Veuillez réessayer.",
+        title: "❌ Erreur de paiement",
+        description: "Une erreur est survenue lors du paiement. Veuillez réessayer.",
         variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const simulateCardPayment = async () => {
+    // Simulation saisie carte avec modale
+    setShowPaymentModal(true);
+    setPaymentStep("card-entry");
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    // Simulation validation carte
+    setPaymentStep("card-validation");
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setShowPaymentModal(false);
+  };
+
+  const simulateApplePayment = async () => {
+    setShowPaymentModal(true);
+    setPaymentStep("apple-auth");
+    await new Promise(resolve => setTimeout(resolve, 1800));
+    
+    setPaymentStep("apple-processing");
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    setShowPaymentModal(false);
+  };
+
+  const simulatePayPalPayment = async () => {
+    setShowPaymentModal(true);
+    setPaymentStep("paypal-login");
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setPaymentStep("paypal-authorize");
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    setShowPaymentModal(false);
+  };
+
+  const simulateGooglePayment = async () => {
+    setShowPaymentModal(true);
+    setPaymentStep("google-auth");
+    await new Promise(resolve => setTimeout(resolve, 1600));
+    
+    setPaymentStep("google-processing");
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    setShowPaymentModal(false);
   };
 
   // Simulate slot availability check
@@ -748,6 +828,122 @@ export default function BookingPage() {
           </div>
         )}
       </div>
+
+      {/* Modale de paiement */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+            <div className="text-center">
+              {/* En-tête */}
+              <div className="mb-6">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+                  {selectedPaymentMethod === "card" && <CreditCard className="w-8 h-8 text-white" />}
+                  {selectedPaymentMethod === "apple" && <span className="text-white text-2xl">🍎</span>}
+                  {selectedPaymentMethod === "paypal" && <span className="text-white text-lg font-bold">PP</span>}
+                  {selectedPaymentMethod === "google" && <span className="text-white text-lg font-bold">G</span>}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {selectedPaymentMethod === "card" && "Paiement par carte"}
+                  {selectedPaymentMethod === "apple" && "Apple Pay"}
+                  {selectedPaymentMethod === "paypal" && "PayPal"}
+                  {selectedPaymentMethod === "google" && "Google Pay"}
+                </h3>
+              </div>
+
+              {/* Contenu selon l'étape */}
+              <div className="mb-6">
+                {paymentStep === "card-entry" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-blue-600">
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span>Redirection sécurisée...</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Redirection vers la page de paiement bancaire</p>
+                  </div>
+                )}
+
+                {paymentStep === "card-validation" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-green-600 border-t-transparent" />
+                      <span>Validation en cours...</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Vérification des informations bancaires</p>
+                  </div>
+                )}
+
+                {paymentStep === "apple-auth" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-gray-800">
+                      <div className="w-4 h-4 animate-pulse rounded-full bg-gray-800" />
+                      <span>Authentification...</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Touch ID / Face ID en cours</p>
+                  </div>
+                )}
+
+                {paymentStep === "apple-processing" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Authentification réussie</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Traitement du paiement...</p>
+                  </div>
+                )}
+
+                {paymentStep === "paypal-login" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-blue-600">
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span>Connexion PayPal</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Redirection vers votre compte PayPal</p>
+                  </div>
+                )}
+
+                {paymentStep === "paypal-authorize" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Connexion établie</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Autorisation du paiement</p>
+                  </div>
+                )}
+
+                {paymentStep === "google-auth" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-blue-600">
+                      <div className="w-4 h-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span>Google Pay activé</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Autorisation en cours</p>
+                  </div>
+                )}
+
+                {paymentStep === "google-processing" && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-center gap-2 text-green-600">
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Autorisation accordée</span>
+                    </div>
+                    <p className="text-sm text-gray-600">Finalisation du paiement</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Montant */}
+              <div className="bg-gray-50 p-4 rounded-xl">
+                <div className="text-lg font-semibold text-gray-900">
+                  {selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0}€
+                </div>
+                <div className="text-sm text-gray-600">Acompte à payer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
