@@ -159,15 +159,18 @@ export default function ProLogin() {
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Espace professionnel
             </h1>
-            <p className="text-gray-600">
-              Connectez-vous à votre compte
+            <p className="text-gray-600 mb-2">
+              Connectez-vous à votre compte professionnel
             </p>
+            <div className="text-xs text-gray-500 bg-blue-50 px-3 py-2 rounded-lg">
+              💼 Réservé aux propriétaires de salons et instituts de beauté
+            </div>
           </div>
 
           <Card className="border-0 shadow-sm bg-white">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-medium text-gray-900 text-center">
-                Connexion
+                Connexion Professionnelle
               </CardTitle>
             </CardHeader>
 
@@ -175,10 +178,10 @@ export default function ProLogin() {
               <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="login" className="text-sm">
-                    Connexion
+                    Connexion Pro
                   </TabsTrigger>
                   <TabsTrigger value="register" className="text-sm">
-                    Inscription
+                    Inscription Pro
                   </TabsTrigger>
                 </TabsList>
 
@@ -242,7 +245,7 @@ export default function ProLogin() {
                           Connexion...
                         </div>
                       ) : (
-                        "Se connecter"
+                        "Connexion professionnelle"
                       )}
                     </Button>
                   </form>
@@ -382,7 +385,7 @@ export default function ProLogin() {
                           Création...
                         </div>
                       ) : (
-                        "Créer mon compte"
+                        "Créer mon compte professionnel"
                       )}
                     </Button>
                   </form>
@@ -410,8 +413,18 @@ export default function ProLogin() {
                 </div>
               </div>
 
+              {/* Note pour les clients */}
+              <div className="mt-6 text-center">
+                <div className="text-sm text-gray-600 mb-3">
+                  👥 Vous êtes un client ? 
+                  <a href="/" className="text-violet-600 hover:underline ml-1">
+                    Réservez directement ici
+                  </a>
+                </div>
+              </div>
+
               {/* Conditions */}
-              <div className="mt-6 text-center text-xs text-gray-500">
+              <div className="mt-4 text-center text-xs text-gray-500">
                 En vous connectant, vous acceptez nos{" "}
                 <a href="#" className="text-violet-600 hover:underline">
                   conditions d'utilisation
