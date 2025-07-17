@@ -32,6 +32,9 @@ import {
   registerSchema,
   clientRegisterSchema,
 } from "@shared/schema";
+import { smsService } from "./smsService";
+import { messagingService } from "./messagingService";
+import { reminderService } from "./reminderService";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1255,6 +1258,306 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Quick booking error:', error);
       res.status(500).json({ error: 'Erreur lors de la réservation' });
+    }
+  });
+
+  // Messaging API Routes
+  app.get('/api/conversations', async (req, res) => {
+    try {
+      const userId = req.query.userId as string;
+      const clientId = req.query.clientId as string;
+      
+      let conversations;
+      if (userId) {
+        conversations = await messagingService.getUserConversations(userId);
+      } else if (clientId) {
+        conversations = await messagingService.getClientConversations(clientId);
+      } else {
+        return res.status(400).json({ message: "userId or clientId required" });
+      }
+      
+      res.json(conversations);
+    } catch (error: any) {
+      console.error("Error fetching conversations:", error);
+      res.status(500).json({ message: "Error fetching conversations" });
+    }
+  });
+
+  app.get('/api/conversations/:conversationId/messages', async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      const limit = parseInt(req.query.limit as string) || 50;
+      
+      const messages = await messagingService.getConversationMessages(conversationId, limit);
+      res.json(messages);
+    } catch (error: any) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Error fetching messages" });
+    }
+  });
+
+  app.post('/api/conversations/:conversationId/messages', async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      const { content, fromUserId, fromClientId, toUserId, toClientId, messageType } = req.body;
+      
+      if (!content) {
+        return res.status(400).json({ message: "Message content is required" });
+      }
+      
+      const message = await messagingService.sendMessage(
+        fromUserId, 
+        fromClientId, 
+        toUserId, 
+        toClientId, 
+        content, 
+        messageType
+      );
+      
+      res.status(201).json(message);
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: "Error sending message" });
+    }
+  });
+
+  app.put('/api/conversations/:conversationId/read', async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      const { userId, clientId } = req.body;
+      
+      await messagingService.markMessagesAsRead(conversationId, userId, clientId);
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error marking messages as read:", error);
+      res.status(500).json({ message: "Error marking messages as read" });
+    }
+  });
+
+  app.get('/api/messages/unread-count', async (req, res) => {
+    try {
+      const userId = req.query.userId as string;
+      const clientId = req.query.clientId as string;
+      
+      const count = await messagingService.getUnreadMessageCount(userId, clientId);
+      res.json({ count });
+    } catch (error: any) {
+      console.error("Error fetching unread count:", error);
+      res.status(500).json({ message: "Error fetching unread count" });
+    }
+  });
+
+  // SMS Notification Routes
+  app.get('/api/sms-notifications', async (req, res) => {
+    try {
+      const userId = req.query.userId as string;
+      const limit = parseInt(req.query.limit as string) || 100;
+      
+      if (!userId) {
+        return res.status(400).json({ message: "userId is required" });
+      }
+      
+      const notifications = await storage.getAllSmsNotifications(userId, limit);
+      res.json(notifications);
+    } catch (error: any) {
+      console.error("Error fetching SMS notifications:", error);
+      res.status(500).json({ message: "Error fetching SMS notifications" });
+    }
+  });
+
+  app.post('/api/sms/send-custom', async (req, res) => {
+    try {
+      const { phone, recipientName, message } = req.body;
+      
+      if (!phone || !message) {
+        return res.status(400).json({ message: "Phone and message are required" });
+      }
+      
+      const success = await smsService.sendCustomMessage(phone, recipientName, message);
+      
+      if (success) {
+        res.json({ success: true, message: "SMS sent successfully" });
+      } else {
+        res.status(500).json({ success: false, message: "Failed to send SMS" });
+      }
+    } catch (error: any) {
+      console.error("Error sending custom SMS:", error);
+      res.status(500).json({ message: "Error sending custom SMS" });
+    }
+  });
+
+  // Enhanced Appointment Routes with SMS Integration
+  app.post('/api/appointments', async (req, res) => {
+    try {
+      const result = insertAppointmentSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Invalid appointment data", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      const appointment = await storage.createAppointment(result.data);
+      
+      // Send confirmation SMS if client has phone number
+      try {
+        const client = await storage.getClient(appointment.clientId);
+        const user = await storage.getUser(appointment.userId);
+        
+        if (client && client.phone && user) {
+          await smsService.sendAppointmentConfirmation(
+            appointment, 
+            client, 
+            user.businessName || 'Votre salon'
+          );
+          
+          // Also send system message if client has account
+          if (client.clientAccountId) {
+            await messagingService.sendAppointmentMessage(
+              appointment.userId,
+              client.clientAccountId,
+              {
+                date: appointment.date,
+                time: appointment.time,
+                serviceName: appointment.serviceName,
+                duration: appointment.duration
+              }
+            );
+          }
+        }
+      } catch (notificationError) {
+        console.error("Error sending appointment notifications:", notificationError);
+        // Don't fail the appointment creation if notifications fail
+      }
+
+      res.status(201).json(appointment);
+    } catch (error: any) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ message: "Error creating appointment" });
+    }
+  });
+
+  app.put('/api/appointments/:id', async (req, res) => {
+    try {
+      const appointmentId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      const appointment = await storage.updateAppointment(appointmentId, updates);
+      
+      // If appointment is cancelled, send cancellation SMS
+      if (updates.status === 'cancelled') {
+        try {
+          const client = await storage.getClient(appointment.clientId);
+          const user = await storage.getUser(appointment.userId);
+          
+          if (client && client.phone && user) {
+            await smsService.sendAppointmentCancellation(
+              appointment,
+              client,
+              user.businessName || 'Votre salon',
+              updates.cancellationReason
+            );
+          }
+        } catch (notificationError) {
+          console.error("Error sending cancellation SMS:", notificationError);
+        }
+      }
+      
+      res.json(appointment);
+    } catch (error: any) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ message: "Error updating appointment" });
+    }
+  });
+
+  // Notification preferences routes
+  app.get('/api/notification-preferences', async (req, res) => {
+    try {
+      const userId = req.query.userId as string;
+      const clientAccountId = req.query.clientAccountId as string;
+      
+      const preferences = await storage.getNotificationPreferences(userId, clientAccountId);
+      res.json(preferences || {
+        smsEnabled: true,
+        emailEnabled: true,
+        appointmentReminders: true,
+        reminderTimeBefore: 24,
+        marketingMessages: false
+      });
+    } catch (error: any) {
+      console.error("Error fetching notification preferences:", error);
+      res.status(500).json({ message: "Error fetching notification preferences" });
+    }
+  });
+
+  app.put('/api/notification-preferences', async (req, res) => {
+    try {
+      const { userId, ...preferences } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ message: "userId is required" });
+      }
+      
+      await storage.updateNotificationPreferences(userId, preferences);
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error updating notification preferences:", error);
+      res.status(500).json({ message: "Error updating notification preferences" });
+    }
+  });
+
+  // Reminder service routes
+  app.post('/api/reminders/test/:appointmentId', async (req, res) => {
+    try {
+      const appointmentId = parseInt(req.params.appointmentId);
+      const success = await reminderService.sendTestReminder(appointmentId);
+      
+      if (success) {
+        res.json({ success: true, message: "Test reminder sent" });
+      } else {
+        res.status(404).json({ success: false, message: "Appointment not found" });
+      }
+    } catch (error: any) {
+      console.error("Error sending test reminder:", error);
+      res.status(500).json({ message: "Error sending test reminder" });
+    }
+  });
+
+  app.post('/api/reminders/immediate/:appointmentId', async (req, res) => {
+    try {
+      const appointmentId = parseInt(req.params.appointmentId);
+      const success = await reminderService.sendImmediateReminder(appointmentId);
+      
+      if (success) {
+        res.json({ success: true, message: "Immediate reminder sent" });
+      } else {
+        res.status(404).json({ success: false, message: "Failed to send reminder" });
+      }
+    } catch (error: any) {
+      console.error("Error sending immediate reminder:", error);
+      res.status(500).json({ message: "Error sending immediate reminder" });
+    }
+  });
+
+  app.get('/api/reminders/stats/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const stats = await reminderService.getReminderStats(userId);
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Error fetching reminder stats:", error);
+      res.status(500).json({ message: "Error fetching reminder stats" });
+    }
+  });
+
+  app.post('/api/reminders/check-now', async (req, res) => {
+    try {
+      // Manually trigger reminder check
+      reminderService.checkAndSendReminders();
+      res.json({ success: true, message: "Reminder check triggered" });
+    } catch (error: any) {
+      console.error("Error triggering reminder check:", error);
+      res.status(500).json({ message: "Error triggering reminder check" });
     }
   });
 

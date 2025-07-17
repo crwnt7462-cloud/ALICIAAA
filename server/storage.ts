@@ -1,6 +1,11 @@
 import {
   users,
   clientAccounts,
+  messages,
+  conversations,
+  smsNotifications,
+  emailNotifications,
+  notificationPreferences,
   services,
   clients,
   staff,
@@ -32,6 +37,16 @@ import {
   type ClientAccount,
   type InsertClientAccount,
   type ClientRegisterRequest,
+  type Message,
+  type InsertMessage,
+  type Conversation,
+  type InsertConversation,
+  type SmsNotification,
+  type InsertSmsNotification,
+  type EmailNotification,
+  type InsertEmailNotification,
+  type NotificationPreference,
+  type InsertNotificationPreference,
   type Service,
   type InsertService,
   type Client,
@@ -79,7 +94,7 @@ import {
   type InsertClientPreferences,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, lte, sql, count } from "drizzle-orm";
+import { eq, desc, and, gte, lte, sql, count, or, isNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
@@ -97,6 +112,34 @@ export interface IStorage {
   getClientByEmail(email: string): Promise<ClientAccount | undefined>;
   createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount>;
   validateClientAccount(email: string, password: string): Promise<ClientAccount | null>;
+
+  // Messaging Operations
+  createMessage(messageData: InsertMessage): Promise<Message>;
+  getMessagesByConversation(conversationId: string, limit?: number): Promise<Message[]>;
+  createConversation(conversationData: InsertConversation): Promise<Conversation>;
+  getConversationByParticipants(professionalUserId: string, clientAccountId: string): Promise<Conversation | undefined>;
+  updateConversation(conversationId: string, updates: Partial<InsertConversation>): Promise<void>;
+  getConversationsByUser(userId: string): Promise<Conversation[]>;
+  getConversationsByClient(clientAccountId: string): Promise<Conversation[]>;
+  markConversationMessagesAsRead(conversationId: string, userId?: string, clientId?: string): Promise<void>;
+  getUnreadMessageCount(userId?: string, clientId?: string): Promise<number>;
+  deleteMessage(messageId: number): Promise<void>;
+  searchMessages(query: string, userId?: string, clientId?: string): Promise<Message[]>;
+
+  // SMS Notification Operations
+  createSmsNotification(smsData: InsertSmsNotification): Promise<SmsNotification>;
+  updateSmsNotification(id: number, updates: Partial<InsertSmsNotification>): Promise<void>;
+  getSmsNotificationsByAppointment(appointmentId: number): Promise<SmsNotification[]>;
+  getAllSmsNotifications(userId: string, limit?: number): Promise<SmsNotification[]>;
+
+  // Email Notification Operations  
+  createEmailNotification(emailData: InsertEmailNotification): Promise<EmailNotification>;
+  updateEmailNotification(id: number, updates: Partial<InsertEmailNotification>): Promise<void>;
+  getEmailNotificationsByAppointment(appointmentId: number): Promise<EmailNotification[]>;
+
+  // Notification Preferences
+  getNotificationPreferences(userId?: string, clientAccountId?: string): Promise<NotificationPreference | undefined>;
+  updateNotificationPreferences(userId: string, preferences: Partial<InsertNotificationPreference>): Promise<void>;
 
   // Service operations
   getServices(userId: string): Promise<Service[]>;
@@ -367,6 +410,221 @@ export class DatabaseStorage implements IStorage {
     }
 
     return client;
+  }
+
+  // Messaging Operations
+  async createMessage(messageData: InsertMessage): Promise<Message> {
+    const [message] = await db.insert(messages).values(messageData).returning();
+    return message;
+  }
+
+  async getMessagesByConversation(conversationId: string, limit: number = 50): Promise<Message[]> {
+    return await db
+      .select()
+      .from(messages)
+      .where(eq(messages.conversationId, conversationId))
+      .orderBy(desc(messages.createdAt))
+      .limit(limit);
+  }
+
+  async createConversation(conversationData: InsertConversation): Promise<Conversation> {
+    const [conversation] = await db.insert(conversations).values(conversationData).returning();
+    return conversation;
+  }
+
+  async getConversationByParticipants(professionalUserId: string, clientAccountId: string): Promise<Conversation | undefined> {
+    const [conversation] = await db
+      .select()
+      .from(conversations)
+      .where(
+        and(
+          eq(conversations.professionalUserId, professionalUserId),
+          eq(conversations.clientAccountId, clientAccountId)
+        )
+      );
+    return conversation;
+  }
+
+  async updateConversation(conversationId: string, updates: Partial<InsertConversation>): Promise<void> {
+    await db
+      .update(conversations)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(conversations.id, conversationId));
+  }
+
+  async getConversationsByUser(userId: string): Promise<Conversation[]> {
+    return await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.professionalUserId, userId))
+      .orderBy(desc(conversations.lastMessageAt));
+  }
+
+  async getConversationsByClient(clientAccountId: string): Promise<Conversation[]> {
+    return await db
+      .select()
+      .from(conversations)
+      .where(eq(conversations.clientAccountId, clientAccountId))
+      .orderBy(desc(conversations.lastMessageAt));
+  }
+
+  async markConversationMessagesAsRead(conversationId: string, userId?: string, clientId?: string): Promise<void> {
+    let whereCondition = eq(messages.conversationId, conversationId);
+    
+    if (userId) {
+      whereCondition = and(whereCondition, eq(messages.toUserId, userId));
+    }
+    if (clientId) {
+      whereCondition = and(whereCondition, eq(messages.toClientId, clientId));
+    }
+
+    await db
+      .update(messages)
+      .set({ isRead: true, updatedAt: new Date() })
+      .where(whereCondition);
+  }
+
+  async getUnreadMessageCount(userId?: string, clientId?: string): Promise<number> {
+    let whereCondition = eq(messages.isRead, false);
+    
+    if (userId) {
+      whereCondition = and(whereCondition, eq(messages.toUserId, userId));
+    }
+    if (clientId) {
+      whereCondition = and(whereCondition, eq(messages.toClientId, clientId));
+    }
+
+    const result = await db
+      .select({ count: count() })
+      .from(messages)
+      .where(whereCondition);
+    
+    return result[0]?.count || 0;
+  }
+
+  async deleteMessage(messageId: number): Promise<void> {
+    await db.delete(messages).where(eq(messages.id, messageId));
+  }
+
+  async searchMessages(query: string, userId?: string, clientId?: string): Promise<Message[]> {
+    let whereCondition = sql`${messages.content} ILIKE ${`%${query}%`}`;
+    
+    if (userId) {
+      whereCondition = and(whereCondition, eq(messages.toUserId, userId));
+    }
+    if (clientId) {
+      whereCondition = and(whereCondition, eq(messages.toClientId, clientId));
+    }
+
+    return await db
+      .select()
+      .from(messages)
+      .where(whereCondition)
+      .orderBy(desc(messages.createdAt))
+      .limit(50);
+  }
+
+  // SMS Notification Operations
+  async createSmsNotification(smsData: InsertSmsNotification): Promise<SmsNotification> {
+    const [smsNotification] = await db.insert(smsNotifications).values(smsData).returning();
+    return smsNotification;
+  }
+
+  async updateSmsNotification(id: number, updates: Partial<InsertSmsNotification>): Promise<void> {
+    await db
+      .update(smsNotifications)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(smsNotifications.id, id));
+  }
+
+  async getSmsNotificationsByAppointment(appointmentId: number): Promise<SmsNotification[]> {
+    return await db
+      .select()
+      .from(smsNotifications)
+      .where(eq(smsNotifications.appointmentId, appointmentId))
+      .orderBy(desc(smsNotifications.createdAt));
+  }
+
+  async getAllSmsNotifications(userId: string, limit: number = 100): Promise<SmsNotification[]> {
+    // Get SMS notifications for appointments belonging to this user
+    return await db
+      .select({
+        id: smsNotifications.id,
+        recipientPhone: smsNotifications.recipientPhone,
+        recipientName: smsNotifications.recipientName,
+        message: smsNotifications.message,
+        notificationType: smsNotifications.notificationType,
+        appointmentId: smsNotifications.appointmentId,
+        status: smsNotifications.status,
+        externalId: smsNotifications.externalId,
+        sentAt: smsNotifications.sentAt,
+        deliveredAt: smsNotifications.deliveredAt,
+        failureReason: smsNotifications.failureReason,
+        createdAt: smsNotifications.createdAt,
+        updatedAt: smsNotifications.updatedAt,
+      })
+      .from(smsNotifications)
+      .leftJoin(appointments, eq(smsNotifications.appointmentId, appointments.id))
+      .where(or(
+        eq(appointments.userId, userId),
+        isNull(smsNotifications.appointmentId) // Include custom SMS not tied to appointments
+      ))
+      .orderBy(desc(smsNotifications.createdAt))
+      .limit(limit);
+  }
+
+  // Email Notification Operations
+  async createEmailNotification(emailData: InsertEmailNotification): Promise<EmailNotification> {
+    const [emailNotification] = await db.insert(emailNotifications).values(emailData).returning();
+    return emailNotification;
+  }
+
+  async updateEmailNotification(id: number, updates: Partial<InsertEmailNotification>): Promise<void> {
+    await db
+      .update(emailNotifications)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(emailNotifications.id, id));
+  }
+
+  async getEmailNotificationsByAppointment(appointmentId: number): Promise<EmailNotification[]> {
+    return await db
+      .select()
+      .from(emailNotifications)
+      .where(eq(emailNotifications.appointmentId, appointmentId))
+      .orderBy(desc(emailNotifications.createdAt));
+  }
+
+  // Notification Preferences
+  async getNotificationPreferences(userId?: string, clientAccountId?: string): Promise<NotificationPreference | undefined> {
+    let whereCondition;
+    if (userId) {
+      whereCondition = eq(notificationPreferences.userId, userId);
+    } else if (clientAccountId) {
+      whereCondition = eq(notificationPreferences.clientAccountId, clientAccountId);
+    } else {
+      return undefined;
+    }
+
+    const [preferences] = await db
+      .select()
+      .from(notificationPreferences)
+      .where(whereCondition);
+    return preferences;
+  }
+
+  async updateNotificationPreferences(userId: string, preferences: Partial<InsertNotificationPreference>): Promise<void> {
+    const existing = await this.getNotificationPreferences(userId);
+    
+    if (existing) {
+      await db
+        .update(notificationPreferences)
+        .set({ ...preferences, updatedAt: new Date() })
+        .where(eq(notificationPreferences.userId, userId));
+    } else {
+      await db
+        .insert(notificationPreferences)
+        .values({ userId, ...preferences });
+    }
   }
 
   // Service operations

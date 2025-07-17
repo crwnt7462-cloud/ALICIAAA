@@ -382,6 +382,86 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Messages between professionals and clients
+export const messages = pgTable("messages", {
+  id: serial("id").primaryKey(),
+  conversationId: varchar("conversation_id").notNull(),
+  fromUserId: varchar("from_user_id"), // professional user id
+  fromClientId: varchar("from_client_id"), // client account id
+  toUserId: varchar("to_user_id"), // professional user id  
+  toClientId: varchar("to_client_id"), // client account id
+  content: text("content").notNull(),
+  messageType: varchar("message_type").default("text"), // text, appointment, reminder, system
+  isRead: boolean("is_read").default(false),
+  attachments: text("attachments").array(), // URLs to attached files
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Conversations between professionals and clients
+export const conversations = pgTable("conversations", {
+  id: varchar("id").primaryKey(),
+  professionalUserId: varchar("professional_user_id").notNull().references(() => users.id),
+  clientAccountId: varchar("client_account_id").notNull().references(() => clientAccounts.id),
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  lastMessageContent: text("last_message_content"),
+  isArchived: boolean("is_archived").default(false),
+  clientName: varchar("client_name"), // Cache client name for quick display
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// SMS and notification logs
+export const smsNotifications = pgTable("sms_notifications", {
+  id: serial("id").primaryKey(),
+  recipientPhone: varchar("recipient_phone").notNull(),
+  recipientName: varchar("recipient_name"),
+  message: text("message").notNull(),
+  notificationType: varchar("notification_type").notNull(), // appointment_confirmation, reminder, cancellation, custom
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  status: varchar("status").default("pending"), // pending, sent, delivered, failed
+  externalId: varchar("external_id"), // SMS provider message ID
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  failureReason: text("failure_reason"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Email notification logs
+export const emailNotifications = pgTable("email_notifications", {
+  id: serial("id").primaryKey(),
+  recipientEmail: varchar("recipient_email").notNull(),
+  recipientName: varchar("recipient_name"),
+  subject: varchar("subject").notNull(),
+  htmlContent: text("html_content").notNull(),
+  textContent: text("text_content"),
+  notificationType: varchar("notification_type").notNull(),
+  appointmentId: integer("appointment_id").references(() => appointments.id),
+  status: varchar("status").default("pending"),
+  externalId: varchar("external_id"),
+  sentAt: timestamp("sent_at"),
+  deliveredAt: timestamp("delivered_at"),
+  openedAt: timestamp("opened_at"),
+  failureReason: text("failure_reason"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Notification preferences for users
+export const notificationPreferences = pgTable("notification_preferences", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id),
+  clientAccountId: varchar("client_account_id").references(() => clientAccounts.id),
+  smsEnabled: boolean("sms_enabled").default(true),
+  emailEnabled: boolean("email_enabled").default(true),
+  appointmentReminders: boolean("appointment_reminders").default(true),
+  reminderTimeBefore: integer("reminder_time_before").default(24), // hours before appointment
+  marketingMessages: boolean("marketing_messages").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Business Settings (like Planity's business configuration)
 export const businessSettings = pgTable("business_settings", {
   id: serial("id").primaryKey(),
@@ -718,6 +798,20 @@ export type ClientRegisterRequest = z.infer<typeof clientRegisterSchema>;
 
 export type ClientAccount = typeof clientAccounts.$inferSelect;
 export type InsertClientAccount = typeof clientAccounts.$inferInsert;
+
+// Message and conversation types
+export type Message = typeof messages.$inferSelect;
+export type InsertMessage = typeof messages.$inferInsert;
+export type Conversation = typeof conversations.$inferSelect;
+export type InsertConversation = typeof conversations.$inferInsert;
+
+// Notification types
+export type SmsNotification = typeof smsNotifications.$inferSelect;
+export type InsertSmsNotification = typeof smsNotifications.$inferInsert;
+export type EmailNotification = typeof emailNotifications.$inferSelect;
+export type InsertEmailNotification = typeof emailNotifications.$inferInsert;
+export type NotificationPreference = typeof notificationPreferences.$inferSelect;
+export type InsertNotificationPreference = typeof notificationPreferences.$inferInsert;
 
 export type InsertService = typeof services.$inferInsert;
 export type Service = typeof services.$inferSelect;
