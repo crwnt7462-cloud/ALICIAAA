@@ -109,18 +109,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/auth/client/register', async (req, res) => {
     try {
-      // Adapter les données du formulaire vers le schéma client
-      const formData = req.body;
-      const clientData = {
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.ownerName ? formData.ownerName.split(' ')[0] : formData.firstName,
-        lastName: formData.ownerName ? formData.ownerName.split(' ').slice(1).join(' ') || '' : formData.lastName,
-        phone: formData.phone,
-        dateOfBirth: formData.dateOfBirth
-      };
+      const clientRegisterSchema = z.object({
+        firstName: z.string().min(2, "Prénom requis"),
+        lastName: z.string().min(2, "Nom requis"),
+        email: z.string().email("Email invalide"),
+        password: z.string().min(6, "Mot de passe trop court"),
+        phone: z.string().optional()
+      });
 
-      const result = clientRegisterSchema.safeParse(clientData);
+      const result = clientRegisterSchema.safeParse(req.body);
       if (!result.success) {
         return res.status(400).json({ 
           message: "Données invalides", 

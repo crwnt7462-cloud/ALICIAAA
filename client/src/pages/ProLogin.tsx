@@ -32,7 +32,8 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   email: z.string().email("Email invalide"),
   password: z.string().min(6, "Mot de passe trop court"),
-  ownerName: z.string().min(2, "Nom complet requis"),
+  firstName: z.string().min(2, "Prénom requis"),
+  lastName: z.string().min(2, "Nom requis"),
   phone: z.string().optional()
 });
 
@@ -249,35 +250,50 @@ export default function ProLogin() {
                   <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
-                        <Label htmlFor="ownerName" className="text-sm font-medium text-gray-700">
-                          Nom complet
+                        <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                          Prénom
                         </Label>
                         <Input
-                          id="ownerName"
-                          placeholder="Jean Dupont"
+                          id="firstName"
+                          placeholder="Jean"
                           className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("ownerName")}
+                          {...registerRegister("firstName")}
                         />
-                        {registerErrors.ownerName && (
-                          <p className="text-xs text-red-500">{registerErrors.ownerName.message}</p>
+                        {registerErrors.firstName && (
+                          <p className="text-xs text-red-500">{registerErrors.firstName.message}</p>
                         )}
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-                          Téléphone
+                        <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                          Nom
                         </Label>
                         <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="01 23 45 67 89"
+                          id="lastName"
+                          placeholder="Dupont"
                           className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("phone")}
+                          {...registerRegister("lastName")}
                         />
-                        {registerErrors.phone && (
-                          <p className="text-xs text-red-500">{registerErrors.phone.message}</p>
+                        {registerErrors.lastName && (
+                          <p className="text-xs text-red-500">{registerErrors.lastName.message}</p>
                         )}
                       </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                        Téléphone
+                      </Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="01 23 45 67 89"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        {...registerRegister("phone")}
+                      />
+                      {registerErrors.phone && (
+                        <p className="text-xs text-red-500">{registerErrors.phone.message}</p>
+                      )}
                     </div>
 
 
