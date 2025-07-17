@@ -68,17 +68,25 @@ export default function ProLogin() {
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      // Simulation de connexion réussie
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await apiRequest("POST", "/api/auth/login", data);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.message || "Erreur de connexion");
+      }
+
       toast({
         title: "Connexion réussie",
         description: "Bienvenue dans votre espace professionnel"
       });
+      
+      // Stocker les informations utilisateur
+      localStorage.setItem("user", JSON.stringify(result.user));
       setLocation("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erreur de connexion",
-        description: "Identifiants incorrects",
+        description: error.message || "Identifiants incorrects",
         variant: "destructive"
       });
     } finally {
@@ -89,17 +97,37 @@ export default function ProLogin() {
   const onRegister = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      // Simulation d'inscription réussie
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Mapper les champs du formulaire vers l'API
+      const registerData = {
+        email: data.email,
+        password: data.password,
+        businessName: data.businessName,
+        firstName: data.ownerName.split(' ')[0] || data.ownerName,
+        lastName: data.ownerName.split(' ').slice(1).join(' ') || '',
+        phone: data.phone,
+        address: data.address,
+        city: data.city
+      };
+
+      const response = await apiRequest("POST", "/api/auth/register", registerData);
+      const result = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(result.message || "Erreur lors de l'inscription");
+      }
+
       toast({
         title: "Inscription réussie",
-        description: "Votre compte professionnel a été créé"
+        description: "Votre compte professionnel a été créé avec un essai gratuit de 14 jours"
       });
+      
+      // Stocker les informations utilisateur
+      localStorage.setItem("user", JSON.stringify(result.user));
       setLocation("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Erreur d'inscription",
-        description: "Impossible de créer le compte",
+        description: error.message || "Impossible de créer le compte",
         variant: "destructive"
       });
     } finally {

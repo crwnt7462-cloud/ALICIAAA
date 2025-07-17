@@ -31,16 +31,18 @@ export const sessions = pgTable(
 // User storage table (mandatory for Replit Auth)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password"), // For custom auth
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   businessName: varchar("business_name"),
   phone: varchar("phone"),
   address: text("address"),
+  city: varchar("city"),
   isProfessional: boolean("is_professional").default(true),
   isVerified: boolean("is_verified").default(false),
-  subscriptionStatus: varchar("subscription_status").default("free"), // free, basic, premium, trial
+  subscriptionStatus: varchar("subscription_status").default("trial"), // free, basic, premium, trial
   trialEndDate: timestamp("trial_end_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -662,6 +664,32 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const loginSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Mot de passe trop court")
+});
+
+export const registerSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Mot de passe trop court"),
+  businessName: z.string().min(2, "Nom du salon requis"),
+  firstName: z.string().min(2, "Prénom requis"),
+  lastName: z.string().min(2, "Nom requis"),
+  phone: z.string().min(10, "Numéro de téléphone requis"),
+  address: z.string().min(5, "Adresse complète requise"),
+  city: z.string().min(2, "Ville requise")
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginRequest = z.infer<typeof loginSchema>;
+export type RegisterRequest = z.infer<typeof registerSchema>;
 
 export type InsertService = typeof services.$inferInsert;
 export type Service = typeof services.$inferSelect;

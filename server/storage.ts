@@ -26,6 +26,8 @@ import {
   clientPreferences,
   type User,
   type UpsertUser,
+  type InsertUser,
+  type RegisterRequest,
   type Service,
   type InsertService,
   type Client,
@@ -74,11 +76,18 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql, count } from "drizzle-orm";
+import bcrypt from "bcrypt";
+import { nanoid } from "nanoid";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  
+  // Authentication
+  createUser(userData: RegisterRequest): Promise<User>;
+  validateUser(email: string, password: string): Promise<User | null>;
 
   // Service operations
   getServices(userId: string): Promise<Service[]>;
@@ -247,6 +256,11 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
   async upsertUser(userData: UpsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
@@ -259,6 +273,49 @@ export class DatabaseStorage implements IStorage {
         },
       })
       .returning();
+    return user;
+  }
+
+  // Authentication methods
+  async createUser(userData: RegisterRequest): Promise<User> {
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+    
+    const userId = nanoid();
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 14); // 14 jours d'essai
+
+    const newUser = {
+      id: userId,
+      email: userData.email,
+      password: hashedPassword,
+      businessName: userData.businessName,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phone: userData.phone,
+      address: userData.address,
+      city: userData.city,
+      isProfessional: true,
+      isVerified: false,
+      subscriptionStatus: "trial",
+      trialEndDate: trialEndDate,
+    };
+
+    const [user] = await db.insert(users).values(newUser).returning();
+    return user;
+  }
+
+  async validateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    if (!user || !user.password) {
+      return null;
+    }
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return null;
+    }
+
     return user;
   }
 

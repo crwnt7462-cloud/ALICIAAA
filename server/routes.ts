@@ -28,12 +28,94 @@ import {
   insertInventorySchema,
   insertMarketingCampaignSchema,
   insertClientPreferencesSchema,
+  loginSchema,
+  registerSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+
+  // Professional Authentication Routes
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const result = registerSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Données invalides", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Vérifier si l'email existe déjà
+      const existingUser = await storage.getUserByEmail(result.data.email);
+      if (existingUser) {
+        return res.status(409).json({ 
+          message: "Un compte existe déjà avec cet email" 
+        });
+      }
+
+      // Créer le nouveau professionnel
+      const user = await storage.createUser(result.data);
+      
+      // Supprimer le mot de passe de la réponse
+      const { password, ...userWithoutPassword } = user;
+      
+      res.status(201).json({ 
+        message: "Compte créé avec succès", 
+        user: userWithoutPassword 
+      });
+    } catch (error) {
+      console.error("Registration error:", error);
+      res.status(500).json({ message: "Erreur lors de la création du compte" });
+    }
+  });
+
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const result = loginSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Données invalides", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Valider les identifiants
+      const user = await storage.validateUser(result.data.email, result.data.password);
+      if (!user) {
+        return res.status(401).json({ message: "Email ou mot de passe incorrect" });
+      }
+
+      // Supprimer le mot de passe de la réponse
+      const { password, ...userWithoutPassword } = user;
+      
+      res.json({ 
+        message: "Connexion réussie", 
+        user: userWithoutPassword 
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Erreur lors de la connexion" });
+    }
+  });
+
+  app.get('/api/auth/check', async (req, res) => {
+    // Simple endpoint to check if user exists by email
+    try {
+      const { email } = req.query;
+      if (!email || typeof email !== 'string') {
+        return res.status(400).json({ message: "Email requis" });
+      }
+
+      const user = await storage.getUserByEmail(email);
+      res.json({ exists: !!user });
+    } catch (error) {
+      console.error("Check auth error:", error);
+      res.status(500).json({ message: "Erreur lors de la vérification" });
+    }
+  });
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
