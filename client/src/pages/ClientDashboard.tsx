@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { 
@@ -24,13 +24,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { apiRequest } from "@/lib/queryClient";
-
-interface ClientSession {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-}
+import { useClientAuth } from "@/hooks/useClientAuth";
 
 interface Appointment {
   id: number;
@@ -54,18 +48,15 @@ interface Conversation {
 }
 
 export default function ClientDashboard() {
-  const [clientSession, setClientSession] = useState<ClientSession | null>(null);
   const [activeTab, setActiveTab] = useState("accueil");
   const [, setLocation] = useLocation();
+  const { clientSession, isLoading, logout, requireAuth } = useClientAuth();
 
-  useEffect(() => {
-    const session = localStorage.getItem('clientSession');
-    if (session) {
-      setClientSession(JSON.parse(session));
-    } else {
-      setLocation('/client-login');
-    }
-  }, [setLocation]);
+  // Rediriger si pas authentifié
+  if (!isLoading && !clientSession) {
+    requireAuth();
+    return null;
+  }
 
   const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/client/appointments'],
@@ -79,13 +70,9 @@ export default function ClientDashboard() {
     enabled: !!clientSession?.id,
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem('clientSession');
-    localStorage.removeItem('userType');
-    setLocation('/');
-  };
+  const handleLogout = logout;
 
-  if (!clientSession) {
+  if (isLoading || !clientSession) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-spin w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full" />

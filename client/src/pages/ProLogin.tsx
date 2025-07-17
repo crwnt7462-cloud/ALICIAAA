@@ -78,14 +78,7 @@ export default function ProLogin() {
         description: "Bienvenue ! Vous pouvez maintenant gérer vos réservations"
       });
       
-      // Store client session
-      localStorage.setItem('clientSession', JSON.stringify({
-        id: result.user.id,
-        email: result.user.email,
-        firstName: result.user.firstName,
-        lastName: result.user.lastName
-      }));
-      localStorage.setItem("userType", "client");
+      // Session maintenue côté serveur, redirection directe
       setLocation("/client-dashboard");
     } catch (error: any) {
       toast({
@@ -113,14 +106,7 @@ export default function ProLogin() {
         description: "Votre compte a été créé avec succès"
       });
       
-      // Store client session
-      localStorage.setItem('clientSession', JSON.stringify({
-        id: result.user.id,
-        email: result.user.email,
-        firstName: result.user.firstName,
-        lastName: result.user.lastName
-      }));
-      localStorage.setItem("userType", "client");
+      // Session maintenue côté serveur, redirection directe
       setLocation("/client-dashboard");
     } catch (error: any) {
       toast({

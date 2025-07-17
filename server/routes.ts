@@ -93,8 +93,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Email ou mot de passe incorrect" });
       }
 
+      // Créer la session client
+      (req.session as any).clientUser = {
+        id: client.id,
+        email: client.email,
+        firstName: client.firstName,
+        lastName: client.lastName
+      };
+
+      // Sauvegarder la session
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+        }
+      });
+
       // Supprimer le mot de passe de la réponse
       const { password, ...clientWithoutPassword } = client;
+      
+      console.log(`✅ Client logged in: ${client.firstName} ${client.lastName} (${client.email})`);
       
       res.json({ 
         message: "Connexion réussie", 
@@ -136,8 +153,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Créer le nouveau compte client
       const client = await storage.createClientAccount(result.data);
       
+      // Créer automatiquement la session client après inscription
+      (req.session as any).clientUser = {
+        id: client.id,
+        email: client.email,
+        firstName: client.firstName,
+        lastName: client.lastName
+      };
+
+      // Sauvegarder la session
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+        }
+      });
+
       // Supprimer le mot de passe de la réponse
       const { password, ...clientWithoutPassword } = client;
+      
+      console.log(`✅ New client registered and logged in: ${client.firstName} ${client.lastName} (${client.email})`);
       
       res.status(201).json({ 
         message: "Compte client créé avec succès", 
@@ -147,6 +181,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Client registration error:", error);
       res.status(500).json({ message: "Erreur lors de la création du compte" });
+    }
+  });
+
+  // Route pour vérifier la session client
+  app.get('/api/auth/client/session', async (req, res) => {
+    try {
+      const clientSession = (req.session as any)?.clientUser;
+      
+      if (!clientSession) {
+        return res.status(401).json({ message: "Aucune session active" });
+      }
+
+      res.json({ 
+        user: clientSession,
+        userType: "client",
+        message: "Session active"
+      });
+    } catch (error) {
+      console.error("Session check error:", error);
+      res.status(500).json({ message: "Erreur lors de la vérification de session" });
+    }
+  });
+
+  // Route de déconnexion client
+  app.post('/api/auth/client/logout', async (req, res) => {
+    try {
+      const clientSession = (req.session as any)?.clientUser;
+      
+      if (clientSession) {
+        console.log(`🚪 Client logged out: ${clientSession.firstName} ${clientSession.lastName} (${clientSession.email})`);
+      }
+
+      // Détruire la session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destroy error:", err);
+          return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+        }
+        
+        res.clearCookie('connect.sid'); // Supprimer le cookie de session
+        res.json({ message: "Déconnexion réussie" });
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      res.status(500).json({ message: "Erreur lors de la déconnexion" });
     }
   });
 
