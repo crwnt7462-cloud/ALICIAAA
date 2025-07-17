@@ -108,9 +108,9 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-blue-50/30">
-      {/* Header minimaliste */}
-      <div className="p-4">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simple */}
+      <div className="p-4 border-b bg-white">
         <Button
           variant="ghost"
           onClick={() => setLocation("/")}
@@ -121,31 +121,26 @@ export default function ProLogin() {
         </Button>
       </div>
 
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
         <div className="w-full max-w-md">
-          {/* Logo/Titre */}
+          {/* Header simple comme Planity */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-violet-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Espace Professionnel
-              </h1>
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              Espace professionnel
+            </h1>
             <p className="text-gray-600">
-              Connectez-vous à votre plateforme de gestion
+              Connectez-vous à votre compte
             </p>
           </div>
 
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="space-y-1 pb-4">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Shield className="w-5 h-5 text-violet-600" />
-                <CardTitle className="text-xl text-center text-gray-900">
-                  Accès Sécurisé
-                </CardTitle>
-              </div>
+          <Card className="border-0 shadow-sm bg-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-medium text-gray-900 text-center">
+                Connexion
+              </CardTitle>
             </CardHeader>
 
             <CardContent className="pt-0">
@@ -165,18 +160,15 @@ export default function ProLogin() {
                       <Label htmlFor="login-email" className="text-sm font-medium text-gray-700">
                         Email professionnel
                       </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="login-email"
-                          type="email"
-                          placeholder="votre@email.com"
-                          className="pl-10 h-11"
-                          {...loginRegister("email")}
-                        />
-                      </div>
+                      <Input
+                        id="login-email"
+                        type="email"
+                        placeholder="votre@email.com"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        {...loginRegister("email")}
+                      />
                       {loginErrors.email && (
-                        <p className="text-xs text-red-600">{loginErrors.email.message}</p>
+                        <p className="text-xs text-red-500">{loginErrors.email.message}</p>
                       )}
                     </div>
 
@@ -185,12 +177,11 @@ export default function ProLogin() {
                         Mot de passe
                       </Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
                           id="login-password"
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          className="pl-10 pr-10 h-11"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500 pr-10"
                           {...loginRegister("password")}
                         />
                         <button
@@ -202,12 +193,12 @@ export default function ProLogin() {
                         </button>
                       </div>
                       {loginErrors.password && (
-                        <p className="text-xs text-red-600">{loginErrors.password.message}</p>
+                        <p className="text-xs text-red-500">{loginErrors.password.message}</p>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                      <a href="#" className="text-violet-600 hover:text-violet-700 hover:underline">
+                      <a href="#" className="text-violet-600 hover:underline">
                         Mot de passe oublié ?
                       </a>
                     </div>
@@ -215,7 +206,7 @@ export default function ProLogin() {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-11"
+                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
@@ -236,17 +227,14 @@ export default function ProLogin() {
                         <Label htmlFor="ownerName" className="text-sm font-medium text-gray-700">
                           Votre nom
                         </Label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="ownerName"
-                            placeholder="Jean Dupont"
-                            className="pl-10 h-11"
-                            {...registerRegister("ownerName")}
-                          />
-                        </div>
+                        <Input
+                          id="ownerName"
+                          placeholder="Jean Dupont"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                          {...registerRegister("ownerName")}
+                        />
                         {registerErrors.ownerName && (
-                          <p className="text-xs text-red-600">{registerErrors.ownerName.message}</p>
+                          <p className="text-xs text-red-500">{registerErrors.ownerName.message}</p>
                         )}
                       </div>
 
@@ -254,18 +242,15 @@ export default function ProLogin() {
                         <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
                           Téléphone
                         </Label>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="phone"
-                            type="tel"
-                            placeholder="01 23 45 67 89"
-                            className="pl-10 h-11"
-                            {...registerRegister("phone")}
-                          />
-                        </div>
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="01 23 45 67 89"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                          {...registerRegister("phone")}
+                        />
                         {registerErrors.phone && (
-                          <p className="text-xs text-red-600">{registerErrors.phone.message}</p>
+                          <p className="text-xs text-red-500">{registerErrors.phone.message}</p>
                         )}
                       </div>
                     </div>
@@ -274,17 +259,14 @@ export default function ProLogin() {
                       <Label htmlFor="businessName" className="text-sm font-medium text-gray-700">
                         Nom de votre salon
                       </Label>
-                      <div className="relative">
-                        <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="businessName"
-                          placeholder="Salon Beauté Élégance"
-                          className="pl-10 h-11"
-                          {...registerRegister("businessName")}
-                        />
-                      </div>
+                      <Input
+                        id="businessName"
+                        placeholder="Salon Beauté Élégance"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        {...registerRegister("businessName")}
+                      />
                       {registerErrors.businessName && (
-                        <p className="text-xs text-red-600">{registerErrors.businessName.message}</p>
+                        <p className="text-xs text-red-500">{registerErrors.businessName.message}</p>
                       )}
                     </div>
 
@@ -292,18 +274,15 @@ export default function ProLogin() {
                       <Label htmlFor="register-email" className="text-sm font-medium text-gray-700">
                         Email professionnel
                       </Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="register-email"
-                          type="email"
-                          placeholder="contact@monsalon.fr"
-                          className="pl-10 h-11"
-                          {...registerRegister("email")}
-                        />
-                      </div>
+                      <Input
+                        id="register-email"
+                        type="email"
+                        placeholder="contact@monsalon.fr"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        {...registerRegister("email")}
+                      />
                       {registerErrors.email && (
-                        <p className="text-xs text-red-600">{registerErrors.email.message}</p>
+                        <p className="text-xs text-red-500">{registerErrors.email.message}</p>
                       )}
                     </div>
 
@@ -312,12 +291,11 @@ export default function ProLogin() {
                         Mot de passe
                       </Label>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                         <Input
                           id="register-password"
                           type={showRegisterPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          className="pl-10 pr-10 h-11"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500 pr-10"
                           {...registerRegister("password")}
                         />
                         <button
@@ -329,7 +307,7 @@ export default function ProLogin() {
                         </button>
                       </div>
                       {registerErrors.password && (
-                        <p className="text-xs text-red-600">{registerErrors.password.message}</p>
+                        <p className="text-xs text-red-500">{registerErrors.password.message}</p>
                       )}
                     </div>
 
@@ -338,17 +316,14 @@ export default function ProLogin() {
                         <Label htmlFor="address" className="text-sm font-medium text-gray-700">
                           Adresse
                         </Label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="address"
-                            placeholder="123 rue Example"
-                            className="pl-10 h-11"
-                            {...registerRegister("address")}
-                          />
-                        </div>
+                        <Input
+                          id="address"
+                          placeholder="123 rue Example"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                          {...registerRegister("address")}
+                        />
                         {registerErrors.address && (
-                          <p className="text-xs text-red-600">{registerErrors.address.message}</p>
+                          <p className="text-xs text-red-500">{registerErrors.address.message}</p>
                         )}
                       </div>
 
@@ -359,11 +334,11 @@ export default function ProLogin() {
                         <Input
                           id="city"
                           placeholder="Paris"
-                          className="h-11"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
                           {...registerRegister("city")}
                         />
                         {registerErrors.city && (
-                          <p className="text-xs text-red-600">{registerErrors.city.message}</p>
+                          <p className="text-xs text-red-500">{registerErrors.city.message}</p>
                         )}
                       </div>
                     </div>
@@ -371,7 +346,7 @@ export default function ProLogin() {
                     <Button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-11"
+                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10"
                     >
                       {isLoading ? (
                         <div className="flex items-center gap-2">
