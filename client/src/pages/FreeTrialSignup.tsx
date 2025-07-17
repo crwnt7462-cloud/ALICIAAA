@@ -106,231 +106,203 @@ export default function FreeTrialSignup() {
 
   if (step === 4) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="max-w-2xl w-full mx-6">
-          <Card className="border-0 shadow-sm bg-gray-50/50">
-            <CardContent className="p-12 text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-2xl mb-8">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-blue-50/30">
+        <div className="flex items-center justify-center min-h-screen px-4">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Inscription validée !
+                </h1>
               </div>
-              
-              <h2 className="text-3xl font-semibold text-gray-900 mb-4">
-                Bienvenue dans notre communauté !
-              </h2>
-              
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Votre compte professionnel a été créé avec succès. 
-                Vous rejoignez maintenant des milliers de professionnels qui nous font confiance.
+              <p className="text-gray-600">
+                Votre compte professionnel a été créé avec succès
               </p>
-              
-              <div className="grid md:grid-cols-3 gap-6 mb-10">
-                <div className="bg-white rounded-xl p-6 border border-gray-100">
-                  <Clock className="w-8 h-8 text-violet-600 mx-auto mb-4" />
-                  <h3 className="font-medium text-gray-900 mb-2">14 jours d'essai</h3>
-                  <p className="text-sm text-gray-600">Accès complet à toutes les fonctionnalités</p>
+            </div>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="space-y-1 pb-4">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Shield className="w-5 h-5 text-green-600" />
+                  <CardTitle className="text-xl text-center text-gray-900">
+                    Bienvenue !
+                  </CardTitle>
                 </div>
-                <div className="bg-white rounded-xl p-6 border border-gray-100">
-                  <Users className="w-8 h-8 text-violet-600 mx-auto mb-4" />
-                  <h3 className="font-medium text-gray-900 mb-2">Support prioritaire</h3>
-                  <p className="text-sm text-gray-600">Assistance dédiée pour votre réussite</p>
-                </div>
-                <div className="bg-white rounded-xl p-6 border border-gray-100">
-                  <Shield className="w-8 h-8 text-violet-600 mx-auto mb-4" />
-                  <h3 className="font-medium text-gray-900 mb-2">Sans engagement</h3>
-                  <p className="text-sm text-gray-600">Aucune carte bancaire requise</p>
-                </div>
-              </div>
-              
-              <div className="bg-violet-50 rounded-xl p-6 mb-8">
-                <h3 className="font-medium text-gray-900 mb-4">Prochaines étapes</h3>
-                <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-violet-600 text-white rounded-full flex items-center justify-center text-xs font-medium">1</div>
-                    <span className="text-gray-700">Configurez votre salon</span>
+              </CardHeader>
+
+              <CardContent className="pt-0">
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <Clock className="w-4 h-4 text-green-600" />
+                    <span>14 jours d'essai gratuit complet</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-violet-600 text-white rounded-full flex items-center justify-center text-xs font-medium">2</div>
-                    <span className="text-gray-700">Ajoutez vos services</span>
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <Users className="w-4 h-4 text-green-600" />
+                    <span>Support client prioritaire</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-violet-600 text-white rounded-full flex items-center justify-center text-xs font-medium">3</div>
-                    <span className="text-gray-700">Recevez vos premiers clients</span>
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <Shield className="w-4 h-4 text-green-600" />
+                    <span>Aucune carte bancaire requise</span>
                   </div>
                 </div>
-              </div>
-              
-              <Button 
-                onClick={() => setLocation("/dashboard")}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-medium shadow-sm"
-              >
-                Accéder à mon espace professionnel
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-              
-              <p className="text-sm text-gray-500 mt-6">
-                Un email de confirmation vous a été envoyé avec tous les détails de votre compte.
-              </p>
-            </CardContent>
-          </Card>
+
+                <Button 
+                  onClick={() => setLocation("/dashboard")}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white h-11"
+                >
+                  Accéder à mon espace professionnel
+                </Button>
+
+                <p className="text-center text-xs text-gray-500 mt-4">
+                  Un email de confirmation vous a été envoyé
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        {/* Header moderne */}
-        <div className="mb-12">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation("/professional-plans")}
-            className="mb-8 hover:bg-gray-50"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux plans
-          </Button>
-          
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-violet-100 rounded-2xl mb-6">
-              <Building className="w-8 h-8 text-violet-600" />
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-blue-50/30">
+      {/* Header minimaliste */}
+      <div className="p-4">
+        <Button
+          variant="ghost"
+          onClick={() => setLocation("/professional-plans")}
+          className="text-gray-600 hover:text-gray-900"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Retour aux plans
+        </Button>
+      </div>
+
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4">
+        <div className="w-full max-w-lg">
+          {/* Logo/Titre */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-violet-600 to-blue-600 rounded-lg flex items-center justify-center">
+                <Building className="w-6 h-6 text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Inscription Professionnelle
+              </h1>
             </div>
-            
-            <h1 className="text-4xl font-semibold text-gray-900 mb-4">
-              Créer votre compte professionnel
-            </h1>
-            
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Rejoignez des milliers de professionnels qui font confiance à notre plateforme
+            <p className="text-gray-600">
+              Créez votre compte et testez gratuitement 14 jours
             </p>
           </div>
-        </div>
 
-        {/* Progress moderne */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <span className="text-lg font-medium text-gray-900">Étape {step}</span>
-              <span className="text-gray-400">/</span>
-              <span className="text-lg text-gray-500">3</span>
+          {/* Progress simple */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-gray-700">Étape {step} sur 3</span>
+              <span className="text-sm text-gray-500">{Math.round((step / 3) * 100)}%</span>
             </div>
-            <span className="text-sm font-medium text-violet-600 bg-violet-50 px-3 py-1 rounded-full">
-              {Math.round((step / 3) * 100)}% terminé
-            </span>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-violet-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(step / 3) * 100}%` }}
+              />
+            </div>
           </div>
-          
-          {/* Stepper moderne */}
-          <div className="flex items-center justify-between relative">
-            <div className="absolute top-5 left-8 right-8 h-px bg-gray-200"></div>
-            <div 
-              className="absolute top-5 left-8 h-px bg-violet-600 transition-all duration-500"
-              style={{ width: `${((step - 1) / 2) * 100}%` }}
-            ></div>
-            
-            {[1, 2, 3].map((stepNum) => (
-              <div key={stepNum} className="flex flex-col items-center relative z-10">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-medium transition-all duration-300 ${
-                  stepNum < step 
-                    ? 'bg-violet-600 text-white' 
-                    : stepNum === step
-                    ? 'bg-violet-600 text-white'
-                    : 'bg-white border-2 border-gray-200 text-gray-400'
-                }`}>
-                  {stepNum < step ? <Check className="w-5 h-5" /> : stepNum}
-                </div>
-                <span className={`mt-3 text-sm font-medium ${
-                  stepNum <= step ? 'text-gray-900' : 'text-gray-400'
-                }`}>
-                  {stepNum === 1 && 'Profil'}
-                  {stepNum === 2 && 'Établissement'}
-                  {stepNum === 3 && 'Informations légales'}
-                </span>
+
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="space-y-1 pb-4">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Shield className="w-5 h-5 text-violet-600" />
+                <CardTitle className="text-xl text-center text-gray-900">
+                  {step === 1 && 'Informations personnelles'}
+                  {step === 2 && 'Votre établissement'}
+                  {step === 3 && 'Informations légales'}
+                </CardTitle>
               </div>
-            ))}
-          </div>
-        </div>
-
-        <Card className="border-0 shadow-sm bg-gray-50/50">
-          <CardHeader className="pb-8">
-            <CardTitle className="text-2xl font-medium text-gray-900">
-              {step === 1 && 'Votre profil'}
-              {step === 2 && 'Votre établissement'}
-              {step === 3 && 'Informations légales'}
-            </CardTitle>
-            <p className="text-gray-600 mt-2">
-              {step === 1 && 'Commençons par vos informations de base'}
-              {step === 2 && 'Parlez-nous de votre établissement'}
-              {step === 3 && 'Finalisez votre inscription'}
-            </p>
-          </CardHeader>
-          <CardContent className="px-8 pb-8">
-            {/* Étape 1: Informations personnelles */}
-            {step === 1 && (
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-900">
-                      Prénom *
-                    </Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      placeholder="Jean"
-                      className="h-12 bg-white border-gray-200 focus:border-violet-600 focus:ring-violet-600"
-                      required
-                    />
+            </CardHeader>
+            <CardContent className="pt-0">
+              {/* Étape 1: Informations personnelles */}
+              {step === 1 && (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                        Prénom
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="firstName"
+                          name="firstName"
+                          value={formData.firstName}
+                          onChange={handleInputChange}
+                          placeholder="Jean"
+                          className="pl-10 h-11"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                        Nom
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                        <Input
+                          id="lastName"
+                          name="lastName"
+                          value={formData.lastName}
+                          onChange={handleInputChange}
+                          placeholder="Dupont"
+                          className="pl-10 h-11"
+                          required
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-900">
-                      Nom de famille *
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                      Email professionnel
                     </Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      placeholder="Dupont"
-                      className="h-12 bg-white border-gray-200 focus:border-violet-600 focus:ring-violet-600"
-                      required
-                    />
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="contact@monsalon.fr"
+                        className="pl-10 h-11"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                      Téléphone
+                    </Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="01 23 45 67 89"
+                        className="pl-10 h-11"
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-900">
-                    Adresse email professionnelle *
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="jean.dupont@monsalon.fr"
-                    className="h-12 bg-white border-gray-200 focus:border-violet-600 focus:ring-violet-600"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label htmlFor="phone" className="text-sm font-medium text-gray-900">
-                    Numéro de téléphone *
-                  </Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="01 23 45 67 89"
-                    className="h-12 bg-white border-gray-200 focus:border-violet-600 focus:ring-violet-600"
-                    required
-                  />
-                </div>
-              </div>
-            )}
+              )}
 
             {/* Étape 2: Informations business */}
             {step === 2 && (
@@ -529,75 +501,42 @@ export default function FreeTrialSignup() {
               </div>
             )}
 
-            {/* Navigation moderne */}
-            <div className="flex items-center justify-between pt-8 border-t border-gray-100">
-              <Button
-                variant="ghost"
-                onClick={() => setStep(step - 1)}
-                disabled={step === 1}
-                className="h-12 px-6 text-gray-600 hover:text-gray-900 hover:bg-gray-50 disabled:opacity-50"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Précédent
-              </Button>
-              
-              <div className="flex items-center gap-4">
-                {!validateStep() && (
-                  <span className="text-sm text-gray-500">
-                    Veuillez remplir tous les champs obligatoires
-                  </span>
-                )}
+              {/* Boutons de navigation */}
+              <div className="flex justify-between pt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setStep(step - 1)}
+                  disabled={step === 1}
+                  className="h-11"
+                >
+                  Précédent
+                </Button>
                 
                 <Button
                   onClick={handleNextStep}
                   disabled={!validateStep()}
-                  className="h-12 px-8 bg-violet-600 hover:bg-violet-700 text-white font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-violet-600 hover:bg-violet-700 text-white h-11"
                 >
-                  {step === 3 ? (
-                    <>
-                      Créer mon compte
-                      <CheckCircle className="w-4 h-4 ml-2" />
-                    </>
-                  ) : (
-                    <>
-                      Continuer
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
+                  {step === 3 ? "Créer mon compte" : "Suivant"}
                 </Button>
               </div>
-            </div>
 
-            {/* Footer moderne */}
-            <div className="mt-8 text-center">
-              <div className="flex items-center justify-center gap-6 text-sm text-gray-500 mb-4">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  <span>Sécurisé SSL</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  <span>RGPD</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>14 jours gratuits</span>
-                </div>
+              {/* Conditions */}
+              <div className="mt-6 text-center text-sm text-gray-600">
+                <p>
+                  En créant votre compte, vous acceptez nos{" "}
+                  <a href="#" className="text-violet-600 hover:underline">
+                    conditions d'utilisation
+                  </a>{" "}
+                  et notre{" "}
+                  <a href="#" className="text-violet-600 hover:underline">
+                    politique de confidentialité
+                  </a>
+                </p>
               </div>
-              
-              <p className="text-sm text-gray-600">
-                En créant votre compte, vous acceptez nos{" "}
-                <a href="#" className="text-violet-600 hover:text-violet-700 font-medium">
-                  conditions d'utilisation
-                </a>{" "}
-                et notre{" "}
-                <a href="#" className="text-violet-600 hover:text-violet-700 font-medium">
-                  politique de confidentialité
-                </a>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
