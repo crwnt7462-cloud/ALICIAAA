@@ -92,9 +92,15 @@ export default function FreeTrialSignup() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Formulaire soumis:", formData);
-    setStep(4); // Page de confirmation
+  const handleSubmit = async () => {
+    try {
+      console.log("Formulaire soumis:", formData);
+      // Simulation d'un appel API
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setStep(4); // Page de confirmation
+    } catch (error) {
+      console.error("Erreur lors de la création du compte:", error);
+    }
   };
 
   const validateEmail = (email: string) => {
@@ -348,45 +354,38 @@ export default function FreeTrialSignup() {
                   <Label htmlFor="businessName" className="text-sm font-medium text-gray-700">
                     Nom de l'établissement
                   </Label>
-                  <div className="relative">
-                    <Building className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="businessName"
-                      name="businessName"
-                      value={formData.businessName}
-                      onChange={handleInputChange}
-                      placeholder="Salon Beauté Élégance"
-                      className="pl-10 h-11"
-                      required
-                    />
-                  </div>
+                  <Input
+                    id="businessName"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                    placeholder="Salon Beauté Élégance"
+                    className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                    required
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="businessType" className="text-sm font-medium text-gray-700">
                     Type d'établissement
                   </Label>
-                  <div className="relative">
-                    <Briefcase className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
-                    <select
-                      id="businessType"
-                      name="businessType"
-                      value={formData.businessType}
-                      onChange={handleInputChange}
-                      className="w-full h-11 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 appearance-none bg-white"
-                      required
-                    >
-                      <option value="">Sélectionnez votre activité</option>
-                      <option value="salon">Salon de coiffure</option>
-                      <option value="spa">Spa / Institut</option>
-                      <option value="barbershop">Barbershop</option>
-                      <option value="institute">Institut de beauté</option>
-                      <option value="nails">Salon d'onglerie</option>
-                      <option value="wellness">Centre de bien-être</option>
-                      <option value="freelance">Freelance beauté</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  <select
+                    id="businessType"
+                    name="businessType"
+                    value={formData.businessType}
+                    onChange={handleInputChange}
+                    className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-white"
+                    required
+                  >
+                    <option value="">Sélectionnez votre activité</option>
+                    <option value="salon">Salon de coiffure</option>
+                    <option value="spa">Spa / Institut</option>
+                    <option value="barbershop">Barbershop</option>
+                    <option value="institute">Institut de beauté</option>
+                    <option value="nails">Salon d'onglerie</option>
+                    <option value="wellness">Centre de bien-être</option>
+                    <option value="freelance">Freelance beauté</option>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -394,39 +393,37 @@ export default function FreeTrialSignup() {
                     <Label htmlFor="siret" className="text-sm font-medium text-gray-700">
                       SIRET
                     </Label>
-                    <div className="relative">
-                      <Hash className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="siret"
-                        name="siret"
-                        value={formData.siret}
-                        onChange={handleInputChange}
-                        placeholder="12345678901234"
-                        className={`pl-10 h-11 ${formData.siret && !validateSiret(formData.siret) ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-                        maxLength={14}
-                        required
-                      />
-                    </div>
-                    <p className={`text-xs ${formData.siret && !validateSiret(formData.siret) ? 'text-red-500' : 'text-gray-500'}`}>
-                      {formData.siret && !validateSiret(formData.siret) ? 'Format invalide' : '14 chiffres sans espaces'}
-                    </p>
+                    <Input
+                      id="siret"
+                      name="siret"
+                      value={formData.siret}
+                      onChange={handleInputChange}
+                      placeholder="12345678901234"
+                      className={`h-10 border-gray-300 focus:ring-violet-500 ${
+                        formData.siret && !validateSiret(formData.siret) 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                          : 'focus:border-violet-500'
+                      }`}
+                      maxLength={14}
+                      required
+                    />
+                    {formData.siret && !validateSiret(formData.siret) && (
+                      <p className="text-xs text-red-500">Format invalide (14 chiffres)</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="businessPhone" className="text-sm font-medium text-gray-700">
                       Téléphone salon
                     </Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="businessPhone"
-                        name="businessPhone"
-                        type="tel"
-                        value={formData.businessPhone || ''}
-                        onChange={handleInputChange}
-                        placeholder="01 23 45 67 89"
-                        className="pl-10 h-11"
-                      />
-                    </div>
+                    <Input
+                      id="businessPhone"
+                      name="businessPhone"
+                      type="tel"
+                      value={formData.businessPhone || ''}
+                      onChange={handleInputChange}
+                      placeholder="01 23 45 67 89"
+                      className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                    />
                   </div>
                 </div>
 
@@ -434,18 +431,15 @@ export default function FreeTrialSignup() {
                   <Label htmlFor="businessAddress" className="text-sm font-medium text-gray-700">
                     Adresse complète
                   </Label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="businessAddress"
-                      name="businessAddress"
-                      value={formData.businessAddress}
-                      onChange={handleInputChange}
-                      placeholder="123 rue de la Beauté"
-                      className="pl-10 h-11"
-                      required
-                    />
-                  </div>
+                  <Input
+                    id="businessAddress"
+                    name="businessAddress"
+                    value={formData.businessAddress}
+                    onChange={handleInputChange}
+                    placeholder="123 rue de la Beauté"
+                    className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                    required
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -453,36 +447,37 @@ export default function FreeTrialSignup() {
                     <Label htmlFor="businessCity" className="text-sm font-medium text-gray-700">
                       Ville
                     </Label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="businessCity"
-                        name="businessCity"
-                        value={formData.businessCity}
-                        onChange={handleInputChange}
-                        placeholder="Paris"
-                        className="pl-10 h-11"
-                        required
-                      />
-                    </div>
+                    <Input
+                      id="businessCity"
+                      name="businessCity"
+                      value={formData.businessCity}
+                      onChange={handleInputChange}
+                      placeholder="Paris"
+                      className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="businessPostalCode" className="text-sm font-medium text-gray-700">
                       Code postal
                     </Label>
-                    <div className="relative">
-                      <Hash className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="businessPostalCode"
-                        name="businessPostalCode"
-                        value={formData.businessPostalCode}
-                        onChange={handleInputChange}
-                        placeholder="75001"
-                        className="pl-10 h-11"
-                        maxLength={5}
-                        required
-                      />
-                    </div>
+                    <Input
+                      id="businessPostalCode"
+                      name="businessPostalCode"
+                      value={formData.businessPostalCode}
+                      onChange={handleInputChange}
+                      placeholder="75001"
+                      className={`h-10 border-gray-300 focus:ring-violet-500 ${
+                        formData.businessPostalCode && !validatePostalCode(formData.businessPostalCode) 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                          : 'focus:border-violet-500'
+                      }`}
+                      maxLength={5}
+                      required
+                    />
+                    {formData.businessPostalCode && !validatePostalCode(formData.businessPostalCode) && (
+                      <p className="text-xs text-red-500">Code postal invalide</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -495,50 +490,42 @@ export default function FreeTrialSignup() {
                   <Label htmlFor="legalForm" className="text-sm font-medium text-gray-700">
                     Forme juridique
                   </Label>
-                  <div className="relative">
-                    <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400 z-10" />
-                    <select
-                      id="legalForm"
-                      name="legalForm"
-                      value={formData.legalForm}
-                      onChange={handleInputChange}
-                      className="w-full h-11 pl-10 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 appearance-none bg-white"
-                      required
-                    >
-                      <option value="">Sélectionnez votre statut</option>
-                      <option value="auto">Auto-entrepreneur</option>
-                      <option value="micro">Micro-entreprise</option>
-                      <option value="ei">Entreprise individuelle</option>
-                      <option value="eurl">EURL</option>
-                      <option value="sarl">SARL</option>
-                      <option value="sas">SAS</option>
-                      <option value="sasu">SASU</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3 h-4 w-4 text-gray-400 pointer-events-none" />
-                  </div>
+                  <select
+                    id="legalForm"
+                    name="legalForm"
+                    value={formData.legalForm}
+                    onChange={handleInputChange}
+                    className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 bg-white"
+                    required
+                  >
+                    <option value="">Sélectionnez votre statut</option>
+                    <option value="auto">Auto-entrepreneur</option>
+                    <option value="micro">Micro-entreprise</option>
+                    <option value="ei">Entreprise individuelle</option>
+                    <option value="eurl">EURL</option>
+                    <option value="sarl">SARL</option>
+                    <option value="sas">SAS</option>
+                    <option value="sasu">SASU</option>
+                  </select>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="vatNumber" className="text-sm font-medium text-gray-700">
                     Numéro de TVA (optionnel)
                   </Label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="vatNumber"
-                      name="vatNumber"
-                      value={formData.vatNumber}
-                      onChange={handleInputChange}
-                      placeholder="FR12345678901"
-                      className="pl-10 h-11"
-                    />
-                  </div>
+                  <Input
+                    id="vatNumber"
+                    name="vatNumber"
+                    value={formData.vatNumber}
+                    onChange={handleInputChange}
+                    placeholder="FR12345678901"
+                    className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                  />
                 </div>
 
                 {/* Section facturation */}
                 <div className="bg-gray-50 rounded-lg p-4 mt-6">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
+                  <h3 className="text-sm font-semibold text-gray-900 mb-4">
                     Informations de facturation
                   </h3>
                   
@@ -547,36 +534,30 @@ export default function FreeTrialSignup() {
                       <Label htmlFor="billingName" className="text-sm font-medium text-gray-700">
                         Nom de facturation
                       </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="billingName"
-                          name="billingName"
-                          value={formData.billingName}
-                          onChange={handleInputChange}
-                          placeholder="Nom ou raison sociale"
-                          className="pl-10 h-11"
-                          required
-                        />
-                      </div>
+                      <Input
+                        id="billingName"
+                        name="billingName"
+                        value={formData.billingName}
+                        onChange={handleInputChange}
+                        placeholder="Nom ou raison sociale"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        required
+                      />
                     </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="billingAddress" className="text-sm font-medium text-gray-700">
                         Adresse de facturation
                       </Label>
-                      <div className="relative">
-                        <Home className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                        <Input
-                          id="billingAddress"
-                          name="billingAddress"
-                          value={formData.billingAddress}
-                          onChange={handleInputChange}
-                          placeholder="Adresse complète"
-                          className="pl-10 h-11"
-                          required
-                        />
-                      </div>
+                      <Input
+                        id="billingAddress"
+                        name="billingAddress"
+                        value={formData.billingAddress}
+                        onChange={handleInputChange}
+                        placeholder="Adresse complète"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        required
+                      />
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
@@ -584,36 +565,37 @@ export default function FreeTrialSignup() {
                         <Label htmlFor="billingCity" className="text-sm font-medium text-gray-700">
                           Ville
                         </Label>
-                        <div className="relative">
-                          <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="billingCity"
-                            name="billingCity"
-                            value={formData.billingCity}
-                            onChange={handleInputChange}
-                            placeholder="Paris"
-                            className="pl-10 h-11"
-                            required
-                          />
-                        </div>
+                        <Input
+                          id="billingCity"
+                          name="billingCity"
+                          value={formData.billingCity}
+                          onChange={handleInputChange}
+                          placeholder="Paris"
+                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="billingPostalCode" className="text-sm font-medium text-gray-700">
                           Code postal
                         </Label>
-                        <div className="relative">
-                          <Hash className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                          <Input
-                            id="billingPostalCode"
-                            name="billingPostalCode"
-                            value={formData.billingPostalCode}
-                            onChange={handleInputChange}
-                            placeholder="75001"
-                            className="pl-10 h-11"
-                            maxLength={5}
-                            required
-                          />
-                        </div>
+                        <Input
+                          id="billingPostalCode"
+                          name="billingPostalCode"
+                          value={formData.billingPostalCode}
+                          onChange={handleInputChange}
+                          placeholder="75001"
+                          className={`h-10 border-gray-300 focus:ring-violet-500 ${
+                            formData.billingPostalCode && !validatePostalCode(formData.billingPostalCode) 
+                              ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                              : 'focus:border-violet-500'
+                          }`}
+                          maxLength={5}
+                          required
+                        />
+                        {formData.billingPostalCode && !validatePostalCode(formData.billingPostalCode) && (
+                          <p className="text-xs text-red-500">Code postal invalide</p>
+                        )}
                       </div>
                     </div>
                   </div>
