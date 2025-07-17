@@ -243,8 +243,19 @@ export default function SubscriptionPlans() {
                   </div>
                 )}
 
-                {/* Bouton d'action */}
-                <div className="pt-4">
+                {/* Boutons d'action */}
+                <div className="pt-4 space-y-3">
+                  {/* Bouton essai gratuit */}
+                  <Button
+                    onClick={() => setLocation("/free-trial")}
+                    variant="outline"
+                    className="w-full border-green-500 text-green-600 hover:bg-green-50 py-3"
+                  >
+                    <Gift className="w-4 h-4 mr-2" />
+                    Essai gratuit 14 jours
+                  </Button>
+                  
+                  {/* Bouton souscription */}
                   <Button
                     onClick={() => handleSelectPlan(plan.id)}
                     className={`w-full ${
