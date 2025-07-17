@@ -229,6 +229,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route de recherche d'utilisateurs pour mentions @
+  app.get('/api/users/search', async (req, res) => {
+    try {
+      const clientSession = (req.session as any)?.clientUser;
+      const { q } = req.query;
+      
+      if (!clientSession) {
+        return res.status(401).json({ message: "Session requise" });
+      }
+
+      if (!q || typeof q !== 'string' || q.length < 2) {
+        return res.json([]);
+      }
+
+      const searchTerm = q.toLowerCase();
+      const users = [];
+
+      // Rechercher parmi les professionnels
+      const professionals = await storage.searchProfessionals(searchTerm);
+      for (const pro of professionals) {
+        users.push({
+          id: pro.id,
+          type: 'professional',
+          firstName: pro.firstName,
+          lastName: pro.lastName,
+          email: pro.email,
+          businessName: pro.businessName
+        });
+      }
+
+      // Rechercher parmi les clients (optionnel selon les besoins)
+      const clients = await storage.searchClients(searchTerm);
+      for (const client of clients) {
+        // Exclure le client actuel
+        if (client.id !== clientSession.id) {
+          users.push({
+            id: client.id,
+            type: 'client',
+            firstName: client.firstName,
+            lastName: client.lastName,
+            email: client.email
+          });
+        }
+      }
+
+      // Limiter à 10 résultats
+      res.json(users.slice(0, 10));
+    } catch (error) {
+      console.error('User search error:', error);
+      res.status(500).json({ message: "Erreur lors de la recherche" });
+    }
+  });
+
   // Professional login (kept separate)
   app.post('/api/auth/login', async (req, res) => {
     try {
@@ -1400,7 +1453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/conversations/:conversationId/messages', async (req, res) => {
     try {
       const { conversationId } = req.params;
-      const { content, fromUserId, fromClientId, toUserId, toClientId, messageType } = req.body;
+      const { content, fromUserId, fromClientId, toUserId, toClientId, messageType, mentions = [] } = req.body;
       
       if (!content) {
         return res.status(400).json({ message: "Message content is required" });
@@ -1412,13 +1465,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
         toUserId, 
         toClientId, 
         content, 
-        messageType
+        messageType,
+        mentions
       );
+      
+      if (mentions.length > 0) {
+        console.log(`📧 Message with ${mentions.length} mentions sent`);
+      }
       
       res.status(201).json(message);
     } catch (error: any) {
       console.error("Error sending message:", error);
       res.status(500).json({ message: "Error sending message" });
+    }
+  });
+
+  // Route simplifiée pour envoyer des messages avec mentions depuis MessagingHub
+  app.post('/api/messages', async (req, res) => {
+    try {
+      const clientSession = (req.session as any)?.clientUser;
+      
+      if (!clientSession) {
+        return res.status(401).json({ message: "Session requise" });
+      }
+
+      const { conversationId, content, mentions = [] } = req.body;
+      
+      if (!conversationId || !content) {
+        return res.status(400).json({ message: "Conversation et contenu requis" });
+      }
+
+      // Utiliser le service de messagerie existant
+      const message = await messagingService.sendMessage(
+        null, // fromUserId
+        clientSession.id, // fromClientId  
+        null, // toUserId - sera déterminé par la conversation
+        null, // toClientId
+        content,
+        'text',
+        mentions
+      );
+
+      console.log(`📨 Message sent by client ${clientSession.firstName} ${clientSession.lastName}${mentions.length > 0 ? ` with ${mentions.length} mentions` : ''}`);
+      
+      res.json(message);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      res.status(500).json({ message: "Erreur lors de l'envoi du message" });
     }
   });
 

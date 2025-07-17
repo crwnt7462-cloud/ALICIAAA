@@ -394,6 +394,7 @@ export const messages = pgTable("messages", {
   messageType: varchar("message_type").default("text"), // text, appointment, reminder, system
   isRead: boolean("is_read").default(false),
   attachments: text("attachments").array(), // URLs to attached files
+  mentions: text("mentions").array(), // Array of mentioned user IDs with @ functionality
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

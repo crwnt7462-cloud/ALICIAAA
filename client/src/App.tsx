@@ -41,6 +41,7 @@ import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
+import MessagingHub from "@/pages/MessagingHub";
 
 
 function Router() {
@@ -170,6 +171,15 @@ function Router() {
     return (
       <div className="h-full">
         <FreeTrialSignup />
+      </div>
+    );
+  }
+
+  // Page de messagerie avancée avec mentions @
+  if (location === '/messaging') {
+    return (
+      <div className="h-full">
+        <MessagingHub />
       </div>
     );
   }

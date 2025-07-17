@@ -42,7 +42,8 @@ export class MessagingService {
     toUserId?: string, 
     toClientId?: string,
     content: string, 
-    messageType: string = "text"
+    messageType: string = "text",
+    mentions: string[] = []
   ): Promise<Message> {
     
     // Determine conversation participants
@@ -61,7 +62,8 @@ export class MessagingService {
       toClientId,
       content,
       messageType,
-      isRead: false
+      isRead: false,
+      mentions
     };
     
     const message = await storage.createMessage(messageData);

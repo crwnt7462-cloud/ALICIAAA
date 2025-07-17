@@ -15,7 +15,8 @@ import {
   Bell,
   Settings,
   Heart,
-  Plus
+  Plus,
+  AtSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -399,7 +400,17 @@ export default function ClientDashboard() {
 
         {activeTab === 'messages' && (
           <div className="space-y-4">
-            <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+              <Button 
+                onClick={() => setLocation('/messaging')}
+                className="bg-violet-600 hover:bg-violet-700"
+                size="sm"
+              >
+                <AtSign className="w-4 h-4 mr-2" />
+                Messagerie Pro
+              </Button>
+            </div>
 
             {conversationsLoading ? (
               <div className="space-y-3">
@@ -438,9 +449,9 @@ export default function ClientDashboard() {
                 <p className="text-gray-500 mb-6">Vos conversations avec les salons apparaîtront ici</p>
                 <Button 
                   className="bg-violet-600 hover:bg-violet-700"
-                  onClick={() => setLocation('/')}
+                  onClick={() => setLocation('/messaging')}
                 >
-                  Découvrir les salons
+                  Ouvrir la messagerie
                 </Button>
               </div>
             )}

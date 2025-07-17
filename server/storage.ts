@@ -94,7 +94,7 @@ import {
   type InsertClientPreferences,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, lte, sql, count, or, isNull } from "drizzle-orm";
+import { eq, desc, and, gte, lte, sql, count, or, isNull, ilike } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
@@ -299,6 +299,10 @@ export interface IStorage {
     pendingAmount: number;
     refundedAmount: number;
   }>;
+
+  // Search operations for mentions @
+  searchProfessionals(query: string): Promise<User[]>;
+  searchClients(query: string): Promise<ClientAccount[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1821,6 +1825,133 @@ export class DatabaseStorage implements IStorage {
       pendingAmount,
       refundedAmount,
     };
+  }
+
+  // Search operations for mentions @
+  async searchProfessionals(query: string): Promise<User[]> {
+    const searchTerm = `%${query}%`;
+    return db
+      .select()
+      .from(users)
+      .where(
+        or(
+          ilike(users.firstName, searchTerm),
+          ilike(users.lastName, searchTerm),
+          ilike(users.email, searchTerm),
+          ilike(users.businessName, searchTerm)
+        )
+      )
+      .limit(10);
+  }
+
+  async searchClients(query: string): Promise<ClientAccount[]> {
+    const searchTerm = `%${query}%`;
+    return db
+      .select()
+      .from(clientAccounts)
+      .where(
+        or(
+          ilike(clientAccounts.firstName, searchTerm),
+          ilike(clientAccounts.lastName, searchTerm),
+          ilike(clientAccounts.email, searchTerm)
+        )
+      )
+      .limit(10);
+  }
+
+  // Messaging operations with mentions support
+  async getMessagesByConversation(conversationId: string): Promise<Message[]> {
+    try {
+      const messageList = await db
+        .select()
+        .from(messages)
+        .where(eq(messages.conversationId, conversationId))
+        .orderBy(messages.createdAt);
+      
+      return messageList;
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      return [];
+    }
+  }
+
+  async createMessage(messageData: InsertMessage): Promise<Message> {
+    try {
+      const [message] = await db
+        .insert(messages)
+        .values(messageData)
+        .returning();
+      
+      if (messageData.mentions && messageData.mentions.length > 0) {
+        console.log(`📧 Message created with ${messageData.mentions.length} mentions: ${messageData.mentions.join(', ')}`);
+      }
+      
+      return message;
+    } catch (error) {
+      console.error('Error creating message:', error);
+      throw error;
+    }
+  }
+
+  async getConversationsByClient(clientId: string): Promise<Conversation[]> {
+    try {
+      return await db
+        .select()
+        .from(conversations)
+        .where(eq(conversations.clientAccountId, clientId))
+        .orderBy(desc(conversations.lastMessageAt));
+    } catch (error) {
+      console.error('Error fetching client conversations:', error);
+      return [];
+    }
+  }
+
+  async getConversationByParticipants(professionalUserId: string, clientAccountId: string): Promise<Conversation | undefined> {
+    try {
+      const [conversation] = await db
+        .select()
+        .from(conversations)
+        .where(
+          and(
+            eq(conversations.professionalUserId, professionalUserId),
+            eq(conversations.clientAccountId, clientAccountId)
+          )
+        );
+      return conversation;
+    } catch (error) {
+      console.error('Error finding conversation:', error);
+      return undefined;
+    }
+  }
+
+  async createConversation(conversationData: InsertConversation): Promise<Conversation> {
+    try {
+      const [conversation] = await db
+        .insert(conversations)
+        .values(conversationData)
+        .returning();
+      
+      console.log(`💬 New conversation created: ${conversation.id}`);
+      return conversation;
+    } catch (error) {
+      console.error('Error creating conversation:', error);
+      throw error;
+    }
+  }
+
+  async updateConversation(id: string, updates: Partial<InsertConversation>): Promise<Conversation> {
+    try {
+      const [conversation] = await db
+        .update(conversations)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(conversations.id, id))
+        .returning();
+      
+      return conversation;
+    } catch (error) {
+      console.error('Error updating conversation:', error);
+      throw error;
+    }
   }
 }
 
