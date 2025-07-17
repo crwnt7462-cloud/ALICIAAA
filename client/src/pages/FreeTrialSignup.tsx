@@ -1,14 +1,9 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 import { 
   ArrowLeft, 
   Gift, 
@@ -19,54 +14,30 @@ import {
   Shield,
   Crown
 } from "lucide-react";
-import { z } from "zod";
-
-const freeTrialSchema = z.object({
-  firstName: z.string().min(2, "Le prénom doit contenir au moins 2 caractères"),
-  lastName: z.string().min(2, "Le nom doit contenir au moins 2 caractères"),
-  email: z.string().email("Email invalide"),
-  phone: z.string().min(10, "Numéro de téléphone invalide"),
-  businessName: z.string().min(2, "Le nom de l'entreprise doit contenir au moins 2 caractères"),
-  businessType: z.enum(["salon", "spa", "barbershop", "institute", "freelance"]),
-});
-
-type FreeTrialFormData = z.infer<typeof freeTrialSchema>;
 
 export default function FreeTrialSignup() {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
   const [step, setStep] = useState(1);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FreeTrialFormData>({
-    resolver: zodResolver(freeTrialSchema),
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    businessName: '',
+    businessType: ''
   });
 
-  const createFreeTrialMutation = useMutation({
-    mutationFn: (data: FreeTrialFormData) => 
-      apiRequest("POST", "/api/free-trial/create", data),
-    onSuccess: () => {
-      setStep(3);
-      toast({
-        title: "Essai gratuit activé !",
-        description: "Votre période d'essai de 14 jours a commencé",
-      });
-    },
-    onError: (error) => {
-      console.error("Erreur lors de la création de l'essai gratuit:", error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer votre essai gratuit",
-        variant: "destructive",
-      });
-    },
-  });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
-  const onSubmit = (data: FreeTrialFormData) => {
-    createFreeTrialMutation.mutate(data);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Formulaire soumis:", formData);
+    setStep(3);
   };
 
   if (step === 3) {
@@ -206,31 +177,31 @@ export default function FreeTrialSignup() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">Prénom</Label>
                   <Input
                     id="firstName"
-                    {...register("firstName")}
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     placeholder="Jean"
                     className="h-10"
+                    required
                   />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-600">{errors.firstName.message}</p>
-                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Nom</Label>
                   <Input
                     id="lastName"
-                    {...register("lastName")}
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     placeholder="Dupont"
                     className="h-10"
+                    required
                   />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-600">{errors.lastName.message}</p>
-                  )}
                 </div>
               </div>
 
@@ -238,49 +209,52 @@ export default function FreeTrialSignup() {
                 <Label htmlFor="email">Email professionnel</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
-                  {...register("email")}
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="jean.dupont@monsalon.fr"
                   className="h-10"
+                  required
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email.message}</p>
-                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Téléphone</Label>
                 <Input
                   id="phone"
+                  name="phone"
                   type="tel"
-                  {...register("phone")}
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   placeholder="01 23 45 67 89"
                   className="h-10"
+                  required
                 />
-                {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone.message}</p>
-                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="businessName">Nom de votre établissement</Label>
                 <Input
                   id="businessName"
-                  {...register("businessName")}
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleInputChange}
                   placeholder="Salon Beauté Élégance"
                   className="h-10"
+                  required
                 />
-                {errors.businessName && (
-                  <p className="text-sm text-red-600">{errors.businessName.message}</p>
-                )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="businessType">Type d'établissement</Label>
                 <select
                   id="businessType"
-                  {...register("businessType")}
+                  name="businessType"
+                  value={formData.businessType}
+                  onChange={handleInputChange}
                   className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  required
                 >
                   <option value="">Sélectionnez un type</option>
                   <option value="salon">Salon de coiffure</option>
@@ -289,28 +263,15 @@ export default function FreeTrialSignup() {
                   <option value="institute">Institut de beauté</option>
                   <option value="freelance">Freelance beauté</option>
                 </select>
-                {errors.businessType && (
-                  <p className="text-sm text-red-600">{errors.businessType.message}</p>
-                )}
               </div>
 
               <div className="pt-4">
                 <Button
                   type="submit"
-                  disabled={createFreeTrialMutation.isPending}
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
                 >
-                  {createFreeTrialMutation.isPending ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                      Activation en cours...
-                    </div>
-                  ) : (
-                    <>
-                      <Gift className="w-4 h-4 mr-2" />
-                      Commencer mon essai gratuit
-                    </>
-                  )}
+                  <Gift className="w-4 h-4 mr-2" />
+                  Commencer mon essai gratuit
                 </Button>
               </div>
             </form>
