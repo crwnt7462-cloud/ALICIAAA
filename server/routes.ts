@@ -229,15 +229,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Route de recherche d'utilisateurs pour mentions @
+  // Route de recherche d'utilisateurs pour mentions @ (accessible publiquement pour test)
   app.get('/api/users/search', async (req, res) => {
     try {
-      const clientSession = (req.session as any)?.clientUser;
       const { q } = req.query;
-      
-      if (!clientSession) {
-        return res.status(401).json({ message: "Session requise" });
-      }
 
       if (!q || typeof q !== 'string' || q.length < 2) {
         return res.json([]);

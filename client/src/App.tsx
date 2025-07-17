@@ -42,6 +42,7 @@ import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import MessagingHub from "@/pages/MessagingHub";
+import MentionTest from "@/pages/MentionTest";
 
 
 function Router() {
@@ -180,6 +181,15 @@ function Router() {
     return (
       <div className="h-full">
         <MessagingHub />
+      </div>
+    );
+  }
+
+  // Page de test des mentions @
+  if (location === '/mention-test') {
+    return (
+      <div className="h-full">
+        <MentionTest />
       </div>
     );
   }
