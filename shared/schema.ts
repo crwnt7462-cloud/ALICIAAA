@@ -40,7 +40,8 @@ export const users = pgTable("users", {
   address: text("address"),
   isProfessional: boolean("is_professional").default(true),
   isVerified: boolean("is_verified").default(false),
-  subscriptionStatus: varchar("subscription_status").default("free"), // free, basic, premium
+  subscriptionStatus: varchar("subscription_status").default("free"), // free, basic, premium, trial
+  trialEndDate: timestamp("trial_end_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -49,7 +50,7 @@ export const users = pgTable("users", {
 export const subscriptions = pgTable("subscriptions", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
-  planType: varchar("plan_type").notNull(), // basic, premium
+  planType: varchar("plan_type").notNull(), // basic, premium, trial
   status: varchar("status").default("pending"), // pending, active, cancelled, expired
   priceMonthly: decimal("price_monthly", { precision: 10, scale: 2 }).notNull(),
   // Business information

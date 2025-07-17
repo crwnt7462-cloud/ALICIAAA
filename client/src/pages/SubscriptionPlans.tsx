@@ -13,7 +13,8 @@ import {
   Zap,
   Shield,
   ArrowLeft,
-  Sparkles
+  Sparkles,
+  Gift
 } from "lucide-react";
 
 const plans = [
@@ -95,7 +96,12 @@ export default function SubscriptionPlans() {
           
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Choisissez le plan qui correspond le mieux à vos besoins professionnel. 
-            Tous nos plans incluent une période d'essai gratuite de 14 jours.
+            Tous nos plans incluent une période d'<button 
+              onClick={() => setLocation("/free-trial")}
+              className="text-green-600 hover:text-green-700 hover:underline font-medium"
+            >
+              essai gratuite de 14 jours
+            </button>.
           </p>
         </div>
 
@@ -126,6 +132,30 @@ export default function SubscriptionPlans() {
               </Badge>
             </button>
           </div>
+        </div>
+
+        {/* Bouton d'essai gratuit mis en avant */}
+        <div className="text-center mb-8">
+          <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 max-w-md mx-auto">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Gift className="w-8 h-8 text-green-600" />
+                <h3 className="text-xl font-bold text-gray-900">
+                  Essai Gratuit 14 Jours
+                </h3>
+              </div>
+              <p className="text-gray-600 mb-4">
+                Testez toutes les fonctionnalités sans engagement ni carte bancaire
+              </p>
+              <Button 
+                onClick={() => setLocation("/free-trial")}
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Gift className="w-4 h-4 mr-2" />
+                Commencer l'essai gratuit
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Plans */}
@@ -251,7 +281,12 @@ export default function SubscriptionPlans() {
                 <Shield className="w-6 h-6 text-green-600" />
               </div>
               <h4 className="font-medium text-gray-900 mb-2">
-                Essai gratuit 14 jours
+                <button 
+                  onClick={() => setLocation("/free-trial")}
+                  className="text-green-600 hover:text-green-700 hover:underline"
+                >
+                  Essai gratuit 14 jours
+                </button>
               </h4>
               <p className="text-sm text-gray-600">
                 Testez toutes les fonctionnalités sans engagement

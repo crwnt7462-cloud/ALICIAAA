@@ -39,6 +39,7 @@ import BookingPage from "@/pages/BookingPage";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
+import FreeTrialSignup from "@/pages/FreeTrialSignup";
 
 
 function Router() {
@@ -137,10 +138,19 @@ function Router() {
   }
 
   // Page des plans de souscription
-  if (location === '/subscription/plans') {
+  if (location === '/subscription/plans' || location === '/subscription-plans') {
     return (
       <div className="h-full">
         <SubscriptionPlans />
+      </div>
+    );
+  }
+
+  // Page d'essai gratuit
+  if (location === '/free-trial') {
+    return (
+      <div className="h-full">
+        <FreeTrialSignup />
       </div>
     );
   }

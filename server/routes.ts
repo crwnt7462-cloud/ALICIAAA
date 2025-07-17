@@ -1827,6 +1827,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Free trial routes
+  app.post('/api/free-trial/create', async (req: any, res) => {
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        businessName,
+        businessType
+      } = req.body;
+
+      // Créer un utilisateur avec période d'essai gratuite
+      const [user] = await db
+        .insert(users)
+        .values({
+          id: `user_${Date.now()}`,
+          firstName,
+          lastName,
+          email,
+          phone,
+          businessName,
+          subscriptionStatus: 'trial',
+          trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 jours
+        })
+        .returning();
+
+      // Créer une souscription d'essai
+      const [subscription] = await db
+        .insert(subscriptions)
+        .values({
+          userId: user.id,
+          planType: 'trial',
+          priceMonthly: '0.00',
+          companyName: businessName,
+          status: 'active',
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+          nextBillingDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+        })
+        .returning();
+
+      res.json({ 
+        success: true, 
+        userId: user.id,
+        subscriptionId: subscription.id,
+        message: 'Essai gratuit créé avec succès'
+      });
+    } catch (error) {
+      console.error("Error creating free trial:", error);
+      res.status(500).json({ message: "Failed to create free trial" });
+    }
+  });
+
   // Subscription routes
   app.post('/api/subscriptions/create', isAuthenticated, async (req: any, res) => {
     try {
