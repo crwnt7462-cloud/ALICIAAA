@@ -96,12 +96,12 @@ export default function SubscriptionPlans() {
           
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Choisissez le plan qui correspond le mieux à vos besoins professionnel. 
-            Tous nos plans incluent une période d'<button 
-              onClick={() => setLocation("/free-trial")}
+            Tous nos plans incluent une période d'<a 
+              href="/free-trial"
               className="text-green-600 hover:text-green-700 hover:underline font-medium"
             >
               essai gratuite de 14 jours
-            </button>.
+            </a>.
           </p>
         </div>
 
@@ -147,19 +147,14 @@ export default function SubscriptionPlans() {
               <p className="text-gray-600 mb-4">
                 Testez toutes les fonctionnalités sans engagement ni carte bancaire
               </p>
-              <Button 
-                onClick={() => {
-                  console.log("Navigation vers /free-trial");
-                  setLocation("/free-trial");
-                }}
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
-              >
-                <Gift className="w-4 h-4 mr-2" />
-                Commencer l'essai gratuit
-              </Button>
-              <p className="text-xs text-gray-500 mt-2">
-                DEBUG: <a href="/free-trial" className="text-blue-600 hover:underline">Lien direct vers /free-trial</a>
-              </p>
+              <a href="/free-trial" className="block">
+                <Button 
+                  className="w-full bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Gift className="w-4 h-4 mr-2" />
+                  Commencer l'essai gratuit
+                </Button>
+              </a>
             </CardContent>
           </Card>
         </div>
@@ -287,15 +282,12 @@ export default function SubscriptionPlans() {
                 <Shield className="w-6 h-6 text-green-600" />
               </div>
               <h4 className="font-medium text-gray-900 mb-2">
-                <button 
-                  onClick={() => {
-                    console.log("Navigation vers /free-trial depuis garanties");
-                    setLocation("/free-trial");
-                  }}
+                <a 
+                  href="/free-trial"
                   className="text-green-600 hover:text-green-700 hover:underline"
                 >
                   Essai gratuit 14 jours
-                </button>
+                </a>
               </h4>
               <p className="text-sm text-gray-600">
                 Testez toutes les fonctionnalités sans engagement
