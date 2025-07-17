@@ -123,6 +123,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - REFONTE MAJEURE CLIENT DASHBOARD ULTRA-PROFESSIONNEL (17 Janvier)
+- ✅ **Design ClientDashboard complètement refait** : Interface ultra-moderne inspirée Treatwell/Planity
+- ✅ **Layout mobile-first optimal** : Header sticky, navigation moderne à onglets, contenu épuré
+- ✅ **Palette couleurs cohérente** : Violet/purple gradient, arrière-plans gris-50, cartes blanches arrondies
+- ✅ **Navigation intuitive** : 4 onglets (Accueil/RDV/Messages/Profil) avec transitions fluides
+- ✅ **Composants raffinés** : Avatars avec statut en ligne, badges colorés par statut, boutons épurés
+- ✅ **Actions rapides** : Nouveau RDV prominent, recherche avancée, filtres intégrés
+- ✅ **États vides élégants** : Messages d'encouragement avec call-to-action visible
+- ✅ **Interface professionnelle** : Espacement cohérent, typographie soignée, micro-interactions
+- ✅ **Session client intégrée** : Authentification transparente, données personnalisées
+- ✅ **Responsive perfect** : Optimisé pour mobile avec largeur max-w-lg centrée
+
 ### Janvier 2025 - SYSTÈME DE SOUSCRIPTION COMPLET AVEC INFORMATIONS BUSINESS (17 Janvier)
 - ✅ **Système de souscription complet** : Plans Pro (49€/mois) et Premium (149€/mois) avec collecte d'informations business
 - ✅ **Processus de souscription à étapes** : SubscriptionPlans → SubscriptionSignup → SubscriptionPayment avec navigation fluide

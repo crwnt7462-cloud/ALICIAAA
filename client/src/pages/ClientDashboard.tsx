@@ -6,21 +6,18 @@ import {
   MessageCircle, 
   User, 
   LogOut, 
-  Phone, 
   Clock, 
-  MapPin, 
   Star,
-  Home,
-  Search,
-  Heart,
-  Bell,
   ChevronRight,
-  Scissors,
-  Palette,
-  Sparkles
+  Search,
+  MapPin,
+  Filter,
+  Bell,
+  Settings,
+  Heart,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -44,7 +41,6 @@ interface Appointment {
   status: string;
   totalPrice: number;
   businessName: string;
-  location: string;
   notes?: string;
 }
 
@@ -59,10 +55,9 @@ interface Conversation {
 
 export default function ClientDashboard() {
   const [clientSession, setClientSession] = useState<ClientSession | null>(null);
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("accueil");
   const [, setLocation] = useLocation();
 
-  // Get client session from localStorage
   useEffect(() => {
     const session = localStorage.getItem('clientSession');
     if (session) {
@@ -72,17 +67,15 @@ export default function ClientDashboard() {
     }
   }, [setLocation]);
 
-  // Fetch client appointments
   const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/client/appointments'],
-    queryFn: () => apiRequest('GET', `/api/client/appointments?clientId=${clientSession?.id}`).then(res => res.json()),
+    queryFn: () => apiRequest('GET', `/api/client/appointments`).then(res => res.json()),
     enabled: !!clientSession?.id,
   });
 
-  // Fetch client conversations
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
     queryKey: ['/api/conversations'],
-    queryFn: () => apiRequest('GET', `/api/conversations?clientId=${clientSession?.id}`).then(res => res.json()),
+    queryFn: () => apiRequest('GET', `/api/conversations`).then(res => res.json()),
     enabled: !!clientSession?.id,
   });
 
@@ -94,566 +87,448 @@ export default function ClientDashboard() {
 
   if (!clientSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-amber-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
   const upcomingAppointments = appointments.filter(apt => 
     apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date()
-  ).slice(0, 3);
+  );
 
-  const recentConversations = conversations.slice(0, 3);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'bg-green-50 text-green-700 border-green-200';
+      case 'pending': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'cancelled': return 'bg-red-50 text-red-700 border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header épuré */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-4 py-3">
+      {/* Header moderne */}
+      <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-white" />
+              <div className="relative">
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback className="bg-gradient-to-r from-violet-500 to-purple-600 text-white font-medium">
+                    {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div>
-                <h1 className="text-lg font-semibold text-gray-900">Beautify</h1>
-                <p className="text-xs text-gray-500">Bonjour {clientSession.firstName}</p>
+                <h1 className="font-semibold text-gray-900">Bonjour {clientSession.firstName}</h1>
+                <p className="text-sm text-gray-500">Gérez vos rendez-vous</p>
               </div>
             </div>
+            
             <div className="flex items-center space-x-2">
-              <div className="hidden md:flex items-center space-x-2 bg-gray-50 rounded-md px-2 py-1">
-                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-xs">
-                  {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
-                </div>
-                <span className="text-xs font-medium text-gray-700">{clientSession.firstName}</span>
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleLogout}
-                className="text-gray-400 hover:text-gray-600 p-1"
-              >
-                <LogOut className="w-4 h-4" />
+              <Button variant="ghost" size="sm" className="p-2">
+                <Bell className="w-5 h-5 text-gray-400" />
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2" onClick={handleLogout}>
+                <LogOut className="w-5 h-5 text-gray-400" />
               </Button>
             </div>
           </div>
         </div>
+      </header>
+
+      {/* Navigation mobile moderne */}
+      <div className="max-w-lg mx-auto px-4 py-4">
+        <div className="flex space-x-1 bg-gray-100 rounded-xl p-1">
+          {[
+            { id: 'accueil', label: 'Accueil', icon: Calendar },
+            { id: 'rendez-vous', label: 'RDV', icon: Clock },
+            { id: 'messages', label: 'Messages', icon: MessageCircle },
+            { id: 'profil', label: 'Profil', icon: User }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex flex-col items-center py-2 px-3 rounded-lg text-xs font-medium transition-all duration-200 ${
+                activeTab === tab.id
+                  ? 'bg-white text-violet-600 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <tab.icon className="w-4 h-4 mb-1" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Navigation compacte */}
-      <div className="max-w-5xl mx-auto px-4 py-4">
-        <div className="bg-white rounded-lg border p-1 mb-6">
-          <div className="grid grid-cols-4 gap-1">
-            <button
-              onClick={() => setActiveTab("dashboard")}
-              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
-                activeTab === "dashboard"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              <Home className="w-4 h-4 mb-1" />
-              Accueil
-            </button>
-            <button
-              onClick={() => setActiveTab("appointments")}
-              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
-                activeTab === "appointments"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              <Calendar className="w-4 h-4 mb-1" />
-              Rendez-vous
-            </button>
-            <button
-              onClick={() => setActiveTab("messages")}
-              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
-                activeTab === "messages"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              <MessageCircle className="w-4 h-4 mb-1" />
-              Messages
-            </button>
-            <button
-              onClick={() => setActiveTab("profile")}
-              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
-                activeTab === "profile"
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              <User className="w-4 h-4 mb-1" />
-              Profil
-            </button>
-          </div>
-        </div>
-
-        {/* Contenu selon l'onglet actif */}
-        {activeTab === "dashboard" && (
+      {/* Contenu principal */}
+      <main className="max-w-lg mx-auto px-4 pb-20">
+        {activeTab === 'accueil' && (
           <div className="space-y-6">
-            {/* Barre de recherche */}
-            <div className="bg-white rounded-lg border p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">Réserver un rendez-vous</h2>
-              <div className="flex space-x-2">
-                <div className="flex-1">
-                  <Input 
-                    placeholder="Rechercher un salon, un service..."
-                    className="h-10 text-sm border-gray-200 focus:border-blue-500"
-                  />
-                </div>
-                <Button 
-                  size="sm"
-                  className="h-10 px-4 bg-blue-600 hover:bg-blue-700"
-                  onClick={() => setLocation('/')}
-                >
-                  <Search className="w-4 h-4" />
-                </Button>
-              </div>
+            {/* Recherche épurée */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input 
+                placeholder="Rechercher un salon, service..."
+                className="pl-10 h-12 border-gray-200 rounded-xl bg-white"
+                onClick={() => setLocation('/')}
+              />
+              <Button 
+                size="sm" 
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 rounded-lg"
+                onClick={() => setLocation('/')}
+              >
+                <Filter className="w-4 h-4" />
+              </Button>
             </div>
 
-            {/* Services compacts */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Scissors className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">Coiffure</h3>
-                    <p className="text-xs text-gray-500">Coupes, colorations</p>
-                  </div>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full text-xs"
-                  onClick={() => setLocation('/')}
-                >
-                  Réserver
-                </Button>
-              </div>
-
-              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
-                    <Palette className="w-5 h-5 text-pink-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">Esthétique</h3>
-                    <p className="text-xs text-gray-500">Soins visage</p>
-                  </div>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full text-xs"
-                  onClick={() => setLocation('/')}
-                >
-                  Réserver
-                </Button>
-              </div>
-
-              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-3 mb-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">Bien-être</h3>
-                    <p className="text-xs text-gray-500">Massages</p>
-                  </div>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="w-full text-xs"
-                  onClick={() => setLocation('/')}
-                >
-                  Réserver
-                </Button>
-              </div>
+            {/* Actions rapides */}
+            <div className="grid grid-cols-2 gap-3">
+              <Button 
+                className="h-20 flex flex-col space-y-2 bg-gradient-to-br from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-xl"
+                onClick={() => setLocation('/')}
+              >
+                <Plus className="w-6 h-6" />
+                <span className="text-sm font-medium">Nouveau RDV</span>
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="h-20 flex flex-col space-y-2 bg-white border-gray-200 hover:bg-gray-50 rounded-xl"
+                onClick={() => setActiveTab('rendez-vous')}
+              >
+                <Calendar className="w-6 h-6 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700">Mes RDV</span>
+              </Button>
             </div>
 
             {/* Prochains rendez-vous */}
-            <div className="bg-white rounded-lg border">
-              <div className="p-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center">
-                      <Calendar className="w-4 h-4 text-green-600" />
-                    </div>
-                    <h3 className="font-medium text-gray-900">Prochains rendez-vous</h3>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => setActiveTab("appointments")}
-                    className="text-blue-600 hover:text-blue-700 text-xs p-1"
-                  >
-                    Voir tout <ChevronRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-gray-900">Prochains rendez-vous</h2>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => setActiveTab('rendez-vous')}
+                  className="text-violet-600 hover:text-violet-700 p-0"
+                >
+                  Voir tout
+                </Button>
               </div>
-              <div className="p-4">
-                {appointmentsLoading ? (
-                  <div className="space-y-3">
-                    {[1, 2].map(i => (
-                      <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
-                    ))}
-                  </div>
-                ) : upcomingAppointments.length > 0 ? (
-                  <div className="space-y-3">
-                    {upcomingAppointments.map((appointment) => (
-                      <div key={appointment.id} className="p-3 bg-green-50 rounded-lg border border-green-100">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center border">
-                              <Scissors className="w-4 h-4 text-green-600" />
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-medium text-gray-900">{appointment.serviceName}</h4>
-                              <p className="text-xs text-gray-600">{appointment.businessName}</p>
-                              <div className="flex items-center space-x-2 mt-1">
-                                <span className="text-xs text-gray-500">
-                                  {appointment.startTime}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}
-                                </span>
-                              </div>
-                            </div>
+
+              {appointmentsLoading ? (
+                <div className="space-y-3">
+                  {[1, 2].map(i => (
+                    <div key={i} className="h-24 bg-white rounded-xl animate-pulse border border-gray-100" />
+                  ))}
+                </div>
+              ) : upcomingAppointments.length > 0 ? (
+                <div className="space-y-3">
+                  {upcomingAppointments.slice(0, 2).map((appointment) => (
+                    <div key={appointment.id} className="bg-white rounded-xl border border-gray-100 p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <h3 className="font-medium text-gray-900">{appointment.serviceName}</h3>
+                            <Badge variant="outline" className={`text-xs ${getStatusColor(appointment.status)}`}>
+                              {appointment.status === 'confirmed' ? 'Confirmé' : appointment.status}
+                            </Badge>
                           </div>
-                          <div className="text-right">
-                            <div className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">
-                              Confirmé
+                          
+                          <p className="text-sm text-gray-600 mb-2">{appointment.businessName}</p>
+                          
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center space-x-1">
+                              <Calendar className="w-4 h-4" />
+                              <span>{format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}</span>
                             </div>
-                            <p className="text-sm font-semibold text-gray-900 mt-1">{appointment.totalPrice}€</p>
+                            <div className="flex items-center space-x-1">
+                              <Clock className="w-4 h-4" />
+                              <span>{appointment.startTime}</span>
+                            </div>
                           </div>
                         </div>
+                        
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">{appointment.totalPrice}€</p>
+                          <Button variant="ghost" size="sm" className="p-0 h-auto text-violet-600 hover:text-violet-700">
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <Calendar className="w-6 h-6 text-gray-400" />
                     </div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-1">Aucun rendez-vous</h4>
-                    <p className="text-xs text-gray-500 mb-4">Réservez votre premier rendez-vous</p>
-                    <Button 
-                      size="sm"
-                      className="bg-blue-600 hover:bg-blue-700"
-                      onClick={() => setLocation('/')}
-                    >
-                      Réserver
-                    </Button>
-                  </div>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
+                  <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <h3 className="font-medium text-gray-900 mb-1">Aucun rendez-vous à venir</h3>
+                  <p className="text-sm text-gray-500 mb-4">Réservez votre prochain soin</p>
+                  <Button 
+                    className="bg-violet-600 hover:bg-violet-700"
+                    onClick={() => setLocation('/')}
+                  >
+                    Réserver maintenant
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Messages récents */}
-            <div className="bg-white rounded-lg border">
-              <div className="p-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 text-blue-600" />
-                    </div>
-                    <h3 className="font-medium text-gray-900">Messages récents</h3>
-                  </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => setActiveTab("messages")}
-                    className="text-blue-600 hover:text-blue-700 text-xs p-1"
-                  >
-                    Voir tout <ChevronRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </div>
-              </div>
-              <div className="p-4">
-                {conversationsLoading ? (
-                  <div className="space-y-3">
-                    {[1, 2].map(i => (
-                      <div key={i} className="h-14 bg-gray-100 rounded-lg animate-pulse" />
-                    ))}
-                  </div>
-                ) : recentConversations.length > 0 ? (
-                  <div className="space-y-3">
-                    {recentConversations.map((conversation) => (
-                      <div key={conversation.id} className="p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-xs">
-                              S
-                            </div>
-                            <div>
-                              <h4 className="text-sm font-medium text-gray-900">Salon Pro</h4>
-                              <p className="text-xs text-gray-600 truncate max-w-48">
-                                {conversation.lastMessageContent}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-xs text-gray-500">
-                              {format(new Date(conversation.lastMessageAt), 'HH:mm')}
-                            </p>
-                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 ml-auto"></div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                      <MessageCircle className="w-6 h-6 text-gray-400" />
-                    </div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-1">Aucune conversation</h4>
-                    <p className="text-xs text-gray-500">Vos échanges avec les salons apparaîtront ici</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "appointments" && (
-          <div className="bg-white rounded-2xl shadow-sm border">
-            <div className="p-6 border-b border-gray-100">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-white" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900">Mes rendez-vous</h2>
-              </div>
-            </div>
-            <div className="p-6">
-              {appointmentsLoading ? (
-                <div className="space-y-4">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
-                  ))}
-                </div>
-              ) : appointments.length > 0 ? (
-                <div className="space-y-4">
-                  {appointments.map((appointment) => (
-                    <div key={appointment.id} className="p-6 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                            <Scissors className="w-7 h-7 text-white" />
-                          </div>
-                          <div>
-                            <h4 className="text-lg font-bold text-gray-900">{appointment.serviceName}</h4>
-                            <p className="text-gray-600 font-medium">{appointment.businessName}</p>
-                            <div className="flex items-center space-x-6 mt-3">
-                              <span className="flex items-center text-gray-500">
-                                <Calendar className="w-4 h-4 mr-2" />
-                                {format(new Date(appointment.appointmentDate), 'd MMMM yyyy', { locale: fr })}
-                              </span>
-                              <span className="flex items-center text-gray-500">
-                                <Clock className="w-4 h-4 mr-2" />
-                                {appointment.startTime}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                            appointment.status === 'confirmed' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {appointment.status === 'confirmed' ? 'Confirmé' : appointment.status}
-                          </div>
-                          <p className="text-2xl font-bold text-gray-900 mt-2">
-                            {appointment.totalPrice}€
-                          </p>
-                          <Button size="sm" variant="outline" className="mt-2 border-blue-200 hover:bg-blue-50">
-                            Gérer
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-16">
-                  <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <Calendar className="w-10 h-10 text-gray-400" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Aucun rendez-vous programmé</h3>
-                  <p className="text-gray-500 mb-8 max-w-md mx-auto">Découvrez nos salons partenaires et réservez votre premier rendez-vous beauté</p>
-                  <Button 
-                    size="lg"
-                    className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
-                    onClick={() => setLocation('/')}
-                  >
-                    Explorer les salons
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "messages" && (
-          <div className="bg-white rounded-lg border">
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
-                  <MessageCircle className="w-4 h-4 text-blue-600" />
-                </div>
-                <h2 className="font-medium text-gray-900">Mes conversations</h2>
-              </div>
-            </div>
-            <div className="p-4">
-              {conversationsLoading ? (
-                <div className="space-y-3">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
-                  ))}
-                </div>
-              ) : conversations.length > 0 ? (
-                <div className="space-y-3">
-                  {conversations.map((conversation) => (
-                    <div key={conversation.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                            S
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900">Salon Professionnel</h4>
-                            <p className="text-xs text-gray-600 truncate max-w-64">
-                              {conversation.lastMessageContent}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-gray-500">
-                            {format(new Date(conversation.lastMessageAt), 'dd/MM à HH:mm')}
-                          </p>
-                          <Button size="sm" variant="ghost" className="mt-1 text-xs">
-                            Répondre
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
-                    <MessageCircle className="w-6 h-6 text-gray-400" />
-                  </div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Aucune conversation</h3>
-                  <p className="text-xs text-gray-600">Vos échanges avec les salons apparaîtront ici</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "profile" && (
-          <div className="bg-white rounded-lg border">
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
-                  <User className="w-4 h-4 text-gray-600" />
-                </div>
-                <h2 className="font-medium text-gray-900">Mon profil</h2>
-              </div>
-            </div>
-            <div className="p-4 space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
-                  {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">
-                    {clientSession.firstName} {clientSession.lastName}
-                  </h3>
-                  <p className="text-sm text-gray-600">{clientSession.email}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-700">Prénom</label>
-                  <Input value={clientSession.firstName} disabled className="h-8 text-sm" />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-gray-700">Nom</label>
-                  <Input value={clientSession.lastName} disabled className="h-8 text-sm" />
-                </div>
-                <div className="space-y-1 md:col-span-2">
-                  <label className="text-xs font-medium text-gray-700">Email</label>
-                  <Input value={clientSession.email} disabled className="h-8 text-sm" />
-                </div>
-              </div>
-
-              <div className="pt-3 border-t border-gray-200">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-gray-900">Messages récents</h2>
                 <Button 
-                  variant="outline" 
+                  variant="ghost" 
                   size="sm"
-                  className="w-full"
+                  onClick={() => setActiveTab('messages')}
+                  className="text-violet-600 hover:text-violet-700 p-0"
                 >
-                  Modifier mes informations
+                  Voir tout
                 </Button>
               </div>
+
+              {conversationsLoading ? (
+                <div className="h-20 bg-white rounded-xl animate-pulse border border-gray-100" />
+              ) : conversations.length > 0 ? (
+                <div className="space-y-2">
+                  {conversations.slice(0, 2).map((conversation) => (
+                    <div key={conversation.id} className="bg-white rounded-xl border border-gray-100 p-4">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="w-10 h-10">
+                          <AvatarFallback className="bg-gray-200 text-gray-600">
+                            {conversation.clientName.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-gray-900 truncate">Salon Professionnel</p>
+                          <p className="text-sm text-gray-500 truncate">{conversation.lastMessageContent}</p>
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {format(new Date(conversation.lastMessageAt), 'HH:mm')}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
+                  <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <h3 className="font-medium text-gray-900 mb-1">Aucun message</h3>
+                  <p className="text-sm text-gray-500">Vos conversations apparaîtront ici</p>
+                </div>
+              )}
             </div>
           </div>
         )}
-      </div>
 
-      {/* Bottom Navigation mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 safe-area-bottom">
-        <div className="flex justify-around">
-          <button
-            onClick={() => setActiveTab("dashboard")}
-            className={`flex flex-col items-center py-1 px-2 rounded-md ${
-              activeTab === "dashboard" ? "text-blue-600" : "text-gray-500"
-            }`}
-          >
-            <Home className="w-4 h-4" />
-            <span className="text-xs mt-1">Accueil</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("appointments")}
-            className={`flex flex-col items-center py-1 px-2 rounded-md ${
-              activeTab === "appointments" ? "text-blue-600" : "text-gray-500"
-            }`}
-          >
-            <Calendar className="w-4 h-4" />
-            <span className="text-xs mt-1">RDV</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("messages")}
-            className={`flex flex-col items-center py-1 px-2 rounded-md ${
-              activeTab === "messages" ? "text-blue-600" : "text-gray-500"
-            }`}
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span className="text-xs mt-1">Messages</span>
-          </button>
-          <button
-            onClick={() => setActiveTab("profile")}
-            className={`flex flex-col items-center py-1 px-2 rounded-md ${
-              activeTab === "profile" ? "text-blue-600" : "text-gray-500"
-            }`}
-          >
-            <User className="w-4 h-4" />
-            <span className="text-xs mt-1">Profil</span>
-          </button>
-        </div>
-      </div>
+        {activeTab === 'rendez-vous' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h1 className="text-xl font-bold text-gray-900">Mes rendez-vous</h1>
+              <Button 
+                className="bg-violet-600 hover:bg-violet-700"
+                onClick={() => setLocation('/')}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Réserver
+              </Button>
+            </div>
+
+            {appointmentsLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-24 bg-white rounded-xl animate-pulse border border-gray-100" />
+                ))}
+              </div>
+            ) : appointments.length > 0 ? (
+              <div className="space-y-3">
+                {appointments.map((appointment) => (
+                  <div key={appointment.id} className="bg-white rounded-xl border border-gray-100 p-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <h3 className="font-medium text-gray-900">{appointment.serviceName}</h3>
+                          <Badge variant="outline" className={`text-xs ${getStatusColor(appointment.status)}`}>
+                            {appointment.status === 'confirmed' ? 'Confirmé' : 
+                             appointment.status === 'pending' ? 'En attente' :
+                             appointment.status === 'cancelled' ? 'Annulé' : appointment.status}
+                          </Badge>
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 mb-2">{appointment.businessName}</p>
+                        
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{format(new Date(appointment.appointmentDate), 'd MMMM yyyy', { locale: fr })}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{appointment.startTime} - {appointment.endTime}</span>
+                          </div>
+                        </div>
+
+                        {appointment.notes && (
+                          <p className="text-sm text-gray-500 mt-2 italic">{appointment.notes}</p>
+                        )}
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900 mb-2">{appointment.totalPrice}€</p>
+                        {appointment.status === 'confirmed' && new Date(appointment.appointmentDate) > new Date() && (
+                          <div className="flex flex-col space-y-1">
+                            <Button variant="outline" size="sm" className="text-xs">
+                              Modifier
+                            </Button>
+                            <Button variant="ghost" size="sm" className="text-xs text-red-600 hover:text-red-700">
+                              Annuler
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous</h3>
+                <p className="text-gray-500 mb-6">Commencez par réserver votre premier soin</p>
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-700"
+                  onClick={() => setLocation('/')}
+                >
+                  Réserver maintenant
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'messages' && (
+          <div className="space-y-4">
+            <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+
+            {conversationsLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-20 bg-white rounded-xl animate-pulse border border-gray-100" />
+                ))}
+              </div>
+            ) : conversations.length > 0 ? (
+              <div className="space-y-2">
+                {conversations.map((conversation) => (
+                  <div key={conversation.id} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-shadow">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-12 h-12">
+                        <AvatarFallback className="bg-violet-100 text-violet-600 font-medium">
+                          SP
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-medium text-gray-900">Salon Professionnel</h3>
+                          <span className="text-xs text-gray-400">
+                            {format(new Date(conversation.lastMessageAt), 'HH:mm')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-500 truncate mt-1">{conversation.lastMessageContent}</p>
+                      </div>
+                      <ChevronRight className="w-5 h-5 text-gray-300" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
+                <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun message</h3>
+                <p className="text-gray-500 mb-6">Vos conversations avec les salons apparaîtront ici</p>
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-700"
+                  onClick={() => setLocation('/')}
+                >
+                  Découvrir les salons
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'profil' && (
+          <div className="space-y-6">
+            <h1 className="text-xl font-bold text-gray-900">Mon profil</h1>
+
+            {/* Informations profil */}
+            <div className="bg-white rounded-xl border border-gray-100 p-6">
+              <div className="flex items-center space-x-4 mb-6">
+                <Avatar className="w-16 h-16">
+                  <AvatarFallback className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-lg font-medium">
+                    {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {clientSession.firstName} {clientSession.lastName}
+                  </h2>
+                  <p className="text-gray-500">{clientSession.email}</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                  <div className="flex items-center space-x-3">
+                    <User className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">Informations personnelles</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-300" />
+                </div>
+
+                <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                  <div className="flex items-center space-x-3">
+                    <Bell className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">Notifications</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-300" />
+                </div>
+
+                <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                  <div className="flex items-center space-x-3">
+                    <Heart className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">Favoris</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-300" />
+                </div>
+
+                <div className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg cursor-pointer">
+                  <div className="flex items-center space-x-3">
+                    <Settings className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">Paramètres</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-300" />
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-center h-12 border-red-200 text-red-600 hover:bg-red-50"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-5 h-5 mr-2" />
+                Se déconnecter
+              </Button>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
