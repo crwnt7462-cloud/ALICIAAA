@@ -140,85 +140,64 @@ export default function FreeTrialSignup() {
 
   if (step === 4) {
     return (
-      <div className="min-h-screen bg-black relative overflow-hidden">
-        {/* Background futuriste */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-emerald-950"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(16,185,129,0.4),transparent_70%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_80%,rgba(59,130,246,0.2),transparent_50%)]"></div>
-        
-        {/* Grille futuriste */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.05)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-        
-        <div className="relative z-10 flex items-center justify-center min-h-screen px-6">
-          <div className="w-full max-w-lg text-center">
-            {/* Animation de succès */}
+      <div className="min-h-screen bg-gray-50">
+        <div className="flex items-center justify-center min-h-screen px-4">
+          <div className="w-full max-w-md text-center">
             <div className="mb-8">
-              <div className="relative inline-flex items-center justify-center">
-                <div className="w-24 h-24 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse">
-                  <CheckCircle className="w-12 h-12 text-white" />
-                </div>
-                <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full blur-xl opacity-40 animate-pulse"></div>
-                {/* Particules de succès */}
-                <div className="absolute inset-0 animate-ping">
-                  <div className="w-6 h-6 bg-emerald-400 rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-8 opacity-60"></div>
-                  <div className="w-4 h-4 bg-green-400 rounded-full absolute bottom-0 right-0 transform translate-x-8 translate-y-8 opacity-40"></div>
-                  <div className="w-3 h-3 bg-emerald-300 rounded-full absolute top-1/2 left-0 transform -translate-x-12 -translate-y-1/2 opacity-50"></div>
-                </div>
+              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-white" />
               </div>
-              
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-white via-emerald-100 to-green-200 bg-clip-text text-transparent mt-6 mb-3">
-                COMPTE ACTIVÉ
+              <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+                Compte créé avec succès !
               </h1>
-              <div className="h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent mb-4"></div>
-              <p className="text-gray-400 text-lg">
-                Bienvenue dans l'écosystème beauté de demain
+              <p className="text-gray-600">
+                Votre essai gratuit de 14 jours a commencé
               </p>
             </div>
 
-            <Card className="border border-emerald-500/20 bg-black/60 backdrop-blur-xl shadow-2xl">
-              <CardContent className="p-8">
-                <div className="space-y-6 mb-8">
-                  <div className="flex items-center gap-4 text-gray-300">
-                    <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                      <Clock className="w-5 h-5 text-emerald-400" />
+            <Card className="border-0 shadow-sm bg-white">
+              <CardContent className="p-6">
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="text-left">
-                      <div className="font-medium text-white">ESSAI 14 JOURS</div>
-                      <div className="text-sm text-gray-400">Accès complet premium</div>
+                      <div className="font-medium">14 jours d'essai gratuit</div>
+                      <div className="text-gray-500">Accès complet à toutes les fonctionnalités</div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-gray-300">
-                    <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                      <Users className="w-5 h-5 text-emerald-400" />
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Users className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="text-left">
-                      <div className="font-medium text-white">SUPPORT 24/7</div>
-                      <div className="text-sm text-gray-400">Assistance prioritaire</div>
+                      <div className="font-medium">Support client inclus</div>
+                      <div className="text-gray-500">Aide prioritaire pendant votre essai</div>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 text-gray-300">
-                    <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center">
-                      <Zap className="w-5 h-5 text-emerald-400" />
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="text-left">
-                      <div className="font-medium text-white">ACTIVATION INSTANT</div>
-                      <div className="text-sm text-gray-400">Prêt à l'emploi maintenant</div>
+                      <div className="font-medium">Aucun engagement</div>
+                      <div className="text-gray-500">Annulation libre à tout moment</div>
                     </div>
                   </div>
                 </div>
 
                 <Button 
                   onClick={() => setLocation("/dashboard")}
-                  className="w-full h-14 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-emerald-500/25"
+                  className="w-full h-11 bg-violet-600 hover:bg-violet-700 text-white"
                 >
-                  ACCÉDER À MON ESPACE PRO
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                  Accéder à mon espace professionnel
                 </Button>
 
-                <p className="text-center text-xs text-gray-500 mt-6">
-                  Email de confirmation envoyé • Activation immédiate
+                <p className="text-center text-xs text-gray-500 mt-4">
+                  Un email de confirmation vous a été envoyé
                 </p>
               </CardContent>
             </Card>
@@ -229,189 +208,135 @@ export default function FreeTrialSignup() {
   }
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background futuriste */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-violet-950"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.3),transparent_50%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(59,130,246,0.2),transparent_50%)]"></div>
-      
-      {/* Grille futuriste */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-      
-      {/* Header futuriste */}
-      <div className="relative z-10 p-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simple */}
+      <div className="p-4 border-b bg-white">
         <Button
           variant="ghost"
           onClick={() => setLocation("/professional-plans")}
-          className="text-gray-400 hover:text-white bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300"
+          className="text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Retour aux plans
         </Button>
       </div>
 
-      <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-6">
-        <div className="w-full max-w-lg">
-          {/* Logo/Titre futuriste */}
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
+        <div className="w-full max-w-md">
+          {/* Header simple comme Planity */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-r from-violet-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-2xl">
-                  <Building className="w-7 h-7 text-white" />
-                </div>
-                <div className="absolute -inset-1 bg-gradient-to-r from-violet-500 to-blue-500 rounded-2xl blur opacity-30 animate-pulse"></div>
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                  Inscription Pro
-                </h1>
-                <div className="h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent mt-2"></div>
-              </div>
+            <div className="w-12 h-12 bg-violet-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+              <Building className="w-6 h-6 text-white" />
             </div>
-            <p className="text-gray-400 text-lg">
-              Rejoignez l'écosystème beauté de demain
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+              Créer un compte professionnel
+            </h1>
+            <p className="text-gray-600">
+              Essai gratuit 14 jours · Sans engagement
             </p>
           </div>
 
-          {/* Progress futuriste */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-300">ÉTAPE {step} / 3</span>
-              <span className="text-sm text-violet-400 font-mono">{Math.round((step / 3) * 100)}%</span>
+          {/* Progress simple comme Planity */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-gray-700">Étape {step} sur 3</span>
+              <span className="text-sm text-gray-500">{Math.round((step / 3) * 100)}%</span>
             </div>
-            <div className="relative">
-              <div className="w-full bg-gray-800 rounded-full h-1 overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-violet-500 to-blue-500 rounded-full transition-all duration-500 ease-out shadow-lg"
-                  style={{ width: `${(step / 3) * 100}%` }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
-                </div>
-              </div>
-              <div className="absolute -top-2 left-0 w-full flex justify-between">
-                {[1, 2, 3].map((stepNum) => (
-                  <div key={stepNum} className="relative">
-                    <div className={`w-1 h-5 rounded-full transition-all duration-300 ${
-                      stepNum <= step 
-                        ? 'bg-gradient-to-b from-violet-400 to-blue-400 shadow-lg' 
-                        : 'bg-gray-700'
-                    }`}>
-                      {stepNum <= step && (
-                        <div className="absolute inset-0 bg-gradient-to-b from-violet-400 to-blue-400 rounded-full blur-sm opacity-50"></div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-violet-600 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${(step / 3) * 100}%` }}
+              />
             </div>
           </div>
 
-          <Card className="border border-white/10 bg-black/50 backdrop-blur-xl shadow-2xl transition-all duration-500 hover:bg-black/60 hover:border-violet-500/30">
-            <CardHeader className="space-y-1 pb-6">
-              <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="relative">
-                  {step === 1 && <User className="w-6 h-6 text-violet-400" />}
-                  {step === 2 && <Building className="w-6 h-6 text-violet-400" />}
-                  {step === 3 && <FileText className="w-6 h-6 text-violet-400" />}
-                  <div className="absolute inset-0 text-violet-400 blur-sm opacity-50">
-                    {step === 1 && <User className="w-6 h-6" />}
-                    {step === 2 && <Building className="w-6 h-6" />}
-                    {step === 3 && <FileText className="w-6 h-6" />}
-                  </div>
-                </div>
-                <CardTitle className="text-xl text-center bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent font-semibold">
-                  {step === 1 && 'PROFIL UTILISATEUR'}
-                  {step === 2 && 'DONNÉES ÉTABLISSEMENT'}
-                  {step === 3 && 'VALIDATION LÉGALE'}
-                </CardTitle>
-              </div>
-              <div className="h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent"></div>
+          <Card className="border-0 shadow-sm bg-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-medium text-gray-900 text-center">
+                {step === 1 && 'Vos informations'}
+                {step === 2 && 'Votre établissement'}
+                {step === 3 && 'Informations légales'}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 pb-8">
+            <CardContent className="pt-0">
               {/* Étape 1: Informations personnelles */}
               {step === 1 && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
                         Prénom
                       </Label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400 group-focus-within:text-violet-300 transition-colors" />
-                        <Input
-                          id="firstName"
-                          name="firstName"
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          placeholder="Jean"
-                          className="pl-12 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 focus:border-violet-500 transition-all duration-300"
-                          required
-                        />
-                        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-violet-500/0 via-violet-500/5 to-blue-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                      </div>
+                      <Input
+                        id="firstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        placeholder="Jean"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        required
+                      />
                     </div>
-                    <div className="space-y-3">
-                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
                         Nom
                       </Label>
-                      <div className="relative group">
-                        <User className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400 group-focus-within:text-violet-300 transition-colors" />
-                        <Input
-                          id="lastName"
-                          name="lastName"
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          placeholder="Dupont"
-                          className="pl-12 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 focus:border-violet-500 transition-all duration-300"
-                          required
-                        />
-                        <div className="absolute inset-0 rounded-md bg-gradient-to-r from-violet-500/0 via-violet-500/5 to-blue-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                      </div>
+                      <Input
+                        id="lastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        placeholder="Dupont"
+                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
+                        required
+                      />
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                       Email professionnel
                     </Label>
-                    <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400 group-focus-within:text-violet-300 transition-colors" />
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="contact@monsalon.fr"
-                        className={`pl-12 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 transition-all duration-300 ${
-                          formData.email && !validateEmail(formData.email) 
-                            ? 'border-red-500/50 focus:border-red-500' 
-                            : 'focus:border-violet-500'
-                        }`}
-                        required
-                      />
-                      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-violet-500/0 via-violet-500/5 to-blue-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                    </div>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="contact@monsalon.fr"
+                      className={`h-10 border-gray-300 focus:ring-violet-500 ${
+                        formData.email && !validateEmail(formData.email) 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                          : 'focus:border-violet-500'
+                      }`}
+                      required
+                    />
+                    {formData.email && !validateEmail(formData.email) && (
+                      <p className="text-xs text-red-500">Format d'email invalide</p>
+                    )}
                   </div>
 
-                  <div className="space-y-3">
-                    <Label htmlFor="phone" className="text-sm font-medium text-gray-300 uppercase tracking-wider">
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
                       Téléphone
                     </Label>
-                    <div className="relative group">
-                      <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-violet-400 group-focus-within:text-violet-300 transition-colors" />
-                      <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        placeholder="01 23 45 67 89"
-                        className="pl-12 h-12 bg-white/5 border-white/10 text-white placeholder:text-gray-500 focus:bg-white/10 focus:border-violet-500 transition-all duration-300"
-                        required
-                      />
-                      <div className="absolute inset-0 rounded-md bg-gradient-to-r from-violet-500/0 via-violet-500/5 to-blue-500/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-                    </div>
+                    <Input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      placeholder="01 23 45 67 89"
+                      className={`h-10 border-gray-300 focus:ring-violet-500 ${
+                        formData.phone && !validatePhone(formData.phone) 
+                          ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                          : 'focus:border-violet-500'
+                      }`}
+                      required
+                    />
+                    {formData.phone && !validatePhone(formData.phone) && (
+                      <p className="text-xs text-red-500">Format de téléphone invalide</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -696,60 +621,37 @@ export default function FreeTrialSignup() {
               </div>
             )}
 
-              {/* Boutons de navigation futuristes */}
-              <div className="flex justify-between pt-8">
+              {/* Boutons navigation simple */}
+              <div className="flex justify-between pt-6">
                 <Button
                   variant="outline"
                   onClick={() => setStep(step - 1)}
                   disabled={step === 1}
-                  className="h-12 px-6 bg-white/5 border-white/20 text-gray-300 hover:bg-white/10 hover:border-violet-500/50 hover:text-white transition-all duration-300 disabled:opacity-30"
+                  className="h-10 px-4"
                 >
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  PRÉCÉDENT
+                  Précédent
                 </Button>
                 
                 <Button
                   onClick={handleNextStep}
                   disabled={!validateStep()}
-                  className="h-12 px-8 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-violet-500/25"
+                  className="h-10 px-6 bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50"
                 >
-                  {step === 3 ? (
-                    <>
-                      CRÉER COMPTE
-                      <CheckCircle className="w-4 h-4 ml-2" />
-                    </>
-                  ) : (
-                    <>
-                      CONTINUER
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
+                  {step === 3 ? "Créer mon compte" : "Suivant"}
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </div>
 
-              {/* Conditions futuristes */}
-              <div className="mt-8 text-center">
-                <div className="flex items-center justify-center gap-4 mb-4 text-xs">
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Shield className="w-3 h-3" />
-                    <span>SÉCURISÉ SSL</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Lock className="w-3 h-3" />
-                    <span>RGPD</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <Zap className="w-3 h-3" />
-                    <span>INSTANTANÉ</span>
-                  </div>
-                </div>
+              {/* Conditions simples */}
+              <div className="mt-6 text-center">
                 <p className="text-xs text-gray-500">
-                  En continuant, vous acceptez nos{" "}
-                  <a href="#" className="text-violet-400 hover:text-violet-300 transition-colors">
-                    conditions
+                  En créant votre compte, vous acceptez nos{" "}
+                  <a href="#" className="text-violet-600 hover:underline">
+                    conditions d'utilisation
                   </a>{" "}
-                  et{" "}
-                  <a href="#" className="text-violet-400 hover:text-violet-300 transition-colors">
+                  et notre{" "}
+                  <a href="#" className="text-violet-600 hover:underline">
                     politique de confidentialité
                   </a>
                 </p>
