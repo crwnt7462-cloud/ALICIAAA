@@ -108,31 +108,31 @@ export default function ClientDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header professionnel épuré */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-4 py-4">
+      {/* Header épuré */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
-                <Sparkles className="w-7 h-7 text-white" />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Beautify</h1>
-                <p className="text-sm text-gray-500">Bonjour {clientSession.firstName}</p>
+                <h1 className="text-lg font-semibold text-gray-900">Beautify</h1>
+                <p className="text-xs text-gray-500">Bonjour {clientSession.firstName}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="hidden md:flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-2 bg-gray-50 rounded-md px-2 py-1">
+                <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-xs">
                   {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
                 </div>
-                <span className="text-sm font-medium text-gray-700">{clientSession.firstName}</span>
+                <span className="text-xs font-medium text-gray-700">{clientSession.firstName}</span>
               </div>
               <Button 
                 variant="ghost" 
                 size="sm"
                 onClick={handleLogout}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-400 hover:text-gray-600 p-1"
               >
                 <LogOut className="w-4 h-4" />
               </Button>
@@ -141,52 +141,52 @@ export default function ClientDashboard() {
         </div>
       </div>
 
-      {/* Navigation moderne */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="bg-white rounded-2xl shadow-sm border p-2 mb-8">
-          <div className="grid grid-cols-4 gap-2">
+      {/* Navigation compacte */}
+      <div className="max-w-5xl mx-auto px-4 py-4">
+        <div className="bg-white rounded-lg border p-1 mb-6">
+          <div className="grid grid-cols-4 gap-1">
             <button
               onClick={() => setActiveTab("dashboard")}
-              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
                 activeTab === "dashboard"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              <Home className="w-5 h-5 mb-2" />
+              <Home className="w-4 h-4 mb-1" />
               Accueil
             </button>
             <button
               onClick={() => setActiveTab("appointments")}
-              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
                 activeTab === "appointments"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              <Calendar className="w-5 h-5 mb-2" />
+              <Calendar className="w-4 h-4 mb-1" />
               Rendez-vous
             </button>
             <button
               onClick={() => setActiveTab("messages")}
-              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
                 activeTab === "messages"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              <MessageCircle className="w-5 h-5 mb-2" />
+              <MessageCircle className="w-4 h-4 mb-1" />
               Messages
             </button>
             <button
               onClick={() => setActiveTab("profile")}
-              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+              className={`flex flex-col items-center px-3 py-2 rounded-md text-xs font-medium transition-all ${
                 activeTab === "profile"
-                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  ? "bg-blue-50 text-blue-700"
                   : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              <User className="w-5 h-5 mb-2" />
+              <User className="w-4 h-4 mb-1" />
               Profil
             </button>
           </div>
@@ -194,159 +194,162 @@ export default function ClientDashboard() {
 
         {/* Contenu selon l'onglet actif */}
         {activeTab === "dashboard" && (
-          <div className="space-y-8">
-            {/* Barre de recherche principale */}
-            <div className="bg-white rounded-2xl shadow-sm border p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Réserver votre prochain rendez-vous</h2>
-              <div className="flex space-x-3">
+          <div className="space-y-6">
+            {/* Barre de recherche */}
+            <div className="bg-white rounded-lg border p-4">
+              <h2 className="text-lg font-semibold text-gray-900 mb-3">Réserver un rendez-vous</h2>
+              <div className="flex space-x-2">
                 <div className="flex-1">
                   <Input 
                     placeholder="Rechercher un salon, un service..."
-                    className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    className="h-10 text-sm border-gray-200 focus:border-blue-500"
                   />
                 </div>
                 <Button 
-                  className="h-12 px-8 bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
+                  size="sm"
+                  className="h-10 px-4 bg-blue-600 hover:bg-blue-700"
                   onClick={() => setLocation('/')}
                 >
-                  <Search className="w-5 h-5 mr-2" />
-                  Rechercher
+                  <Search className="w-4 h-4" />
                 </Button>
               </div>
             </div>
 
-            {/* Actions rapides avec design moderne */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
-                    <Scissors className="w-7 h-7 text-white" />
+            {/* Services compacts */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Scissors className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-lg">Coiffure</h3>
-                    <p className="text-sm text-gray-500">Coupes, colorations, soins</p>
+                    <h3 className="font-medium text-gray-900">Coiffure</h3>
+                    <p className="text-xs text-gray-500">Coupes, colorations</p>
                   </div>
                 </div>
                 <Button 
                   variant="outline" 
-                  className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                  size="sm"
+                  className="w-full text-xs"
                   onClick={() => setLocation('/')}
                 >
-                  Réserver maintenant
+                  Réserver
                 </Button>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center">
-                    <Palette className="w-7 h-7 text-white" />
+              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center">
+                    <Palette className="w-5 h-5 text-pink-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-lg">Esthétique</h3>
-                    <p className="text-sm text-gray-500">Soins visage, épilations</p>
+                    <h3 className="font-medium text-gray-900">Esthétique</h3>
+                    <p className="text-xs text-gray-500">Soins visage</p>
                   </div>
                 </div>
                 <Button 
                   variant="outline" 
-                  className="w-full border-pink-200 hover:bg-pink-50 hover:border-pink-300"
+                  size="sm"
+                  className="w-full text-xs"
                   onClick={() => setLocation('/')}
                 >
-                  Réserver maintenant
+                  Réserver
                 </Button>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center space-x-4 mb-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                    <Sparkles className="w-7 h-7 text-white" />
+              <div className="bg-white rounded-lg border p-4 hover:shadow-sm transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 text-lg">Bien-être</h3>
-                    <p className="text-sm text-gray-500">Massages, relaxation</p>
+                    <h3 className="font-medium text-gray-900">Bien-être</h3>
+                    <p className="text-xs text-gray-500">Massages</p>
                   </div>
                 </div>
                 <Button 
                   variant="outline" 
-                  className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                  size="sm"
+                  className="w-full text-xs"
                   onClick={() => setLocation('/')}
                 >
-                  Réserver maintenant
+                  Réserver
                 </Button>
               </div>
             </div>
 
             {/* Prochains rendez-vous */}
-            <div className="bg-white rounded-2xl shadow-sm border">
-              <div className="p-6 border-b border-gray-100">
+            <div className="bg-white rounded-lg border">
+              <div className="p-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-white" />
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-green-100 rounded-md flex items-center justify-center">
+                      <Calendar className="w-4 h-4 text-green-600" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900">Prochains rendez-vous</h3>
+                    <h3 className="font-medium text-gray-900">Prochains rendez-vous</h3>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => setActiveTab("appointments")}
-                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    className="text-blue-600 hover:text-blue-700 text-xs p-1"
                   >
-                    Voir tout <ChevronRight className="w-4 h-4 ml-1" />
+                    Voir tout <ChevronRight className="w-3 h-3 ml-1" />
                   </Button>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4">
                 {appointmentsLoading ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {[1, 2].map(i => (
-                      <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
+                      <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
                     ))}
                   </div>
                 ) : upcomingAppointments.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {upcomingAppointments.map((appointment) => (
-                      <div key={appointment.id} className="p-4 bg-gradient-to-r from-green-50 to-green-50/50 rounded-xl border border-green-100">
+                      <div key={appointment.id} className="p-3 bg-green-50 rounded-lg border border-green-100">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm border border-green-100">
-                              <Scissors className="w-6 h-6 text-green-600" />
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center border">
+                              <Scissors className="w-4 h-4 text-green-600" />
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
-                              <p className="text-gray-600 text-sm">{appointment.businessName}</p>
-                              <div className="flex items-center space-x-3 mt-1">
-                                <span className="flex items-center text-sm text-gray-500">
-                                  <Clock className="w-4 h-4 mr-1" />
+                              <h4 className="text-sm font-medium text-gray-900">{appointment.serviceName}</h4>
+                              <p className="text-xs text-gray-600">{appointment.businessName}</p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <span className="text-xs text-gray-500">
                                   {appointment.startTime}
                                 </span>
-                                <span className="text-sm text-gray-500">
-                                  {format(new Date(appointment.appointmentDate), 'd MMMM', { locale: fr })}
+                                <span className="text-xs text-gray-500">
+                                  {format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}
                                 </span>
                               </div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <div className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded">
                               Confirmé
                             </div>
-                            <p className="text-lg font-bold text-gray-900 mt-1">{appointment.totalPrice}€</p>
+                            <p className="text-sm font-semibold text-gray-900 mt-1">{appointment.totalPrice}€</p>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <Calendar className="w-8 h-8 text-gray-400" />
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="w-6 h-6 text-gray-400" />
                     </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Aucun rendez-vous programmé</h4>
-                    <p className="text-gray-500 mb-6">Réservez votre premier rendez-vous dès maintenant</p>
+                    <h4 className="text-sm font-medium text-gray-900 mb-1">Aucun rendez-vous</h4>
+                    <p className="text-xs text-gray-500 mb-4">Réservez votre premier rendez-vous</p>
                     <Button 
-                      className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700"
                       onClick={() => setLocation('/')}
                     >
-                      Prendre rendez-vous
+                      Réserver
                     </Button>
                   </div>
                 )}
@@ -354,44 +357,44 @@ export default function ClientDashboard() {
             </div>
 
             {/* Messages récents */}
-            <div className="bg-white rounded-2xl shadow-sm border">
-              <div className="p-6 border-b border-gray-100">
+            <div className="bg-white rounded-lg border">
+              <div className="p-4 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                      <MessageCircle className="w-5 h-5 text-white" />
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+                      <MessageCircle className="w-4 h-4 text-blue-600" />
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900">Messages récents</h3>
+                    <h3 className="font-medium text-gray-900">Messages récents</h3>
                   </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => setActiveTab("messages")}
-                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                    className="text-blue-600 hover:text-blue-700 text-xs p-1"
                   >
-                    Voir tout <ChevronRight className="w-4 h-4 ml-1" />
+                    Voir tout <ChevronRight className="w-3 h-3 ml-1" />
                   </Button>
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4">
                 {conversationsLoading ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {[1, 2].map(i => (
-                      <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
+                      <div key={i} className="h-14 bg-gray-100 rounded-lg animate-pulse" />
                     ))}
                   </div>
                 ) : recentConversations.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {recentConversations.map((conversation) => (
-                      <div key={conversation.id} className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 hover:bg-blue-50 transition-colors cursor-pointer">
+                      <div key={conversation.id} className="p-3 bg-blue-50 rounded-lg border border-blue-100 hover:bg-blue-100 transition-colors cursor-pointer">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-xs">
                               S
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">Salon Professionnel</h4>
-                              <p className="text-sm text-gray-600 truncate max-w-64">
+                              <h4 className="text-sm font-medium text-gray-900">Salon Pro</h4>
+                              <p className="text-xs text-gray-600 truncate max-w-48">
                                 {conversation.lastMessageContent}
                               </p>
                             </div>
@@ -407,12 +410,12 @@ export default function ClientDashboard() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                      <MessageCircle className="w-8 h-8 text-gray-400" />
+                  <div className="text-center py-8">
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                      <MessageCircle className="w-6 h-6 text-gray-400" />
                     </div>
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Aucune conversation</h4>
-                    <p className="text-gray-500">Vos échanges avec les salons apparaîtront ici</p>
+                    <h4 className="text-sm font-medium text-gray-900 mb-1">Aucune conversation</h4>
+                    <p className="text-xs text-gray-500">Vos échanges avec les salons apparaîtront ici</p>
                   </div>
                 )}
               </div>
@@ -501,34 +504,34 @@ export default function ClientDashboard() {
         )}
 
         {activeTab === "messages" && (
-          <Card className="border-violet-100">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <MessageCircle className="w-5 h-5 text-violet-600" />
-                <span>Mes conversations</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="bg-white rounded-lg border">
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-blue-100 rounded-md flex items-center justify-center">
+                  <MessageCircle className="w-4 h-4 text-blue-600" />
+                </div>
+                <h2 className="font-medium text-gray-900">Mes conversations</h2>
+              </div>
+            </div>
+            <div className="p-4">
               {conversationsLoading ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {[1, 2, 3].map(i => (
                     <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
                   ))}
                 </div>
               ) : conversations.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {conversations.map((conversation) => (
-                    <div key={conversation.id} className="p-4 border border-violet-100 rounded-lg bg-gradient-to-r from-violet-50 to-white hover:shadow-md transition-shadow cursor-pointer">
+                    <div key={conversation.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <Avatar className="w-12 h-12">
-                            <AvatarFallback className="bg-violet-100 text-violet-600">
-                              S
-                            </AvatarFallback>
-                          </Avatar>
+                          <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                            S
+                          </div>
                           <div>
-                            <h4 className="font-medium text-gray-900">Salon Professionnel</h4>
-                            <p className="text-sm text-gray-600 truncate max-w-64">
+                            <h4 className="text-sm font-medium text-gray-900">Salon Professionnel</h4>
+                            <p className="text-xs text-gray-600 truncate max-w-64">
                               {conversation.lastMessageContent}
                             </p>
                           </div>
@@ -537,7 +540,7 @@ export default function ClientDashboard() {
                           <p className="text-xs text-gray-500">
                             {format(new Date(conversation.lastMessageAt), 'dd/MM à HH:mm')}
                           </p>
-                          <Button size="sm" variant="ghost" className="mt-1">
+                          <Button size="sm" variant="ghost" className="mt-1 text-xs">
                             Répondre
                           </Button>
                         </div>
@@ -547,103 +550,106 @@ export default function ClientDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune conversation</h3>
-                  <p className="text-gray-600">Vos échanges avec les salons apparaîtront ici</p>
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    <MessageCircle className="w-6 h-6 text-gray-400" />
+                  </div>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2">Aucune conversation</h3>
+                  <p className="text-xs text-gray-600">Vos échanges avec les salons apparaîtront ici</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {activeTab === "profile" && (
-          <Card className="border-violet-100">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <User className="w-5 h-5 text-violet-600" />
-                <span>Mon profil</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <Avatar className="w-20 h-20">
-                  <AvatarFallback className="bg-gradient-to-br from-violet-500 to-purple-600 text-white text-2xl">
-                    {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+          <div className="bg-white rounded-lg border">
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center">
+                  <User className="w-4 h-4 text-gray-600" />
+                </div>
+                <h2 className="font-medium text-gray-900">Mon profil</h2>
+              </div>
+            </div>
+            <div className="p-4 space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                  {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
+                </div>
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="font-medium text-gray-900">
                     {clientSession.firstName} {clientSession.lastName}
                   </h3>
-                  <p className="text-gray-600">{clientSession.email}</p>
+                  <p className="text-sm text-gray-600">{clientSession.email}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Prénom</label>
-                  <Input value={clientSession.firstName} disabled />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Prénom</label>
+                  <Input value={clientSession.firstName} disabled className="h-8 text-sm" />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Nom</label>
-                  <Input value={clientSession.lastName} disabled />
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-700">Nom</label>
+                  <Input value={clientSession.lastName} disabled className="h-8 text-sm" />
                 </div>
-                <div className="space-y-2 md:col-span-2">
-                  <label className="text-sm font-medium text-gray-700">Email</label>
-                  <Input value={clientSession.email} disabled />
+                <div className="space-y-1 md:col-span-2">
+                  <label className="text-xs font-medium text-gray-700">Email</label>
+                  <Input value={clientSession.email} disabled className="h-8 text-sm" />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-3 border-t border-gray-200">
                 <Button 
                   variant="outline" 
-                  className="w-full border-violet-200 hover:bg-violet-50"
+                  size="sm"
+                  className="w-full"
                 >
                   Modifier mes informations
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
 
       {/* Bottom Navigation mobile */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-violet-100 px-4 py-2">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 safe-area-bottom">
         <div className="flex justify-around">
           <button
             onClick={() => setActiveTab("dashboard")}
-            className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-              activeTab === "dashboard" ? "text-violet-600" : "text-gray-500"
+            className={`flex flex-col items-center py-1 px-2 rounded-md ${
+              activeTab === "dashboard" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-4 h-4" />
             <span className="text-xs mt-1">Accueil</span>
           </button>
           <button
             onClick={() => setActiveTab("appointments")}
-            className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-              activeTab === "appointments" ? "text-violet-600" : "text-gray-500"
+            className={`flex flex-col items-center py-1 px-2 rounded-md ${
+              activeTab === "appointments" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <Calendar className="w-5 h-5" />
+            <Calendar className="w-4 h-4" />
             <span className="text-xs mt-1">RDV</span>
           </button>
           <button
             onClick={() => setActiveTab("messages")}
-            className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-              activeTab === "messages" ? "text-violet-600" : "text-gray-500"
+            className={`flex flex-col items-center py-1 px-2 rounded-md ${
+              activeTab === "messages" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <MessageCircle className="w-5 h-5" />
+            <MessageCircle className="w-4 h-4" />
             <span className="text-xs mt-1">Messages</span>
           </button>
           <button
             onClick={() => setActiveTab("profile")}
-            className={`flex flex-col items-center py-2 px-3 rounded-lg ${
-              activeTab === "profile" ? "text-violet-600" : "text-gray-500"
+            className={`flex flex-col items-center py-1 px-2 rounded-md ${
+              activeTab === "profile" ? "text-blue-600" : "text-gray-500"
             }`}
           >
-            <User className="w-5 h-5" />
+            <User className="w-4 h-4" />
             <span className="text-xs mt-1">Profil</span>
           </button>
         </div>
