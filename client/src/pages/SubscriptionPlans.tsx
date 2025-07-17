@@ -148,12 +148,18 @@ export default function SubscriptionPlans() {
                 Testez toutes les fonctionnalités sans engagement ni carte bancaire
               </p>
               <Button 
-                onClick={() => setLocation("/free-trial")}
+                onClick={() => {
+                  console.log("Navigation vers /free-trial");
+                  setLocation("/free-trial");
+                }}
                 className="w-full bg-green-600 hover:bg-green-700 text-white"
               >
                 <Gift className="w-4 h-4 mr-2" />
                 Commencer l'essai gratuit
               </Button>
+              <p className="text-xs text-gray-500 mt-2">
+                DEBUG: <a href="/free-trial" className="text-blue-600 hover:underline">Lien direct vers /free-trial</a>
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -282,7 +288,10 @@ export default function SubscriptionPlans() {
               </div>
               <h4 className="font-medium text-gray-900 mb-2">
                 <button 
-                  onClick={() => setLocation("/free-trial")}
+                  onClick={() => {
+                    console.log("Navigation vers /free-trial depuis garanties");
+                    setLocation("/free-trial");
+                  }}
                   className="text-green-600 hover:text-green-700 hover:underline"
                 >
                   Essai gratuit 14 jours
