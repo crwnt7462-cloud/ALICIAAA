@@ -1261,6 +1261,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Client Appointments API
+  app.get('/api/client/appointments', async (req, res) => {
+    try {
+      const clientId = req.query.clientId as string;
+      
+      if (!clientId) {
+        return res.status(400).json({ message: "clientId is required" });
+      }
+
+      // Get client account to find associated appointments
+      const clientAccount = await storage.getClientByEmail(""); // We'll need to adjust this
+      
+      // For now, return empty array - this will need to be implemented based on how clients are linked to appointments
+      const appointments = [];
+      
+      res.json(appointments);
+    } catch (error: any) {
+      console.error("Error fetching client appointments:", error);
+      res.status(500).json({ message: "Error fetching client appointments" });
+    }
+  });
+
   // Messaging API Routes
   app.get('/api/conversations', async (req, res) => {
     try {

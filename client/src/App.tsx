@@ -40,6 +40,7 @@ import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
+import ClientDashboard from "@/pages/ClientDashboard";
 
 
 function Router() {
@@ -77,6 +78,24 @@ function Router() {
     return (
       <div className="h-full">
         <SalonDetail />
+      </div>
+    );
+  }
+
+  // Page de connexion client
+  if (location === '/client-login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
+      </div>
+    );
+  }
+
+  // Page tableau de bord client
+  if (location === '/client-dashboard') {
+    return (
+      <div className="h-full">
+        <ClientDashboard />
       </div>
     );
   }

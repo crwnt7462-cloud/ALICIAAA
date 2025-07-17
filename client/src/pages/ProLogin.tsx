@@ -77,10 +77,15 @@ export default function ProLogin() {
         description: "Bienvenue ! Vous pouvez maintenant gérer vos réservations"
       });
       
-      // Stocker les informations utilisateur
-      localStorage.setItem("user", JSON.stringify(result.user));
+      // Store client session
+      localStorage.setItem('clientSession', JSON.stringify({
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName
+      }));
       localStorage.setItem("userType", "client");
-      setLocation("/");
+      setLocation("/client-dashboard");
     } catch (error: any) {
       toast({
         title: "Erreur de connexion",
@@ -107,10 +112,15 @@ export default function ProLogin() {
         description: "Votre compte a été créé avec succès"
       });
       
-      // Stocker les informations utilisateur
-      localStorage.setItem("user", JSON.stringify(result.user));
+      // Store client session
+      localStorage.setItem('clientSession', JSON.stringify({
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        lastName: result.user.lastName
+      }));
       localStorage.setItem("userType", "client");
-      setLocation("/");
+      setLocation("/client-dashboard");
     } catch (error: any) {
       toast({
         title: "Erreur d'inscription",
