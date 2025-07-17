@@ -44,6 +44,7 @@ export const users = pgTable("users", {
   isVerified: boolean("is_verified").default(false),
   subscriptionStatus: varchar("subscription_status").default("trial"), // free, basic, premium, trial
   trialEndDate: timestamp("trial_end_date"),
+  mentionHandle: varchar("mention_handle").unique(), // @identifiant unique pour mentions dans messagerie
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -122,6 +123,7 @@ export const clientAccounts = pgTable("client_accounts", {
   phone: varchar("phone"),
   dateOfBirth: date("date_of_birth"),
   isVerified: boolean("is_verified").default(false),
+  mentionHandle: varchar("mention_handle").unique(), // @identifiant unique pour mentions dans messagerie
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

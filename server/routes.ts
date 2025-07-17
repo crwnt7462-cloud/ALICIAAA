@@ -6,7 +6,7 @@ import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { appointmentHistory, cancellationPredictions, appointments, clients, subscriptions, users } from "@shared/schema";
+import { appointmentHistory, cancellationPredictions, appointments, clients, subscriptions, users, clientAccounts } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import {
   insertServiceSchema,
@@ -1406,6 +1406,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error fetching client appointments:", error);
       res.status(500).json({ message: "Error fetching client appointments" });
+    }
+  });
+
+  // Search routes for mentions @ avec support des handles
+  app.get('/api/users/search', async (req, res) => {
+    try {
+      const { q: query, type } = req.query;
+      
+      if (!query || typeof query !== 'string') {
+        return res.status(400).json({ message: "Query parameter required" });
+      }
+
+      // Utiliser la nouvelle méthode de recherche universelle
+      const results = await storage.searchUsersForMention(query);
+      
+      // Filtrer par type si spécifié
+      let filteredResults = results;
+      if (type === 'professionals') {
+        filteredResults = results.filter(r => r.type === 'professional');
+      } else if (type === 'clients') {
+        filteredResults = results.filter(r => r.type === 'client');
+      }
+      
+      res.json(filteredResults);
+    } catch (error) {
+      console.error('Error searching users:', error);
+      res.status(500).json({ message: "Erreur lors de la recherche" });
+    }
+  });
+
+  // Route pour vérifier la disponibilité d'un handle
+  app.get('/api/users/check-handle/:handle', async (req, res) => {
+    try {
+      const { handle } = req.params;
+      const exists = await storage.handleExists(handle);
+      res.json({ available: !exists });
+    } catch (error) {
+      console.error('Error checking handle:', error);
+      res.status(500).json({ message: "Erreur lors de la vérification" });
+    }
+  });
+
+  // Route pour générer un handle automatiquement
+  app.post('/api/users/generate-handle', async (req, res) => {
+    try {
+      const { name, type } = req.body;
+      
+      if (!name || !type) {
+        return res.status(400).json({ message: "Nom et type requis" });
+      }
+      
+      const handle = await storage.generateMentionHandle(name, type);
+      res.json({ handle });
+    } catch (error) {
+      console.error('Error generating handle:', error);
+      res.status(500).json({ message: "Erreur lors de la génération" });
+    }
+  });
+
+  // Route pour créer automatiquement des handles pour tous les utilisateurs existants
+  app.post('/api/users/create-handles', async (req, res) => {
+    try {
+      let proCount = 0;
+      let clientCount = 0;
+
+      // Récupérer tous les professionnels
+      const allPros = await db.select().from(users);
+      for (const pro of allPros) {
+        if (!pro.mentionHandle) {
+          const name = pro.businessName || `${pro.firstName || ''} ${pro.lastName || ''}`.trim();
+          if (name) {
+            const handle = await storage.generateMentionHandle(name, 'professional');
+            await storage.updateUser(pro.id, { mentionHandle: handle });
+            proCount++;
+            console.log(`✅ Handle créé pour professionnel ${name}: @${handle}`);
+          }
+        }
+      }
+
+      // Récupérer tous les clients
+      const allClients = await db.select().from(clientAccounts);
+      for (const client of allClients) {
+        if (!client.mentionHandle) {
+          const name = `${client.firstName} ${client.lastName}`;
+          const handle = await storage.generateMentionHandle(name, 'client');
+          await storage.updateClientAccount(client.id, { mentionHandle: handle });
+          clientCount++;
+          console.log(`✅ Handle créé pour client ${name}: @${handle}`);
+        }
+      }
+
+      res.json({ 
+        success: true, 
+        message: `Handles créés: ${proCount} professionnels, ${clientCount} clients`,
+        proCount,
+        clientCount
+      });
+    } catch (error) {
+      console.error('Error creating handles:', error);
+      res.status(500).json({ message: "Erreur lors de la création des handles" });
     }
   });
 

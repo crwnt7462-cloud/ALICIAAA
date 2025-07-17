@@ -1827,7 +1827,7 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
-  // Search operations for mentions @
+  // Search operations for mentions @ avec support des handles
   async searchProfessionals(query: string): Promise<User[]> {
     const searchTerm = `%${query}%`;
     return db
@@ -1838,7 +1838,8 @@ export class DatabaseStorage implements IStorage {
           ilike(users.firstName, searchTerm),
           ilike(users.lastName, searchTerm),
           ilike(users.email, searchTerm),
-          ilike(users.businessName, searchTerm)
+          ilike(users.businessName, searchTerm),
+          ilike(users.mentionHandle, searchTerm)
         )
       )
       .limit(10);
@@ -1853,10 +1854,113 @@ export class DatabaseStorage implements IStorage {
         or(
           ilike(clientAccounts.firstName, searchTerm),
           ilike(clientAccounts.lastName, searchTerm),
-          ilike(clientAccounts.email, searchTerm)
+          ilike(clientAccounts.email, searchTerm),
+          ilike(clientAccounts.mentionHandle, searchTerm)
         )
       )
       .limit(10);
+  }
+
+  // Recherche universelle pour mentions @
+  async searchUsersForMention(query: string): Promise<Array<{id: string, name: string, handle: string, type: 'professional' | 'client'}>> {
+    const searchTerm = `%${query}%`;
+    
+    // Rechercher les professionnels
+    const professionals = await db
+      .select({
+        id: users.id,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        businessName: users.businessName,
+        mentionHandle: users.mentionHandle
+      })
+      .from(users)
+      .where(
+        or(
+          ilike(users.firstName, searchTerm),
+          ilike(users.lastName, searchTerm),
+          ilike(users.businessName, searchTerm),
+          ilike(users.mentionHandle, searchTerm)
+        )
+      )
+      .limit(5);
+
+    // Rechercher les clients
+    const clients = await db
+      .select({
+        id: clientAccounts.id,
+        firstName: clientAccounts.firstName,
+        lastName: clientAccounts.lastName,
+        mentionHandle: clientAccounts.mentionHandle
+      })
+      .from(clientAccounts)
+      .where(
+        or(
+          ilike(clientAccounts.firstName, searchTerm),
+          ilike(clientAccounts.lastName, searchTerm),
+          ilike(clientAccounts.mentionHandle, searchTerm)
+        )
+      )
+      .limit(5);
+
+    // Combiner et formater les résultats
+    const results = [
+      ...professionals.map(p => ({
+        id: p.id,
+        name: p.businessName || `${p.firstName || ''} ${p.lastName || ''}`.trim(),
+        handle: p.mentionHandle || '',
+        type: 'professional' as const
+      })),
+      ...clients.map(c => ({
+        id: c.id,
+        name: `${c.firstName} ${c.lastName}`,
+        handle: c.mentionHandle || '',
+        type: 'client' as const
+      }))
+    ];
+
+    return results.filter(r => r.handle); // Ne retourner que ceux qui ont un handle
+  }
+
+  // Génération de handles uniques
+  async generateMentionHandle(name: string, type: 'professional' | 'client'): Promise<string> {
+    // Nettoyer le nom pour créer un handle de base
+    const cleanName = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+      .substring(0, 15);
+    
+    const prefix = type === 'professional' ? 'pro' : 'client';
+    let baseHandle = cleanName || prefix;
+    
+    // Vérifier l'unicité et ajouter un suffixe si nécessaire
+    let handle = baseHandle;
+    let counter = 1;
+    
+    while (await this.handleExists(handle)) {
+      handle = `${baseHandle}${counter}`;
+      counter++;
+    }
+    
+    return handle;
+  }
+
+  async handleExists(handle: string): Promise<boolean> {
+    const [userExists] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.mentionHandle, handle))
+      .limit(1);
+    
+    if (userExists) return true;
+    
+    const [clientExists] = await db
+      .select({ id: clientAccounts.id })
+      .from(clientAccounts)
+      .where(eq(clientAccounts.mentionHandle, handle))
+      .limit(1);
+    
+    return !!clientExists;
   }
 
   // Messaging operations with mentions support
@@ -1950,6 +2054,37 @@ export class DatabaseStorage implements IStorage {
       return conversation;
     } catch (error) {
       console.error('Error updating conversation:', error);
+      throw error;
+    }
+  }
+
+  // Mise à jour des utilisateurs avec handles
+  async updateUser(id: string, updates: Partial<InsertUser>): Promise<User> {
+    try {
+      const [user] = await db
+        .update(users)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(users.id, id))
+        .returning();
+      
+      return user;
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  }
+
+  async updateClientAccount(id: string, updates: Partial<InsertClientAccount>): Promise<ClientAccount> {
+    try {
+      const [client] = await db
+        .update(clientAccounts)
+        .set({ ...updates, updatedAt: new Date() })
+        .where(eq(clientAccounts.id, id))
+        .returning();
+      
+      return client;
+    } catch (error) {
+      console.error('Error updating client account:', error);
       throw error;
     }
   }

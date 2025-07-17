@@ -7,11 +7,9 @@ import { apiRequest } from '@/lib/queryClient';
 
 interface MentionableUser {
   id: string;
-  type: 'client' | 'professional';
-  firstName: string;
-  lastName: string;
-  email: string;
-  businessName?: string;
+  name: string;
+  handle: string;
+  type: 'professional' | 'client';
 }
 
 interface MentionInputProps {
@@ -78,11 +76,11 @@ export function MentionInput({ onSendMessage, placeholder = "Tapez votre message
   const handleMentionSelect = (user: MentionableUser) => {
     const beforeMention = message.slice(0, mentionPosition);
     const afterMention = message.slice(mentionPosition + mentionSearch.length + 1);
-    const displayName = user.type === 'professional' && user.businessName 
-      ? user.businessName 
-      : `${user.firstName} ${user.lastName}`;
     
-    const newMessage = `${beforeMention}@${displayName} ${afterMention}`;
+    // Utiliser le handle @ si disponible, sinon le nom
+    const displayText = user.handle ? user.handle : user.name.replace(/\s/g, '');
+    
+    const newMessage = `${beforeMention}@${displayText} ${afterMention}`;
     setMessage(newMessage);
     setShowMentions(false);
     setSelectedMentions(prev => [...prev, user.id]);
@@ -136,16 +134,14 @@ export function MentionInput({ onSendMessage, placeholder = "Tapez votre message
                       {user.type === 'professional' ? (
                         <Building className="w-4 h-4" />
                       ) : (
-                        user.firstName.charAt(0) + user.lastName.charAt(0)
+                        <User className="w-4 h-4" />
                       )}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2">
                       <span className="font-medium text-gray-900">
-                        {user.type === 'professional' && user.businessName 
-                          ? user.businessName 
-                          : `${user.firstName} ${user.lastName}`}
+                        {user.name}
                       </span>
                       <span className={`text-xs px-2 py-1 rounded-full ${
                         user.type === 'professional' 
@@ -155,7 +151,12 @@ export function MentionInput({ onSendMessage, placeholder = "Tapez votre message
                         {user.type === 'professional' ? 'Pro' : 'Client'}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                    <div className="flex items-center space-x-1">
+                      <AtSign className="w-3 h-3 text-gray-400" />
+                      <p className="text-sm text-gray-500 truncate">
+                        {user.handle || 'Pas de handle'}
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
