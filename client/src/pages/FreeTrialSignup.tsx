@@ -231,8 +231,8 @@ export default function FreeTrialSignup() {
         <div className="w-full max-w-md">
           {/* Header simple comme Planity */}
           <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-violet-600 rounded-lg flex items-center justify-center mx-auto mb-4">
-              <Building className="w-6 h-6 text-white" />
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg">
+              <Sparkles className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Créer un compte professionnel
