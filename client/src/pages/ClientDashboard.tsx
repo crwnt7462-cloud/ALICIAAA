@@ -107,248 +107,291 @@ export default function ClientDashboard() {
   const recentConversations = conversations.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-amber-50">
-      {/* Header avec même style que l'app principale */}
-      <div className="bg-white border-b border-violet-100">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header professionnel épuré */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Mon Espace Client</h1>
-                <p className="text-sm text-gray-600">Bienvenue {clientSession.firstName} !</p>
+                <h1 className="text-2xl font-bold text-gray-900">Beautify</h1>
+                <p className="text-sm text-gray-500">Bonjour {clientSession.firstName}</p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={handleLogout}
-              className="border-violet-200 hover:bg-violet-50"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Déconnexion
-            </Button>
+            <div className="flex items-center space-x-3">
+              <div className="hidden md:flex items-center space-x-2 bg-gray-50 rounded-lg px-3 py-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                  {clientSession.firstName.charAt(0)}{clientSession.lastName.charAt(0)}
+                </div>
+                <span className="text-sm font-medium text-gray-700">{clientSession.firstName}</span>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleLogout}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation principale */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex space-x-1 bg-white rounded-xl p-1 border border-violet-100 mb-6">
-          <button
-            onClick={() => setActiveTab("dashboard")}
-            className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "dashboard"
-                ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-                : "text-gray-600 hover:text-violet-600 hover:bg-violet-50"
-            }`}
-          >
-            <Home className="w-4 h-4 mx-auto mb-1" />
-            Accueil
-          </button>
-          <button
-            onClick={() => setActiveTab("appointments")}
-            className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "appointments"
-                ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-                : "text-gray-600 hover:text-violet-600 hover:bg-violet-50"
-            }`}
-          >
-            <Calendar className="w-4 h-4 mx-auto mb-1" />
-            Mes RDV
-          </button>
-          <button
-            onClick={() => setActiveTab("messages")}
-            className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "messages"
-                ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-                : "text-gray-600 hover:text-violet-600 hover:bg-violet-50"
-            }`}
-          >
-            <MessageCircle className="w-4 h-4 mx-auto mb-1" />
-            Messages
-          </button>
-          <button
-            onClick={() => setActiveTab("profile")}
-            className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-              activeTab === "profile"
-                ? "bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-md"
-                : "text-gray-600 hover:text-violet-600 hover:bg-violet-50"
-            }`}
-          >
-            <User className="w-4 h-4 mx-auto mb-1" />
-            Profil
-          </button>
+      {/* Navigation moderne */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="bg-white rounded-2xl shadow-sm border p-2 mb-8">
+          <div className="grid grid-cols-4 gap-2">
+            <button
+              onClick={() => setActiveTab("dashboard")}
+              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+                activeTab === "dashboard"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+              }`}
+            >
+              <Home className="w-5 h-5 mb-2" />
+              Accueil
+            </button>
+            <button
+              onClick={() => setActiveTab("appointments")}
+              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+                activeTab === "appointments"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+              }`}
+            >
+              <Calendar className="w-5 h-5 mb-2" />
+              Rendez-vous
+            </button>
+            <button
+              onClick={() => setActiveTab("messages")}
+              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+                activeTab === "messages"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+              }`}
+            >
+              <MessageCircle className="w-5 h-5 mb-2" />
+              Messages
+            </button>
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`flex flex-col items-center px-4 py-4 rounded-xl text-sm font-medium transition-all ${
+                activeTab === "profile"
+                  ? "bg-blue-50 text-blue-700 shadow-sm"
+                  : "text-gray-600 hover:text-blue-600 hover:bg-gray-50"
+              }`}
+            >
+              <User className="w-5 h-5 mb-2" />
+              Profil
+            </button>
+          </div>
         </div>
 
         {/* Contenu selon l'onglet actif */}
         {activeTab === "dashboard" && (
-          <div className="space-y-6">
-            {/* Actions rapides */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border-violet-100 bg-gradient-to-br from-violet-50 to-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
-                      <Search className="w-6 h-6 text-violet-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Trouver un salon</h3>
-                      <p className="text-sm text-gray-600">Découvrez de nouveaux salons</p>
-                    </div>
-                  </div>
-                  <Button 
-                    className="w-full mt-4 bg-gradient-to-r from-violet-500 to-purple-600"
-                    onClick={() => setLocation('/')}
-                  >
-                    Rechercher
-                  </Button>
-                </CardContent>
-              </Card>
+          <div className="space-y-8">
+            {/* Barre de recherche principale */}
+            <div className="bg-white rounded-2xl shadow-sm border p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Réserver votre prochain rendez-vous</h2>
+              <div className="flex space-x-3">
+                <div className="flex-1">
+                  <Input 
+                    placeholder="Rechercher un salon, un service..."
+                    className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <Button 
+                  className="h-12 px-8 bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
+                  onClick={() => setLocation('/')}
+                >
+                  <Search className="w-5 h-5 mr-2" />
+                  Rechercher
+                </Button>
+              </div>
+            </div>
 
-              <Card className="border-amber-100 bg-gradient-to-br from-amber-50 to-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
-                      <Heart className="w-6 h-6 text-amber-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Mes favoris</h3>
-                      <p className="text-sm text-gray-600">Salons préférés</p>
-                    </div>
+            {/* Actions rapides avec design moderne */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
+                    <Scissors className="w-7 h-7 text-white" />
                   </div>
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4 border-amber-200 hover:bg-amber-50"
-                  >
-                    Voir mes favoris
-                  </Button>
-                </CardContent>
-              </Card>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg">Coiffure</h3>
+                    <p className="text-sm text-gray-500">Coupes, colorations, soins</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-blue-200 hover:bg-blue-50 hover:border-blue-300"
+                  onClick={() => setLocation('/')}
+                >
+                  Réserver maintenant
+                </Button>
+              </div>
 
-              <Card className="border-purple-100 bg-gradient-to-br from-purple-50 to-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                      <Star className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Donner un avis</h3>
-                      <p className="text-sm text-gray-600">Partagez votre expérience</p>
-                    </div>
+              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center">
+                    <Palette className="w-7 h-7 text-white" />
                   </div>
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4 border-purple-200 hover:bg-purple-50"
-                  >
-                    Évaluer
-                  </Button>
-                </CardContent>
-              </Card>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg">Esthétique</h3>
+                    <p className="text-sm text-gray-500">Soins visage, épilations</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-pink-200 hover:bg-pink-50 hover:border-pink-300"
+                  onClick={() => setLocation('/')}
+                >
+                  Réserver maintenant
+                </Button>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-sm border p-6 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                    <Sparkles className="w-7 h-7 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg">Bien-être</h3>
+                    <p className="text-sm text-gray-500">Massages, relaxation</p>
+                  </div>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-purple-200 hover:bg-purple-50 hover:border-purple-300"
+                  onClick={() => setLocation('/')}
+                >
+                  Réserver maintenant
+                </Button>
+              </div>
             </div>
 
             {/* Prochains rendez-vous */}
-            <Card className="border-violet-100">
-              <CardHeader>
+            <div className="bg-white rounded-2xl shadow-sm border">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center space-x-2">
-                    <Calendar className="w-5 h-5 text-violet-600" />
-                    <span>Prochains rendez-vous</span>
-                  </CardTitle>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">Prochains rendez-vous</h3>
+                  </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => setActiveTab("appointments")}
+                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                   >
                     Voir tout <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
+              </div>
+              <div className="p-6">
                 {appointmentsLoading ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[1, 2].map(i => (
-                      <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
+                      <div key={i} className="h-20 bg-gray-100 rounded-xl animate-pulse" />
                     ))}
                   </div>
                 ) : upcomingAppointments.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {upcomingAppointments.map((appointment) => (
-                      <div key={appointment.id} className="p-4 border border-violet-100 rounded-lg bg-gradient-to-r from-violet-50 to-white">
+                      <div key={appointment.id} className="p-4 bg-gradient-to-r from-green-50 to-green-50/50 rounded-xl border border-green-100">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                              <Scissors className="w-5 h-5 text-violet-600" />
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm border border-green-100">
+                              <Scissors className="w-6 h-6 text-green-600" />
                             </div>
                             <div>
-                              <h4 className="font-medium text-gray-900">{appointment.serviceName}</h4>
-                              <p className="text-sm text-gray-600">{appointment.businessName}</p>
+                              <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
+                              <p className="text-gray-600 text-sm">{appointment.businessName}</p>
+                              <div className="flex items-center space-x-3 mt-1">
+                                <span className="flex items-center text-sm text-gray-500">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  {appointment.startTime}
+                                </span>
+                                <span className="text-sm text-gray-500">
+                                  {format(new Date(appointment.appointmentDate), 'd MMMM', { locale: fr })}
+                                </span>
+                              </div>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-medium text-gray-900">
-                              {format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}
-                            </p>
-                            <p className="text-sm text-gray-600">{appointment.startTime}</p>
+                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              Confirmé
+                            </div>
+                            <p className="text-lg font-bold text-gray-900 mt-1">{appointment.totalPrice}€</p>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-600">Aucun rendez-vous à venir</p>
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Calendar className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Aucun rendez-vous programmé</h4>
+                    <p className="text-gray-500 mb-6">Réservez votre premier rendez-vous dès maintenant</p>
                     <Button 
-                      className="mt-3 bg-gradient-to-r from-violet-500 to-purple-600"
+                      className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
                       onClick={() => setLocation('/')}
                     >
                       Prendre rendez-vous
                     </Button>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Messages récents */}
-            <Card className="border-violet-100">
-              <CardHeader>
+            <div className="bg-white rounded-2xl shadow-sm border">
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center space-x-2">
-                    <MessageCircle className="w-5 h-5 text-violet-600" />
-                    <span>Messages récents</span>
-                  </CardTitle>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                      <MessageCircle className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900">Messages récents</h3>
+                  </div>
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => setActiveTab("messages")}
+                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                   >
                     Voir tout <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 </div>
-              </CardHeader>
-              <CardContent>
+              </div>
+              <div className="p-6">
                 {conversationsLoading ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {[1, 2].map(i => (
-                      <div key={i} className="h-16 bg-gray-100 rounded-lg animate-pulse" />
+                      <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
                     ))}
                   </div>
                 ) : recentConversations.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {recentConversations.map((conversation) => (
-                      <div key={conversation.id} className="p-4 border border-violet-100 rounded-lg bg-gradient-to-r from-violet-50 to-white">
+                      <div key={conversation.id} className="p-4 bg-blue-50/50 rounded-xl border border-blue-100 hover:bg-blue-50 transition-colors cursor-pointer">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="w-10 h-10">
-                              <AvatarFallback className="bg-violet-100 text-violet-600">
-                                {conversation.clientName?.charAt(0) || 'S'}
-                              </AvatarFallback>
-                            </Avatar>
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                              S
+                            </div>
                             <div>
-                              <h4 className="font-medium text-gray-900">Salon Pro</h4>
-                              <p className="text-sm text-gray-600 truncate max-w-48">
+                              <h4 className="font-semibold text-gray-900">Salon Professionnel</h4>
+                              <p className="text-sm text-gray-600 truncate max-w-64">
                                 {conversation.lastMessageContent}
                               </p>
                             </div>
@@ -357,91 +400,104 @@ export default function ClientDashboard() {
                             <p className="text-xs text-gray-500">
                               {format(new Date(conversation.lastMessageAt), 'HH:mm')}
                             </p>
+                            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1 ml-auto"></div>
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-600">Aucun message</p>
+                  <div className="text-center py-12">
+                    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <MessageCircle className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-900 mb-2">Aucune conversation</h4>
+                    <p className="text-gray-500">Vos échanges avec les salons apparaîtront ici</p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         )}
 
         {activeTab === "appointments" && (
-          <Card className="border-violet-100">
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Calendar className="w-5 h-5 text-violet-600" />
-                <span>Mes rendez-vous</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="bg-white rounded-2xl shadow-sm border">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">Mes rendez-vous</h2>
+              </div>
+            </div>
+            <div className="p-6">
               {appointmentsLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="h-20 bg-gray-100 rounded-lg animate-pulse" />
+                    <div key={i} className="h-24 bg-gray-100 rounded-xl animate-pulse" />
                   ))}
                 </div>
               ) : appointments.length > 0 ? (
                 <div className="space-y-4">
                   {appointments.map((appointment) => (
-                    <div key={appointment.id} className="p-4 border border-violet-100 rounded-lg bg-gradient-to-r from-violet-50 to-white">
+                    <div key={appointment.id} className="p-6 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
-                          <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
-                            <Scissors className="w-6 h-6 text-violet-600" />
+                          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
+                            <Scissors className="w-7 h-7 text-white" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
-                            <p className="text-gray-600">{appointment.businessName}</p>
-                            <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
-                              <span className="flex items-center">
-                                <Calendar className="w-4 h-4 mr-1" />
+                            <h4 className="text-lg font-bold text-gray-900">{appointment.serviceName}</h4>
+                            <p className="text-gray-600 font-medium">{appointment.businessName}</p>
+                            <div className="flex items-center space-x-6 mt-3">
+                              <span className="flex items-center text-gray-500">
+                                <Calendar className="w-4 h-4 mr-2" />
                                 {format(new Date(appointment.appointmentDate), 'd MMMM yyyy', { locale: fr })}
                               </span>
-                              <span className="flex items-center">
-                                <Clock className="w-4 h-4 mr-1" />
+                              <span className="flex items-center text-gray-500">
+                                <Clock className="w-4 h-4 mr-2" />
                                 {appointment.startTime}
                               </span>
                             </div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <Badge 
-                            variant={appointment.status === 'confirmed' ? 'default' : 'secondary'}
-                            className={appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' : ''}
-                          >
+                          <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                            appointment.status === 'confirmed' 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-gray-100 text-gray-800'
+                          }`}>
                             {appointment.status === 'confirmed' ? 'Confirmé' : appointment.status}
-                          </Badge>
-                          <p className="text-lg font-semibold text-gray-900 mt-1">
+                          </div>
+                          <p className="text-2xl font-bold text-gray-900 mt-2">
                             {appointment.totalPrice}€
                           </p>
+                          <Button size="sm" variant="outline" className="mt-2 border-blue-200 hover:bg-blue-50">
+                            Gérer
+                          </Button>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun rendez-vous</h3>
-                  <p className="text-gray-600 mb-4">Vous n'avez pas encore de rendez-vous programmé</p>
+                <div className="text-center py-16">
+                  <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <Calendar className="w-10 h-10 text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Aucun rendez-vous programmé</h3>
+                  <p className="text-gray-500 mb-8 max-w-md mx-auto">Découvrez nos salons partenaires et réservez votre premier rendez-vous beauté</p>
                   <Button 
-                    className="bg-gradient-to-r from-violet-500 to-purple-600"
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800"
                     onClick={() => setLocation('/')}
                   >
-                    Prendre rendez-vous
+                    Explorer les salons
                   </Button>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {activeTab === "messages" && (
