@@ -112,10 +112,25 @@ export const staff = pgTable("staff", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Clients
+// Client accounts (for customer login)
+export const clientAccounts = pgTable("client_accounts", {
+  id: varchar("id").primaryKey().notNull(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password"),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  phone: varchar("phone"),
+  dateOfBirth: date("date_of_birth"),
+  isVerified: boolean("is_verified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Clients (managed by professionals)
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
+  clientAccountId: varchar("client_account_id").references(() => clientAccounts.id), // Link to client account if they have one
   firstName: varchar("first_name").notNull(),
   lastName: varchar("last_name").notNull(),
   email: varchar("email"),
@@ -687,9 +702,22 @@ export const registerSchema = z.object({
   city: z.string().min(2, "Ville requise")
 });
 
+export const clientRegisterSchema = z.object({
+  email: z.string().email("Email invalide"),
+  password: z.string().min(6, "Mot de passe trop court"),
+  firstName: z.string().min(2, "Prénom requis"),
+  lastName: z.string().min(2, "Nom requis"),
+  phone: z.string().optional(),
+  dateOfBirth: z.string().optional()
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
+export type ClientRegisterRequest = z.infer<typeof clientRegisterSchema>;
+
+export type ClientAccount = typeof clientAccounts.$inferSelect;
+export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 
 export type InsertService = typeof services.$inferInsert;
 export type Service = typeof services.$inferSelect;

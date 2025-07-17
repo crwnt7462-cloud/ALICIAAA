@@ -30,6 +30,7 @@ import {
   insertClientPreferencesSchema,
   loginSchema,
   registerSchema,
+  clientRegisterSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -72,6 +73,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Client Authentication Routes
+  app.post('/api/auth/client/login', async (req, res) => {
+    try {
+      const result = loginSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Données invalides", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Valider les identifiants client
+      const client = await storage.validateClientAccount(result.data.email, result.data.password);
+      if (!client) {
+        return res.status(401).json({ message: "Email ou mot de passe incorrect" });
+      }
+
+      // Supprimer le mot de passe de la réponse
+      const { password, ...clientWithoutPassword } = client;
+      
+      res.json({ 
+        message: "Connexion réussie", 
+        user: clientWithoutPassword,
+        userType: "client"
+      });
+    } catch (error) {
+      console.error("Client login error:", error);
+      res.status(500).json({ message: "Erreur lors de la connexion" });
+    }
+  });
+
+  app.post('/api/auth/client/register', async (req, res) => {
+    try {
+      // Adapter les données du formulaire vers le schéma client
+      const formData = req.body;
+      const clientData = {
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.ownerName ? formData.ownerName.split(' ')[0] : formData.firstName,
+        lastName: formData.ownerName ? formData.ownerName.split(' ').slice(1).join(' ') || '' : formData.lastName,
+        phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth
+      };
+
+      const result = clientRegisterSchema.safeParse(clientData);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Données invalides", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Vérifier si l'email existe déjà
+      const existingClient = await storage.getClientByEmail(result.data.email);
+      if (existingClient) {
+        return res.status(409).json({ 
+          message: "Un compte existe déjà avec cet email" 
+        });
+      }
+
+      // Créer le nouveau compte client
+      const client = await storage.createClientAccount(result.data);
+      
+      // Supprimer le mot de passe de la réponse
+      const { password, ...clientWithoutPassword } = client;
+      
+      res.status(201).json({ 
+        message: "Compte client créé avec succès", 
+        user: clientWithoutPassword,
+        userType: "client"
+      });
+    } catch (error) {
+      console.error("Client registration error:", error);
+      res.status(500).json({ message: "Erreur lors de la création du compte" });
+    }
+  });
+
+  // Professional login (kept separate)
   app.post('/api/auth/login', async (req, res) => {
     try {
       const result = loginSchema.safeParse(req.body);
@@ -82,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Valider les identifiants
+      // Valider les identifiants professionnel
       const user = await storage.validateUser(result.data.email, result.data.password);
       if (!user) {
         return res.status(401).json({ message: "Email ou mot de passe incorrect" });
@@ -93,10 +172,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json({ 
         message: "Connexion réussie", 
-        user: userWithoutPassword 
+        user: userWithoutPassword,
+        userType: "professional"
       });
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Professional login error:", error);
       res.status(500).json({ message: "Erreur lors de la connexion" });
     }
   });

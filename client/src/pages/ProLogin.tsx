@@ -32,11 +32,8 @@ const loginSchema = z.object({
 const registerSchema = z.object({
   email: z.string().email("Email invalide"),
   password: z.string().min(6, "Mot de passe trop court"),
-  businessName: z.string().min(2, "Nom du salon requis"),
-  ownerName: z.string().min(2, "Nom du propriétaire requis"),
-  phone: z.string().min(10, "Numéro de téléphone requis"),
-  address: z.string().min(5, "Adresse complète requise"),
-  city: z.string().min(2, "Ville requise")
+  ownerName: z.string().min(2, "Nom complet requis"),
+  phone: z.string().optional()
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -68,7 +65,7 @@ export default function ProLogin() {
   const onLogin = async (data: LoginForm) => {
     setIsLoading(true);
     try {
-      const response = await apiRequest("POST", "/api/auth/login", data);
+      const response = await apiRequest("POST", "/api/auth/client/login", data);
       const result = await response.json();
       
       if (!response.ok) {
@@ -77,12 +74,13 @@ export default function ProLogin() {
 
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue dans votre espace professionnel"
+        description: "Bienvenue ! Vous pouvez maintenant gérer vos réservations"
       });
       
       // Stocker les informations utilisateur
       localStorage.setItem("user", JSON.stringify(result.user));
-      setLocation("/dashboard");
+      localStorage.setItem("userType", "client");
+      setLocation("/");
     } catch (error: any) {
       toast({
         title: "Erreur de connexion",
@@ -97,19 +95,7 @@ export default function ProLogin() {
   const onRegister = async (data: RegisterForm) => {
     setIsLoading(true);
     try {
-      // Mapper les champs du formulaire vers l'API
-      const registerData = {
-        email: data.email,
-        password: data.password,
-        businessName: data.businessName,
-        firstName: data.ownerName.split(' ')[0] || data.ownerName,
-        lastName: data.ownerName.split(' ').slice(1).join(' ') || '',
-        phone: data.phone,
-        address: data.address,
-        city: data.city
-      };
-
-      const response = await apiRequest("POST", "/api/auth/register", registerData);
+      const response = await apiRequest("POST", "/api/auth/client/register", data);
       const result = await response.json();
       
       if (!response.ok) {
@@ -118,12 +104,13 @@ export default function ProLogin() {
 
       toast({
         title: "Inscription réussie",
-        description: "Votre compte professionnel a été créé avec un essai gratuit de 14 jours"
+        description: "Votre compte a été créé avec succès"
       });
       
       // Stocker les informations utilisateur
       localStorage.setItem("user", JSON.stringify(result.user));
-      setLocation("/dashboard");
+      localStorage.setItem("userType", "client");
+      setLocation("/");
     } catch (error: any) {
       toast({
         title: "Erreur d'inscription",
@@ -157,20 +144,17 @@ export default function ProLogin() {
               <Sparkles className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-              Espace professionnel
+              Mon compte
             </h1>
-            <p className="text-gray-600 mb-2">
-              Connectez-vous à votre compte professionnel
+            <p className="text-gray-600">
+              Connectez-vous pour gérer vos réservations
             </p>
-            <div className="text-xs text-gray-500 bg-blue-50 px-3 py-2 rounded-lg">
-              💼 Réservé aux propriétaires de salons et instituts de beauté
-            </div>
           </div>
 
           <Card className="border-0 shadow-sm bg-white">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-medium text-gray-900 text-center">
-                Connexion Professionnelle
+                Connexion
               </CardTitle>
             </CardHeader>
 
@@ -178,10 +162,10 @@ export default function ProLogin() {
               <Tabs defaultValue="login" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-6">
                   <TabsTrigger value="login" className="text-sm">
-                    Connexion Pro
+                    Connexion
                   </TabsTrigger>
                   <TabsTrigger value="register" className="text-sm">
-                    Inscription Pro
+                    Inscription
                   </TabsTrigger>
                 </TabsList>
 
@@ -189,7 +173,7 @@ export default function ProLogin() {
                   <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="login-email" className="text-sm font-medium text-gray-700">
-                        Email professionnel
+                        Email
                       </Label>
                       <Input
                         id="login-email"
@@ -245,7 +229,7 @@ export default function ProLogin() {
                           Connexion...
                         </div>
                       ) : (
-                        "Connexion professionnelle"
+                        "Se connecter"
                       )}
                     </Button>
                   </form>
@@ -256,7 +240,7 @@ export default function ProLogin() {
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
                         <Label htmlFor="ownerName" className="text-sm font-medium text-gray-700">
-                          Votre nom
+                          Nom complet
                         </Label>
                         <Input
                           id="ownerName"
@@ -286,29 +270,16 @@ export default function ProLogin() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="businessName" className="text-sm font-medium text-gray-700">
-                        Nom de votre salon
-                      </Label>
-                      <Input
-                        id="businessName"
-                        placeholder="Salon Beauté Élégance"
-                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                        {...registerRegister("businessName")}
-                      />
-                      {registerErrors.businessName && (
-                        <p className="text-xs text-red-500">{registerErrors.businessName.message}</p>
-                      )}
-                    </div>
+
 
                     <div className="space-y-2">
                       <Label htmlFor="register-email" className="text-sm font-medium text-gray-700">
-                        Email professionnel
+                        Email
                       </Label>
                       <Input
                         id="register-email"
                         type="email"
-                        placeholder="contact@monsalon.fr"
+                        placeholder="jean.dupont@email.com"
                         className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
                         {...registerRegister("email")}
                       />
@@ -342,37 +313,7 @@ export default function ProLogin() {
                       )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label htmlFor="address" className="text-sm font-medium text-gray-700">
-                          Adresse
-                        </Label>
-                        <Input
-                          id="address"
-                          placeholder="123 rue Example"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("address")}
-                        />
-                        {registerErrors.address && (
-                          <p className="text-xs text-red-500">{registerErrors.address.message}</p>
-                        )}
-                      </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="city" className="text-sm font-medium text-gray-700">
-                          Ville
-                        </Label>
-                        <Input
-                          id="city"
-                          placeholder="Paris"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("city")}
-                        />
-                        {registerErrors.city && (
-                          <p className="text-xs text-red-500">{registerErrors.city.message}</p>
-                        )}
-                      </div>
-                    </div>
 
                     <Button
                       type="submit"
@@ -385,7 +326,7 @@ export default function ProLogin() {
                           Création...
                         </div>
                       ) : (
-                        "Créer mon compte professionnel"
+                        "Créer mon compte"
                       )}
                     </Button>
                   </form>
@@ -413,12 +354,12 @@ export default function ProLogin() {
                 </div>
               </div>
 
-              {/* Note pour les clients */}
+              {/* Note pour les professionnels */}
               <div className="mt-6 text-center">
                 <div className="text-sm text-gray-600 mb-3">
-                  👥 Vous êtes un client ? 
-                  <a href="/" className="text-violet-600 hover:underline ml-1">
-                    Réservez directement ici
+                  Vous êtes un professionnel ? 
+                  <a href="/free-trial" className="text-violet-600 hover:underline ml-1">
+                    Créez votre espace salon
                   </a>
                 </div>
               </div>

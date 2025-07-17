@@ -1,5 +1,6 @@
 import {
   users,
+  clientAccounts,
   services,
   clients,
   staff,
@@ -28,6 +29,9 @@ import {
   type UpsertUser,
   type InsertUser,
   type RegisterRequest,
+  type ClientAccount,
+  type InsertClientAccount,
+  type ClientRegisterRequest,
   type Service,
   type InsertService,
   type Client,
@@ -85,9 +89,14 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
-  // Authentication
+  // Professional Authentication
   createUser(userData: RegisterRequest): Promise<User>;
   validateUser(email: string, password: string): Promise<User | null>;
+  
+  // Client Authentication
+  getClientByEmail(email: string): Promise<ClientAccount | undefined>;
+  createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount>;
+  validateClientAccount(email: string, password: string): Promise<ClientAccount | null>;
 
   // Service operations
   getServices(userId: string): Promise<Service[]>;
@@ -317,6 +326,47 @@ export class DatabaseStorage implements IStorage {
     }
 
     return user;
+  }
+
+  // Client Authentication methods
+  async getClientByEmail(email: string): Promise<ClientAccount | undefined> {
+    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
+    return client;
+  }
+
+  async createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount> {
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+    
+    const clientId = nanoid();
+
+    const newClient = {
+      id: clientId,
+      email: userData.email,
+      password: hashedPassword,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phone: userData.phone || null,
+      dateOfBirth: userData.dateOfBirth ? new Date(userData.dateOfBirth) : null,
+      isVerified: false,
+    };
+
+    const [client] = await db.insert(clientAccounts).values(newClient).returning();
+    return client;
+  }
+
+  async validateClientAccount(email: string, password: string): Promise<ClientAccount | null> {
+    const client = await this.getClientByEmail(email);
+    if (!client || !client.password) {
+      return null;
+    }
+
+    const isValid = await bcrypt.compare(password, client.password);
+    if (!isValid) {
+      return null;
+    }
+
+    return client;
   }
 
   // Service operations
