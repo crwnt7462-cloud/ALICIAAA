@@ -123,6 +123,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - SYSTÈME DE MENTIONS @ AVEC HANDLES UNIQUES COMPLET (17 Janvier)
+- ✅ **Système de mentions @ opérationnel** : Handles uniques auto-générés pour tous utilisateurs (pros/clients)
+- ✅ **Génération automatique handles** : API /api/users/create-handles génère @identifiants basés sur noms
+- ✅ **Recherche d'utilisateurs par handle** : API /api/users/search avec support @nom et recherche textuelle
+- ✅ **Interface MentionInput avancée** : Autocomplétion temps réel, sélection mentions, affichage handles
+- ✅ **Page de test complète** : /mention-test pour tester toutes fonctionnalités sans authentification
+- ✅ **Schéma base de données étendu** : Colonnes mention_handle ajoutées aux tables users et client_accounts
+- ✅ **Gestion unicité stricte** : Contraintes UNIQUE, vérification collision, suffixes numériques automatiques
+- ✅ **Intégration MessagingHub** : Support mentions dans conversations avec stockage mentions array
+- ✅ **Erreurs de connexion corrigées** : Migration schéma, ajout colonnes manquantes, serveur stable
+- ✅ **Tests API fonctionnels** : 1 professionnel + 2 clients avec handles @demouser, @agashbij, @ryanmlk
+
 ### Janvier 2025 - REFONTE MAJEURE CLIENT DASHBOARD ULTRA-PROFESSIONNEL (17 Janvier)
 - ✅ **Design ClientDashboard complètement refait** : Interface ultra-moderne inspirée Treatwell/Planity
 - ✅ **Layout mobile-first optimal** : Header sticky, navigation moderne à onglets, contenu épuré

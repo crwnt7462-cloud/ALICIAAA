@@ -254,19 +254,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Rechercher parmi les clients (optionnel selon les besoins)
+      // Rechercher parmi les clients
       const clients = await storage.searchClients(searchTerm);
       for (const client of clients) {
-        // Exclure le client actuel
-        if (client.id !== clientSession.id) {
-          users.push({
-            id: client.id,
-            type: 'client',
-            firstName: client.firstName,
-            lastName: client.lastName,
-            email: client.email
-          });
-        }
+        users.push({
+          id: client.id,
+          type: 'client',
+          firstName: client.firstName,
+          lastName: client.lastName,
+          email: client.email
+        });
       }
 
       // Limiter à 10 résultats
