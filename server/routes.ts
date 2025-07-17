@@ -1261,17 +1261,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Client Appointments API
   app.get('/api/client/appointments', async (req, res) => {
     try {
-      const clientId = req.query.clientId as string;
+      const clientSession = (req.session as any)?.clientUser;
       
-      if (!clientId) {
-        return res.status(400).json({ message: "clientId is required" });
+      if (!clientSession) {
+        return res.status(401).json({ message: "Client authentication required" });
       }
 
-      // Get client account to find associated appointments
-      const clientAccount = await storage.getClientByEmail(""); // We'll need to adjust this
-      
-      // For now, return empty array - this will need to be implemented based on how clients are linked to appointments
-      const appointments = [];
+      // Get appointments for this client account
+      const appointments = await storage.getClientAccountAppointments(clientSession.id);
       
       res.json(appointments);
     } catch (error: any) {
@@ -1286,13 +1283,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.query.userId as string;
       const clientId = req.query.clientId as string;
       
+      // Check if client is authenticated via session
+      const clientSession = (req.session as any)?.clientUser;
+      
       let conversations;
       if (userId) {
         conversations = await messagingService.getUserConversations(userId);
       } else if (clientId) {
         conversations = await messagingService.getClientConversations(clientId);
+      } else if (clientSession) {
+        // Client connecté via session - récupérer ses conversations
+        conversations = await messagingService.getClientConversations(clientSession.id);
       } else {
-        return res.status(400).json({ message: "userId or clientId required" });
+        return res.status(400).json({ message: "Authentication required" });
       }
       
       res.json(conversations);

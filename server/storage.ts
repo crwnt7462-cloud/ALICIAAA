@@ -524,6 +524,44 @@ export class DatabaseStorage implements IStorage {
       .limit(50);
   }
 
+  // Client Account Operations
+  async getClientAccountAppointments(clientAccountId: string): Promise<any[]> {
+    // Get appointments where the client account is linked via email match
+    const clientAccount = await db
+      .select()
+      .from(clientAccounts)
+      .where(eq(clientAccounts.id, clientAccountId))
+      .limit(1);
+    
+    if (!clientAccount.length) {
+      return [];
+    }
+
+    const client = clientAccount[0];
+    
+    // Find appointments by matching email
+    const appointmentResults = await db
+      .select({
+        id: appointments.id,
+        serviceName: sql<string>`COALESCE(${services.name}, 'Service')`,
+        businessName: sql<string>`COALESCE(${users.businessName}, 'Salon')`,
+        appointmentDate: appointments.appointmentDate,
+        startTime: appointments.startTime,
+        endTime: appointments.endTime,
+        status: appointments.status,
+        totalPrice: appointments.totalPrice,
+        notes: appointments.notes,
+        createdAt: appointments.createdAt
+      })
+      .from(appointments)
+      .leftJoin(services, eq(appointments.serviceId, services.id))
+      .leftJoin(users, eq(appointments.userId, users.id))
+      .where(eq(appointments.clientEmail, client.email))
+      .orderBy(desc(appointments.appointmentDate));
+
+    return appointmentResults;
+  }
+
   // SMS Notification Operations
   async createSmsNotification(smsData: InsertSmsNotification): Promise<SmsNotification> {
     const [smsNotification] = await db.insert(smsNotifications).values(smsData).returning();
