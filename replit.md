@@ -123,6 +123,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - SYSTÈME DE SOUSCRIPTION COMPLET AVEC INFORMATIONS BUSINESS (17 Janvier)
+- ✅ **Système de souscription complet** : Plans Pro (49€/mois) et Premium (149€/mois) avec collecte d'informations business
+- ✅ **Processus de souscription à étapes** : SubscriptionPlans → SubscriptionSignup → SubscriptionPayment avec navigation fluide
+- ✅ **Collecte informations business** : SIRET, raison sociale, adresse, téléphone, email, forme juridique, numéro TVA
+- ✅ **Informations de facturation** : Nom et adresse de facturation séparés pour la gestion comptable
+- ✅ **Base de données étendue** : Table subscriptions avec tous les champs nécessaires, schémas de validation Zod
+- ✅ **API routes complètes** : Création, récupération, activation des souscriptions avec validation backend
+- ✅ **Activation automatique** : Paiement simulé déclenche activation de la souscription (30 jours)
+- ✅ **Intégration Pro Tools** : Bouton d'accès aux plans d'abonnement dans BusinessFeatures
+- ✅ **Gestion des statuts** : Pending → Active avec dates de début, fin et prochaine facturation
+- ✅ **Mobile-first design** : Interface responsive avec design professionnel et dégradés cohérents
+
 ### Janvier 2025 - SYSTÈME D'ACOMPTE ET CRÉATEUR DE PAGES (15 Janvier)
 - ✅ **Étape acompte intégrée** : Processus de réservation avec paiement d'acompte 30%
 - ✅ **Créateur de pages professionnel** : Interface élégante avec design BookingPage

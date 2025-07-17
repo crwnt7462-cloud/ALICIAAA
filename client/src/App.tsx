@@ -36,6 +36,9 @@ import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import SalonSearch from "@/pages/SalonSearch";
 import BookingPage from "@/pages/BookingPage";
+import SubscriptionSignup from "@/pages/SubscriptionSignup";
+import SubscriptionPayment from "@/pages/SubscriptionPayment";
+import SubscriptionPlans from "@/pages/SubscriptionPlans";
 
 
 function Router() {
@@ -109,6 +112,35 @@ function Router() {
     return (
       <div className="h-full">
         <Subscribe />
+      </div>
+    );
+  }
+
+  // Page de souscription avec informations d'entreprise
+  if (location.startsWith('/subscription/signup')) {
+    const planType = location.split('/')[3] as "basic" | "premium" | undefined;
+    return (
+      <div className="h-full">
+        <SubscriptionSignup selectedPlan={planType} />
+      </div>
+    );
+  }
+
+  // Page de paiement de souscription
+  if (location.startsWith('/subscription/payment/')) {
+    const subscriptionId = location.split('/')[3];
+    return (
+      <div className="h-full">
+        <SubscriptionPayment subscriptionId={subscriptionId} />
+      </div>
+    );
+  }
+
+  // Page des plans de souscription
+  if (location === '/subscription/plans') {
+    return (
+      <div className="h-full">
+        <SubscriptionPlans />
       </div>
     );
   }

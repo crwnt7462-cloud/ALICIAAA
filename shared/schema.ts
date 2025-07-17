@@ -40,6 +40,37 @@ export const users = pgTable("users", {
   address: text("address"),
   isProfessional: boolean("is_professional").default(true),
   isVerified: boolean("is_verified").default(false),
+  subscriptionStatus: varchar("subscription_status").default("free"), // free, basic, premium
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Subscription plans and business information
+export const subscriptions = pgTable("subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  planType: varchar("plan_type").notNull(), // basic, premium
+  status: varchar("status").default("pending"), // pending, active, cancelled, expired
+  priceMonthly: decimal("price_monthly", { precision: 10, scale: 2 }).notNull(),
+  // Business information
+  companyName: varchar("company_name").notNull(),
+  siret: varchar("siret").notNull(),
+  businessAddress: text("business_address").notNull(),
+  businessPhone: varchar("business_phone"),
+  businessEmail: varchar("business_email"),
+  legalForm: varchar("legal_form"), // SARL, SAS, auto-entrepreneur, etc.
+  vatNumber: varchar("vat_number"),
+  // Billing information
+  billingAddress: text("billing_address"),
+  billingName: varchar("billing_name"),
+  // Subscription dates
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  nextBillingDate: timestamp("next_billing_date"),
+  // Payment information
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  lastPaymentDate: timestamp("last_payment_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -831,3 +862,12 @@ export const insertClientPreferencesSchema = createInsertSchema(clientPreference
   createdAt: true,
   updatedAt: true,
 });
+
+export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type Subscription = typeof subscriptions.$inferSelect;
+export type InsertSubscription = typeof subscriptions.$inferInsert;

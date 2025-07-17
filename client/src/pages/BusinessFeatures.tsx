@@ -49,6 +49,42 @@ export default function BusinessFeatures() {
         </p>
       </div>
 
+      {/* Section Abonnement */}
+      <Card className="mb-6 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Abonnement Pro</h3>
+                <p className="text-sm text-gray-600">Déverrouillez toutes les fonctionnalités</p>
+              </div>
+            </div>
+            <Badge className="bg-amber-600 text-white">Nouvelle offre</Badge>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4 mb-4 text-center">
+            <div>
+              <div className="text-lg font-bold text-amber-600">Pro</div>
+              <div className="text-xs text-gray-600">49€/mois</div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-amber-600">Premium</div>
+              <div className="text-xs text-gray-600">149€/mois</div>
+            </div>
+          </div>
+          
+          <Button 
+            onClick={() => setLocation("/subscription-plans")}
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+          >
+            Voir les plans d'abonnement
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Messagerie Premium - Section spéciale */}
       <Card className="mb-6 border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50">
         <CardContent className="p-4">

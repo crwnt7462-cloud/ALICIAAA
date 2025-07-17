@@ -6,7 +6,7 @@ import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { appointmentHistory, cancellationPredictions, appointments, clients } from "@shared/schema";
+import { appointmentHistory, cancellationPredictions, appointments, clients, subscriptions, users } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import {
   insertServiceSchema,
@@ -1824,6 +1824,133 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating client communication:", error);
       res.status(400).json({ message: "Failed to create client communication" });
+    }
+  });
+
+  // Subscription routes
+  app.post('/api/subscriptions/create', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const {
+        planType,
+        companyName,
+        siret,
+        businessAddress,
+        businessPhone,
+        businessEmail,
+        legalForm,
+        vatNumber,
+        billingAddress,
+        billingName
+      } = req.body;
+
+      // Déterminer le prix selon le plan
+      const priceMonthly = planType === 'premium' ? '149.00' : '49.00';
+
+      // Créer la souscription
+      const [subscription] = await db
+        .insert(subscriptions)
+        .values({
+          userId,
+          planType,
+          priceMonthly,
+          companyName,
+          siret,
+          businessAddress,
+          businessPhone,
+          businessEmail,
+          legalForm,
+          vatNumber,
+          billingAddress,
+          billingName,
+          status: 'pending'
+        })
+        .returning();
+
+      res.json({ 
+        success: true, 
+        subscriptionId: subscription.id,
+        message: 'Souscription créée avec succès'
+      });
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ message: "Failed to create subscription" });
+    }
+  });
+
+  app.get('/api/subscriptions/:subscriptionId', isAuthenticated, async (req: any, res) => {
+    try {
+      const subscriptionId = parseInt(req.params.subscriptionId);
+      const [subscription] = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.id, subscriptionId));
+
+      if (!subscription) {
+        return res.status(404).json({ message: 'Souscription non trouvée' });
+      }
+
+      res.json(subscription);
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ message: "Failed to fetch subscription" });
+    }
+  });
+
+  app.post('/api/subscriptions/:subscriptionId/activate', isAuthenticated, async (req: any, res) => {
+    try {
+      const subscriptionId = parseInt(req.params.subscriptionId);
+      const userId = req.user.claims.sub;
+
+      // Activer la souscription
+      await db
+        .update(subscriptions)
+        .set({
+          status: 'active',
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 jours
+          nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        })
+        .where(eq(subscriptions.id, subscriptionId));
+
+      // Mettre à jour le statut de l'utilisateur
+      const [subscription] = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.id, subscriptionId));
+
+      if (subscription) {
+        await db
+          .update(users)
+          .set({
+            subscriptionStatus: subscription.planType
+          })
+          .where(eq(users.id, userId));
+      }
+
+      res.json({ 
+        success: true, 
+        message: 'Souscription activée avec succès'
+      });
+    } catch (error) {
+      console.error("Error activating subscription:", error);
+      res.status(500).json({ message: "Failed to activate subscription" });
+    }
+  });
+
+  app.get('/api/subscriptions/user/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.params.userId;
+      const userSubscriptions = await db
+        .select()
+        .from(subscriptions)
+        .where(eq(subscriptions.userId, userId))
+        .orderBy(desc(subscriptions.createdAt));
+
+      res.json(userSubscriptions);
+    } catch (error) {
+      console.error("Error fetching user subscriptions:", error);
+      res.status(500).json({ message: "Failed to fetch user subscriptions" });
     }
   });
 
