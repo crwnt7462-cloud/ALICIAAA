@@ -2,12 +2,12 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { db, pool } from "./db";
+import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { appointmentHistory, cancellationPredictions, appointments, clients, subscriptions, users, clientAccounts } from "@shared/schema";
-import { eq, desc, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import {
   insertServiceSchema,
   insertClientSchema,
@@ -355,50 +355,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Champs obligatoires manquants" });
       }
 
-      // Create or get existing client with session detection
-      let clientAccountId = null;
-      
-      // Vérifier s'il y a un client connecté avec une session
-      if ((req.session as any).clientUser) {
-        const sessionClient = (req.session as any).clientUser;
-        console.log(`🔗 Client connecté détecté lors de la réservation: ${sessionClient.email}`);
-        clientAccountId = sessionClient.id; // Utiliser directement l'ID de session
-        console.log(`🔑 ID du compte client pour liaison: ${clientAccountId}`);
-      }
-
-      console.log(`🔍 Recherche client existant pour email: ${clientEmail}`);
-      
-      // Utiliser pool PostgreSQL directement
-      const existingClientQuery = await pool.query(
-        'SELECT id, client_account_id FROM clients WHERE email = $1 LIMIT 1',
-        [clientEmail]
-      );
-      
-      let client = existingClientQuery.rows;
-      console.log(`📋 Client trouvé: ${client.length > 0 ? 'OUI' : 'NON'}`);
+      // Create or get existing client
+      let client = await db
+        .select()
+        .from(clients)
+        .where(eq(clients.email, clientEmail))
+        .limit(1);
 
       let clientId;
       if (client.length === 0) {
-        // Create new client with potential account link using pool
-        const insertResult = await pool.query(
-          'INSERT INTO clients (user_id, first_name, last_name, email, phone, client_account_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-          ['demo-user', clientFirstName, clientLastName, clientEmail, clientPhone || '', clientAccountId]
-        );
-        clientId = insertResult.rows[0].id;
-        console.log(`✅ Nouveau client créé et lié au compte: ${clientId} (Account: ${clientAccountId})`);
+        // Create new client
+        const newClient = await db
+          .insert(clients)
+          .values({
+            firstName: clientFirstName,
+            lastName: clientLastName,
+            email: clientEmail,
+            phone: clientPhone || '',
+            userId: 'demo-user' // For demo purposes, link to demo salon
+          })
+          .returning();
+        clientId = newClient[0].id;
       } else {
         clientId = client[0].id;
-        
-        // Mettre à jour le lien avec le compte client si pas encore fait
-        if (clientAccountId && !client[0].client_account_id) {
-          await pool.query(
-            'UPDATE clients SET client_account_id = $1 WHERE id = $2',
-            [clientAccountId, clientId]
-          );
-          console.log(`✅ Client existant lié au compte: ${clientId} (Account: ${clientAccountId})`);
-        } else if (clientAccountId) {
-          console.log(`ℹ️ Client déjà lié au compte: ${clientId} (Account: ${client[0].client_account_id})`);
-        }
       }
 
       // Calculate end time
@@ -410,26 +389,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const endMinute = (startHour * 60 + startMinute + duration) % 60;
       const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
-      // Create appointment with client info using pool
-      const appointmentResult = await pool.query(
-        `INSERT INTO appointments (
-          user_id, client_id, client_name, client_email, client_phone,
-          appointment_date, start_time, end_time, status, total_price, deposit_paid, notes
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id`,
-        [
-          'demo-user', clientId, `${clientFirstName} ${clientLastName}`, clientEmail, clientPhone || '',
-          appointmentDate, startTime, endTime, 'confirmed', totalAmount, depositAmount, notes || ''
-        ]
-      );
-      
-      const appointment = { id: appointmentResult.rows[0].id };
+      // Create appointment
+      const appointment = await db
+        .insert(appointments)
+        .values({
+          userId: 'demo-user',
+          clientId: clientId,
+          staffId: professionalId,
+          service: serviceId,
+          appointmentDate: appointmentDate,
+          startTime: startTime,
+          endTime: endTime,
+          status: 'confirmed',
+          totalPrice: totalAmount,
+          depositPaid: depositAmount,
+          notes: notes || ''
+        })
+        .returning();
 
       // Send notifications to professional
-      await notificationService.sendNewBookingNotification(appointment.id);
+      await notificationService.sendNewBookingNotification(appointment[0].id);
 
       res.json({ 
         success: true, 
-        appointmentId: appointment.id,
+        appointmentId: appointment[0].id,
         message: "Rendez-vous confirmé et ajouté au planning du professionnel"
       });
     } catch (error) {
@@ -1408,24 +1391,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Client authentication required" });
       }
 
-      console.log(`🔍 Récupération RDV pour client: ${clientSession.email}`);
-
-      // Get appointments for this client account using PostgreSQL directly
-      const appointmentQuery = await pool.query(
-        'SELECT * FROM appointments WHERE client_email = $1 ORDER BY appointment_date DESC, start_time DESC',
-        [clientSession.email]
-      );
-
-      console.log(`📋 ${appointmentQuery.rows.length} rendez-vous trouvés`);
+      // Get appointments for this client account
+      const appointments = await storage.getClientAccountAppointments(clientSession.id);
       
-      res.json({
-        appointments: appointmentQuery.rows,
-        clientInfo: {
-          firstName: clientSession.firstName,
-          lastName: clientSession.lastName,
-          email: clientSession.email
-        }
-      });
+      res.json(appointments);
     } catch (error: any) {
       console.error("Error fetching client appointments:", error);
       res.status(500).json({ message: "Error fetching client appointments" });

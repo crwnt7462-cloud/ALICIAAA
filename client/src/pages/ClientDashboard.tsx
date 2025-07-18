@@ -59,14 +59,11 @@ export default function ClientDashboard() {
     return null;
   }
 
-  const { data: appointmentsData, isLoading: appointmentsLoading } = useQuery({
+  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/client/appointments'],
     queryFn: () => apiRequest('GET', `/api/client/appointments`).then(res => res.json()),
     enabled: !!clientSession?.id,
   });
-
-  // Extraire le tableau d'appointments de la réponse API
-  const appointments = appointmentsData?.appointments || [];
 
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
     queryKey: ['/api/conversations'],
@@ -84,14 +81,9 @@ export default function ClientDashboard() {
     );
   }
 
-  const upcomingAppointments = appointments.filter(apt => {
-    try {
-      return apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date();
-    } catch (error) {
-      console.error('Error parsing appointment date:', apt.appointmentDate, error);
-      return false;
-    }
-  });
+  const upcomingAppointments = appointments.filter(apt => 
+    apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date()
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -239,11 +231,11 @@ export default function ClientDashboard() {
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
-                              <span>{appointment.appointmentDate}</span>
+                              <span>{format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}</span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Clock className="w-4 h-4" />
-                              <span>{appointment.startTime ? appointment.startTime.substring(0, 5) : 'N/A'}</span>
+                              <span>{appointment.startTime}</span>
                             </div>
                           </div>
                         </div>
@@ -328,7 +320,7 @@ export default function ClientDashboard() {
                           <p className="text-sm text-gray-500 truncate">{conversation.lastMessageContent}</p>
                         </div>
                         <div className="text-xs text-gray-400">
-                          {conversation.lastMessageAt || 'N/A'}
+                          {format(new Date(conversation.lastMessageAt), 'HH:mm')}
                         </div>
                       </div>
                     </div>
@@ -385,7 +377,7 @@ export default function ClientDashboard() {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-4 h-4" />
-                            <span>{appointment.appointmentDate}</span>
+                            <span>{format(new Date(appointment.appointmentDate), 'd MMMM yyyy', { locale: fr })}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Clock className="w-4 h-4" />
@@ -400,7 +392,7 @@ export default function ClientDashboard() {
                       
                       <div className="text-right">
                         <p className="font-semibold text-gray-900 mb-2">{appointment.totalPrice}€</p>
-                        {appointment.status === 'confirmed' && (
+                        {appointment.status === 'confirmed' && new Date(appointment.appointmentDate) > new Date() && (
                           <div className="flex flex-col space-y-1">
                             <Button variant="outline" size="sm" className="text-xs h-7 px-2">
                               Déplacer
@@ -484,7 +476,7 @@ export default function ClientDashboard() {
                         <div className="flex items-center justify-between">
                           <h3 className="font-medium text-gray-900">Salon Professionnel</h3>
                           <span className="text-xs text-gray-400">
-                            {conversation.lastMessageAt || 'N/A'}
+                            {format(new Date(conversation.lastMessageAt), 'HH:mm')}
                           </span>
                         </div>
                         <p className="text-sm text-gray-500 truncate mt-1">{conversation.lastMessageContent}</p>

@@ -123,14 +123,13 @@ Génération automatique :
 
 ## Changements Récents
 
-### Janvier 2025 - LIAISON COMPTES CLIENTS & RENDEZ-VOUS RÉSOLUE (18 Janvier)
-- ✅ **Problème critique résolu** : Liaison automatique entre comptes clients et rendez-vous opérationnelle
-- ✅ **Erreurs SQL corrigées** : Migration vers requêtes PostgreSQL directes pour éviter erreurs Drizzle
-- ✅ **Détection session client** : Client connecté automatiquement détecté lors des réservations
-- ✅ **Base de données actualisée** : 5 rendez-vous test créés avec liaison compte client fonctionnelle
-- ✅ **Interface ClientDashboard corrigée** : Erreur `appointments.filter is not a function` résolue
-- ✅ **API /api/client/appointments** : Retourne correctement les rendez-vous du client connecté
-- ✅ **Test account opérationnel** : test@example.com/password avec rendez-vous visibles
+### Janvier 2025 - AMÉLIORATION UX CLIENT DASHBOARD & POLITIQUE ANNULATION (17 Janvier)
+- ✅ **Boutons redimensionnés** : Actions client plus compactes (h-14 au lieu de h-20, text-xs)
+- ✅ **Fonctionnalités annulation/déplacement** : Boutons "Déplacer" et "Annuler" pour RDV confirmés
+- ✅ **Politique d'annulation claire** : Alerte visible sur remboursement acompte selon délai 24h
+- ✅ **Interface compacte optimisée** : Boutons actions réduits (h-7, h-8) pour meilleure ergonomie mobile
+- ✅ **Messages informatifs** : Encarts bleu/amber avec icônes pour expliquer les règles d'annulation
+- ✅ **Design cohérent** : Toutes les tailles de boutons harmonisées dans l'interface client
 
 ### Janvier 2025 - SYSTÈME DE MENTIONS @ AVEC HANDLES UNIQUES COMPLET (17 Janvier)
 - ✅ **Système de mentions @ opérationnel** : Handles uniques auto-générés pour tous utilisateurs (pros/clients)
