@@ -530,7 +530,7 @@ export class DatabaseStorage implements IStorage {
 
   // Client Account Operations
   async getClientAccountAppointments(clientAccountId: string): Promise<any[]> {
-    // Get appointments where the client account is linked via email match
+    // Get appointments where the client account is linked via email match OR direct clientAccountId link
     const clientAccount = await db
       .select()
       .from(clientAccounts)
@@ -543,11 +543,13 @@ export class DatabaseStorage implements IStorage {
 
     const client = clientAccount[0];
     
-    // Find appointments by matching email
+    // Find appointments by both methods: 
+    // 1. Direct link via clientAccountId in clients table
+    // 2. Fallback to email matching (for older appointments)
     const appointmentResults = await db
       .select({
         id: appointments.id,
-        serviceName: sql<string>`COALESCE(${services.name}, 'Service')`,
+        serviceName: sql<string>`COALESCE(${services.name}, COALESCE(${appointments.service}, 'Service'))`,
         businessName: sql<string>`COALESCE(${users.businessName}, 'Salon')`,
         appointmentDate: appointments.appointmentDate,
         startTime: appointments.startTime,
@@ -558,11 +560,20 @@ export class DatabaseStorage implements IStorage {
         createdAt: appointments.createdAt
       })
       .from(appointments)
+      .leftJoin(clients, eq(appointments.clientId, clients.id))
       .leftJoin(services, eq(appointments.serviceId, services.id))
       .leftJoin(users, eq(appointments.userId, users.id))
-      .where(eq(appointments.clientEmail, client.email))
+      .where(
+        or(
+          // Direct link via clientAccountId
+          eq(clients.clientAccountId, clientAccountId),
+          // Fallback: email matching
+          eq(appointments.clientEmail, client.email)
+        )
+      )
       .orderBy(desc(appointments.appointmentDate));
 
+    console.log(`📅 Found ${appointmentResults.length} appointments for client account ${clientAccountId} (${client.email})`);
     return appointmentResults;
   }
 
