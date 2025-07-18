@@ -328,7 +328,7 @@ export default function ClientDashboard() {
                           <p className="text-sm text-gray-500 truncate">{conversation.lastMessageContent}</p>
                         </div>
                         <div className="text-xs text-gray-400">
-                          {format(new Date(conversation.lastMessageAt), 'HH:mm')}
+                          {conversation.lastMessageAt || 'N/A'}
                         </div>
                       </div>
                     </div>
@@ -385,7 +385,7 @@ export default function ClientDashboard() {
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center space-x-1">
                             <Calendar className="w-4 h-4" />
-                            <span>{format(new Date(appointment.appointmentDate), 'd MMMM yyyy', { locale: fr })}</span>
+                            <span>{appointment.appointmentDate}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Clock className="w-4 h-4" />
@@ -400,7 +400,7 @@ export default function ClientDashboard() {
                       
                       <div className="text-right">
                         <p className="font-semibold text-gray-900 mb-2">{appointment.totalPrice}€</p>
-                        {appointment.status === 'confirmed' && new Date(appointment.appointmentDate) > new Date() && (
+                        {appointment.status === 'confirmed' && (
                           <div className="flex flex-col space-y-1">
                             <Button variant="outline" size="sm" className="text-xs h-7 px-2">
                               Déplacer
@@ -484,7 +484,7 @@ export default function ClientDashboard() {
                         <div className="flex items-center justify-between">
                           <h3 className="font-medium text-gray-900">Salon Professionnel</h3>
                           <span className="text-xs text-gray-400">
-                            {format(new Date(conversation.lastMessageAt), 'HH:mm')}
+                            {conversation.lastMessageAt || 'N/A'}
                           </span>
                         </div>
                         <p className="text-sm text-gray-500 truncate mt-1">{conversation.lastMessageContent}</p>
