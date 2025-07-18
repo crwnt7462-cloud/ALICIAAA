@@ -123,6 +123,14 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - AMÉLIORATION UX CLIENT DASHBOARD & POLITIQUE ANNULATION (17 Janvier)
+- ✅ **Boutons redimensionnés** : Actions client plus compactes (h-14 au lieu de h-20, text-xs)
+- ✅ **Fonctionnalités annulation/déplacement** : Boutons "Déplacer" et "Annuler" pour RDV confirmés
+- ✅ **Politique d'annulation claire** : Alerte visible sur remboursement acompte selon délai 24h
+- ✅ **Interface compacte optimisée** : Boutons actions réduits (h-7, h-8) pour meilleure ergonomie mobile
+- ✅ **Messages informatifs** : Encarts bleu/amber avec icônes pour expliquer les règles d'annulation
+- ✅ **Design cohérent** : Toutes les tailles de boutons harmonisées dans l'interface client
+
 ### Janvier 2025 - SYSTÈME DE MENTIONS @ AVEC HANDLES UNIQUES COMPLET (17 Janvier)
 - ✅ **Système de mentions @ opérationnel** : Handles uniques auto-générés pour tous utilisateurs (pros/clients)
 - ✅ **Génération automatique handles** : API /api/users/create-handles génère @identifiants basés sur noms
@@ -134,6 +142,7 @@ Génération automatique :
 - ✅ **Intégration MessagingHub** : Support mentions dans conversations avec stockage mentions array
 - ✅ **Erreurs de connexion corrigées** : Migration schéma, ajout colonnes manquantes, serveur stable
 - ✅ **Tests API fonctionnels** : 1 professionnel + 2 clients avec handles @demouser, @agashbij, @ryanmlk
+- ✅ **Compte test fonctionnel** : test@example.com / password avec handle @testuser
 
 ### Janvier 2025 - REFONTE MAJEURE CLIENT DASHBOARD ULTRA-PROFESSIONNEL (17 Janvier)
 - ✅ **Design ClientDashboard complètement refait** : Interface ultra-moderne inspirée Treatwell/Planity

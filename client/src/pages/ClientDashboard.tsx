@@ -176,20 +176,20 @@ export default function ClientDashboard() {
             {/* Actions rapides */}
             <div className="grid grid-cols-2 gap-3">
               <Button 
-                className="h-20 flex flex-col space-y-2 bg-gradient-to-br from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-xl"
+                className="h-14 flex flex-col space-y-1 bg-gradient-to-br from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-lg text-sm"
                 onClick={() => setLocation('/')}
               >
-                <Plus className="w-6 h-6" />
-                <span className="text-sm font-medium">Nouveau RDV</span>
+                <Plus className="w-4 h-4" />
+                <span className="text-xs font-medium">Nouveau RDV</span>
               </Button>
               
               <Button 
                 variant="outline" 
-                className="h-20 flex flex-col space-y-2 bg-white border-gray-200 hover:bg-gray-50 rounded-xl"
+                className="h-14 flex flex-col space-y-1 bg-white border-gray-200 hover:bg-gray-50 rounded-lg text-sm"
                 onClick={() => setActiveTab('rendez-vous')}
               >
-                <Calendar className="w-6 h-6 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Mes RDV</span>
+                <Calendar className="w-4 h-4 text-gray-600" />
+                <span className="text-xs font-medium text-gray-700">Mes RDV</span>
               </Button>
             </div>
 
@@ -242,8 +242,13 @@ export default function ClientDashboard() {
                         
                         <div className="text-right">
                           <p className="font-semibold text-gray-900">{appointment.totalPrice}€</p>
-                          <Button variant="ghost" size="sm" className="p-0 h-auto text-violet-600 hover:text-violet-700">
-                            <ChevronRight className="w-4 h-4" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-1 h-6 w-6 text-violet-600 hover:text-violet-700 hover:bg-violet-50"
+                            onClick={() => setActiveTab('rendez-vous')}
+                          >
+                            <ChevronRight className="w-3 h-3" />
                           </Button>
                         </div>
                       </div>
@@ -256,7 +261,8 @@ export default function ClientDashboard() {
                   <h3 className="font-medium text-gray-900 mb-1">Aucun rendez-vous à venir</h3>
                   <p className="text-sm text-gray-500 mb-4">Réservez votre prochain soin</p>
                   <Button 
-                    className="bg-violet-600 hover:bg-violet-700"
+                    size="sm"
+                    className="bg-violet-600 hover:bg-violet-700 h-9 px-4"
                     onClick={() => setLocation('/')}
                   >
                     Réserver maintenant
@@ -264,6 +270,24 @@ export default function ClientDashboard() {
                 </div>
               )}
             </div>
+
+            {/* Politique d'annulation */}
+            {upcomingAppointments.length > 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start space-x-2">
+                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">i</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-blue-800 text-xs mb-1">Info importante</h4>
+                    <p className="text-blue-700 text-xs leading-relaxed">
+                      <strong>Annulation gratuite jusqu'à 24h avant le RDV.</strong> 
+                      Passé ce délai, l'acompte peut ne pas être remboursé selon la politique du salon.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Messages récents */}
             <div className="space-y-4">
@@ -273,7 +297,7 @@ export default function ClientDashboard() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => setActiveTab('messages')}
-                  className="text-violet-600 hover:text-violet-700 p-0"
+                  className="text-violet-600 hover:text-violet-700 p-0 h-6 text-xs"
                 >
                   Voir tout
                 </Button>
@@ -318,11 +342,12 @@ export default function ClientDashboard() {
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold text-gray-900">Mes rendez-vous</h1>
               <Button 
-                className="bg-violet-600 hover:bg-violet-700"
+                size="sm"
+                className="bg-violet-600 hover:bg-violet-700 h-8 px-3"
                 onClick={() => setLocation('/')}
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Réserver
+                <Plus className="w-3 h-3 mr-1" />
+                <span className="text-xs">Nouveau</span>
               </Button>
             </div>
 
@@ -369,10 +394,10 @@ export default function ClientDashboard() {
                         <p className="font-semibold text-gray-900 mb-2">{appointment.totalPrice}€</p>
                         {appointment.status === 'confirmed' && new Date(appointment.appointmentDate) > new Date() && (
                           <div className="flex flex-col space-y-1">
-                            <Button variant="outline" size="sm" className="text-xs">
-                              Modifier
+                            <Button variant="outline" size="sm" className="text-xs h-7 px-2">
+                              Déplacer
                             </Button>
-                            <Button variant="ghost" size="sm" className="text-xs text-red-600 hover:text-red-700">
+                            <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-red-600 hover:text-red-700 hover:bg-red-50">
                               Annuler
                             </Button>
                           </div>
@@ -395,6 +420,25 @@ export default function ClientDashboard() {
                 </Button>
               </div>
             )}
+            
+            {/* Politique d'annulation */}
+            {appointments.length > 0 && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">!</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium text-amber-800 text-sm mb-1">Politique d'annulation</h4>
+                    <p className="text-amber-700 text-xs leading-relaxed">
+                      <strong>Annulation gratuite jusqu'à 24h avant le rendez-vous.</strong> 
+                      Passé ce délai, l'acompte versé peut ne pas être remboursé selon la politique du salon. 
+                      Contactez directement l'établissement pour connaître leurs conditions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -404,11 +448,11 @@ export default function ClientDashboard() {
               <h1 className="text-xl font-bold text-gray-900">Messages</h1>
               <Button 
                 onClick={() => setLocation('/messaging')}
-                className="bg-violet-600 hover:bg-violet-700"
+                className="bg-violet-600 hover:bg-violet-700 h-8 px-3"
                 size="sm"
               >
-                <AtSign className="w-4 h-4 mr-2" />
-                Messagerie Pro
+                <AtSign className="w-3 h-3 mr-1" />
+                <span className="text-xs">Messagerie</span>
               </Button>
             </div>
 
