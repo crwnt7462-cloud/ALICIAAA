@@ -84,9 +84,14 @@ export default function ClientDashboard() {
     );
   }
 
-  const upcomingAppointments = appointments.filter(apt => 
-    apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date()
-  );
+  const upcomingAppointments = appointments.filter(apt => {
+    try {
+      return apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date();
+    } catch (error) {
+      console.error('Error parsing appointment date:', apt.appointmentDate, error);
+      return false;
+    }
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -234,11 +239,11 @@ export default function ClientDashboard() {
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
-                              <span>{format(new Date(appointment.appointmentDate), 'd MMM', { locale: fr })}</span>
+                              <span>{appointment.appointmentDate}</span>
                             </div>
                             <div className="flex items-center space-x-1">
                               <Clock className="w-4 h-4" />
-                              <span>{appointment.startTime}</span>
+                              <span>{appointment.startTime ? appointment.startTime.substring(0, 5) : 'N/A'}</span>
                             </div>
                           </div>
                         </div>
