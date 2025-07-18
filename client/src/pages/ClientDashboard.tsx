@@ -59,11 +59,14 @@ export default function ClientDashboard() {
     return null;
   }
 
-  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
+  const { data: appointmentsData, isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/client/appointments'],
     queryFn: () => apiRequest('GET', `/api/client/appointments`).then(res => res.json()),
     enabled: !!clientSession?.id,
   });
+
+  // Extraire le tableau d'appointments de la réponse API
+  const appointments = appointmentsData?.appointments || [];
 
   const { data: conversations = [], isLoading: conversationsLoading } = useQuery({
     queryKey: ['/api/conversations'],
