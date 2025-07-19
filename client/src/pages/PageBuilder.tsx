@@ -87,18 +87,20 @@ export default function PageBuilder() {
   };
 
   const savePage = () => {
+    // Sauvegarder la configuration dans le localStorage pour l'appliquer à Booking.tsx
+    localStorage.setItem('bookingPageConfig', JSON.stringify(pageConfig));
     toast({ 
-      title: "Page sauvegardée", 
-      description: "Votre page de réservation a été mise à jour avec succès" 
+      title: "Style sauvegardé", 
+      description: "L'apparence de votre page de réservation a été mise à jour" 
     });
   };
 
   const previewPage = () => {
     toast({ 
       title: "Aperçu généré", 
-      description: "Ouverture de l'aperçu dans un nouvel onglet" 
+      description: "Ouverture de la page de réservation personnalisée" 
     });
-    // Ici on pourrait ouvrir un aperçu réel
+    setLocation('/booking');
   };
 
   return (
@@ -115,8 +117,8 @@ export default function PageBuilder() {
               <ArrowLeft className="w-4 h-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Créateur de Pages</h1>
-              <p className="text-sm text-gray-500">Personnalisez votre page de réservation</p>
+              <h1 className="text-xl font-bold text-gray-900">Personnalisation Page Client</h1>
+              <p className="text-sm text-gray-500">Modifiez l'apparence de votre page de réservation</p>
             </div>
           </div>
           

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Calendar, Clock, User, Phone, Mail, CreditCard, Check } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,20 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Booking() {
+  const [customConfig, setCustomConfig] = useState(null);
+
+  // Charger la configuration personnalisée depuis le localStorage
+  useEffect(() => {
+    const savedConfig = localStorage.getItem('bookingPageConfig');
+    if (savedConfig) {
+      try {
+        setCustomConfig(JSON.parse(savedConfig));
+      } catch (e) {
+        console.warn('Erreur lors du chargement de la configuration:', e);
+      }
+    }
+  }, []);
+
   const [formData, setFormData] = useState({
     // Client info
     firstName: "",
@@ -123,12 +137,48 @@ export default function Booking() {
     });
   };
 
+  // Styles personnalisés basés sur la configuration
+  const getCustomStyles = () => {
+    if (!customConfig) return {};
+    
+    return {
+      background: customConfig.headerStyle === "gradient" 
+        ? `linear-gradient(135deg, ${customConfig.primaryColor}, ${customConfig.secondaryColor})`
+        : customConfig.backgroundColor,
+      primaryColor: customConfig.primaryColor,
+      secondaryColor: customConfig.secondaryColor,
+      accentColor: customConfig.accentColor,
+      textColor: customConfig.textColor
+    };
+  };
+
+  const styles = getCustomStyles();
+
   return (
-    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
+    <div 
+      className="p-4 space-y-6 min-h-full"
+      style={{ 
+        background: customConfig?.headerStyle === "gradient" 
+          ? `linear-gradient(135deg, ${customConfig.primaryColor}20, ${customConfig.secondaryColor}20)`
+          : "linear-gradient(to bottom right, rgb(249 250 251 / 0.5), rgb(196 181 253 / 0.3))" 
+      }}
+    >
       <div className="max-w-md mx-auto">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Réserver un rendez-vous</h1>
-          <p className="text-gray-600 text-sm mt-1">Rapide et simple</p>
+        <div 
+          className="text-center mb-6 p-6 rounded-xl"
+          style={{ 
+            background: customConfig?.headerStyle === "gradient" 
+              ? `linear-gradient(135deg, ${customConfig.primaryColor}, ${customConfig.secondaryColor})`
+              : undefined,
+            color: customConfig?.headerStyle === "gradient" ? "white" : undefined
+          }}
+        >
+          <h1 className={`text-2xl font-bold ${customConfig?.headerStyle === "gradient" ? "text-white" : "text-gray-900"}`}>
+            {customConfig?.welcomeTitle || "Réserver un rendez-vous"}
+          </h1>
+          <p className={`text-sm mt-1 ${customConfig?.headerStyle === "gradient" ? "text-white/90" : "text-gray-600"}`}>
+            {customConfig?.description || "Rapide et simple"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -308,7 +358,15 @@ export default function Booking() {
           {/* Bouton de réservation */}
           <Button 
             type="submit" 
-            className="w-full h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className={`w-full h-12 text-lg text-white ${
+              customConfig?.buttonStyle === "pill" ? "rounded-full" :
+              customConfig?.buttonStyle === "square" ? "rounded-none" : "rounded-lg"
+            }`}
+            style={{ 
+              background: customConfig?.primaryColor 
+                ? `linear-gradient(to right, ${customConfig.primaryColor}, ${customConfig.secondaryColor})`
+                : "linear-gradient(to right, rgb(37 99 235), rgb(147 51 234))"
+            }}
             disabled={createBookingMutation.isPending}
           >
             {createBookingMutation.isPending ? (
