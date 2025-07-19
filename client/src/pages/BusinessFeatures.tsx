@@ -467,7 +467,7 @@ export default function BusinessFeatures() {
                         variant="outline"
                         onClick={() => {
                           toast({ title: "Page ouverte", description: `Ouverture de ${page.name}` });
-                          setLocation(`/quick-booking`);
+                          setLocation(`/booking`);
                         }}
                       >
                         Voir
@@ -480,7 +480,10 @@ export default function BusinessFeatures() {
                 size="sm" 
                 variant="outline" 
                 className="w-full"
-                onClick={() => setLocation('/page-builder')}
+                onClick={() => {
+                  toast({ title: "Nouvelle page", description: "Redirection vers la page de réservation" });
+                  setLocation('/booking');
+                }}
               >
                 + Créer nouvelle page
               </Button>
