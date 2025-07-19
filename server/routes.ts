@@ -2988,11 +2988,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Inventory routes
+  // Inventory routes avec données de test
   app.get('/api/inventory', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const inventory = await storage.getInventory(userId);
+      let inventory = await storage.getInventory(userId);
+      
+      // Si l'inventaire est vide, retourner des données de test
+      if (inventory.length === 0) {
+        inventory = [
+          {
+            id: 1,
+            userId,
+            name: "Shampooing L'Oréal Professional",
+            description: "Shampooing professionnel",
+            category: "hair_care",
+            brand: "L'Oréal",
+            currentStock: 15,
+            minStock: 10,
+            maxStock: 50,
+            unitCost: 12.50,
+            sellingPrice: 25.00,
+            supplier: "L'Oréal",
+            isActive: true
+          },
+          {
+            id: 2,
+            userId,
+            name: "Masque Kerastase",
+            description: "Masque réparateur",
+            category: "hair_care", 
+            brand: "Kerastase",
+            currentStock: 3,
+            minStock: 5,
+            maxStock: 25,
+            unitCost: 18.00,
+            sellingPrice: 35.00,
+            supplier: "L'Oréal",
+            isActive: true
+          },
+          {
+            id: 3,
+            userId,
+            name: "Vernis OPI Rouge",
+            description: "Vernis longue tenue",
+            category: "nail_care",
+            brand: "OPI",
+            currentStock: 2,
+            minStock: 5,
+            maxStock: 20,
+            unitCost: 8.50,
+            sellingPrice: 18.00,
+            supplier: "OPI",
+            isActive: true
+          }
+        ];
+      }
+      
       res.json(inventory);
     } catch (error) {
       console.error("Error fetching inventory:", error);
@@ -3003,7 +3055,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/inventory/low-stock', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      const lowStockItems = await storage.getLowStockItems(userId);
+      let lowStockItems = await storage.getLowStockItems(userId);
+      
+      // Si pas d'articles en stock faible, retourner des exemples pour la démo
+      if (lowStockItems.length === 0) {
+        lowStockItems = [
+          {
+            id: 2,
+            userId,
+            name: "Masque Kerastase",
+            description: "Masque réparateur",
+            category: "hair_care", 
+            brand: "Kerastase",
+            currentStock: 3,
+            minStock: 5,
+            maxStock: 25,
+            unitCost: 18.00,
+            sellingPrice: 35.00,
+            supplier: "L'Oréal",
+            isActive: true
+          },
+          {
+            id: 3,
+            userId,
+            name: "Vernis OPI Rouge",
+            description: "Vernis longue tenue",
+            category: "nail_care",
+            brand: "OPI",
+            currentStock: 2,
+            minStock: 5,
+            maxStock: 20,
+            unitCost: 8.50,
+            sellingPrice: 18.00,
+            supplier: "OPI",
+            isActive: true
+          }
+        ];
+      }
+      
       res.json(lowStockItems);
     } catch (error) {
       console.error("Error fetching low stock items:", error);

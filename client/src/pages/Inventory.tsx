@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Plus, Package, AlertTriangle, Edit, Trash2, 
-  Search, Filter, TrendingDown, TrendingUp
+  Search, Filter, TrendingDown, TrendingUp, Minus
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -52,9 +52,9 @@ export default function Inventory() {
   const [newItem, setNewItem] = useState({
     name: "",
     description: "",
-    category: "",
+    category: "hair_care",
     brand: "",
-    currentStock: 0,
+    currentStock: 10,
     minStock: 5,
     maxStock: 100,
     unitCost: 0,
@@ -77,9 +77,9 @@ export default function Inventory() {
       setNewItem({
         name: "",
         description: "",
-        category: "",
+        category: "hair_care",
         brand: "",
-        currentStock: 0,
+        currentStock: 10,
         minStock: 5,
         maxStock: 100,
         unitCost: 0,
@@ -90,18 +90,14 @@ export default function Inventory() {
       toast({ title: "Article créé avec succès!" });
     },
     onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer l'article",
-        variant: "destructive",
-      });
-    },
+      toast({ title: "Erreur lors de la création", variant: "destructive" });
+    }
   });
 
-  // Mutation pour mettre à jour le stock
+  // Mutation pour ajuster le stock
   const updateStockMutation = useMutation({
     mutationFn: async ({ id, currentStock }: { id: number; currentStock: number }) => {
-      const response = await apiRequest("PATCH", `/api/inventory/${id}/stock`, { currentStock });
+      const response = await apiRequest("PATCH", `/api/inventory/${id}`, { currentStock });
       if (!response.ok) throw new Error("Erreur lors de la mise à jour");
       return response.json();
     },
@@ -112,54 +108,42 @@ export default function Inventory() {
     },
   });
 
-  // Mutation pour supprimer un article
-  const deleteItemMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await apiRequest("DELETE", `/api/inventory/${id}`);
-      if (!response.ok) throw new Error("Erreur lors de la suppression");
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/inventory"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/inventory/low-stock"] });
-      toast({ title: "Article supprimé!" });
-    },
-  });
-
   // Filtrer les articles
   const filteredInventory = inventory.filter((item: InventoryItem) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+                         (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesCategory = !categoryFilter || item.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
-  // Catégories uniques
-  const categories = [...new Set(inventory.map((item: InventoryItem) => item.category).filter(Boolean))];
-
   // Vérifier si un article est en stock faible
   const isLowStock = (item: InventoryItem) => item.currentStock <= item.minStock;
 
-  const handleStockUpdate = (item: InventoryItem, newStock: number) => {
+  const handleStockAdjustment = (item: InventoryItem, adjustment: number) => {
+    const newStock = Math.max(0, item.currentStock + adjustment);
     updateStockMutation.mutate({ id: item.id, currentStock: newStock });
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center h-64">Chargement...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-4 space-y-6">
-      {/* Header avec alertes */}
-      <div className="flex items-center justify-between">
+    <div className="p-4 space-y-6 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Gestion des Stocks</h1>
-          <p className="text-gray-500">Gérez votre inventaire et surveillez les niveaux de stock</p>
+          <h1 className="text-2xl font-bold text-gray-900">Gestion des Stocks</h1>
+          <p className="text-gray-600">Gérez votre inventaire et surveillez les niveaux de stock</p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="gradient-bg">
               <Plus className="w-4 h-4 mr-2" />
               Ajouter un article
             </Button>
@@ -174,7 +158,7 @@ export default function Inventory() {
                 <Input
                   value={newItem.name}
                   onChange={(e) => setNewItem(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Shampooing L'Oréal"
+                  placeholder="Shampooing L'Oréal Professional"
                 />
               </div>
               <div>
@@ -198,7 +182,7 @@ export default function Inventory() {
                 <Input
                   value={newItem.brand}
                   onChange={(e) => setNewItem(prev => ({ ...prev, brand: e.target.value }))}
-                  placeholder="L'Oréal"
+                  placeholder="L'Oréal Professional"
                 />
               </div>
               <div className="grid grid-cols-3 gap-2">
@@ -247,18 +231,10 @@ export default function Inventory() {
                   />
                 </div>
               </div>
-              <div>
-                <Label>Fournisseur</Label>
-                <Input
-                  value={newItem.supplier}
-                  onChange={(e) => setNewItem(prev => ({ ...prev, supplier: e.target.value }))}
-                  placeholder="Nom du fournisseur"
-                />
-              </div>
               <Button
                 onClick={() => createItemMutation.mutate(newItem)}
                 disabled={!newItem.name || createItemMutation.isPending}
-                className="w-full"
+                className="w-full gradient-bg"
               >
                 {createItemMutation.isPending ? "Création..." : "Créer l'article"}
               </Button>
@@ -278,176 +254,137 @@ export default function Inventory() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-2">
-              {lowStockItems.map((item: InventoryItem) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-2 bg-white rounded border border-red-200"
-                >
+              {lowStockItems.slice(0, 3).map((item: InventoryItem) => (
+                <div key={item.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-red-200">
                   <div>
-                    <span className="font-medium text-red-800">{item.name}</span>
-                    {item.brand && <span className="text-sm text-red-600 ml-2">({item.brand})</span>}
+                    <span className="font-medium text-red-900">{item.name}</span>
+                    <span className="text-red-600 ml-2">({item.currentStock} restants)</span>
                   </div>
-                  <Badge variant="destructive">
-                    {item.currentStock}/{item.minStock}
+                  <Badge variant="destructive" className="bg-red-600">
+                    Stock faible
                   </Badge>
                 </div>
               ))}
+              {lowStockItems.length > 3 && (
+                <div className="text-red-600 text-sm">
+                  +{lowStockItems.length - 3} autres articles en stock faible
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* Filtres */}
-      <div className="flex gap-4">
-        <div className="flex-1">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-            <Input
-              placeholder="Rechercher un article..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Rechercher par nom, marque..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+            <div className="w-full sm:w-48">
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Toutes catégories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Toutes catégories</SelectItem>
+                  <SelectItem value="hair_care">Soins cheveux</SelectItem>
+                  <SelectItem value="skin_care">Soins visage</SelectItem>
+                  <SelectItem value="tools">Outils</SelectItem>
+                  <SelectItem value="nail_care">Soins ongles</SelectItem>
+                  <SelectItem value="makeup">Maquillage</SelectItem>
+                  <SelectItem value="other">Autre</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-48">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="Toutes catégories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">Toutes catégories</SelectItem>
-            {categories.map(category => (
-              <SelectItem key={category} value={category}>
-                {category === 'hair_care' ? 'Soins cheveux' :
-                 category === 'skin_care' ? 'Soins visage' :
-                 category === 'tools' ? 'Outils' :
-                 category === 'nail_care' ? 'Soins ongles' :
-                 category === 'makeup' ? 'Maquillage' : 
-                 category}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Liste des articles */}
       <div className="grid gap-4">
-        {filteredInventory.map((item: InventoryItem) => (
-          <Card 
-            key={item.id} 
-            className={`${isLowStock(item) ? 'border-red-200 bg-red-50' : ''}`}
-          >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium">{item.name}</span>
-                    {item.brand && (
-                      <Badge variant="outline" className="text-xs">{item.brand}</Badge>
-                    )}
-                    {isLowStock(item) && (
-                      <Badge variant="destructive" className="text-xs">
-                        Stock faible !
-                      </Badge>
-                    )}
-                  </div>
-                  {item.description && (
-                    <p className="text-sm text-gray-600 mt-1">{item.description}</p>
-                  )}
-                  <div className="flex items-center gap-4 mt-2 text-sm">
-                    {item.category && (
-                      <span className="text-gray-500">
-                        {item.category === 'hair_care' ? 'Soins cheveux' :
-                         item.category === 'skin_care' ? 'Soins visage' :
-                         item.category === 'tools' ? 'Outils' :
-                         item.category === 'nail_care' ? 'Soins ongles' :
-                         item.category === 'makeup' ? 'Maquillage' : 
-                         item.category}
-                      </span>
-                    )}
-                    {item.supplier && (
-                      <span className="text-gray-500">Fournisseur: {item.supplier}</span>
-                    )}
-                    {item.unitCost && item.sellingPrice && (
-                      <span className="text-green-600">
-                        Marge: {((item.sellingPrice - item.unitCost) / item.unitCost * 100).toFixed(1)}%
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  {/* Stock */}
-                  <div className="text-center">
-                    <div className={`text-lg font-bold ${isLowStock(item) ? 'text-red-600' : 'text-gray-900'}`}>
-                      {item.currentStock}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      Min: {item.minStock}
-                    </div>
-                  </div>
-
-                  {/* Actions stock */}
-                  <div className="flex flex-col gap-1">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleStockUpdate(item, item.currentStock + 1)}
-                      disabled={updateStockMutation.isPending}
-                    >
-                      <TrendingUp className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleStockUpdate(item, Math.max(0, item.currentStock - 1))}
-                      disabled={updateStockMutation.isPending || item.currentStock === 0}
-                    >
-                      <TrendingDown className="w-3 h-3" />
-                    </Button>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setSelectedItem(item)}
-                    >
-                      <Edit className="w-3 h-3" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => deleteItemMutation.mutate(item.id)}
-                      disabled={deleteItemMutation.isPending}
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+        {filteredInventory.length === 0 ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <Package className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun article trouvé</h3>
+              <p className="text-gray-600 mb-4">
+                {searchTerm || categoryFilter 
+                  ? "Essayez de modifier vos filtres de recherche"
+                  : "Commencez par ajouter votre premier article d'inventaire"
+                }
+              </p>
+              {!searchTerm && !categoryFilter && (
+                <Button onClick={() => setIsAddDialogOpen(true)} className="gradient-bg">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Ajouter votre premier article
+                </Button>
+              )}
             </CardContent>
           </Card>
-        ))}
+        ) : (
+          filteredInventory.map((item: InventoryItem) => (
+            <Card key={item.id} className={`${isLowStock(item) ? 'border-red-200 bg-red-50' : ''}`}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-medium text-gray-900">{item.name}</h3>
+                      {isLowStock(item) && (
+                        <Badge variant="destructive" className="bg-red-600">
+                          Stock faible
+                        </Badge>
+                      )}
+                      {item.brand && (
+                        <Badge variant="outline" className="text-xs">
+                          {item.brand}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span>Stock: {item.currentStock}</span>
+                      <span>Min: {item.minStock}</span>
+                      {item.category && (
+                        <span>Catégorie: {item.category}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleStockAdjustment(item, -1)}
+                      disabled={item.currentStock <= 0 || updateStockMutation.isPending}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="px-2 font-medium min-w-[3rem] text-center">
+                      {item.currentStock}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleStockAdjustment(item, 1)}
+                      disabled={updateStockMutation.isPending}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </div>
-
-      {filteredInventory.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-8">
-            <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900">Aucun article trouvé</h3>
-            <p className="text-gray-500">
-              {searchTerm || categoryFilter ? 
-                "Aucun article ne correspond à vos critères de recherche." :
-                "Commencez par ajouter des articles à votre inventaire."
-              }
-            </p>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
