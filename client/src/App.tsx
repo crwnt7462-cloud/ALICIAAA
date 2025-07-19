@@ -45,6 +45,7 @@ import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
 import Inventory from "@/pages/Inventory";
+import BookingPages from "@/pages/BookingPages";
 
 
 function Router() {
@@ -261,6 +262,7 @@ function Router() {
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
           <Route path="/inventory" component={Inventory} />
+          <Route path="/booking-pages" component={BookingPages} />
 
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />

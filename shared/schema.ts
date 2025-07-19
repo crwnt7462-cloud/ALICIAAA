@@ -882,6 +882,9 @@ export type InsertNotification = typeof notifications.$inferInsert;
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
   createdAt: true,
+}).extend({
+  price: z.union([z.number(), z.string()]).transform((val) => String(val)),
+  duration: z.union([z.number(), z.string()]).transform((val) => Number(val)),
 });
 
 export const insertClientSchema = createInsertSchema(clients).omit({
