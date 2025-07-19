@@ -104,14 +104,22 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
-  // Professional Authentication
+  // Professional Authentication with sessions
   createUser(userData: RegisterRequest): Promise<User>;
   validateUser(email: string, password: string): Promise<User | null>;
+  createUserSession(userId: string, sessionData: any): Promise<void>;
+  getUserSession(sessionId: string): Promise<any>;
+  updateUserSession(sessionId: string, sessionData: any): Promise<void>;
+  deleteUserSession(sessionId: string): Promise<void>;
   
-  // Client Authentication
+  // Client Authentication with sessions
   getClientByEmail(email: string): Promise<ClientAccount | undefined>;
   createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount>;
   validateClientAccount(email: string, password: string): Promise<ClientAccount | null>;
+  createClientSession(clientId: string, sessionData: any): Promise<void>;
+  getClientSession(sessionId: string): Promise<any>;
+  updateClientSession(sessionId: string, sessionData: any): Promise<void>;
+  deleteClientSession(sessionId: string): Promise<void>;
 
   // Messaging Operations
   createMessage(messageData: InsertMessage): Promise<Message>;
@@ -414,6 +422,70 @@ export class DatabaseStorage implements IStorage {
     }
 
     return client;
+  }
+
+  // Session management for professionals
+  async createUserSession(userId: string, sessionData: any): Promise<void> {
+    const sessionId = nanoid();
+    await db.execute(sql`
+      INSERT INTO sessions (sid, sess, expire) 
+      VALUES (${sessionId}, ${JSON.stringify({
+        ...sessionData,
+        userId,
+        userType: 'professional',
+        timestamp: new Date().toISOString()
+      })}, ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)})
+    `);
+  }
+
+  async getUserSession(sessionId: string): Promise<any> {
+    const result = await db.execute(sql`
+      SELECT sess FROM sessions WHERE sid = ${sessionId} AND expire > NOW()
+    `);
+    return result.rows[0]?.sess;
+  }
+
+  async updateUserSession(sessionId: string, sessionData: any): Promise<void> {
+    await db.execute(sql`
+      UPDATE sessions SET sess = ${JSON.stringify(sessionData)}, expire = ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
+      WHERE sid = ${sessionId}
+    `);
+  }
+
+  async deleteUserSession(sessionId: string): Promise<void> {
+    await db.execute(sql`DELETE FROM sessions WHERE sid = ${sessionId}`);
+  }
+
+  // Session management for clients  
+  async createClientSession(clientId: string, sessionData: any): Promise<void> {
+    const sessionId = nanoid();
+    await db.execute(sql`
+      INSERT INTO sessions (sid, sess, expire) 
+      VALUES (${sessionId}, ${JSON.stringify({
+        ...sessionData,
+        clientId,
+        userType: 'client',
+        timestamp: new Date().toISOString()
+      })}, ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)})
+    `);
+  }
+
+  async getClientSession(sessionId: string): Promise<any> {
+    const result = await db.execute(sql`
+      SELECT sess FROM sessions WHERE sid = ${sessionId} AND expire > NOW()
+    `);
+    return result.rows[0]?.sess;
+  }
+
+  async updateClientSession(sessionId: string, sessionData: any): Promise<void> {
+    await db.execute(sql`
+      UPDATE sessions SET sess = ${JSON.stringify(sessionData)}, expire = ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)}
+      WHERE sid = ${sessionId}
+    `);
+  }
+
+  async deleteClientSession(sessionId: string): Promise<void> {
+    await db.execute(sql`DELETE FROM sessions WHERE sid = ${sessionId}`);
   }
 
   // Messaging Operations

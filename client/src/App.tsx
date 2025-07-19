@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { useAuth } from "@/hooks/useAuth";
+import { SessionProvider } from "@/components/SessionProvider";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
@@ -279,14 +280,16 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <div className="h-full animated-bg">
-            <Toaster />
-            <Router />
-          </div>
-        </TooltipProvider>
-      </ThemeProvider>
+      <SessionProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <div className="h-full animated-bg">
+              <Toaster />
+              <Router />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

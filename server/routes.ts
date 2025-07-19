@@ -6,6 +6,7 @@ import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { configureSession, authenticateUser, authenticateClient, authenticateAny } from "./sessionMiddleware";
 import { appointmentHistory, cancellationPredictions, appointments, clients, subscriptions, users, clientAccounts } from "@shared/schema";
 import { eq, desc } from "drizzle-orm";
 import {
@@ -38,10 +39,13 @@ import { reminderService } from "./reminderService";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure session middleware for persistent authentication
+  app.use(configureSession());
+  
   // Auth middleware
   await setupAuth(app);
 
-  // Professional Authentication Routes
+  // Professional Authentication Routes with persistent sessions
   app.post('/api/auth/register', async (req, res) => {
     try {
       const result = registerSchema.safeParse(req.body);
@@ -62,6 +66,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Créer le nouveau professionnel
       const user = await storage.createUser(result.data);
+      
+      // Créer une session persistante
+      req.session.userId = user.id;
+      req.session.userType = 'professional';
+      req.session.email = user.email;
+      req.session.businessName = user.businessName;
       
       // Supprimer le mot de passe de la réponse
       const { password, ...userWithoutPassword } = user;
@@ -142,6 +152,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!client) {
         return res.status(401).json({ message: "Email ou mot de passe incorrect" });
       }
+
+      // Créer une session persistante pour le client
+      req.session.clientId = client.id;
+      req.session.userType = 'client';
+      req.session.email = client.email;
+      req.session.firstName = client.firstName;
+      req.session.lastName = client.lastName;
 
       // Créer la session client
       (req.session as any).clientUser = {
@@ -1551,74 +1568,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Messaging API Routes
-  app.get('/api/conversations', async (req, res) => {
+  // Messaging API Routes avec sessions persistantes
+  app.get('/api/conversations', authenticateAny, async (req: any, res) => {
     try {
-      const userId = req.query.userId as string;
-      const clientId = req.query.clientId as string;
-      
-      // Check if client is authenticated via session
-      const clientSession = (req.session as any)?.clientUser;
-      
       let conversations;
-      if (userId) {
-        conversations = await messagingService.getUserConversations(userId);
-      } else if (clientId) {
-        conversations = await messagingService.getClientConversations(clientId);
-      } else if (clientSession) {
-        // Client connecté via session - récupérer ses conversations
-        conversations = await messagingService.getClientConversations(clientSession.id);
+      
+      if (req.session.userType === 'professional' && req.session.userId) {
+        conversations = await storage.getConversationsByUser(req.session.userId);
+      } else if (req.session.userType === 'client' && req.session.clientId) {
+        conversations = await storage.getConversationsByClient(req.session.clientId);
       } else {
-        return res.status(400).json({ message: "Authentication required" });
+        return res.status(400).json({ message: "Session invalide" });
       }
       
       res.json(conversations);
     } catch (error: any) {
       console.error("Error fetching conversations:", error);
-      res.status(500).json({ message: "Error fetching conversations" });
+      res.status(500).json({ message: "Erreur lors de la récupération des conversations" });
     }
   });
 
-  app.get('/api/conversations/:conversationId/messages', async (req, res) => {
+  app.get('/api/conversations/:conversationId/messages', authenticateAny, async (req: any, res) => {
     try {
       const { conversationId } = req.params;
       const limit = parseInt(req.query.limit as string) || 50;
       
-      const messages = await messagingService.getConversationMessages(conversationId, limit);
+      const messages = await storage.getMessagesByConversation(conversationId, limit);
       res.json(messages);
     } catch (error: any) {
       console.error("Error fetching messages:", error);
-      res.status(500).json({ message: "Error fetching messages" });
+      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
     }
   });
 
-  app.post('/api/conversations/:conversationId/messages', async (req, res) => {
+  app.post('/api/conversations/:conversationId/messages', authenticateAny, async (req: any, res) => {
     try {
       const { conversationId } = req.params;
-      const { content, fromUserId, fromClientId, toUserId, toClientId, messageType, mentions = [] } = req.body;
+      const { content, mentions = [] } = req.body;
       
       if (!content) {
-        return res.status(400).json({ message: "Message content is required" });
+        return res.status(400).json({ message: "Contenu du message requis" });
       }
       
-      const message = await messagingService.sendMessage(
-        fromUserId, 
-        fromClientId, 
-        toUserId, 
-        toClientId, 
-        content, 
-        messageType,
-        mentions
-      );
+      const messageData = {
+        conversationId,
+        content,
+        fromUserId: req.session.userType === 'professional' ? req.session.userId : null,
+        fromClientId: req.session.userType === 'client' ? req.session.clientId : null,
+        mentions: mentions.length > 0 ? JSON.stringify(mentions) : null,
+        isRead: false
+      };
+      
+      const message = await storage.createMessage(messageData);
       
       if (mentions.length > 0) {
-        console.log(`📧 Message with ${mentions.length} mentions sent`);
+        console.log(`Message avec ${mentions.length} mentions envoyé`);
       }
       
       res.status(201).json(message);
     } catch (error: any) {
       console.error("Error sending message:", error);
-      res.status(500).json({ message: "Error sending message" });
+      res.status(500).json({ message: "Erreur lors de l'envoi du message" });
     }
   });
 
