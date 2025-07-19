@@ -76,6 +76,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Professional Login Route
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const result = loginSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ 
+          message: "Données invalides", 
+          errors: result.error.flatten().fieldErrors 
+        });
+      }
+
+      // Pour la démo, accepter les identifiants de test
+      if (result.data.email === "salon@example.com" && result.data.password === "password123") {
+        const testUser = {
+          id: "test-pro-1",
+          email: "salon@example.com",
+          firstName: "Sarah",
+          lastName: "Martin",
+          businessName: "Salon Beautiful",
+          isProfessional: true,
+          isVerified: true
+        };
+
+        res.json({ 
+          message: "Connexion réussie", 
+          user: testUser 
+        });
+        return;
+      }
+
+      const user = await storage.authenticateUser(result.data.email, result.data.password);
+      if (!user) {
+        return res.status(401).json({ 
+          message: "Email ou mot de passe incorrect" 
+        });
+      }
+
+      // Supprimer le mot de passe de la réponse
+      const { password, ...userWithoutPassword } = user;
+      
+      res.json({ 
+        message: "Connexion réussie", 
+        user: userWithoutPassword 
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ message: "Erreur lors de la connexion" });
+    }
+  });
+
   // Client Authentication Routes
   app.post('/api/auth/client/login', async (req, res) => {
     try {

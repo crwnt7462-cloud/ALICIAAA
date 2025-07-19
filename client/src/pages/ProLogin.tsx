@@ -1,89 +1,44 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  ArrowLeft, 
-  Mail, 
-  Lock, 
-  User, 
-  Phone, 
-  MapPin, 
-  Building,
-  Eye,
-  EyeOff,
-  Sparkles,
-  Shield
-} from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-
-const loginSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Mot de passe trop court")
-});
-
-const registerSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Mot de passe trop court"),
-  firstName: z.string().min(2, "Prénom requis"),
-  lastName: z.string().min(2, "Nom requis"),
-  phone: z.string().optional()
-});
-
-type LoginForm = z.infer<typeof loginSchema>;
-type RegisterForm = z.infer<typeof registerSchema>;
+import { Scissors, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 export default function ProLogin() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-
-  const {
-    register: loginRegister,
-    handleSubmit: handleLoginSubmit,
-    formState: { errors: loginErrors }
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema)
+  const [formData, setFormData] = useState({
+    email: "salon@example.com", // Données de test pré-remplies
+    password: "password123"
   });
 
-  const {
-    register: registerRegister,
-    handleSubmit: handleRegisterSubmit,
-    formState: { errors: registerErrors }
-  } = useForm<RegisterForm>({
-    resolver: zodResolver(registerSchema)
-  });
-
-  const onLogin = async (data: LoginForm) => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
-    try {
-      const response = await apiRequest("POST", "/api/auth/client/login", data);
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.message || "Erreur de connexion");
-      }
 
-      toast({
-        title: "Connexion réussie",
-        description: "Bienvenue ! Vous pouvez maintenant gérer vos réservations"
-      });
-      
-      // Session maintenue côté serveur, redirection directe
-      setLocation("/client-dashboard");
+    try {
+      const response = await apiRequest("POST", "/api/auth/login", formData);
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: "Connexion réussie !",
+          description: `Bienvenue ${data.user?.businessName || data.user?.firstName}`
+        });
+        setLocation("/dashboard");
+      } else {
+        throw new Error(data.message || "Erreur de connexion");
+      }
     } catch (error: any) {
       toast({
         title: "Erreur de connexion",
-        description: error.message || "Identifiants incorrects",
+        description: error.message || "Vérifiez vos identifiants",
         variant: "destructive"
       });
     } finally {
@@ -91,304 +46,118 @@ export default function ProLogin() {
     }
   };
 
-  const onRegister = async (data: RegisterForm) => {
-    setIsLoading(true);
-    try {
-      const response = await apiRequest("POST", "/api/auth/client/register", data);
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.message || "Erreur lors de l'inscription");
-      }
-
-      toast({
-        title: "Inscription réussie",
-        description: "Votre compte a été créé avec succès"
-      });
-      
-      // Session maintenue côté serveur, redirection directe
-      setLocation("/client-dashboard");
-    } catch (error: any) {
-      toast({
-        title: "Erreur d'inscription",
-        description: error.message || "Impossible de créer le compte",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const quickDemo = () => {
+    setFormData({
+      email: "salon@example.com",
+      password: "password123"
+    });
+    toast({
+      title: "Compte de démonstration",
+      description: "Identifiants de test pré-remplis"
+    });
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header simple */}
-      <div className="p-4 border-b bg-white">
-        <Button
-          variant="ghost"
-          onClick={() => setLocation("/")}
-          className="text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour à l'accueil
-        </Button>
-      </div>
-
-      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
-        <div className="w-full max-w-md">
-          {/* Header simple comme Planity */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-              Mon compte
-            </h1>
-            <p className="text-gray-600">
-              Connectez-vous pour gérer vos réservations
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Scissors className="w-8 h-8 text-white" />
           </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Connexion Pro
+          </h1>
+          <p className="text-gray-600">
+            Accédez à votre tableau de bord professionnel
+          </p>
+        </div>
 
-          <Card className="border-0 shadow-sm bg-white">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg font-medium text-gray-900 text-center">
-                Connexion
-              </CardTitle>
-            </CardHeader>
-
-            <CardContent className="pt-0">
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login" className="text-sm">
-                    Connexion
-                  </TabsTrigger>
-                  <TabsTrigger value="register" className="text-sm">
-                    Inscription
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="login" className="space-y-4">
-                  <form onSubmit={handleLoginSubmit(onLogin)} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="login-email" className="text-sm font-medium text-gray-700">
-                        Email
-                      </Label>
-                      <Input
-                        id="login-email"
-                        type="email"
-                        placeholder="votre@email.com"
-                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                        {...loginRegister("email")}
-                      />
-                      {loginErrors.email && (
-                        <p className="text-xs text-red-500">{loginErrors.email.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="login-password" className="text-sm font-medium text-gray-700">
-                        Mot de passe
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="login-password"
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500 pr-10"
-                          {...loginRegister("password")}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                        >
-                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
-                      {loginErrors.password && (
-                        <p className="text-xs text-red-500">{loginErrors.password.message}</p>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm">
-                      <a href="#" className="text-violet-600 hover:underline">
-                        Mot de passe oublié ?
-                      </a>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10"
-                    >
-                      {isLoading ? (
-                        <div className="flex items-center gap-2">
-                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                          Connexion...
-                        </div>
-                      ) : (
-                        "Se connecter"
-                      )}
-                    </Button>
-                  </form>
-                </TabsContent>
-
-                <TabsContent value="register" className="space-y-4">
-                  <form onSubmit={handleRegisterSubmit(onRegister)} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
-                          Prénom
-                        </Label>
-                        <Input
-                          id="firstName"
-                          placeholder="Jean"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("firstName")}
-                        />
-                        {registerErrors.firstName && (
-                          <p className="text-xs text-red-500">{registerErrors.firstName.message}</p>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
-                          Nom
-                        </Label>
-                        <Input
-                          id="lastName"
-                          placeholder="Dupont"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                          {...registerRegister("lastName")}
-                        />
-                        {registerErrors.lastName && (
-                          <p className="text-xs text-red-500">{registerErrors.lastName.message}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
-                        Téléphone
-                      </Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="01 23 45 67 89"
-                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                        {...registerRegister("phone")}
-                      />
-                      {registerErrors.phone && (
-                        <p className="text-xs text-red-500">{registerErrors.phone.message}</p>
-                      )}
-                    </div>
-
-
-
-                    <div className="space-y-2">
-                      <Label htmlFor="register-email" className="text-sm font-medium text-gray-700">
-                        Email
-                      </Label>
-                      <Input
-                        id="register-email"
-                        type="email"
-                        placeholder="jean.dupont@email.com"
-                        className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
-                        {...registerRegister("email")}
-                      />
-                      {registerErrors.email && (
-                        <p className="text-xs text-red-500">{registerErrors.email.message}</p>
-                      )}
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="register-password" className="text-sm font-medium text-gray-700">
-                        Mot de passe
-                      </Label>
-                      <div className="relative">
-                        <Input
-                          id="register-password"
-                          type={showRegisterPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="h-10 border-gray-300 focus:border-violet-500 focus:ring-violet-500 pr-10"
-                          {...registerRegister("password")}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                          className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                        >
-                          {showRegisterPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
-                      {registerErrors.password && (
-                        <p className="text-xs text-red-500">{registerErrors.password.message}</p>
-                      )}
-                    </div>
-
-
-
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10"
-                    >
-                      {isLoading ? (
-                        <div className="flex items-center gap-2">
-                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                          Création...
-                        </div>
-                      ) : (
-                        "Créer mon compte"
-                      )}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-
-              {/* Lien vers essai gratuit */}
-              <div className="mt-6 text-center">
+        {/* Formulaire de connexion */}
+        <Card className="shadow-lg border-0">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl text-center">Se connecter</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email professionnel</Label>
                 <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200" />
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-4 text-gray-500">ou</span>
-                  </div>
+                  <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="votre@salon.fr"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="pl-10"
+                    required
+                  />
                 </div>
-                
-                <div className="mt-4">
-                  <a 
-                    href="/free-trial"
-                    className="text-green-600 hover:text-green-700 font-medium text-sm hover:underline"
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                    className="pl-10 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
                   >
-                    Commencer un essai gratuit de 14 jours
-                  </a>
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
-              {/* Note pour les professionnels */}
-              <div className="mt-6 text-center">
-                <div className="text-sm text-gray-600 mb-3">
-                  Vous êtes un professionnel ? 
-                  <a href="/free-trial" className="text-violet-600 hover:underline ml-1">
-                    Créez votre espace salon
-                  </a>
-                </div>
-              </div>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                disabled={isLoading}
+              >
+                {isLoading ? "Connexion..." : "Se connecter"}
+              </Button>
+            </form>
 
-              {/* Conditions */}
-              <div className="mt-4 text-center text-xs text-gray-500">
-                En vous connectant, vous acceptez nos{" "}
-                <a href="#" className="text-violet-600 hover:underline">
-                  conditions d'utilisation
-                </a>{" "}
-                et notre{" "}
-                <a href="#" className="text-violet-600 hover:underline">
-                  politique de confidentialité
-                </a>
+            {/* Actions rapides */}
+            <div className="mt-6 space-y-3">
+              <Button
+                variant="outline"
+                onClick={quickDemo}
+                className="w-full"
+              >
+                Tester avec compte démo
+              </Button>
+              
+              <div className="text-center">
+                <button
+                  onClick={() => setLocation("/register")}
+                  className="text-sm text-violet-600 hover:text-violet-700 underline"
+                >
+                  Pas encore de compte ? S'inscrire
+                </button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Avantages */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600 mb-3">Fonctionnalités pro incluses :</p>
+          <div className="flex justify-center gap-4 text-xs text-gray-500">
+            <span>• Planning intelligent</span>
+            <span>• IA intégrée</span>
+            <span>• Gestion stocks</span>
+          </div>
         </div>
       </div>
     </div>

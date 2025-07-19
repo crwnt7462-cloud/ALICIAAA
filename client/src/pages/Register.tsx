@@ -1,65 +1,61 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLocation } from "wouter";
-import { Mail, Lock, User, Phone, MapPin, Building, Moon, Sun } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { useTheme } from "@/components/ThemeProvider";
-
-const registerSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(6, "Mot de passe trop court"),
-  businessName: z.string().min(2, "Nom du salon requis"),
-  ownerName: z.string().min(2, "Nom du propriétaire requis"),
-  phone: z.string().min(10, "Numéro de téléphone requis"),
-  address: z.string().min(5, "Adresse complète requise"),
-  city: z.string().min(2, "Ville requise")
-});
-
-type RegisterForm = z.infer<typeof registerSchema>;
+import { Scissors, Mail, Lock, User, Building, Phone, MapPin } from "lucide-react";
 
 export default function Register() {
   const [, setLocation] = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { theme, toggleTheme } = useTheme();
-
-  const registerForm = useForm<RegisterForm>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      businessName: "",
-      ownerName: "",
-      phone: "",
-      address: "",
-      city: ""
-    }
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    firstName: "",
+    lastName: "",
+    businessName: "",
+    phone: "",
+    address: "",
+    city: ""
   });
 
-  const onRegister = async (data: RegisterForm) => {
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Erreur",
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
+
     try {
-      const response = await apiRequest("POST", "/api/auth/register", data);
+      const { confirmPassword, ...registerData } = formData;
+      const response = await apiRequest("POST", "/api/auth/register", registerData);
+      const data = await response.json();
+
       if (response.ok) {
         toast({
-          title: "Inscription réussie",
-          description: "Votre compte a été créé avec succès"
+          title: "Compte créé avec succès !",
+          description: "Vous pouvez maintenant vous connecter"
         });
-        setLocation("/dashboard");
+        setLocation("/pro-login");
       } else {
-        throw new Error("Erreur lors de l'inscription");
+        throw new Error(data.message || "Erreur lors de la création du compte");
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
-        title: "Erreur d'inscription",
-        description: "Veuillez réessayer",
+        title: "Erreur de création",
+        description: error.message || "Une erreur est survenue",
         variant: "destructive"
       });
     } finally {
@@ -67,227 +63,190 @@ export default function Register() {
     }
   };
 
+  const updateField = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full opacity-30 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-blue-100 to-violet-100 rounded-full opacity-20 animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full opacity-10 animate-spin" style={{ animationDuration: '20s' }}></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-lg">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Scissors className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Créer votre salon
+          </h1>
+          <p className="text-gray-600">
+            Rejoignez la plateforme professionnelle
+          </p>
+        </div>
 
-      {/* Header */}
-      <header className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-lg border-b border-violet-200/50 dark:border-gray-700/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2 cursor-pointer group" onClick={() => setLocation("/")}>
-              <span className="text-xl font-semibold text-black dark:text-white tracking-wide group-hover:text-violet-600 transition-colors duration-200" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</span>
-            </div>
-            
-            <div className="flex items-center gap-2">
+        {/* Formulaire d'inscription */}
+        <Card className="shadow-lg border-0">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl text-center">Inscription Pro</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleRegister} className="space-y-4">
+              {/* Informations personnelles */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">Prénom</Label>
+                  <div className="relative">
+                    <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                    <Input
+                      id="firstName"
+                      placeholder="Sarah"
+                      value={formData.firstName}
+                      onChange={(e) => updateField("firstName", e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Nom</Label>
+                  <Input
+                    id="lastName"
+                    placeholder="Martin"
+                    value={formData.lastName}
+                    onChange={(e) => updateField("lastName", e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Salon */}
+              <div className="space-y-2">
+                <Label htmlFor="businessName">Nom du salon</Label>
+                <div className="relative">
+                  <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="businessName"
+                    placeholder="Salon Beautiful"
+                    value={formData.businessName}
+                    onChange={(e) => updateField("businessName", e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Contact */}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email professionnel</Label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="contact@salonbeautiful.fr"
+                    value={formData.email}
+                    onChange={(e) => updateField("email", e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone">Téléphone</Label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="phone"
+                    placeholder="01 23 45 67 89"
+                    value={formData.phone}
+                    onChange={(e) => updateField("phone", e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Adresse */}
+              <div className="space-y-2">
+                <Label htmlFor="address">Adresse complète</Label>
+                <div className="relative">
+                  <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="address"
+                    placeholder="123 Rue de la Beauté"
+                    value={formData.address}
+                    onChange={(e) => updateField("address", e.target.value)}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="city">Ville</Label>
+                <Input
+                  id="city"
+                  placeholder="Paris"
+                  value={formData.city}
+                  onChange={(e) => updateField("city", e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Mot de passe */}
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => updateField("password", e.target.value)}
+                    className="pl-10"
+                    required
+                    minLength={6}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                <div className="relative">
+                  <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => updateField("confirmPassword", e.target.value)}
+                    className="pl-10"
+                    required
+                    minLength={6}
+                  />
+                </div>
+              </div>
+
               <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className="text-gray-600 dark:text-gray-300 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-gray-800 transition-all duration-200"
+                type="submit"
+                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                disabled={isLoading}
               >
-                {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+                {isLoading ? "Création..." : "Créer mon salon"}
               </Button>
-              <Button 
-                variant="ghost" 
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
                 onClick={() => setLocation("/pro-login")}
-                className="text-gray-600 dark:text-gray-300 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-gray-800 font-medium transition-all duration-200"
+                className="text-sm text-violet-600 hover:text-violet-700 underline"
               >
-                Se connecter
-              </Button>
+                Déjà un compte ? Se connecter
+              </button>
             </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <div className="relative flex items-center justify-center py-12 px-4">
-        <div className="w-full max-w-md">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl mb-4 shadow-xl animate-bounce" style={{ animationDuration: '3s' }}>
-              <User className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-2">
-              Inscription
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Rejoignez la révolution beauté digitale
-            </p>
-          </div>
-
-          <Card className="shadow-2xl border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl overflow-hidden transform hover:scale-105 transition-all duration-300">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600"></div>
-            <CardHeader className="text-center pb-6 pt-8">
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-100 dark:to-gray-300 bg-clip-text text-transparent">Nouveau compte</CardTitle>
-              <CardDescription className="text-gray-600 dark:text-gray-300 text-base">
-                Rejoignez la communauté Rendly et digitalisez votre salon
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent>
-              <Form {...registerForm}>
-                <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                      control={registerForm.control}
-                      name="ownerName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Votre nom</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                              <Input {...field} placeholder="John Doe" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={registerForm.control}
-                      name="businessName"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nom du salon</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <Building className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                              <Input {...field} placeholder="Salon Beauty" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                            <Input {...field} type="email" placeholder="contact@salon.com" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Téléphone</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Phone className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                            <Input {...field} placeholder="01 23 45 67 89" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Adresse</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <MapPin className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                            <Input {...field} placeholder="123 rue de la Beauté" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Ville</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Paris" className="h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Mot de passe</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-3 w-5 h-5 text-violet-400" />
-                            <Input {...field} type="password" placeholder="••••••••" className="pl-12 h-12 border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-violet-500 focus:ring-violet-500 rounded-xl transition-all duration-200" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <Button type="submit" className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-medium py-3 shadow-lg" disabled={isLoading}>
-                    {isLoading ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        Création...
-                      </div>
-                    ) : (
-                      "Créer mon compte"
-                    )}
-                  </Button>
-
-                  <div className="text-center pt-6 border-t border-violet-100">
-                    <p className="text-sm text-gray-600 mb-3">Déjà un compte ?</p>
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      className="w-full border-violet-200 text-violet-600 hover:bg-violet-50 hover:border-violet-300 font-medium"
-                      onClick={() => setLocation("/pro-login")}
-                    >
-                      Se connecter
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-
-          <div className="text-center mt-8">
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 p-6 rounded-2xl">
-              <p className="text-base text-gray-700 dark:text-gray-300 mb-2">
-                <span className="font-semibold">Besoin d'aide ?</span>
-              </p>
-              <a href="#" className="text-violet-600 hover:text-violet-800 font-semibold text-lg hover:underline transition-all duration-200">
-                Contactez notre équipe support →
-              </a>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
