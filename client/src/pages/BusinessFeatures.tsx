@@ -214,19 +214,47 @@ export default function BusinessFeatures() {
             <CardContent className="space-y-3 pt-0">
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Confirmation auto</Label>
-                <Switch defaultChecked />
+                <Switch 
+                  defaultChecked 
+                  onCheckedChange={(checked) => 
+                    toast({ 
+                      title: checked ? "Confirmation auto activée" : "Confirmation auto désactivée",
+                      description: "Paramètre mis à jour"
+                    })
+                  }
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Booking en ligne</Label>
-                <Switch defaultChecked />
+                <Switch 
+                  defaultChecked 
+                  onCheckedChange={(checked) => 
+                    toast({ 
+                      title: checked ? "Booking en ligne activé" : "Booking en ligne désactivé",
+                      description: "Paramètre mis à jour"
+                    })
+                  }
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label className="text-sm">Acompte obligatoire</Label>
-                <Switch />
+                <Switch 
+                  onCheckedChange={(checked) => 
+                    toast({ 
+                      title: checked ? "Acompte obligatoire activé" : "Acompte obligatoire désactivé",
+                      description: "Paramètre mis à jour"
+                    })
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label className="text-sm">Annulation</Label>
-                <Select>
+                <Select onValueChange={(value) => 
+                  toast({ 
+                    title: "Politique d'annulation mise à jour",
+                    description: `Nouveau délai: ${value}`
+                  })
+                }>
                   <SelectTrigger className="h-9">
                     <SelectValue placeholder="Politique" />
                   </SelectTrigger>
@@ -257,7 +285,14 @@ export default function BusinessFeatures() {
                   { name: "Espèces", status: "Actif" },
                   { name: "Chèques", status: "Inactif" },
                 ].map((method, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                    onClick={() => toast({ 
+                      title: `Méthode de paiement: ${method.name}`,
+                      description: `Statut: ${method.status}`
+                    })}
+                  >
                     <div className="flex items-center gap-2">
                       <CreditCard className="h-4 w-4" />
                       <span className="text-sm font-medium">{method.name}</span>
@@ -295,7 +330,14 @@ export default function BusinessFeatures() {
                 { client: "Sophie L.", amount: "45€", status: "En attente" },
                 { client: "Emma M.", amount: "80€", status: "Payé" },
               ].map((transaction, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                  onClick={() => toast({ 
+                    title: `Transaction: ${transaction.client}`,
+                    description: `Montant: ${transaction.amount} - Statut: ${transaction.status}`
+                  })}
+                >
                   <div>
                     <p className="text-sm font-medium">{transaction.client}</p>
                     <p className="text-xs text-gray-500">Aujourd'hui</p>
@@ -522,7 +564,14 @@ export default function BusinessFeatures() {
                 { name: "Masque Hydratant", stock: 3, alert: true },
                 { name: "Sérum Anti-Age", stock: 8, alert: false },
               ].map((item, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                  onClick={() => toast({ 
+                    title: `Produit: ${item.name}`,
+                    description: `Stock actuel: ${item.stock} unités${item.alert ? ' - Stock bas!' : ''}`
+                  })}
+                >
                   <div>
                     <p className="text-sm font-medium">{item.name}</p>
                     <p className="text-xs text-gray-500">Stock: {item.stock}</p>
@@ -561,7 +610,14 @@ export default function BusinessFeatures() {
                 { name: "Promo Nouvel An", status: "Active", reach: "156 clients" },
                 { name: "Fidélité VIP", status: "Programmée", reach: "89 clients" },
               ].map((campaign, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                  onClick={() => toast({ 
+                    title: `Campagne: ${campaign.name}`,
+                    description: `Portée: ${campaign.reach} - Statut: ${campaign.status}`
+                  })}
+                >
                   <div>
                     <p className="text-sm font-medium">{campaign.name}</p>
                     <p className="text-xs text-gray-500">{campaign.reach}</p>
@@ -626,19 +682,31 @@ export default function BusinessFeatures() {
             </CardHeader>
             <CardContent className="space-y-3 pt-0">
               <div className="grid grid-cols-2 gap-3">
-                <div className="text-center p-3 border rounded-lg">
+                <div 
+                  className="text-center p-3 border rounded-lg cursor-pointer hover:bg-blue-50"
+                  onClick={() => toast({ title: "Rendez-vous", description: "156 RDV ce mois (+15% vs mois dernier)" })}
+                >
                   <p className="text-2xl font-bold text-blue-600">156</p>
                   <p className="text-xs text-gray-500">RDV ce mois</p>
                 </div>
-                <div className="text-center p-3 border rounded-lg">
+                <div 
+                  className="text-center p-3 border rounded-lg cursor-pointer hover:bg-green-50"
+                  onClick={() => toast({ title: "Chiffre d'affaires", description: "€4,680 ce mois (+8% vs mois dernier)" })}
+                >
                   <p className="text-2xl font-bold text-green-600">€4,680</p>
                   <p className="text-xs text-gray-500">Chiffre d'affaires</p>
                 </div>
-                <div className="text-center p-3 border rounded-lg">
+                <div 
+                  className="text-center p-3 border rounded-lg cursor-pointer hover:bg-purple-50"
+                  onClick={() => toast({ title: "Taux de présence", description: "89% - Excellent! Moyenne du secteur: 75%" })}
+                >
                   <p className="text-2xl font-bold text-purple-600">89%</p>
                   <p className="text-xs text-gray-500">Taux présence</p>
                 </div>
-                <div className="text-center p-3 border rounded-lg">
+                <div 
+                  className="text-center p-3 border rounded-lg cursor-pointer hover:bg-orange-50"
+                  onClick={() => toast({ title: "Note moyenne", description: "4.8/5 basé sur 89 avis clients" })}
+                >
                   <p className="text-2xl font-bold text-orange-600">4.8</p>
                   <p className="text-xs text-gray-500">Note moyenne</p>
                 </div>
