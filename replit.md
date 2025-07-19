@@ -31,6 +31,7 @@ Une plateforme web simple et efficace pour la gestion de salons et instituts de 
 - **Planning** : Gestion des rendez-vous
 - **Clients** : Gestion de la clientèle
 - **Services** : Configuration des prestations
+- **Inventory** : Gestion complète des stocks avec alertes
 - **IA Pro** : Fonctionnalités d'intelligence artificielle
 
 ## Fonctionnalités Principales
@@ -122,6 +123,18 @@ Génération automatique :
 - Accès rapide aux fonctionnalités essentielles
 
 ## Changements Récents
+
+### Janvier 2025 - SYSTÈME GESTION STOCKS COMPLET AVEC ALERTES (19 Janvier)
+- ✅ **Système inventaire complet** : Interface complète de gestion des stocks avec CRUD complet
+- ✅ **Alertes stock faible rouges** : Détection automatique et affichage en rouge des articles en rupture
+- ✅ **API routes inventaire** : GET, POST, PATCH, DELETE pour gestion complète des articles
+- ✅ **Interface mobile-first** : Cards avec boutons +/- pour ajustement stock rapide
+- ✅ **Fonctionnalités avancées** : Calcul marges automatique, filtres par catégorie, recherche
+- ✅ **Catégories prédéfinies** : Soins cheveux, visage, outils, ongles, maquillage
+- ✅ **Badges et indicateurs** : Stock OK/faible, marques, fournisseurs
+- ✅ **Intégration Pro Tools** : Bouton "Gérer Stock" dans l'onglet inventaire
+- ✅ **Base données étendue** : Table inventory avec tous champs nécessaires
+- ✅ **Stockage DatabaseStorage** : Méthodes complètes pour CRUD et alertes stock faible
 
 ### Janvier 2025 - AMÉLIORATION UX CLIENT DASHBOARD & POLITIQUE ANNULATION (17 Janvier)
 - ✅ **Boutons redimensionnés** : Actions client plus compactes (h-14 au lieu de h-20, text-xs)

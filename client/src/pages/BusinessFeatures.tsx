@@ -587,14 +587,25 @@ export default function BusinessFeatures() {
                   </div>
                 </div>
               ))}
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => toast({ title: "Produit ajouté", description: "Le produit a été ajouté à l'inventaire" })}
-              >
-                + Ajouter produit
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Link to="/inventory">
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  >
+                    <Package className="w-4 h-4 mr-1" />
+                    Gérer Stock
+                  </Button>
+                </Link>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => toast({ title: "Produit ajouté", description: "Le produit a été ajouté à l'inventaire" })}
+                >
+                  + Nouveau
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

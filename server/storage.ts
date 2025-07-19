@@ -2088,6 +2088,52 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
+  // Inventory management
+  async getInventory(userId: string): Promise<Inventory[]> {
+    return db.select().from(inventory).where(eq(inventory.userId, userId)).orderBy(inventory.name);
+  }
+
+  async getInventoryItem(id: number): Promise<Inventory | undefined> {
+    const [item] = await db.select().from(inventory).where(eq(inventory.id, id));
+    return item;
+  }
+
+  async createInventoryItem(data: InsertInventory): Promise<Inventory> {
+    const [item] = await db.insert(inventory).values(data).returning();
+    return item;
+  }
+
+  async updateInventoryItem(id: number, data: Partial<InsertInventory>): Promise<Inventory> {
+    const [item] = await db.update(inventory)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(inventory.id, id))
+      .returning();
+    return item;
+  }
+
+  async deleteInventoryItem(id: number): Promise<void> {
+    await db.delete(inventory).where(eq(inventory.id, id));
+  }
+
+  async getLowStockItems(userId: string): Promise<Inventory[]> {
+    return db.select().from(inventory)
+      .where(
+        and(
+          eq(inventory.userId, userId),
+          eq(inventory.isActive, true),
+          sql`${inventory.currentStock} <= ${inventory.minStock}`
+        )
+      )
+      .orderBy(inventory.name);
+  }
+
+  async updateStock(id: number, currentStock: number): Promise<Inventory> {
+    const [item] = await db.update(inventory)
+      .set({ currentStock, updatedAt: new Date() })
+      .where(eq(inventory.id, id))
+      .returning();
+    return item;
+  }
 }
 
 export const storage = new DatabaseStorage();

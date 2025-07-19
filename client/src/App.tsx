@@ -44,6 +44,7 @@ import ClientDashboard from "@/pages/ClientDashboard";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
+import Inventory from "@/pages/Inventory";
 
 
 function Router() {
@@ -259,6 +260,7 @@ function Router() {
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
+          <Route path="/inventory" component={Inventory} />
 
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
