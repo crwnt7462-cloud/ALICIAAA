@@ -481,8 +481,8 @@ export default function BusinessFeatures() {
                 variant="outline" 
                 className="w-full"
                 onClick={() => {
-                  toast({ title: "Nouvelle page", description: "Redirection vers la page de réservation" });
-                  setLocation('/booking');
+                  toast({ title: "Créateur de pages", description: "Ouverture du créateur de pages" });
+                  setLocation('/page-builder');
                 }}
               >
                 + Créer nouvelle page
