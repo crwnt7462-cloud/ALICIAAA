@@ -3,9 +3,11 @@ import { Bell, Menu, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 export function Header() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
   const { data: user } = useQuery({
     queryKey: ["/api/auth/user"],
   });
@@ -37,9 +39,22 @@ export function Header() {
     <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 px-4 py-3 shadow-sm">
       <div className="flex items-center justify-between max-w-md mx-auto">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-sm">S</span>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-0 h-8 w-8"
+            onClick={() => {
+              setLocation("/business-features");
+              toast({
+                title: "Configuration salon",
+                description: "Paramètres généraux du salon"
+              });
+            }}
+          >
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">S</span>
+            </div>
+          </Button>
           <div>
             <h1 className="font-semibold text-gray-900 text-sm">{getPageTitle()}</h1>
             {user?.username && (
@@ -56,8 +71,11 @@ export function Header() {
             variant="ghost" 
             className="h-8 w-8 p-0 relative"
             onClick={() => {
-              // Simuler ouverture notifications
-              console.log("Ouverture notifications");
+              setLocation("/notifications");
+              toast({
+                title: "Notifications",
+                description: "Centre de notifications ouvert"
+              });
             }}
           >
             <Bell className="w-4 h-4 text-gray-600" />
@@ -74,8 +92,11 @@ export function Header() {
             variant="ghost" 
             className="h-8 w-8 p-0"
             onClick={() => {
-              // Rediriger vers paramètres
-              window.location.href = "/business-features";
+              setLocation("/business-features");
+              toast({
+                title: "Paramètres",
+                description: "Configuration du salon ouverte"
+              });
             }}
           >
             <Settings className="w-4 h-4 text-gray-600" />
