@@ -43,6 +43,7 @@ import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
+import SalonPage from "@/pages/SalonPage";
 
 
 function Router() {
@@ -199,6 +200,16 @@ function Router() {
     return (
       <div className="h-screen w-full">
         <PageBuilder />
+      </div>
+    );
+  }
+
+  // Pages de salon personnalisées (salon-xxx-xxxx)
+  if (location.startsWith('/salon-')) {
+    const pageUrl = location.substring(1); // Remove leading slash
+    return (
+      <div className="h-full">
+        <SalonPage pageUrl={pageUrl} />
       </div>
     );
   }

@@ -2871,5 +2871,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
 
+  // Routes pour les pages de réservation personnalisées
+  app.post("/api/booking-pages", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentification requise" });
+    }
+
+    try {
+      const pageData = {
+        ...req.body,
+        userId: req.user.id,
+        isPublished: true
+      };
+
+      const [page] = await db
+        .insert(bookingPages)
+        .values(pageData)
+        .returning();
+
+      res.json(page);
+    } catch (error: any) {
+      console.error("Erreur création page:", error);
+      res.status(500).json({ message: "Erreur lors de la création de la page" });
+    }
+  });
+
+  app.get("/api/booking-pages", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentification requise" });
+    }
+
+    try {
+      const pages = await db
+        .select()
+        .from(bookingPages)
+        .where(eq(bookingPages.userId, req.user.id));
+
+      res.json(pages);
+    } catch (error) {
+      console.error("Erreur récupération pages:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération" });
+    }
+  });
+
+  app.get("/api/booking-pages/:pageUrl", async (req, res) => {
+    try {
+      const [page] = await db
+        .select()
+        .from(bookingPages)
+        .where(eq(bookingPages.pageUrl, req.params.pageUrl));
+
+      if (!page) {
+        return res.status(404).json({ message: "Page non trouvée" });
+      }
+
+      // Incrémenter le compteur de vues
+      await db
+        .update(bookingPages)
+        .set({ views: page.views + 1 })
+        .where(eq(bookingPages.id, page.id));
+
+      res.json(page);
+    } catch (error) {
+      console.error("Erreur récupération page:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération" });
+    }
+  });
+
   return httpServer;
 }

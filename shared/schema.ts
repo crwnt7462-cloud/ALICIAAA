@@ -553,24 +553,32 @@ export const transactions = pgTable("transactions", {
 });
 
 // Online Booking Public Pages
+// Pages de réservation personnalisées créées par les professionnels
 export const bookingPages = pgTable("booking_pages", {
   id: serial("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id),
-  slug: text("slug").notNull().unique(),
-  title: text("title").notNull(),
-  description: text("description"),
-  welcomeMessage: text("welcome_message"),
-  termsAndConditions: text("terms_and_conditions"),
-  customCss: text("custom_css"),
-  logoUrl: text("logo_url"),
-  backgroundImageUrl: text("background_image_url"),
+  userId: text("user_id").references(() => users.id).notNull(),
+  pageUrl: text("page_url").unique().notNull(),
+  salonName: text("salon_name").notNull(),
+  salonDescription: text("salon_description"),
+  salonAddress: text("salon_address"),
+  salonPhone: text("salon_phone"),
+  salonEmail: text("salon_email"),
+  selectedServices: integer("selected_services").array().default([]),
+  template: text("template").default("moderne"),
   primaryColor: text("primary_color").default("#8B5CF6"),
-  isActive: boolean("is_active").default(true),
-  allowGuestBooking: boolean("allow_guest_booking").default(true),
-  requirePhoneNumber: boolean("require_phone_number").default(true),
-  showStaffSelection: boolean("show_staff_selection").default(true),
+  secondaryColor: text("secondary_color").default("#F59E0B"),
+  logoUrl: text("logo_url"),
+  coverImageUrl: text("cover_image_url"),
+  showPrices: boolean("show_prices").default(true),
+  enableOnlineBooking: boolean("enable_online_booking").default(true),
+  requireDeposit: boolean("require_deposit").default(true),
+  depositPercentage: integer("deposit_percentage").default(30),
+  businessHours: jsonb("business_hours"),
+  isPublished: boolean("is_published").default(false),
+  views: integer("views").default(0),
+  bookings: integer("bookings").default(0),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow()
 });
 
 // Client Communication History
