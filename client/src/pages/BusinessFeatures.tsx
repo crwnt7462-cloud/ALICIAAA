@@ -268,7 +268,15 @@ export default function BusinessFeatures() {
                   </div>
                 ))}
               </div>
-              <Button size="sm" variant="outline" className="w-full">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full"
+                onClick={() => toast({ 
+                  title: "Nouvelle méthode", 
+                  description: "Fonction disponible avec l'abonnement Pro" 
+                })}
+              >
                 + Ajouter méthode
               </Button>
             </CardContent>
@@ -345,7 +353,14 @@ export default function BusinessFeatures() {
                     <p className="text-sm font-medium">QR Code généré</p>
                     <p className="text-xs text-gray-600">Pour impression ou affichage</p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => toast({ 
+                      title: "QR Code téléchargé", 
+                      description: "Le fichier sera disponible dans vos téléchargements" 
+                    })}
+                  >
                     Télécharger
                   </Button>
                 </div>

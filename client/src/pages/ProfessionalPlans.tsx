@@ -77,7 +77,7 @@ export default function ProfessionalPlans() {
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
     // Rediriger vers la page d'inscription professionnelle avec SIRET
-    setLocation('/free-trial');
+    setLocation('/subscription-signup');
   };
 
   const getPrice = (plan: typeof plans[0]) => {
