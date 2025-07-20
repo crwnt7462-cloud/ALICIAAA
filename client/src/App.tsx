@@ -47,6 +47,10 @@ import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
+import MessagingSystem from "@/pages/MessagingSystem";
+import AdminDashboard from "@/pages/AdminDashboard";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import StockAlerts from "@/pages/StockAlerts";
 
 
 function Router() {
@@ -254,9 +258,13 @@ function Router() {
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
           <Route path="/dashboard" component={Dashboard} />
+          <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
           <Route path="/business-features" component={BusinessFeatures} />
+          <Route path="/messaging-system" component={MessagingSystem} />
+          <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
+          <Route path="/stock-alerts" component={StockAlerts} />
 
           <Route path="/booking" component={Booking} />
           <Route path="/share-booking" component={ShareBooking} />

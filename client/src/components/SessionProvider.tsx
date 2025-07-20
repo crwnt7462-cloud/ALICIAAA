@@ -1,33 +1,42 @@
-import { createContext, useContext, useEffect } from "react";
-import { useAuthSession } from "@/hooks/useAuthSession";
-import { useLocation } from "wouter";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useAuthSession } from '@/hooks/useAuthSession';
 
-const SessionContext = createContext<any>(null);
+interface SessionContextType {
+  isInitialized: boolean;
+}
 
-export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const session = useAuthSession();
-  const [location, setLocation] = useLocation();
+const SessionContext = createContext<SessionContextType>({
+  isInitialized: false,
+});
 
-  // Redirection automatique pour les pages protégées
+export const useSession = () => useContext(SessionContext);
+
+interface SessionProviderProps {
+  children: React.ReactNode;
+}
+
+export function SessionProvider({ children }: SessionProviderProps) {
+  const [isInitialized, setIsInitialized] = useState(false);
+  const { checkSession } = useAuthSession();
+
   useEffect(() => {
-    if (!session.isLoading && !session.isAuthenticated) {
-      if (location.startsWith('/dashboard') || location.startsWith('/pro-tools') || location.startsWith('/messaging')) {
-        setLocation('/pro-login');
+    // Vérifier la session au démarrage
+    const initializeSession = async () => {
+      try {
+        await checkSession();
+      } catch (error) {
+        console.error('Erreur lors de la vérification de session:', error);
+      } finally {
+        setIsInitialized(true);
       }
-    }
-  }, [session.isLoading, session.isAuthenticated, location, setLocation]);
+    };
+
+    initializeSession();
+  }, [checkSession]);
 
   return (
-    <SessionContext.Provider value={session}>
+    <SessionContext.Provider value={{ isInitialized }}>
       {children}
     </SessionContext.Provider>
   );
-}
-
-export function useSession() {
-  const context = useContext(SessionContext);
-  if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
-  }
-  return context;
 }
