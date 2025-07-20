@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 
 export default function BusinessFeatures() {
-  const [activeTab, setActiveTab] = useState("settings");
+  const [activeTab, setActiveTab] = useState("payments");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
@@ -158,10 +158,6 @@ export default function BusinessFeatures() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 mb-4">
-          <TabsTrigger value="settings" className="flex flex-col items-center gap-1 py-3">
-            <Settings className="h-4 w-4" />
-            <span className="text-xs">Config</span>
-          </TabsTrigger>
           <TabsTrigger value="payments" className="flex flex-col items-center gap-1 py-3">
             <CreditCard className="h-4 w-4" />
             <span className="text-xs">Paiements</span>
@@ -170,13 +166,13 @@ export default function BusinessFeatures() {
             <Store className="h-4 w-4" />
             <span className="text-xs">Pages</span>
           </TabsTrigger>
-        </TabsList>
-        
-        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="inventory" className="flex flex-col items-center gap-1 py-3">
             <Package className="h-4 w-4" />
             <span className="text-xs">Stock</span>
           </TabsTrigger>
+        </TabsList>
+        
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="marketing" className="flex flex-col items-center gap-1 py-3">
             <Target className="h-4 w-4" />
             <span className="text-xs">Marketing</span>
@@ -187,115 +183,7 @@ export default function BusinessFeatures() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Configuration Tab */}
-        <TabsContent value="settings" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Store className="h-4 w-4" />
-                Configuration Salon
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 pt-0">
-              <div className="space-y-2">
-                <Label className="text-sm">Nom du salon</Label>
-                <Input placeholder="Mon Salon Beauty" className="h-9" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Adresse</Label>
-                <Input placeholder="123 Rue de la Beauté, Paris" className="h-9" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-2">
-                  <Label className="text-sm">Téléphone</Label>
-                  <Input placeholder="01 23 45 67 89" className="h-9" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm">Email</Label>
-                  <Input placeholder="contact@salon.fr" className="h-9" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Horaires</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Input type="time" defaultValue="09:00" className="h-9" />
-                  <Input type="time" defaultValue="18:00" className="h-9" />
-                </div>
-              </div>
-              <Button 
-                size="sm" 
-                className="w-full"
-                onClick={() => toast({ title: "Configuration sauvegardée", description: "Les paramètres du salon ont été mis à jour" })}
-              >
-                Sauvegarder
-              </Button>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Calendar className="h-4 w-4" />
-                Options Réservation
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 pt-0">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Confirmation auto</Label>
-                <Switch 
-                  defaultChecked 
-                  onCheckedChange={(checked) => 
-                    toast({ 
-                      title: checked ? "Confirmation auto activée" : "Confirmation auto désactivée",
-                      description: "Paramètre mis à jour"
-                    })
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Booking en ligne</Label>
-                <Switch 
-                  defaultChecked 
-                  onCheckedChange={(checked) => 
-                    toast({ 
-                      title: checked ? "Booking en ligne activé" : "Booking en ligne désactivé",
-                      description: "Paramètre mis à jour"
-                    })
-                  }
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Acompte obligatoire</Label>
-                <Switch 
-                  onCheckedChange={(checked) => 
-                    toast({ 
-                      title: checked ? "Acompte obligatoire activé" : "Acompte obligatoire désactivé",
-                      description: "Paramètre mis à jour"
-                    })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-sm">Annulation</Label>
-                <Select onValueChange={(value) => 
-                  toast({ 
-                    title: "Politique d'annulation mise à jour",
-                    description: `Nouveau délai: ${value}`
-                  })
-                }>
-                  <SelectTrigger className="h-9">
-                    <SelectValue placeholder="Politique" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="24h">24h avant</SelectItem>
-                    <SelectItem value="48h">48h avant</SelectItem>
-                    <SelectItem value="no-refund">Non remboursable</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Paiements Tab */}
         <TabsContent value="payments" className="space-y-4">

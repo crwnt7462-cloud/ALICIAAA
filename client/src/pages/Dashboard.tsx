@@ -64,15 +64,6 @@ export default function Dashboard() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-xs px-3 py-1.5"
-            onClick={() => setLocation('/settings')}
-          >
-            <Settings className="w-3 h-3 mr-1" />
-            Paramètres
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
             className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
             onClick={() => setLocation('/ai')}
           >
