@@ -14,7 +14,7 @@ export default function PublicLanding() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearchService = (service: string) => {
-    setLocation(`/search-results?service=${encodeURIComponent(service)}`);
+    setLocation(`/services/${service}`);
   };
 
   const stats = [
@@ -825,7 +825,7 @@ export default function PublicLanding() {
               <h4 className="font-semibold text-gray-900 mb-4">Services</h4>
               <ul className="space-y-2 text-gray-600">
                 <li><button onClick={() => handleSearchService('coiffure')} className="hover:text-violet-600 text-left">Coiffure</button></li>
-                <li><button onClick={() => handleSearchService('esthétique')} className="hover:text-violet-600 text-left">Esthétique</button></li>
+                <li><button onClick={() => handleSearchService('esthetique')} className="hover:text-violet-600 text-left">Esthétique</button></li>
                 <li><button onClick={() => handleSearchService('massage')} className="hover:text-violet-600 text-left">Massage</button></li>
                 <li><button onClick={() => handleSearchService('onglerie')} className="hover:text-violet-600 text-left">Onglerie</button></li>
               </ul>

@@ -124,6 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - PAGES SERVICES DÉDIÉES ET NAVIGATION FOOTER COMPLÈTE (20 Janvier)
+- ✅ **4 pages services créées** : Coiffure, Esthétique, Massage, Onglerie avec contenu complet
+- ✅ **Design unique par service** : Couleurs thématiques (violet, rose, vert, violet) et icônes spécialisées
+- ✅ **Contenu riche** : Services populaires, tarifs, salons recommandés, avis clients
+- ✅ **Navigation fonctionnelle** : Footer PublicLanding avec boutons Services et Support fonctionnels
+- ✅ **Pages Support créées** : Centre d'aide et Contact avec formulaires complets
+- ✅ **Routes ajoutées** : /services/coiffure, /services/esthetique, /services/massage, /services/onglerie
+- ✅ **Interface responsive** : Toutes pages optimisées mobile avec retour vers accueil
+- ✅ **Intégration complète** : Boutons footer mènent vers vraies pages avec contenu pertinent
+
 ### Janvier 2025 - PAGE PARAMÈTRES COMPLÈTE FONCTIONNELLE (20 Janvier)
 - ✅ **Page Settings créée** : Interface complète avec 4 onglets (Profil, Notifications, Privé, Thème)
 - ✅ **Onglet Profil** : Modification infos personnelles, téléphone, adresse, sécurité

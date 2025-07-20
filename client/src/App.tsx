@@ -55,6 +55,10 @@ import StockAlerts from "@/pages/StockAlerts";
 import Settings from "@/pages/Settings";
 import Support from "@/pages/Support";
 import Contact from "@/pages/Contact";
+import ServiceCoiffure from "@/pages/ServiceCoiffure";
+import ServiceEsthetique from "@/pages/ServiceEsthetique";
+import ServiceMassage from "@/pages/ServiceMassage";
+import ServiceOnglerie from "@/pages/ServiceOnglerie";
 
 
 function Router() {
@@ -291,6 +295,10 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
+          <Route path="/services/coiffure" component={ServiceCoiffure} />
+          <Route path="/services/esthetique" component={ServiceEsthetique} />
+          <Route path="/services/massage" component={ServiceMassage} />
+          <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
           <Route component={NotFound} />
         </Switch>
