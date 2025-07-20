@@ -110,8 +110,69 @@ export default function BookingPage() {
 
     setIsLoading(true);
     
-    // Simulation du processus de paiement
-    await simulatePayment();
+    try {
+      // Prepare booking data for payment
+      const bookingData = {
+        salonId: params?.salonId || "demo",
+        serviceId: selectedService,
+        staffId: selectedProfessional,
+        appointmentDate: selectedDate.toISOString().split('T')[0],
+        startTime: selectedTime,
+        endTime: selectedTime, // Calculate end time based on service duration
+        clientInfo: customerInfo,
+        totalPrice: selectedServiceData?.price || 0,
+        depositAmount: selectedServiceData ? Math.round(selectedServiceData.price * 0.3) : 0,
+        serviceName: selectedServiceData?.name || '',
+        businessName: salon.name
+      };
+
+      // Create payment intent for card payment
+      if (selectedPaymentMethod === "card") {
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: bookingData.depositAmount,
+            metadata: {
+              salonId: bookingData.salonId,
+              serviceId: bookingData.serviceId,
+              serviceName: bookingData.serviceName,
+              clientEmail: customerInfo.email,
+              appointmentDate: bookingData.appointmentDate,
+              startTime: selectedTime
+            }
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Échec de la création du paiement');
+        }
+
+        const { clientSecret, paymentIntentId } = await response.json();
+        
+        // Store booking data and redirect to payment page
+        sessionStorage.setItem('currentBooking', JSON.stringify({
+          ...bookingData,
+          clientSecret,
+          paymentIntentId
+        }));
+
+        setLocation(`/booking/${params?.salonId || "demo"}/payment`);
+      } else {
+        // For other payment methods (Apple Pay, PayPal, Google Pay), simulate for now
+        await simulatePayment();
+      }
+    } catch (error: any) {
+      console.error('Booking error:', error);
+      toast({
+        title: "Erreur de réservation",
+        description: error.message || "Une erreur est survenue lors de la réservation",
+        variant: "destructive"
+      });
+      setIsLoading(false);
+    }
   };
 
   const simulatePayment = async () => {
@@ -148,7 +209,7 @@ export default function BookingPage() {
         serviceName: selectedServiceData?.name,
         professionalId: selectedProfessional,
         professionalName: professionals.find(p => p.id === selectedProfessional)?.name,
-        appointmentDate: selectedDate.toLocaleDateString(),
+        appointmentDate: selectedDate?.toLocaleDateString() || '',
         startTime: selectedTime,
         clientName: `${customerInfo.firstName} ${customerInfo.lastName}`,
         clientEmail: customerInfo.email,
@@ -169,7 +230,7 @@ export default function BookingPage() {
       setTimeout(() => {
         toast({
           title: "✅ Rendez-vous confirmé !",
-          description: `Votre rendez-vous a été confirmé pour le ${selectedDate.toLocaleDateString()} à ${selectedTime}. Un email de confirmation vous a été envoyé.`,
+          description: `Votre rendez-vous a été confirmé pour le ${selectedDate?.toLocaleDateString()} à ${selectedTime}. Un email de confirmation vous a été envoyé.`,
         });
       }, 1000);
 

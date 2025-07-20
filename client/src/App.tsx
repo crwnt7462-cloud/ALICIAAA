@@ -59,13 +59,22 @@ import ServiceCoiffure from "@/pages/ServiceCoiffure";
 import ServiceEsthetique from "@/pages/ServiceEsthetique";
 import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
+import PaymentStep from "@/pages/PaymentStep";
 
 
 function Router() {
   const [location] = useLocation();
   
   // Page publique pour réservation client (sans header/nav)
-  if (location.startsWith('/book/')) {
+  if (location.startsWith('/booking/') && location.includes('/payment')) {
+    return (
+      <div className="h-full">
+        <PaymentStep />
+      </div>
+    );
+  }
+  
+  if (location.startsWith('/booking/')) {
     return (
       <div className="h-full">
         <BookingPage />
