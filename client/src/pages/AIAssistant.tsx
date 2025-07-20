@@ -73,18 +73,19 @@ export default function AIAssistant() {
         type: 'assistant',
         content: data.response || "Je n'ai pas pu traiter votre demande. Pouvez-vous reformuler ?",
         timestamp: new Date(),
-        category: data.category || 'general'
+        category: data.category || 'general',
+        insights: data.insights || []
       };
       setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
     },
     onError: () => {
-      setIsLoading(false);
       toast({
-        title: "Erreur",
-        description: "Impossible de contacter l'assistant IA",
+        title: "Erreur de connexion",
+        description: "Impossible de joindre l'assistant IA. Réessayez plus tard.",
         variant: "destructive"
       });
+      setIsLoading(false);
     }
   });
 
@@ -111,248 +112,132 @@ export default function AIAssistant() {
     }
   };
 
-  const aiCapabilities = [
-    {
-      category: "Analyse Business",
-      icon: <BarChart3 className="w-5 h-5" />,
-      color: "from-blue-500 to-cyan-600",
-      actions: [
-        { label: "Performance mensuelle", action: "Analyse complète de mes performances ce mois" },
-        { label: "ROI par service", action: "Calcule le ROI de chaque service proposé" },
-        { label: "Prévisions CA", action: "Prédis mon chiffre d'affaires du mois prochain" }
-      ]
-    },
-    {
-      category: "Optimisation Planning",
-      icon: <Calendar className="w-5 h-5" />,
-      color: "from-green-500 to-emerald-600",
-      actions: [
-        { label: "Planning optimal", action: "Optimise mon planning pour maximiser les revenus" },
-        { label: "Créneaux libres", action: "Identifie les créneaux à optimiser cette semaine" },
-        { label: "Prédiction no-shows", action: "Prédis les risques d'annulation demain" }
-      ]
-    },
-    {
-      category: "Marketing IA",
-      icon: <Target className="w-5 h-5" />,
-      color: "from-purple-500 to-violet-600",
-      actions: [
-        { label: "Campagne personnalisée", action: "Crée une campagne marketing pour mes clients VIP" },
-        { label: "Segmentation clients", action: "Analyse et segmente ma clientèle" },
-        { label: "Prix dynamiques", action: "Suggère des prix optimaux selon la demande" }
-      ]
-    },
-    {
-      category: "Tendances & Innovation",
-      icon: <Sparkles className="w-5 h-5" />,
-      color: "from-pink-500 to-rose-600",
-      actions: [
-        { label: "Tendances 2025", action: "Quelles sont les tendances beauté 2025 ?" },
-        { label: "Nouveaux services", action: "Suggère de nouveaux services à proposer" },
-        { label: "Formation équipe", action: "Recommande des formations pour mon équipe" }
-      ]
-    }
-  ];
-
-  const insights = [
-    {
-      title: "Chiffre d'affaires",
-      value: "€12,450",
-      change: "+15.3%",
-      trend: "up",
-      icon: <TrendingUp className="w-4 h-4" />,
-      color: "text-green-600"
-    },
-    {
-      title: "Taux occupation",
-      value: "87%",
-      change: "+5.2%",
-      trend: "up", 
-      icon: <Activity className="w-4 h-4" />,
-      color: "text-blue-600"
-    },
-    {
-      title: "Clients fidèles",
-      value: "234",
-      change: "+23",
-      trend: "up",
-      icon: <Users className="w-4 h-4" />,
-      color: "text-purple-600"
-    },
-    {
-      title: "Note moyenne",
-      value: "4.8/5",
-      change: "+0.3",
-      trend: "up",
-      icon: <Star className="w-4 h-4" />,
-      color: "text-yellow-600"
-    }
-  ];
-
-  const predictions = [
-    {
-      type: "success",
-      title: "Pic de demande prévu",
-      description: "Samedi 25 janvier - Coiffure +40%",
-      icon: <TrendingUp className="w-4 h-4" />
-    },
-    {
-      type: "warning", 
-      title: "Stock critique",
-      description: "Shampoing professionnel - 3 jours restants",
-      icon: <AlertTriangle className="w-4 h-4" />
-    },
-    {
-      type: "info",
-      title: "Opportunité marketing",
-      description: "15 clientes n'ont pas réservé depuis 3 mois",
-      icon: <Target className="w-4 h-4" />
-    }
-  ];
-
   const handleQuickAction = (action: string) => {
     setInputMessage(action);
-    setActiveTab("chat");
     setTimeout(() => handleSendMessage(), 100);
   };
 
+  const quickActions = [
+    { icon: <BarChart3 className="w-4 h-4" />, label: "Analyser les performances", action: "Analyse mes performances de cette semaine" },
+    { icon: <Calendar className="w-4 h-4" />, label: "Optimiser planning", action: "Comment optimiser mon planning de demain ?" },
+    { icon: <Users className="w-4 h-4" />, label: "Fidélisation clients", action: "Conseils pour fidéliser mes clients" },
+    { icon: <TrendingUp className="w-4 h-4" />, label: "Augmenter CA", action: "Stratégies pour augmenter mon chiffre d'affaires" }
+  ];
+
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 to-purple-50/30">
-      {/* Header Pro */}
-      <div className="bg-white/95 backdrop-blur-sm border-b px-4 py-3 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation("/dashboard")}
-              className="shrink-0"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-violet-500 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
-                <Brain className="w-5 h-5 text-white" />
+    <div className="h-full flex flex-col bg-gray-50">
+      {/* Header fixe */}
+      <div className="bg-white border-b p-4 flex items-center gap-3 shadow-sm flex-shrink-0">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setLocation("/dashboard")}
+          className="h-10 w-10"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="font-semibold text-gray-900">Rendly AI Pro</h1>
+            <p className="text-sm text-gray-500">Assistant IA spécialisé beauté</p>
+          </div>
+        </div>
+        <div className="ml-auto">
+          <Badge variant="secondary" className="bg-violet-100 text-violet-700">
+            <Crown className="w-3 h-3 mr-1" />
+            Premium
+          </Badge>
+        </div>
+      </div>
+
+      {/* Contenu principal scrollable */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-3xl mx-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <div key={message.id} className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+              {message.type === 'assistant' && (
+                <Avatar className="w-8 h-8 flex-shrink-0">
+                  <AvatarFallback className="bg-violet-100 text-violet-600">
+                    <Bot className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              
+              <div className={`max-w-[80%] ${message.type === 'user' ? 'order-first' : ''}`}>
+                <div className={`p-3 rounded-lg ${
+                  message.type === 'user' 
+                    ? 'bg-violet-500 text-white ml-auto' 
+                    : 'bg-white border shadow-sm'
+                }`}>
+                  <p className="text-sm leading-relaxed">{message.content}</p>
+                </div>
+                
+                {message.insights && message.insights.length > 0 && (
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    {message.insights.map((insight, index) => (
+                      <Card key={index} className="border-l-4 border-l-violet-500">
+                        <CardContent className="p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-600">{insight.title}</span>
+                            <span className={`text-sm font-semibold ${
+                              insight.type === 'success' ? 'text-green-600' : 
+                              insight.type === 'warning' ? 'text-amber-600' : 'text-blue-600'
+                            }`}>
+                              {insight.value}
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+                
+                <p className="text-xs text-gray-400 mt-1">
+                  {message.timestamp.toLocaleTimeString()}
+                </p>
               </div>
-              <div>
+              
+              {message.type === 'user' && (
+                <Avatar className="w-8 h-8 flex-shrink-0">
+                  <AvatarFallback className="bg-gray-100 text-gray-600">
+                    <User className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </div>
+          ))}
+          
+          {isLoading && (
+            <div className="flex gap-3 justify-start">
+              <Avatar className="w-8 h-8 flex-shrink-0">
+                <AvatarFallback className="bg-violet-100 text-violet-600">
+                  <Bot className="w-4 h-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="bg-white border shadow-sm p-3 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <h1 className="font-bold text-gray-900">Rendly AI Pro</h1>
-                  <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
-                    <Crown className="w-3 h-3 mr-1" />
-                    Premium
-                  </Badge>
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  </div>
+                  <span className="text-sm text-gray-500">L'IA réfléchit...</span>
                 </div>
-                <p className="text-xs text-gray-500">Intelligence artificielle avancée</p>
               </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-xs text-green-600 font-medium">En ligne</span>
-          </div>
+          )}
+          
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* Tabs Navigation */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <div className="bg-white/80 backdrop-blur-sm px-4 border-b">
-          <TabsList className="grid w-full grid-cols-4 bg-gray-100/50 rounded-xl p-1">
-            <TabsTrigger value="chat" className="flex items-center gap-2 text-xs">
-              <MessageSquare className="w-4 h-4" />
-              Chat IA
-            </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2 text-xs">
-              <BarChart3 className="w-4 h-4" />
-              Analytics
-            </TabsTrigger>
-            <TabsTrigger value="insights" className="flex items-center gap-2 text-xs">
-              <Lightbulb className="w-4 h-4" />
-              Insights
-            </TabsTrigger>
-            <TabsTrigger value="predictions" className="flex items-center gap-2 text-xs">
-              <Zap className="w-4 h-4" />
-              Prédictions
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        {/* Chat Tab */}
-        <TabsContent value="chat" className="flex-1 flex flex-col">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex gap-3 ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                {message.type === 'assistant' && (
-                  <Avatar className="w-9 h-9 shrink-0">
-                    <AvatarFallback className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm">
-                      <Brain className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-                <div
-                  className={`max-w-[85%] ${
-                    message.type === 'user'
-                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-2xl p-4'
-                      : 'bg-white rounded-2xl p-4 shadow-sm border'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                  
-                  {message.insights && (
-                    <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-gray-100">
-                      {message.insights.map((insight, idx) => (
-                        <div key={idx} className={`text-center p-2 rounded-lg ${
-                          insight.type === 'success' ? 'bg-green-50 text-green-700' :
-                          insight.type === 'warning' ? 'bg-orange-50 text-orange-700' :
-                          'bg-blue-50 text-blue-700'
-                        }`}>
-                          <div className="text-xs font-medium">{insight.title}</div>
-                          <div className="text-sm font-bold">{insight.value}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  <p className={`text-xs mt-3 ${
-                    message.type === 'user' ? 'text-violet-100' : 'text-gray-400'
-                  }`}>
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                </div>
-                {message.type === 'user' && (
-                  <Avatar className="w-9 h-9 shrink-0">
-                    <AvatarFallback className="bg-violet-500 text-white text-sm">
-                      <User className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                )}
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex gap-3 justify-start">
-                <Avatar className="w-9 h-9 shrink-0">
-                  <AvatarFallback className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm">
-                <Bot className="w-4 h-4" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="bg-gray-100 p-3 rounded-2xl">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-              </div>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Actions rapides au premier message */}
+      {/* Actions rapides */}
       {messages.length === 1 && (
-        <div className="p-4 border-t bg-gray-50 flex-shrink-0">
+        <div className="p-4 bg-white border-t">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Actions rapides</h3>
           <div className="grid grid-cols-2 gap-2">
             {quickActions.map((action, index) => (
               <Button
@@ -360,7 +245,7 @@ export default function AIAssistant() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action.action)}
-                className="justify-start h-auto p-3 text-left text-xs"
+                className="h-auto p-3 justify-start text-left"
               >
                 <div className="flex items-center gap-2">
                   {action.icon}
