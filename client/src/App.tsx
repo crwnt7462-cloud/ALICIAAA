@@ -52,6 +52,7 @@ import MessagingSystem from "@/pages/MessagingSystem";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StockAlerts from "@/pages/StockAlerts";
+import Settings from "@/pages/Settings";
 
 
 function Router() {
@@ -107,6 +108,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientDashboard />
+      </div>
+    );
+  }
+
+  // Page paramètres client
+  if (location === '/settings') {
+    return (
+      <div className="h-full">
+        <Settings />
       </div>
     );
   }
