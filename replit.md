@@ -124,6 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - POP-UPS D'AJOUT COMPLETS POUR TOUTES SECTIONS (20 Janvier)
+- ✅ **Pop-ups stock et marketing** : Formulaires complets d'ajout avec tous les champs nécessaires
+- ✅ **Campagnes marketing** : Pop-up avec nom, type, description, public cible, réduction, dates
+- ✅ **Ajout rapide produits** : Pop-up inventaire avec nom, catégorie, marque, stock initial/minimum
+- ✅ **Configuration fidélité** : Pop-up programme avec points/euro, bonus, seuils niveaux
+- ✅ **Erreurs SelectItem corrigées** : Toutes les erreurs de valeurs vides résolues
+- ✅ **DialogDescription ajoutée** : Suppression des warnings d'accessibilité
+- ✅ **Interface mobile-first** : Tous les pop-ups optimisés pour écrans tactiles
+- ✅ **Sans paiement** : Toutes les fonctionnalités d'ajout gratuites et accessibles
+
 ### Janvier 2025 - CORRECTION ERREUR DE COMPILATION CSS (20 Janvier)
 - ✅ **Erreur SVG corrigée** : Fix de l'erreur de parsing CSS dans ModernSubscriptionPlans.tsx
 - ✅ **Application fonctionnelle** : Remplacement du background SVG inline par un style JavaScript

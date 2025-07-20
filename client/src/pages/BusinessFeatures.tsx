@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
@@ -39,6 +39,8 @@ export default function BusinessFeatures() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
+  const [isLoyaltyDialogOpen, setIsLoyaltyDialogOpen] = useState(false);
+  const [isQuickProductDialogOpen, setIsQuickProductDialogOpen] = useState(false);
   const [newCampaign, setNewCampaign] = useState({
     name: "",
     type: "discount",
@@ -47,6 +49,21 @@ export default function BusinessFeatures() {
     discountValue: 10,
     startDate: "",
     endDate: ""
+  });
+  const [loyaltyConfig, setLoyaltyConfig] = useState({
+    pointsPerEuro: 1,
+    welcomeBonus: 50,
+    bronzeThreshold: 0,
+    silverThreshold: 500,
+    goldThreshold: 1000,
+    vipThreshold: 2000
+  });
+  const [quickProduct, setQuickProduct] = useState({
+    name: "",
+    category: "hair_care",
+    currentStock: 10,
+    minStock: 5,
+    brand: ""
   });
 
   return (
@@ -608,14 +625,96 @@ export default function BusinessFeatures() {
                     Gérer Stock
                   </Button>
                 </Link>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => toast({ title: "Produit ajouté", description: "Le produit a été ajouté à l'inventaire" })}
-                >
-                  + Nouveau
-                </Button>
+                <Dialog open={isQuickProductDialogOpen} onOpenChange={setIsQuickProductDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full"
+                    >
+                      + Nouveau
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Ajout rapide produit</DialogTitle>
+                      <DialogDescription>
+                        Ajoutez rapidement un nouveau produit à votre stock
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Nom du produit *</Label>
+                        <Input
+                          value={quickProduct.name}
+                          onChange={(e) => setQuickProduct(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Ex: Shampooing Volume"
+                        />
+                      </div>
+                      <div>
+                        <Label>Catégorie</Label>
+                        <Select value={quickProduct.category} onValueChange={(value) => setQuickProduct(prev => ({ ...prev, category: value }))}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Catégorie" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hair_care">Soins cheveux</SelectItem>
+                            <SelectItem value="skin_care">Soins visage</SelectItem>
+                            <SelectItem value="tools">Outils</SelectItem>
+                            <SelectItem value="nail_care">Soins ongles</SelectItem>
+                            <SelectItem value="makeup">Maquillage</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Marque</Label>
+                        <Input
+                          value={quickProduct.brand}
+                          onChange={(e) => setQuickProduct(prev => ({ ...prev, brand: e.target.value }))}
+                          placeholder="Ex: L'Oréal"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <Label>Stock initial</Label>
+                          <Input
+                            type="number"
+                            value={quickProduct.currentStock}
+                            onChange={(e) => setQuickProduct(prev => ({ ...prev, currentStock: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                        <div>
+                          <Label>Stock minimum</Label>
+                          <Input
+                            type="number"
+                            value={quickProduct.minStock}
+                            onChange={(e) => setQuickProduct(prev => ({ ...prev, minStock: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => {
+                          toast({ 
+                            title: "Produit ajouté !", 
+                            description: `${quickProduct.name} ajouté à votre inventaire`
+                          });
+                          setIsQuickProductDialogOpen(false);
+                          setQuickProduct({
+                            name: "",
+                            category: "hair_care",
+                            currentStock: 10,
+                            minStock: 5,
+                            brand: ""
+                          });
+                        }}
+                        disabled={!quickProduct.name}
+                        className="w-full gradient-bg"
+                      >
+                        Ajouter le produit
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>
@@ -665,6 +764,9 @@ export default function BusinessFeatures() {
                 <DialogContent className="max-w-md">
                   <DialogHeader>
                     <DialogTitle>Créer une nouvelle campagne</DialogTitle>
+                    <DialogDescription>
+                      Créez une campagne marketing personnalisée pour vos clients
+                    </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
@@ -787,13 +889,91 @@ export default function BusinessFeatures() {
                   <span className="text-sm font-medium">8</span>
                 </div>
               </div>
-              <Button 
-                size="sm" 
-                className="w-full"
-                onClick={() => toast({ title: "Configuration programme", description: "Programme de fidélité en cours de configuration" })}
-              >
-                Configurer programme
-              </Button>
+              <Dialog open={isLoyaltyDialogOpen} onOpenChange={setIsLoyaltyDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    size="sm" 
+                    className="w-full"
+                  >
+                    Configurer programme
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Configuration Programme Fidélité</DialogTitle>
+                    <DialogDescription>
+                      Configurez les paramètres de votre programme de fidélité
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Points par euro dépensé</Label>
+                      <Input
+                        type="number"
+                        value={loyaltyConfig.pointsPerEuro}
+                        onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, pointsPerEuro: parseInt(e.target.value) || 1 }))}
+                      />
+                    </div>
+                    <div>
+                      <Label>Bonus d'inscription (points)</Label>
+                      <Input
+                        type="number"
+                        value={loyaltyConfig.welcomeBonus}
+                        onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, welcomeBonus: parseInt(e.target.value) || 0 }))}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Seuils des niveaux (€ dépensés)</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <Label className="text-xs">Bronze</Label>
+                          <Input
+                            type="number"
+                            value={loyaltyConfig.bronzeThreshold}
+                            onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, bronzeThreshold: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Silver</Label>
+                          <Input
+                            type="number"
+                            value={loyaltyConfig.silverThreshold}
+                            onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, silverThreshold: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Gold</Label>
+                          <Input
+                            type="number"
+                            value={loyaltyConfig.goldThreshold}
+                            onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, goldThreshold: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">VIP</Label>
+                          <Input
+                            type="number"
+                            value={loyaltyConfig.vipThreshold}
+                            onChange={(e) => setLoyaltyConfig(prev => ({ ...prev, vipThreshold: parseInt(e.target.value) || 0 }))}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        toast({ 
+                          title: "Programme configuré !", 
+                          description: `${loyaltyConfig.pointsPerEuro} pt/€ - Bonus: ${loyaltyConfig.welcomeBonus} pts`
+                        });
+                        setIsLoyaltyDialogOpen(false);
+                      }}
+                      className="w-full gradient-bg"
+                    >
+                      Sauvegarder la configuration
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
         </TabsContent>

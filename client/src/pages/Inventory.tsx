@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -151,6 +151,9 @@ export default function Inventory() {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Nouvel article</DialogTitle>
+              <DialogDescription>
+                Ajoutez un nouvel article à votre inventaire
+              </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
