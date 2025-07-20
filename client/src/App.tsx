@@ -53,6 +53,8 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StockAlerts from "@/pages/StockAlerts";
 import Settings from "@/pages/Settings";
+import Support from "@/pages/Support";
+import Contact from "@/pages/Contact";
 
 
 function Router() {
@@ -287,6 +289,8 @@ function Router() {
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
           <Route path="/test-booking" component={BookingTest} />
+          <Route path="/support" component={Support} />
+          <Route path="/contact" component={Contact} />
           <Route path="/pro" component={Landing} />
           <Route component={NotFound} />
         </Switch>

@@ -13,6 +13,10 @@ export default function PublicLanding() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const handleSearchService = (service: string) => {
+    setLocation(`/search-results?service=${encodeURIComponent(service)}`);
+  };
+
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
     { number: "2,500+", label: "Salons partenaires" },
@@ -820,20 +824,20 @@ export default function PublicLanding() {
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Services</h4>
               <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-violet-600">Coiffure</a></li>
-                <li><a href="#" className="hover:text-violet-600">Esthétique</a></li>
-                <li><a href="#" className="hover:text-violet-600">Massage</a></li>
-                <li><a href="#" className="hover:text-violet-600">Onglerie</a></li>
+                <li><button onClick={() => handleSearchService('coiffure')} className="hover:text-violet-600 text-left">Coiffure</button></li>
+                <li><button onClick={() => handleSearchService('esthétique')} className="hover:text-violet-600 text-left">Esthétique</button></li>
+                <li><button onClick={() => handleSearchService('massage')} className="hover:text-violet-600 text-left">Massage</button></li>
+                <li><button onClick={() => handleSearchService('onglerie')} className="hover:text-violet-600 text-left">Onglerie</button></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold text-gray-900 mb-4">Support</h4>
               <ul className="space-y-2 text-gray-600">
-                <li><a href="#" className="hover:text-violet-600">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-violet-600">Contact</a></li>
-                <li><a href="#" className="hover:text-violet-600">Conditions</a></li>
-                <li><a href="#" className="hover:text-violet-600">Confidentialité</a></li>
+                <li><button onClick={() => setLocation('/support')} className="hover:text-violet-600 text-left">Centre d'aide</button></li>
+                <li><button onClick={() => setLocation('/contact')} className="hover:text-violet-600 text-left">Contact</button></li>
+                <li><button onClick={() => setLocation('/conditions')} className="hover:text-violet-600 text-left">Conditions</button></li>
+                <li><button onClick={() => setLocation('/confidentialite')} className="hover:text-violet-600 text-left">Confidentialité</button></li>
               </ul>
             </div>
           </div>
