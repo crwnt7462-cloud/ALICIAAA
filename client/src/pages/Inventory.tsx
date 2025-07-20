@@ -36,7 +36,7 @@ export default function Inventory() {
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
   // Récupérer l'inventaire
   const { data: inventory = [], isLoading } = useQuery({
@@ -113,7 +113,7 @@ export default function Inventory() {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = !categoryFilter || item.category === categoryFilter;
+    const matchesCategory = categoryFilter === "all" || item.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
@@ -296,7 +296,7 @@ export default function Inventory() {
                   <SelectValue placeholder="Toutes catégories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes catégories</SelectItem>
+                  <SelectItem value="all">Toutes catégories</SelectItem>
                   <SelectItem value="hair_care">Soins cheveux</SelectItem>
                   <SelectItem value="skin_care">Soins visage</SelectItem>
                   <SelectItem value="tools">Outils</SelectItem>

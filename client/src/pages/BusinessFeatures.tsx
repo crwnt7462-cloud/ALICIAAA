@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
@@ -37,6 +38,16 @@ export default function BusinessFeatures() {
   const [activeTab, setActiveTab] = useState("settings");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
+  const [newCampaign, setNewCampaign] = useState({
+    name: "",
+    type: "discount",
+    description: "",
+    targetSegment: "all_clients",
+    discountValue: 10,
+    startDate: "",
+    endDate: ""
+  });
 
   return (
     <div className="p-4 max-w-md mx-auto">
@@ -641,14 +652,116 @@ export default function BusinessFeatures() {
                   </Badge>
                 </div>
               ))}
-              <Button 
-                size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => toast({ title: "Campagne créée", description: "Nouvelle campagne marketing en préparation" })}
-              >
-                + Nouvelle campagne
-              </Button>
+              <Dialog open={isCampaignDialogOpen} onOpenChange={setIsCampaignDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full"
+                  >
+                    + Nouvelle campagne
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Créer une nouvelle campagne</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Nom de la campagne *</Label>
+                      <Input
+                        value={newCampaign.name}
+                        onChange={(e) => setNewCampaign(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Ex: Promo Saint-Valentin"
+                      />
+                    </div>
+                    <div>
+                      <Label>Type de campagne</Label>
+                      <Select value={newCampaign.type} onValueChange={(value) => setNewCampaign(prev => ({ ...prev, type: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Type de campagne" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="discount">Réduction</SelectItem>
+                          <SelectItem value="package">Forfait spécial</SelectItem>
+                          <SelectItem value="loyalty">Points fidélité</SelectItem>
+                          <SelectItem value="referral">Parrainage</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Input
+                        value={newCampaign.description}
+                        onChange={(e) => setNewCampaign(prev => ({ ...prev, description: e.target.value }))}
+                        placeholder="Description de votre campagne"
+                      />
+                    </div>
+                    <div>
+                      <Label>Public cible</Label>
+                      <Select value={newCampaign.targetSegment} onValueChange={(value) => setNewCampaign(prev => ({ ...prev, targetSegment: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner le public" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all_clients">Tous les clients</SelectItem>
+                          <SelectItem value="new_clients">Nouveaux clients</SelectItem>
+                          <SelectItem value="vip_clients">Clients VIP</SelectItem>
+                          <SelectItem value="lapsed_clients">Clients inactifs</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Réduction (%)</Label>
+                      <Input
+                        type="number"
+                        value={newCampaign.discountValue}
+                        onChange={(e) => setNewCampaign(prev => ({ ...prev, discountValue: parseInt(e.target.value) || 0 }))}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label>Date de début</Label>
+                        <Input
+                          type="date"
+                          value={newCampaign.startDate}
+                          onChange={(e) => setNewCampaign(prev => ({ ...prev, startDate: e.target.value }))}
+                        />
+                      </div>
+                      <div>
+                        <Label>Date de fin</Label>
+                        <Input
+                          type="date"
+                          value={newCampaign.endDate}
+                          onChange={(e) => setNewCampaign(prev => ({ ...prev, endDate: e.target.value }))}
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        toast({ 
+                          title: "Campagne créée !", 
+                          description: `${newCampaign.name} - ${newCampaign.discountValue}% de réduction`
+                        });
+                        setIsCampaignDialogOpen(false);
+                        setNewCampaign({
+                          name: "",
+                          type: "discount",
+                          description: "",
+                          targetSegment: "all_clients",
+                          discountValue: 10,
+                          startDate: "",
+                          endDate: ""
+                        });
+                      }}
+                      disabled={!newCampaign.name}
+                      className="w-full gradient-bg"
+                    >
+                      Créer la campagne
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </CardContent>
           </Card>
 
