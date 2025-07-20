@@ -40,6 +40,7 @@ import BookingPage from "@/pages/BookingPage";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
+import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import MessagingHub from "@/pages/MessagingHub";
@@ -170,7 +171,7 @@ function Router() {
   if (location === '/subscription/plans' || location === '/subscription-plans') {
     return (
       <div className="h-full">
-        <SubscriptionPlans />
+        <ModernSubscriptionPlans />
       </div>
     );
   }
