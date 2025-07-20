@@ -222,13 +222,24 @@ export default function BusinessFeatures() {
                   <Input type="time" defaultValue="18:00" className="h-9" />
                 </div>
               </div>
-              <Button 
-                size="sm" 
-                className="w-full"
-                onClick={() => toast({ title: "Configuration sauvegardée", description: "Les paramètres du salon ont été mis à jour" })}
-              >
-                Sauvegarder
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={() => toast({ title: "Configuration sauvegardée", description: "Les paramètres du salon ont été mis à jour" })}
+                >
+                  Sauvegarder
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setLocation('/settings')}
+                >
+                  <Settings className="h-3 w-3 mr-1" />
+                  Paramètres
+                </Button>
+              </div>
             </CardContent>
           </Card>
 

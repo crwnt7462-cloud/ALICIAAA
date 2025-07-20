@@ -131,6 +131,8 @@ Génération automatique :
 - ✅ **Onglet Confidentialité** : Visibilité profil, activité, mentions, partage données
 - ✅ **Onglet Apparence** : Thème clair/sombre, langue, taille police
 - ✅ **Navigation fonctionnelle** : Bouton Paramètres dans ClientDashboard redirige vers /settings
+- ✅ **Boutons Pro ajoutés** : Paramètres accessibles depuis Dashboard (header + accès rapides)
+- ✅ **BusinessFeatures intégré** : Bouton Paramètres dans l'onglet Config des Pro Tools
 - ✅ **Route ajoutée** : /settings accessible avec retour vers dashboard
 - ✅ **Interface responsive** : Optimisée mobile avec tabs et formulaires complets
 - ✅ **Sauvegarde locale** : Boutons sauvegarder avec notifications de confirmation

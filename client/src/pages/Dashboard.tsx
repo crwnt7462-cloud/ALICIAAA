@@ -64,6 +64,15 @@ export default function Dashboard() {
           <Button 
             variant="outline" 
             size="sm" 
+            className="border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-xs px-3 py-1.5"
+            onClick={() => setLocation('/settings')}
+          >
+            <Settings className="w-3 h-3 mr-1" />
+            Paramètres
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
             className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
             onClick={() => setLocation('/ai')}
           >
@@ -126,6 +135,14 @@ export default function Dashboard() {
         >
           <Calendar className="w-5 h-5 mb-1" />
           Planning
+        </Button>
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-xs"
+          onClick={() => setLocation("/settings")}
+        >
+          <Settings className="w-5 h-5 mb-1" />
+          Config
         </Button>
       </div>
 
