@@ -77,7 +77,7 @@ function Router() {
   if (location.startsWith('/booking/')) {
     return (
       <div className="h-full">
-        <BookingPage />
+        <Booking />
       </div>
     );
   }
