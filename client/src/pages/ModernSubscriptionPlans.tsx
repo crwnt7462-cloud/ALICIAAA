@@ -30,51 +30,82 @@ export default function ModernSubscriptionPlans() {
 
   const plans = [
     {
-      id: 'basic' as const,
-      name: 'Salon Pro',
-      subtitle: 'Pour débuter en beauté',
-      monthlyPrice: 49,
-      yearlyPrice: 490,
-      originalYearlyPrice: 588,
-      description: 'Tous les outils essentiels pour digitaliser votre salon',
+      id: 'starter' as const,
+      name: 'Beauty Start',
+      subtitle: 'Parfait pour débuter',
+      monthlyPrice: 29,
+      yearlyPrice: 290,
+      originalYearlyPrice: 348,
+      description: 'L\'essentiel pour numériser votre salon avec style',
       popular: false,
-      color: 'from-blue-500 to-cyan-500',
+      color: 'from-emerald-500 to-teal-600',
       icon: Users,
+      ribbon: 'NOUVEAU',
       features: [
-        'Planning intelligent illimité',
-        'Gestion clients professionnelle', 
-        'Réservations en ligne 24/7',
-        'Notifications SMS/Email automatiques',
-        'Analytics et rapports détaillés',
-        'Système de paiement intégré',
-        'Support expert par email',
-        'Formation vidéo complète'
-      ]
+        'Planning numérique moderne',
+        'Gestion clientèle simplifiée', 
+        'Réservations web 24/7',
+        'Notifications automatiques',
+        'Rapports de base',
+        'Paiements sécurisés',
+        'Support par email',
+        'Guides de démarrage'
+      ],
+      limits: 'Jusqu\'à 100 clients • 1 salon'
+    },
+    {
+      id: 'professional' as const,
+      name: 'Beauty Pro',
+      subtitle: 'Boostez votre business',
+      monthlyPrice: 79,
+      yearlyPrice: 790,
+      originalYearlyPrice: 948,
+      description: 'Tous les outils pro pour développer votre activité',
+      popular: true,
+      color: 'from-violet-600 to-purple-700',
+      icon: BarChart,
+      ribbon: 'POPULAIRE',
+      features: [
+        'TOUT du plan Beauty Start +',
+        'Analytics avancés et insights',
+        'Marketing automation intelligent', 
+        'Gestion multi-établissements (3 max)',
+        'Programme de fidélité automatisé',
+        'Intégrations réseaux sociaux',
+        'Inventaire et stock alerts',
+        'Support prioritaire par chat',
+        'Formation personnalisée',
+        'Export comptabilité'
+      ],
+      limits: 'Jusqu\'à 500 clients • 3 salons'
     },
     {
       id: 'premium' as const,
       name: 'Beauty Empire',
-      subtitle: 'La solution ultime',
+      subtitle: 'La puissance absolue',
       monthlyPrice: 149,
       yearlyPrice: 1490,
       originalYearlyPrice: 1788,
-      description: 'Dominez votre marché avec l\'IA et l\'automatisation',
-      popular: true,
-      color: 'from-purple-600 via-pink-600 to-rose-500',
+      description: 'L\'arsenal complet avec IA pour dominer votre marché',
+      popular: false,
+      color: 'from-gradient-start to-gradient-end',
       icon: Crown,
+      ribbon: 'PREMIUM',
       features: [
-        'TOUT du plan Salon Pro +',
-        'Rendly AI - Assistant ultra-intelligent',
-        'Messagerie illimitée temps réel',
-        'Pages personnalisées infinies',
-        'Analytics prédictives IA',
-        'Marketing automation avancé',
-        'Programme fidélité automatisé',
-        'Intégrations premium (Google, Meta...)',
-        'Support VIP instantané 24/7',
-        'Formation personnelle 1-à-1',
+        'TOUT du plan Beauty Pro +',
+        'Rendly AI - Assistant révolutionnaire',
+        'Messagerie clients illimitée temps réel',
+        'Pages de réservation infinies',
+        'IA prédictive et recommandations',
+        'Automatisation marketing complète',
+        'Multi-établissements illimités',
+        'Intégrations premium (Google, Meta, Apple)',
+        'Support VIP 24/7 avec account manager',
+        'Formation 1-à-1 et certification',
+        'API et développements sur mesure',
         'Certification Beauty Pro offerte'
-      ]
+      ],
+      limits: 'Clients illimités • Salons illimités'
     }
   ];
 
@@ -94,7 +125,7 @@ export default function ModernSubscriptionPlans() {
     return 0;
   };
 
-  const handleSelectPlan = (planType: 'basic' | 'premium') => {
+  const handleSelectPlan = (planType: 'starter' | 'professional' | 'premium') => {
     setLocation(`/subscription/signup/${planType}`);
   };
 
@@ -227,6 +258,16 @@ export default function ModernSubscriptionPlans() {
                       </Badge>
                     )}
                   </div>
+
+                  {/* Limits */}
+                  {plan.limits && (
+                    <div className="mb-6 p-3 bg-gradient-to-r from-gray-800/50 to-gray-700/50 rounded-lg border border-gray-600/30">
+                      <div className="flex items-center space-x-2">
+                        <Users className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-300 font-medium">{plan.limits}</span>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Features */}
                   <div className="mb-8 space-y-3">

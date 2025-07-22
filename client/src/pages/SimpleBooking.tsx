@@ -32,59 +32,95 @@ export default function SimpleBooking() {
   });
 
   const salon = {
-    name: "Salon Excellence",
+    name: "Salon Excellence Paris",
+    subtitle: "L'Art Capillaire Depuis 1995",
     address: "42 rue de Rivoli, Paris 1er",
-    rating: 4.8,
-    reviews: 324,
+    phone: "01 42 96 17 83",
+    rating: 4.9,
+    reviews: 1247,
     verified: true,
     nextAvailable: "Aujourd'hui 14h30",
-    specialties: ["Coiffure", "Coloration", "Soins"],
-    certifications: ["Bio", "Vegan", "Cruelty-free"]
+    specialties: ["Coiffure Haute Couture", "Coloration Bio", "Soins Experts"],
+    certifications: ["L'Oréal Professionnel", "Kérastase Expert", "Olaplex Certified"],
+    amenities: ["WiFi Gratuit", "Café Offert", "Parking Partenaire", "Produits Premium"],
+    images: ["salon1.jpg", "salon2.jpg"],
+    awards: ["Meilleur Salon 2024", "Prix Innovation Bio"]
   };
 
   const services = [
     { 
       id: "1", 
-      name: "Coupe Femme", 
-      duration: 45, 
-      price: 55,
-      description: "Coupe personnalisée avec conseil style",
+      name: "Coupe Femme Signature", 
+      duration: 60, 
+      price: 75,
+      originalPrice: 85,
+      description: "Coupe personnalisée par nos stylistes experts avec diagnostic capillaire complet",
       popular: true,
-      includes: ["Shampoing", "Coupe", "Brushing"]
+      level: "Expert",
+      includes: ["Diagnostic capillaire", "Shampoing bio", "Coupe signature", "Brushing pro", "Conseil style"],
+      specialist: "Sarah Michel - 12 ans d'expérience",
+      beforeAfter: "Voir transformations",
+      guarantee: "Retouche gratuite 15 jours"
     },
     { 
       id: "2", 
-      name: "Coupe Homme", 
-      duration: 30, 
-      price: 35,
-      description: "Coupe moderne avec finition précise",
-      includes: ["Shampoing", "Coupe", "Styling"]
+      name: "Coupe Homme Premium", 
+      duration: 45, 
+      price: 55,
+      originalPrice: 65,
+      description: "Coupe masculine moderne avec soin du cuir chevelu et styling personnalisé",
+      includes: ["Shampoing + massage", "Coupe précision", "Soin barbe", "Styling", "Produit offert"],
+      specialist: "Marco Rossi - Barbier expert",
+      level: "Premium"
     },
     { 
       id: "3", 
-      name: "Coloration", 
-      duration: 120, 
-      price: 85,
-      description: "Coloration complète avec produits premium",
+      name: "Coloration Haute Couture", 
+      duration: 150, 
+      price: 135,
+      originalPrice: 160,
+      description: "Coloration sur mesure avec produits L'Oréal Professionnel et soin restructurant",
       premium: true,
-      includes: ["Consultation", "Coloration", "Soin", "Brushing"]
+      level: "Haute Couture",
+      includes: ["Consultation coloriste", "Test allergie", "Coloration pro", "Soin Olaplex", "Brushing signature"],
+      specialist: "Amélie Durand - Coloriste diplômée",
+      guarantee: "Retouche couleur 3 semaines",
+      beforeAfter: "Portfolio disponible"
     },
     { 
       id: "4", 
-      name: "Balayage", 
-      duration: 180, 
-      price: 120,
-      description: "Technique de méchage naturel et tendance",
+      name: "Balayage Sunset", 
+      duration: 210, 
+      price: 180,
+      originalPrice: 220,
+      description: "Technique de méchage artistique créant des reflets naturels sublimes",
       premium: true,
-      includes: ["Consultation", "Balayage", "Toner", "Soin", "Brushing"]
+      level: "Artiste",
+      includes: ["Consultation couleur", "Balayage main levée", "Toner personnalisé", "Soin réparateur", "Brushing + lissage"],
+      specialist: "Chloé Lambert - Artiste coloriste",
+      beforeAfter: "Voir nos créations",
+      guarantee: "Résultat garanti ou refait"
     },
     { 
       id: "5", 
-      name: "Brushing", 
-      duration: 30, 
-      price: 25,
-      description: "Mise en pli professionnelle",
-      includes: ["Shampoing", "Brushing", "Finition"]
+      name: "Soin Restructurant Kérastase", 
+      duration: 45, 
+      price: 65,
+      originalPrice: 75,
+      description: "Soin professionnel réparateur pour cheveux abîmés et colorés",
+      includes: ["Diagnostic expert", "Soin sur-mesure", "Massage relaxant", "Brushing soyeux", "Conseil à domicile"],
+      specialist: "Marie Petit - Experte soins",
+      level: "Thérapeutique"
+    },
+    { 
+      id: "6", 
+      name: "Brushing Royal", 
+      duration: 35, 
+      price: 45,
+      originalPrice: 55,
+      description: "Mise en pli d'exception avec techniques professionnelles et tenue longue durée",
+      includes: ["Shampoing premium", "Soin express", "Brushing technique", "Laque professionnelle"],
+      level: "Pro"
     }
   ];
 
@@ -127,10 +163,10 @@ export default function SimpleBooking() {
       description: "Vous recevrez une confirmation par email dans quelques instants.",
     });
     
-    // Redirection vers page de paiement après 1 seconde
+    // Redirection vers accueil après succès
     setTimeout(() => {
-      setLocation('/booking/payment');
-    }, 1000);
+      setLocation('/');
+    }, 2000);
   };
 
   const isStepComplete = () => {
@@ -159,28 +195,32 @@ export default function SimpleBooking() {
               </Button>
               <div>
                 <div className="flex items-center space-x-2">
-                  <h1 className="font-semibold text-lg">{salon.name}</h1>
+                  <div>
+                    <h1 className="font-bold text-lg">{salon.name}</h1>
+                    <p className="text-sm text-violet-600 italic">{salon.subtitle}</p>
+                  </div>
                   {salon.verified && (
-                    <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+                    <Badge variant="secondary" className="bg-gradient-to-r from-gold-400 to-yellow-500 text-white text-xs">
                       <Award className="w-3 h-3 mr-1" />
-                      Vérifié
+                      Certifié
                     </Badge>
                   )}
                 </div>
-                <div className="flex items-center space-x-3 text-sm text-gray-600 mt-1">
+                <div className="flex items-center space-x-4 text-sm text-gray-600 mt-2">
                   <div className="flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />
                     <span>{salon.address}</span>
                   </div>
                   <div className="flex items-center">
                     <Star className="w-3 h-3 text-yellow-400 fill-current mr-1" />
-                    <span>{salon.rating} ({salon.reviews})</span>
+                    <span className="font-medium">{salon.rating} ({salon.reviews} avis)</span>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2 mt-1">
-                  {salon.certifications.map((cert, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {cert}
+                <div className="flex items-center flex-wrap gap-1 mt-2">
+                  {salon.awards.map((award, idx) => (
+                    <Badge key={idx} className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
+                      <Award className="w-3 h-3 mr-1" />
+                      {award}
                     </Badge>
                   ))}
                 </div>
@@ -234,15 +274,15 @@ export default function SimpleBooking() {
                 }`}
                 onClick={() => setSelectedService(service.id)}
               >
-                <CardContent className="p-4">
+                <CardContent className="p-5">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold text-lg">{service.name}</h3>
+                        <h3 className="font-bold text-xl">{service.name}</h3>
                         {service.popular && (
-                          <Badge className="bg-orange-100 text-orange-700 text-xs">
+                          <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs">
                             <ThumbsUp className="w-3 h-3 mr-1" />
-                            Populaire
+                            Top Choix
                           </Badge>
                         )}
                         {service.premium && (
@@ -251,32 +291,74 @@ export default function SimpleBooking() {
                             Premium
                           </Badge>
                         )}
+                        {service.level && (
+                          <Badge variant="outline" className="text-xs border-violet-300 text-violet-700">
+                            {service.level}
+                          </Badge>
+                        )}
                       </div>
                       
-                      <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                      <p className="text-sm text-gray-700 mb-3 leading-relaxed">{service.description}</p>
                       
-                      <div className="flex items-center space-x-4 text-sm text-gray-700 mb-3">
+                      <div className="flex items-center space-x-6 text-sm text-gray-700 mb-3">
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-1 text-violet-600" />
-                          {service.duration} min
+                          <span className="font-medium">{service.duration} min</span>
                         </div>
-                        <div className="flex items-center font-semibold">
-                          <Euro className="w-4 h-4 mr-1 text-green-600" />
-                          {service.price}€
+                        <div className="flex items-center space-x-1">
+                          {service.originalPrice && (
+                            <span className="text-gray-400 line-through text-xs">{service.originalPrice}€</span>
+                          )}
+                          <div className="flex items-center font-bold text-lg">
+                            <Euro className="w-4 h-4 mr-1 text-green-600" />
+                            <span className="text-green-600">{service.price}€</span>
+                          </div>
+                          {service.originalPrice && (
+                            <Badge className="bg-red-100 text-red-700 text-xs ml-2">
+                              -{Math.round((1 - service.price / service.originalPrice) * 100)}%
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       
-                      <div className="text-xs text-gray-500">
-                        <span className="font-medium">Inclus :</span> {service.includes.join(", ")}
+                      {service.specialist && (
+                        <div className="text-xs text-violet-700 mb-2 flex items-center">
+                          <User className="w-3 h-3 mr-1" />
+                          <span className="font-medium">Avec {service.specialist}</span>
+                        </div>
+                      )}
+                      
+                      <div className="text-xs text-gray-600 mb-2">
+                        <span className="font-medium">Prestations incluses :</span> {service.includes.join(" • ")}
+                      </div>
+                      
+                      <div className="flex items-center space-x-3 text-xs">
+                        {service.guarantee && (
+                          <div className="flex items-center text-green-600">
+                            <Shield className="w-3 h-3 mr-1" />
+                            <span>{service.guarantee}</span>
+                          </div>
+                        )}
+                        {service.beforeAfter && (
+                          <div className="flex items-center text-violet-600">
+                            <Camera className="w-3 h-3 mr-1" />
+                            <span>{service.beforeAfter}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                     
-                    <div className="ml-4 flex flex-col items-center">
+                    <div className="ml-4 flex flex-col items-center space-y-2">
                       {selectedService === service.id && (
-                        <CheckCircle className="w-6 h-6 text-violet-600 mb-2" />
+                        <CheckCircle className="w-8 h-8 text-violet-600" />
                       )}
                       {service.premium && (
-                        <Gift className="w-5 h-5 text-violet-500" />
+                        <Gift className="w-6 h-6 text-violet-500" />
+                      )}
+                      {service.originalPrice && (
+                        <Badge className="bg-red-500 text-white text-xs rotate-12">
+                          PROMO
+                        </Badge>
                       )}
                     </div>
                   </div>
