@@ -3,9 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   ArrowLeft, Clock, Euro, User, Phone, Mail, CreditCard,
-  CheckCircle, Star, MapPin, Calendar as CalendarIcon
+  CheckCircle, Star, MapPin, Calendar as CalendarIcon,
+  Award, Shield, Sparkles, Users, MessageSquare, 
+  ThumbsUp, Zap, Heart, Camera, Gift
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
@@ -21,22 +25,67 @@ export default function SimpleBooking() {
     firstName: "",
     lastName: "",
     email: "",
-    phone: ""
+    phone: "",
+    notes: "",
+    isFirstVisit: true,
+    newsletter: false
   });
 
   const salon = {
     name: "Salon Excellence",
     address: "42 rue de Rivoli, Paris 1er",
     rating: 4.8,
-    reviews: 324
+    reviews: 324,
+    verified: true,
+    nextAvailable: "Aujourd'hui 14h30",
+    specialties: ["Coiffure", "Coloration", "Soins"],
+    certifications: ["Bio", "Vegan", "Cruelty-free"]
   };
 
   const services = [
-    { id: "1", name: "Coupe Femme", duration: 45, price: 55 },
-    { id: "2", name: "Coupe Homme", duration: 30, price: 35 },
-    { id: "3", name: "Coloration", duration: 120, price: 85 },
-    { id: "4", name: "Balayage", duration: 180, price: 120 },
-    { id: "5", name: "Brushing", duration: 30, price: 25 }
+    { 
+      id: "1", 
+      name: "Coupe Femme", 
+      duration: 45, 
+      price: 55,
+      description: "Coupe personnalisée avec conseil style",
+      popular: true,
+      includes: ["Shampoing", "Coupe", "Brushing"]
+    },
+    { 
+      id: "2", 
+      name: "Coupe Homme", 
+      duration: 30, 
+      price: 35,
+      description: "Coupe moderne avec finition précise",
+      includes: ["Shampoing", "Coupe", "Styling"]
+    },
+    { 
+      id: "3", 
+      name: "Coloration", 
+      duration: 120, 
+      price: 85,
+      description: "Coloration complète avec produits premium",
+      premium: true,
+      includes: ["Consultation", "Coloration", "Soin", "Brushing"]
+    },
+    { 
+      id: "4", 
+      name: "Balayage", 
+      duration: 180, 
+      price: 120,
+      description: "Technique de méchage naturel et tendance",
+      premium: true,
+      includes: ["Consultation", "Balayage", "Toner", "Soin", "Brushing"]
+    },
+    { 
+      id: "5", 
+      name: "Brushing", 
+      duration: 30, 
+      price: 25,
+      description: "Mise en pli professionnelle",
+      includes: ["Shampoing", "Brushing", "Finition"]
+    }
   ];
 
   const timeSlots = [
@@ -88,7 +137,7 @@ export default function SimpleBooking() {
     switch (step) {
       case 1: return selectedService !== "";
       case 2: return selectedDate !== "" && selectedTime !== "";
-      case 3: return clientInfo.firstName && clientInfo.lastName && clientInfo.email && clientInfo.phone;
+      case 3: return clientInfo.firstName.trim() && clientInfo.lastName.trim() && clientInfo.email.trim() && clientInfo.phone.trim();
       default: return false;
     }
   };
@@ -109,12 +158,31 @@ export default function SimpleBooking() {
                 <ArrowLeft className="w-4 h-4" />
               </Button>
               <div>
-                <h1 className="font-semibold text-lg">{salon.name}</h1>
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <MapPin className="w-3 h-3" />
-                  <span>{salon.address}</span>
-                  <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                  <span>{salon.rating} ({salon.reviews})</span>
+                <div className="flex items-center space-x-2">
+                  <h1 className="font-semibold text-lg">{salon.name}</h1>
+                  {salon.verified && (
+                    <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
+                      <Award className="w-3 h-3 mr-1" />
+                      Vérifié
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center space-x-3 text-sm text-gray-600 mt-1">
+                  <div className="flex items-center">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    <span>{salon.address}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Star className="w-3 h-3 text-yellow-400 fill-current mr-1" />
+                    <span>{salon.rating} ({salon.reviews})</span>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 mt-1">
+                  {salon.certifications.map((cert, idx) => (
+                    <Badge key={idx} variant="outline" className="text-xs">
+                      {cert}
+                    </Badge>
+                  ))}
                 </div>
               </div>
             </div>
@@ -161,33 +229,88 @@ export default function SimpleBooking() {
             {services.map((service) => (
               <Card 
                 key={service.id}
-                className={`cursor-pointer transition-all hover:shadow-md ${
-                  selectedService === service.id ? 'ring-2 ring-violet-500 bg-violet-50' : ''
+                className={`cursor-pointer transition-all hover:shadow-md border-2 ${
+                  selectedService === service.id ? 'border-violet-500 bg-violet-50' : 'border-gray-100'
                 }`}
                 onClick={() => setSelectedService(service.id)}
               >
                 <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="font-medium">{service.name}</h3>
-                      <div className="flex items-center space-x-3 text-sm text-gray-600 mt-1">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="font-semibold text-lg">{service.name}</h3>
+                        {service.popular && (
+                          <Badge className="bg-orange-100 text-orange-700 text-xs">
+                            <ThumbsUp className="w-3 h-3 mr-1" />
+                            Populaire
+                          </Badge>
+                        )}
+                        {service.premium && (
+                          <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            Premium
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <p className="text-sm text-gray-600 mb-3">{service.description}</p>
+                      
+                      <div className="flex items-center space-x-4 text-sm text-gray-700 mb-3">
                         <div className="flex items-center">
-                          <Clock className="w-3 h-3 mr-1" />
+                          <Clock className="w-4 h-4 mr-1 text-violet-600" />
                           {service.duration} min
                         </div>
-                        <div className="flex items-center">
-                          <Euro className="w-3 h-3 mr-1" />
+                        <div className="flex items-center font-semibold">
+                          <Euro className="w-4 h-4 mr-1 text-green-600" />
                           {service.price}€
                         </div>
                       </div>
+                      
+                      <div className="text-xs text-gray-500">
+                        <span className="font-medium">Inclus :</span> {service.includes.join(", ")}
+                      </div>
                     </div>
-                    {selectedService === service.id && (
-                      <CheckCircle className="w-5 h-5 text-violet-600" />
-                    )}
+                    
+                    <div className="ml-4 flex flex-col items-center">
+                      {selectedService === service.id && (
+                        <CheckCircle className="w-6 h-6 text-violet-600 mb-2" />
+                      )}
+                      {service.premium && (
+                        <Gift className="w-5 h-5 text-violet-500" />
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
+            
+            {/* Salon highlights */}
+            <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <Heart className="w-5 h-5 text-violet-600" />
+                  <span className="font-medium text-violet-900">Pourquoi choisir {salon.name} ?</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm text-violet-700">
+                  <div className="flex items-center">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Produits bio certifiés
+                  </div>
+                  <div className="flex items-center">
+                    <Users className="w-3 h-3 mr-1" />
+                    15+ ans d'expérience
+                  </div>
+                  <div className="flex items-center">
+                    <Zap className="w-3 h-3 mr-1" />
+                    Techniques innovantes
+                  </div>
+                  <div className="flex items-center">
+                    <Camera className="w-3 h-3 mr-1" />
+                    Conseil personnalisé
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 
@@ -236,10 +359,10 @@ export default function SimpleBooking() {
 
         {/* Étape 3: Informations client */}
         {step === 3 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label>Prénom *</Label>
+                <Label className="text-sm font-medium">Prénom *</Label>
                 <Input
                   value={clientInfo.firstName}
                   onChange={(e) => setClientInfo({...clientInfo, firstName: e.target.value})}
@@ -248,7 +371,7 @@ export default function SimpleBooking() {
                 />
               </div>
               <div>
-                <Label>Nom *</Label>
+                <Label className="text-sm font-medium">Nom *</Label>
                 <Input
                   value={clientInfo.lastName}
                   onChange={(e) => setClientInfo({...clientInfo, lastName: e.target.value})}
@@ -259,7 +382,7 @@ export default function SimpleBooking() {
             </div>
             
             <div>
-              <Label>Email *</Label>
+              <Label className="text-sm font-medium">Email *</Label>
               <Input
                 type="email"
                 value={clientInfo.email}
@@ -267,10 +390,11 @@ export default function SimpleBooking() {
                 placeholder="votre@email.com"
                 className="mt-1"
               />
+              <p className="text-xs text-gray-500 mt-1">Confirmation de rendez-vous envoyée par email</p>
             </div>
             
             <div>
-              <Label>Téléphone *</Label>
+              <Label className="text-sm font-medium">Téléphone *</Label>
               <Input
                 type="tel"
                 value={clientInfo.phone}
@@ -278,49 +402,176 @@ export default function SimpleBooking() {
                 placeholder="06 12 34 56 78"
                 className="mt-1"
               />
+              <p className="text-xs text-gray-500 mt-1">Rappel SMS 24h avant votre rendez-vous</p>
             </div>
+            
+            <div>
+              <Label className="text-sm font-medium">Notes particulières (optionnel)</Label>
+              <Textarea
+                value={clientInfo.notes}
+                onChange={(e) => setClientInfo({...clientInfo, notes: e.target.value})}
+                placeholder="Allergie, préférence de coiffeur, demande spéciale..."
+                className="mt-1 h-20"
+              />
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="firstVisit"
+                  checked={clientInfo.isFirstVisit}
+                  onChange={(e) => setClientInfo({...clientInfo, isFirstVisit: e.target.checked})}
+                  className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                />
+                <Label htmlFor="firstVisit" className="text-sm">
+                  C'est ma première visite dans ce salon
+                </Label>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  id="newsletter"
+                  checked={clientInfo.newsletter}
+                  onChange={(e) => setClientInfo({...clientInfo, newsletter: e.target.checked})}
+                  className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                />
+                <Label htmlFor="newsletter" className="text-sm">
+                  Recevoir les offres et nouveautés par email
+                </Label>
+              </div>
+            </div>
+            
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="p-4">
+                <div className="flex items-start space-x-3">
+                  <MessageSquare className="w-5 h-5 text-blue-600 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-1">Première visite ?</h4>
+                    <p className="text-sm text-blue-700">
+                      Arrivez 10 minutes en avance pour la consultation. 
+                      Notre équipe vous accueillera avec un café et discutera de vos attentes.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 
         {/* Étape 4: Confirmation */}
         {step === 4 && (
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Récapitulatif</CardTitle>
+            {/* Confirmation header */}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Presque terminé !</h2>
+              <p className="text-gray-600">Vérifiez vos informations avant de confirmer</p>
+            </div>
+
+            {/* Service summary */}
+            <Card className="border-violet-200">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center">
+                  <CalendarIcon className="w-5 h-5 mr-2 text-violet-600" />
+                  Votre rendez-vous
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Service</span>
-                  <span className="font-medium">{selectedServiceData?.name}</span>
+              <CardContent className="space-y-4">
+                <div className="bg-violet-50 p-4 rounded-lg">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="font-semibold text-lg text-violet-900">{selectedServiceData?.name}</h3>
+                      <p className="text-sm text-violet-700">{selectedServiceData?.description}</p>
+                    </div>
+                    {selectedServiceData?.premium && (
+                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Premium
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center">
+                      <CalendarIcon className="w-4 h-4 mr-2 text-violet-600" />
+                      <span>{getAvailableDates().find(d => d.value === selectedDate)?.label}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="w-4 h-4 mr-2 text-violet-600" />
+                      <span>{selectedTime} ({selectedServiceData?.duration} min)</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Date</span>
-                  <span className="font-medium">
-                    {getAvailableDates().find(d => d.value === selectedDate)?.label}
-                  </span>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Client</span>
+                    <span className="font-medium">{clientInfo.firstName} {clientInfo.lastName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Téléphone</span>
+                    <span className="font-medium">{clientInfo.phone}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Email</span>
+                    <span className="font-medium">{clientInfo.email}</span>
+                  </div>
+                  {clientInfo.notes && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Notes</span>
+                      <span className="font-medium text-sm">{clientInfo.notes}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Heure</span>
-                  <span className="font-medium">{selectedTime}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Durée</span>
-                  <span className="font-medium">{selectedServiceData?.duration} min</span>
-                </div>
-                <div className="border-t pt-3">
-                  <div className="flex justify-between text-lg font-semibold">
-                    <span>Total</span>
-                    <span>{selectedServiceData?.price}€</span>
+                
+                <div className="border-t pt-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold">Total à payer</span>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-violet-600">{selectedServiceData?.price}€</div>
+                      <div className="text-xs text-gray-500">TTC</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <p className="text-sm text-blue-800">
-                <strong>Politique d'annulation :</strong> Annulation gratuite jusqu'à 24h avant le rendez-vous.
-              </p>
+            {/* Garantees */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                <div className="flex items-center mb-1">
+                  <Shield className="w-4 h-4 text-green-600 mr-2" />
+                  <span className="font-medium text-green-800 text-sm">Paiement sécurisé</span>
+                </div>
+                <p className="text-xs text-green-700">SSL + protection Stripe</p>
+              </div>
+              
+              <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                <div className="flex items-center mb-1">
+                  <MessageSquare className="w-4 h-4 text-blue-600 mr-2" />
+                  <span className="font-medium text-blue-800 text-sm">Annulation 24h</span>
+                </div>
+                <p className="text-xs text-blue-700">Gratuite et sans frais</p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <div className="flex items-start space-x-3">
+                <Clock className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium text-amber-900 mb-1">Informations importantes</h4>
+                  <ul className="text-sm text-amber-800 space-y-1">
+                    <li>• Arrivez 5 minutes en avance</li>
+                    <li>• Confirmation par email et SMS</li>
+                    <li>• Rappel automatique 24h avant</li>
+                    <li>• {clientInfo.isFirstVisit ? "Accueil nouvelle cliente avec consultation" : "Rendez-vous client habituel"}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -350,10 +601,11 @@ export default function SimpleBooking() {
           ) : (
             <Button
               onClick={handleBooking}
-              className="flex-1 bg-violet-600 hover:bg-violet-700"
+              className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg"
+              size="lg"
             >
-              <CreditCard className="w-4 h-4 mr-2" />
-              Confirmer et payer
+              <CreditCard className="w-5 h-5 mr-2" />
+              Confirmer et payer {selectedServiceData?.price}€
             </Button>
           )}
         </div>
