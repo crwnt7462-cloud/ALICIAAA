@@ -140,7 +140,7 @@ export default function PublicLanding() {
   };
 
   const handleBookSalon = (salonId: string) => {
-    setLocation(`/book/${salonId}`);
+    setLocation(`/booking`);
   };
 
   const handleSalonClick = (salonId: string) => {
@@ -586,7 +586,7 @@ export default function PublicLanding() {
                   <Button 
                     onClick={(e) => {
                       e.stopPropagation();
-                      setLocation(`/book/${salon.id}`);
+                      setLocation(`/booking`);
                     }}
                     className="w-full gradient-bg hover:opacity-90"
                     size="sm"
