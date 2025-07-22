@@ -247,8 +247,8 @@ function Router() {
     );
   }
 
-  // QuickBooking en plein écran (sans navigation)
-  if (location === '/quick-booking') {
+  // Page de réservation client en plein écran (sans navigation)
+  if (location === '/booking' || location === '/quick-booking') {
     return (
       <div className="h-full">
         <QuickBooking />
@@ -308,7 +308,7 @@ function Router() {
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
-          <Route path="/booking" component={QuickBooking} />
+
           <Route component={NotFound} />
         </Switch>
       </main>
