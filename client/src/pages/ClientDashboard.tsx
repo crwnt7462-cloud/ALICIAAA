@@ -16,7 +16,8 @@ import {
   Settings,
   Heart,
   Plus,
-  AtSign
+  AtSign,
+  Crown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -81,7 +82,7 @@ export default function ClientDashboard() {
     );
   }
 
-  const upcomingAppointments = appointments.filter(apt => 
+  const upcomingAppointments = appointments.filter((apt: Appointment) => 
     apt.status === 'confirmed' && new Date(apt.appointmentDate) >= new Date()
   );
 
@@ -307,7 +308,7 @@ export default function ClientDashboard() {
                 <div className="h-20 bg-white rounded-xl animate-pulse border border-gray-100" />
               ) : conversations.length > 0 ? (
                 <div className="space-y-2">
-                  {conversations.slice(0, 2).map((conversation) => (
+                  {conversations.slice(0, 2).map((conversation: Conversation) => (
                     <div key={conversation.id} className="bg-white rounded-xl border border-gray-100 p-4">
                       <div className="flex items-center space-x-3">
                         <Avatar className="w-10 h-10">
@@ -359,7 +360,7 @@ export default function ClientDashboard() {
               </div>
             ) : appointments.length > 0 ? (
               <div className="space-y-3">
-                {appointments.map((appointment) => (
+                {appointments.map((appointment: Appointment) => (
                   <div key={appointment.id} className="bg-white rounded-xl border border-gray-100 p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -464,7 +465,7 @@ export default function ClientDashboard() {
               </div>
             ) : conversations.length > 0 ? (
               <div className="space-y-2">
-                {conversations.map((conversation) => (
+                {conversations.map((conversation: Conversation) => (
                   <div key={conversation.id} className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-shadow">
                     <div className="flex items-center space-x-3">
                       <Avatar className="w-12 h-12">

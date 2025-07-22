@@ -32,7 +32,7 @@ import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeatures from "@/pages/BusinessFeatures";
 import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
-import SimpleBooking from "@/pages/SimpleBooking";
+import ModernBooking from "@/pages/ModernBooking";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
@@ -252,7 +252,7 @@ function Router() {
   if (location === '/booking' || location === '/quick-booking') {
     return (
       <div className="h-full">
-        <SimpleBooking />
+        <ModernBooking />
       </div>
     );
   }
