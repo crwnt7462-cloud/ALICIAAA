@@ -274,11 +274,11 @@ export default function SimpleBooking() {
                 }`}
                 onClick={() => setSelectedService(service.id)}
               >
-                <CardContent className="p-5">
+                <CardContent className="p-4">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-bold text-xl">{service.name}</h3>
+                        <h3 className="font-semibold text-lg">{service.name}</h3>
                         {service.popular && (
                           <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs">
                             <ThumbsUp className="w-3 h-3 mr-1" />
@@ -298,9 +298,7 @@ export default function SimpleBooking() {
                         )}
                       </div>
                       
-                      <p className="text-sm text-gray-700 mb-3 leading-relaxed">{service.description}</p>
-                      
-                      <div className="flex items-center space-x-6 text-sm text-gray-700 mb-3">
+                      <div className="flex items-center space-x-4 text-sm text-gray-700 mb-2">
                         <div className="flex items-center">
                           <Clock className="w-4 h-4 mr-1 text-violet-600" />
                           <span className="font-medium">{service.duration} min</span>
@@ -309,42 +307,16 @@ export default function SimpleBooking() {
                           {service.originalPrice && (
                             <span className="text-gray-400 line-through text-xs">{service.originalPrice}€</span>
                           )}
-                          <div className="flex items-center font-bold text-lg">
+                          <div className="flex items-center font-bold">
                             <Euro className="w-4 h-4 mr-1 text-green-600" />
                             <span className="text-green-600">{service.price}€</span>
                           </div>
                           {service.originalPrice && (
-                            <Badge className="bg-red-100 text-red-700 text-xs ml-2">
+                            <Badge className="bg-red-100 text-red-700 text-xs">
                               -{Math.round((1 - service.price / service.originalPrice) * 100)}%
                             </Badge>
                           )}
                         </div>
-                      </div>
-                      
-                      {service.specialist && (
-                        <div className="text-xs text-violet-700 mb-2 flex items-center">
-                          <User className="w-3 h-3 mr-1" />
-                          <span className="font-medium">Avec {service.specialist}</span>
-                        </div>
-                      )}
-                      
-                      <div className="text-xs text-gray-600 mb-2">
-                        <span className="font-medium">Prestations incluses :</span> {service.includes.join(" • ")}
-                      </div>
-                      
-                      <div className="flex items-center space-x-3 text-xs">
-                        {service.guarantee && (
-                          <div className="flex items-center text-green-600">
-                            <Shield className="w-3 h-3 mr-1" />
-                            <span>{service.guarantee}</span>
-                          </div>
-                        )}
-                        {service.beforeAfter && (
-                          <div className="flex items-center text-violet-600">
-                            <Camera className="w-3 h-3 mr-1" />
-                            <span>{service.beforeAfter}</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                     

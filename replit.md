@@ -124,6 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - INTERFACE DE RÉSERVATION ULTRA-LUXE ET PLANS PREMIUM (22 Janvier)
+- ✅ **Interface réservation transformée** : Salon Excellence Paris avec histoire, certifications et prix
+- ✅ **6 services détaillés haut-de-gamme** : Spécialistes experts, prix barrés, garanties professionnelles
+- ✅ **Badges et niveaux** : Premium/Expert/Haute Couture avec remises et certifications
+- ✅ **Navigation corrigée** : SalonDetail → /booking fonctionnel, redirection après réservation vers accueil
+- ✅ **Plans abonnement modernisés** : Beauty Start/Pro/Empire avec limites claires et fonctionnalités IA
+- ✅ **Interface premium sombre** : Testimonials, garanties et design ultra-professionnel
+- ✅ **Cartes services compactes** : Réduction du padding et optimisation visuelle
+- ✅ **Serveur stabilisé** : Redémarrage automatique et résolution conflits de port
+
 ### Janvier 2025 - PAGES SERVICES DÉDIÉES ET NAVIGATION FOOTER COMPLÈTE (20 Janvier)
 - ✅ **4 pages services créées** : Coiffure, Esthétique, Massage, Onglerie avec contenu complet
 - ✅ **Design unique par service** : Couleurs thématiques (violet, rose, vert, violet) et icônes spécialisées
