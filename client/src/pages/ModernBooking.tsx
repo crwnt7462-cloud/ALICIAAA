@@ -147,35 +147,34 @@ export default function ModernBooking() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-rose-50/20">
-      {/* Header ultra-moderne */}
-      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-rose-500 shadow-2xl">
-        <div className="max-w-2xl mx-auto px-6 py-8">
-          <div className="flex items-center justify-between mb-6">
+      {/* Header compact */}
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-rose-500 shadow-xl">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
             <Button
               variant="ghost" 
               size="sm"
               onClick={() => setLocation("/")}
-              className="text-white hover:bg-white/20 p-3 rounded-xl transition-all"
+              className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </Button>
             
-            {/* Salon Info */}
+            {/* Salon Info compact */}
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-white mb-1">{salon.name}</h1>
-              <p className="text-violet-100 text-sm italic">{salon.subtitle}</p>
-              <div className="flex items-center justify-center mt-2 space-x-2">
-                <Star className="w-4 h-4 text-yellow-300 fill-current" />
+              <h1 className="text-lg font-bold text-white">{salon.name}</h1>
+              <div className="flex items-center justify-center space-x-1 text-xs">
+                <Star className="w-3 h-3 text-yellow-300 fill-current" />
                 <span className="text-white font-medium">{salon.rating}</span>
-                <span className="text-violet-100 text-sm">({salon.reviews} avis)</span>
+                <span className="text-violet-100">({salon.reviews})</span>
               </div>
             </div>
             
-            <div className="w-12"></div>
+            <div className="w-8"></div>
           </div>
 
-          {/* Étapes modernes avec animations */}
-          <div className="flex items-center justify-center space-x-4">
+          {/* Étapes compactes */}
+          <div className="flex items-center justify-center space-x-3">
             {[
               { num: 1, label: "Service", icon: Sparkles },
               { num: 2, label: "Créneau", icon: CalendarIcon },
@@ -183,18 +182,18 @@ export default function ModernBooking() {
             ].map(({ num, label, icon: Icon }, index) => (
               <div key={num} className="flex items-center">
                 <div className="flex flex-col items-center">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-300 ${
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm transition-all duration-300 ${
                     step >= num 
-                      ? 'bg-white text-violet-600 shadow-lg scale-110' 
-                      : 'bg-white/20 text-white/70 scale-100'
+                      ? 'bg-white text-violet-600 shadow-md' 
+                      : 'bg-white/20 text-white/70'
                   }`}>
-                    {step > num ? <Check className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
+                    {step > num ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                   </div>
-                  <span className="text-white/90 text-xs font-medium mt-2">{label}</span>
+                  <span className="text-white/90 text-xs font-medium mt-1">{label}</span>
                 </div>
                 
                 {index < 2 && (
-                  <div className={`w-16 h-1 rounded-full mx-4 transition-all duration-300 ${
+                  <div className={`w-8 h-0.5 rounded-full mx-2 transition-all duration-300 ${
                     step > num ? 'bg-white' : 'bg-white/30'
                   }`}></div>
                 )}
@@ -204,63 +203,65 @@ export default function ModernBooking() {
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="max-w-2xl mx-auto px-6 py-8">
+      {/* Contenu principal compact */}
+      <div className="max-w-lg mx-auto px-4 py-4">
         {/* Étape 1: Sélection service */}
         {step === 1 && (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Choisissez votre service</h2>
-              <p className="text-gray-600">Sélectionnez la prestation qui vous convient le mieux</p>
+          <div className="space-y-4">
+            <div className="text-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Choisissez votre service</h2>
+              <p className="text-gray-600 text-sm">Sélectionnez votre prestation</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {services.map((service) => (
                 <Card 
                   key={service.id}
-                  className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
+                  className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
                     selectedService === service.id 
-                      ? 'ring-2 ring-violet-500 shadow-xl bg-gradient-to-r from-violet-50 to-purple-50' 
-                      : 'hover:shadow-lg border-gray-200'
+                      ? 'ring-2 ring-violet-500 shadow-lg bg-gradient-to-r from-violet-50 to-purple-50' 
+                      : 'hover:shadow-md border-gray-200'
                   }`}
                   onClick={() => setSelectedService(service.id)}
                 >
-                  <CardContent className="p-6">
+                  <CardContent className="p-4">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-3">
+                        <div className="flex items-center justify-between mb-2">
                           <div>
-                            <h3 className="text-xl font-bold text-gray-900">{service.name}</h3>
-                            <p className="text-violet-600 font-medium text-sm">{service.subtitle}</p>
+                            <h3 className="text-lg font-bold text-gray-900">{service.name}</h3>
+                            <p className="text-violet-600 font-medium text-xs">{service.subtitle}</p>
                           </div>
                           
-                          {service.popular && (
-                            <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white">
-                              <Crown className="w-3 h-3 mr-1" />
-                              Populaire
-                            </Badge>
-                          )}
-                          
-                          {service.premium && (
-                            <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white">
-                              <Sparkles className="w-3 h-3 mr-1" />
-                              Premium
-                            </Badge>
-                          )}
+                          <div className="flex flex-col items-end space-y-1">
+                            {service.popular && (
+                              <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white text-xs">
+                                <Crown className="w-3 h-3 mr-1" />
+                                Populaire
+                              </Badge>
+                            )}
+                            
+                            {service.premium && (
+                              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                Premium
+                              </Badge>
+                            )}
+                          </div>
                         </div>
 
-                        <div className="flex items-center space-x-6 mb-3">
-                          <div className="flex items-center text-gray-600">
-                            <Clock className="w-4 h-4 mr-2" />
-                            <span className="font-medium">{service.duration} min</span>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center text-gray-600 text-sm">
+                            <Clock className="w-3 h-3 mr-1" />
+                            <span>{service.duration} min</span>
                           </div>
                           
                           <div className="flex items-center space-x-2">
                             {service.originalPrice && (
-                              <span className="text-gray-400 line-through text-sm">{service.originalPrice}€</span>
+                              <span className="text-gray-400 line-through text-xs">{service.originalPrice}€</span>
                             )}
-                            <div className="flex items-center font-bold text-xl">
-                              <Euro className="w-5 h-5 mr-1 text-green-600" />
+                            <div className="flex items-center font-bold text-lg">
+                              <Euro className="w-4 h-4 mr-1 text-green-600" />
                               <span className="text-green-600">{service.price}€</span>
                             </div>
                             {service.originalPrice && (
@@ -271,32 +272,25 @@ export default function ModernBooking() {
                           </div>
                         </div>
 
-                        <div className="text-sm text-gray-600 mb-3 leading-relaxed">
+                        <div className="text-xs text-gray-600 mb-2 leading-relaxed">
                           {service.description}
                         </div>
 
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-xs">
                           <div className="flex items-center text-violet-700">
-                            <User className="w-4 h-4 mr-1" />
-                            <span className="font-medium">{service.specialist} • {service.experience}</span>
+                            <User className="w-3 h-3 mr-1" />
+                            <span>{service.specialist}</span>
                           </div>
                           
                           <div className="flex items-center text-green-600">
-                            <Shield className="w-4 h-4 mr-1" />
+                            <Shield className="w-3 h-3 mr-1" />
                             <span>{service.guarantee}</span>
                           </div>
+                          
+                          {selectedService === service.id && (
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
+                          )}
                         </div>
-                      </div>
-                      
-                      <div className="ml-6 flex flex-col items-center space-y-2">
-                        {selectedService === service.id && (
-                          <CheckCircle className="w-8 h-8 text-violet-600" />
-                        )}
-                        {service.originalPrice && (
-                          <Badge className="bg-red-500 text-white text-xs rotate-12">
-                            PROMO
-                          </Badge>
-                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -308,16 +302,16 @@ export default function ModernBooking() {
 
         {/* Étape 2: Sélection créneau */}
         {step === 2 && (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Choisissez votre créneau</h2>
-              <p className="text-gray-600">Sélectionnez la date et l'heure qui vous conviennent</p>
+          <div className="space-y-4">
+            <div className="text-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Choisissez votre créneau</h2>
+              <p className="text-gray-600 text-sm">Sélectionnez date et heure</p>
             </div>
 
             {/* Sélection de date */}
-            <Card className="p-6">
-              <h3 className="font-semibold text-lg mb-4">Date</h3>
-              <div className="grid grid-cols-7 gap-2">
+            <Card className="p-4">
+              <h3 className="font-semibold text-base mb-3">Date</h3>
+              <div className="grid grid-cols-7 gap-1">
                 {Array.from({ length: 14 }, (_, i) => {
                   const date = new Date();
                   date.setDate(date.getDate() + i);
@@ -330,7 +324,7 @@ export default function ModernBooking() {
                     <Button
                       key={i}
                       variant={selectedDate === dateStr ? "default" : "outline"}
-                      className={`h-16 flex flex-col ${
+                      className={`h-12 flex flex-col text-xs ${
                         selectedDate === dateStr 
                           ? 'bg-violet-600 text-white' 
                           : 'hover:bg-violet-50'
@@ -339,7 +333,7 @@ export default function ModernBooking() {
                     >
                       <span className="text-xs">{dayName}</span>
                       <span className="font-bold">{dayNum}</span>
-                      {isToday && <span className="text-xs">Aujourd'hui</span>}
+                      {isToday && <span className="text-xs">Auj.</span>}
                     </Button>
                   );
                 })}
@@ -348,15 +342,15 @@ export default function ModernBooking() {
 
             {/* Sélection d'heure */}
             {selectedDate && (
-              <Card className="p-6">
-                <h3 className="font-semibold text-lg mb-4">Heure</h3>
-                <div className="grid grid-cols-3 gap-3">
+              <Card className="p-4">
+                <h3 className="font-semibold text-base mb-3">Heure</h3>
+                <div className="grid grid-cols-4 gap-2">
                   {timeSlots.map((slot) => (
                     <Button
                       key={slot.time}
                       variant={selectedTime === slot.time ? "default" : "outline"}
                       disabled={!slot.available}
-                      className={`h-12 relative ${
+                      className={`h-8 text-xs relative ${
                         selectedTime === slot.time 
                           ? 'bg-violet-600 text-white' 
                           : slot.available 
@@ -377,11 +371,11 @@ export default function ModernBooking() {
               </Card>
             )}
 
-            {/* Résumé */}
+            {/* Résumé compact */}
             {selectedServiceData && selectedDate && selectedTime && (
               <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg mb-4 text-violet-800">Récapitulatif</h3>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-base mb-3 text-violet-800">Récapitulatif</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service :</span>
@@ -414,13 +408,13 @@ export default function ModernBooking() {
         {/* Étape 3: Informations client */}
         {step === 3 && (
           <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Vos informations</h2>
-              <p className="text-gray-600">Dernière étape pour finaliser votre réservation</p>
+            <div className="text-center mb-4">
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Vos informations</h2>
+              <p className="text-gray-600 text-sm">Complétez vos coordonnées</p>
             </div>
 
-            <Card className="p-6">
-              <div className="grid grid-cols-2 gap-4 mb-4">
+            <Card className="p-4">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
                   <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">Prénom *</Label>
                   <Input
@@ -443,7 +437,7 @@ export default function ModernBooking() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-2 gap-3 mb-3">
                 <div>
                   <Label htmlFor="email" className="text-sm font-medium text-gray-700">Email *</Label>
                   <Input
