@@ -368,7 +368,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/ai/chat', async (req, res) => {
     try {
       const { message, conversationHistory } = req.body;
-      const response = await aiService.generateResponse(message, conversationHistory);
+      const response = await aiService.generateChatResponse(message, conversationHistory);
       res.json(response);
     } catch (error) {
       console.error("AI chat error:", error);
@@ -565,21 +565,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // WebSocket setup for real-time notifications
+  // Create HTTP server without WebSocket in development to avoid conflicts with Vite
   const httpServer = createServer(app);
-  const wss = new WebSocketServer({ server: httpServer });
+  
+  // Only setup WebSocket in production mode
+  if (process.env.NODE_ENV === 'production') {
+    const wss = new WebSocketServer({ server: httpServer });
 
-  wss.on('connection', (ws: WebSocket) => {
-    console.log('WebSocket client connected');
-    
-    ws.on('message', (message: Buffer) => {
-      console.log('Received:', message.toString());
-    });
+    wss.on('connection', (ws: WebSocket) => {
+      console.log('WebSocket client connected');
+      
+      ws.on('message', (message: Buffer) => {
+        console.log('Received:', message.toString());
+      });
 
-    ws.on('close', () => {
-      console.log('WebSocket client disconnected');
+      ws.on('close', () => {
+        console.log('WebSocket client disconnected');
+      });
     });
-  });
+  }
 
   return httpServer;
 }
