@@ -77,7 +77,7 @@ function Router() {
   if (location.startsWith('/booking/')) {
     return (
       <div className="h-full">
-        <Booking />
+        <QuickBooking />
       </div>
     );
   }
@@ -309,6 +309,7 @@ function Router() {
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
+          <Route path="/booking" component={QuickBooking} />
           <Route component={NotFound} />
         </Switch>
       </main>

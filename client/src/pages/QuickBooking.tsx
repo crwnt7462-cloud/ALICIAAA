@@ -100,11 +100,7 @@ export default function QuickBooking() {
   ];
 
   const createBookingMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/quick-booking', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    }),
+    mutationFn: (data: any) => apiRequest('POST', '/api/quick-booking', data),
     onSuccess: () => {
       setStep(4);
       toast({
