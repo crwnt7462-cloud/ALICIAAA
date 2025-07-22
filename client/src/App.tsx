@@ -74,7 +74,7 @@ function Router() {
     );
   }
   
-  if (location.startsWith('/booking/')) {
+  if (location.startsWith('/booking/') && location !== '/booking') {
     return (
       <div className="h-full">
         <QuickBooking />
@@ -292,7 +292,6 @@ function Router() {
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />
 
-          <Route path="/booking" component={Booking} />
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
