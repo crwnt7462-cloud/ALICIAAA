@@ -10,8 +10,17 @@ import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, CreditCard, Check, AlertCircle, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
-// Initialize Stripe with public key
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+// Initialize Stripe with fallback key
+const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo';
+
+let stripePromise: any = null;
+try {
+  if (STRIPE_KEY && STRIPE_KEY.startsWith('pk_')) {
+    stripePromise = loadStripe(STRIPE_KEY);
+  }
+} catch (error) {
+  console.warn('Stripe initialization failed:', error);
+}
 
 interface PaymentFormProps {
   bookingData: any;
@@ -298,12 +307,18 @@ export default function PaymentStep() {
             </div>
 
             {/* Payment Form */}
-            <Elements stripe={stripePromise}>
-              <PaymentForm 
-                bookingData={bookingData} 
-                onSuccess={handlePaymentSuccess}
-              />
-            </Elements>
+            {stripePromise ? (
+              <Elements stripe={stripePromise}>
+                <PaymentForm 
+                  bookingData={bookingData} 
+                  onSuccess={handlePaymentSuccess}
+                />
+              </Elements>
+            ) : (
+              <div className="p-4 text-center text-gray-500">
+                Configuration des paiements en cours...
+              </div>
+            )}
 
             {/* Security Info */}
             <div className="mt-6 p-4 bg-blue-50 rounded-lg">
