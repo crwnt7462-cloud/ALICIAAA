@@ -113,48 +113,48 @@ export default function ClientLogin() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
+      <div className="w-full max-w-sm">
+        {/* Header simple */}
+        <div className="text-center mb-6">
           <Button
             variant="ghost"
             onClick={() => setLocation('/')}
-            className="absolute top-4 left-4 h-10 w-10 rounded-full"
+            className="absolute top-4 left-4 h-9 w-9 rounded-full hover:bg-white/80"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-4 w-4" />
           </Button>
           
           <div className="flex justify-center mb-4">
-            <div className="h-16 w-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Sparkles className="h-8 w-8 text-white" />
+            <div className="h-12 w-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+              <Sparkles className="h-6 w-6 text-white" />
             </div>
           </div>
           
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl font-semibold text-gray-900 mb-1">
             Espace Client
           </h1>
-          <p className="text-gray-600">
-            Gérez vos rendez-vous en toute simplicité
+          <p className="text-sm text-gray-600">
+            Connectez-vous à votre compte
           </p>
         </div>
 
-        <Card className="shadow-2xl border-0">
-          <CardHeader className="pb-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
+        <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-center gap-2">
               <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-gray-500">Service disponible 24h/7j</span>
+              <span className="text-xs text-gray-500">Service disponible 24h/7j</span>
             </div>
           </CardHeader>
           
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="login" className="flex items-center gap-2">
-                  <LogIn className="h-4 w-4" />
+              <TabsList className="grid w-full grid-cols-2 mb-4 bg-gray-100/50">
+                <TabsTrigger value="login" className="flex items-center gap-1.5 text-sm">
+                  <LogIn className="h-3.5 w-3.5" />
                   Connexion
                 </TabsTrigger>
-                <TabsTrigger value="register" className="flex items-center gap-2">
-                  <UserPlus className="h-4 w-4" />
+                <TabsTrigger value="register" className="flex items-center gap-1.5 text-sm">
+                  <UserPlus className="h-3.5 w-3.5" />
                   Inscription
                 </TabsTrigger>
               </TabsList>

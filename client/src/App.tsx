@@ -43,7 +43,7 @@ import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
-import ClientDashboard from "@/pages/ClientDashboard";
+import ClientDashboard from "@/pages/ClientDashboardSimple";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
