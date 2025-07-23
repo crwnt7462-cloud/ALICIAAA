@@ -24,10 +24,11 @@ export default function PublicLanding() {
     { number: "24h/24", label: "Réservation disponible" }
   ];
 
-  const topSalons = [
+  // Salons ajoutés automatiquement lors de l'inscription pro
+  const [topSalons, setTopSalons] = useState([
     {
-      id: "demo-user",
-      name: "Salon Excellence",
+      id: "salon-excellence",
+      name: "Salon Excellence Paris",
       location: "Paris 16ème",
       rating: 4.9,
       reviews: 324,
@@ -55,7 +56,33 @@ export default function PublicLanding() {
       services: ["Massage", "Relaxation"],
       verified: true
     }
-  ];
+  ]);
+
+  // Simuler l'ajout automatique d'un nouveau salon pro
+  useEffect(() => {
+    const addNewProSalons = () => {
+      const newSalons = [
+        {
+          id: "mon-salon-beaute",
+          name: "Mon Salon de Beauté",
+          location: "Paris Centre",
+          rating: 4.8,
+          reviews: 42,
+          nextSlot: "Disponible maintenant",
+          services: ["Coupe", "Brushing", "Soin"],
+          verified: true,
+          isNew: true
+        }
+      ];
+      
+      // Ajouter les nouveaux salons automatiquement
+      setTopSalons(prev => [...newSalons, ...prev]);
+    };
+
+    // Simuler l'ajout après 3 secondes (normalement lors de l'inscription)
+    const timer = setTimeout(addNewProSalons, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const benefits = [
     {
@@ -559,12 +586,20 @@ export default function PublicLanding() {
                     <h3 className="font-semibold text-gray-900">
                       {salon.name}
                     </h3>
-                    {salon.verified && (
-                      <Badge variant="secondary" className="text-xs">
-                        <CheckCircle2 className="w-3 h-3 mr-1" />
-                        Vérifié
-                      </Badge>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {(salon as any).isNew && (
+                        <Badge className="bg-green-600 text-white text-xs">
+                          <Sparkles className="w-3 h-3 mr-1" />
+                          Nouveau
+                        </Badge>
+                      )}
+                      {salon.verified && (
+                        <Badge variant="secondary" className="text-xs">
+                          <CheckCircle2 className="w-3 h-3 mr-1" />
+                          Vérifié
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="space-y-2 text-sm text-gray-600 mb-4">

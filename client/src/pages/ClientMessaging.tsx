@@ -171,7 +171,7 @@ export default function ClientMessaging() {
           {filteredConversations.map((conversation) => (
             <div
               key={conversation.id}
-              onClick={() => setSelectedConversation(conversation.id)}
+              onClick={() => setLocation(`/message/${conversation.id}`)}
               className={`p-4 border-b border-gray-100/50 cursor-pointer hover:bg-gray-50/50 transition-colors ${
                 selectedConversation === conversation.id ? 'bg-purple-50/50' : ''
               }`}

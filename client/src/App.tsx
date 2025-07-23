@@ -25,7 +25,9 @@ import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
 import Register from "@/pages/Register";
-import SalonDetail from "@/pages/SalonDetail";
+import ModernSalonDetail from "@/pages/ModernSalonDetail";
+import FullScreenMessage from "@/pages/FullScreenMessage";
+import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
@@ -108,7 +110,25 @@ function Router() {
   if (location.startsWith('/salon/')) {
     return (
       <div className="h-full">
-        <SalonDetail />
+        <ModernSalonDetail />
+      </div>
+    );
+  }
+
+  // Page de message plein écran
+  if (location.startsWith('/message/')) {
+    return (
+      <div className="h-full">
+        <FullScreenMessage />
+      </div>
+    );
+  }
+
+  // Créateur de page de réservation parfaite
+  if (location === '/perfect-booking-creator') {
+    return (
+      <div className="h-full">
+        <PerfectBookingCreator />
       </div>
     );
   }

@@ -394,12 +394,8 @@ export default function BusinessFeatures() {
               </div>
               <Button 
                 size="sm" 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  toast({ title: "Créateur de pages", description: "Ouverture du créateur de pages" });
-                  setLocation('/page-builder');
-                }}
+                onClick={() => setLocation('/perfect-booking-creator')}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
               >
                 + Créer nouvelle page
               </Button>

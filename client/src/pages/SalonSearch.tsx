@@ -31,8 +31,8 @@ export default function SalonSearch() {
 
   const salons = [
     {
-      id: "demo-user",
-      name: "Salon Excellence",
+      id: "salon-excellence",
+      name: "Salon Excellence Paris",
       location: "Paris 16ème",
       rating: 4.9,
       reviews: 324,
