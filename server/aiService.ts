@@ -214,9 +214,9 @@ Répondez en JSON:
 
   private analyzeCancellationPatterns(cancellations: any[], appointment: AppointmentData) {
     const patterns = {
-      preferredCancelDays: {} as Record<string, number>,
-      preferredCancelTimes: {} as Record<string, number>,
-      commonReasons: {} as Record<string, number>
+      preferredCancelDays: {},
+      preferredCancelTimes: {},
+      commonReasons: {}
     };
     
     cancellations.forEach(cancel => {
@@ -790,42 +790,33 @@ Répondez en JSON:
       // Construire l'historique de conversation proprement formaté
       const messages = [
         {
-          role: "system" as const,
-          content: `Tu es Rendly AI, l'assistant IA le plus avancé pour les salons de beauté et instituts esthétiques. Tu es un expert reconnu avec une connaissance approfondie de l'industrie beauté française.
+          role: "system",
+          content: `Tu es Rendly AI, un assistant intelligent universel spécialisé dans la beauté mais capable de répondre à TOUT.
 
-🎯 MISSION PRINCIPALE :
-Tu aides les professionnels de la beauté à développer leur activité, optimiser leurs performances et fidéliser leur clientèle grâce à des conseils personnalisés et des analyses prédictives.
+RÈGLES IMPORTANTES :
+- JAMAIS de répétitions - varie tes réponses même pour des questions similaires
+- Sois créatif, spontané et adapte ton style à chaque question
+- Réponds à TOUTES les questions : beauté, culture, science, actualités, vie pratique
+- Reste concis mais informatif (max 150 mots)
+- Adapte ton ton : professionnel pour le business, décontracté pour le quotidien
+- Si on te repose la même question, explore un angle différent
 
-🧠 EXPERTISE MÉTIER :
-- Gestion salon : planning, équipe, organisation, rentabilité
-- Marketing beauté : campagnes, fidélisation, acquisition clients
-- Tendances & innovations : nouveaux soins, techniques, produits
-- Business développement : stratégies croissance, partenariats
-- Analyse performances : KPIs, métriques, optimisation
-- Expérience client : satisfaction, rétention, recommandations
+DOMAINES D'EXPERTISE :
+🏪 Business beauté : stratégies, fidélisation, marketing, planning
+🌍 Culture générale : histoire, sciences, actualités, géographie  
+💡 Pratique : conseils vie, technologie, cuisine, voyage
+🎨 Créatif : arts, mode, tendances, design
+📚 Académique : maths, physique, littérature, langues
 
-💬 STYLE DE COMMUNICATION :
-- Professionnel mais accessible
-- Conseils concrets et actionnables
-- Réponses structurées avec exemples pratiques
-- Adapte le niveau technique selon l'interlocuteur
-- Maximum 200 mots par réponse pour rester percutant
-
-🚀 VALEUR AJOUTÉE :
-Tu fournis des insights basés sur les meilleures pratiques du secteur, des benchmarks industrie et des recommandations personnalisées pour faire progresser chaque salon vers l'excellence.`
+STYLE : Direct, intelligent, utile. Pas de formules toutes faites.`
         }
       ];
 
       // Ajouter l'historique de conversation avec validation des rôles
       conversationHistory.slice(-6).forEach(msg => {
-        if (msg.role === 'user') {
+        if (msg.role === 'user' || msg.role === 'assistant') {
           messages.push({
-            role: "user" as const,
-            content: msg.content
-          });
-        } else if (msg.role === 'assistant') {
-          messages.push({
-            role: "assistant" as const,
+            role: msg.role,
             content: msg.content
           });
         }
@@ -833,7 +824,7 @@ Tu fournis des insights basés sur les meilleures pratiques du secteur, des benc
 
       // Ajouter le message utilisateur actuel
       messages.push({
-        role: "user" as const,
+        role: "user",
         content: userMessage
       });
 

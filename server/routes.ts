@@ -375,7 +375,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // AI Chat route
+  // AI Chat route (legacy)
   app.post('/api/ai/chat', async (req, res) => {
     try {
       const { message, conversationHistory } = req.body;
@@ -384,6 +384,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("AI chat error:", error);
       res.status(500).json({ message: "Erreur lors de la génération de la réponse IA" });
+    }
+  });
+
+  // ===== AI CHAT SYSTEM WITH HISTORY =====
+
+  // Get all conversations for current user
+  app.get("/api/ai-chat/conversations", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    try {
+      const conversations = await storage.getAiChatConversations(req.user.id);
+      res.json(conversations);
+    } catch (error) {
+      console.error('Erreur récupération conversations:', error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Create new conversation
+  app.post("/api/ai-chat/conversations", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    try {
+      const { title } = req.body;
+      const conversationId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const conversation = await storage.createAiChatConversation({
+        id: conversationId,
+        userId: req.user.id,
+        title,
+        lastMessageAt: new Date(),
+        messageCount: 0,
+        isArchived: false,
+        isPinned: false,
+        isShared: false
+      });
+      
+      res.json(conversation);
+    } catch (error) {
+      console.error('Erreur création conversation:', error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Delete conversation
+  app.delete("/api/ai-chat/conversations/:id", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    try {
+      const conversationId = req.params.id;
+      await storage.deleteAiChatConversation(conversationId, req.user.id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Erreur suppression conversation:', error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Get messages for a conversation
+  app.get("/api/ai-chat/messages/:conversationId", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    try {
+      const conversationId = req.params.conversationId;
+      const messages = await storage.getAiChatMessages(conversationId, req.user.id);
+      res.json(messages);
+    } catch (error) {
+      console.error('Erreur récupération messages:', error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Send message in conversation
+  app.post("/api/ai-chat/messages", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Non autorisé" });
+    }
+
+    try {
+      const { conversationId, message } = req.body;
+      
+      // Get conversation history for context
+      const messages = await storage.getAiChatMessages(conversationId, req.user.id);
+      const conversationHistory = messages.map(m => ({
+        role: m.role,
+        content: m.content
+      }));
+
+      // Get next message index
+      const nextIndex = messages.length;
+
+      // Save user message
+      await storage.createAiChatMessage({
+        conversationId,
+        role: 'user',
+        content: message,
+        messageIndex: nextIndex,
+        isEdited: false
+      });
+
+      // Generate AI response
+      const aiResponse = await aiService.generateChatResponse(message, conversationHistory);
+
+      // Save AI message
+      await storage.createAiChatMessage({
+        conversationId,
+        role: 'assistant',
+        content: aiResponse,
+        messageIndex: nextIndex + 1,
+        isEdited: false
+      });
+
+      // Update conversation
+      await storage.updateAiChatConversation(conversationId, {
+        lastMessageAt: new Date(),
+        messageCount: nextIndex + 2,
+        title: nextIndex === 0 ? message.substring(0, 50) + (message.length > 50 ? '...' : '') : undefined
+      });
+
+      res.json({ success: true, response: aiResponse });
+    } catch (error) {
+      console.error('Erreur envoi message:', error);
+      res.status(500).json({ error: "Erreur serveur" });
     }
   });
 
