@@ -149,8 +149,14 @@ export default function PublicLanding() {
 
   const menuItems = [
     { 
+      id: 'client-login', 
+      label: 'Espace Client', 
+      icon: <User className="w-5 h-5" />,
+      action: () => setLocation("/client/login")
+    },
+    { 
       id: 'login', 
-      label: 'Se connecter', 
+      label: 'Espace Pro', 
       icon: <LogIn className="w-5 h-5" />,
       action: () => setLocation("/pro-login")
     },
@@ -290,14 +296,14 @@ export default function PublicLanding() {
               <Button 
                 variant="ghost" 
                 className="text-gray-600 hover:text-gray-900 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
-                onClick={() => setLocation("/pro-login")}
+                onClick={() => setLocation("/client/login")}
               >
-                <span className="hidden md:inline">Espace Professionnel</span>
-                <span className="md:hidden">Pro</span>
+                <span className="hidden md:inline">Espace Client</span>
+                <span className="md:hidden">Client</span>
               </Button>
               <Button 
                 className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
-                onClick={() => setLocation("/pro-login")}
+                onClick={() => setLocation("/client/login")}
               >
                 Connexion
               </Button>
@@ -307,7 +313,7 @@ export default function PublicLanding() {
                 className="p-2 hover:bg-gray-100 rounded-lg"
                 onClick={() => setLocation("/pro-login")}
               >
-                <User className="w-5 h-5 text-gray-600" />
+                <LogIn className="w-5 h-5 text-gray-600" />
               </Button>
             </div>
           </div>

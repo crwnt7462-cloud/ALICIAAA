@@ -1,63 +1,64 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { apiRequest } from '@/lib/queryClient';
 
-interface ClientSession {
+interface ClientUser {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
+  mentionHandle?: string;
+  profileImageUrl?: string;
 }
 
 export function useClientAuth() {
-  const [clientSession, setClientSession] = useState<ClientSession | null>(null);
+  const [clientUser, setClientUser] = useState<ClientUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [, setLocation] = useLocation();
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkSession = async () => {
+    // Vérifier si un token client existe
+    const storedToken = localStorage.getItem('clientToken');
+    const storedUser = localStorage.getItem('clientUser') || localStorage.getItem('clientData');
+    
+    if (storedToken && storedUser) {
       try {
-        const response = await apiRequest('GET', '/api/auth/client/session');
-        if (response.ok) {
-          const sessionData = await response.json();
-          setClientSession(sessionData.user);
-        } else {
-          setClientSession(null);
-        }
+        const userData = JSON.parse(storedUser);
+        setClientUser(userData);
+        setToken(storedToken);
       } catch (error) {
-        console.error('Session check error:', error);
-        setClientSession(null);
-      } finally {
-        setIsLoading(false);
+        console.error('Erreur lors du parsing des données client:', error);
+        localStorage.removeItem('clientToken');
+        localStorage.removeItem('clientUser');
+        localStorage.removeItem('clientData');
       }
-    };
-
-    checkSession();
+    }
+    
+    setIsLoading(false);
   }, []);
 
-  const logout = async () => {
-    try {
-      await apiRequest('POST', '/api/auth/client/logout');
-      setClientSession(null);
-      setLocation('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-      setClientSession(null);
-      setLocation('/');
-    }
+  const login = (userData: ClientUser, authToken: string) => {
+    setClientUser(userData);
+    setToken(authToken);
+    localStorage.setItem('clientToken', authToken);
+    localStorage.setItem('clientUser', JSON.stringify(userData));
   };
 
-  const requireAuth = () => {
-    if (!isLoading && !clientSession) {
-      setLocation('/client-login');
-    }
+  const logout = () => {
+    setClientUser(null);
+    setToken(null);
+    localStorage.removeItem('clientToken');
+    localStorage.removeItem('clientUser');
+    localStorage.removeItem('clientData');
   };
+
+  const isAuthenticated = !!clientUser && !!token;
 
   return {
-    clientSession,
+    clientUser,
+    token,
+    isAuthenticated,
     isLoading,
-    isAuthenticated: !!clientSession,
-    logout,
-    requireAuth
+    login,
+    logout
   };
 }

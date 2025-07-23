@@ -45,7 +45,7 @@ export default function ClientDashboard() {
 
   useEffect(() => {
     const token = localStorage.getItem("clientToken");
-    const data = localStorage.getItem("clientData");
+    const data = localStorage.getItem("clientData") || localStorage.getItem("clientUser");
     
     if (!token || !data) {
       setLocation("/client/login");
@@ -61,15 +61,35 @@ export default function ClientDashboard() {
   }, [setLocation]);
 
   // Récupération des rendez-vous
-  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
+  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/client/appointments'],
     enabled: !!clientData,
+    queryFn: async () => {
+      const token = localStorage.getItem("clientToken");
+      const response = await fetch('/api/client/appointments', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch appointments');
+      return response.json() as Promise<Appointment[]>;
+    }
   });
 
   // Récupération des messages
-  const { data: messages = [], isLoading: messagesLoading } = useQuery({
+  const { data: messages = [], isLoading: messagesLoading } = useQuery<any[]>({
     queryKey: ['/api/client/messages'],
     enabled: !!clientData,
+    queryFn: async () => {
+      const token = localStorage.getItem("clientToken");
+      const response = await fetch('/api/client/messages', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch messages');
+      return response.json() as Promise<any[]>;
+    }
   });
 
   const cancelAppointmentMutation = useMutation({
