@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
-  Send, ArrowLeft, Bot, User, RefreshCw
+  Send, ArrowLeft, Bot, User, RefreshCw, Sparkles, 
+  MessageSquare, Zap, Settings, MoreHorizontal
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -92,78 +93,112 @@ export default function ChatGPTInterface() {
 
   return (
     <div className="h-screen flex flex-col bg-white">
-      {/* Header Simple */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => setLocation('/')}
-          className="mr-3"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <h1 className="text-lg font-semibold text-gray-900">Rendly AI</h1>
+      {/* Header Moderne */}
+      <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center space-x-3">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setLocation('/')}
+            className="mr-2 hover:bg-gray-100 rounded-lg"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">Rendly AI</h1>
+              <p className="text-xs text-gray-500">Assistant Intelligent</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 px-2 py-1 bg-green-50 rounded-full">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-xs text-green-700 font-medium">En ligne</span>
+          </div>
+          <Button variant="ghost" size="sm" className="w-8 h-8 p-0 hover:bg-gray-100">
+            <MoreHorizontal className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex items-start space-x-4 ${
-                message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              className={`group relative ${
+                message.type === 'assistant' 
+                  ? 'bg-gray-50/50' 
+                  : ''
               }`}
             >
-              <Avatar className="w-8 h-8 flex-shrink-0">
-                <AvatarFallback className={`${
-                  message.type === 'assistant' 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-blue-100 text-blue-700'
-                }`}>
-                  {message.type === 'assistant' ? (
-                    <Bot className="w-4 h-4" />
-                  ) : (
-                    <User className="w-4 h-4" />
-                  )}
-                </AvatarFallback>
-              </Avatar>
-              
-              <div className={`flex-1 ${message.type === 'user' ? 'text-right' : ''}`}>
-                <div
-                  className={`inline-block max-w-full p-4 rounded-lg ${
-                    message.type === 'user'
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {message.content}
-                  </p>
+              <div className={`flex items-start space-x-4 p-4 ${
+                message.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              }`}>
+                <Avatar className="w-8 h-8 flex-shrink-0 mt-1">
+                  <AvatarFallback className={`${
+                    message.type === 'assistant' 
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white' 
+                      : 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
+                  }`}>
+                    {message.type === 'assistant' ? (
+                      <Sparkles className="w-4 h-4" />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="mb-1">
+                    <span className="text-sm font-medium text-gray-900">
+                      {message.type === 'assistant' ? 'Rendly AI' : 'Vous'}
+                    </span>
+                    <span className="text-xs text-gray-500 ml-2">
+                      {message.timestamp.toLocaleTimeString('fr-FR', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </span>
+                  </div>
+                  <div className="prose prose-sm max-w-none">
+                    <p className="text-gray-800 leading-relaxed whitespace-pre-wrap m-0">
+                      {message.content}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  {message.timestamp.toLocaleTimeString('fr-FR', { 
-                    hour: '2-digit', 
-                    minute: '2-digit' 
-                  })}
-                </p>
               </div>
             </div>
           ))}
           
           {/* Loading Indicator */}
           {isLoading && (
-            <div className="flex items-start space-x-4">
-              <Avatar className="w-8 h-8">
-                <AvatarFallback className="bg-green-100 text-green-700">
-                  <Bot className="w-4 h-4" />
-                </AvatarFallback>
-              </Avatar>
-              <div className="bg-gray-100 p-4 rounded-lg">
-                <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            <div className="bg-gray-50/50">
+              <div className="flex items-start space-x-4 p-4">
+                <Avatar className="w-8 h-8 mt-1">
+                  <AvatarFallback className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                    <Sparkles className="w-4 h-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="mb-1">
+                    <span className="text-sm font-medium text-gray-900">Rendly AI</span>
+                    <span className="text-xs text-gray-500 ml-2">En train d'écrire...</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                    <span className="text-xs text-gray-500">IA en réflexion</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -175,29 +210,70 @@ export default function ChatGPTInterface() {
 
       {/* Input Area */}
       <div className="sticky bottom-0 bg-white border-t border-gray-200 px-4 py-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="flex items-end space-x-3">
-            <div className="flex-1">
-              <Input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Tapez votre message..."
-                className="resize-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                disabled={isLoading}
-              />
+        <div className="max-w-4xl mx-auto">
+          {/* Suggestions rapides */}
+          {messages.length === 1 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {[
+                "Analyser mes performances",
+                "Optimiser mon planning",
+                "Conseils fidélisation",
+                "Augmenter mon CA"
+              ].map((suggestion, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setInputMessage(suggestion);
+                    setTimeout(() => handleSendMessage(), 100);
+                  }}
+                  className="text-xs hover:bg-gray-50 border-gray-200"
+                  disabled={isLoading}
+                >
+                  <MessageSquare className="w-3 h-3 mr-1" />
+                  {suggestion}
+                </Button>
+              ))}
             </div>
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputMessage.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
-            >
-              {isLoading ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
+          )}
+          
+          <div className="relative">
+            <div className="flex items-end space-x-3 bg-gray-50 rounded-2xl p-3 border border-gray-200 focus-within:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-100">
+              <div className="flex-1">
+                <Textarea
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Posez votre question à Rendly AI..."
+                  className="resize-none border-0 bg-transparent focus:ring-0 focus:outline-none min-h-[20px] max-h-32 text-sm"
+                  disabled={isLoading}
+                  rows={1}
+                />
+              </div>
+              <Button
+                onClick={handleSendMessage}
+                disabled={!inputMessage.trim() || isLoading}
+                size="sm"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-3 py-2 transition-all duration-200"
+              >
+                {isLoading ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+            
+            <div className="flex items-center justify-between mt-2 px-1">
+              <div className="flex items-center space-x-2 text-xs text-gray-500">
+                <Zap className="w-3 h-3" />
+                <span>Alimenté par GPT-4o</span>
+              </div>
+              <div className="text-xs text-gray-400">
+                Appuyez sur Entrée pour envoyer
+              </div>
+            </div>
           </div>
         </div>
       </div>
