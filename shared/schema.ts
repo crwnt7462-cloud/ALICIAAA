@@ -329,6 +329,8 @@ export const pushTokens = pgTable("push_tokens", {
   lastUsed: timestamp("last_used").defaultNow()
 });
 
+
+
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),

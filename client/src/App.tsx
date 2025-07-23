@@ -61,6 +61,7 @@ import ServiceEsthetique from "@/pages/ServiceEsthetique";
 import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
 import PaymentStep from "@/pages/PaymentStep";
+import ClientLogin from "@/pages/ClientLogin";
 
 
 function Router() {

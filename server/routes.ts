@@ -579,6 +579,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create HTTP server without WebSocket in development to avoid conflicts with Vite
   const httpServer = createServer(app);
   
+  // Routes d'authentification client
+  app.post("/api/client/register", async (req, res) => {
+    try {
+      const { email, password, firstName, lastName, phone } = req.body;
+      
+      if (!email || !password || !firstName || !lastName) {
+        return res.status(400).json({ message: "Champs requis manquants" });
+      }
+
+      // Vérifier si l'email existe déjà
+      const existingClient = await storage.getClientByEmail(email);
+      if (existingClient) {
+        return res.status(400).json({ message: "Cet email est déjà utilisé" });
+      }
+
+      // Créer le compte client
+      const client = await storage.createClientAccount({
+        email,
+        password,
+        firstName,
+        lastName,
+        phone: phone || null,
+      });
+
+      // Générer un token simple
+      const token = `client_${client.id}_${Date.now()}`;
+
+      res.json({
+        token,
+        client: {
+          id: client.id,
+          email: client.email,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          phone: client.phone,
+          mentionHandle: client.mentionHandle,
+          profileImageUrl: client.profileImageUrl,
+        }
+      });
+    } catch (error) {
+      console.error("Error creating client account:", error);
+      res.status(500).json({ message: "Erreur lors de la création du compte" });
+    }
+  });
+
+  app.post("/api/client/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis" });
+      }
+
+      // Authentifier le client
+      const client = await storage.authenticateClient(email, password);
+      if (!client) {
+        return res.status(401).json({ message: "Email ou mot de passe incorrect" });
+      }
+
+      // Générer un token simple
+      const token = `client_${client.id}_${Date.now()}`;
+
+      res.json({
+        token,
+        client: {
+          id: client.id,
+          email: client.email,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          phone: client.phone,
+          mentionHandle: client.mentionHandle,
+          profileImageUrl: client.profileImageUrl,
+        }
+      });
+    } catch (error) {
+      console.error("Error authenticating client:", error);
+      res.status(500).json({ message: "Erreur lors de la connexion" });
+    }
+  });
+
+  // Middleware d'authentification client
+  const isClientAuthenticated = (req: any, res: any, next: any) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Token manquant" });
+    }
+
+    const token = authHeader.substring(7);
+    if (!token.startsWith('client_')) {
+      return res.status(401).json({ message: "Token invalide" });
+    }
+
+    const clientId = token.split('_')[1];
+    req.clientId = clientId;
+    next();
+  };
+
+  // Routes client authentifiées
+  app.get("/api/client/appointments", isClientAuthenticated, async (req, res) => {
+    try {
+      const appointments = [
+        {
+          id: 1,
+          serviceName: "Coupe + Brushing",
+          professionalName: "Marie Dubois", 
+          appointmentDate: "2025-01-25",
+          appointmentTime: "14:30",
+          duration: 60,
+          price: 45,
+          status: "confirmed",
+          salonName: "Salon Excellence",
+          salonAddress: "15 rue de la Paix, Paris"
+        }
+      ];
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching client appointments:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des rendez-vous" });
+    }
+  });
+
+  app.get("/api/client/messages", isClientAuthenticated, async (req, res) => {
+    try {
+      const messages = [];
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching client messages:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
+    }
+  });
+
   // Only setup WebSocket in production mode
   if (process.env.NODE_ENV === 'production') {
     const wss = new WebSocketServer({ server: httpServer });
