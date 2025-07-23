@@ -387,60 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===== AI CHAT SYSTEM WITH HISTORY AND FOLDERS =====
-
-  // Get all folders for current user
-  app.get("/api/ai-chat/folders", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Non autorisé" });
-    }
-
-    try {
-      const folders = await storage.getAiChatFolders(req.user.id);
-      res.json(folders);
-    } catch (error) {
-      console.error('Erreur récupération dossiers:', error);
-      res.status(500).json({ error: "Erreur serveur" });
-    }
-  });
-
-  // Create new folder
-  app.post("/api/ai-chat/folders", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Non autorisé" });
-    }
-
-    try {
-      const { name, color = "#8B5CF6" } = req.body;
-      const folder = await storage.createAiChatFolder({
-        userId: req.user.id,
-        name,
-        color,
-        sortOrder: 0,
-        isExpanded: true
-      });
-      res.json(folder);
-    } catch (error) {
-      console.error('Erreur création dossier:', error);
-      res.status(500).json({ error: "Erreur serveur" });
-    }
-  });
-
-  // Toggle folder expansion
-  app.patch("/api/ai-chat/folders/:id/toggle", async (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ message: "Non autorisé" });
-    }
-
-    try {
-      const folderId = parseInt(req.params.id);
-      await storage.toggleAiChatFolder(folderId, req.user.id);
-      res.json({ success: true });
-    } catch (error) {
-      console.error('Erreur toggle dossier:', error);
-      res.status(500).json({ error: "Erreur serveur" });
-    }
-  });
+  // ===== AI CHAT SYSTEM WITH HISTORY =====
 
   // Get all conversations for current user
   app.get("/api/ai-chat/conversations", async (req, res) => {
@@ -464,13 +411,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     try {
-      const { title, folderId } = req.body;
+      const { title } = req.body;
       const conversationId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       const conversation = await storage.createAiChatConversation({
         id: conversationId,
         userId: req.user.id,
-        folderId: folderId || null,
         title,
         lastMessageAt: new Date(),
         messageCount: 0,

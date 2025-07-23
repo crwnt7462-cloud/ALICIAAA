@@ -6,7 +6,6 @@ import {
   staff,
   appointments,
   subscriptions,
-  aiChatFolders,
   aiChatConversations,
   aiChatMessages,
   type User,
@@ -24,8 +23,6 @@ import {
   type InsertStaff,
   type Appointment,
   type InsertAppointment,
-  type AiChatFolder,
-  type InsertAiChatFolder,
   type AiChatConversation,
   type InsertAiChatConversation,
   type AiChatMessage,
@@ -83,10 +80,7 @@ export interface IStorage {
   getStaffPerformance(userId: string): Promise<any[]>;
   getClientRetentionRate(userId: string): Promise<any>;
 
-  // AI Chat System
-  getAiChatFolders(userId: string): Promise<any[]>;
-  createAiChatFolder(folderData: any): Promise<any>;
-  toggleAiChatFolder(folderId: number, userId: string): Promise<void>;
+  // AI Chat System  
   getAiChatConversations(userId: string): Promise<any[]>;
   createAiChatConversation(conversationData: any): Promise<any>;
   deleteAiChatConversation(conversationId: string, userId: string): Promise<void>;
@@ -110,7 +104,7 @@ export class DatabaseStorage implements IStorage {
         phone: "01 42 34 56 78",
         address: "123 Avenue de la Beauté, 75001 Paris",
         city: "Paris",
-        postalCode: "75001",
+        // postalCode: "75001", // Field removed from schema
         country: "France",
         isProfessional: true,
         isVerified: true,
@@ -144,8 +138,8 @@ export class DatabaseStorage implements IStorage {
       return updated;
     } else {
       const [created] = await db.insert(users).values({
-        id: userData.id || nanoid(),
         ...userData,
+        id: userData.id || nanoid(),
       }).returning();
       return created;
     }
@@ -235,7 +229,7 @@ export class DatabaseStorage implements IStorage {
     if (userId === "demo") {
       return [
         {
-          id: 1,
+          id: "1",
           userId: "demo",
           name: "Coupe + Brushing",
           description: "Coupe personnalisée avec brushing professionnel",
@@ -249,7 +243,7 @@ export class DatabaseStorage implements IStorage {
           updatedAt: new Date()
         },
         {
-          id: 2,
+          id: "2",
           userId: "demo",
           name: "Coloration complète",
           description: "Coloration avec soins capillaires inclus",
@@ -263,7 +257,7 @@ export class DatabaseStorage implements IStorage {
           updatedAt: new Date()
         },
         {
-          id: 3,
+          id: "3",
           userId: "demo",
           name: "Soin visage relaxant",
           description: "Nettoyage de peau avec masque hydratant",
@@ -366,7 +360,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(appointments.userId, userId));
 
     if (date) {
-      query = query.where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)));
+      return await db
+        .select()
+        .from(appointments)
+        .where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)))
+        .orderBy(appointments.appointmentDate, appointments.startTime);
     }
 
     return await query.orderBy(appointments.appointmentDate, appointments.startTime);
@@ -589,32 +587,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   // ===== AI CHAT SYSTEM METHODS =====
-
-  async getAiChatFolders(userId: string): Promise<AiChatFolder[]> {
-    return await db.select()
-      .from(aiChatFolders)
-      .where(eq(aiChatFolders.userId, userId))
-      .orderBy(aiChatFolders.sortOrder);
-  }
-
-  async createAiChatFolder(folderData: InsertAiChatFolder): Promise<AiChatFolder> {
-    const [folder] = await db.insert(aiChatFolders)
-      .values(folderData)
-      .returning();
-    return folder;
-  }
-
-  async toggleAiChatFolder(folderId: number, userId: string): Promise<void> {
-    const [folder] = await db.select()
-      .from(aiChatFolders)
-      .where(and(eq(aiChatFolders.id, folderId), eq(aiChatFolders.userId, userId)));
-    
-    if (folder) {
-      await db.update(aiChatFolders)
-        .set({ isExpanded: !folder.isExpanded })
-        .where(eq(aiChatFolders.id, folderId));
-    }
-  }
 
   async getAiChatConversations(userId: string): Promise<AiChatConversation[]> {
     return await db.select()

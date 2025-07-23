@@ -1055,7 +1055,6 @@ export const aiChatFolders = pgTable("ai_chat_folders", {
 export const aiChatConversations = pgTable("ai_chat_conversations", {
   id: varchar("id").primaryKey(), // UUID
   userId: varchar("user_id").notNull().references(() => users.id),
-  folderId: integer("folder_id").references(() => aiChatFolders.id),
   title: varchar("title").notNull(),
   lastMessageAt: timestamp("last_message_at").defaultNow(),
   messageCount: integer("message_count").default(0),
@@ -1109,10 +1108,6 @@ export const aiChatConversationsRelations = relations(aiChatConversations, ({ on
   user: one(users, {
     fields: [aiChatConversations.userId],
     references: [users.id],
-  }),
-  folder: one(aiChatFolders, {
-    fields: [aiChatConversations.folderId],
-    references: [aiChatFolders.id],
   }),
   messages: many(aiChatMessages),
 }));
