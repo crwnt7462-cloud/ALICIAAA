@@ -6,11 +6,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { 
   Send, ArrowLeft, Bot, User, BarChart3, Users, Target, Heart, 
   Brain, TrendingUp, Calendar, Clock, Star, AlertTriangle,
   CheckCircle, Zap, Crown, Sparkles, Camera, FileText,
-  PieChart, Activity, Lightbulb, ShoppingBag, MessageSquare
+  PieChart, Activity, Lightbulb, ShoppingBag, MessageSquare,
+  Mic, Settings, Maximize2, Copy, RefreshCw, Palette
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";

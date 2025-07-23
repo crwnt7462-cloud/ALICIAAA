@@ -17,7 +17,7 @@ import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
 import AIAutomation from "@/pages/AIAutomationNew";
-import AIAssistant from "@/pages/AIAssistant";
+import AIAssistant from "@/pages/AIAssistantNew";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
