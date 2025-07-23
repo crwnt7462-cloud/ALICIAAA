@@ -37,7 +37,7 @@ import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import SalonSearch from "@/pages/SalonSearch";
-import BookingPage from "@/pages/BookingPageSimple";
+import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
@@ -273,7 +273,7 @@ function Router() {
   if (location === '/booking' || location === '/quick-booking') {
     return (
       <div className="h-full">
-        <ModernBooking />
+        <BookingPageSimple />
       </div>
     );
   }

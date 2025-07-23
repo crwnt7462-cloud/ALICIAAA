@@ -131,7 +131,7 @@ export default function ClientLogin() {
           </div>
           
           <h1 className="text-xl font-semibold text-gray-900 mb-1">
-            Espace Client
+            Connexion Client
           </h1>
           <p className="text-sm text-gray-600">
             Connectez-vous à votre compte

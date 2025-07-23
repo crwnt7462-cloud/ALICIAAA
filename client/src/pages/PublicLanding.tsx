@@ -150,7 +150,7 @@ export default function PublicLanding() {
   const menuItems = [
     { 
       id: 'client-login', 
-      label: 'Espace Client', 
+      label: 'Se connecter', 
       icon: <User className="w-5 h-5" />,
       action: () => setLocation("/client/login")
     },
@@ -298,14 +298,14 @@ export default function PublicLanding() {
                 className="text-gray-600 hover:text-gray-900 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
                 onClick={() => setLocation("/client/login")}
               >
-                <span className="hidden md:inline">Espace Client</span>
-                <span className="md:hidden">Client</span>
+                <span className="hidden md:inline">Se connecter</span>
+                <span className="md:hidden">Connexion</span>
               </Button>
               <Button 
                 className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
-                onClick={() => setLocation("/client/login")}
+                onClick={() => setLocation("/booking")}
               >
-                Connexion
+                Réserver
               </Button>
               <Button 
                 variant="ghost" 

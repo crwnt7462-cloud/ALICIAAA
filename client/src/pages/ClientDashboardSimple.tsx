@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Calendar, Clock, MapPin, Phone, Star, 
   LogOut, Plus, Settings, Bell, ChevronRight,
-  CheckCircle2, AlertCircle, XCircle
+  CheckCircle2, AlertCircle, XCircle, MessageSquare
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -249,31 +249,22 @@ export default function ClientDashboardSimple() {
         </Card>
 
         {/* Accès rapides */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           <Button 
             variant="outline" 
-            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
+            className="h-16 flex-col gap-2 bg-white/70 backdrop-blur-sm border-gray-200/50 hover:bg-white/80"
             onClick={() => setLocation('/client/messages')}
           >
-            <Settings className="h-4 w-4" />
-            <span className="text-xs">Messages</span>
+            <MessageSquare className="h-5 w-5 text-purple-600" />
+            <span className="text-sm font-medium">Messages</span>
           </Button>
           
           <Button 
             variant="outline" 
-            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-            onClick={() => setLocation('/ai')}
+            className="h-16 flex-col gap-2 bg-white/70 backdrop-blur-sm border-gray-200/50 hover:bg-white/80"
           >
-            <Star className="h-4 w-4" />
-            <span className="text-xs">IA Beauté</span>
-          </Button>
-
-          <Button 
-            variant="outline" 
-            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-          >
-            <Phone className="h-4 w-4" />
-            <span className="text-xs">Support</span>
+            <Phone className="h-5 w-5 text-green-600" />
+            <span className="text-sm font-medium">Support</span>
           </Button>
         </div>
 

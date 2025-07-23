@@ -1,19 +1,16 @@
-import { useState, useEffect } from "react";
-import { useLocation, useParams } from "wouter";
+import { useState } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { 
-  ArrowLeft, Calendar, Clock, MapPin, Star, 
-  CreditCard, Check, User, Phone, Mail
+  ArrowLeft, Calendar, Clock, MapPin, User, 
+  ChevronLeft, ChevronRight, CheckCircle2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 
 interface Service {
   id: string;
@@ -23,92 +20,44 @@ interface Service {
   description: string;
 }
 
-interface TimeSlot {
-  time: string;
-  available: boolean;
-}
-
 interface BookingData {
-  serviceId: string;
-  date: string;
-  time: string;
-  clientName: string;
-  clientEmail: string;
-  clientPhone: string;
-  notes: string;
+  service?: Service;
+  date?: string;
+  time?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  phone?: string;
+  notes?: string;
 }
 
 export default function BookingPageSimple() {
   const [, setLocation] = useLocation();
-  const { salonId } = useParams();
   const { toast } = useToast();
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [bookingData, setBookingData] = useState<BookingData>({
-    serviceId: "",
-    date: "",
-    time: "",
-    clientName: "",
-    clientEmail: "",
-    clientPhone: "",
-    notes: ""
-  });
+  const [step, setStep] = useState(1);
+  const [bookingData, setBookingData] = useState<BookingData>({});
 
-  // Services disponibles
   const services: Service[] = [
-    {
-      id: "coupe-brushing",
-      name: "Coupe + Brushing",
-      duration: 60,
-      price: 65,
-      description: "Coupe personnalisée et brushing professionnel"
-    },
-    {
-      id: "couleur",
-      name: "Coloration",
-      duration: 120,
-      price: 85,
-      description: "Coloration complète avec soins"
-    },
-    {
-      id: "meches",
-      name: "Mèches",
-      duration: 150,
-      price: 120,
-      description: "Mèches et balayage expert"
-    },
-    {
-      id: "soin",
-      name: "Soin Capillaire",
-      duration: 45,
-      price: 35,
-      description: "Soin hydratant et réparateur"
-    }
+    { id: "1", name: "Coupe & Brushing", duration: 60, price: 45, description: "Coupe personnalisée + brushing" },
+    { id: "2", name: "Coloration", duration: 120, price: 80, description: "Coloration complète + soin" },
+    { id: "3", name: "Soin Visage", duration: 75, price: 65, description: "Nettoyage + hydratation" },
+    { id: "4", name: "Manucure", duration: 45, price: 35, description: "Soin des ongles + vernis" }
   ];
 
-  // Créneaux horaires
-  const timeSlots: TimeSlot[] = [
-    { time: "09:00", available: true },
-    { time: "10:00", available: false },
-    { time: "11:00", available: true },
-    { time: "14:00", available: true },
-    { time: "15:00", available: true },
-    { time: "16:00", available: false },
-    { time: "17:00", available: true }
+  const timeSlots = [
+    "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+    "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"
   ];
 
-  // Génération des dates disponibles (7 prochains jours)
-  const getAvailableDates = () => {
+  const generateDates = () => {
     const dates = [];
-    for (let i = 1; i <= 7; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
+    const today = new Date();
+    for (let i = 1; i <= 14; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
       dates.push({
-        value: date.toISOString().split('T')[0],
-        label: date.toLocaleDateString('fr-FR', { 
+        date: date.toISOString().split('T')[0],
+        display: date.toLocaleDateString('fr-FR', { 
           weekday: 'short', 
           day: 'numeric', 
           month: 'short' 
@@ -118,384 +67,319 @@ export default function BookingPageSimple() {
     return dates;
   };
 
-  const availableDates = getAvailableDates();
-
-  const bookingMutation = useMutation({
-    mutationFn: async (data: BookingData) => {
-      const response = await apiRequest("POST", "/api/bookings", data);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Réservation confirmée",
-        description: "Votre rendez-vous a été enregistré avec succès.",
-      });
-      setCurrentStep(4);
-    },
-    onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la réservation.",
-        variant: "destructive",
-      });
-    }
-  });
+  const dates = generateDates();
 
   const handleServiceSelect = (service: Service) => {
-    setSelectedService(service);
-    setBookingData(prev => ({ ...prev, serviceId: service.id }));
-    setCurrentStep(2);
+    setBookingData({ ...bookingData, service });
+    setStep(2);
   };
 
-  const handleDateTimeSelect = () => {
-    if (selectedDate && selectedTime) {
-      setBookingData(prev => ({ 
-        ...prev, 
-        date: selectedDate, 
-        time: selectedTime 
-      }));
-      setCurrentStep(3);
-    }
+  const handleDateTimeSelect = (date: string, time: string) => {
+    setBookingData({ ...bookingData, date, time });
+    setStep(3);
   };
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bookingData.clientName || !bookingData.clientEmail || !bookingData.clientPhone) {
-      toast({
-        title: "Informations manquantes",
-        description: "Veuillez remplir tous les champs obligatoires.",
-        variant: "destructive",
-      });
-      return;
-    }
-    bookingMutation.mutate(bookingData);
+    const formData = new FormData(e.target as HTMLFormElement);
+    
+    const finalBookingData = {
+      ...bookingData,
+      firstName: formData.get('firstName') as string,
+      lastName: formData.get('lastName') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      notes: formData.get('notes') as string,
+    };
+
+    setBookingData(finalBookingData);
+    setStep(4);
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-4">
-            <div className="text-center mb-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
-                Choisissez votre prestation
-              </h2>
-              <p className="text-sm text-gray-600">
-                Sélectionnez le service qui vous intéresse
-              </p>
+  const confirmBooking = () => {
+    toast({
+      title: "Rendez-vous confirmé",
+      description: "Vous recevrez un email de confirmation sous peu.",
+    });
+    setLocation('/client/dashboard');
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-sm mx-auto bg-white shadow-sm">
+        {/* Header */}
+        <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                onClick={() => step > 1 ? setStep(step - 1) : setLocation('/')}
+                className="h-10 w-10 p-0 rounded-full"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="text-center">
+                <h1 className="text-lg font-medium text-gray-900">Réservation</h1>
+                <p className="text-sm text-gray-500">Étape {step}/4</p>
+              </div>
+              
+              <div className="w-10" />
             </div>
             
-            {services.map((service) => (
-              <Card 
-                key={service.id}
-                className="border-0 shadow-sm bg-white/60 backdrop-blur-sm cursor-pointer hover:bg-white/80 transition-all"
-                onClick={() => handleServiceSelect(service)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">
-                        {service.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {service.duration} min
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-semibold text-purple-600">
-                        {service.price}€
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
-                Choisissez votre créneau
-              </h2>
-              <p className="text-sm text-gray-600">
-                {selectedService?.name} - {selectedService?.duration} min
-              </p>
+            {/* Barre de progression */}
+            <div className="mt-4 flex gap-1">
+              {[1, 2, 3, 4].map((s) => (
+                <div
+                  key={s}
+                  className={`flex-1 h-1 rounded-full ${
+                    s <= step ? 'bg-purple-600' : 'bg-gray-200'
+                  }`}
+                />
+              ))}
             </div>
+          </div>
+        </div>
 
-            {/* Sélection de la date */}
-            <div>
-              <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                Date
-              </Label>
-              <div className="grid grid-cols-2 gap-2">
-                {availableDates.map((date) => (
-                  <Button
-                    key={date.value}
-                    variant={selectedDate === date.value ? "default" : "outline"}
-                    size="sm"
-                    className={`h-12 text-sm ${
-                      selectedDate === date.value 
-                        ? "bg-purple-600 text-white" 
-                        : "bg-white/60 backdrop-blur-sm hover:bg-white/80"
-                    }`}
-                    onClick={() => setSelectedDate(date.value)}
+        {/* Contenu */}
+        <div className="p-4 space-y-6">
+          {/* Étape 1: Choix du service */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-xl font-medium text-gray-900 mb-2">
+                  Choisissez votre service
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  Sélectionnez le service qui vous intéresse
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                {services.map((service) => (
+                  <Card 
+                    key={service.id} 
+                    className="cursor-pointer border-gray-200 hover:border-purple-300 hover:shadow-sm transition-all"
+                    onClick={() => handleServiceSelect(service)}
                   >
-                    {date.label}
-                  </Button>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900">{service.name}</h3>
+                          <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                          <div className="flex items-center gap-3 mt-2">
+                            <Badge variant="outline" className="text-xs">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {service.duration}min
+                            </Badge>
+                            <span className="font-medium text-purple-600">
+                              {service.price}€
+                            </span>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
+          )}
 
-            {/* Sélection de l'heure */}
-            {selectedDate && (
+          {/* Étape 2: Date et heure */}
+          {step === 2 && bookingData.service && (
+            <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700 mb-3 block">
-                  Heure
-                </Label>
-                <div className="grid grid-cols-3 gap-2">
-                  {timeSlots.map((slot) => (
+                <h2 className="text-xl font-medium text-gray-900 mb-2">
+                  Date et heure
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  {bookingData.service.name} - {bookingData.service.duration}min
+                </p>
+              </div>
+
+              {/* Sélection de date */}
+              <div>
+                <h3 className="font-medium text-gray-900 mb-3">Choisissez une date</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {dates.map((dateObj) => (
                     <Button
-                      key={slot.time}
-                      variant={selectedTime === slot.time ? "default" : "outline"}
-                      size="sm"
-                      disabled={!slot.available}
-                      className={`h-10 text-sm ${
-                        selectedTime === slot.time 
-                          ? "bg-purple-600 text-white" 
-                          : slot.available 
-                            ? "bg-white/60 backdrop-blur-sm hover:bg-white/80" 
-                            : "opacity-50"
-                      }`}
-                      onClick={() => setSelectedTime(slot.time)}
+                      key={dateObj.date}
+                      variant={bookingData.date === dateObj.date ? "default" : "outline"}
+                      className="h-12 text-sm justify-center"
+                      onClick={() => setBookingData({ ...bookingData, date: dateObj.date })}
                     >
-                      {slot.time}
+                      {dateObj.display}
                     </Button>
                   ))}
                 </div>
               </div>
-            )}
 
-            {selectedDate && selectedTime && (
-              <Button 
-                onClick={handleDateTimeSelect}
-                className="w-full gradient-bg text-white rounded-xl h-12"
-              >
-                Confirmer le créneau
-              </Button>
-            )}
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div className="text-center mb-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
-                Vos informations
-              </h2>
-              <p className="text-sm text-gray-600">
-                Complétez vos coordonnées pour finaliser
-              </p>
+              {/* Sélection d'heure */}
+              {bookingData.date && (
+                <div>
+                  <h3 className="font-medium text-gray-900 mb-3">Choisissez une heure</h3>
+                  <div className="grid grid-cols-3 gap-2">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        variant={bookingData.time === time ? "default" : "outline"}
+                        className="h-10 text-sm"
+                        onClick={() => handleDateTimeSelect(bookingData.date!, time)}
+                      >
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          )}
 
-            {/* Récapitulatif */}
-            <Card className="border-0 shadow-sm bg-white/60 backdrop-blur-sm">
-              <CardContent className="p-4">
-                <div className="flex justify-between items-center">
+          {/* Étape 3: Informations personnelles */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-xl font-medium text-gray-900 mb-2">
+                  Vos informations
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  Complétez vos coordonnées
+                </p>
+              </div>
+
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <p className="font-medium text-gray-900">{selectedService?.name}</p>
-                    <p className="text-sm text-gray-600">
-                      {selectedDate && new Date(selectedDate).toLocaleDateString('fr-FR', {
-                        weekday: 'long',
-                        day: 'numeric', 
-                        month: 'long'
-                      })} à {selectedTime}
-                    </p>
+                    <Label htmlFor="firstName">Prénom</Label>
+                    <Input 
+                      id="firstName" 
+                      name="firstName" 
+                      required 
+                      className="mt-1"
+                    />
                   </div>
-                  <div className="text-lg font-semibold text-purple-600">
-                    {selectedService?.price}€
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <form onSubmit={handleBookingSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="clientName" className="text-sm font-medium text-gray-700">
-                  Nom complet *
-                </Label>
-                <Input
-                  id="clientName"
-                  value={bookingData.clientName}
-                  onChange={(e) => setBookingData(prev => ({ ...prev, clientName: e.target.value }))}
-                  className="mt-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-                  placeholder="Votre nom et prénom"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="clientEmail" className="text-sm font-medium text-gray-700">
-                  Email *
-                </Label>
-                <Input
-                  id="clientEmail"
-                  type="email"
-                  value={bookingData.clientEmail}
-                  onChange={(e) => setBookingData(prev => ({ ...prev, clientEmail: e.target.value }))}
-                  className="mt-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-                  placeholder="votre@email.com"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="clientPhone" className="text-sm font-medium text-gray-700">
-                  Téléphone *
-                </Label>
-                <Input
-                  id="clientPhone"
-                  value={bookingData.clientPhone}
-                  onChange={(e) => setBookingData(prev => ({ ...prev, clientPhone: e.target.value }))}
-                  className="mt-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-                  placeholder="06 12 34 56 78"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="notes" className="text-sm font-medium text-gray-700">
-                  Notes (optionnel)
-                </Label>
-                <Textarea
-                  id="notes"
-                  value={bookingData.notes}
-                  onChange={(e) => setBookingData(prev => ({ ...prev, notes: e.target.value }))}
-                  className="mt-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
-                  placeholder="Demandes particulières..."
-                  rows={3}
-                />
-              </div>
-
-              <Button 
-                type="submit"
-                disabled={bookingMutation.isPending}
-                className="w-full gradient-bg text-white rounded-xl h-12 font-medium"
-              >
-                {bookingMutation.isPending ? "Réservation en cours..." : "Confirmer la réservation"}
-              </Button>
-            </form>
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="text-center space-y-6">
-            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <Check className="w-8 h-8 text-green-600" />
-            </div>
-            
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Réservation confirmée !
-              </h2>
-              <p className="text-gray-600">
-                Vous recevrez un email de confirmation sous peu.
-              </p>
-            </div>
-
-            <Card className="border-0 shadow-sm bg-white/60 backdrop-blur-sm">
-              <CardContent className="p-4 text-left">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Service :</span>
-                    <span className="font-medium">{selectedService?.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Date :</span>
-                    <span className="font-medium">
-                      {selectedDate && new Date(selectedDate).toLocaleDateString('fr-FR')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Heure :</span>
-                    <span className="font-medium">{selectedTime}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Prix :</span>
-                    <span className="font-medium text-purple-600">{selectedService?.price}€</span>
+                  <div>
+                    <Label htmlFor="lastName">Nom</Label>
+                    <Input 
+                      id="lastName" 
+                      name="lastName" 
+                      required 
+                      className="mt-1"
+                    />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-3">
-              <Button 
-                onClick={() => setLocation('/')}
-                className="w-full gradient-bg text-white rounded-xl h-12"
-              >
-                Retour à l'accueil
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => setLocation('/client/login')}
-                className="w-full bg-white/60 backdrop-blur-sm border-gray-200/50"
-              >
-                Gérer mes rendez-vous
-              </Button>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white/90 backdrop-blur-sm border-b border-gray-100/50 sticky top-0 z-10">
-        <div className="max-w-sm mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              onClick={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : setLocation('/')}
-              className="h-9 w-9 p-0 rounded-full hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            
-            <div className="text-center">
-              <h1 className="text-base font-medium text-gray-900">
-                Réservation
-              </h1>
-              <div className="flex items-center gap-1 mt-1">
-                {[1, 2, 3, 4].map((step) => (
-                  <div
-                    key={step}
-                    className={`h-1.5 w-6 rounded-full ${
-                      step <= currentStep ? 'bg-purple-600' : 'bg-gray-200'
-                    }`}
+                
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    required 
+                    className="mt-1"
                   />
-                ))}
-              </div>
-            </div>
-            
-            <div className="w-9" /> {/* Spacer */}
-          </div>
-        </div>
-      </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="phone">Téléphone</Label>
+                  <Input 
+                    id="phone" 
+                    name="phone" 
+                    type="tel" 
+                    required 
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="notes">Notes (optionnel)</Label>
+                  <Textarea 
+                    id="notes" 
+                    name="notes" 
+                    rows={3}
+                    className="mt-1 resize-none"
+                    placeholder="Demandes particulières..."
+                  />
+                </div>
 
-      {/* Contenu */}
-      <div className="max-w-sm mx-auto px-6 py-6">
-        {renderStep()}
+                <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700">
+                  Continuer
+                </Button>
+              </form>
+            </div>
+          )}
+
+          {/* Étape 4: Confirmation */}
+          {step === 4 && bookingData.service && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <h2 className="text-xl font-medium text-gray-900 mb-2">
+                  Récapitulatif
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  Vérifiez les détails de votre rendez-vous
+                </p>
+              </div>
+
+              <Card className="border-gray-200">
+                <CardContent className="p-4 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
+                      <User className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {bookingData.firstName} {bookingData.lastName}
+                      </p>
+                      <p className="text-sm text-gray-600">{bookingData.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h3 className="font-medium text-gray-900 mb-2">Service</h3>
+                    <p className="text-gray-700">{bookingData.service.name}</p>
+                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {bookingData.service.duration}min
+                      </span>
+                      <span className="font-medium text-purple-600">
+                        {bookingData.service.price}€
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h3 className="font-medium text-gray-900 mb-2">Date et heure</h3>
+                    <div className="flex items-center gap-4 text-sm text-gray-700">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        {new Date(bookingData.date!).toLocaleDateString('fr-FR', {
+                          weekday: 'long',
+                          day: 'numeric', 
+                          month: 'long'
+                        })}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        {bookingData.time}
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Button 
+                onClick={confirmBooking}
+                className="w-full bg-purple-600 hover:bg-purple-700 h-12"
+              >
+                <CheckCircle2 className="h-4 w-4 mr-2" />
+                Confirmer le rendez-vous
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
