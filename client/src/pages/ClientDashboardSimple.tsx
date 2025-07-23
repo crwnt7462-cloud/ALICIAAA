@@ -199,7 +199,7 @@ export default function ClientDashboardSimple() {
                   variant="outline" 
                   size="sm" 
                   className="mt-3"
-                  onClick={() => setLocation('/')}
+                  onClick={() => setLocation('/booking')}
                 >
                   Réserver maintenant
                 </Button>
@@ -249,24 +249,68 @@ export default function ClientDashboardSimple() {
         </Card>
 
         {/* Accès rapides */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-3">
           <Button 
             variant="outline" 
-            className="h-16 flex-col gap-2 bg-white/60 backdrop-blur-sm border-gray-200/50"
+            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
             onClick={() => setLocation('/client/messages')}
           >
-            <Settings className="h-5 w-5" />
+            <Settings className="h-4 w-4" />
             <span className="text-xs">Messages</span>
           </Button>
           
           <Button 
             variant="outline" 
-            className="h-16 flex-col gap-2 bg-white/60 backdrop-blur-sm border-gray-200/50"
+            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
+            onClick={() => setLocation('/ai')}
           >
-            <Star className="h-5 w-5" />
-            <span className="text-xs">Mes avis</span>
+            <Star className="h-4 w-4" />
+            <span className="text-xs">IA Beauté</span>
+          </Button>
+
+          <Button 
+            variant="outline" 
+            className="h-14 flex-col gap-1 bg-white/60 backdrop-blur-sm border-gray-200/50"
+          >
+            <Phone className="h-4 w-4" />
+            <span className="text-xs">Support</span>
           </Button>
         </div>
+
+        {/* Section salons favoris */}
+        <Card className="border-0 shadow-sm bg-white/60 backdrop-blur-sm">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-medium text-gray-900 flex items-center gap-2">
+              <Star className="h-5 w-5 text-yellow-500" />
+              Mes salons favoris
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {[
+              { name: "Salon Excellence", address: "Paris 16ème", rating: 4.9 },
+              { name: "Beauty Center", address: "Paris 15ème", rating: 4.7 },
+              { name: "Coiffure Prestige", address: "Paris 3ème", rating: 4.8 }
+            ].map((salon, index) => (
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-white/40 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white text-sm">
+                      {salon.name[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium text-gray-900 text-sm">{salon.name}</p>
+                    <p className="text-xs text-gray-600">{salon.address}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs text-gray-600">{salon.rating}</span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

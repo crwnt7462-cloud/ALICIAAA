@@ -44,6 +44,8 @@ import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboardSimple";
+import ClientMessaging from "@/pages/ClientMessaging";
+import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
@@ -125,6 +127,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientDashboard />
+      </div>
+    );
+  }
+
+  // Page messages client
+  if (location === '/client/messages') {
+    return (
+      <div className="h-full">
+        <ClientMessaging />
       </div>
     );
   }
@@ -267,14 +278,11 @@ function Router() {
     );
   }
 
-  // Page IA avec navigation en bas mais sans header
+  // Page IA simple en plein écran
   if (location === '/ai') {
     return (
-      <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
-          <AIAssistant />
-        </main>
-        <BottomNavigation />
+      <div className="h-full">
+        <AIAssistantSimple />
       </div>
     );
   }
