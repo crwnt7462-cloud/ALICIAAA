@@ -787,7 +787,7 @@ Répondez en JSON:
 
   async generateChatResponse(userMessage: string, conversationHistory: Array<{role: string, content: string}> = []) {
     try {
-      // Construire l'historique de conversation pour éviter les répétitions
+      // Construire l'historique de conversation proprement formaté
       const messages = [
         {
           role: "system",
@@ -809,13 +809,24 @@ DOMAINES D'EXPERTISE :
 📚 Académique : maths, physique, littérature, langues
 
 STYLE : Direct, intelligent, utile. Pas de formules toutes faites.`
-        },
-        ...conversationHistory.slice(-6), // Garde les 6 derniers échanges pour le contexte
-        {
-          role: "user",
-          content: userMessage
         }
       ];
+
+      // Ajouter l'historique de conversation avec validation des rôles
+      conversationHistory.slice(-6).forEach(msg => {
+        if (msg.role === 'user' || msg.role === 'assistant') {
+          messages.push({
+            role: msg.role,
+            content: msg.content
+          });
+        }
+      });
+
+      // Ajouter le message utilisateur actuel
+      messages.push({
+        role: "user",
+        content: userMessage
+      });
 
       const response = await openai.chat.completions.create({
         model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
