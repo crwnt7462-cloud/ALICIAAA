@@ -6,8 +6,6 @@ import {
   staff,
   appointments,
   subscriptions,
-  aiChatConversations,
-  aiChatMessages,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -23,10 +21,6 @@ import {
   type InsertStaff,
   type Appointment,
   type InsertAppointment,
-  type AiChatConversation,
-  type InsertAiChatConversation,
-  type AiChatMessage,
-  type InsertAiChatMessage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
@@ -79,14 +73,6 @@ export interface IStorage {
   getTopServices(userId: string): Promise<any[]>;
   getStaffPerformance(userId: string): Promise<any[]>;
   getClientRetentionRate(userId: string): Promise<any>;
-
-  // AI Chat System  
-  getAiChatConversations(userId: string): Promise<any[]>;
-  createAiChatConversation(conversationData: any): Promise<any>;
-  deleteAiChatConversation(conversationId: string, userId: string): Promise<void>;
-  updateAiChatConversation(conversationId: string, updates: any): Promise<void>;
-  getAiChatMessages(conversationId: string, userId: string): Promise<any[]>;
-  createAiChatMessage(messageData: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -104,7 +90,7 @@ export class DatabaseStorage implements IStorage {
         phone: "01 42 34 56 78",
         address: "123 Avenue de la Beauté, 75001 Paris",
         city: "Paris",
-        // postalCode: "75001", // Field removed from schema
+        postalCode: "75001",
         country: "France",
         isProfessional: true,
         isVerified: true,
@@ -138,8 +124,8 @@ export class DatabaseStorage implements IStorage {
       return updated;
     } else {
       const [created] = await db.insert(users).values({
-        ...userData,
         id: userData.id || nanoid(),
+        ...userData,
       }).returning();
       return created;
     }
@@ -229,7 +215,7 @@ export class DatabaseStorage implements IStorage {
     if (userId === "demo") {
       return [
         {
-          id: "1",
+          id: 1,
           userId: "demo",
           name: "Coupe + Brushing",
           description: "Coupe personnalisée avec brushing professionnel",
@@ -243,7 +229,7 @@ export class DatabaseStorage implements IStorage {
           updatedAt: new Date()
         },
         {
-          id: "2",
+          id: 2,
           userId: "demo",
           name: "Coloration complète",
           description: "Coloration avec soins capillaires inclus",
@@ -257,7 +243,7 @@ export class DatabaseStorage implements IStorage {
           updatedAt: new Date()
         },
         {
-          id: "3",
+          id: 3,
           userId: "demo",
           name: "Soin visage relaxant",
           description: "Nettoyage de peau avec masque hydratant",
@@ -360,11 +346,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(appointments.userId, userId));
 
     if (date) {
-      return await db
-        .select()
-        .from(appointments)
-        .where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)))
-        .orderBy(appointments.appointmentDate, appointments.startTime);
+      query = query.where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)));
     }
 
     return await query.orderBy(appointments.appointmentDate, appointments.startTime);
@@ -584,68 +566,6 @@ export class DatabaseStorage implements IStorage {
         averageVisitsPerClient: 0
       };
     }
-  }
-
-  // ===== AI CHAT SYSTEM METHODS =====
-
-  async getAiChatConversations(userId: string): Promise<AiChatConversation[]> {
-    return await db.select()
-      .from(aiChatConversations)
-      .where(eq(aiChatConversations.userId, userId))
-      .orderBy(desc(aiChatConversations.lastMessageAt));
-  }
-
-  async createAiChatConversation(conversationData: InsertAiChatConversation): Promise<AiChatConversation> {
-    const [conversation] = await db.insert(aiChatConversations)
-      .values(conversationData)
-      .returning();
-    return conversation;
-  }
-
-  async deleteAiChatConversation(conversationId: string, userId: string): Promise<void> {
-    // First delete all messages in the conversation
-    await db.delete(aiChatMessages)
-      .where(eq(aiChatMessages.conversationId, conversationId));
-    
-    // Then delete the conversation
-    await db.delete(aiChatConversations)
-      .where(and(
-        eq(aiChatConversations.id, conversationId),
-        eq(aiChatConversations.userId, userId)
-      ));
-  }
-
-  async updateAiChatConversation(conversationId: string, updates: Partial<AiChatConversation>): Promise<void> {
-    const updateData = { ...updates, updatedAt: new Date() };
-    await db.update(aiChatConversations)
-      .set(updateData)
-      .where(eq(aiChatConversations.id, conversationId));
-  }
-
-  async getAiChatMessages(conversationId: string, userId: string): Promise<AiChatMessage[]> {
-    // Verify user owns this conversation
-    const [conversation] = await db.select()
-      .from(aiChatConversations)
-      .where(and(
-        eq(aiChatConversations.id, conversationId),
-        eq(aiChatConversations.userId, userId)
-      ));
-    
-    if (!conversation) {
-      throw new Error("Conversation not found or access denied");
-    }
-
-    return await db.select()
-      .from(aiChatMessages)
-      .where(eq(aiChatMessages.conversationId, conversationId))
-      .orderBy(aiChatMessages.messageIndex);
-  }
-
-  async createAiChatMessage(messageData: InsertAiChatMessage): Promise<AiChatMessage> {
-    const [message] = await db.insert(aiChatMessages)
-      .values(messageData)
-      .returning();
-    return message;
   }
 }
 
