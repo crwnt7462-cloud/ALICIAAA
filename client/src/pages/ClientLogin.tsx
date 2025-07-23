@@ -38,7 +38,7 @@ export default function ClientLogin() {
     },
     onSuccess: (data) => {
       localStorage.setItem("clientToken", data.token);
-      localStorage.setItem("clientData", JSON.stringify(data.client));
+      localStorage.setItem("clientUser", JSON.stringify(data.client));
       toast({
         title: "Connexion réussie",
         description: "Bienvenue ! Vous êtes maintenant connecté.",
@@ -61,7 +61,7 @@ export default function ClientLogin() {
     },
     onSuccess: (data) => {
       localStorage.setItem("clientToken", data.token);
-      localStorage.setItem("clientData", JSON.stringify(data.client));
+      localStorage.setItem("clientUser", JSON.stringify(data.client));
       toast({
         title: "Inscription réussie",
         description: "Votre compte a été créé avec succès !",

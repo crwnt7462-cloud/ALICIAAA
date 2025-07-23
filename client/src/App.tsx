@@ -112,19 +112,28 @@ function Router() {
   }
 
   // Page de connexion client
-  if (location === '/client-login') {
+  if (location === '/client/login') {
     return (
       <div className="h-full">
-        <ProLogin />
+        <ClientLogin />
       </div>
     );
   }
 
   // Page tableau de bord client
-  if (location === '/client-dashboard') {
+  if (location === '/client/dashboard') {
     return (
       <div className="h-full">
         <ClientDashboard />
+      </div>
+    );
+  }
+
+  // Page messagerie client
+  if (location === '/client/messages') {
+    return (
+      <div className="h-full">
+        <MessagingSystem />
       </div>
     );
   }
