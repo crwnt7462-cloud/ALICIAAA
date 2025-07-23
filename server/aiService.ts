@@ -214,9 +214,9 @@ Répondez en JSON:
 
   private analyzeCancellationPatterns(cancellations: any[], appointment: AppointmentData) {
     const patterns = {
-      preferredCancelDays: {},
-      preferredCancelTimes: {},
-      commonReasons: {}
+      preferredCancelDays: {} as Record<string, number>,
+      preferredCancelTimes: {} as Record<string, number>,
+      commonReasons: {} as Record<string, number>
     };
     
     cancellations.forEach(cancel => {
@@ -790,7 +790,7 @@ Répondez en JSON:
       // Construire l'historique de conversation proprement formaté
       const messages = [
         {
-          role: "system",
+          role: "system" as const,
           content: `Tu es Rendly AI, l'assistant IA le plus avancé pour les salons de beauté et instituts esthétiques. Tu es un expert reconnu avec une connaissance approfondie de l'industrie beauté française.
 
 🎯 MISSION PRINCIPALE :
@@ -818,9 +818,14 @@ Tu fournis des insights basés sur les meilleures pratiques du secteur, des benc
 
       // Ajouter l'historique de conversation avec validation des rôles
       conversationHistory.slice(-6).forEach(msg => {
-        if (msg.role === 'user' || msg.role === 'assistant') {
+        if (msg.role === 'user') {
           messages.push({
-            role: msg.role,
+            role: "user" as const,
+            content: msg.content
+          });
+        } else if (msg.role === 'assistant') {
+          messages.push({
+            role: "assistant" as const,
             content: msg.content
           });
         }
@@ -828,7 +833,7 @@ Tu fournis des insights basés sur les meilleures pratiques du secteur, des benc
 
       // Ajouter le message utilisateur actuel
       messages.push({
-        role: "user",
+        role: "user" as const,
         content: userMessage
       });
 
