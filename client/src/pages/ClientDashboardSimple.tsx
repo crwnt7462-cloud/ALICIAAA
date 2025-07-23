@@ -173,7 +173,7 @@ export default function ClientDashboardSimple() {
         {/* Nouveau rendez-vous */}
         <Button 
           className="w-full gradient-bg text-white rounded-xl h-12 text-base font-medium"
-          onClick={() => setLocation('/')}
+          onClick={() => setLocation('/booking')}
         >
           <Plus className="h-5 w-5 mr-2" />
           Nouveau rendez-vous

@@ -375,10 +375,11 @@ export default function PublicLanding() {
                   </button>
                 </div>
                 <Button 
-                  onClick={handleSearch}
+                  onClick={() => setLocation('/booking')}
                   className="w-full h-11 gradient-bg text-white text-sm font-medium rounded-lg touch-manipulation"
                 >
-                  Rechercher
+                  <Search className="w-4 h-4 mr-2" />
+                  Réserver maintenant
                 </Button>
               </div>
             </div>
