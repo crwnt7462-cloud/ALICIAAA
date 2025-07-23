@@ -146,16 +146,16 @@ export default function ModernBooking() {
   const selectedServiceData = services.find(s => s.id === selectedService);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header professionnel */}
-      <div className="bg-slate-900 shadow-xl">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      {/* Header premium */}
+      <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 shadow-xl">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <Button
               variant="ghost" 
               size="sm"
               onClick={() => setLocation("/")}
-              className="text-white hover:bg-white/10 p-2 rounded-lg transition-all"
+              className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
@@ -166,7 +166,7 @@ export default function ModernBooking() {
               <div className="flex items-center justify-center space-x-1 text-xs">
                 <Star className="w-3 h-3 text-yellow-400 fill-current" />
                 <span className="text-white font-medium">{salon.rating}</span>
-                <span className="text-gray-300">({salon.reviews})</span>
+                <span className="text-violet-100">({salon.reviews})</span>
               </div>
             </div>
             
@@ -184,12 +184,12 @@ export default function ModernBooking() {
                 <div className="flex flex-col items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-medium text-sm transition-all duration-300 ${
                     step >= num 
-                      ? 'bg-white text-slate-900 shadow-md' 
+                      ? 'bg-white text-violet-600 shadow-md' 
                       : 'bg-white/20 text-white/70'
                   }`}>
                     {step > num ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
                   </div>
-                  <span className="text-gray-200 text-xs font-medium mt-1">{label}</span>
+                  <span className="text-white/90 text-xs font-medium mt-1">{label}</span>
                 </div>
                 
                 {index < 2 && (
@@ -219,7 +219,7 @@ export default function ModernBooking() {
                   key={service.id}
                   className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
                     selectedService === service.id 
-                      ? 'ring-2 ring-slate-900 shadow-lg bg-slate-50' 
+                      ? 'ring-2 ring-violet-500 shadow-lg bg-gradient-to-r from-violet-50 to-purple-50' 
                       : 'hover:shadow-md border-gray-200'
                   }`}
                   onClick={() => setSelectedService(service.id)}
@@ -230,19 +230,19 @@ export default function ModernBooking() {
                         <div className="flex items-center justify-between mb-2">
                           <div>
                             <h3 className="text-lg font-bold text-gray-900">{service.name}</h3>
-                            <p className="text-slate-600 font-medium text-xs">{service.subtitle}</p>
+                            <p className="text-violet-600 font-medium text-xs">{service.subtitle}</p>
                           </div>
                           
                           <div className="flex flex-col items-end space-y-1">
                             {service.popular && (
-                              <Badge className="bg-orange-600 text-white text-xs">
+                              <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs">
                                 <Crown className="w-3 h-3 mr-1" />
                                 Populaire
                               </Badge>
                             )}
                             
                             {service.premium && (
-                              <Badge className="bg-slate-900 text-white text-xs">
+                              <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 Premium
                               </Badge>
@@ -277,18 +277,18 @@ export default function ModernBooking() {
                         </div>
 
                         <div className="flex items-center justify-between text-xs">
-                          <div className="flex items-center text-slate-700">
+                          <div className="flex items-center text-violet-700">
                             <User className="w-3 h-3 mr-1" />
                             <span>{service.specialist}</span>
                           </div>
                           
-                          <div className="flex items-center text-emerald-600">
+                          <div className="flex items-center text-green-600">
                             <Shield className="w-3 h-3 mr-1" />
                             <span>{service.guarantee}</span>
                           </div>
                           
                           {selectedService === service.id && (
-                            <CheckCircle className="w-5 h-5 text-slate-900" />
+                            <CheckCircle className="w-5 h-5 text-violet-600" />
                           )}
                         </div>
                       </div>
@@ -326,8 +326,8 @@ export default function ModernBooking() {
                       variant={selectedDate === dateStr ? "default" : "outline"}
                       className={`h-12 flex flex-col text-xs ${
                         selectedDate === dateStr 
-                          ? 'bg-slate-900 text-white' 
-                          : 'hover:bg-slate-50'
+                          ? 'bg-violet-600 text-white' 
+                          : 'hover:bg-violet-50'
                       }`}
                       onClick={() => setSelectedDate(dateStr)}
                     >
@@ -352,9 +352,9 @@ export default function ModernBooking() {
                       disabled={!slot.available}
                       className={`h-8 text-xs relative ${
                         selectedTime === slot.time 
-                          ? 'bg-slate-900 text-white' 
+                          ? 'bg-violet-600 text-white' 
                           : slot.available 
-                            ? 'hover:bg-slate-50' 
+                            ? 'hover:bg-violet-50' 
                             : 'opacity-50'
                       }`}
                       onClick={() => slot.available && setSelectedTime(slot.time)}
@@ -373,9 +373,9 @@ export default function ModernBooking() {
 
             {/* Résumé compact */}
             {selectedServiceData && selectedDate && selectedTime && (
-              <Card className="bg-slate-50 border-slate-200">
+              <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-base mb-3 text-slate-800">Récapitulatif</h3>
+                  <h3 className="font-semibold text-base mb-3 text-violet-800">Récapitulatif</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service :</span>
@@ -394,9 +394,9 @@ export default function ModernBooking() {
                       <span className="text-gray-600">Heure :</span>
                       <span className="font-medium">{selectedTime}</span>
                     </div>
-                    <div className="flex justify-between items-center pt-2 border-t border-slate-200">
+                    <div className="flex justify-between items-center pt-2 border-t border-violet-200">
                       <span className="text-gray-600">Prix :</span>
-                      <span className="font-bold text-lg text-emerald-600">{selectedServiceData.price}€</span>
+                      <span className="font-bold text-lg text-green-600">{selectedServiceData.price}€</span>
                     </div>
                   </div>
                 </CardContent>
@@ -528,7 +528,7 @@ export default function ModernBooking() {
             <Button 
               onClick={handleNext}
               disabled={!isStepComplete()}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-8 flex items-center space-x-2"
+              className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 flex items-center space-x-2"
             >
               <span>Continuer</span>
               <ArrowRight className="w-4 h-4" />
@@ -537,7 +537,7 @@ export default function ModernBooking() {
             <Button 
               onClick={handleBooking}
               disabled={!isStepComplete()}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 flex items-center space-x-2"
+              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 flex items-center space-x-2"
             >
               <CheckCircle className="w-4 h-4" />
               <span>Confirmer la réservation</span>
@@ -552,7 +552,7 @@ export default function ModernBooking() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {salon.amenities.map((amenity, idx) => (
               <div key={idx} className="flex items-center space-x-2 text-sm text-gray-600">
-                <amenity.icon className="w-4 h-4 text-slate-600" />
+                <amenity.icon className="w-4 h-4 text-violet-600" />
                 <span>{amenity.label}</span>
               </div>
             ))}
@@ -569,7 +569,7 @@ export default function ModernBooking() {
                 <span>Annulation gratuite 24h</span>
               </div>
               <div className="flex items-center space-x-1">
-                <MessageSquare className="w-4 h-4 text-slate-600" />
+                <MessageSquare className="w-4 h-4 text-violet-600" />
                 <span>Support 7j/7</span>
               </div>
             </div>

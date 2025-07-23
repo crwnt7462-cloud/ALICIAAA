@@ -72,6 +72,7 @@ export interface IStorage {
   getUpcomingAppointments(userId: string): Promise<any[]>;
   getTopServices(userId: string): Promise<any[]>;
   getStaffPerformance(userId: string): Promise<any[]>;
+  getClientRetentionRate(userId: string): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -455,6 +456,116 @@ export class DatabaseStorage implements IStorage {
       { staffName: "Sophie Martin", appointments: 31, revenue: 1860, rating: 4.7 },
       { staffName: "Laura Petit", appointments: 19, revenue: 1140, rating: 4.8 },
     ];
+  }
+
+  async getClientRetentionRate(userId: string): Promise<any> {
+    const now = new Date();
+    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const threeMonthsAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+
+    try {
+      // Clients ayant eu au moins un RDV dans les 6 derniers mois
+      const clientsWithAppointments = await db
+        .select({
+          clientEmail: appointments.clientEmail,
+          appointmentDate: appointments.appointmentDate,
+        })
+        .from(appointments)
+        .where(and(
+          eq(appointments.userId, userId),
+          gte(appointments.appointmentDate, sixMonthsAgo.toISOString().split('T')[0])
+        ))
+        .orderBy(appointments.clientEmail, desc(appointments.appointmentDate));
+
+      // Grouper par client et calculer les statistiques
+      const clientStats = new Map();
+      
+      clientsWithAppointments.forEach(appointment => {
+        const email = appointment.clientEmail;
+        const date = new Date(appointment.appointmentDate);
+        
+        if (!clientStats.has(email)) {
+          clientStats.set(email, {
+            lastVisit: date,
+            visitCount: 0,
+            visits: []
+          });
+        }
+        
+        const client = clientStats.get(email);
+        client.visitCount++;
+        client.visits.push(date);
+        
+        if (date > client.lastVisit) {
+          client.lastVisit = date;
+        }
+      });
+
+      // Calculer les taux de récurrence
+      let returningClients30Days = 0;
+      let returningClients90Days = 0;
+      let loyalClients = 0; // 3+ visites
+      let vipClients = 0; // 5+ visites
+      const totalClients = clientStats.size;
+
+      clientStats.forEach(client => {
+        // Client récurrent si dernière visite dans les 30 jours
+        if (client.lastVisit >= oneMonthAgo) {
+          returningClients30Days++;
+        }
+        
+        // Client récurrent si dernière visite dans les 90 jours
+        if (client.lastVisit >= threeMonthsAgo) {
+          returningClients90Days++;
+        }
+        
+        // Client fidèle si 3+ visites
+        if (client.visitCount >= 3) {
+          loyalClients++;
+        }
+        
+        // Client VIP si 5+ visites
+        if (client.visitCount >= 5) {
+          vipClients++;
+        }
+      });
+
+      const retentionRate30Days = totalClients > 0 ? Math.round((returningClients30Days / totalClients) * 100) : 0;
+      const retentionRate90Days = totalClients > 0 ? Math.round((returningClients90Days / totalClients) * 100) : 0;
+      const loyaltyRate = totalClients > 0 ? Math.round((loyalClients / totalClients) * 100) : 0;
+      const vipRate = totalClients > 0 ? Math.round((vipClients / totalClients) * 100) : 0;
+
+      return {
+        totalClients,
+        retentionRate30Days,
+        retentionRate90Days,
+        loyaltyRate,
+        vipRate,
+        returningClients30Days,
+        returningClients90Days,
+        loyalClients,
+        vipClients,
+        averageVisitsPerClient: totalClients > 0 ? Math.round(
+          Array.from(clientStats.values()).reduce((sum, client) => sum + client.visitCount, 0) / totalClients * 10
+        ) / 10 : 0
+      };
+    } catch (error) {
+      console.error("Error calculating client retention:", error);
+      // Données par défaut en cas d'erreur
+      return {
+        totalClients: 0,
+        retentionRate30Days: 0,
+        retentionRate90Days: 0,
+        loyaltyRate: 0,
+        vipRate: 0,
+        returningClients30Days: 0,
+        returningClients90Days: 0,
+        loyalClients: 0,
+        vipClients: 0,
+        averageVisitsPerClient: 0
+      };
+    }
   }
 }
 

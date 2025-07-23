@@ -31,6 +31,10 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/staff-performance"],
   });
 
+  const { data: clientRetention, isLoading: retentionLoading } = useQuery({
+    queryKey: ["/api/dashboard/client-retention"],
+  });
+
   const { lastMessage } = useWebSocket();
 
   useEffect(() => {
@@ -41,7 +45,7 @@ export default function Dashboard() {
 
   const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
-  if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading) {
+  if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading || retentionLoading) {
     return <LoadingDashboard />;
   }
 
@@ -168,6 +172,44 @@ export default function Dashboard() {
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg flex items-center justify-center">
                 <TrendingUp className="w-4 h-4 text-emerald-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500">Récurrence 30j</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">
+                  {clientRetention?.retentionRate30Days || 0}%
+                </p>
+                <p className="text-xs text-violet-600 font-medium">
+                  {clientRetention?.returningClients30Days || 0} clients
+                </p>
+              </div>
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-100 to-purple-100 rounded-lg flex items-center justify-center">
+                <UserCheck className="w-4 h-4 text-violet-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500">Clients Fidèles</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">
+                  {clientRetention?.loyaltyRate || 0}%
+                </p>
+                <p className="text-xs text-orange-600 font-medium">
+                  {clientRetention?.loyalClients || 0} clients 3+ visites
+                </p>
+              </div>
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg flex items-center justify-center">
+                <Award className="w-4 h-4 text-orange-600" />
               </div>
             </div>
           </CardContent>
@@ -304,6 +346,64 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Client Retention Analysis */}
+      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Analyse de Fidélisation Client</CardTitle>
+          <p className="text-sm text-gray-500">Indicateurs de récurrence et fidélité</p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-semibold text-violet-800">Récurrence 30 jours</h4>
+                <UserCheck className="w-5 h-5 text-violet-600" />
+              </div>
+              <p className="text-2xl font-bold text-violet-900">
+                {clientRetention?.retentionRate30Days || 0}%
+              </p>
+              <p className="text-xs text-violet-600 mt-1">
+                {clientRetention?.returningClients30Days || 0} / {clientRetention?.totalClients || 0} clients
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-sm font-semibold text-orange-800">Clients VIP</h4>
+                <Award className="w-5 h-5 text-orange-600" />
+              </div>
+              <p className="text-2xl font-bold text-orange-900">
+                {clientRetention?.vipRate || 0}%
+              </p>
+              <p className="text-xs text-orange-600 mt-1">
+                {clientRetention?.vipClients || 0} clients (5+ visites)
+              </p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-3">
+            <div className="text-center p-3 bg-blue-50 rounded-lg">
+              <p className="text-lg font-bold text-blue-900">
+                {clientRetention?.retentionRate90Days || 0}%
+              </p>
+              <p className="text-xs text-blue-600">Récurrence 90j</p>
+            </div>
+            <div className="text-center p-3 bg-emerald-50 rounded-lg">
+              <p className="text-lg font-bold text-emerald-900">
+                {clientRetention?.averageVisitsPerClient || 0}
+              </p>
+              <p className="text-xs text-emerald-600">Visites/client</p>
+            </div>
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
+              <p className="text-lg font-bold text-purple-900">
+                {clientRetention?.loyaltyRate || 0}%
+              </p>
+              <p className="text-xs text-purple-600">Clients fidèles</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Upcoming Appointments */}
       <Card className="border-0 shadow-sm">

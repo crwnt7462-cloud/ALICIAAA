@@ -364,6 +364,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/dashboard/client-retention', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const retentionData = await storage.getClientRetentionRate(userId);
+      res.json(retentionData);
+    } catch (error) {
+      console.error("Error fetching client retention:", error);
+      res.status(500).json({ message: "Failed to fetch client retention" });
+    }
+  });
+
   // AI Chat route
   app.post('/api/ai/chat', async (req, res) => {
     try {
