@@ -1036,3 +1036,133 @@ export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+// ===== AI CHAT SYSTEM LIKE CHATGPT =====
+
+// AI Chat Folders (like ChatGPT folders)
+export const aiChatFolders = pgTable("ai_chat_folders", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  name: varchar("name").notNull(),
+  color: varchar("color").default("#8B5CF6"), // Folder color
+  sortOrder: integer("sort_order").default(0),
+  isExpanded: boolean("is_expanded").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Chat Conversations (like ChatGPT chat history)
+export const aiChatConversations = pgTable("ai_chat_conversations", {
+  id: varchar("id").primaryKey(), // UUID
+  userId: varchar("user_id").notNull().references(() => users.id),
+  folderId: integer("folder_id").references(() => aiChatFolders.id),
+  title: varchar("title").notNull(),
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  messageCount: integer("message_count").default(0),
+  isArchived: boolean("is_archived").default(false),
+  isPinned: boolean("is_pinned").default(false),
+  isShared: boolean("is_shared").default(false),
+  shareId: varchar("share_id"), // For public sharing
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// AI Chat Messages (individual messages in conversations)
+export const aiChatMessages = pgTable("ai_chat_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: varchar("conversation_id").notNull().references(() => aiChatConversations.id),
+  role: varchar("role").notNull(), // 'user' or 'assistant'
+  content: text("content").notNull(),
+  messageIndex: integer("message_index").notNull(), // Order in conversation
+  isEdited: boolean("is_edited").default(false),
+  editedAt: timestamp("edited_at"),
+  metadata: jsonb("metadata"), // For storing additional AI response data
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// AI Chat Settings (user preferences for AI)
+export const aiChatSettings = pgTable("ai_chat_settings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  model: varchar("model").default("gpt-4o"), // AI model preference
+  temperature: decimal("temperature", { precision: 3, scale: 2 }).default("0.8"),
+  maxTokens: integer("max_tokens").default(400),
+  systemPrompt: text("system_prompt"), // Custom system prompt
+  autoTitle: boolean("auto_title").default(true), // Auto-generate conversation titles
+  saveHistory: boolean("save_history").default(true),
+  shareByDefault: boolean("share_by_default").default(false),
+  theme: varchar("theme").default("light"), // light, dark, auto
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Relations for AI Chat System
+export const aiChatFoldersRelations = relations(aiChatFolders, ({ one, many }) => ({
+  user: one(users, {
+    fields: [aiChatFolders.userId],
+    references: [users.id],
+  }),
+  conversations: many(aiChatConversations),
+}));
+
+export const aiChatConversationsRelations = relations(aiChatConversations, ({ one, many }) => ({
+  user: one(users, {
+    fields: [aiChatConversations.userId],
+    references: [users.id],
+  }),
+  folder: one(aiChatFolders, {
+    fields: [aiChatConversations.folderId],
+    references: [aiChatFolders.id],
+  }),
+  messages: many(aiChatMessages),
+}));
+
+export const aiChatMessagesRelations = relations(aiChatMessages, ({ one }) => ({
+  conversation: one(aiChatConversations, {
+    fields: [aiChatMessages.conversationId],
+    references: [aiChatConversations.id],
+  }),
+}));
+
+export const aiChatSettingsRelations = relations(aiChatSettings, ({ one }) => ({
+  user: one(users, {
+    fields: [aiChatSettings.userId],
+    references: [users.id],
+  }),
+}));
+
+// Types for AI Chat System
+export type AiChatFolder = typeof aiChatFolders.$inferSelect;
+export type InsertAiChatFolder = typeof aiChatFolders.$inferInsert;
+
+export type AiChatConversation = typeof aiChatConversations.$inferSelect;
+export type InsertAiChatConversation = typeof aiChatConversations.$inferInsert;
+
+export type AiChatMessage = typeof aiChatMessages.$inferSelect;
+export type InsertAiChatMessage = typeof aiChatMessages.$inferInsert;
+
+export type AiChatSettings = typeof aiChatSettings.$inferSelect;
+export type InsertAiChatSettings = typeof aiChatSettings.$inferInsert;
+
+// Validation schemas for AI Chat
+export const insertAiChatFolderSchema = createInsertSchema(aiChatFolders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAiChatConversationSchema = createInsertSchema(aiChatConversations).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAiChatMessageSchema = createInsertSchema(aiChatMessages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAiChatSettingsSchema = createInsertSchema(aiChatSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
