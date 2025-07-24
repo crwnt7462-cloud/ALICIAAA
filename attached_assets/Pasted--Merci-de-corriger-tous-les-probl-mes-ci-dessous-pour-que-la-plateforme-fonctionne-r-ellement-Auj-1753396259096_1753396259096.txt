@@ -1,0 +1,63 @@
+🔧 Merci de corriger tous les problèmes ci-dessous pour que la plateforme fonctionne réellement. Aujourd’hui, la majorité des modules sont soit factices, soit non connectés.
+
+Voici les 6 points à corriger immédiatement :
+
+⸻
+
+1. ✅ Connexion client non fonctionnelle
+	•	Lorsqu’un client se connecte, rien ne se passe (aucune redirection, aucun espace affiché).
+	•	Il faut :
+	•	Rediriger vers un espace client réel
+	•	Afficher l’historique, un bouton de messagerie, un accès aux pros via @
+	•	Garder le client connecté (pas de retour à l’accueil sans raison)
+
+⸻
+
+2. ✅ Fonction “Mot de passe oublié” inactive
+	•	Cliquer sur “Mot de passe oublié” ne fait rien.
+	•	Il faut activer ce système avec :
+	•	Un champ mail
+	•	L’envoi d’un lien de réinitialisation fonctionnel
+	•	Un retour utilisateur clair (confirmation, erreur, etc.)
+
+⸻
+
+3. ✅ Bouton “Réserver maintenant” mal nommé
+	•	Le bouton est étiqueté “Réserver maintenant” alors qu’il redirige vers la recherche.
+	•	Il faut le renommer en :
+	•	“Rechercher un salon” ou “Trouver un professionnel”
+	•	Et s’assurer que la redirection correspond bien à la recherche, pas à une réservation directe
+
+⸻
+
+4. ✅ Bloc “Méthodes de paiement” inactif
+	•	On ne peut rien activer/désactiver ou ajouter malgré les apparences.
+	•	Il faut rendre ce bloc fonctionnel :
+	•	Bouton “+ Ajouter méthode” doit ouvrir un formulaire
+	•	Les méthodes doivent être sauvegardées côté base
+	•	Affichées sur la fiche publique du salon
+
+⸻
+
+5. ✅ Dashboard Pro 100 % factice
+	•	Toutes les données (CA, RDV, clients fidèles, récurrence, etc.) sont fausses.
+	•	Il faut connecter le tableau de bord aux vraies données du pro :
+	•	Réels rendez-vous, chiffres, clients
+	•	Statistiques calculées automatiquement
+	•	Graphiques dynamiques à partir de la base réelle
+
+⸻
+
+6. ✅ Rendez-vous non visibles par les pros + Pro Tools décoratif
+	•	Lorsqu’un client réserve, le pro ne voit rien dans son compte.
+	•	Toute la section “Pro Tools” est factice.
+	•	Il faut :
+	•	Afficher les RDV en temps réel dans le planning du pro
+	•	Créer une vraie fiche client visible pour le pro
+	•	Relier toutes les sections (“Planning”, “Statistiques”, “Clients”, etc.) à la base réelle
+
+⸻
+
+⚠️ Tout doit être 100 % fonctionnel et connecté à la base.
+Pas d’interface factice. Le site doit être prêt à être utilisé comme Planity.
+Merci aussi de créer un compte test pro et un compte test client pour que je puisse tester le tout.

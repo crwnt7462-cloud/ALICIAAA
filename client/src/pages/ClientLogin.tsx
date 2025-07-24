@@ -275,6 +275,7 @@ export default function ClientLogin() {
                 <div className="text-center">
                   <Button
                     variant="ghost"
+                    onClick={() => setLocation('/forgot-password')}
                     className="text-gray-600 hover:text-gray-900 text-sm"
                   >
                     Mot de passe oublié ?

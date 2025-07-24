@@ -749,6 +749,80 @@ export class DatabaseStorage implements IStorage {
       .set({ isRead: true, updatedAt: new Date() })
       .where(eq(clientMessages.id, messageId));
   }
+  // Client authentication methods
+  async authenticateClient(email: string, password: string): Promise<any | null> {
+    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
+    if (!client) return null;
+    
+    const bcrypt = require('bcrypt');
+    const isValid = await bcrypt.compare(password, client.passwordHash);
+    if (!isValid) return null;
+    
+    return client;
+  }
+
+  async getClientById(id: string): Promise<any | undefined> {
+    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.id, id));
+    return client;
+  }
+
+  async getClientAppointments(clientId: string): Promise<any[]> {
+    const appointmentsList = await db
+      .select({
+        id: appointments.id,
+        serviceName: appointments.serviceName,
+        salonName: appointments.salonName,
+        date: appointments.date,
+        time: appointments.time,
+        status: appointments.status,
+        price: appointments.price,
+        address: appointments.address
+      })
+      .from(appointments)
+      .where(eq(appointments.clientId, clientId))
+      .orderBy(desc(appointments.date));
+    
+    return appointmentsList;
+  }
+
+  async getClientMessages(clientId: string): Promise<any[]> {
+    // For now, return empty array - will be implemented with real messaging
+    return [];
+  }
+
+  // Password reset methods
+  async savePasswordResetToken(email: string, token: string): Promise<void> {
+    // In a real system, this would save to a password_reset_tokens table
+    console.log(`Password reset token for ${email}: ${token}`);
+  }
+
+  // Payment methods for professionals
+  async getPaymentMethods(userId: string): Promise<any[]> {
+    // For now, return some default methods
+    return [
+      { id: 1, name: "Carte bancaire", type: "card", isActive: true, fees: 0 },
+      { id: 2, name: "Espèces", type: "cash", isActive: true, fees: 0 },
+      { id: 3, name: "Chèques", type: "check", isActive: false, fees: 0 }
+    ];
+  }
+
+  async addPaymentMethod(methodData: any): Promise<any> {
+    // In a real system, this would insert to payment_methods table
+    const newMethod = {
+      id: Date.now(),
+      ...methodData
+    };
+    console.log('Adding payment method:', newMethod);
+    return newMethod;
+  }
+
+  async updatePaymentMethod(id: number, data: any): Promise<void> {
+    console.log(`Updating payment method ${id}:`, data);
+  }
+
+  async deletePaymentMethod(id: number): Promise<void> {
+    console.log(`Deleting payment method ${id}`);
+  }
 }
 
 export const storage = new DatabaseStorage();

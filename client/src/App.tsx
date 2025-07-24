@@ -73,6 +73,8 @@ import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
 import SalonSettings from "@/pages/SalonSettings";
 import BookingCustomization from "@/pages/BookingCustomization";
+import ForgotPassword from "@/pages/ForgotPassword";
+import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";

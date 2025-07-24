@@ -213,6 +213,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes pour connexion client
+  app.post('/api/client/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis" });
+      }
+
+      const client = await storage.authenticateClient(email, password);
+      if (!client) {
+        return res.status(401).json({ message: "Identifiants incorrects" });
+      }
+
+      // Créer la session
+      req.session.clientId = client.id;
+      req.session.userType = 'client';
+
+      res.json({
+        message: "Connexion réussie",
+        client: {
+          id: client.id,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          email: client.email
+        },
+        redirectTo: "/client-dashboard"
+      });
+    } catch (error) {
+      console.error("Error during client login:", error);
+      res.status(500).json({ message: "Erreur de connexion" });
+    }
+  });
+
+  app.post('/api/client/logout', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+      }
+      res.json({ message: "Déconnexion réussie" });
+    });
+  });
+
+  // Routes pour les données client
+  app.get('/api/client/profile', authenticateClient, async (req: any, res) => {
+    try {
+      const clientId = req.session.clientId;
+      const client = await storage.getClientById(clientId);
+      res.json(client);
+    } catch (error) {
+      console.error("Error fetching client profile:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération du profil" });
+    }
+  });
+
+  app.get('/api/client/appointments', authenticateClient, async (req: any, res) => {
+    try {
+      const clientId = req.session.clientId;
+      const appointments = await storage.getClientAppointments(clientId);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching client appointments:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des rendez-vous" });
+    }
+  });
+
+  app.get('/api/client/messages', authenticateClient, async (req: any, res) => {
+    try {
+      const clientId = req.session.clientId;
+      const messages = await storage.getClientMessages(clientId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching client messages:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
+    }
+  });
+
+  // Route pour mot de passe oublié
+  app.post('/api/auth/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email requis" });
+      }
+
+      // Vérifier si l'email existe
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        // Pour la sécurité, on ne révèle pas si l'email existe ou non
+        return res.json({ message: "Si cet email existe, un lien de réinitialisation a été envoyé" });
+      }
+
+      // Générer un token de réinitialisation
+      const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      await storage.savePasswordResetToken(email, resetToken);
+
+      // Dans un vrai système, on enverrait un email ici
+      console.log(`Reset token for ${email}: ${resetToken}`);
+
+      res.json({ message: "Un email de réinitialisation a été envoyé" });
+    } catch (error) {
+      console.error("Error in forgot password:", error);
+      res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+    }
+  });
+
+  // Routes pour méthodes de paiement
+  app.get('/api/professional/payment-methods', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const methods = await storage.getPaymentMethods(userId);
+      res.json(methods);
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des méthodes" });
+    }
+  });
+
+  app.post('/api/professional/payment-methods', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const methodData = { ...req.body, userId, isActive: true };
+      const method = await storage.addPaymentMethod(methodData);
+      res.json(method);
+    } catch (error) {
+      console.error("Error adding payment method:", error);
+      res.status(500).json({ message: "Erreur lors de l'ajout de la méthode" });
+    }
+  });
+
+  app.patch('/api/professional/payment-methods/:id', authenticateUser, async (req: any, res) => {
+    try {
+      const methodId = parseInt(req.params.id);
+      const { isActive } = req.body;
+      await storage.updatePaymentMethod(methodId, { isActive });
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating payment method:", error);
+      res.status(500).json({ message: "Erreur lors de la modification" });
+    }
+  });
+
+  app.delete('/api/professional/payment-methods/:id', authenticateUser, async (req: any, res) => {
+    try {
+      const methodId = parseInt(req.params.id);
+      await storage.deletePaymentMethod(methodId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting payment method:", error);
+      res.status(500).json({ message: "Erreur lors de la suppression" });
+    }
+  });
+
   // Client Authentication Routes
   app.post('/api/client-auth/register', async (req, res) => {
     try {

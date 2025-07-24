@@ -402,11 +402,11 @@ export default function PublicLanding() {
                   </button>
                 </div>
                 <Button 
-                  onClick={() => setLocation('/booking')}
+                  onClick={handleSearch}
                   className="w-full h-11 gradient-bg text-white text-sm font-medium rounded-lg touch-manipulation"
                 >
                   <Search className="w-4 h-4 mr-2" />
-                  Réserver maintenant
+                  Rechercher un salon
                 </Button>
               </div>
             </div>
