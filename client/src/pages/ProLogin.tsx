@@ -39,8 +39,8 @@ export default function ProLogin() {
           title: "Connexion réussie",
           description: `Bienvenue ${data.user.firstName} !`,
         });
-        // Redirection vers les Pro Tools
-        setLocation('/business-features');
+        // Redirection vers le tableau de bord pro
+        setLocation('/pro-dashboard');
       } else {
         const errorData = await response.json();
         toast({

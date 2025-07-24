@@ -28,6 +28,20 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
+// Messages simples entre clients et professionnels
+export const clientMessages = pgTable("client_messages", {
+  id: serial("id").primaryKey(),
+  fromClientId: varchar("from_client_id").notNull(),
+  toProfessionalId: varchar("to_professional_id").notNull().references(() => users.id),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type ClientMessage = typeof clientMessages.$inferSelect;
+export type InsertClientMessage = typeof clientMessages.$inferInsert;
+
 // User storage table (mandatory for Replit Auth)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),

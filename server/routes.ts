@@ -169,10 +169,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Données manquantes" });
       }
 
-      // Dans un vrai système, on vérifierait l'authentification client
-      // Pour cette démo, on simule l'envoi
+      // Créer un compte client temporaire s'il n'existe pas
+      let clientId = "temp-client-" + Date.now();
+      
       await storage.sendMessageToProfessional({
-        fromClientId: "test-client-user",
+        fromClientId: clientId,
         toProfessionalId: professionalId,
         message: message.trim(),
         timestamp: new Date()
@@ -197,6 +198,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching professional messages:", error);
       res.status(500).json({ message: "Erreur lors de la récupération des messages" });
+    }
+  });
+
+  // Route pour marquer un message comme lu
+  app.patch('/api/professional/messages/:messageId/read', authenticateUser, async (req: any, res) => {
+    try {
+      const messageId = parseInt(req.params.messageId);
+      await storage.markMessageAsRead(messageId);
+      res.json({ success: true, message: "Message marqué comme lu" });
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+      res.status(500).json({ message: "Erreur lors du marquage" });
     }
   });
 
@@ -806,6 +819,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error updating booking page:", error);
       res.status(500).json({ message: "Failed to update booking page" });
     }
+  });
+
+  // Route de déconnexion
+  app.post('/api/auth/logout', (req: any, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Déconnexion réussie" });
+    });
   });
 
   app.get('/api/salon-settings', authenticateUser, async (req: any, res) => {

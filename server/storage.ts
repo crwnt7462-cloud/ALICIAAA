@@ -6,6 +6,7 @@ import {
   staff,
   appointments,
   subscriptions,
+  clientMessages,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -21,6 +22,8 @@ import {
   type InsertStaff,
   type Appointment,
   type InsertAppointment,
+  type ClientMessage,
+  type InsertClientMessage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
@@ -707,21 +710,44 @@ export class DatabaseStorage implements IStorage {
     toProfessionalId: string;
     message: string;
     timestamp: Date;
-  }): Promise<void> {
-    console.log("Message envoyé:", messageData);
+  }): Promise<ClientMessage> {
+    const [newMessage] = await db.insert(clientMessages).values({
+      fromClientId: messageData.fromClientId,
+      toProfessionalId: messageData.toProfessionalId,
+      message: messageData.message,
+      isRead: false,
+      createdAt: messageData.timestamp,
+      updatedAt: messageData.timestamp
+    }).returning();
+    
+    return newMessage;
   }
 
   // Récupérer les messages d'un professionnel
   async getProfessionalMessages(professionalId: string): Promise<any[]> {
-    return [
-      {
-        id: "1",
-        fromClient: "Jean Martin",
-        message: "Bonjour, j'aimerais prendre rendez-vous pour une coupe",
-        timestamp: new Date(),
-        isRead: false
-      }
-    ];
+    const professionalMessages = await db
+      .select({
+        id: clientMessages.id,
+        fromClientId: clientMessages.fromClientId,
+        message: clientMessages.message,
+        isRead: clientMessages.isRead,
+        createdAt: clientMessages.createdAt,
+        clientName: sql<string>`COALESCE(${clientAccounts.firstName} || ' ' || ${clientAccounts.lastName}, 'Client inconnu')`
+      })
+      .from(clientMessages)
+      .leftJoin(clientAccounts, eq(clientMessages.fromClientId, clientAccounts.id))
+      .where(eq(clientMessages.toProfessionalId, professionalId))
+      .orderBy(desc(clientMessages.createdAt));
+
+    return professionalMessages;
+  }
+
+  // Marquer un message comme lu
+  async markMessageAsRead(messageId: number): Promise<void> {
+    await db
+      .update(clientMessages)
+      .set({ isRead: true, updatedAt: new Date() })
+      .where(eq(clientMessages.id, messageId));
   }
 }
 

@@ -76,6 +76,10 @@ import BookingCustomization from "@/pages/BookingCustomization";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";
+import ProDashboard from "@/pages/ProDashboard";
+import ProMessaging from "@/pages/ProMessaging";
+import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
+import BookingPage from "@/pages/BookingPage";
 
 
 function Router() {
@@ -121,6 +125,42 @@ function Router() {
     return (
       <div className="h-full">
         <MessagingSearch />
+      </div>
+    );
+  }
+
+  // Tableau de bord professionnel
+  if (location === '/pro-dashboard') {
+    return (
+      <div className="h-full">
+        <ProDashboard />
+      </div>
+    );
+  }
+
+  // Messagerie professionnelle
+  if (location === '/pro-messaging') {
+    return (
+      <div className="h-full">
+        <ProMessaging />
+      </div>
+    );
+  }
+
+  // Paramètres du salon
+  if (location === '/salon-settings') {
+    return (
+      <div className="h-full">
+        <SalonSettingsComplete />
+      </div>
+    );
+  }
+
+  // Page de réservation publique
+  if (location.startsWith('/booking')) {
+    return (
+      <div className="h-full">
+        <BookingPage />
       </div>
     );
   }
