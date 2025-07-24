@@ -73,6 +73,11 @@ export interface IStorage {
   getTopServices(userId: string): Promise<any[]>;
   getStaffPerformance(userId: string): Promise<any[]>;
   getClientRetentionRate(userId: string): Promise<any>;
+
+  // Booking Pages Management
+  getCurrentBookingPage(userId: string): Promise<any>;
+  updateCurrentBookingPage(userId: string, data: any): Promise<any>;
+  updateUserProfile(userId: string, data: any): Promise<User>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -90,7 +95,6 @@ export class DatabaseStorage implements IStorage {
         phone: "01 42 34 56 78",
         address: "123 Avenue de la Beauté, 75001 Paris",
         city: "Paris",
-        postalCode: "75001",
         country: "France",
         isProfessional: true,
         isVerified: true,
@@ -123,9 +127,10 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return updated;
     } else {
+      const userId = userData.id || nanoid();
       const [created] = await db.insert(users).values({
-        id: userData.id || nanoid(),
         ...userData,
+        id: userId,
       }).returning();
       return created;
     }
@@ -346,7 +351,10 @@ export class DatabaseStorage implements IStorage {
       .where(eq(appointments.userId, userId));
 
     if (date) {
-      query = query.where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)));
+      query = db
+        .select()
+        .from(appointments)
+        .where(and(eq(appointments.userId, userId), eq(appointments.appointmentDate, date)));
     }
 
     return await query.orderBy(appointments.appointmentDate, appointments.startTime);
@@ -565,6 +573,102 @@ export class DatabaseStorage implements IStorage {
         vipClients: 0,
         averageVisitsPerClient: 0
       };
+    }
+  }
+  // Booking Pages Management
+  async getCurrentBookingPage(userId: string): Promise<any> {
+    try {
+      // Import bookingPages here to avoid circular imports
+      const { bookingPages } = await import("@shared/schema");
+      const [bookingPage] = await db
+        .select()
+        .from(bookingPages)
+        .where(eq(bookingPages.userId, userId))
+        .limit(1);
+
+      if (bookingPage) {
+        return bookingPage;
+      }
+
+      // If no booking page exists, create a default one
+      const user = await this.getUser(userId);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const defaultPageUrl = `salon-${userId}-${Date.now()}`;
+      const [newPage] = await db
+        .insert(bookingPages)
+        .values({
+          userId,
+          pageUrl: defaultPageUrl,
+          salonName: user.businessName || `Salon ${user.firstName || 'Beauty'}`,
+          salonDescription: `Salon de beauté professionnel - Prenez rendez-vous en ligne`,
+          salonAddress: user.address || '',
+          salonPhone: user.phone || '',
+          salonEmail: user.email,
+          selectedServices: [],
+          template: 'moderne',
+          primaryColor: '#8B5CF6',
+          secondaryColor: '#F59E0B',
+          showPrices: true,
+          enableOnlineBooking: true,
+          requireDeposit: true,
+          depositPercentage: 30,
+          businessHours: {
+            monday: { open: '09:00', close: '18:00', closed: false },
+            tuesday: { open: '09:00', close: '18:00', closed: false },
+            wednesday: { open: '09:00', close: '18:00', closed: false },
+            thursday: { open: '09:00', close: '19:00', closed: false },
+            friday: { open: '09:00', close: '19:00', closed: false },
+            saturday: { open: '08:00', close: '17:00', closed: false },
+            sunday: { open: '10:00', close: '16:00', closed: false }
+          },
+          isPublished: false
+        })
+        .returning();
+
+      return newPage;
+    } catch (error) {
+      console.error("Error getting current booking page:", error);
+      throw error;
+    }
+  }
+
+  async updateCurrentBookingPage(userId: string, data: any): Promise<any> {
+    try {
+      const { bookingPages } = await import("@shared/schema");
+      const [updatedPage] = await db
+        .update(bookingPages)
+        .set({
+          ...data,
+          updatedAt: new Date()
+        })
+        .where(eq(bookingPages.userId, userId))
+        .returning();
+
+      return updatedPage;
+    } catch (error) {
+      console.error("Error updating booking page:", error);
+      throw error;
+    }
+  }
+
+  async updateUserProfile(userId: string, data: any): Promise<User> {
+    try {
+      const [updatedUser] = await db
+        .update(users)
+        .set({
+          ...data,
+          updatedAt: new Date()
+        })
+        .where(eq(users.id, userId))
+        .returning();
+
+      return updatedUser;
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      throw error;
     }
   }
 }

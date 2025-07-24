@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
@@ -11,13 +12,28 @@ import {
   Copy,
   ExternalLink,
   Settings,
-  Globe
+  Globe,
+  Loader2
 } from 'lucide-react';
 
 export default function ProPagesManager() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [bookingUrl] = useState("https://beauty-booking.app/salon/excellence-paris");
+
+  // Récupérer les données utilisateur (informations du salon)
+  const { data: userData, isLoading: userLoading } = useQuery({
+    queryKey: ['/api/auth/user']
+  });
+
+  // Récupérer la page de réservation existante
+  const { data: bookingPageData, isLoading: bookingLoading } = useQuery({
+    queryKey: ['/api/booking-pages/current'],
+    enabled: !!userData
+  });
+
+  const bookingUrl = bookingPageData?.pageUrl ? 
+    `${window.location.origin}/booking/${bookingPageData.pageUrl}` : 
+    `${window.location.origin}/booking/salon-${userData?.id || 'default'}`;
 
   const handleCopyBookingUrl = () => {
     navigator.clipboard.writeText(bookingUrl);
@@ -59,6 +75,14 @@ export default function ProPagesManager() {
       </div>
 
       <div className="max-w-4xl mx-auto p-6 space-y-6">
+        {/* État de chargement */}
+        {(userLoading || bookingLoading) && (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-violet-600" />
+            <span className="ml-2 text-gray-600">Chargement des données...</span>
+          </div>
+        )}
+
         {/* Page du Salon */}
         <Card className="border-l-4 border-l-violet-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-4">
@@ -74,7 +98,8 @@ export default function ProPagesManager() {
               </div>
               <Button
                 onClick={handleModifySalonPage}
-                className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
+                disabled={userLoading}
+                className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
               >
                 <Edit3 className="h-4 w-4 mr-2" />
                 Modifier
@@ -82,20 +107,34 @@ export default function ProPagesManager() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div className="flex items-center gap-2 text-gray-600">
-                <Globe className="h-4 w-4" />
-                <span>Informations générales</span>
+            {userData ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Building2 className="h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Nom:</span>
+                    <span>{userData.businessName || 'Non défini'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Globe className="h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Adresse:</span>
+                    <span>{userData.address || 'Non définie'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Settings className="h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Téléphone:</span>
+                    <span>{userData.phone || 'Non défini'}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <ExternalLink className="h-4 w-4 text-violet-600" />
+                    <span className="font-medium">Email:</span>
+                    <span>{userData.email}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <Settings className="h-4 w-4" />
-                <span>Horaires & contact</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <ExternalLink className="h-4 w-4" />
-                <span>Photos & description</span>
-              </div>
-            </div>
+            ) : (
+              <div className="text-gray-500 text-sm">Chargement des informations du salon...</div>
+            )}
           </CardContent>
         </Card>
 
@@ -116,14 +155,16 @@ export default function ProPagesManager() {
                 <Button
                   onClick={handleCopyBookingUrl}
                   variant="outline"
-                  className="rounded-full px-4 py-2 font-medium hover:bg-gray-50 transition-all hover:scale-105"
+                  disabled={bookingLoading}
+                  className="rounded-full px-4 py-2 font-medium hover:bg-gray-50 transition-all hover:scale-105 disabled:opacity-50"
                 >
                   <Copy className="h-4 w-4 mr-2" />
                   Copier
                 </Button>
                 <Button
                   onClick={handleModifyBookingPage}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
+                  disabled={bookingLoading}
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
                 >
                   <Edit3 className="h-4 w-4 mr-2" />
                   Modifier
@@ -132,37 +173,55 @@ export default function ProPagesManager() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {/* URL de réservation */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 mb-1">Lien de réservation</p>
-                    <p className="text-blue-600 font-mono text-sm break-all">{bookingUrl}</p>
+            {bookingPageData ? (
+              <div className="space-y-4">
+                {/* URL de réservation */}
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700 mb-1">Lien de réservation</p>
+                      <p className="text-blue-600 font-mono text-sm break-all">{bookingUrl}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(bookingUrl, '_blank')}
+                      className="ml-4 rounded-full hover:bg-gray-100"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => window.open(bookingUrl, '_blank')}
-                    className="ml-4 rounded-full hover:bg-gray-100"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </Button>
                 </div>
-              </div>
 
-              {/* Options de personnalisation */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Settings className="h-4 w-4" />
-                  <span>Services affichés</span>
-                </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Globe className="h-4 w-4" />
-                  <span>URL personnalisée</span>
+                {/* Informations de la page */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Building2 className="h-4 w-4 text-blue-600" />
+                    <span className="font-medium">Nom affiché:</span>
+                    <span>{bookingPageData.salonName}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Settings className="h-4 w-4 text-blue-600" />
+                    <span className="font-medium">Services:</span>
+                    <span>{bookingPageData.selectedServices?.length || 0} service(s)</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <Globe className="h-4 w-4 text-blue-600" />
+                    <span className="font-medium">Statut:</span>
+                    <span className={bookingPageData.isPublished ? "text-green-600" : "text-orange-600"}>
+                      {bookingPageData.isPublished ? "Publié" : "Brouillon"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <ExternalLink className="h-4 w-4 text-blue-600" />
+                    <span className="font-medium">Vues:</span>
+                    <span>{bookingPageData.views || 0}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-gray-500 text-sm">Chargement des données de réservation...</div>
+            )}
           </CardContent>
         </Card>
 

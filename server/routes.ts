@@ -710,6 +710,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Booking Pages API Routes
+  app.get('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const bookingPage = await storage.getCurrentBookingPage(userId);
+      res.json(bookingPage);
+    } catch (error) {
+      console.error("Error fetching current booking page:", error);
+      res.status(500).json({ message: "Failed to fetch booking page" });
+    }
+  });
+
+  app.patch('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const updatedPage = await storage.updateCurrentBookingPage(userId, req.body);
+      res.json(updatedPage);
+    } catch (error) {
+      console.error("Error updating booking page:", error);
+      res.status(500).json({ message: "Failed to update booking page" });
+    }
+  });
+
+  app.get('/api/salon-settings', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return salon data from user profile
+      const salonData = {
+        businessName: user.businessName || '',
+        address: user.address || '',
+        city: user.city || '',
+        phone: user.phone || '',
+        email: user.email,
+        description: '', // Could be added to user schema if needed
+        coverImage: user.profileImageUrl || '',
+        workingHours: {
+          monday: { open: '09:00', close: '18:00', closed: false },
+          tuesday: { open: '09:00', close: '18:00', closed: false },
+          wednesday: { open: '09:00', close: '18:00', closed: false },
+          thursday: { open: '09:00', close: '19:00', closed: false },
+          friday: { open: '09:00', close: '19:00', closed: false },
+          saturday: { open: '08:00', close: '17:00', closed: false },
+          sunday: { open: '10:00', close: '16:00', closed: false }
+        }
+      };
+
+      res.json(salonData);
+    } catch (error) {
+      console.error("Error fetching salon settings:", error);
+      res.status(500).json({ message: "Failed to fetch salon settings" });
+    }
+  });
+
+  app.patch('/api/salon-settings', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const updatedUser = await storage.updateUserProfile(userId, req.body);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating salon settings:", error);
+      res.status(500).json({ message: "Failed to update salon settings" });
+    }
+  });
+
   // Only setup WebSocket in production mode
   if (process.env.NODE_ENV === 'production') {
     const wss = new WebSocketServer({ server: httpServer });
