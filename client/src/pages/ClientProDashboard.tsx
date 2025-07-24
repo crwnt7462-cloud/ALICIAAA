@@ -26,7 +26,7 @@ import {
 
 export default function ClientProDashboard() {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("appointments");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const { toast } = useToast();
 
   const upcomingAppointments = [
@@ -113,24 +113,85 @@ export default function ClientProDashboard() {
 
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsTrigger value="dashboard" className="flex flex-col items-center gap-1 py-3">
+              <Calendar className="h-4 w-4" />
+              <span className="text-xs">Accueil</span>
+            </TabsTrigger>
             <TabsTrigger value="appointments" className="flex flex-col items-center gap-1 py-3">
               <Calendar className="h-4 w-4" />
-              <span className="text-xs">RDV</span>
+              <span className="text-xs">Planning</span>
             </TabsTrigger>
             <TabsTrigger value="messages" className="flex flex-col items-center gap-1 py-3">
               <MessageSquare className="h-4 w-4" />
-              <span className="text-xs">Messages</span>
+              <span className="text-xs">Clients</span>
             </TabsTrigger>
-            <TabsTrigger value="favorites" className="flex flex-col items-center gap-1 py-3">
-              <Heart className="h-4 w-4" />
-              <span className="text-xs">Favoris</span>
+            <TabsTrigger value="tools" className="flex flex-col items-center gap-1 py-3">
+              <Settings className="h-4 w-4" />
+              <span className="text-xs">Pro Tools</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="flex flex-col items-center gap-1 py-3">
-              <User className="h-4 w-4" />
-              <span className="text-xs">Profil</span>
+            <TabsTrigger value="ai" className="flex flex-col items-center gap-1 py-3">
+              <Star className="h-4 w-4" />
+              <span className="text-xs">IA Pro</span>
             </TabsTrigger>
           </TabsList>
+
+          {/* Dashboard Tab */}
+          <TabsContent value="dashboard" className="space-y-4">
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-violet-600">8</div>
+                  <div className="text-sm text-gray-600">RDV aujourd'hui</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-green-600">340€</div>
+                  <div className="text-sm text-gray-600">CA du jour</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-blue-600">12</div>
+                  <div className="text-sm text-gray-600">Nouveaux clients</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-orange-600">4.9</div>
+                  <div className="text-sm text-gray-600">Note moyenne</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Prochains rendez-vous</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {upcomingAppointments.slice(0, 3).map((appointment) => (
+                  <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <div className="font-medium text-gray-900">{appointment.service}</div>
+                      <div className="text-sm text-gray-600">{appointment.time} - {appointment.specialist}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-violet-600">{appointment.price}</div>
+                      <div className="text-xs text-gray-500">{appointment.status}</div>
+                    </div>
+                  </div>
+                ))}
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => setActiveTab("appointments")}
+                >
+                  Voir tous les RDV
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Appointments Tab */}
           <TabsContent value="appointments" className="space-y-4">
@@ -258,94 +319,124 @@ export default function ClientProDashboard() {
             </div>
           </TabsContent>
 
-          {/* Favorites Tab */}
-          <TabsContent value="favorites" className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900">Services favoris</h3>
-              <Button variant="outline" size="sm">
-                <Filter className="h-3 w-3" />
-              </Button>
-            </div>
+          {/* Pro Tools Tab */}
+          <TabsContent value="tools" className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Outils Professionnels</h3>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setLocation('/page-creator')}>
+                <CardContent className="p-4 text-center">
+                  <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Edit3 className="h-5 w-5 text-violet-600" />
+                  </div>
+                  <div className="font-medium text-gray-900">Pages</div>
+                  <div className="text-xs text-gray-600">Créer/modifier</div>
+                </CardContent>
+              </Card>
 
-            <div className="space-y-3">
-              {favoriteServices.map((service, index) => (
-                <Card key={index} className="border border-gray-200">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <h5 className="font-medium text-gray-900">{service.name}</h5>
-                        <p className="text-sm text-gray-600">{service.salon}</p>
-                      </div>
-                      <span className="font-semibold text-violet-600">{service.price}</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        className="flex-1 bg-violet-600 hover:bg-violet-700"
-                        onClick={() => toast({ title: "Réservation en cours..." })}
-                      >
-                        Réserver
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Heart className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-4 text-center">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <CreditCard className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div className="font-medium text-gray-900">Paiements</div>
+                  <div className="text-xs text-gray-600">Encaissements</div>
+                </CardContent>
+              </Card>
 
-          {/* Profile Tab */}
-          <TabsContent value="profile" className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Mon profil</h3>
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-4 text-center">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Bell className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div className="font-medium text-gray-900">Marketing</div>
+                  <div className="text-xs text-gray-600">Campagnes</div>
+                </CardContent>
+              </Card>
+
+              <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                <CardContent className="p-4 text-center">
+                  <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Gift className="h-5 w-5 text-orange-600" />
+                  </div>
+                  <div className="font-medium text-gray-900">Fidélité</div>
+                  <div className="text-xs text-gray-600">Programmes</div>
+                </CardContent>
+              </Card>
+            </div>
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Informations personnelles</CardTitle>
+                <CardTitle className="text-lg">Configuration</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label className="text-sm">Nom complet</Label>
-                  <Input value="Marie Dubois" readOnly className="mt-1" />
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Paramètres du salon
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Horaires d'ouverture
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <User className="h-4 w-4 mr-2" />
+                  Gestion équipe
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* AI Tab */}
+          <TabsContent value="ai" className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Intelligence Artificielle</h3>
+            
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-8 w-8 text-white" />
                 </div>
-                <div>
-                  <Label className="text-sm">Email</Label>
-                  <Input value="marie.dubois@email.com" readOnly className="mt-1" />
-                </div>
-                <div>
-                  <Label className="text-sm">Téléphone</Label>
-                  <Input value="+33 6 12 34 56 78" readOnly className="mt-1" />
-                </div>
-                <Button className="w-full bg-violet-600 hover:bg-violet-700">
-                  Modifier mes informations
+                <h4 className="font-semibold text-gray-900 mb-2">Assistant IA Professionnel</h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  Optimisez votre planning, analysez vos performances et obtenez des conseils personnalisés
+                </p>
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-700"
+                  onClick={() => setLocation('/ai-pro')}
+                >
+                  Lancer l'assistant
                 </Button>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Statistiques</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">RDV cette année</span>
-                  <span className="font-semibold">12</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Salons visités</span>
-                  <span className="font-semibold">5</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Points fidélité</span>
-                  <span className="font-semibold text-violet-600">450</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Économies réalisées</span>
-                  <span className="font-semibold text-green-600">85€</span>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid grid-cols-1 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">Optimisation Planning</div>
+                      <div className="text-xs text-gray-600">Suggestions automatiques</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                      <Star className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900">Analyse Clients</div>
+                      <div className="text-xs text-gray-600">Comportements et tendances</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

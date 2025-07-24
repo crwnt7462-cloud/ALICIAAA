@@ -69,7 +69,14 @@ export default function NewPageCreator() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-900">Page Salon</h2>
-              <Badge>Aperçu Live</Badge>
+              <Button 
+                size="sm" 
+                className="bg-violet-600 hover:bg-violet-700"
+                onClick={() => alert('Mode édition activé ! Cliquez sur n\'importe quel élément pour le modifier.')}
+              >
+                <Edit3 className="h-3 w-3 mr-1" />
+                Modifier tout
+              </Button>
             </div>
 
             <Card className="overflow-hidden">
@@ -321,7 +328,14 @@ export default function NewPageCreator() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-900">Page Réservation</h2>
-              <Badge variant="secondary">Modifiable</Badge>
+              <Button 
+                size="sm" 
+                className="bg-violet-600 hover:bg-violet-700"
+                onClick={() => alert('Mode édition activé ! Cliquez sur n\'importe quel élément pour le modifier.')}
+              >
+                <Edit3 className="h-3 w-3 mr-1" />
+                Modifier tout
+              </Button>
             </div>
 
             <Card>
