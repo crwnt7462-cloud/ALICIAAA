@@ -75,6 +75,7 @@ import SalonSettings from "@/pages/SalonSettings";
 import BookingCustomization from "@/pages/BookingCustomization";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
+import MessagingSearch from "@/pages/MessagingSearch";
 
 
 function Router() {
@@ -102,6 +103,24 @@ function Router() {
     return (
       <div className="h-full">
         <DemoLogin />
+      </div>
+    );
+  }
+
+  // Page de connexion professionnelle
+  if (location === '/pro-login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
+      </div>
+    );
+  }
+
+  // Page de recherche de messagerie
+  if (location === '/messaging-search') {
+    return (
+      <div className="h-full">
+        <MessagingSearch />
       </div>
     );
   }

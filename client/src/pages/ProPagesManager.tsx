@@ -73,11 +73,11 @@ export default function ProPagesManager() {
               </div>
             </div>
             <Button
-              onClick={() => setLocation('/demo-login')}
+              onClick={() => setLocation('/pro-login')}
               variant="outline"
               className="text-sm"
             >
-              Connexion Démo
+              Se connecter
             </Button>
           </div>
         </div>

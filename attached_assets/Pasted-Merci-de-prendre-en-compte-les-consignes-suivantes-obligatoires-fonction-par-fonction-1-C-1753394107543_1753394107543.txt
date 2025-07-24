@@ -1,0 +1,70 @@
+Merci de prendre en compte les consignes suivantes obligatoires, fonction par fonction :
+
+⸻
+
+🔐 1. Connexion sécurisée uniquement avec compte existant
+	•	❌ On ne doit plus pouvoir se connecter sans compte réel (ni pro, ni client)
+	•	✅ Lorsqu’un utilisateur tente de se connecter, vérifier que :
+	•	L’e-mail existe
+	•	Le mot de passe est correct
+	•	Si ce n’est pas le cas :
+	•	Afficher un message clair : “Identifiants incorrects”
+	•	❌ Ne pas autoriser l’accès
+	•	✅ Aucun “faux login” ou session fantôme
+	•	✅ Redirection correcte après connexion (pas vers la home)
+
+⸻
+
+🧪 2. Créer un compte test fonctionnel (PRO)
+
+Ce compte me permettra de tester l’espace pro sans bug.
+
+	•	Email : test@monapp.com
+	•	Mot de passe : test1234
+	•	Ce compte doit être lié à :
+	•	Un salon réel existant
+	•	Une page de salon fonctionnelle (modification active)
+	•	Une page de réservation (même si elle n’est pas modifiable)
+	•	Je dois pouvoir me connecter et tout tester sans erreur
+
+⸻
+
+🧩 3. Pro Tools > Pages
+
+✅ Page du Salon
+	•	Le bouton “Modifier” doit :
+	•	Charger le salon réel lié au compte
+	•	Afficher un formulaire pré-rempli (nom, horaires, image, etc.)
+	•	Sauvegarder les changements sur ce salon
+
+❌ Page de Réservation (Non modifiable pour l’instant)
+	•	Affiche uniquement le lien réel du salon
+	•	Le bouton “Modifier” doit être supprimé ou désactivé
+	•	Le bouton “Copier” doit fonctionner
+
+⸻
+
+💬 4. Fonction de messagerie — Recherche par @handle
+
+Je veux que les clients puissent rechercher un pro via son @ (handle) et lui envoyer un message directement depuis l’app.
+
+✅ Fonction attendue :
+	•	Barre de recherche dans l’espace messagerie pour taper un @
+	•	Exemple : si un pro s’appelle @usemyrr, on tape @usemyrr
+	•	L’app doit retrouver le salon/pro associé à ce @handle
+	•	Une fois trouvé : possibilité d’envoyer un message
+	•	Le pro doit recevoir ce message dans sa messagerie (système interne)
+
+🚫 Aucun message ne doit se perdre
+
+✅ Les messages doivent être associés correctement entre client ↔ pro
+
+⸻
+
+🎯 Résumé à livrer :
+	•	✅ Connexion sécurisée 100% fonctionnelle
+	•	✅ Compte test opérationnel
+	•	✅ Page du salon modifiable
+	•	❌ Page de réservation non modifiable (mais visible)
+	•	✅ Recherche par @handle pour envoyer un message à un pro
+	•	✅ Réception du message côté pro

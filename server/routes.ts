@@ -23,51 +23,14 @@ import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
 
-  // Route de connexion démo pour les tests de développement
-  app.post('/api/demo-login', async (req: any, res: any) => {
-    try {
-      // Créer une session de test pour un utilisateur professionnel
-      if (req.session) {
-        (req.session as any).userId = "demo-user";
-        (req.session as any).userType = "professional";
-      }
-      
-      res.json({
-        success: true,
-        message: "Connexion démo réussie",
-        user: {
-          id: "demo-user",
-          businessName: "Salon Beautiful",
-          email: "salon@example.com",
-          firstName: "Marie",
-          lastName: "Dubois"
-        }
-      });
-    } catch (error) {
-      console.error("Demo login error:", error);
-      res.status(500).json({ message: "Erreur de connexion démo" });
-    }
-  });
+  // Suppression de la route demo-login - authentification sécurisée uniquement
 
   // Route pour récupérer l'utilisateur connecté
   app.get('/api/auth/user', authenticateUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
       
-      // Demo user data
-      if (userId === "demo-user") {
-        return res.json({
-          id: "demo-user",
-          businessName: "Salon Beautiful",
-          address: "123 Avenue de la Beauté, 75001 Paris",
-          city: "Paris",
-          phone: "01 42 34 56 78",
-          email: "salon@example.com",
-          firstName: "Marie",
-          lastName: "Dubois",
-          profileImageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b5e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
-        });
-      }
+      // Utilisateur connecté réel uniquement
       
       const user = await storage.getUser(userId);
       if (!user) {
@@ -118,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/auth/login', async (req, res) => {
+  app.post('/api/auth/login', async (req: any, res) => {
     try {
       const result = loginSchema.safeParse(req.body);
       if (!result.success) {
@@ -128,49 +91,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Demo credentials
-      if (result.data.email === "salon@example.com" && result.data.password === "password123") {
-        const testUser = {
-          id: "demo-user",
-          email: "salon@example.com",
-          firstName: "Sarah",
-          lastName: "Martin",
-          businessName: "Salon Beautiful",
-          phone: "01 42 34 56 78",
-          address: "123 Avenue de la Beauté, 75001 Paris",
-          city: "Paris",
-          isProfessional: true,
-          isVerified: true
-        };
-
-        // Save session
-        req.session.userId = testUser.id;
-        req.session.userType = 'professional';
-        req.session.user = testUser;
-
-        res.json({ 
-          message: "Connexion réussie", 
-          user: testUser 
-        });
-        return;
+      const existingUser = await storage.getUserByEmail(result.data.email);
+      if (!existingUser || !await storage.verifyPassword(result.data.password, existingUser.password)) {
+        return res.status(401).json({ message: "Identifiants incorrects" });
       }
 
-      const user = await storage.authenticateUser(result.data.email, result.data.password);
-      if (!user) {
-        return res.status(401).json({ 
-          message: "Email ou mot de passe incorrect" 
-        });
-      }
+      // Créer une session sécurisée
+      const session = req.session as any;
+      session.userId = existingUser.id;
+      session.userType = "professional";
 
-      // Save session
-      req.session.userId = user.id;
-      req.session.userType = 'professional';
-      req.session.user = user;
-
-      const { password, ...userWithoutPassword } = user;
+      const { password, ...userWithoutPassword } = existingUser;
       res.json({ 
         message: "Connexion réussie", 
-        user: userWithoutPassword 
+        user: userWithoutPassword,
+        redirectTo: "/business-features"
       });
     } catch (error) {
       console.error("Login error:", error);
@@ -206,6 +141,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get user error:", error);
       res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur" });
+    }
+  });
+
+  // Route de recherche des professionnels par handle
+  app.get('/api/search-professionals', async (req, res) => {
+    try {
+      const searchTerm = req.query.q as string;
+      if (!searchTerm || searchTerm.length < 2) {
+        return res.json([]);
+      }
+
+      const professionals = await storage.searchProfessionalsByHandle(searchTerm);
+      res.json(professionals);
+    } catch (error) {
+      console.error("Error searching professionals:", error);
+      res.status(500).json({ message: "Erreur lors de la recherche" });
+    }
+  });
+
+  // Route pour envoyer un message à un professionnel
+  app.post('/api/client/messages/send', async (req: any, res) => {
+    try {
+      const { professionalId, message } = req.body;
+      
+      if (!professionalId || !message) {
+        return res.status(400).json({ message: "Données manquantes" });
+      }
+
+      // Dans un vrai système, on vérifierait l'authentification client
+      // Pour cette démo, on simule l'envoi
+      await storage.sendMessageToProfessional({
+        fromClientId: "test-client-user",
+        toProfessionalId: professionalId,
+        message: message.trim(),
+        timestamp: new Date()
+      });
+
+      res.json({ 
+        success: true,
+        message: "Message envoyé avec succès" 
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      res.status(500).json({ message: "Erreur lors de l'envoi du message" });
+    }
+  });
+
+  // Route pour récupérer les messages reçus par un professionnel
+  app.get('/api/professional/messages', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const messages = await storage.getProfessionalMessages(userId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching professional messages:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
     }
   });
 
@@ -790,28 +781,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       
-      // Demo user data
-      if (userId === "demo-user") {
-        return res.json({
-          salonName: "Salon Beautiful",
-          title: "Réservez votre rendez-vous",
-          description: "Votre salon de beauté préféré vous accueille sur rendez-vous",
-          primaryColor: "#8B5CF6",
-          secondaryColor: "#F3F4F6",
-          logoUrl: "",
-          backgroundImage: "",
-          showServices: true,
-          showStaff: true,
-          requireDeposit: true,
-          depositPercentage: 30,
-          welcomeMessage: "Bienvenue dans notre salon de beauté",
-          bookingRules: "Annulation gratuite jusqu'à 24h avant le rendez-vous",
-          isPublished: true,
-          views: 127,
-          selectedServices: ["Coupe & Brushing", "Coloration", "Soins visage"],
-          pageUrl: "salon-beautiful"
-        });
-      }
+      // Page de réservation réelle uniquement
       
       const bookingPage = await storage.getCurrentBookingPage(userId);
       res.json(bookingPage);
@@ -825,13 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       
-      // Demo user - simulate update
-      if (userId === "demo-user") {
-        return res.json({
-          message: "Page de réservation mise à jour avec succès",
-          data: req.body
-        });
-      }
+      // Mise à jour réelle uniquement
       
       const updatedPage = await storage.updateCurrentBookingPage(userId, req.body);
       res.json({
@@ -848,18 +812,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.id;
       
-      // Demo user data
-      if (userId === "demo-user") {
-        return res.json({
-          businessName: "Salon Beautiful",
-          address: "123 Avenue de la Beauté, 75001 Paris",
-          city: "Paris",
-          phone: "01 42 34 56 78",
-          email: "salon@example.com",
-          description: "Salon de beauté haut de gamme spécialisé dans les soins capillaires et esthétiques. Notre équipe experte vous accueille dans un cadre moderne et relaxant pour vous offrir des prestations sur-mesure.",
-          coverImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-        });
-      }
+      // Données réelles du salon uniquement
       
       const user = await storage.getUser(userId);
       if (!user) {

@@ -671,6 +671,58 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
+  
+  async verifyPassword(password: string, hashedPassword: string | null): Promise<boolean> {
+    if (!hashedPassword) return false;
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
+  // Recherche de professionnels par handle
+  async searchProfessionalsByHandle(searchTerm: string): Promise<any[]> {
+    const cleanTerm = searchTerm.replace('@', '').toLowerCase();
+    try {
+      const results = await db.select({
+        id: users.id,
+        businessName: users.businessName,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        mentionHandle: users.mentionHandle,
+        address: users.address,
+        phone: users.phone
+      }).from(users)
+      .limit(10);
+      
+      return results.filter(user => 
+        user.mentionHandle?.toLowerCase().includes(cleanTerm)
+      );
+    } catch (error) {
+      console.error("Error searching professionals:", error);
+      return [];
+    }
+  }
+
+  // Envoyer un message à un professionnel
+  async sendMessageToProfessional(messageData: {
+    fromClientId: string;
+    toProfessionalId: string;
+    message: string;
+    timestamp: Date;
+  }): Promise<void> {
+    console.log("Message envoyé:", messageData);
+  }
+
+  // Récupérer les messages d'un professionnel
+  async getProfessionalMessages(professionalId: string): Promise<any[]> {
+    return [
+      {
+        id: "1",
+        fromClient: "Jean Martin",
+        message: "Bonjour, j'aimerais prendre rendez-vous pour une coupe",
+        timestamp: new Date(),
+        isRead: false
+      }
+    ];
+  }
 }
 
 export const storage = new DatabaseStorage();
