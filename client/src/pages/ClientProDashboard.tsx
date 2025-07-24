@@ -273,7 +273,7 @@ export default function ClientProDashboard() {
                   <Button 
                     variant="outline" 
                     className="h-16 flex flex-col items-center gap-1"
-                    onClick={() => setLocation('/page-creator')}
+                    onClick={() => setLocation('/pro-pages')}
                   >
                     <Edit3 className="h-5 w-5" />
                     <span className="text-sm">Modifier Pages</span>

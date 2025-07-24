@@ -69,7 +69,9 @@ import ClientLogin from "@/pages/ClientLogin";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
 import PageCreator from "@/pages/PageCreator";
-import NewPageCreator from "@/pages/NewPageCreator";
+import ProPagesManager from "@/pages/ProPagesManager";
+import SalonSettings from "@/pages/SalonSettings";
+import BookingCustomization from "@/pages/BookingCustomization";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 
 
@@ -156,11 +158,11 @@ function Router() {
     );
   }
 
-  // Page créateur de pages
-  if (location === '/page-creator') {
+  // Pro Pages Manager
+  if (location === '/pro-pages') {
     return (
       <div className="h-full">
-        <NewPageCreator />
+        <ProPagesManager />
       </div>
     );
   }
@@ -405,6 +407,9 @@ function Router() {
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
+          <Route path="/pro-pages" component={ProPagesManager} />
+          <Route path="/salon-settings" component={SalonSettings} />
+          <Route path="/booking-customization" component={BookingCustomization} />
 
           <Route component={NotFound} />
         </Switch>
