@@ -37,7 +37,13 @@ export default function SalonRegistration() {
     activityType: '',
     description: '',
     instagram: '',
-    selectedPlan: new URLSearchParams(window.location.search).get('plan') || 'professionnel'
+    selectedPlan: (() => {
+      try {
+        return new URLSearchParams(window.location.search).get('plan') || 'professionnel';
+      } catch (e) {
+        return 'professionnel';
+      }
+    })()
   });
 
   const plans = {
