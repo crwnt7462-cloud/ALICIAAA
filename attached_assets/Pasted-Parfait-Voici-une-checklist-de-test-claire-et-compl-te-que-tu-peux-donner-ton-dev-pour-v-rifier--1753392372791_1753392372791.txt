@@ -1,0 +1,56 @@
+Parfait ! Voici une checklist de test claire et complète que tu peux donner à ton dev pour vérifier que tout fonctionne correctement après les corrections. C’est une checklist “prête à valider” avec ✅ / ❌ pour chaque point.
+
+⸻
+
+✅ ✅ CHECKLIST DE TEST – À VALIDER AVANT LIVRAISON FINALE :
+
+⸻
+
+🔐 AUTHENTIFICATION / CONNEXION
+
+Test	Résultat attendu	✅ / ❌
+On ne peut pas se connecter avec des identifiants invalides	Message d’erreur clair s’affiche	
+On ne peut PAS accéder au dashboard sans être connecté	Redirection automatique vers la page login	
+Après connexion avec un compte valide	Redirection vers l’espace pro (dashboard ou pro tools)	
+L’utilisateur reste connecté après rechargement de page	La session est persistante	
+Cliquer sur “Se déconnecter” me déconnecte bien	Retour à la page login, session coupée	
+
+
+⸻
+
+🧩 SECTION PRO TOOLS > PAGES
+
+Test	Résultat attendu	✅ / ❌
+Le bouton “Créer une page” a été supprimé	Aucun bouton de création visible	
+Deux blocs fixes sont affichés : Page du Salon et Page de Réservation	Interface propre, sans liste multiple	
+Le bouton “Modifier” de la Page du Salon	Ouvre bien les infos du salon réel (nom, horaires, etc.)	
+Le bouton “Modifier” de la Page de Réservation	Édite la vraie page de réservation existante	
+Le bouton “Copier” copie le vrai lien de réservation	Le lien est bien copié dans le presse-papier	
+
+
+⸻
+
+🎨 DESIGN & COMPORTEMENT
+
+Test	Résultat attendu	✅ / ❌
+La page de connexion n’a plus de fond violet	Fond blanc propre, design épuré	
+Tous les boutons visibles sur le site fonctionnent	Aucun bouton mort ou inactif	
+Aucun lien ne mène à une page vide ou cassée	Navigation fluide	
+
+
+⸻
+
+📦 BONUS (à valider si applicable)
+
+Test	Résultat attendu	✅ / ❌
+Le lien de réservation peut être ouvert publiquement	Page propre, personnalisée pour chaque salon	
+Aucune duplication de données ou pages en base	1 seul salon, 1 seule page réservation par compte	
+
+
+⸻
+
+🧠 Conseil :
+
+Tu peux lui demander de valider chaque ligne avec un ✅ ou une capture d’écran avant livraison finale, pour t’assurer que tout a été revu.
+
+Souhaites-tu aussi un PDF ou version à imprimer de cette checklist ?
