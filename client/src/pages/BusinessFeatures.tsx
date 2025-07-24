@@ -148,7 +148,7 @@ export default function BusinessFeatures() {
           </div>
           
           <Button 
-            onClick={() => setLocation("/pro-messaging")}
+            onClick={() => setLocation("/pro-messaging-simple")}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white"
           >
             Ouvrir la messagerie
@@ -223,12 +223,9 @@ export default function BusinessFeatures() {
                 size="sm" 
                 variant="outline" 
                 className="w-full"
-                onClick={() => toast({ 
-                  title: "Nouvelle méthode", 
-                  description: "Fonction disponible avec l'abonnement Pro" 
-                })}
+                onClick={() => setLocation('/payment-methods-simple')}
               >
-                + Ajouter méthode
+                Gérer paiements
               </Button>
             </CardContent>
           </Card>

@@ -75,11 +75,13 @@ import SalonSettings from "@/pages/SalonSettings";
 import BookingCustomization from "@/pages/BookingCustomization";
 import ForgotPassword from "@/pages/ForgotPassword";
 import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
+import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";
 import ProDashboard from "@/pages/ProDashboard";
 import ProMessaging from "@/pages/ProMessaging";
+import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
 
@@ -145,6 +147,15 @@ function Router() {
     return (
       <div className="h-full">
         <ProMessaging />
+      </div>
+    );
+  }
+
+  // Messagerie professionnelle simplifiée
+  if (location === '/pro-messaging-simple') {
+    return (
+      <div className="h-full">
+        <ProMessagingSimple />
       </div>
     );
   }
@@ -482,6 +493,7 @@ function Router() {
           <Route path="/pro-pages" component={ProPagesManager} />
           <Route path="/salon-settings" component={SalonSettings} />
           <Route path="/booking-customization" component={BookingCustomization} />
+          <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
 
           <Route component={NotFound} />
         </Switch>
