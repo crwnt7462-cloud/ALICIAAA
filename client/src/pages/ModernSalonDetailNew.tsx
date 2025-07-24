@@ -201,7 +201,7 @@ export default function ModernSalonDetail() {
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-lg font-medium text-gray-900">{salon.name}</h1>
               {salon.verified && (
-                <div className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
+                <div className="flex items-center gap-1 text-xs text-violet-700 bg-violet-50 px-2 py-1 rounded-full border border-violet-200">
                   <div className="w-1 h-1 bg-green-500 rounded-full"></div>
                   <span>Certifié</span>
                 </div>
@@ -224,7 +224,7 @@ export default function ModernSalonDetail() {
 
             <div className="flex flex-wrap gap-1">
               {salon.certifications.map((cert, idx) => (
-                <div key={idx} className="text-xs bg-gray-50 text-gray-600 px-2 py-1 rounded border border-gray-200">
+                <div key={idx} className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200">
                   {cert}
                 </div>
               ))}
@@ -236,9 +236,9 @@ export default function ModernSalonDetail() {
         <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3 bg-white rounded-none h-12 border-0">
-              <TabsTrigger value="services" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 border-r border-gray-100 transition-all duration-300">Services</TabsTrigger>
-              <TabsTrigger value="story" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 border-r border-gray-100 transition-all duration-300">Histoire</TabsTrigger>
-              <TabsTrigger value="avis" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 transition-all duration-300">Avis</TabsTrigger>
+              <TabsTrigger value="services" className="text-xs text-gray-500 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-violet-600 border-r border-gray-100 transition-all duration-300">Services</TabsTrigger>
+              <TabsTrigger value="story" className="text-xs text-gray-500 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-violet-600 border-r border-gray-100 transition-all duration-300">Histoire</TabsTrigger>
+              <TabsTrigger value="avis" className="text-xs text-gray-500 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-violet-600 transition-all duration-300">Avis</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -273,7 +273,7 @@ export default function ModernSalonDetail() {
                         </div>
                         <Button 
                           onClick={() => setLocation('/booking')}
-                          className="bg-gray-900 text-white hover:bg-gray-800 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-105 transform active:scale-95"
+                          className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-105 transform active:scale-95"
                         >
                           Réserver
                         </Button>
@@ -414,11 +414,11 @@ export default function ModernSalonDetail() {
           )}
         </div>
 
-        {/* Bouton de réservation simple */}
+        {/* Bouton de réservation avec violet */}
         <div className="bg-white border-t border-gray-100 p-3">
           <Button 
             onClick={() => setLocation('/booking')}
-            className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
+            className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
           >
             Réserver maintenant
           </Button>

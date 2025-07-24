@@ -148,14 +148,14 @@ export default function ProLogin() {
                   <Button
                     variant={isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(true)}
-                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${isLogin ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${isLogin ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Connexion
                   </Button>
                   <Button
                     variant={!isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(false)}
-                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${!isLogin ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${!isLogin ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Inscription
                   </Button>
@@ -253,7 +253,7 @@ export default function ProLogin() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                 >
                   {isLogin ? "Se connecter" : "Créer mon espace pro"}
                 </Button>
