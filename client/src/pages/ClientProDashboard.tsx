@@ -21,12 +21,18 @@ import {
   Bell,
   Heart,
   Search,
-  Filter
+  Filter,
+  Edit3,
+  BarChart3,
+  Users,
+  TrendingUp,
+  DollarSign,
+  Bot
 } from 'lucide-react';
 
 export default function ClientProDashboard() {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("accueil");
   const { toast } = useToast();
 
   const upcomingAppointments = [
@@ -95,18 +101,21 @@ export default function ClientProDashboard() {
       </div>
 
       <div className="max-w-md mx-auto p-4">
-        {/* Profile Card */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-violet-600" />
+        {/* Welcome Card */}
+        <Card className="mb-6 bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+                <User className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="font-semibold text-gray-900">Marie Dubois</h2>
-                <p className="text-sm text-gray-600">Cliente VIP</p>
+                <h2 className="text-xl font-bold text-gray-900">Excellence Beauty Salon</h2>
+                <p className="text-gray-600">Tableau de bord professionnel</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <Badge className="bg-violet-100 text-violet-700">Plan Pro</Badge>
+                  <Badge variant="outline" className="text-green-600 border-green-300">En ligne</Badge>
+                </div>
               </div>
-              <Badge className="bg-violet-100 text-violet-700">Premium</Badge>
             </div>
           </CardContent>
         </Card>
@@ -114,87 +123,176 @@ export default function ClientProDashboard() {
         {/* Navigation Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="dashboard" className="flex flex-col items-center gap-1 py-3">
-              <Calendar className="h-4 w-4" />
+            <TabsTrigger value="accueil" className="flex flex-col items-center gap-1 py-3">
+              <BarChart3 className="h-4 w-4" />
               <span className="text-xs">Accueil</span>
             </TabsTrigger>
-            <TabsTrigger value="appointments" className="flex flex-col items-center gap-1 py-3">
+            <TabsTrigger value="planning" className="flex flex-col items-center gap-1 py-3">
               <Calendar className="h-4 w-4" />
               <span className="text-xs">Planning</span>
             </TabsTrigger>
-            <TabsTrigger value="messages" className="flex flex-col items-center gap-1 py-3">
-              <MessageSquare className="h-4 w-4" />
+            <TabsTrigger value="clients" className="flex flex-col items-center gap-1 py-3">
+              <Users className="h-4 w-4" />
               <span className="text-xs">Clients</span>
             </TabsTrigger>
-            <TabsTrigger value="tools" className="flex flex-col items-center gap-1 py-3">
+            <TabsTrigger value="pro-tools" className="flex flex-col items-center gap-1 py-3">
               <Settings className="h-4 w-4" />
               <span className="text-xs">Pro Tools</span>
             </TabsTrigger>
-            <TabsTrigger value="ai" className="flex flex-col items-center gap-1 py-3">
-              <Star className="h-4 w-4" />
+            <TabsTrigger value="ia-pro" className="flex flex-col items-center gap-1 py-3">
+              <Bot className="h-4 w-4" />
               <span className="text-xs">IA Pro</span>
             </TabsTrigger>
           </TabsList>
 
-          {/* Dashboard Tab */}
-          <TabsContent value="dashboard" className="space-y-4">
+          {/* Accueil Tab */}
+          <TabsContent value="accueil" className="space-y-4">
+            {/* Stats Cards */}
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-violet-600">8</div>
-                  <div className="text-sm text-gray-600">RDV aujourd'hui</div>
+              <Card className="border-l-4 border-l-violet-500">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">RDV Aujourd'hui</p>
+                      <p className="text-2xl font-bold text-gray-900">8</p>
+                    </div>
+                    <Calendar className="h-8 w-8 text-violet-500" />
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+12% vs hier</span>
+                  </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-600">340€</div>
-                  <div className="text-sm text-gray-600">CA du jour</div>
+
+              <Card className="border-l-4 border-l-green-500">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">CA du Jour</p>
+                      <p className="text-2xl font-bold text-gray-900">640€</p>
+                    </div>
+                    <DollarSign className="h-8 w-8 text-green-500" />
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+8% vs hier</span>
+                  </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-600">12</div>
-                  <div className="text-sm text-gray-600">Nouveaux clients</div>
+
+              <Card className="border-l-4 border-l-blue-500">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Nouveaux Clients</p>
+                      <p className="text-2xl font-bold text-gray-900">3</p>
+                    </div>
+                    <Users className="h-8 w-8 text-blue-500" />
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+2 cette semaine</span>
+                  </div>
                 </CardContent>
               </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-orange-600">4.9</div>
-                  <div className="text-sm text-gray-600">Note moyenne</div>
+
+              <Card className="border-l-4 border-l-orange-500">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Note Moyenne</p>
+                      <p className="text-2xl font-bold text-gray-900">4.9</p>
+                    </div>
+                    <Star className="h-8 w-8 text-orange-500" />
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <Star className="h-3 w-3 text-yellow-500 mr-1" />
+                    <span className="text-xs text-gray-600">156 avis</span>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
+            {/* Prochains RDV */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Prochains rendez-vous</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Prochains rendez-vous
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {upcomingAppointments.slice(0, 3).map((appointment) => (
-                  <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
+                  <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex-1">
                       <div className="font-medium text-gray-900">{appointment.service}</div>
                       <div className="text-sm text-gray-600">{appointment.time} - {appointment.specialist}</div>
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-violet-600">{appointment.price}</div>
-                      <div className="text-xs text-gray-500">{appointment.status}</div>
+                      <Badge variant="secondary" className="text-xs">
+                        {appointment.status}
+                      </Badge>
                     </div>
                   </div>
                 ))}
                 <Button 
                   variant="outline" 
                   className="w-full"
-                  onClick={() => setActiveTab("appointments")}
+                  onClick={() => setActiveTab("planning")}
                 >
-                  Voir tous les RDV
+                  Voir tout le planning
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Actions rapides */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Actions rapides</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="h-16 flex flex-col items-center gap-1"
+                    onClick={() => setActiveTab("planning")}
+                  >
+                    <Calendar className="h-5 w-5" />
+                    <span className="text-sm">Nouveau RDV</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="h-16 flex flex-col items-center gap-1"
+                    onClick={() => setActiveTab("clients")}
+                  >
+                    <Users className="h-5 w-5" />
+                    <span className="text-sm">Ajouter Client</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="h-16 flex flex-col items-center gap-1"
+                    onClick={() => setLocation('/page-creator')}
+                  >
+                    <Edit3 className="h-5 w-5" />
+                    <span className="text-sm">Modifier Pages</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="h-16 flex flex-col items-center gap-1"
+                    onClick={() => setActiveTab("ia-pro")}
+                  >
+                    <Bot className="h-5 w-5" />
+                    <span className="text-sm">Assistant IA</span>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Appointments Tab */}
-          <TabsContent value="appointments" className="space-y-4">
+          {/* Planning Tab */}
+          <TabsContent value="planning" className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-gray-900">Mes rendez-vous</h3>
               <Button 
