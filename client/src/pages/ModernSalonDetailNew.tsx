@@ -149,10 +149,10 @@ export default function ModernSalonDetail() {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Haute Couture': return 'bg-white/20 text-gray-200';
-      case 'Expert': return 'bg-white/15 text-gray-300';
-      case 'Premium': return 'bg-white/10 text-gray-400';
-      default: return 'bg-white/5 text-gray-500';
+      case 'Haute Couture': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'Expert': return 'bg-violet-50 text-violet-700 border-violet-200';
+      case 'Premium': return 'bg-blue-50 text-blue-700 border-blue-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   };
 
@@ -166,22 +166,30 @@ export default function ModernSalonDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="max-w-lg mx-auto bg-black">
-        {/* Header futuriste */}
-        <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white overflow-hidden">
-          {/* Effet de lignes géométriques */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white to-transparent"></div>
-            <div className="absolute top-8 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white to-transparent"></div>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-lg mx-auto bg-white shadow-xl">
+        {/* Header élégant avec gradient violet */}
+        <div className="relative bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white overflow-hidden">
+          {/* Effet de particules animées */}
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-4 left-8 w-2 h-2 bg-white rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+            <div className="absolute top-12 right-12 w-1 h-1 bg-white rounded-full animate-bounce" style={{animationDelay: '0.5s'}}></div>
+            <div className="absolute bottom-8 left-16 w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{animationDelay: '1s'}}></div>
+            <div className="absolute top-20 left-1/2 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+            <div className="absolute bottom-16 right-8 w-2 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '1.5s'}}></div>
+          </div>
+          
+          {/* Lignes décoratives animées */}
+          <div className="absolute inset-0 opacity-30">
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white to-transparent animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
           </div>
           
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
               onClick={() => setLocation('/')}
-              className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
+              className="h-10 w-10 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 transition-all duration-300 hover:scale-105"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -191,47 +199,47 @@ export default function ModernSalonDetail() {
             <Button
               variant="ghost"
               onClick={() => setIsFavorite(!isFavorite)}
-              className={`h-10 w-10 p-0 rounded-full border ${isFavorite ? 'bg-white/20 border-white/40' : 'bg-white/10 border-white/20'} hover:bg-white/20 text-white`}
+              className={`h-10 w-10 p-0 rounded-full border transition-all duration-300 hover:scale-105 ${isFavorite ? 'bg-white/30 border-white/50 text-red-200' : 'bg-white/20 border-white/30'} hover:bg-white/30 text-white`}
             >
-              <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
+              <Heart className={`h-4 w-4 transition-all duration-300 ${isFavorite ? 'fill-current scale-110' : ''}`} />
             </Button>
             <Button
               variant="ghost"
-              className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
+              className="h-10 w-10 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30 transition-all duration-300 hover:scale-105"
             >
               <Share2 className="h-4 w-4" />
             </Button>
           </div>
 
           <div className="px-4 pt-16 pb-8 relative z-10">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 mb-3 animate-fade-in">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
               <h1 className="text-2xl font-light tracking-wide">{salon.name}</h1>
               {salon.verified && (
-                <div className="flex items-center gap-1 text-xs text-gray-300 bg-white/10 px-2 py-1 rounded-full border border-white/20">
-                  <div className="w-1 h-1 bg-green-400 rounded-full"></div>
+                <div className="flex items-center gap-1 text-xs text-white bg-white/20 px-2 py-1 rounded-full border border-white/30 animate-fade-in" style={{animationDelay: '0.3s'}}>
+                  <div className="w-1 h-1 bg-green-300 rounded-full animate-pulse"></div>
                   <span>Certifié</span>
                 </div>
               )}
             </div>
             
-            <p className="text-gray-300 text-sm mb-4 font-light">{salon.subtitle}</p>
+            <p className="text-white/90 text-sm mb-4 font-light animate-fade-in" style={{animationDelay: '0.5s'}}>{salon.subtitle}</p>
             
-            <div className="flex items-center gap-6 text-sm text-gray-300 mb-4">
+            <div className="flex items-center gap-6 text-sm text-white/80 mb-4 animate-fade-in" style={{animationDelay: '0.7s'}}>
               <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-gray-400" />
+                <Star className="w-4 h-4 text-yellow-300" />
                 <span className="text-white font-medium">{salon.rating}</span>
-                <span className="text-gray-400">({salon.reviews})</span>
+                <span className="text-white/70">({salon.reviews})</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-300">Paris 16ème</span>
+                <MapPin className="w-4 h-4 text-white/70" />
+                <span className="text-white/90">Paris 16ème</span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 animate-fade-in" style={{animationDelay: '0.9s'}}>
               {salon.certifications.map((cert, idx) => (
-                <div key={idx} className="text-xs bg-white/5 text-gray-300 px-3 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+                <div key={idx} className="text-xs bg-white/20 text-white px-3 py-1 rounded-full border border-white/30 backdrop-blur-sm hover:bg-white/30 transition-all duration-300">
                   {cert}
                 </div>
               ))}
@@ -239,51 +247,51 @@ export default function ModernSalonDetail() {
           </div>
         </div>
 
-        {/* Navigation par onglets futuriste */}
-        <div className="bg-black border-b border-gray-800 sticky top-0 z-20">
+        {/* Navigation par onglets élégante */}
+        <div className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-gray-900 rounded-none h-14 border border-gray-800">
-              <TabsTrigger value="services" className="text-sm text-gray-400 data-[state=active]:text-white data-[state=active]:bg-gray-800 border-r border-gray-800">Services</TabsTrigger>
-              <TabsTrigger value="story" className="text-sm text-gray-400 data-[state=active]:text-white data-[state=active]:bg-gray-800 border-r border-gray-800">Histoire</TabsTrigger>
-              <TabsTrigger value="avis" className="text-sm text-gray-400 data-[state=active]:text-white data-[state=active]:bg-gray-800">Avis</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 bg-gray-50 rounded-none h-14 border-0">
+              <TabsTrigger value="services" className="text-sm text-gray-600 data-[state=active]:text-violet-600 data-[state=active]:bg-white data-[state=active]:shadow-sm border-r border-gray-200 hover:text-violet-500 transition-all duration-300">Services</TabsTrigger>
+              <TabsTrigger value="story" className="text-sm text-gray-600 data-[state=active]:text-violet-600 data-[state=active]:bg-white data-[state=active]:shadow-sm border-r border-gray-200 hover:text-violet-500 transition-all duration-300">Histoire</TabsTrigger>
+              <TabsTrigger value="avis" className="text-sm text-gray-600 data-[state=active]:text-violet-600 data-[state=active]:bg-white data-[state=active]:shadow-sm hover:text-violet-500 transition-all duration-300">Avis</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
 
-        {/* Contenu des onglets futuriste */}
-        <div className="p-4 bg-black">
+        {/* Contenu des onglets avec animations */}
+        <div className="p-4 bg-gray-50">
           {activeTab === 'services' && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div className="mb-6">
-                <h2 className="text-xl font-light text-white mb-2">Services d'exception</h2>
-                <p className="text-sm text-gray-400">Prestations haut de gamme avec technologies avancées</p>
+                <h2 className="text-xl font-light text-gray-900 mb-2">Services d'exception</h2>
+                <p className="text-sm text-gray-600">Prestations haut de gamme avec expertise reconnue</p>
               </div>
 
               {services.map((service, index) => (
-                <Card key={service.id} className="bg-gray-900 border border-gray-800 hover:border-gray-700 hover:bg-gray-800 transition-all duration-300">
+                <Card key={service.id} className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300 hover:scale-[1.01] animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <div className="w-1 h-6 bg-gradient-to-b from-white to-gray-400"></div>
-                          <h3 className="font-medium text-white">{service.name}</h3>
-                          <div className={`text-xs px-2 py-1 rounded-full ${getLevelColor(service.level)} border border-gray-700`}>
+                          <div className="w-1 h-6 bg-gradient-to-b from-violet-500 to-purple-600 rounded-full"></div>
+                          <h3 className="font-medium text-gray-900">{service.name}</h3>
+                          <div className={`text-xs px-2 py-1 rounded-full ${getLevelColor(service.level)} border border-violet-200`}>
                             {getLevelIcon(service.level)}
                             <span className="ml-1">{service.level}</span>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-400 mb-3 leading-relaxed">{service.description}</p>
+                        <p className="text-sm text-gray-600 mb-3 leading-relaxed">{service.description}</p>
                         <div className="text-xs text-gray-500 mb-3 flex items-center gap-2">
                           <Clock className="w-3 h-3" />
                           <span>{service.duration}min</span>
-                          <span className="text-gray-600">•</span>
+                          <span className="text-gray-400">•</span>
                           <span>{service.specialist}</span>
                         </div>
                         
                         {service.badges && (
                           <div className="flex flex-wrap gap-2 mb-3">
                             {service.badges.map((badge, idx) => (
-                              <span key={idx} className="text-xs bg-white/5 text-gray-300 px-2 py-1 rounded border border-white/10">
+                              <span key={idx} className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200 hover:bg-violet-100 transition-colors">
                                 {badge}
                               </span>
                             ))}
@@ -292,21 +300,21 @@ export default function ModernSalonDetail() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-800">
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
                       <div className="flex items-center gap-3">
                         {service.originalPrice && (
                           <span className="text-sm text-gray-500 line-through">{service.originalPrice}€</span>
                         )}
-                        <span className="text-xl font-light text-white">{service.price}€</span>
+                        <span className="text-xl font-light text-gray-900">{service.price}€</span>
                         {service.originalPrice && (
-                          <span className="text-xs bg-white/10 text-gray-300 px-2 py-1 rounded border border-white/20">
+                          <span className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded border border-green-200">
                             -{Math.round((1 - service.price / service.originalPrice) * 100)}%
                           </span>
                         )}
                       </div>
                       <Button 
                         onClick={() => setLocation('/booking')}
-                        className="bg-white text-black hover:bg-gray-200 h-9 px-6 text-sm font-medium border border-white/20"
+                        className="bg-violet-600 text-white hover:bg-violet-700 h-9 px-6 text-sm font-medium transition-all duration-300 hover:scale-105"
                       >
                         Réserver
                       </Button>
@@ -318,54 +326,63 @@ export default function ModernSalonDetail() {
           )}
 
           {activeTab === 'story' && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               <div className="mb-6">
-                <h2 className="text-xl font-light text-white mb-2">Notre histoire</h2>
-                <p className="text-sm text-gray-400">15 ans d'excellence dans l'art de la beauté</p>
+                <h2 className="text-xl font-light text-gray-900 mb-2">Notre histoire</h2>
+                <p className="text-sm text-gray-600">15 ans d'excellence dans l'art de la beauté</p>
               </div>
 
               <div className="space-y-6">
-                <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                  <h3 className="text-lg font-medium text-white mb-3">La vision</h3>
-                  <p className="text-gray-400 leading-relaxed">
+                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up" style={{animationDelay: '0.1s'}}>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-violet-600" />
+                    La vision
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed">
                     {salon.story}
                   </p>
                 </div>
 
-                <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                  <h3 className="text-lg font-medium text-white mb-3">Nos distinctions</h3>
+                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up" style={{animationDelay: '0.2s'}}>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                    <Award className="w-5 h-5 text-amber-600" />
+                    Nos distinctions
+                  </h3>
                   <div className="space-y-3">
                     {salon.awards.map((award, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-2 bg-white/5 rounded border border-white/10">
-                        <div className="w-1 h-8 bg-gradient-to-b from-white to-gray-400"></div>
-                        <span className="text-gray-300">{award}</span>
+                      <div key={idx} className="flex items-center gap-3 p-3 bg-amber-50 rounded-lg border border-amber-200 hover:bg-amber-100 transition-colors">
+                        <div className="w-1 h-8 bg-gradient-to-b from-amber-500 to-orange-500 rounded-full"></div>
+                        <span className="text-gray-800 font-medium">{award}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                  <h3 className="text-lg font-medium text-white mb-3">Engagements</h3>
-                  <div className="grid grid-cols-1 gap-3">
-                    <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up" style={{animationDelay: '0.3s'}}>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    Engagements
+                  </h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                       <div>
-                        <h4 className="text-white font-medium">Éco-responsabilité</h4>
-                        <p className="text-gray-400 text-sm">Produits biologiques et pratiques durables</p>
+                        <h4 className="text-gray-900 font-medium">Éco-responsabilité</h4>
+                        <p className="text-gray-600 text-sm">Produits biologiques et pratiques durables</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                       <div>
-                        <h4 className="text-white font-medium">Formation continue</h4>
-                        <p className="text-gray-400 text-sm">Équipe formée aux dernières techniques</p>
+                        <h4 className="text-gray-900 font-medium">Formation continue</h4>
+                        <p className="text-gray-600 text-sm">Équipe formée aux dernières techniques</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="flex items-start gap-3 p-3 bg-violet-50 rounded-lg hover:bg-violet-100 transition-colors">
+                      <div className="w-2 h-2 bg-violet-500 rounded-full mt-2 flex-shrink-0"></div>
                       <div>
-                        <h4 className="text-white font-medium">Excellence client</h4>
-                        <p className="text-gray-400 text-sm">Service personnalisé et attentionné</p>
+                        <h4 className="text-gray-900 font-medium">Excellence client</h4>
+                        <p className="text-gray-600 text-sm">Service personnalisé et attentionné</p>
                       </div>
                     </div>
                   </div>
@@ -375,32 +392,32 @@ export default function ModernSalonDetail() {
           )}
 
           {activeTab === 'avis' && (
-            <div className="space-y-4">
+            <div className="space-y-4 animate-fade-in">
               <div className="mb-6">
-                <h2 className="text-xl font-light text-white mb-2">Avis clients</h2>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <h2 className="text-xl font-light text-gray-900 mb-2">Avis clients</h2>
+                <div className="flex items-center gap-4 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-gray-400" />
-                    <span className="text-white font-medium">{salon.rating}/5</span>
+                    <Star className="w-4 h-4 text-yellow-400" />
+                    <span className="text-gray-900 font-medium">{salon.rating}/5</span>
                   </div>
                   <span>{salon.reviews} avis vérifiés</span>
                 </div>
               </div>
 
               <div className="space-y-4">
-                {reviews.map((review) => (
-                  <div key={review.id} className="p-4 bg-gray-900 rounded-lg border border-gray-800">
+                {reviews.map((review, index) => (
+                  <div key={review.id} className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center">
-                          <User className="w-4 h-4 text-gray-400" />
+                        <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <User className="w-5 h-5 text-white" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-white font-medium">{review.clientName}</h4>
+                            <h4 className="text-gray-900 font-medium">{review.clientName}</h4>
                             {review.verified && (
-                              <div className="flex items-center gap-1 text-xs text-gray-400">
-                                <div className="w-1 h-1 bg-green-400 rounded-full"></div>
+                              <div className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                                <CheckCircle2 className="w-3 h-3" />
                                 <span>Vérifié</span>
                               </div>
                             )}
@@ -410,7 +427,7 @@ export default function ModernSalonDetail() {
                               {[...Array(5)].map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`w-3 h-3 ${i < review.rating ? 'text-gray-400' : 'text-gray-700'}`}
+                                  className={`w-3 h-3 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
                                 />
                               ))}
                             </div>
@@ -420,20 +437,20 @@ export default function ModernSalonDetail() {
                       </div>
                     </div>
                     
-                    <p className="text-gray-400 text-sm leading-relaxed mb-3">
+                    <p className="text-gray-700 text-sm leading-relaxed mb-3">
                       {review.comment}
                     </p>
                     
-                    <div className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded border border-white/10 inline-block">
+                    <div className="text-xs text-violet-700 bg-violet-50 px-2 py-1 rounded border border-violet-200 inline-block">
                       Service : {review.service}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-gray-800">
+              <div className="pt-4 border-t border-gray-200">
                 <Button 
-                  className="w-full bg-white/10 text-white hover:bg-white/20 border border-white/20"
+                  className="w-full bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 transition-all duration-300 hover:scale-[1.01]"
                   variant="outline"
                 >
                   Voir tous les avis
@@ -444,10 +461,10 @@ export default function ModernSalonDetail() {
         </div>
 
         {/* Bouton de réservation fixe */}
-        <div className="bg-black border-t border-gray-800 p-4">
+        <div className="bg-white border-t border-gray-200 p-4 shadow-lg">
           <Button 
             onClick={() => setLocation('/booking')}
-            className="w-full bg-white text-black hover:bg-gray-200 h-12 text-base font-medium"
+            className="w-full bg-violet-600 text-white hover:bg-violet-700 h-12 text-base font-medium transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl"
           >
             Réserver maintenant
           </Button>
