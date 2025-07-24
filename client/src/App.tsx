@@ -165,11 +165,11 @@ function Router() {
     );
   }
 
-  // Dashboard client pro style
-  if (location === '/client-pro-dashboard') {
+  // Dashboard client original
+  if (location === '/client-dashboard') {
     return (
       <div className="h-full">
-        <ClientProDashboard />
+        <ClientDashboard />
       </div>
     );
   }
