@@ -132,16 +132,15 @@ export default function SalonSearch() {
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-semibold text-gray-900">{salon.name}</h3>
                 {salon.verified && (
-                  <Badge variant="secondary" className="text-xs">
-                    <CheckCircle2 className="w-3 h-3 mr-1" />
-                    Vérifié
-                  </Badge>
+                  <span className="text-xs text-gray-500">
+                    ✓ Vérifié
+                  </span>
                 )}
               </div>
               
               <div className="space-y-1 text-sm text-gray-600 mb-3">
                 <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                  <Star className="w-4 h-4 text-gray-400" />
                   <span>{salon.rating} ({salon.reviews} avis)</span>
                   <span>•</span>
                   <span>{salon.distance}</span>
@@ -151,16 +150,16 @@ export default function SalonSearch() {
                   <span>{salon.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-green-600" />
+                  <Clock className="w-4 h-4 text-gray-400" />
                   <span>{salon.nextSlot}</span>
                 </div>
               </div>
               
               <div className="flex flex-wrap gap-1 mb-3">
                 {salon.services.map((service, idx) => (
-                  <Badge key={idx} variant="outline" className="text-xs">
+                  <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
                     {service}
-                  </Badge>
+                  </span>
                 ))}
               </div>
               

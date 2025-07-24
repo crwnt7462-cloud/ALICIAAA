@@ -165,9 +165,9 @@ export default function ModernSalonDetail() {
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'Haute Couture': return 'bg-gradient-to-r from-purple-600 to-pink-600 text-white';
-      case 'Expert': return 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white';
-      case 'Premium': return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white';
+      case 'Haute Couture': return 'bg-gray-100 text-gray-700 font-medium';
+      case 'Expert': return 'bg-gray-100 text-gray-700 font-medium';
+      case 'Premium': return 'bg-gray-100 text-gray-700 font-medium';
       default: return 'bg-gray-100 text-gray-700';
     }
   };
@@ -185,7 +185,7 @@ export default function ModernSalonDetail() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-lg mx-auto bg-white shadow-sm">
         {/* Header moderne */}
-        <div className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 text-white">
+        <div className="relative bg-gray-900 text-white">
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
@@ -216,18 +216,17 @@ export default function ModernSalonDetail() {
             <div className="flex items-center gap-2 mb-2">
               <h1 className="text-xl font-bold">{salon.name}</h1>
               {salon.verified && (
-                <Badge className="bg-white/20 text-white border-white/30">
-                  <CheckCircle className="w-3 h-3 mr-1" />
-                  Vérifié
-                </Badge>
+                <span className="text-xs text-gray-300">
+                  ✓ Vérifié
+                </span>
               )}
             </div>
             
-            <p className="text-purple-100 text-sm mb-3">{salon.subtitle}</p>
+            <p className="text-gray-300 text-sm mb-3">{salon.subtitle}</p>
             
-            <div className="flex items-center gap-4 text-sm text-purple-100 mb-3">
+            <div className="flex items-center gap-4 text-sm text-gray-300 mb-3">
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-300 fill-current" />
+                <Star className="w-4 h-4 text-gray-400" />
                 <span className="text-white font-medium">{salon.rating}</span>
                 <span>({salon.reviews} avis)</span>
               </div>
@@ -239,10 +238,9 @@ export default function ModernSalonDetail() {
 
             <div className="flex flex-wrap gap-1">
               {salon.certifications.map((cert, idx) => (
-                <Badge key={idx} className="bg-white/20 text-white border-white/30 text-xs">
-                  <Award className="w-3 h-3 mr-1" />
+                <span key={idx} className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded">
                   {cert}
-                </Badge>
+                </span>
               ))}
             </div>
           </div>
@@ -269,7 +267,7 @@ export default function ModernSalonDetail() {
               </div>
 
               {services.map((service) => (
-                <Card key={service.id} className="border border-gray-200 hover:border-purple-300 hover:shadow-sm transition-all">
+                <Card key={service.id} className="border border-gray-200 hover:border-gray-300 hover:shadow-sm transition-all">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
@@ -289,9 +287,9 @@ export default function ModernSalonDetail() {
                         {service.badges && (
                           <div className="flex flex-wrap gap-1 mb-2">
                             {service.badges.map((badge, idx) => (
-                              <Badge key={idx} variant="outline" className="text-xs">
+                              <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
                                 {badge}
-                              </Badge>
+                              </span>
                             ))}
                           </div>
                         )}
@@ -303,16 +301,16 @@ export default function ModernSalonDetail() {
                         {service.originalPrice && (
                           <span className="text-sm text-gray-400 line-through">{service.originalPrice}€</span>
                         )}
-                        <span className="text-lg font-bold text-purple-600">{service.price}€</span>
+                        <span className="text-lg font-bold text-gray-900">{service.price}€</span>
                         {service.originalPrice && (
-                          <Badge className="bg-green-100 text-green-700 text-xs">
+                          <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
                             -{Math.round((1 - service.price / service.originalPrice) * 100)}%
-                          </Badge>
+                          </span>
                         )}
                       </div>
                       <Button 
                         onClick={() => setLocation('/booking')}
-                        className="bg-purple-600 hover:bg-purple-700 text-white h-8 px-4 text-sm"
+                        className="bg-gray-900 hover:bg-gray-800 text-white h-8 px-4 text-sm"
                       >
                         Réserver
                       </Button>

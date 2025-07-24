@@ -588,23 +588,21 @@ export default function PublicLanding() {
                     </h3>
                     <div className="flex items-center gap-2">
                       {(salon as any).isNew && (
-                        <Badge className="bg-green-600 text-white text-xs">
-                          <Sparkles className="w-3 h-3 mr-1" />
+                        <span className="text-xs text-gray-500">
                           Nouveau
-                        </Badge>
+                        </span>
                       )}
                       {salon.verified && (
-                        <Badge variant="secondary" className="text-xs">
-                          <CheckCircle2 className="w-3 h-3 mr-1" />
-                          Vérifié
-                        </Badge>
+                        <span className="text-xs text-gray-500">
+                          ✓ Vérifié
+                        </span>
                       )}
                     </div>
                   </div>
                   
                   <div className="space-y-2 text-sm text-gray-600 mb-4">
                     <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                      <Star className="w-4 h-4 text-gray-400" />
                       <span>{salon.rating} ({salon.reviews} avis)</span>
                     </div>
                     <div className="flex items-center gap-2">
