@@ -943,6 +943,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Salon Registration routes
+  app.post("/api/salon-registration", async (req, res) => {
+    try {
+      const salonData = req.body;
+      const registration = await storage.createSalonRegistration(salonData);
+      res.json({ success: true, registrationId: registration.id });
+    } catch (error) {
+      console.error("Error creating salon registration:", error);
+      res.status(500).json({ error: "Failed to create salon registration" });
+    }
+  });
+
+  app.post("/api/salon-registration/:id/payment-success", async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.updateSalonPaymentStatus(parseInt(id), "completed");
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+      res.status(500).json({ error: "Failed to update payment status" });
+    }
+  });
+
   // Booking Pages API Routes
   app.get('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
     try {

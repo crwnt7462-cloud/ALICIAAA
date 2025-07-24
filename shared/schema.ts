@@ -787,6 +787,30 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
+// Table pour les informations de salon lors de l'inscription
+export const salonRegistrations = pgTable("salon_registrations", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id),
+  salonName: varchar("salon_name").notNull(),
+  salonDescription: text("salon_description"),
+  ownerName: varchar("owner_name").notNull(),
+  phone: varchar("phone").notNull(),
+  email: varchar("email").notNull(),
+  address: text("address").notNull(),
+  city: varchar("city").notNull(),
+  postalCode: varchar("postal_code").notNull(),
+  activityType: varchar("activity_type").notNull(),
+  instagram: varchar("instagram"),
+  selectedPlan: varchar("selected_plan").notNull(),
+  stripePaymentUrl: text("stripe_payment_url"), // URL de paiement Stripe
+  paymentStatus: varchar("payment_status").default("pending"), // pending, completed, failed
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type SalonRegistration = typeof salonRegistrations.$inferSelect;
+export type InsertSalonRegistration = typeof salonRegistrations.$inferInsert;
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,

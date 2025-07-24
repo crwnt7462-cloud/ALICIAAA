@@ -24,6 +24,9 @@ import {
   type InsertAppointment,
   type ClientMessage,
   type InsertClientMessage,
+  salonRegistrations,
+  type SalonRegistration,
+  type InsertSalonRegistration,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
@@ -81,6 +84,11 @@ export interface IStorage {
   getCurrentBookingPage(userId: string): Promise<any>;
   updateCurrentBookingPage(userId: string, data: any): Promise<any>;
   updateUserProfile(userId: string, data: any): Promise<User>;
+
+  // Salon Registration
+  createSalonRegistration(salon: InsertSalonRegistration): Promise<SalonRegistration>;
+  getSalonRegistration(id: number): Promise<SalonRegistration | undefined>;
+  updateSalonPaymentStatus(id: number, status: string): Promise<SalonRegistration>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -822,6 +830,32 @@ export class DatabaseStorage implements IStorage {
 
   async deletePaymentMethod(id: number): Promise<void> {
     console.log(`Deleting payment method ${id}`);
+  }
+
+  // Salon Registration methods
+  async createSalonRegistration(salon: InsertSalonRegistration): Promise<SalonRegistration> {
+    const [registration] = await db
+      .insert(salonRegistrations)
+      .values(salon)
+      .returning();
+    return registration;
+  }
+
+  async getSalonRegistration(id: number): Promise<SalonRegistration | undefined> {
+    const [registration] = await db
+      .select()
+      .from(salonRegistrations)
+      .where(eq(salonRegistrations.id, id));
+    return registration;
+  }
+
+  async updateSalonPaymentStatus(id: number, status: string): Promise<SalonRegistration> {
+    const [updated] = await db
+      .update(salonRegistrations)
+      .set({ paymentStatus: status, updatedAt: new Date() })
+      .where(eq(salonRegistrations.id, id))
+      .returning();
+    return updated;
   }
 }
 

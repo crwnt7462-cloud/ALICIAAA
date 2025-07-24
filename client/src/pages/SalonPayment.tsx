@@ -93,26 +93,51 @@ export default function SalonPayment() {
   };
 
   const handlePayment = async () => {
-    if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvv || !paymentData.cardName) {
-      toast({
-        title: "Informations manquantes",
-        description: "Veuillez remplir toutes les informations de paiement",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setIsProcessing(true);
 
-    // Simulation du traitement de paiement
-    setTimeout(() => {
-      setIsProcessing(false);
-      setPaymentStep('success');
-      toast({
-        title: "Paiement confirmé !",
-        description: "Votre abonnement a été activé avec succès",
+    try {
+      // Préparation des données de salon pour l'API
+      const salonData = JSON.parse(localStorage.getItem('salonFormData') || '{}');
+      
+      // Création de l'inscription salon
+      const response = await fetch('/api/salon-registration', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...salonData,
+          selectedPlan,
+          stripePaymentUrl: selectedPlan === 'essentiel' 
+            ? 'https://buy.stripe.com/test_14AfZj1xX2Th3f832j7wA00'
+            : null
+        })
       });
-    }, 2000);
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de l\'inscription');
+      }
+
+      const result = await response.json();
+      
+      // Redirection vers Stripe pour le paiement réel
+      if (selectedPlan === 'essentiel') {
+        window.location.href = 'https://buy.stripe.com/test_14AfZj1xX2Th3f832j7wA00';
+      } else {
+        // Pour les autres plans, afficher la page de succès temporairement
+        setPaymentStep('success');
+        setTimeout(() => {
+          setLocation('/business-features');
+        }, 3000);
+      }
+      
+    } catch (error) {
+      toast({
+        title: "Erreur d'inscription",
+        description: "Une erreur est survenue lors de l'inscription.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (paymentStep === 'success') {
