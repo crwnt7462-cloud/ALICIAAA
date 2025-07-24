@@ -168,76 +168,63 @@ export default function ModernSalonDetail() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-lg mx-auto bg-white shadow-xl">
-        {/* Header luxueux avec gradient pastel */}
-        <div className="relative bg-gradient-to-br from-violet-50 via-pink-50 to-rose-50 text-gray-900 overflow-hidden border-b border-violet-100">
-          {/* Effets lumineux subtils */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-2 left-8 w-3 h-3 bg-gradient-to-r from-violet-400 to-pink-400 rounded-full animate-pulse"></div>
-            <div className="absolute top-16 right-12 w-2 h-2 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full animate-bounce" style={{animationDelay: '0.5s'}}></div>
-            <div className="absolute bottom-8 left-16 w-4 h-4 bg-gradient-to-r from-rose-300 to-violet-300 rounded-full animate-pulse" style={{animationDelay: '1s'}}></div>
-          </div>
-          
-          {/* Lignes décoratives animées */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-300 to-transparent animate-pulse"></div>
-            <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-pink-300 to-transparent animate-pulse" style={{animationDelay: '1s'}}></div>
-          </div>
+        {/* Header épuré */}
+        <div className="relative bg-white text-gray-900 overflow-hidden border-b border-gray-100">
           
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
               onClick={() => setLocation('/')}
-              className="h-10 w-10 p-0 rounded-full bg-white/80 hover:bg-white text-violet-600 border border-violet-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+              className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </div>
           
-          <div className="absolute top-4 right-4 z-10 flex gap-3">
+          <div className="absolute top-4 right-4 z-10 flex gap-2">
             <Button
               variant="ghost"
               onClick={() => setIsFavorite(!isFavorite)}
-              className={`h-10 w-10 p-0 rounded-full border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm ${isFavorite ? 'bg-rose-100 border-rose-200 text-rose-600' : 'bg-white/80 border-violet-200 text-violet-600'} hover:bg-white`}
+              className={`h-9 w-9 p-0 rounded-full border transition-all duration-300 ${isFavorite ? 'bg-red-50 border-red-200 text-red-500' : 'bg-gray-100 border-gray-200 text-gray-600'} hover:bg-gray-200`}
             >
-              <Heart className={`h-4 w-4 transition-all duration-300 ${isFavorite ? 'fill-current animate-pulse' : ''}`} />
+              <Heart className={`h-4 w-4 transition-all duration-300 ${isFavorite ? 'fill-current' : ''}`} />
             </Button>
             <Button
               variant="ghost"
-              className="h-10 w-10 p-0 rounded-full bg-white/80 hover:bg-white text-violet-600 border border-violet-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+              className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <Share2 className="h-4 w-4" />
             </Button>
           </div>
 
-          <div className="px-6 pt-16 pb-8 relative z-10">
-            <div className="flex items-center gap-3 mb-3 animate-fade-in">
-              <div className="w-2 h-2 bg-gradient-to-r from-violet-400 to-pink-400 rounded-full animate-pulse"></div>
-              <h1 className="text-2xl font-light text-gray-900 tracking-wide">{salon.name}</h1>
+          <div className="px-4 pt-14 pb-6 relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+              <h1 className="text-lg font-medium text-gray-900">{salon.name}</h1>
               {salon.verified && (
-                <div className="flex items-center gap-2 text-xs text-violet-700 bg-violet-100 px-3 py-1.5 rounded-full border border-violet-200 shadow-sm animate-fade-in" style={{animationDelay: '0.3s'}}>
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                  <span className="font-medium">Certifié Premium</span>
+                <div className="flex items-center gap-1 text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
+                  <div className="w-1 h-1 bg-green-500 rounded-full"></div>
+                  <span>Certifié</span>
                 </div>
               )}
             </div>
             
-            <p className="text-gray-700 text-base mb-4 font-light leading-relaxed animate-fade-in" style={{animationDelay: '0.5s'}}>{salon.subtitle}</p>
+            <p className="text-gray-600 text-sm mb-3">{salon.subtitle}</p>
             
-            <div className="flex items-center gap-6 text-sm text-gray-600 mb-5 animate-fade-in" style={{animationDelay: '0.7s'}}>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-amber-400" />
-                <span className="text-gray-900 font-semibold">{salon.rating}</span>
-                <span className="text-gray-500">({salon.reviews} avis)</span>
+            <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+              <div className="flex items-center gap-1">
+                <Star className="w-3 h-3 text-amber-400" />
+                <span className="text-gray-900 font-medium text-sm">{salon.rating}</span>
+                <span className="text-gray-500 text-xs">({salon.reviews})</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-violet-500" />
-                <span className="text-gray-700 font-medium">Paris 16ème</span>
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-gray-400" />
+                <span className="text-gray-600 text-xs">Paris 16ème</span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2 animate-fade-in" style={{animationDelay: '0.9s'}}>
+            <div className="flex flex-wrap gap-1">
               {salon.certifications.map((cert, idx) => (
-                <div key={idx} className="text-xs bg-gradient-to-r from-violet-100 to-pink-100 text-violet-700 px-3 py-1.5 rounded-full border border-violet-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
+                <div key={idx} className="text-xs bg-gray-50 text-gray-600 px-2 py-1 rounded border border-gray-200">
                   {cert}
                 </div>
               ))}
@@ -245,77 +232,52 @@ export default function ModernSalonDetail() {
           </div>
         </div>
 
-        {/* Navigation élégante avec gradient */}
-        <div className="bg-gradient-to-r from-white via-violet-50 to-pink-50 border-b border-violet-100 sticky top-0 z-20 backdrop-blur-sm">
+        {/* Navigation simple */}
+        <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent rounded-none h-14 border-0">
-              <TabsTrigger value="services" className="text-sm text-gray-600 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-3 data-[state=active]:border-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-pink-500 border-r border-violet-100 transition-all duration-300 hover:text-violet-600 hover:bg-violet-50 font-medium">Services</TabsTrigger>
-              <TabsTrigger value="story" className="text-sm text-gray-600 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-3 data-[state=active]:border-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-pink-500 border-r border-violet-100 transition-all duration-300 hover:text-violet-600 hover:bg-violet-50 font-medium">Histoire</TabsTrigger>
-              <TabsTrigger value="avis" className="text-sm text-gray-600 data-[state=active]:text-violet-700 data-[state=active]:bg-white data-[state=active]:border-b-3 data-[state=active]:border-gradient-to-r data-[state=active]:from-violet-500 data-[state=active]:to-pink-500 transition-all duration-300 hover:text-violet-600 hover:bg-violet-50 font-medium">Avis</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 bg-white rounded-none h-12 border-0">
+              <TabsTrigger value="services" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 border-r border-gray-100 transition-all duration-300">Services</TabsTrigger>
+              <TabsTrigger value="story" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 border-r border-gray-100 transition-all duration-300">Histoire</TabsTrigger>
+              <TabsTrigger value="avis" className="text-xs text-gray-500 data-[state=active]:text-gray-900 data-[state=active]:bg-white data-[state=active]:border-b-2 data-[state=active]:border-gray-900 transition-all duration-300">Avis</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
 
-        {/* Contenu luxueux */}
-        <div className="p-5 bg-gradient-to-b from-white to-violet-50/30">
+        {/* Contenu épuré */}
+        <div className="p-3 bg-white">
           {activeTab === 'services' && (
-            <div className="space-y-4">
-              <div className="mb-6">
-                <h2 className="text-xl font-light text-gray-900 mb-2">Services d'exception</h2>
-                <p className="text-sm text-gray-600">Prestations haut de gamme avec expertise reconnue</p>
+            <div className="space-y-3">
+              <div className="mb-3">
+                <h2 className="text-base font-medium text-gray-900">Services</h2>
               </div>
 
               {services.map((service, index) => (
-                <Card key={service.id} className="bg-white border border-violet-100 hover:border-violet-200 hover:shadow-xl transition-all duration-300 hover:scale-[1.01] animate-slide-up shadow-lg" style={{animationDelay: `${index * 0.1}s`}}>
-                  <CardContent className="p-5">
-                    <div className="flex items-start justify-between mb-3">
+                <Card key={service.id} className="bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-300">
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-1 h-6 bg-gradient-to-b from-violet-500 to-pink-500 rounded-full"></div>
-                          <h3 className="font-semibold text-gray-900 text-base">{service.name}</h3>
-                          <div className={`text-xs px-2 py-1 rounded-full ${getLevelColor(service.level)} border border-violet-200`}>
-                            {getLevelIcon(service.level)}
-                            <span className="ml-1">{service.level}</span>
-                          </div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-medium text-gray-900 text-sm">{service.name}</h3>
+                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{service.duration}min</span>
                         </div>
-                        <p className="text-sm text-gray-700 mb-3 leading-relaxed">{service.description}</p>
-                        <div className="text-sm text-gray-600 mb-3 flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-violet-500" />
-                          <span>{service.duration}min</span>
-                          <span className="text-gray-400">•</span>
-                          <span className="font-medium">{service.specialist}</span>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
+                          <span>{service.specialist}</span>
                         </div>
-                        
-                        {service.badges && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {service.badges.map((badge, idx) => (
-                              <span key={idx} className="text-xs bg-gradient-to-r from-violet-50 to-pink-50 text-violet-700 px-3 py-1 rounded-full border border-violet-200 hover:bg-violet-100 transition-colors">
-                                {badge}
-                              </span>
-                            ))}
-                          </div>
-                        )}
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center justify-between pt-3 border-t border-violet-100">
                       <div className="flex items-center gap-3">
-                        {service.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">{service.originalPrice}€</span>
-                        )}
-                        <span className="text-xl font-light text-gray-900">{service.price}€</span>
-                        {service.originalPrice && (
-                          <span className="text-xs bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-700 px-2 py-1 rounded-full border border-emerald-200">
-                            -{Math.round((1 - service.price / service.originalPrice) * 100)}%
-                          </span>
-                        )}
+                        <div className="text-right">
+                          {service.originalPrice && (
+                            <span className="text-xs text-gray-400 line-through block">{service.originalPrice}€</span>
+                          )}
+                          <span className="text-base font-medium text-gray-900">{service.price}€</span>
+                        </div>
+                        <Button 
+                          onClick={() => setLocation('/booking')}
+                          className="bg-gray-900 text-white hover:bg-gray-800 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-105 transform active:scale-95"
+                        >
+                          Réserver
+                        </Button>
                       </div>
-                      <Button 
-                        onClick={() => setLocation('/booking')}
-                        className="bg-gradient-to-r from-violet-500 via-pink-500 to-rose-500 text-white hover:from-violet-600 hover:via-pink-600 hover:to-rose-600 h-10 px-6 text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg transform active:scale-95 rounded-full"
-                      >
-                        Réserver
-                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -452,11 +414,11 @@ export default function ModernSalonDetail() {
           )}
         </div>
 
-        {/* Bouton de réservation luxueux */}
-        <div className="bg-gradient-to-r from-violet-50 to-pink-50 border-t border-violet-100 p-5">
+        {/* Bouton de réservation simple */}
+        <div className="bg-white border-t border-gray-100 p-3">
           <Button 
             onClick={() => setLocation('/booking')}
-            className="w-full bg-gradient-to-r from-violet-500 via-pink-500 to-rose-500 text-white hover:from-violet-600 hover:via-pink-600 hover:to-rose-600 h-14 text-base font-semibold transition-all duration-300 hover:scale-[1.02] hover:shadow-xl transform active:scale-95 rounded-2xl shadow-lg"
+            className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
           >
             Réserver maintenant
           </Button>
