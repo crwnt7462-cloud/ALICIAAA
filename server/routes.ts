@@ -22,6 +22,65 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+
+  // Route de connexion démo pour les tests de développement
+  app.post('/api/demo-login', async (req: any, res: any) => {
+    try {
+      // Créer une session de test pour un utilisateur professionnel
+      if (req.session) {
+        (req.session as any).userId = "demo-user";
+        (req.session as any).userType = "professional";
+      }
+      
+      res.json({
+        success: true,
+        message: "Connexion démo réussie",
+        user: {
+          id: "demo-user",
+          businessName: "Salon Beautiful",
+          email: "salon@example.com",
+          firstName: "Marie",
+          lastName: "Dubois"
+        }
+      });
+    } catch (error) {
+      console.error("Demo login error:", error);
+      res.status(500).json({ message: "Erreur de connexion démo" });
+    }
+  });
+
+  // Route pour récupérer l'utilisateur connecté
+  app.get('/api/auth/user', authenticateUser, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      
+      // Demo user data
+      if (userId === "demo-user") {
+        return res.json({
+          id: "demo-user",
+          businessName: "Salon Beautiful",
+          address: "123 Avenue de la Beauté, 75001 Paris",
+          city: "Paris",
+          phone: "01 42 34 56 78",
+          email: "salon@example.com",
+          firstName: "Marie",
+          lastName: "Dubois",
+          profileImageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b5e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
+        });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+      
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur" });
+    }
+  });
+
   // Configure session middleware for persistent authentication
   app.use(configureSession());
   

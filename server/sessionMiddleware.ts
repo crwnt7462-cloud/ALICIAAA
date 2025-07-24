@@ -26,16 +26,18 @@ export function configureSession() {
 
 // Middleware pour les comptes professionnels
 export function authenticateUser(req: any, res: any, next: any) {
-  if (!req.session?.userId || req.session?.userType !== 'professional') {
+  const session = req.session as any;
+  if (!session?.userId || session?.userType !== 'professional') {
     return res.status(401).json({ message: "Non autorisé - Connexion professionnelle requise" });
   }
-  req.user = { id: req.session.userId };
+  req.user = { id: session.userId };
   next();
 }
 
 // Middleware pour les comptes clients
 export function authenticateClient(req: any, res: any, next: any) {
-  if (!req.session?.clientId || req.session?.userType !== 'client') {
+  const session = req.session as any;
+  if (!session?.clientId || session?.userType !== 'client') {
     return res.status(401).json({ message: "Non autorisé - Connexion client requise" });
   }
   next();
@@ -43,7 +45,8 @@ export function authenticateClient(req: any, res: any, next: any) {
 
 // Middleware pour vérifier les deux types de comptes
 export function authenticateAny(req: any, res: any, next: any) {
-  if (!req.session?.userId && !req.session?.clientId) {
+  const session = req.session as any;
+  if (!session?.userId && !session?.clientId) {
     return res.status(401).json({ message: "Non autorisé - Connexion requise" });
   }
   next();

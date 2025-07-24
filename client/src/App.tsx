@@ -74,6 +74,7 @@ import ProPagesManager from "@/pages/ProPagesManager";
 import SalonSettings from "@/pages/SalonSettings";
 import BookingCustomization from "@/pages/BookingCustomization";
 import ClientProDashboard from "@/pages/ClientProDashboard";
+import DemoLogin from "@/pages/DemoLogin";
 
 
 function Router() {
@@ -92,6 +93,15 @@ function Router() {
     return (
       <div className="h-full">
         <QuickBooking />
+      </div>
+    );
+  }
+
+  // Page de connexion démo
+  if (location === '/demo-login') {
+    return (
+      <div className="h-full">
+        <DemoLogin />
       </div>
     );
   }

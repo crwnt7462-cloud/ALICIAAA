@@ -58,18 +58,27 @@ export default function ProPagesManager() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => setLocation('/business-features')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Gestion des Pages</h1>
-              <p className="text-gray-600">Gérez vos pages publiques et de réservation</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => setLocation('/business-features')}
+                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Gestion des Pages</h1>
+                <p className="text-gray-600">Gérez vos pages publiques et de réservation</p>
+              </div>
             </div>
+            <Button
+              onClick={() => setLocation('/demo-login')}
+              variant="outline"
+              className="text-sm"
+            >
+              Connexion Démo
+            </Button>
           </div>
         </div>
       </div>
