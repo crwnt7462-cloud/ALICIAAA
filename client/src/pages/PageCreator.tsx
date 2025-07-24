@@ -83,6 +83,37 @@ export default function PageCreator() {
                           Ajouter des photos
                         </Button>
                       </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Services</label>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span className="text-sm">Coupe & Brushing</span>
+                            <span className="text-sm text-gray-500">45€</span>
+                          </div>
+                          <Button variant="outline" size="sm" className="w-full">
+                            + Ajouter un service
+                          </Button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Histoire du salon</label>
+                        <textarea 
+                          placeholder="15 ans d'excellence dans l'art de la beauté..."
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500 h-16"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Avis clients</label>
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span className="text-sm">"Service exceptionnel !" - Marie D.</span>
+                            <span className="text-sm text-yellow-500">⭐⭐⭐⭐⭐</span>
+                          </div>
+                          <Button variant="outline" size="sm" className="w-full">
+                            + Ajouter un avis
+                          </Button>
+                        </div>
+                      </div>
                     </>
                   )}
                   
@@ -152,6 +183,39 @@ export default function PageCreator() {
                           <div className="h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">Photo 1</div>
                           <div className="h-16 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-500">Photo 2</div>
                         </div>
+                        
+                        {/* Services */}
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-gray-900">Services</h3>
+                          <div className="p-3 border border-gray-200 rounded-lg">
+                            <div className="flex justify-between items-center">
+                              <span className="font-medium">Coupe & Brushing</span>
+                              <span className="text-violet-600 font-semibold">45€</span>
+                            </div>
+                            <span className="text-sm text-gray-500">45 min - Expert Sophie</span>
+                          </div>
+                        </div>
+
+                        {/* Histoire */}
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-gray-900">Notre histoire</h3>
+                          <div className="p-3 bg-gray-50 rounded-lg">
+                            <p className="text-xs text-gray-700">15 ans d'excellence dans l'art de la beauté...</p>
+                          </div>
+                        </div>
+
+                        {/* Avis */}
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-gray-900">Avis clients</h3>
+                          <div className="p-3 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-1 mb-1">
+                              {[...Array(5)].map((_, i) => (
+                                <div key={i} className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                              ))}
+                            </div>
+                            <p className="text-xs text-gray-700">"Service exceptionnel !" - Marie D.</p>
+                          </div>
+                        </div>
                       </>
                     )}
 
@@ -180,10 +244,20 @@ export default function PageCreator() {
               </Card>
 
               <div className="flex gap-2">
-                <Button className="flex-1 bg-violet-600 hover:bg-violet-700">
+                <Button 
+                  className="flex-1 bg-violet-600 hover:bg-violet-700"
+                  onClick={() => {
+                    alert('Page publiée avec succès ! Votre page sera disponible à l\'adresse : beautybook.com/salon/mon-salon');
+                  }}
+                >
                   Publier la page
                 </Button>
-                <Button variant="outline">
+                <Button 
+                  variant="outline"
+                  onClick={() => {
+                    alert('Brouillon sauvegardé ! Vous pouvez continuer à modifier votre page plus tard.');
+                  }}
+                >
                   Sauvegarder brouillon
                 </Button>
               </div>
