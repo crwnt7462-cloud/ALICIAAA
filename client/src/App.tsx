@@ -69,6 +69,8 @@ import ClientLogin from "@/pages/ClientLogin";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
 import PageCreator from "@/pages/PageCreator";
+import NewPageCreator from "@/pages/NewPageCreator";
+import ClientProDashboard from "@/pages/ClientProDashboard";
 
 
 function Router() {
@@ -158,7 +160,16 @@ function Router() {
   if (location === '/page-creator') {
     return (
       <div className="h-full">
-        <PageCreator />
+        <NewPageCreator />
+      </div>
+    );
+  }
+
+  // Dashboard client pro style
+  if (location === '/client-pro-dashboard') {
+    return (
+      <div className="h-full">
+        <ClientProDashboard />
       </div>
     );
   }

@@ -10,7 +10,7 @@ export default function FuturisticClientLogin() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLocation('/client-dashboard');
+    setLocation('/client-pro-dashboard');
   };
 
   const benefits = [
