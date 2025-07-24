@@ -91,24 +91,24 @@ export default function ProLogin() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-violet-50">
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
           onClick={() => setLocation('/')}
-          className="h-10 w-10 p-0 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
+          className="h-10 w-10 p-0 rounded-full bg-white/80 hover:bg-white text-gray-700 border border-gray-200 shadow-sm transition-all duration-300 hover:scale-105"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Effet géométrique */}
+      {/* Effet géométrique subtil */}
       <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
-        <div className="absolute top-20 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
-        <div className="absolute bottom-20 left-0 w-full h-px bg-gradient-to-r from-transparent via-white to-transparent"></div>
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-400 to-transparent"></div>
+        <div className="absolute top-20 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+        <div className="absolute bottom-20 left-0 w-full h-px bg-gradient-to-r from-transparent via-violet-400 to-transparent"></div>
+        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
       </div>
 
       <div className="flex min-h-screen">
@@ -116,24 +116,24 @@ export default function ProLogin() {
         <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 relative">
           <div className="max-w-md mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-light mb-4">
+              <h1 className="text-4xl font-light mb-4 text-gray-900">
                 Plateforme
-                <span className="block text-2xl text-gray-400">Professionnelle</span>
+                <span className="block text-2xl text-violet-600">Professionnelle</span>
               </h1>
-              <p className="text-gray-400 text-lg leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Gérez votre salon avec des outils de pointe et l'intelligence artificielle
               </p>
             </div>
 
             <div className="space-y-6">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-white/5 rounded-lg border border-white/10 backdrop-blur-sm">
-                  <div className="text-gray-300 mt-1">
+                <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:border-violet-300 transition-all duration-300 hover:scale-[1.02] animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
+                  <div className="text-violet-600 mt-1">
                     {feature.icon}
                   </div>
                   <div>
-                    <h3 className="font-medium text-white mb-1">{feature.title}</h3>
-                    <p className="text-gray-400 text-sm">{feature.desc}</p>
+                    <h3 className="font-medium text-gray-900 mb-1">{feature.title}</h3>
+                    <p className="text-gray-600 text-sm">{feature.desc}</p>
                   </div>
                 </div>
               ))}
@@ -143,25 +143,25 @@ export default function ProLogin() {
 
         {/* Côté droit - Formulaire */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
-          <Card className="w-full max-w-md bg-gray-900/50 border border-gray-800 backdrop-blur-sm">
+          <Card className="w-full max-w-md bg-white border border-gray-200 shadow-xl">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <Building2 className="w-6 h-6 text-gray-300" />
-                <h2 className="text-2xl font-light text-white">Espace Pro</h2>
+                <Building2 className="w-6 h-6 text-violet-600" />
+                <h2 className="text-2xl font-light text-gray-900">Espace Pro</h2>
               </div>
               <div className="flex justify-center">
-                <div className="flex bg-gray-800 rounded-lg p-1 border border-gray-700">
+                <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-200">
                   <Button
                     variant={isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(true)}
-                    className={`px-6 py-2 text-sm ${isLogin ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${isLogin ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Connexion
                   </Button>
                   <Button
                     variant={!isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(false)}
-                    className={`px-6 py-2 text-sm ${!isLogin ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${!isLogin ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Inscription
                   </Button>
@@ -174,7 +174,7 @@ export default function ProLogin() {
                 {!isLogin && (
                   <>
                     <div className="space-y-2">
-                      <Label className="text-gray-300">Nom du salon</Label>
+                      <Label className="text-gray-700">Nom du salon</Label>
                       <div className="relative">
                         <Building2 className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                         <Input
@@ -182,20 +182,20 @@ export default function ProLogin() {
                           placeholder="Mon Salon de Beauté"
                           value={formData.salonName}
                           onChange={(e) => setFormData({...formData, salonName: e.target.value})}
-                          className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                          className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                           required={!isLogin}
                         />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-gray-300">Téléphone</Label>
+                      <Label className="text-gray-700">Téléphone</Label>
                       <Input
                         type="tel"
                         placeholder="01 23 45 67 89"
                         value={formData.phone}
                         onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                        className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         required={!isLogin}
                       />
                     </div>
@@ -203,7 +203,7 @@ export default function ProLogin() {
                 )}
 
                 <div className="space-y-2">
-                  <Label className="text-gray-300">Email professionnel</Label>
+                  <Label className="text-gray-700">Email professionnel</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                     <Input
@@ -211,14 +211,14 @@ export default function ProLogin() {
                       placeholder="pro@monsalon.fr"
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                      className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-300">Mot de passe</Label>
+                  <Label className="text-gray-700">Mot de passe</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                     <Input
@@ -226,14 +226,14 @@ export default function ProLogin() {
                       placeholder="••••••••"
                       value={formData.password}
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
-                      className="pl-10 pr-10 bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                      className="pl-10 pr-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                       required
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-300"
+                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -242,7 +242,7 @@ export default function ProLogin() {
 
                 {!isLogin && (
                   <div className="space-y-2">
-                    <Label className="text-gray-300">Confirmer le mot de passe</Label>
+                    <Label className="text-gray-700">Confirmer le mot de passe</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                       <Input
@@ -250,7 +250,7 @@ export default function ProLogin() {
                         placeholder="••••••••"
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                        className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-500"
+                        className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         required={!isLogin}
                       />
                     </div>
@@ -259,7 +259,7 @@ export default function ProLogin() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-white text-black hover:bg-gray-200 h-11 font-medium"
+                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                 >
                   {isLogin ? "Se connecter" : "Créer mon espace pro"}
                 </Button>
@@ -269,14 +269,14 @@ export default function ProLogin() {
                 <div className="text-center">
                   <Button
                     variant="ghost"
-                    className="text-gray-400 hover:text-white text-sm"
+                    className="text-gray-600 hover:text-gray-900 text-sm"
                   >
                     Mot de passe oublié ?
                   </Button>
                 </div>
               )}
 
-              <div className="text-center pt-4 border-t border-gray-800">
+              <div className="text-center pt-4 border-t border-gray-200">
                 <p className="text-xs text-gray-500">
                   En continuant, vous acceptez nos conditions générales
                 </p>

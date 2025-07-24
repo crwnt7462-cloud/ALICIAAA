@@ -129,7 +129,7 @@ export default function ClientLogin() {
 
             <div className="space-y-6">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
+                <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all duration-300 hover:scale-[1.02] animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
                   <div className="text-gray-700 mt-1">
                     {benefit.icon}
                   </div>
@@ -156,14 +156,14 @@ export default function ClientLogin() {
                   <Button
                     variant={isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(true)}
-                    className={`px-6 py-2 text-sm ${isLogin ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${isLogin ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Connexion
                   </Button>
                   <Button
                     variant={!isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(false)}
-                    className={`px-6 py-2 text-sm ${!isLogin ? 'bg-gray-900 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                    className={`px-6 py-2 text-sm transition-all duration-300 hover:scale-105 ${!isLogin ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}
                   >
                     Inscription
                   </Button>
@@ -271,7 +271,7 @@ export default function ClientLogin() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 font-medium"
+                  className="w-full bg-gray-900 text-white hover:bg-gray-800 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
                 >
                   {isLogin ? "Se connecter" : "Créer mon compte"}
                 </Button>
