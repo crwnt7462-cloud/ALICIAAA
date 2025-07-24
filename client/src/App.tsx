@@ -76,6 +76,8 @@ import BookingCustomization from "@/pages/BookingCustomization";
 import ForgotPassword from "@/pages/ForgotPassword";
 import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
 import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
+import SalonRegistration from "@/pages/SalonRegistration";
+import SalonPayment from "@/pages/SalonPayment";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";
@@ -494,6 +496,8 @@ function Router() {
           <Route path="/salon-settings" component={SalonSettings} />
           <Route path="/booking-customization" component={BookingCustomization} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
+          <Route path="/salon-registration" component={SalonRegistration} />
+          <Route path="/salon-payment" component={SalonPayment} />
 
           <Route component={NotFound} />
         </Switch>

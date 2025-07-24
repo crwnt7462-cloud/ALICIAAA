@@ -76,8 +76,8 @@ export default function ProfessionalPlans() {
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
-    // Rediriger vers la page d'inscription professionnelle avec SIRET
-    setLocation('/subscription-signup');
+    // Rediriger vers la page d'inscription du salon
+    setLocation(`/salon-registration?plan=${planId}`);
   };
 
   const getPrice = (plan: typeof plans[0]) => {
