@@ -25,7 +25,7 @@ import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 import ProLogin from "@/pages/ProLogin";
 import Register from "@/pages/Register";
-import ModernSalonDetail from "@/pages/ModernSalonDetail";
+import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
 import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
@@ -312,6 +312,23 @@ function Router() {
     return (
       <div className="h-full">
         <DirectMessaging />
+      </div>
+    );
+  }
+
+  // Pages de connexion sans navigation
+  if (location === '/pro-login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
+      </div>
+    );
+  }
+
+  if (location === '/client-login') {
+    return (
+      <div className="h-full">
+        <ClientLogin />
       </div>
     );
   }

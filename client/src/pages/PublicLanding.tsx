@@ -323,7 +323,7 @@ export default function PublicLanding() {
               <Button 
                 variant="ghost" 
                 className="text-gray-600 hover:text-gray-900 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
-                onClick={() => setLocation("/client/login")}
+                onClick={() => setLocation("/client-login")}
               >
                 <span className="hidden md:inline">Se connecter</span>
                 <span className="md:hidden">Connexion</span>
