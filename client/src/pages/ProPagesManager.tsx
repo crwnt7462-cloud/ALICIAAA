@@ -31,9 +31,9 @@ export default function ProPagesManager() {
     enabled: !!userData
   });
 
-  const bookingUrl = bookingPageData?.pageUrl ? 
-    `${window.location.origin}/booking/${bookingPageData.pageUrl}` : 
-    `${window.location.origin}/booking/salon-${userData?.id || 'default'}`;
+  const bookingUrl = (bookingPageData as any)?.pageUrl ? 
+    `${window.location.origin}/booking/${(bookingPageData as any).pageUrl}` : 
+    `${window.location.origin}/booking/salon-${(userData as any)?.id || 'default'}`;
 
   const handleCopyBookingUrl = () => {
     navigator.clipboard.writeText(bookingUrl);
@@ -61,7 +61,7 @@ export default function ProPagesManager() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/pro-dashboard')}
+              onClick={() => setLocation('/business-features')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -113,22 +113,22 @@ export default function ProPagesManager() {
                   <div className="flex items-center gap-2 text-gray-700">
                     <Building2 className="h-4 w-4 text-violet-600" />
                     <span className="font-medium">Nom:</span>
-                    <span>{userData.businessName || 'Non défini'}</span>
+                    <span>{(userData as any)?.businessName || 'Non défini'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Globe className="h-4 w-4 text-violet-600" />
                     <span className="font-medium">Adresse:</span>
-                    <span>{userData.address || 'Non définie'}</span>
+                    <span>{(userData as any)?.address || 'Non définie'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Settings className="h-4 w-4 text-violet-600" />
                     <span className="font-medium">Téléphone:</span>
-                    <span>{userData.phone || 'Non défini'}</span>
+                    <span>{(userData as any)?.phone || 'Non défini'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <ExternalLink className="h-4 w-4 text-violet-600" />
                     <span className="font-medium">Email:</span>
-                    <span>{userData.email}</span>
+                    <span>{(userData as any)?.email || 'Non défini'}</span>
                   </div>
                 </div>
               </div>
@@ -198,24 +198,24 @@ export default function ProPagesManager() {
                   <div className="flex items-center gap-2 text-gray-700">
                     <Building2 className="h-4 w-4 text-blue-600" />
                     <span className="font-medium">Nom affiché:</span>
-                    <span>{bookingPageData.salonName}</span>
+                    <span>{(bookingPageData as any)?.salonName || 'Salon Beautiful'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Settings className="h-4 w-4 text-blue-600" />
                     <span className="font-medium">Services:</span>
-                    <span>{bookingPageData.selectedServices?.length || 0} service(s)</span>
+                    <span>{(bookingPageData as any)?.selectedServices?.length || 0} service(s)</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Globe className="h-4 w-4 text-blue-600" />
                     <span className="font-medium">Statut:</span>
-                    <span className={bookingPageData.isPublished ? "text-green-600" : "text-orange-600"}>
-                      {bookingPageData.isPublished ? "Publié" : "Brouillon"}
+                    <span className={(bookingPageData as any)?.isPublished ? "text-green-600" : "text-orange-600"}>
+                      {(bookingPageData as any)?.isPublished ? "Publié" : "Brouillon"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <ExternalLink className="h-4 w-4 text-blue-600" />
                     <span className="font-medium">Vues:</span>
-                    <span>{bookingPageData.views || 0}</span>
+                    <span>{(bookingPageData as any)?.views || 0}</span>
                   </div>
                 </div>
               </div>

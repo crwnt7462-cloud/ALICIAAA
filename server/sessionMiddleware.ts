@@ -29,6 +29,7 @@ export function authenticateUser(req: any, res: any, next: any) {
   if (!req.session?.userId || req.session?.userType !== 'professional') {
     return res.status(401).json({ message: "Non autorisé - Connexion professionnelle requise" });
   }
+  req.user = { id: req.session.userId };
   next();
 }
 

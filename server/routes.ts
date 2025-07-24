@@ -77,9 +77,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: "Sarah",
           lastName: "Martin",
           businessName: "Salon Beautiful",
+          phone: "01 42 34 56 78",
+          address: "123 Avenue de la Beauté, 75001 Paris",
+          city: "Paris",
           isProfessional: true,
           isVerified: true
         };
+
+        // Save session
+        req.session.userId = testUser.id;
+        req.session.userType = 'professional';
+        req.session.user = testUser;
 
         res.json({ 
           message: "Connexion réussie", 
@@ -94,6 +102,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           message: "Email ou mot de passe incorrect" 
         });
       }
+
+      // Save session
+      req.session.userId = user.id;
+      req.session.userType = 'professional';
+      req.session.user = user;
 
       const { password, ...userWithoutPassword } = user;
       res.json({ 
@@ -111,10 +124,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.user?.id === "demo-user") {
         const testUser = {
           id: "demo-user",
-          email: "demo@beautyapp.com",
-          firstName: "Demo",
-          lastName: "User",
-          businessName: "Salon Demo",
+          email: "salon@example.com",
+          firstName: "Sarah",
+          lastName: "Martin",
+          businessName: "Salon Beautiful",
+          phone: "01 42 34 56 78",
+          address: "123 Avenue de la Beauté, 75001 Paris",
+          city: "Paris",
           isProfessional: true,
           isVerified: true
         };
@@ -714,6 +730,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      
+      // Demo user data
+      if (userId === "demo-user") {
+        return res.json({
+          salonName: "Salon Beautiful",
+          title: "Réservez votre rendez-vous",
+          description: "Votre salon de beauté préféré vous accueille sur rendez-vous",
+          primaryColor: "#8B5CF6",
+          secondaryColor: "#F3F4F6",
+          logoUrl: "",
+          backgroundImage: "",
+          showServices: true,
+          showStaff: true,
+          requireDeposit: true,
+          depositPercentage: 30,
+          welcomeMessage: "Bienvenue dans notre salon de beauté",
+          bookingRules: "Annulation gratuite jusqu'à 24h avant le rendez-vous",
+          isPublished: true,
+          views: 127,
+          selectedServices: ["Coupe & Brushing", "Coloration", "Soins visage"],
+          pageUrl: "salon-beautiful"
+        });
+      }
+      
       const bookingPage = await storage.getCurrentBookingPage(userId);
       res.json(bookingPage);
     } catch (error) {
@@ -725,8 +765,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      
+      // Demo user - simulate update
+      if (userId === "demo-user") {
+        return res.json({
+          message: "Page de réservation mise à jour avec succès",
+          data: req.body
+        });
+      }
+      
       const updatedPage = await storage.updateCurrentBookingPage(userId, req.body);
-      res.json(updatedPage);
+      res.json({
+        message: "Page de réservation mise à jour avec succès",
+        data: updatedPage
+      });
     } catch (error) {
       console.error("Error updating booking page:", error);
       res.status(500).json({ message: "Failed to update booking page" });
@@ -736,8 +788,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/salon-settings', authenticateUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
-      const user = await storage.getUser(userId);
       
+      // Demo user data
+      if (userId === "demo-user") {
+        return res.json({
+          businessName: "Salon Beautiful",
+          address: "123 Avenue de la Beauté, 75001 Paris",
+          city: "Paris",
+          phone: "01 42 34 56 78",
+          email: "salon@example.com",
+          description: "Salon de beauté haut de gamme spécialisé dans les soins capillaires et esthétiques. Notre équipe experte vous accueille dans un cadre moderne et relaxant pour vous offrir des prestations sur-mesure.",
+          coverImage: "https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+        });
+      }
+      
+      const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -749,17 +814,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city: user.city || '',
         phone: user.phone || '',
         email: user.email,
-        description: '', // Could be added to user schema if needed
-        coverImage: user.profileImageUrl || '',
-        workingHours: {
-          monday: { open: '09:00', close: '18:00', closed: false },
-          tuesday: { open: '09:00', close: '18:00', closed: false },
-          wednesday: { open: '09:00', close: '18:00', closed: false },
-          thursday: { open: '09:00', close: '19:00', closed: false },
-          friday: { open: '09:00', close: '19:00', closed: false },
-          saturday: { open: '08:00', close: '17:00', closed: false },
-          sunday: { open: '10:00', close: '16:00', closed: false }
-        }
+        description: user.description || '',
+        coverImage: user.profileImageUrl || ''
       };
 
       res.json(salonData);
@@ -772,8 +828,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch('/api/salon-settings', authenticateUser, async (req: any, res) => {
     try {
       const userId = req.user.id;
+      
+      // Demo user - simulate update
+      if (userId === "demo-user") {
+        return res.json({
+          message: "Paramètres mis à jour avec succès",
+          data: req.body
+        });
+      }
+      
       const updatedUser = await storage.updateUserProfile(userId, req.body);
-      res.json(updatedUser);
+      res.json({
+        message: "Paramètres mis à jour avec succès",
+        data: updatedUser
+      });
     } catch (error) {
       console.error("Error updating salon settings:", error);
       res.status(500).json({ message: "Failed to update salon settings" });
