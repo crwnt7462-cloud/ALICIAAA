@@ -66,6 +66,7 @@ import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
 import PaymentStep from "@/pages/PaymentStep";
 import ClientLogin from "@/pages/ClientLogin";
+import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
 import PageCreator from "@/pages/PageCreator";
@@ -144,7 +145,7 @@ function Router() {
   if (location === '/client-login') {
     return (
       <div className="h-full">
-        <FuturisticClientLogin />
+        <ClientLoginWhite />
       </div>
     );
   }

@@ -18,7 +18,7 @@ import {
   Star
 } from "lucide-react";
 
-export default function ClientLogin() {
+export default function ClientLoginWhite() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
@@ -164,82 +164,72 @@ export default function ClientLogin() {
                 </div>
               </div>
             </CardHeader>
-
-            <CardContent className="space-y-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
+            
+            <CardContent className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 {!isLogin && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-700">Prénom</Label>
+                      <Label htmlFor="firstName" className="text-gray-700">Prénom</Label>
                       <Input
+                        id="firstName"
                         type="text"
-                        placeholder="Marie"
+                        required
                         value={formData.firstName}
-                        onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                        className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                        className="border-gray-200 focus:border-violet-400 h-10"
+                        placeholder="Votre prénom"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-gray-700">Nom</Label>
+                      <Label htmlFor="lastName" className="text-gray-700">Nom</Label>
                       <Input
+                        id="lastName"
                         type="text"
-                        placeholder="Dupont"
+                        required
                         value={formData.lastName}
-                        onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                        className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                        className="border-gray-200 focus:border-violet-400 h-10"
+                        placeholder="Votre nom"
                       />
                     </div>
-                  </div>
-                )}
-
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label className="text-gray-700">Téléphone</Label>
-                    <Input
-                      type="tel"
-                      placeholder="06 12 34 56 78"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                      required={!isLogin}
-                    />
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  <Label className="text-gray-700">Email</Label>
+                  <Label htmlFor="email" className="text-gray-700">Email</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                     <Input
+                      id="email"
                       type="email"
-                      placeholder="marie@example.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                       required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="border-gray-200 focus:border-violet-400 pl-10 h-10"
+                      placeholder="votre@email.com"
                     />
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-700">Mot de passe</Label>
+                  <Label htmlFor="password" className="text-gray-700">Mot de passe</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                     <Input
+                      id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={(e) => setFormData({...formData, password: e.target.value})}
-                      className="pl-10 pr-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                       required
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="border-gray-200 focus:border-violet-400 pl-10 pr-10 h-10"
+                      placeholder="••••••••"
                     />
+                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Button
                       type="button"
                       variant="ghost"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-gray-400 hover:text-gray-600"
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -247,46 +237,45 @@ export default function ClientLogin() {
                 </div>
 
                 {!isLogin && (
-                  <div className="space-y-2">
-                    <Label className="text-gray-700">Confirmer le mot de passe</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="text-gray-700">Confirmer le mot de passe</Label>
+                      <div className="relative">
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          required
+                          value={formData.confirmPassword}
+                          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                          className="border-gray-200 focus:border-violet-400 pl-10 h-10"
+                          placeholder="••••••••"
+                        />
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-gray-700">Téléphone</Label>
                       <Input
-                        type="password"
-                        placeholder="••••••••"
-                        value={formData.confirmPassword}
-                        onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                        className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
+                        id="phone"
+                        type="tel"
+                        required
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        className="border-gray-200 focus:border-violet-400 h-10"
+                        placeholder="06 12 34 56 78"
                       />
                     </div>
-                  </div>
+                  </>
                 )}
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 h-10 rounded-md"
                 >
                   {isLogin ? "Se connecter" : "Créer mon compte"}
                 </Button>
               </form>
-
-              {isLogin && (
-                <div className="text-center">
-                  <Button
-                    variant="ghost"
-                    className="text-gray-600 hover:text-gray-900 text-sm"
-                  >
-                    Mot de passe oublié ?
-                  </Button>
-                </div>
-              )}
-
-              <div className="text-center pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-500">
-                  En continuant, vous acceptez nos conditions générales
-                </p>
-              </div>
             </CardContent>
           </Card>
         </div>

@@ -91,7 +91,7 @@ export default function ProLogin() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
