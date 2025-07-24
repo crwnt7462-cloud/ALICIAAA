@@ -394,8 +394,8 @@ export default function BusinessFeatures() {
               </div>
               <Button 
                 size="sm" 
-                onClick={() => setLocation('/perfect-booking-creator')}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                onClick={() => setLocation('/page-creator')}
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white"
               >
                 + Créer nouvelle page
               </Button>

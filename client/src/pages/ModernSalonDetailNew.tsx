@@ -252,16 +252,28 @@ export default function ModernSalonDetail() {
               </div>
 
               {services.map((service, index) => (
-                <Card key={service.id} className="bg-white border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-300">
+                <Card 
+                  key={service.id} 
+                  className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300 cursor-pointer group animate-click-bounce"
+                  onClick={() => {
+                    // Animation de rebond au clic
+                    const card = document.querySelector(`[data-service="${service.id}"]`);
+                    if (card) {
+                      card.classList.add('animate-click-bounce');
+                      setTimeout(() => card.classList.remove('animate-click-bounce'), 300);
+                    }
+                  }}
+                  data-service={service.id}
+                >
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-gray-900 text-sm">{service.name}</h3>
-                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">{service.duration}min</span>
+                          <h3 className="font-medium text-gray-900 text-sm group-hover:text-violet-700 transition-colors">{service.name}</h3>
+                          <span className="text-xs text-gray-500 bg-gray-100 group-hover:bg-violet-100 group-hover:text-violet-600 px-2 py-0.5 rounded transition-colors">{service.duration}min</span>
                         </div>
                         <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                          <span>{service.specialist}</span>
+                          <span className="group-hover:text-violet-600 transition-colors">{service.specialist}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -269,11 +281,14 @@ export default function ModernSalonDetail() {
                           {service.originalPrice && (
                             <span className="text-xs text-gray-400 line-through block">{service.originalPrice}€</span>
                           )}
-                          <span className="text-base font-medium text-gray-900">{service.price}€</span>
+                          <span className="text-base font-medium text-gray-900 group-hover:text-violet-700 transition-colors">{service.price}€</span>
                         </div>
                         <Button 
-                          onClick={() => setLocation('/booking')}
-                          className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-105 transform active:scale-95"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLocation('/booking');
+                          }}
+                          className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-110 transform active:scale-95 shadow-lg hover:shadow-xl"
                         >
                           Réserver
                         </Button>
@@ -287,18 +302,21 @@ export default function ModernSalonDetail() {
 
           {activeTab === 'story' && (
             <div className="space-y-4">
-              <div className="mb-6">
-                <h2 className="text-xl font-light text-gray-900 mb-2">Notre histoire</h2>
-                <p className="text-sm text-gray-600">15 ans d'excellence dans l'art de la beauté</p>
+              <div className="mb-3">
+                <h2 className="text-base font-medium text-gray-900">Notre histoire</h2>
               </div>
 
-              <div className="space-y-4">
-                <div className="p-5 bg-white border border-violet-100 hover:border-violet-200 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl">
-                  <h3 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-violet-600" />
+              <div className="space-y-3">
+                <div className="p-4 bg-white border border-gray-200 hover:border-violet-300 hover:shadow-md transition-all duration-300 cursor-pointer group animate-click-bounce"
+                     onClick={(e) => {
+                       e.currentTarget.classList.add('animate-click-bounce');
+                       setTimeout(() => e.currentTarget.classList.remove('animate-click-bounce'), 300);
+                     }}>
+                  <h3 className="text-sm font-medium text-gray-900 mb-2 group-hover:text-violet-700 transition-colors flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-violet-600" />
                     La vision
                   </h3>
-                  <p className="text-sm text-gray-700 leading-relaxed">
+                  <p className="text-xs text-gray-700 leading-relaxed group-hover:text-gray-800 transition-colors">
                     {salon.story}
                   </p>
                 </div>
@@ -358,9 +376,13 @@ export default function ModernSalonDetail() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {reviews.map((review, index) => (
-                  <div key={review.id} className="p-5 bg-white border border-violet-100 hover:border-violet-200 transition-all duration-300 shadow-lg hover:shadow-xl rounded-xl animate-slide-up" style={{animationDelay: `${index * 0.1}s`}}>
+                  <div key={review.id} className="p-4 bg-white border border-gray-200 hover:border-violet-300 hover:shadow-md transition-all duration-300 cursor-pointer group animate-click-bounce"
+                       onClick={(e) => {
+                         e.currentTarget.classList.add('animate-click-bounce');
+                         setTimeout(() => e.currentTarget.classList.remove('animate-click-bounce'), 300);
+                       }}>
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center">

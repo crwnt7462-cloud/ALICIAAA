@@ -66,6 +66,9 @@ import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
 import PaymentStep from "@/pages/PaymentStep";
 import ClientLogin from "@/pages/ClientLogin";
+import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
+import FuturisticProLogin from "@/pages/FuturisticProLogin";
+import PageCreator from "@/pages/PageCreator";
 
 
 function Router() {
@@ -129,6 +132,33 @@ function Router() {
     return (
       <div className="h-full">
         <PerfectBookingCreator />
+      </div>
+    );
+  }
+
+  // Page de connexion client futuriste
+  if (location === '/client-login') {
+    return (
+      <div className="h-full">
+        <FuturisticClientLogin />
+      </div>
+    );
+  }
+
+  // Page de connexion pro futuriste
+  if (location === '/pro-login') {
+    return (
+      <div className="h-full">
+        <FuturisticProLogin />
+      </div>
+    );
+  }
+
+  // Page créateur de pages
+  if (location === '/page-creator') {
+    return (
+      <div className="h-full">
+        <PageCreator />
       </div>
     );
   }
