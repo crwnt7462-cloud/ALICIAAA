@@ -276,7 +276,7 @@ export default function QuickBooking() {
                   <Button
                     onClick={() => setStep(3)}
                     disabled={!isStepValid(2)}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 py-3"
                   >
                     Continuer
                   </Button>
@@ -380,7 +380,7 @@ export default function QuickBooking() {
                   <Button
                     onClick={handleSubmit}
                     disabled={!isStepValid(3) || createBookingMutation.isPending}
-                    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 py-3"
                   >
                     {createBookingMutation.isPending ? 'Confirmation...' : 'Confirmer la réservation'}
                   </Button>

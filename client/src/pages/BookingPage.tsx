@@ -850,7 +850,7 @@ export default function BookingPage() {
                 <Button 
                   onClick={handleBooking}
                   disabled={isLoading}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 text-white font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="flex-1 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 disabled:opacity-50 text-white font-semibold"
                   size="lg"
                 >
                   {isLoading ? (

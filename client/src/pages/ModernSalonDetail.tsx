@@ -405,7 +405,7 @@ export default function ModernSalonDetail() {
         <div className="sticky bottom-0 bg-white border-t p-4">
           <Button 
             onClick={() => setLocation('/booking')}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-12 text-base font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white h-12 text-base font-medium"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Réserver maintenant

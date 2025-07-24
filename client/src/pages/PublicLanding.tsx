@@ -329,7 +329,7 @@ export default function PublicLanding() {
                 <span className="md:hidden">Connexion</span>
               </Button>
               <Button 
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hidden lg:flex"
+                className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
                 onClick={() => setLocation("/booking")}
               >
                 Réserver
@@ -403,7 +403,7 @@ export default function PublicLanding() {
                 </div>
                 <Button 
                   onClick={() => setLocation('/booking')}
-                  className="w-full h-11 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-sm font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 touch-manipulation"
+                  className="w-full h-11 gradient-bg text-white text-sm font-medium rounded-lg touch-manipulation"
                 >
                   <Search className="w-4 h-4 mr-2" />
                   Réserver maintenant
@@ -483,7 +483,7 @@ export default function PublicLanding() {
                 <p className="text-xs text-gray-600 mb-1">{slot.service}</p>
                 <p className="text-xs text-gray-500 mb-2">{slot.location}</p>
                 <Button 
-                  className="w-full h-9 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg touch-manipulation text-xs shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                  className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleBookSalon(slot.id);

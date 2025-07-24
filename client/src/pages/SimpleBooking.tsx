@@ -379,7 +379,7 @@ export default function SimpleBooking() {
                     key={date.value}
                     variant={selectedDate === date.value ? "default" : "outline"}
                     className={`p-3 h-auto ${
-                      selectedDate === date.value ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300' : ''
+                      selectedDate === date.value ? 'bg-violet-600 hover:bg-violet-700' : ''
                     }`}
                     onClick={() => setSelectedDate(date.value)}
                   >
@@ -398,7 +398,7 @@ export default function SimpleBooking() {
                       key={time}
                       variant={selectedTime === time ? "default" : "outline"}
                       className={`p-2 ${
-                        selectedTime === time ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300' : ''
+                        selectedTime === time ? 'bg-violet-600 hover:bg-violet-700' : ''
                       }`}
                       onClick={() => setSelectedTime(time)}
                     >

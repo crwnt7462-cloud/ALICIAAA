@@ -280,7 +280,7 @@ export default function PerfectBookingCreator() {
                 </div>
               </div>
 
-              <Button onClick={() => setStep(2)} className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+              <Button onClick={() => setStep(2)} className="w-full bg-purple-600 hover:bg-purple-700">
                 Continuer
               </Button>
             </div>
