@@ -1,635 +1,382 @@
-import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+// Gestion des clients avec notes et popup
+import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Camera, Tag, AlertTriangle, Heart, User } from 'lucide-react';
-import { useLocation } from 'wouter';
-import AuthGuard from '@/components/AuthGuard';
-import { apiRequest } from '@/lib/queryClient';
+import { ArrowLeft, Search, User, Star, Calendar, MessageCircle, Phone, Mail, Plus, Edit } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
-type ClientNote = {
+interface ClientNote {
   id: string;
-  clientId: string;
-  professionalId: string;
-  notes?: string;
-  photos: string[];
-  allergies: string[];
-  tags: string[];
-  preferences?: string;
-  lastVisit?: string;
-  createdAt: string;
-  updatedAt: string;
-};
+  content: string;
+  date: string;
+  category: 'general' | 'preference' | 'allergie' | 'important';
+}
 
-type Client = {
-  id: number;
-  firstName: string;
-  lastName: string;
+interface Client {
+  id: string;
+  name: string;
   email: string;
   phone: string;
-  note?: ClientNote;
-};
-
-type CustomTag = {
-  id: string;
-  professionalId: string;
-  name: string;
-  color: string;
-  category: string;
-  createdAt: string;
-};
+  lastVisit: string;
+  totalVisits: number;
+  favoriteService: string;
+  status: 'vip' | 'fidele' | 'regulier' | 'nouveau';
+  notes: ClientNote[];
+}
 
 export default function ClientManagement() {
   const [, setLocation] = useLocation();
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [noteForm, setNoteForm] = useState({
-    notes: '',
-    allergies: [] as string[],
-    tags: [] as string[],
-    preferences: '',
-    photos: [] as string[]
-  });
-  const [newTag, setNewTag] = useState({ name: '', color: '#6366f1', category: 'general' });
-  const [newClient, setNewClient] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: ''
-  });
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  // Récupérer la liste des clients avec leurs notes
-  const { data: clients = [], isLoading } = useQuery({
-    queryKey: ['/api/clients-with-notes'],
-    refetchOnWindowFocus: false
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
+  const [newNote, setNewNote] = useState({
+    content: '',
+    category: 'general' as const
   });
 
-  // Récupérer les tags personnalisés
-  const { data: customTags = [] } = useQuery<CustomTag[]>({
-    queryKey: ['/api/custom-tags'],
-    refetchOnWindowFocus: false
-  });
-
-  // Mutation pour sauvegarder les notes client
-  const saveNoteMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return await apiRequest('POST', '/api/client-notes', data);
+  const clients: Client[] = [
+    {
+      id: '1',
+      name: 'Marie Dupont',
+      email: 'marie@example.com',
+      phone: '06 12 34 56 78',
+      lastVisit: '2024-01-20',
+      totalVisits: 15,
+      favoriteService: 'Coupe + Couleur',
+      status: 'vip',
+      notes: [
+        { id: '1', content: 'Préfère les RDV le matin', date: '2024-01-15', category: 'preference' },
+        { id: '2', content: 'Allergique aux produits à base d\'ammoniaque', date: '2024-01-10', category: 'allergie' }
+      ]
     },
-    onSuccess: () => {
-      toast({
-        title: "Notes sauvegardées",
-        description: "Les informations client ont été mises à jour avec succès"
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/clients-with-notes'] });
-      setIsEditing(false);
+    {
+      id: '2',
+      name: 'Sophie Martin',
+      email: 'sophie.martin@gmail.com',
+      phone: '06 98 76 54 32',
+      lastVisit: '2024-01-18',
+      totalVisits: 8,
+      favoriteService: 'Soin du visage',
+      status: 'fidele',
+      notes: [
+        { id: '3', content: 'Très satisfaite du dernier soin', date: '2024-01-18', category: 'general' }
+      ]
     },
-    onError: (error) => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les notes",
-        variant: "destructive"
-      });
+    {
+      id: '3',
+      name: 'Emma Laurent',
+      email: 'emma.laurent@outlook.fr',
+      phone: '07 11 22 33 44',
+      lastVisit: '2024-01-22',
+      totalVisits: 3,
+      favoriteService: 'Manucure',
+      status: 'regulier',
+      notes: []
     }
-  });
+  ];
 
-  // Mutation pour créer un tag personnalisé
-  const createTagMutation = useMutation({
-    mutationFn: async (tagData: any) => {
-      return await apiRequest('POST', '/api/custom-tags', tagData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Tag créé",
-        description: "Le nouveau tag a été ajouté avec succès"
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/custom-tags'] });
-      setNewTag({ name: '', color: '#6366f1', category: 'general' });
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'vip': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'fidele': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'regulier': return 'bg-green-100 text-green-800 border-green-200';
+      case 'nouveau': return 'bg-orange-100 text-orange-800 border-orange-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  });
+  };
 
-  // Mutation pour créer un nouveau client
-  const createClientMutation = useMutation({
-    mutationFn: async (clientData: any) => {
-      return await apiRequest('POST', '/api/clients', clientData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Client créé",
-        description: "Le nouveau client a été ajouté avec succès"
-      });
-      queryClient.invalidateQueries({ queryKey: ['/api/clients-with-notes'] });
-      setNewClient({ firstName: '', lastName: '', email: '', phone: '' });
-      setIsCreateDialogOpen(false);
-    },
-    onError: () => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer le client",
-        variant: "destructive"
-      });
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'allergie': return 'bg-red-100 text-red-800 border-red-200';
+      case 'important': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'preference': return 'bg-blue-100 text-blue-800 border-blue-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-  });
+  };
 
-  // Initialiser le formulaire quand un client est sélectionné
-  useEffect(() => {
-    if (selectedClient && selectedClient.note) {
-      setNoteForm({
-        notes: selectedClient.note.notes || '',
-        allergies: selectedClient.note.allergies || [],
-        tags: selectedClient.note.tags || [],
-        preferences: selectedClient.note.preferences || '',
-        photos: selectedClient.note.photos || []
-      });
-    } else if (selectedClient) {
-      setNoteForm({
-        notes: '',
-        allergies: [],
-        tags: [],
-        preferences: '',
-        photos: []
-      });
-    }
-  }, [selectedClient]);
+  const addNote = () => {
+    if (!newNote.content.trim() || !selectedClient) return;
 
-  const handleSaveNote = () => {
-    if (!selectedClient) return;
+    const note: ClientNote = {
+      id: Date.now().toString(),
+      content: newNote.content,
+      date: new Date().toISOString().split('T')[0],
+      category: newNote.category
+    };
 
-    saveNoteMutation.mutate({
-      clientId: selectedClient.id.toString(),
-      ...noteForm
+    // Simuler l'ajout en mémoire
+    selectedClient.notes.push(note);
+    
+    toast({
+      title: "Note ajoutée",
+      description: `Note ajoutée pour ${selectedClient.name}`
     });
-  };
 
-  const addAllergie = (allergie: string) => {
-    if (allergie && !noteForm.allergies.includes(allergie)) {
-      setNoteForm(prev => ({
-        ...prev,
-        allergies: [...prev.allergies, allergie]
-      }));
-    }
+    setNewNote({ content: '', category: 'general' });
+    setIsNoteDialogOpen(false);
   };
-
-  const removeAllergie = (allergie: string) => {
-    setNoteForm(prev => ({
-      ...prev,
-      allergies: prev.allergies.filter(a => a !== allergie)
-    }));
-  };
-
-  const addTag = (tagName: string) => {
-    if (tagName && !noteForm.tags.includes(tagName)) {
-      setNoteForm(prev => ({
-        ...prev,
-        tags: [...prev.tags, tagName]
-      }));
-    }
-  };
-
-  const removeTag = (tag: string) => {
-    setNoteForm(prev => ({
-      ...prev,
-      tags: prev.tags.filter(t => t !== tag)
-    }));
-  };
-
-  const getTagColor = (tagName: string) => {
-    const customTag = customTags.find(t => t.name === tagName);
-    return customTag?.color || '#6366f1';
-  };
-
-  const getTagCategory = (tagName: string) => {
-    const customTag = customTags.find(t => t.name === tagName);
-    return customTag?.category || 'general';
-  };
-
-  if (isLoading) {
-    return (
-      <AuthGuard requiredAuth="pro">
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Chargement des clients...</p>
-          </div>
-        </div>
-      </AuthGuard>
-    );
-  }
 
   return (
-    <AuthGuard requiredAuth="pro">
-      <div className="min-h-screen bg-gray-50">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="max-w-6xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation('/business-features')}
-                  className="p-2"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </Button>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Gestion Clientèle</h1>
-                  <p className="text-sm text-gray-600">Notes, photos et préférences clients</p>
-                </div>
-              </div>
-              
-              {/* Création de tags personnalisés */}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="bg-purple-600 hover:bg-purple-700">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nouveau Tag
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Créer un tag personnalisé</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label>Nom du tag</Label>
-                      <Input
-                        value={newTag.name}
-                        onChange={(e) => setNewTag(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="Ex: VIP, Fidèle, Difficile..."
-                      />
-                    </div>
-                    <div>
-                      <Label>Catégorie</Label>
-                      <Select value={newTag.category} onValueChange={(value) => setNewTag(prev => ({ ...prev, category: value }))}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="general">Général</SelectItem>
-                          <SelectItem value="allergie">Allergie</SelectItem>
-                          <SelectItem value="preference">Préférence</SelectItem>
-                          <SelectItem value="comportement">Comportement</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>Couleur</Label>
-                      <Input
-                        type="color"
-                        value={newTag.color}
-                        onChange={(e) => setNewTag(prev => ({ ...prev, color: e.target.value }))}
-                      />
-                    </div>
-                    <Button 
-                      onClick={() => createTagMutation.mutate(newTag)}
-                      disabled={!newTag.name || createTagMutation.isPending}
-                      className="w-full"
-                    >
-                      Créer le tag
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            
-            {/* Liste des clients */}
-            <div className="lg:col-span-1">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Clients ({clients.length})</CardTitle>
-                    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                          <Plus className="w-4 h-4 mr-2" />
-                          Nouveau Client
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Ajouter un nouveau client</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-3">
-                            <div>
-                              <Label>Prénom</Label>
-                              <Input 
-                                value={newClient.firstName}
-                                onChange={(e) => setNewClient(prev => ({ ...prev, firstName: e.target.value }))}
-                                placeholder="Prénom" 
-                              />
-                            </div>
-                            <div>
-                              <Label>Nom</Label>
-                              <Input 
-                                value={newClient.lastName}
-                                onChange={(e) => setNewClient(prev => ({ ...prev, lastName: e.target.value }))}
-                                placeholder="Nom" 
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <Label>Email</Label>
-                            <Input 
-                              type="email" 
-                              value={newClient.email}
-                              onChange={(e) => setNewClient(prev => ({ ...prev, email: e.target.value }))}
-                              placeholder="email@exemple.com" 
-                            />
-                          </div>
-                          <div>
-                            <Label>Téléphone</Label>
-                            <Input 
-                              value={newClient.phone}
-                              onChange={(e) => setNewClient(prev => ({ ...prev, phone: e.target.value }))}
-                              placeholder="06 12 34 56 78" 
-                            />
-                          </div>
-                          <Button 
-                            onClick={() => createClientMutation.mutate(newClient)}
-                            disabled={!newClient.firstName || !newClient.lastName || !newClient.email || createClientMutation.isPending}
-                            className="w-full"
-                          >
-                            {createClientMutation.isPending ? "Création..." : "Créer le client"}
-                          </Button>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="max-h-96 overflow-y-auto">
-                    {clients.map((client: Client) => (
-                      <div
-                        key={client.id}
-                        className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
-                          selectedClient?.id === client.id ? 'bg-purple-50 border-purple-200' : ''
-                        }`}
-                        onClick={() => setSelectedClient(client)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-medium text-gray-900">
-                              {client.firstName} {client.lastName}
-                            </h3>
-                            <p className="text-sm text-gray-600">{client.email}</p>
-                            {client.note && (
-                              <div className="flex gap-1 mt-2">
-                                {client.note.tags.slice(0, 2).map(tag => (
-                                  <Badge
-                                    key={tag}
-                                    variant="secondary"
-                                    style={{ backgroundColor: getTagColor(tag) + '20', color: getTagColor(tag) }}
-                                    className="text-xs"
-                                  >
-                                    {tag}
-                                  </Badge>
-                                ))}
-                                {client.note.tags.length > 2 && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    +{client.note.tags.length - 2}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex flex-col items-center gap-1">
-                            {client.note?.allergies && client.note.allergies.length > 0 && (
-                              <AlertTriangle className="w-4 h-4 text-orange-500" />
-                            )}
-                            {client.note?.notes && (
-                              <Edit3 className="w-4 h-4 text-gray-400" />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Détails du client sélectionné */}
-            <div className="lg:col-span-2">
-              {selectedClient ? (
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <User className="w-6 h-6 text-purple-600" />
-                        <div>
-                          <CardTitle className="text-lg">
-                            {selectedClient.firstName} {selectedClient.lastName}
-                          </CardTitle>
-                          <p className="text-sm text-gray-600">{selectedClient.email}</p>
-                        </div>
-                      </div>
-{isEditing ? (
-                        <Button
-                          onClick={handleSaveNote}
-                          disabled={saveNoteMutation.isPending}
-                          size="sm"
-                        >
-                          Sauvegarder
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => setIsEditing(true)}
-                          variant="outline"
-                          size="sm"
-                        >
-                          Modifier
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    
-                    {/* Notes personnelles */}
-                    <div>
-                      <Label className="text-base font-medium">Notes personnelles</Label>
-                      <Textarea
-                        value={noteForm.notes}
-                        onChange={(e) => setNoteForm(prev => ({ ...prev, notes: e.target.value }))}
-                        placeholder="Ajoutez vos notes sur ce client..."
-                        disabled={!isEditing}
-                        className="mt-2"
-                        rows={4}
-                      />
-                    </div>
-
-                    {/* Allergies */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <AlertTriangle className="w-5 h-5 text-orange-500" />
-                        <Label className="text-base font-medium">Allergies</Label>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {noteForm.allergies.map(allergie => (
-                          <Badge
-                            key={allergie}
-                            variant="secondary"
-                            className="bg-orange-100 text-orange-800"
-                          >
-                            {allergie}
-                            {isEditing && (
-                              <button
-                                onClick={() => removeAllergie(allergie)}
-                                className="ml-2 text-orange-600 hover:text-orange-800"
-                              >
-                                ×
-                              </button>
-                            )}
-                          </Badge>
-                        ))}
-                      </div>
-                      {isEditing && (
-                        <Input
-                          placeholder="Ajouter une allergie (Appuyez sur Entrée)"
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              const value = e.currentTarget.value.trim();
-                              if (value) {
-                                addAllergie(value);
-                                e.currentTarget.value = '';
-                              }
-                            }
-                          }}
-                        />
-                      )}
-                    </div>
-
-                    {/* Tags personnalisés */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Tag className="w-5 h-5 text-purple-500" />
-                        <Label className="text-base font-medium">Tags</Label>
-                      </div>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {noteForm.tags.map(tag => (
-                          <Badge
-                            key={tag}
-                            variant="secondary"
-                            style={{ backgroundColor: getTagColor(tag) + '20', color: getTagColor(tag) }}
-                          >
-                            {tag}
-                            {isEditing && (
-                              <button
-                                onClick={() => removeTag(tag)}
-                                className="ml-2 hover:opacity-70"
-                              >
-                                ×
-                              </button>
-                            )}
-                          </Badge>
-                        ))}
-                      </div>
-                      {isEditing && (
-                        <Select onValueChange={(value) => addTag(value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Ajouter un tag" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {customTags.map(tag => (
-                              <SelectItem key={tag.id} value={tag.name}>
-                                <div className="flex items-center gap-2">
-                                  <div
-                                    className="w-3 h-3 rounded-full"
-                                    style={{ backgroundColor: tag.color }}
-                                  ></div>
-                                  {tag.name}
-                                  <span className="text-xs text-gray-500">({tag.category})</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
-
-                    {/* Préférences */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Heart className="w-5 h-5 text-pink-500" />
-                        <Label className="text-base font-medium">Préférences</Label>
-                      </div>
-                      <Textarea
-                        value={noteForm.preferences}
-                        onChange={(e) => setNoteForm(prev => ({ ...prev, preferences: e.target.value }))}
-                        placeholder="Préférences, habitudes, demandes spéciales..."
-                        disabled={!isEditing}
-                        rows={3}
-                      />
-                    </div>
-
-                    {/* Photos */}
-                    <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <Camera className="w-5 h-5 text-blue-500" />
-                        <Label className="text-base font-medium">Photos</Label>
-                      </div>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600">
-                          Fonctionnalité photos à venir
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Coiffures, avant/après, références...
-                        </p>
-                      </div>
-                    </div>
-
-                    {isEditing && (
-                      <div className="flex gap-3 pt-4 border-t">
-                        <Button
-                          onClick={handleSaveNote}
-                          disabled={saveNoteMutation.isPending}
-                          className="bg-purple-600 hover:bg-purple-700"
-                        >
-                          Sauvegarder les modifications
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={() => setIsEditing(false)}
-                        >
-                          Annuler
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ) : (
-                <Card>
-                  <CardContent className="p-12 text-center">
-                    <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Sélectionnez un client
-                    </h3>
-                    <p className="text-gray-600">
-                      Choisissez un client dans la liste pour voir et modifier ses informations
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => setLocation('/business-features')}
+              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Gestion Clients</h1>
+              <p className="text-gray-600">Gérez vos clients et leurs notes</p>
             </div>
           </div>
         </div>
       </div>
-    </AuthGuard>
+
+      {/* Contenu */}
+      <div className="max-w-6xl mx-auto p-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Liste des clients */}
+          <div className="lg:col-span-5">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Clients ({filteredClients.length})</CardTitle>
+                  <Badge variant="secondary">{clients.length} total</Badge>
+                </div>
+                
+                {/* Recherche */}
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="Rechercher un client..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </CardHeader>
+              
+              <CardContent className="p-0">
+                <div className="space-y-0 max-h-96 overflow-y-auto">
+                  {filteredClients.map((client) => (
+                    <div
+                      key={client.id}
+                      className={`p-4 border-b hover:bg-gray-50 cursor-pointer transition-colors ${
+                        selectedClient?.id === client.id ? 'bg-violet-50 border-violet-200' : ''
+                      }`}
+                      onClick={() => setSelectedClient(client)}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-sm">{client.name}</h4>
+                        <Badge className={`text-xs ${getStatusColor(client.status)}`}>
+                          {client.status.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-1">{client.email}</p>
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>{client.totalVisits} visites</span>
+                        <span>Dernière: {new Date(client.lastVisit).toLocaleDateString('fr-FR')}</span>
+                      </div>
+                      {client.notes.length > 0 && (
+                        <div className="mt-2">
+                          <Badge variant="outline" className="text-xs">
+                            {client.notes.length} note{client.notes.length > 1 ? 's' : ''}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Détail du client */}
+          <div className="lg:col-span-7">
+            {selectedClient ? (
+              <div className="space-y-6">
+                {/* Informations client */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center">
+                          <User className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{selectedClient.name}</CardTitle>
+                          <Badge className={`${getStatusColor(selectedClient.status)} mt-1`}>
+                            {selectedClient.status.toUpperCase()}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          <Phone className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <MessageCircle className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-600">Email</p>
+                        <p className="font-medium">{selectedClient.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Téléphone</p>
+                        <p className="font-medium">{selectedClient.phone}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Dernière visite</p>
+                        <p className="font-medium">{new Date(selectedClient.lastVisit).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-600">Total visites</p>
+                        <p className="font-medium">{selectedClient.totalVisits}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-gray-600">Service préféré</p>
+                        <p className="font-medium">{selectedClient.favoriteService}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Notes du client */}
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg">Notes Client</CardTitle>
+                      <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button className="bg-violet-600 hover:bg-violet-700 text-white">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Ajouter une note
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Nouvelle note pour {selectedClient.name}</DialogTitle>
+                            <DialogDescription>
+                              Ajoutez une note personnalisée pour ce client
+                            </DialogDescription>
+                          </DialogHeader>
+                          
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-sm font-medium">Catégorie :</label>
+                              <select
+                                value={newNote.category}
+                                onChange={(e) => setNewNote({...newNote, category: e.target.value as any})}
+                                className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                              >
+                                <option value="general">Général</option>
+                                <option value="preference">Préférence</option>
+                                <option value="allergie">Allergie</option>
+                                <option value="important">Important</option>
+                              </select>
+                            </div>
+                            
+                            <Textarea
+                              placeholder="Tapez votre note..."
+                              value={newNote.content}
+                              onChange={(e) => setNewNote({...newNote, content: e.target.value})}
+                              rows={4}
+                            />
+                          </div>
+                          
+                          <DialogFooter>
+                            <Button
+                              onClick={addNote}
+                              disabled={!newNote.content.trim()}
+                              className="bg-violet-600 hover:bg-violet-700 text-white"
+                            >
+                              Ajouter la note
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="space-y-3">
+                      {selectedClient.notes.length === 0 ? (
+                        <div className="text-center py-8">
+                          <Edit className="h-12 w-12 text-gray-300 mx-auto mb-3" />
+                          <p className="text-gray-600">Aucune note pour ce client</p>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="mt-3"
+                            onClick={() => setIsNoteDialogOpen(true)}
+                          >
+                            Ajouter la première note
+                          </Button>
+                        </div>
+                      ) : (
+                        selectedClient.notes.map((note) => (
+                          <div key={note.id} className="border border-gray-200 rounded-lg p-3">
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge className={`text-xs ${getCategoryColor(note.category)}`}>
+                                {note.category}
+                              </Badge>
+                              <span className="text-xs text-gray-500">
+                                {new Date(note.date).toLocaleDateString('fr-FR')}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-900">{note.content}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              <Card className="h-96 flex items-center justify-center">
+                <div className="text-center">
+                  <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Sélectionnez un client</h3>
+                  <p className="text-gray-600">Choisissez un client dans la liste pour voir ses détails et notes</p>
+                </div>
+              </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

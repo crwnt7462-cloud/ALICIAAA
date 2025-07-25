@@ -35,7 +35,7 @@ import {
 } from "lucide-react";
 
 export default function BusinessFeatures() {
-  const [activeTab, setActiveTab] = useState("notifications");
+  const [activeTab, setActiveTab] = useState("config");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
@@ -166,9 +166,9 @@ export default function BusinessFeatures() {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-3 mb-4">
-          <TabsTrigger value="notifications" className="flex flex-col items-center gap-1 py-3">
-            <AlertTriangle className="h-4 w-4" />
-            <span className="text-xs">Notifications</span>
+          <TabsTrigger value="config" className="flex flex-col items-center gap-1 py-3">
+            <Settings className="h-4 w-4" />
+            <span className="text-xs">Config</span>
           </TabsTrigger>
           <TabsTrigger value="payments" className="flex flex-col items-center gap-1 py-3">
             <CreditCard className="h-4 w-4" />
@@ -197,88 +197,41 @@ export default function BusinessFeatures() {
 
 
 
-        {/* Notifications Tab */}
-        <TabsContent value="notifications" className="space-y-4">
+        {/* Configuration Tab */}
+        <TabsContent value="config" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <AlertTriangle className="h-4 w-4" />
-                Centre de Notifications
+                <Settings className="h-4 w-4" />
+                Configuration Salon
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Notifications Importantes */}
-              <div className="space-y-3">
-                <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-red-800">Stock faible détecté</h4>
-                      <p className="text-sm text-red-600">3 produits en rupture de stock</p>
-                    </div>
-                    <Button size="sm" onClick={() => setActiveTab('inventory')}>
-                      Voir Stock
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="bg-amber-50 border-l-4 border-amber-400 p-4 rounded">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-amber-800">Nouveau message client</h4>
-                      <p className="text-sm text-amber-600">2 messages non lus en attente</p>
-                    </div>
-                    <Button size="sm" onClick={() => setLocation('/pro-messaging-search')}>
-                      Voir Messages
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-blue-800">Rendez-vous à confirmer</h4>
-                      <p className="text-sm text-blue-600">5 réservations en attente de confirmation</p>
-                    </div>
-                    <Button size="sm">
-                      Gérer RDV
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="font-medium text-green-800">Objectif atteint</h4>
-                      <p className="text-sm text-green-600">Chiffre d'affaires mensuel dépassé de 15%</p>
-                    </div>
-                    <Button size="sm" onClick={() => setActiveTab('analytics')}>
-                      Voir Stats
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Paramètres Notifications */}
-              <div className="pt-4 border-t">
-                <h4 className="font-medium mb-3">Paramètres de notification</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label>Notifications push</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Alertes email</Label>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>SMS urgents</Label>
-                    <Switch />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <Label>Rappels stock</Label>
-                    <Switch defaultChecked />
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Button 
+                  onClick={() => setLocation("/salon-settings")}
+                  className="bg-gray-600 hover:bg-gray-700 text-white"
+                >
+                  Paramètres
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/staff-management")}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Équipe
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/service-management")}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Services
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/hours-management")}
+                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                >
+                  Horaires
+                </Button>
               </div>
             </CardContent>
           </Card>

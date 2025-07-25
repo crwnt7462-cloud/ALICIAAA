@@ -103,6 +103,7 @@ import ProMessagingReal from "@/pages/ProMessagingReal";
 import MessagingTest from "@/pages/MessagingTest";
 import ProMessagingWithSearch from "@/pages/ProMessagingWithSearch";
 import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
+import NotificationCenter from "@/pages/NotificationCenter";
 
 
 function Router() {
@@ -572,6 +573,8 @@ function Router() {
           <Route path="/messaging-test" component={MessagingTest} />
           <Route path="/pro-messaging-search" component={ProMessagingWithSearch} />
           <Route path="/client-messaging-search" component={ClientMessagingWithSearch} />
+          <Route path="/notifications" component={NotificationCenter} />
+          <Route path="/client-management" component={ClientManagement} />
           <Route path="/services/coiffure" component={ServiceCoiffure} />
           <Route path="/services/esthetique" component={ServiceEsthetique} />
           <Route path="/services/massage" component={ServiceMassage} />

@@ -420,15 +420,15 @@ export default function ProMessagingWithSearch() {
                         className={`flex ${message.senderId === 'pro_1' ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                          className={`max-w-xs lg:max-w-md px-4 py-3 ${
                             message.senderId === 'pro_1'
-                              ? 'bg-violet-600 text-white'
-                              : 'bg-gray-100 text-gray-900'
+                              ? 'bg-blue-500 text-white rounded-2xl rounded-br-sm'
+                              : 'bg-gray-200 text-gray-900 rounded-2xl rounded-bl-sm'
                           }`}
                         >
-                          <p className="text-sm">{message.content}</p>
-                          <p className={`text-xs mt-1 ${
-                            message.senderId === 'pro_1' ? 'text-violet-200' : 'text-gray-500'
+                          <p className="text-sm leading-relaxed">{message.content}</p>
+                          <p className={`text-xs mt-1 opacity-70 ${
+                            message.senderId === 'pro_1' ? 'text-blue-100' : 'text-gray-600'
                           }`}>
                             {new Date(message.timestamp).toLocaleTimeString('fr-FR', {
                               hour: '2-digit',
@@ -441,20 +441,23 @@ export default function ProMessagingWithSearch() {
                   </div>
                 </CardContent>
                 
-                {/* Zone de saisie */}
-                <div className="border-t p-4">
-                  <div className="flex gap-2">
-                    <Textarea
-                      placeholder="Tapez votre réponse..."
-                      value={messageContent}
-                      onChange={(e) => setMessageContent(e.target.value)}
-                      rows={2}
-                      className="flex-1"
-                    />
+                {/* Zone de saisie iMessage style */}
+                <div className="border-t p-4 bg-gray-50">
+                  <div className="flex gap-3 items-end">
+                    <div className="flex-1 bg-white rounded-2xl border border-gray-200 px-4 py-2">
+                      <Textarea
+                        placeholder="Message"
+                        value={messageContent}
+                        onChange={(e) => setMessageContent(e.target.value)}
+                        rows={1}
+                        className="border-0 p-0 resize-none focus:ring-0 bg-transparent text-sm"
+                        style={{ minHeight: '20px', maxHeight: '100px' }}
+                      />
+                    </div>
                     <Button
                       onClick={sendMessage}
                       disabled={!messageContent.trim()}
-                      className="bg-violet-600 hover:bg-violet-700 text-white"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-8 h-8 p-0 shrink-0"
                     >
                       <Send className="h-4 w-4" />
                     </Button>
