@@ -1,8 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import jwt from 'jsonwebtoken';
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { messagingService, type Message } from "./messagingService";
+
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -75,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur création salon:", error);
       res.status(500).json({ 
         error: 'Erreur lors de la création du salon',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -94,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur récupération salon:", error);
       res.status(500).json({ 
         error: 'Erreur lors de la récupération du salon',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -119,7 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur mise à jour salon:", error);
       res.status(500).json({ 
         error: 'Erreur lors de la mise à jour du salon',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -406,7 +409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur création client:", error);
       res.status(500).json({ 
         error: 'Erreur lors de la création du client',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -512,6 +515,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting custom tag:", error);
       res.status(500).json({ message: "Erreur lors de la suppression du tag" });
+    }
+  });
+
+  // ===== ROUTE RECHERCHE UTILISATEURS =====
+  app.get("/api/users/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      
+      if (!q || typeof q !== 'string') {
+        return res.json([]);
+      }
+      
+      // Recherche simulation pour le moment - retourne utilisateurs de test
+      const testUsers = [
+        {
+          id: 'test-pro-user',
+          name: 'Salon Excellence Paris',
+          handle: '@usemyrr',
+          userType: 'pro',
+          isOnline: true,
+          lastSeen: 'En ligne'
+        },
+        {
+          id: 'test-client-user',
+          name: 'Client Test',
+          handle: '@client_test',
+          userType: 'client',
+          isOnline: false,
+          lastSeen: 'Il y a 1h'
+        },
+        {
+          id: 'marie-user',
+          name: 'Marie Dupont',
+          handle: '@marie_d',
+          userType: 'client',
+          isOnline: true,
+          lastSeen: 'En ligne'
+        },
+        {
+          id: 'sophie-user',
+          name: 'Sophie Martin',
+          handle: '@sophie_m',
+          userType: 'client',
+          isOnline: false,
+          lastSeen: 'Il y a 2h'
+        }
+      ];
+      
+      // Filtrer selon la recherche
+      const searchTerm = q.toLowerCase();
+      const results = testUsers.filter(user => 
+        user.name.toLowerCase().includes(searchTerm) ||
+        user.handle.toLowerCase().includes(searchTerm)
+      );
+      
+      res.json(results);
+    } catch (error) {
+      console.error("Erreur recherche utilisateurs:", error);
+      res.status(500).json({ error: 'Erreur lors de la recherche' });
     }
   });
 

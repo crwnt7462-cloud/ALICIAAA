@@ -15,7 +15,11 @@ import {
   Phone, 
   Video, 
   Plus,
-  X
+  X,
+  MessageCircle,
+  Calendar,
+  Gift,
+  Users
 } from 'lucide-react';
 
 interface User {
