@@ -70,28 +70,49 @@ export default function Booking() {
 
   const selectedService = services.find(s => s.id.toString() === formData.serviceId);
 
+  const handleStripePayment = async (appointmentData: any) => {
+    try {
+      const response = await fetch('/api/stripe/create-payment-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: appointmentData.depositAmount,
+          description: `Acompte - ${appointmentData.serviceName}`,
+          customerEmail: appointmentData.email,
+          customerName: `${appointmentData.firstName} ${appointmentData.lastName}`,
+          appointmentId: Date.now().toString(),
+          salonName: "Salon Excellence Paris",
+        }),
+      });
+
+      const { url } = await response.json();
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('URL de paiement manquante');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erreur de paiement",
+        description: error.message || "Impossible de créer la session de paiement",
+        variant: "destructive",
+      });
+    }
+  };
+
   const createBookingMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/appointments", data);
       return response.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Réservation confirmée !",
-        description: "Votre rendez-vous a été créé avec succès.",
+    onSuccess: (data) => {
+      // Rediriger vers Stripe pour le paiement d'acompte
+      const selectedService = services.find(s => s.id.toString() === formData.serviceId);
+      handleStripePayment({
+        ...formData,
+        serviceName: selectedService?.name,
+        depositAmount: formData.depositAmount,
       });
-      // Reset form
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        serviceId: "",
-        date: "",
-        time: "",
-        depositAmount: 20
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
     },
     onError: () => {
       toast({
@@ -183,7 +204,7 @@ export default function Booking() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Informations client */}
-          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <Card className="border-0 shadow-sm bg-white rounded-2xl">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center">
                 <User className="w-5 h-5 mr-2 text-blue-600" />
@@ -236,7 +257,7 @@ export default function Booking() {
           </Card>
 
           {/* Choix du service */}
-          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <Card className="border-0 shadow-sm bg-white rounded-2xl">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center">
                 <CreditCard className="w-5 h-5 mr-2 text-green-600" />
@@ -277,7 +298,7 @@ export default function Booking() {
           </Card>
 
           {/* Date et heure */}
-          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <Card className="border-0 shadow-sm bg-white rounded-2xl">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center">
                 <Calendar className="w-5 h-5 mr-2 text-purple-600" />
@@ -331,7 +352,7 @@ export default function Booking() {
 
           {/* Acompte */}
           {selectedService && (
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+            <Card className="border-0 shadow-sm bg-white rounded-2xl">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg flex items-center">
                   <CreditCard className="w-5 h-5 mr-2 text-orange-600" />
@@ -355,29 +376,21 @@ export default function Booking() {
             </Card>
           )}
 
-          {/* Bouton de réservation */}
+          {/* Bouton de réservation avec paiement */}
           <Button 
             type="submit" 
-            className={`w-full h-12 text-lg text-white ${
-              customConfig?.buttonStyle === "pill" ? "rounded-full" :
-              customConfig?.buttonStyle === "square" ? "rounded-none" : "rounded-lg"
-            }`}
-            style={{ 
-              background: customConfig?.primaryColor 
-                ? `linear-gradient(to right, ${customConfig.primaryColor}, ${customConfig.secondaryColor})`
-                : "linear-gradient(to right, rgb(37 99 235), rgb(147 51 234))"
-            }}
+            className="w-full h-14 text-lg font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
             disabled={createBookingMutation.isPending}
           >
             {createBookingMutation.isPending ? (
               <div className="flex items-center">
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
-                Réservation...
+                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                Traitement...
               </div>
             ) : (
-              <div className="flex items-center">
-                <Check className="w-5 h-5 mr-2" />
-                Réserver maintenant
+              <div className="flex items-center justify-center">
+                <CreditCard className="w-5 h-5 mr-2" />
+                Réserver et payer l'acompte
                 {selectedService && ` (${formData.depositAmount}€)`}
               </div>
             )}
@@ -385,7 +398,8 @@ export default function Booking() {
         </form>
 
         <div className="mt-6 text-center text-xs text-gray-500">
-          <p>Paiement sécurisé • Confirmation immédiate</p>
+          <p>🔒 Paiement sécurisé par Stripe • Confirmation immédiate par email</p>
+          <p className="mt-1">✅ Annulation gratuite jusqu'à 24h avant le rendez-vous</p>
         </div>
       </div>
     </div>
