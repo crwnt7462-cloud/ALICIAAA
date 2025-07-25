@@ -253,7 +253,7 @@ export default function ClientDashboardSimple() {
           <Button 
             variant="outline" 
             className="h-16 flex-col gap-2 bg-white/70 backdrop-blur-sm border-gray-200/50 hover:bg-white/80"
-            onClick={() => setLocation('/client/messages')}
+            onClick={() => setLocation('/client-messaging-search')}
           >
             <MessageSquare className="h-5 w-5 text-purple-600" />
             <span className="text-sm font-medium">Messages</span>

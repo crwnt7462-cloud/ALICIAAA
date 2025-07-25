@@ -102,6 +102,7 @@ import ClientMessaging from "@/pages/ClientMessaging";
 import ProMessagingReal from "@/pages/ProMessagingReal";
 import MessagingTest from "@/pages/MessagingTest";
 import ProMessagingWithSearch from "@/pages/ProMessagingWithSearch";
+import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
 
 
 function Router() {
@@ -570,6 +571,7 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/messaging-test" component={MessagingTest} />
           <Route path="/pro-messaging-search" component={ProMessagingWithSearch} />
+          <Route path="/client-messaging-search" component={ClientMessagingWithSearch} />
           <Route path="/services/coiffure" component={ServiceCoiffure} />
           <Route path="/services/esthetique" component={ServiceEsthetique} />
           <Route path="/services/massage" component={ServiceMassage} />
