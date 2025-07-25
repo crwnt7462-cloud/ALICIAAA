@@ -259,6 +259,74 @@ export default function AIAssistant() {
         </div>
       )}
 
+      {/* Nouvelles fonctionnalités IA */}
+      {messages.length > 1 && (
+        <div className="p-4 bg-gradient-to-r from-violet-50 to-purple-50 border-t">
+          <h3 className="text-sm font-medium text-gray-700 mb-3">Fonctionnalités IA Avancées</h3>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAction('analyse_photo')}
+              className="h-auto p-3 justify-start text-left"
+            >
+              <div className="flex items-center gap-2">
+                <Camera className="w-4 h-4 text-violet-600" />
+                <div>
+                  <div className="font-medium">Analyse Photo</div>
+                  <div className="text-xs text-gray-500">Conseils beauté IA</div>
+                </div>
+              </div>
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAction('optimiser_planning')}
+              className="h-auto p-3 justify-start text-left"
+            >
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-blue-600" />
+                <div>
+                  <div className="font-medium">Optimiser Planning</div>
+                  <div className="text-xs text-gray-500">IA prédictive</div>
+                </div>
+              </div>
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAction('analyse_tendances')}
+              className="h-auto p-3 justify-start text-left"
+            >
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-green-600" />
+                <div>
+                  <div className="font-medium">Tendances Marché</div>
+                  <div className="text-xs text-gray-500">Insights business</div>
+                </div>
+              </div>
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleQuickAction('recommandations')}
+              className="h-auto p-3 justify-start text-left"
+            >
+              <div className="flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-amber-600" />
+                <div>
+                  <div className="font-medium">Recommandations</div>
+                  <div className="text-xs text-gray-500">Personnalisées</div>
+                </div>
+              </div>
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Zone de saisie fixe en bas */}
       <div className="p-4 border-t bg-white flex-shrink-0">
         <div className="flex gap-2 items-end">
@@ -267,7 +335,7 @@ export default function AIAssistant() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Tapez votre message..."
+              placeholder="Posez votre question à l'IA..."
               className="resize-none"
               disabled={isLoading}
             />

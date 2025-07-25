@@ -3,6 +3,10 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   MessageCircle, 
@@ -104,25 +108,75 @@ export default function ProMessaging() {
     );
   }
 
+  // États pour nouvelle conversation
+  const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
+  const [newMessageText, setNewMessageText] = useState('');
+  const [selectedClient, setSelectedClient] = useState('');
+
+  // Clients disponibles (simulés)
+  const availableClients = [
+    { id: 'client1', name: 'Marie Dupont', email: 'marie@email.com' },
+    { id: 'client2', name: 'Sophie Martin', email: 'sophie@email.com' },
+    { id: 'client3', name: 'Claire Rousseau', email: 'claire@email.com' }
+  ];
+
+  // Mutation pour envoyer un nouveau message
+  const sendNewMessageMutation = useMutation({
+    mutationFn: async (data: { clientId: string; message: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { success: true };
+    },
+    onSuccess: () => {
+      toast({
+        title: "Message envoyé",
+        description: "Votre message a été envoyé au client"
+      });
+      setNewMessageText('');
+      setSelectedClient('');
+      setIsNewMessageOpen(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/professional/messages'] });
+    }
+  });
+
+  const handleSendNewMessage = () => {
+    if (!newMessageText.trim() || !selectedClient) return;
+    
+    sendNewMessageMutation.mutate({
+      clientId: selectedClient,
+      message: newMessageText
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => setLocation('/pro-dashboard')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">Messagerie Professionnelle</h1>
-              <p className="text-gray-600">
-                {messages.length} messages • {messages.filter((m: Message) => !m.isRead).length} non lus
-              </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => setLocation('/business-features')}
+                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Messagerie Professionnelle</h1>
+                <p className="text-gray-600">
+                  {messages.length} messages • {messages.filter((m: Message) => !m.isRead).length} non lus
+                </p>
+              </div>
             </div>
+            
+            {/* Bouton Nouveau Message */}
+            <Button
+              onClick={() => setIsNewMessageOpen(true)}
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Nouveau
+            </Button>
           </div>
         </div>
       </div>
@@ -262,6 +316,55 @@ export default function ProMessaging() {
           </div>
         )}
       </div>
+      {/* Dialog pour nouveau message */}
+      <Dialog open={isNewMessageOpen} onOpenChange={setIsNewMessageOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Nouveau Message</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Client destinataire</Label>
+              <Select value={selectedClient} onValueChange={setSelectedClient}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner un client" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableClients.map(client => (
+                    <SelectItem key={client.id} value={client.id}>
+                      {client.name} ({client.email})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Message</Label>
+              <Textarea
+                value={newMessageText}
+                onChange={(e) => setNewMessageText(e.target.value)}
+                placeholder="Tapez votre message ici..."
+                rows={4}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleSendNewMessage}
+                disabled={!selectedClient || !newMessageText.trim() || sendNewMessageMutation.isPending}
+                className="flex-1"
+              >
+                {sendNewMessageMutation.isPending ? "Envoi..." : "Envoyer"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setIsNewMessageOpen(false)}
+              >
+                Annuler
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
