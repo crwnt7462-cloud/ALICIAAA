@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -47,14 +47,14 @@ function BookingPageNew() {
     // Charger les services depuis l'API
     const fetchServices = async () => {
       try {
-        const response = await fetch('/api/public-services/1');
+        const response = await fetch('/api/public-services/test-pro-user');
         if (response.ok) {
           const servicesData = await response.json();
           const formattedServices = servicesData.map((service: any) => ({
             id: service.id.toString(),
             name: service.name,
             description: service.description,
-            price: service.price,
+            price: parseFloat(service.price),
             duration: service.duration
           }));
           setServices(formattedServices);
@@ -175,7 +175,7 @@ function BookingPageNew() {
             </Button>
             <div className="text-center">
               <h1 className="text-sm font-medium text-gray-900">
-                {salonInfo?.businessName || 'Salon Excellence'}
+                Salon Excellence Paris
               </h1>
               <p className="text-xs text-gray-500">Réservation</p>
             </div>

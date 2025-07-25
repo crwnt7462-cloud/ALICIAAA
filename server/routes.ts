@@ -860,7 +860,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const metadata = session.metadata;
         
         // Récupérer les détails du service depuis la base
-        const services = await storage.getActiveServices('1');
+        const services = await storage.getActiveServices('test-pro-user');
         const selectedService = services.find(s => s.id === parseInt(metadata.serviceId));
         
         // Calculer l'heure de fin automatiquement
@@ -871,7 +871,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Créer l'appointment dans la base de données
         const appointment = await storage.createAppointment({
-          userId: '1', // ID salon par défaut
+          userId: 'test-pro-user', // ID salon par défaut
           serviceId: parseInt(metadata.serviceId),
           staffId: null,
           clientName: metadata.clientName,
