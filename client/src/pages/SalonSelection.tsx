@@ -38,8 +38,15 @@ export default function SalonSelection() {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Récupérer la catégorie depuis l'URL si présente
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryFromUrl = urlParams.get('category');
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+    
     loadCategories();
-    loadSalons();
+    loadSalons(categoryFromUrl || '');
   }, []);
 
   useEffect(() => {
@@ -104,14 +111,24 @@ export default function SalonSelection() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/client-dashboard')}
+              onClick={() => setLocation('/category-selection')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               ←
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Nouveau rendez-vous</h1>
-              <p className="text-gray-600">Choisissez votre salon</p>
+              <h1 className="text-2xl font-bold text-gray-900">
+                {selectedCategory 
+                  ? `Salons ${categories.find(c => c.id === selectedCategory)?.name || ''}`
+                  : 'Choisissez votre salon'
+                }
+              </h1>
+              <p className="text-gray-600">
+                {selectedCategory 
+                  ? `Réservez dans un salon ${categories.find(c => c.id === selectedCategory)?.name?.toLowerCase() || ''}`
+                  : 'Trouvez le salon parfait pour vous'
+                }
+              </p>
             </div>
           </div>
         </div>

@@ -190,13 +190,13 @@ export default function ClientDashboard() {
 
         {/* Actions rapides */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/salon-selection')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/category-selection')}>
             <CardContent className="p-6 text-center">
               <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Search className="h-6 w-6 text-violet-600" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Nouveau rendez-vous</h3>
-              <p className="text-sm text-gray-600">Trouvez un salon et réservez votre créneau</p>
+              <p className="text-sm text-gray-600">Choisissez votre catégorie de service</p>
             </CardContent>
           </Card>
 
@@ -234,7 +234,7 @@ export default function ClientDashboard() {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => setLocation('/salon-selection')}
+                onClick={() => setLocation('/category-selection')}
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Nouveau RDV
