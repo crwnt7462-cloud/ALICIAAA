@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { messagingService, type Message } from "./messagingService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -511,6 +512,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting custom tag:", error);
       res.status(500).json({ message: "Erreur lors de la suppression du tag" });
+    }
+  });
+
+  // ===== ROUTES MESSAGERIE TEMPS RÉEL =====
+  app.post("/api/messaging/send", async (req, res) => {
+    try {
+      const { fromUserId, fromUserType, fromUserName, toUserId, toUserType, toUserName, content } = req.body;
+      if (!fromUserId || !fromUserType || !fromUserName || !toUserId || !toUserType || !toUserName || !content) {
+        return res.status(400).json({ error: "Tous les champs sont requis" });
+      }
+      const message = messagingService.sendMessage(fromUserId, fromUserType, fromUserName, toUserId, toUserType, toUserName, content);
+      res.json({ success: true, message, timestamp: new Date().toISOString() });
+    } catch (error) {
+      console.error("Erreur envoi message:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi du message" });
+    }
+  });
+
+  app.get("/api/messaging/conversation/:clientId/:professionalId", async (req, res) => {
+    try {
+      const { clientId, professionalId } = req.params;
+      const messages = messagingService.getConversationMessages(clientId, professionalId);
+      res.json({ success: true, messages, total: messages.length });
+    } catch (error) {
+      console.error("Erreur récupération messages:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des messages" });
+    }
+  });
+
+  app.get("/api/messaging/conversations/:userId/:userType", async (req, res) => {
+    try {
+      const { userId, userType } = req.params;
+      if (userType !== 'client' && userType !== 'professional') {
+        return res.status(400).json({ error: "Type d'utilisateur invalide" });
+      }
+      const conversations = messagingService.getUserConversations(userId, userType);
+      res.json({ success: true, conversations, total: conversations.length });
+    } catch (error) {
+      console.error("Erreur récupération conversations:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des conversations" });
     }
   });
 

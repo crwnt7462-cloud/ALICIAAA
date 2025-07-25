@@ -1,38 +1,38 @@
-// Page de messagerie côté client
+// Page de messagerie côté professionnel
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import RealTimeMessaging from './RealTimeMessaging';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, MessageCircle } from 'lucide-react';
+import { ArrowLeft, MessageCircle, User } from 'lucide-react';
 
-export default function ClientMessaging() {
+export default function ProMessagingReal() {
   const [, setLocation] = useLocation();
   const [showMessaging, setShowMessaging] = useState(false);
 
-  // Informations client (depuis localStorage ou contexte)
-  const clientInfo = {
-    id: 'client_1',
-    name: 'Marie Dupont',
-    type: 'client' as const
-  };
-
-  // Informations professionnel (salon de test)
+  // Informations professionnel (depuis localStorage ou contexte)
   const professionalInfo = {
     id: 'pro_1',
     name: 'Salon Excellence',
     type: 'professional' as const
   };
 
+  // Informations client (client de test)
+  const clientInfo = {
+    id: 'client_1',
+    name: 'Marie Dupont',
+    type: 'client' as const
+  };
+
   if (showMessaging) {
     return (
       <RealTimeMessaging
-        currentUserId={clientInfo.id}
-        currentUserType={clientInfo.type}
-        currentUserName={clientInfo.name}
-        otherUserId={professionalInfo.id}
-        otherUserType={professionalInfo.type}
-        otherUserName={professionalInfo.name}
+        currentUserId={professionalInfo.id}
+        currentUserType={professionalInfo.type}
+        currentUserName={professionalInfo.name}
+        otherUserId={clientInfo.id}
+        otherUserType={clientInfo.type}
+        otherUserName={clientInfo.name}
       />
     );
   }
@@ -45,14 +45,14 @@ export default function ClientMessaging() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/client-dashboard')}
+              onClick={() => setLocation('/business-features')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Messagerie</h1>
-              <p className="text-gray-600">Communiquez avec vos salons</p>
+              <h1 className="text-xl font-bold text-gray-900">Messagerie Pro</h1>
+              <p className="text-gray-600">Communication directe avec vos clients</p>
             </div>
           </div>
         </div>
@@ -63,18 +63,18 @@ export default function ClientMessaging() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              Conversation avec {professionalInfo.name}
+              <User className="h-5 w-5" />
+              Conversation avec {clientInfo.name}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8">
               <MessageCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Messagerie temps réel
+                Messagerie professionnelle temps réel
               </h3>
               <p className="text-gray-600 mb-6">
-                Discutez directement avec {professionalInfo.name} pour vos questions et réservations
+                Répondez directement aux questions de {clientInfo.name} et gérez vos échanges clients
               </p>
               <Button
                 onClick={() => setShowMessaging(true)}
@@ -86,21 +86,38 @@ export default function ClientMessaging() {
           </CardContent>
         </Card>
 
-        {/* Informations sur la messagerie */}
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
+        {/* Fonctionnalités pro */}
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5 text-violet-600" />
+                </div>
+                <div>
+                  <h4 className="font-medium">Réponse rapide</h4>
+                  <p className="text-sm text-gray-600">Temps réel</p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">
+                Répondez instantanément aux questions de vos clients pour améliorer leur expérience.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <MessageCircle className="h-5 w-5 text-green-600" />
+                  <User className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium">Messages temps réel</h4>
-                  <p className="text-sm text-gray-600">Réponse instantanée</p>
+                  <h4 className="font-medium">Gestion client</h4>
+                  <p className="text-sm text-gray-600">Suivi personnalisé</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">
-                Vos messages sont envoyés instantanément et les réponses apparaissent en temps réel.
+                Gardez un historique de tous les échanges avec chaque client pour un service personnalisé.
               </p>
             </CardContent>
           </Card>
@@ -112,12 +129,12 @@ export default function ClientMessaging() {
                   <MessageCircle className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium">Historique sauvegardé</h4>
-                  <p className="text-sm text-gray-600">Conversations mémorisées</p>
+                  <h4 className="font-medium">Communication</h4>
+                  <p className="text-sm text-gray-600">Professionnelle</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">
-                Retrouvez l'historique complet de vos échanges avec le salon à tout moment.
+                Communiquez de manière professionnelle avec vos clients pour renforcer votre image de marque.
               </p>
             </CardContent>
           </Card>

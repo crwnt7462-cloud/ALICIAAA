@@ -48,7 +48,6 @@ import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboardSimple";
-import ClientMessaging from "@/pages/ClientMessaging";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
@@ -98,6 +97,10 @@ import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
 import BookingSuccess from "@/pages/BookingSuccess";
 import ClientManagement from "@/pages/ClientManagement";
+import RealTimeMessaging from "@/pages/RealTimeMessaging";
+import ClientMessaging from "@/pages/ClientMessaging";
+import ProMessagingReal from "@/pages/ProMessagingReal";
+import MessagingTest from "@/pages/MessagingTest";
 
 
 function Router() {
@@ -564,6 +567,7 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
+          <Route path="/messaging-test" component={MessagingTest} />
           <Route path="/services/coiffure" component={ServiceCoiffure} />
           <Route path="/services/esthetique" component={ServiceEsthetique} />
           <Route path="/services/massage" component={ServiceMassage} />
