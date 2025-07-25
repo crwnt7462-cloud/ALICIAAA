@@ -117,7 +117,7 @@ export class DatabaseStorage implements IStorage {
         phone: "01 42 34 56 78",
         address: "123 Avenue de la Beauté, 75001 Paris",
         city: "Paris",
-        country: "France",
+
         isProfessional: true,
         isVerified: true,
         subscriptionStatus: "active",
@@ -825,7 +825,7 @@ export class DatabaseStorage implements IStorage {
     if (!client) return null;
     
     const bcrypt = require('bcrypt');
-    const isValid = await bcrypt.compare(password, client.passwordHash);
+    const isValid = await bcrypt.compare(password, client.password || '');
     if (!isValid) return null;
     
     return client;

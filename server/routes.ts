@@ -10,7 +10,124 @@ import { aiService } from "./aiService";
 import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  console.log("📝 Enregistrement des routes d'authentification...");
   
+  // Route de test pour vérifier le routage
+  app.get("/api/test", (req, res) => {
+    res.json({ message: "Les routes API fonctionnent !" });
+  });
+  
+  // ============= ROUTES D'AUTHENTIFICATION =============
+  
+  // Connexion professionnelle
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email et mot de passe requis" });
+      }
+
+      const user = await storage.authenticateUser(email, password);
+      
+      if (!user) {
+        return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+      }
+
+      // Créer la session utilisateur
+      (req as any).session.userId = user.id;
+      (req as any).session.userType = 'professional';
+      
+      res.json({ 
+        success: true, 
+        user: {
+          id: user.id,
+          email: user.email,
+          businessName: user.businessName,
+          firstName: user.firstName,
+          lastName: user.lastName
+        }
+      });
+    } catch (error: any) {
+      console.error("Erreur connexion pro:", error);
+      res.status(500).json({ error: "Erreur de connexion" });
+    }
+  });
+
+  // Connexion client
+  app.post("/api/client-auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email et mot de passe requis" });
+      }
+
+      const client = await storage.authenticateClient(email, password);
+      
+      if (!client) {
+        return res.status(401).json({ error: "Email ou mot de passe incorrect" });
+      }
+
+      // Créer la session client
+      (req as any).session.clientId = client.id;
+      (req as any).session.userType = 'client';
+      
+      res.json({ 
+        success: true, 
+        client: {
+          id: client.id,
+          email: client.email,
+          firstName: client.firstName,
+          lastName: client.lastName
+        }
+      });
+    } catch (error: any) {
+      console.error("Erreur connexion client:", error);
+      res.status(500).json({ error: "Erreur de connexion" });
+    }
+  });
+
+  // Inscription client
+  app.post("/api/client-auth/register", async (req, res) => {
+    try {
+      const clientData = req.body;
+      
+      const existingClient = await storage.getClientByEmail(clientData.email);
+      if (existingClient) {
+        return res.status(400).json({ error: "Un compte client existe déjà avec cet email" });
+      }
+
+      const client = await storage.createClientAccount(clientData);
+      
+      (req as any).session.clientId = client.id;
+      (req as any).session.userType = 'client';
+      
+      res.json({ 
+        success: true, 
+        client: {
+          id: client.id,
+          email: client.email,
+          firstName: client.firstName,
+          lastName: client.lastName
+        }
+      });
+    } catch (error: any) {
+      console.error("Erreur inscription client:", error);
+      res.status(500).json({ error: "Erreur lors de l'inscription" });
+    }
+  });
+
+  // Déconnexion
+  app.post("/api/auth/logout", (req, res) => {
+    (req as any).session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ error: "Erreur de déconnexion" });
+      }
+      res.json({ success: true });
+    });
+  });
+
   // ============= ROUTES DE RÉSERVATION =============
   
   // Créer une nouvelle réservation avec paiement d'acompte

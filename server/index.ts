@@ -2,10 +2,14 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { seedDatabase } from "./seedData";
 import { setupVite, serveStatic, log } from "./vite";
+import { configureSession } from "./sessionMiddleware";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Configurer les sessions persistantes
+app.use(configureSession());
 
 app.use((req, res, next) => {
   const start = Date.now();

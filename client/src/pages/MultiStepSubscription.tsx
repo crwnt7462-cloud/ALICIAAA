@@ -30,6 +30,8 @@ const step2Schema = z.object({
   companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
   siret: z.string().min(14, "Le SIRET doit contenir 14 chiffres").max(14),
   businessAddress: z.string().min(10, "L'adresse complète est requise"),
+  businessCity: z.string().min(2, "La ville est requise"),
+  businessPostalCode: z.string().min(5, "Le code postal est requis"),
   businessPhone: z.string().min(10, "Le téléphone professionnel est requis"),
   legalForm: z.enum(["SARL", "SAS", "EURL", "Auto-entrepreneur", "Autre"]),
   vatNumber: z.string().optional(),
@@ -116,10 +118,29 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   const handleFinalSubmit = (data: Step3Form) => {
     setIsSubmitting(true);
     const completeData = {
-      ...formData.step1,
-      ...formData.step2,
-      ...data,
+      // Données étape 1 (infos personnelles)
+      ownerFirstName: formData.step1.firstName,
+      ownerLastName: formData.step1.lastName,
+      email: formData.step1.email,
+      password: formData.step1.password,
+      phone: formData.step1.phone,
+      
+      // Données étape 2 (infos business)
+      businessName: formData.step2.companyName,
+      businessType: "salon",
+      siret: formData.step2.siret,
+      address: formData.step2.businessAddress,
+      city: formData.step2.businessCity,
+      postalCode: formData.step2.businessPostalCode,
+      legalForm: formData.step2.legalForm,
+      vatNumber: formData.step2.vatNumber || "",
+      description: "",
+      
+      // Données étape 3 (plan et conditions)
+      planType: data.planType || selectedPlan || 'basic',
     };
+    
+    console.log("Données complètes à envoyer:", completeData);
     createAccountMutation.mutate(completeData);
   };
 
@@ -396,13 +417,43 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
                   <Input
                     id="businessAddress"
                     {...step2Form.register("businessAddress")}
-                    placeholder="Adresse complète avec code postal et ville"
+                    placeholder="123 rue de la Beauté"
                   />
                   {step2Form.formState.errors.businessAddress && (
                     <p className="text-sm text-red-600 mt-1">
                       {step2Form.formState.errors.businessAddress.message}
                     </p>
                   )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="businessCity">Ville *</Label>
+                    <Input
+                      id="businessCity"
+                      {...step2Form.register("businessCity")}
+                      placeholder="Paris"
+                    />
+                    {step2Form.formState.errors.businessCity && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {step2Form.formState.errors.businessCity.message}
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="businessPostalCode">Code postal *</Label>
+                    <Input
+                      id="businessPostalCode"
+                      {...step2Form.register("businessPostalCode")}
+                      placeholder="75001"
+                      maxLength={5}
+                    />
+                    {step2Form.formState.errors.businessPostalCode && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {step2Form.formState.errors.businessPostalCode.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
