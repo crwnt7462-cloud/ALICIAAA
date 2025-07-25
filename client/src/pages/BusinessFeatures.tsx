@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,9 +35,22 @@ import {
 } from "lucide-react";
 
 export default function BusinessFeatures() {
-  const [activeTab, setActiveTab] = useState("config");
+  const [activeTab, setActiveTab] = useState("outils");
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+
+  // Vérifier l'authentification
+  const { data: sessionData, isLoading } = useQuery({
+    queryKey: ['/api/auth/check-session'],
+    retry: false,
+  });
+
+  useEffect(() => {
+    // Rediriger vers login si pas connecté
+    if (!isLoading && (!sessionData || !sessionData.authenticated)) {
+      setLocation('/pro-login');
+    }
+  }, [sessionData, isLoading, setLocation]);
   const [isCampaignDialogOpen, setIsCampaignDialogOpen] = useState(false);
   const [isLoyaltyDialogOpen, setIsLoyaltyDialogOpen] = useState(false);
   const [isQuickProductDialogOpen, setIsQuickProductDialogOpen] = useState(false);
@@ -77,41 +90,7 @@ export default function BusinessFeatures() {
         </p>
       </div>
 
-      {/* Section Abonnement */}
-      <Card className="mb-6 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center">
-                <Crown className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Abonnement Pro</h3>
-                <p className="text-sm text-gray-600">Déverrouillez toutes les fonctionnalités</p>
-              </div>
-            </div>
-            <Badge className="bg-amber-600 text-white">Nouvelle offre</Badge>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 mb-4 text-center">
-            <div>
-              <div className="text-lg font-bold text-amber-600">Pro</div>
-              <div className="text-xs text-gray-600">49€/mois</div>
-            </div>
-            <div>
-              <div className="text-lg font-bold text-amber-600">Premium</div>
-              <div className="text-xs text-gray-600">149€/mois</div>
-            </div>
-          </div>
-          
-          <Button 
-            onClick={() => setLocation("/subscription-plans")}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white"
-          >
-            Voir les plans d'abonnement
-          </Button>
-        </CardContent>
-      </Card>
+
 
       {/* Messagerie Premium - Section spéciale */}
       <Card className="mb-6 border-violet-200 bg-gradient-to-r from-violet-50 to-purple-50">
@@ -158,11 +137,11 @@ export default function BusinessFeatures() {
         </CardContent>
       </Card>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3 mb-4">
-          <TabsTrigger value="config" className="flex flex-col items-center gap-1 py-3">
-            <Settings className="h-4 w-4" />
-            <span className="text-xs">Config</span>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">        
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="outils" className="flex flex-col items-center gap-1 py-3">
+            <Store className="h-4 w-4" />
+            <span className="text-xs">Outils</span>
           </TabsTrigger>
           <TabsTrigger value="payments" className="flex flex-col items-center gap-1 py-3">
             <CreditCard className="h-4 w-4" />
@@ -189,15 +168,13 @@ export default function BusinessFeatures() {
           </TabsTrigger>
         </TabsList>
 
-
-
-        {/* Configuration Tab */}
-        <TabsContent value="config" className="space-y-4">
+        {/* Outils Tab */}
+        <TabsContent value="outils" className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Settings className="h-4 w-4" />
-                Configuration Salon
+                <Store className="h-4 w-4" />
+                Outils Pro
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

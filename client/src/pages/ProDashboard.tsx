@@ -47,9 +47,9 @@ export default function ProDashboard() {
   const [bookingPage, setBookingPage] = useState<BookingPage | null>(null);
   const [messages, setMessages] = useState<any[]>([]);
 
-  // Récupérer les données utilisateur
-  const { data: userData, isLoading: userLoading } = useQuery({
-    queryKey: ['/api/auth/user'],
+  // Récupérer les données utilisateur via la session
+  const { data: sessionData, isLoading: userLoading } = useQuery({
+    queryKey: ['/api/auth/check-session'],
     retry: false,
   });
 
@@ -72,10 +72,16 @@ export default function ProDashboard() {
   });
 
   useEffect(() => {
-    if (userData) setUser(userData);
+    // Rediriger vers login si pas connecté
+    if (!userLoading && (!sessionData || !sessionData.authenticated)) {
+      setLocation('/pro-login');
+      return;
+    }
+    
+    if (sessionData?.user) setUser(sessionData.user);
     if (bookingData) setBookingPage(bookingData);
     if (messagesData) setMessages(messagesData);
-  }, [userData, bookingData, messagesData]);
+  }, [sessionData, bookingData, messagesData, userLoading, setLocation]);
 
   const handleLogout = async () => {
     try {

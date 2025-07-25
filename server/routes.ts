@@ -23,25 +23,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Route de connexion PRO simplifiée
+
+
+  // Route de connexion PRO avec session persistante
   app.post('/api/auth/login', async (req, res) => {
     try {
       const { email, password } = req.body;
       
       // Compte test PRO
       if (email === 'test@monapp.com' && password === 'test1234') {
-        const proToken = `pro_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        // Stocker les données utilisateur dans la session
+        (req.session as any).user = {
+          id: 'test-pro-user',
+          email: 'test@monapp.com',
+          firstName: 'Salon',
+          lastName: 'Excellence',
+          businessName: 'Salon Excellence Paris',
+          handle: '@usemyrr',
+          role: 'professional',
+          userType: 'professional'
+        };
         
         res.json({
           success: true,
-          user: {
-            id: 'test-pro-user',
-            email: 'test@monapp.com',
-            handle: '@usemyrr',
-            role: 'professional',
-            salon: 'Salon Excellence Paris',
-            token: proToken
-          },
+          user: (req.session as any).user,
           message: 'Connexion PRO réussie'
         });
         return;
@@ -52,6 +57,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Erreur login PRO:", error);
+      res.status(500).json({
+        error: 'Erreur serveur'
+      });
+    }
+  });
+
+  // Route pour vérifier la session actuelle
+  app.get('/api/auth/check-session', async (req, res) => {
+    try {
+      const user = (req.session as any)?.user;
+      if (user) {
+        res.json({
+          authenticated: true,
+          user: user
+        });
+      } else {
+        res.json({
+          authenticated: false
+        });
+      }
+    } catch (error) {
+      console.error("Erreur vérification session:", error);
+      res.status(500).json({
+        error: 'Erreur serveur'
+      });
+    }
+  });
+
+  // Route de déconnexion
+  app.post('/api/auth/logout', async (req, res) => {
+    try {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Erreur déconnexion:", err);
+          return res.status(500).json({ error: 'Erreur lors de la déconnexion' });
+        }
+        res.clearCookie('connect.sid'); // Nom par défaut du cookie de session
+        res.json({ success: true, message: 'Déconnexion réussie' });
+      });
+    } catch (error) {
+      console.error("Erreur déconnexion:", error);
       res.status(500).json({
         error: 'Erreur serveur'
       });
