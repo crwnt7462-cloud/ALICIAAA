@@ -308,11 +308,11 @@ export default function ProMessagingPerfect() {
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto p-4">
-        <div className="grid grid-cols-12 gap-6 h-[800px]">
-          {/* Sidebar conversations */}
-          <div className="col-span-4">
+      {/* Contenu principal - Mobile First */}
+      <div className="h-[calc(100vh-80px)] flex flex-col lg:max-w-7xl lg:mx-auto lg:p-4">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 lg:gap-6 h-full">
+          {/* Sidebar conversations - Hidden on mobile if conversation selected */}
+          <div className={`${selectedConversation ? 'hidden lg:block' : 'block'} lg:col-span-4 flex flex-col h-full`}>
             <Card className="h-full">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between mb-4">
@@ -430,62 +430,66 @@ export default function ProMessagingPerfect() {
             </Card>
           </div>
 
-          {/* Zone de conversation */}
-          <div className="col-span-5">
+          {/* Zone de conversation - Full screen on mobile */}
+          <div className={`${selectedConversation ? 'block' : 'hidden lg:block'} lg:col-span-5 flex flex-col h-full`}>
             {selectedConv ? (
               <Card className="h-full flex flex-col">
-                {/* Header conversation */}
-                <CardHeader className="border-b pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-medium">
-                          {selectedConv.avatar}
-                        </div>
-                        {selectedConv.isOnline && (
-                          <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                        )}
+                {/* Header conversation - Mobile optimized */}
+                <div className="bg-white border-b p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedConversation(null)}
+                      className="lg:hidden p-1"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                    <div className="relative">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-medium">
+                        {selectedConv.avatar}
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{selectedConv.clientName}</h3>
-                        <p className="text-sm text-gray-500">{selectedConv.lastSeen}</p>
-                      </div>
+                      {selectedConv.isOnline && (
+                        <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                      )}
                     </div>
-                    
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Video className="h-4 w-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Calendar className="h-4 w-4" />
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => setShowClientInfo(!showClientInfo)}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                    <div>
+                      <h3 className="font-medium text-gray-900">{selectedConv.clientName}</h3>
+                      <p className="text-sm text-gray-500">{selectedConv.lastSeen}</p>
                     </div>
                   </div>
-                </CardHeader>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" className="p-2">
+                      <Phone className="h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" size="sm" className="p-2">
+                      <Video className="h-5 w-5" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="p-2 lg:hidden"
+                      onClick={() => setShowClientInfo(!showClientInfo)}
+                    >
+                      <Eye className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
                 
-                {/* Messages */}
-                <CardContent className="flex-1 p-4 overflow-y-auto">
-                  <div className="space-y-4">
+                {/* Messages - iPhone style */}
+                <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+                  <div className="space-y-2">
                     {messages.map((message) => (
                       <div
                         key={message.id}
                         className={`flex ${message.senderId === 'pro_1' ? 'justify-end' : 'justify-start'}`}
                       >
                         <div
-                          className={`max-w-xs lg:max-w-md px-4 py-3 ${
+                          className={`max-w-[80%] px-4 py-2 ${
                             message.senderId === 'pro_1'
-                              ? 'bg-blue-500 text-white rounded-2xl rounded-br-sm'
-                              : 'bg-gray-200 text-gray-900 rounded-2xl rounded-bl-sm'
+                              ? 'bg-blue-500 text-white rounded-2xl rounded-br-md ml-auto'
+                              : 'bg-white text-gray-900 rounded-2xl rounded-bl-md border shadow-sm'
                           }`}
                         >
                           {message.type === 'appointment' && message.metadata ? (
@@ -523,18 +527,18 @@ export default function ProMessagingPerfect() {
                     ))}
                     <div ref={messagesEndRef} />
                   </div>
-                </CardContent>
+                </div>
                 
                 {/* Zone de saisie iMessage style */}
-                <div className="border-t p-4 bg-gray-50">
+                <div className="bg-white border-t p-3 lg:p-4">
                   <div className="flex gap-3 items-end">
-                    <div className="flex-1 bg-white rounded-2xl border border-gray-200 px-4 py-2">
+                    <div className="flex-1 bg-gray-100 rounded-3xl px-4 py-3 min-h-[44px] flex items-center">
                       <Textarea
-                        placeholder="Message"
+                        placeholder="iMessage"
                         value={messageContent}
                         onChange={(e) => setMessageContent(e.target.value)}
                         rows={1}
-                        className="border-0 p-0 resize-none focus:ring-0 bg-transparent text-sm"
+                        className="border-0 p-0 resize-none focus:ring-0 bg-transparent text-base w-full"
                         style={{ minHeight: '20px', maxHeight: '100px' }}
                         onKeyPress={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
@@ -547,14 +551,14 @@ export default function ProMessagingPerfect() {
                     <Button
                       onClick={sendMessage}
                       disabled={!messageContent.trim()}
-                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-8 h-8 p-0 shrink-0"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-11 h-11 p-0 shrink-0"
                     >
-                      <Send className="h-4 w-4" />
+                      <Send className="h-5 w-5" />
                     </Button>
                   </div>
                   
-                  {/* Actions rapides */}
-                  <div className="flex gap-2 mt-3">
+                  {/* Actions rapides - Hidden on mobile to save space */}
+                  <div className="hidden lg:flex gap-2 mt-3">
                     <Button variant="outline" size="sm" className="text-xs">
                       <Calendar className="h-3 w-3 mr-1" />
                       Prendre RDV
@@ -581,8 +585,8 @@ export default function ProMessagingPerfect() {
             )}
           </div>
 
-          {/* Panel info client */}
-          <div className="col-span-3">
+          {/* Panel info client - Hidden on mobile */}
+          <div className="hidden lg:block lg:col-span-3">
             {selectedConv && showClientInfo ? (
               <Card className="h-full">
                 <CardHeader className="pb-3">

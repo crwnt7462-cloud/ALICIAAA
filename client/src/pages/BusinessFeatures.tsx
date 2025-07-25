@@ -204,27 +204,15 @@ export default function BusinessFeatures() {
               <div className="grid grid-cols-2 gap-3">
                 <Button 
                   onClick={() => setLocation("/salon-settings")}
-                  className="bg-gray-600 hover:bg-gray-700 text-white"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  Paramètres
+                  Mon Salon
                 </Button>
                 <Button 
                   onClick={() => setLocation("/staff-management")}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  Équipe
-                </Button>
-                <Button 
-                  onClick={() => setLocation("/service-management")}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Services
-                </Button>
-                <Button 
-                  onClick={() => setLocation("/hours-management")}
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
-                >
-                  Horaires
+                  Mon Équipe
                 </Button>
               </div>
             </CardContent>
