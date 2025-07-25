@@ -6,6 +6,7 @@ import { db } from "./db";
 import { aiService } from "./aiService";
 import { notificationService } from "./notificationService";
 import { stripeService } from "./stripeService";
+import { confirmationService } from "./confirmationService";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { configureSession, authenticateUser, authenticateClient, authenticateAny } from "./sessionMiddleware";
 import { appointments, clients, users, clientAccounts } from "@shared/schema";
@@ -809,6 +810,118 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour paiement d'acompte de réservation
+  app.post("/api/create-booking-payment", async (req, res) => {
+    try {
+      const {
+        serviceId,
+        serviceName,
+        servicePrice,
+        depositAmount,
+        selectedDate,
+        selectedTime,
+        clientName,
+        clientPhone,
+        clientEmail,
+      } = req.body;
+
+      // Créer la session Stripe Checkout
+      const session = await stripeService.createBookingCheckout({
+        serviceId,
+        serviceName,
+        servicePrice,
+        depositAmount,
+        selectedDate,
+        selectedTime,
+        clientName,
+        clientPhone,
+        clientEmail,
+        successUrl: `${req.protocol}://${req.get('host')}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${req.protocol}://${req.get('host')}/booking`,
+      });
+
+      res.json({ checkoutUrl: session.url });
+    } catch (error: any) {
+      console.error('Erreur création session Stripe:', error);
+      res.status(500).json({ 
+        message: "Erreur lors de la création du paiement: " + error.message 
+      });
+    }
+  });
+
+  // Route pour récupérer les détails d'une session de booking
+  app.get("/api/booking-session/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await stripeService.getCheckoutSession(sessionId);
+      
+      // Si le paiement a réussi, créer la réservation dans la base de données
+      if (session.payment_status === 'paid' && session.metadata) {
+        const metadata = session.metadata;
+        
+        // Récupérer les détails du service depuis la base
+        const services = await storage.getActiveServices('1');
+        const selectedService = services.find(s => s.id === parseInt(metadata.serviceId));
+        
+        // Calculer l'heure de fin automatiquement
+        const [hours, minutes] = metadata.selectedTime.split(':').map(Number);
+        const endTimeDate = new Date();
+        endTimeDate.setHours(hours, minutes + (selectedService?.duration || 60), 0, 0);
+        const endTime = endTimeDate.toTimeString().slice(0, 5);
+
+        // Créer l'appointment dans la base de données
+        const appointment = await storage.createAppointment({
+          userId: '1', // ID salon par défaut
+          serviceId: parseInt(metadata.serviceId),
+          staffId: null,
+          clientName: metadata.clientName,
+          clientEmail: metadata.clientEmail || session.customer_details?.email || '',
+          clientPhone: metadata.clientPhone,
+          appointmentDate: metadata.selectedDate,
+          startTime: metadata.selectedTime,
+          endTime: endTime,
+          totalPrice: metadata.servicePrice,
+          depositPaid: metadata.depositAmount,
+          paymentStatus: 'deposit_paid',
+          status: 'confirmed',
+          stripeSessionId: sessionId
+        });
+
+        // Envoyer les confirmations automatiques
+        if (selectedService) {
+          try {
+            await confirmationService.sendBookingConfirmation({
+              clientName: metadata.clientName,
+              clientEmail: metadata.clientEmail || session.customer_details?.email || '',
+              clientPhone: metadata.clientPhone,
+              serviceName: selectedService.name,
+              appointmentDate: metadata.selectedDate,
+              appointmentTime: metadata.selectedTime,
+              salonName: 'Salon Excellence Paris',
+              depositAmount: parseFloat(metadata.depositAmount),
+              totalAmount: parseFloat(metadata.servicePrice)
+            });
+          } catch (notifError) {
+            console.error('Erreur envoi confirmation:', notifError);
+            // Continue même si notification échoue
+          }
+        }
+      }
+      
+      res.json({
+        status: session.payment_status,
+        metadata: session.metadata,
+        amountTotal: session.amount_total ? session.amount_total / 100 : 0,
+        customerEmail: session.customer_details?.email
+      });
+    } catch (error: any) {
+      console.error('Erreur récupération session:', error);
+      res.status(500).json({ 
+        message: "Erreur lors de la récupération de la session: " + error.message 
+      });
+    }
+  });
+
   // Create HTTP server without WebSocket in development to avoid conflicts with Vite
   const httpServer = createServer(app);
   
@@ -1086,6 +1199,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Erreur récupération session:', error);
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ======================
+  // ROUTES PUBLIQUES POUR RÉSERVATION
+  // ======================
+
+  // API pour récupérer les services d'un salon (public)
+  app.get('/api/public-services/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const salonServices = await storage.getActiveServices(userId);
+      
+      // Formatage pour l'interface de réservation
+      const formattedServices = salonServices.map(service => ({
+        id: service.id,
+        name: service.name,
+        description: service.description,
+        price: parseFloat(service.price),
+        duration: service.duration,
+        category: service.category
+      }));
+
+      res.json(formattedServices);
+    } catch (error) {
+      console.error('Erreur récupération services publics:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  // API pour récupérer les infos publiques d'un salon
+  app.get('/api/public-salon/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: 'Salon non trouvé' });
+      }
+
+      // Infos publiques uniquement
+      const salonInfo = {
+        name: user.businessName || `${user.firstName} ${user.lastName}`,
+        address: user.address,
+        phone: user.phone,
+        email: user.email
+      };
+
+      res.json(salonInfo);
+    } catch (error) {
+      console.error('Erreur récupération salon public:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
     }
   });
 

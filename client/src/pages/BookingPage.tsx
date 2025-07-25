@@ -39,44 +39,35 @@ function BookingPageNew() {
     clientEmail: ''
   });
 
-  // Services disponibles
-  const services: Service[] = [
-    {
-      id: '1',
-      name: 'Coupe & Brushing',
-      duration: 60,
-      price: 45,
-      description: 'Coupe personnalisée avec brushing'
-    },
-    {
-      id: '2',
-      name: 'Coloration',
-      duration: 120,
-      price: 85,
-      description: 'Coloration complète avec soins'
-    },
-    {
-      id: '3',
-      name: 'Balayage',
-      duration: 180,
-      price: 120,
-      description: 'Technique de balayage naturel'
-    },
-    {
-      id: '4',
-      name: 'Soin Visage',
-      duration: 75,
-      price: 65,
-      description: 'Soin complet du visage'
-    },
-    {
-      id: '5',
-      name: 'Manucure',
-      duration: 45,
-      price: 35,
-      description: 'Manucure complète avec vernis'
-    }
-  ];
+  // Services récupérés depuis l'API
+  const [services, setServices] = useState<Service[]>([]);
+  const [loadingServices, setLoadingServices] = useState(true);
+
+  useEffect(() => {
+    // Charger les services depuis l'API
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/public-services/1');
+        if (response.ok) {
+          const servicesData = await response.json();
+          const formattedServices = servicesData.map((service: any) => ({
+            id: service.id.toString(),
+            name: service.name,
+            description: service.description,
+            price: service.price,
+            duration: service.duration
+          }));
+          setServices(formattedServices);
+        }
+      } catch (error) {
+        console.error('Erreur chargement services:', error);
+      } finally {
+        setLoadingServices(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   // Créneaux disponibles
   const timeSlots = [
@@ -117,19 +108,52 @@ function BookingPageNew() {
   };
 
   const handleBookingSubmit = async () => {
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+    if (!bookingData.selectedService || !bookingData.clientName || !bookingData.clientPhone) {
       toast({
-        title: "Réservation confirmée",
-        description: `Rendez-vous confirmé le ${bookingData.selectedDate} à ${bookingData.selectedTime}`,
+        title: "Informations manquantes",
+        description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive"
       });
+      return;
+    }
+
+    try {
+      // Calculer l'acompte (30% du prix)
+      const depositAmount = Math.round(bookingData.selectedService.price * 0.3);
       
-      setStep(4);
+      // Créer une session de paiement Stripe
+      const response = await fetch('/api/create-booking-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          serviceId: bookingData.selectedService.id,
+          serviceName: bookingData.selectedService.name,
+          servicePrice: bookingData.selectedService.price,
+          depositAmount,
+          selectedDate: bookingData.selectedDate,
+          selectedTime: bookingData.selectedTime,
+          clientName: bookingData.clientName,
+          clientPhone: bookingData.clientPhone,
+          clientEmail: bookingData.clientEmail,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la création du paiement');
+      }
+
+      const { checkoutUrl } = await response.json();
+      
+      // Redirection vers Stripe Checkout
+      window.location.href = checkoutUrl;
+      
     } catch (error) {
+      console.error('Erreur paiement:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue",
+        description: "Impossible de traiter le paiement. Veuillez réessayer.",
         variant: "destructive"
       });
     }
@@ -293,12 +317,12 @@ function BookingPageNew() {
               disabled={!bookingData.clientName || !bookingData.clientPhone}
               className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white rounded-xl"
             >
-              Confirmer la réservation
+              Payer l'acompte ({Math.round((bookingData.selectedService?.price || 0) * 0.3)}€)
             </Button>
 
             <div className="text-center">
               <p className="text-xs text-gray-500">
-                Acompte: {Math.round((bookingData.selectedService?.price || 0) * 0.3)}€
+                Paiement sécurisé par Stripe • Total: {bookingData.selectedService?.price}€
               </p>
             </div>
           </div>

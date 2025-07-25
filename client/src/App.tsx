@@ -89,6 +89,7 @@ import StripeCancel from "@/pages/StripeCancel";
 import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
+import BookingSuccess from "@/pages/BookingSuccess";
 
 
 function Router() {
@@ -107,6 +108,24 @@ function Router() {
     return (
       <div className="h-full">
         <QuickBooking />
+      </div>
+    );
+  }
+
+  // Page de succès de réservation
+  if (location === '/booking-success') {
+    return (
+      <div className="h-full">
+        <BookingSuccess />
+      </div>
+    );
+  }
+
+  // Page de réservation principale
+  if (location === '/booking') {
+    return (
+      <div className="h-full">
+        <BookingPage />
       </div>
     );
   }

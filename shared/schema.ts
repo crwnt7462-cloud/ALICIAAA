@@ -178,7 +178,9 @@ export const appointments = pgTable("appointments", {
   totalPrice: decimal("total_price", { precision: 10, scale: 2 }),
   depositPaid: decimal("deposit_paid", { precision: 10, scale: 2 }),
   paymentStatus: varchar("payment_status").default("pending"), // pending, partial, paid, refunded
+  stripeSessionId: text("stripe_session_id"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Waiting list for appointments

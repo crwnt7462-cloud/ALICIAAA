@@ -282,6 +282,20 @@ export class DatabaseStorage implements IStorage {
       .orderBy(services.name);
   }
 
+  async getActiveServices(userId: string): Promise<any[]> {
+    try {
+      const activeServices = await db
+        .select()
+        .from(services)
+        .where(eq(services.userId, userId));
+      
+      return activeServices.filter(service => service.isActive);
+    } catch (error) {
+      console.error('Erreur récupération services actifs:', error);
+      return [];
+    }
+  }
+
   async createService(service: InsertService): Promise<Service> {
     const [newService] = await db.insert(services).values(service).returning();
     return newService;
@@ -371,9 +385,46 @@ export class DatabaseStorage implements IStorage {
     return await query.orderBy(appointments.appointmentDate, appointments.startTime);
   }
 
-  async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
-    const [newAppointment] = await db.insert(appointments).values(appointment).returning();
-    return newAppointment;
+  async createAppointment(appointmentData: {
+    userId: string;
+    serviceId: number;
+    staffId?: number | null;
+    clientName: string;
+    clientEmail: string;
+    clientPhone: string;
+    appointmentDate: string;
+    startTime: string;
+    endTime?: string;
+    totalPrice: string | number;
+    depositPaid: string | number;
+    paymentStatus: string;
+    status: string;
+    notes?: string;
+    stripeSessionId?: string;
+  }): Promise<any> {
+    try {
+      const [newAppointment] = await db.insert(appointments).values({
+        userId: appointmentData.userId,
+        serviceId: appointmentData.serviceId,
+        staffId: appointmentData.staffId,
+        clientName: appointmentData.clientName,
+        clientEmail: appointmentData.clientEmail,
+        clientPhone: appointmentData.clientPhone,
+        appointmentDate: appointmentData.appointmentDate,
+        startTime: appointmentData.startTime,
+        endTime: appointmentData.endTime || '',
+        totalPrice: appointmentData.totalPrice.toString(),
+        depositPaid: appointmentData.depositPaid.toString(),
+        paymentStatus: appointmentData.paymentStatus,
+        status: appointmentData.status,
+        notes: appointmentData.notes || '',
+        stripeSessionId: appointmentData.stripeSessionId,
+      }).returning();
+      return newAppointment;
+    } catch (error) {
+      console.error('Erreur création appointment:', error);
+      throw error;
+    }
   }
 
   async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment> {

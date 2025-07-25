@@ -192,6 +192,60 @@ export class StripeService {
       throw error;
     }
   }
+  // Créer une session Stripe Checkout pour réservation avec acompte
+  async createBookingCheckout(bookingData: {
+    serviceId: string;
+    serviceName: string;
+    servicePrice: number;
+    depositAmount: number;
+    selectedDate: string;
+    selectedTime: string;
+    clientName: string;
+    clientPhone: string;
+    clientEmail: string;
+    successUrl: string;
+    cancelUrl: string;
+  }) {
+    try {
+      const stripeInstance = getStripe();
+      const session = await stripeInstance.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'eur',
+              product_data: {
+                name: `Acompte - ${bookingData.serviceName}`,
+                description: `Réservation du ${bookingData.selectedDate} à ${bookingData.selectedTime}`,
+              },
+              unit_amount: bookingData.depositAmount * 100, // Stripe utilise les centimes
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: bookingData.successUrl,
+        cancel_url: bookingData.cancelUrl,
+        metadata: {
+          serviceId: bookingData.serviceId,
+          serviceName: bookingData.serviceName,
+          servicePrice: bookingData.servicePrice.toString(),
+          depositAmount: bookingData.depositAmount.toString(),
+          selectedDate: bookingData.selectedDate,
+          selectedTime: bookingData.selectedTime,
+          clientName: bookingData.clientName,
+          clientPhone: bookingData.clientPhone,
+          clientEmail: bookingData.clientEmail,
+          bookingType: 'appointment_deposit'
+        },
+      });
+
+      return session;
+    } catch (error) {
+      console.error('Erreur création session booking Stripe:', error);
+      throw error;
+    }
+  }
 }
 
 export const stripeService = new StripeService();
