@@ -103,7 +103,9 @@ import ProMessagingReal from "@/pages/ProMessagingReal";
 import MessagingTest from "@/pages/MessagingTest";
 import ProMessagingWithSearch from "@/pages/ProMessagingWithSearch";
 import ProMessagingPerfect from "@/pages/ProMessagingPerfect";
+import ProMessagingMobile from "@/pages/ProMessagingMobile";
 import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
+import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import NotificationCenter from "@/pages/NotificationCenter";
 
 
@@ -572,8 +574,8 @@ function Router() {
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
           <Route path="/messaging-test" component={MessagingTest} />
-          <Route path="/pro-messaging-search" component={ProMessagingPerfect} />
-          <Route path="/client-messaging-search" component={ClientMessagingWithSearch} />
+          <Route path="/pro-messaging-search" component={ProMessagingMobile} />
+          <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />
           <Route path="/client-management" component={ClientManagement} />
           <Route path="/services/coiffure" component={ServiceCoiffure} />

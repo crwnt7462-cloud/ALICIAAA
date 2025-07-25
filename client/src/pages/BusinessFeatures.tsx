@@ -150,9 +150,9 @@ export default function BusinessFeatures() {
           <div className="grid grid-cols-1 gap-3">
             <Button 
               onClick={() => setLocation("/pro-messaging-search")}
-              className="bg-violet-600 hover:bg-violet-700 text-white"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              Messagerie Pro
+              Messages
             </Button>
           </div>
         </CardContent>

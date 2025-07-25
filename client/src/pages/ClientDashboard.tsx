@@ -56,18 +56,18 @@ export default function ClientDashboard() {
     }
   }, [authLoading, isAuthenticated, setLocation]);
 
-  // Récupérer les données du client
-  const { data: clientData, isLoading: loadingClient } = useQuery({
+  // Récupérer les données du client  
+  const { data: clientProfile, isLoading: loadingClient } = useQuery({
     queryKey: ['/api/client/profile'],
   });
 
   // Récupérer les rendez-vous du client
-  const { data: appointments = [], isLoading: loadingAppointments } = useQuery({
+  const { data: appointments = [], isLoading: loadingAppointments } = useQuery<Appointment[]>({
     queryKey: ['/api/client/appointments'],
   });
 
-  // Récupérer les messages
-  const { data: messages = [], isLoading: loadingMessages } = useQuery({
+  // Récupérer les messages  
+  const { data: messages = [], isLoading: loadingMessages } = useQuery<any[]>({
     queryKey: ['/api/client/messages'],
   });
 
@@ -200,14 +200,14 @@ export default function ClientDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/client-messaging')}>
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/client-messaging-search')}>
             <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <MessageCircle className="h-6 w-6 text-green-600" />
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MessageCircle className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Messagerie</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">Messages</h3>
               <p className="text-sm text-gray-600">
-                {messages.length > 0 ? `${messages.length} nouveaux messages` : 'Aucun nouveau message'}
+                {messages.length > 0 ? `${messages.length} nouveaux messages` : 'Contactez vos salons'}
               </p>
             </CardContent>
           </Card>
@@ -248,7 +248,7 @@ export default function ClientDashboard() {
               </div>
             ) : appointments.length > 0 ? (
               <div className="space-y-4">
-                {appointments.map((appointment: Appointment) => (
+                {appointments.map((appointment) => (
                   <div key={appointment.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
