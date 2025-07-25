@@ -19,6 +19,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route de connexion PRO simplifiée
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Compte test PRO
+      if (email === 'test@monapp.com' && password === 'test1234') {
+        res.json({
+          success: true,
+          user: {
+            id: 'test-pro-user',
+            email: 'test@monapp.com',
+            handle: '@usemyrr',
+            role: 'professional',
+            salon: 'Salon Excellence Paris'
+          },
+          message: 'Connexion PRO réussie'
+        });
+        return;
+      }
+      
+      res.status(401).json({
+        error: 'Identifiants incorrects'
+      });
+    } catch (error) {
+      console.error("Erreur login PRO:", error);
+      res.status(500).json({
+        error: 'Erreur serveur'
+      });
+    }
+  });
+
   // Routes salon pour workflow d'abonnement
   app.post('/api/salon/register', async (req, res) => {
     try {
@@ -181,6 +213,149 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         error: 'Erreur lors de l\'inscription',
         details: error.message
+      });
+    }
+  });
+
+  // Routes pour la réservation client - Liste des salons par catégorie
+  app.get('/api/salons', async (req, res) => {
+    try {
+      const { category } = req.query;
+      
+      const allSalons = [
+        {
+          id: 'salon-1',
+          name: 'Salon Excellence Paris',
+          category: 'coiffure',
+          address: '15 Avenue des Champs-Élysées, 75008 Paris',
+          rating: 4.8,
+          reviews: 245,
+          price: '€€€',
+          image: '/salon-1.jpg',
+          services: ['Coupe', 'Coloration', 'Brushing', 'Balayage'],
+          openNow: true
+        },
+        {
+          id: 'salon-2', 
+          name: 'Beauty & Spa Marais',
+          category: 'esthetique',
+          address: '8 Rue du Marais, 75004 Paris',
+          rating: 4.9,
+          reviews: 189,
+          price: '€€',
+          image: '/salon-2.jpg',
+          services: ['Soin du visage', 'Épilation', 'Massage', 'Microdermabrasion'],
+          openNow: true
+        },
+        {
+          id: 'salon-3',
+          name: 'Zen Massage Studio',
+          category: 'massage',
+          address: '25 Boulevard Saint-Germain, 75005 Paris',
+          rating: 4.7,
+          reviews: 156,
+          price: '€€€',
+          image: '/salon-3.jpg',
+          services: ['Massage relaxant', 'Massage deep tissue', 'Massage aux pierres chaudes'],
+          openNow: false
+        },
+        {
+          id: 'salon-4',
+          name: 'Nail Art Gallery',
+          category: 'onglerie',
+          address: '12 Rue de Rivoli, 75001 Paris',
+          rating: 4.6,
+          reviews: 203,
+          price: '€€',
+          image: '/salon-4.jpg',
+          services: ['Manucure', 'Pédicure', 'Nail art', 'Pose gel'],
+          openNow: true
+        },
+        {
+          id: 'salon-5',
+          name: 'Coiffure Moderne',
+          category: 'coiffure',
+          address: '30 Rue de la Paix, 75002 Paris',
+          rating: 4.5,
+          reviews: 167,
+          price: '€€',
+          image: '/salon-5.jpg',
+          services: ['Coupe homme', 'Coupe femme', 'Coloration', 'Permanente'],
+          openNow: true
+        },
+        {
+          id: 'salon-6',
+          name: 'Institut Beauté Luxury',
+          category: 'esthetique',
+          address: '18 Avenue Montaigne, 75008 Paris',
+          rating: 4.9,
+          reviews: 298,
+          price: '€€€€',
+          image: '/salon-6.jpg',
+          services: ['Soin anti-âge', 'Peeling', 'Lifting', 'Botox'],
+          openNow: true
+        }
+      ];
+      
+      const filteredSalons = category 
+        ? allSalons.filter(salon => salon.category === category)
+        : allSalons;
+      
+      res.json({
+        success: true,
+        salons: filteredSalons,
+        total: filteredSalons.length
+      });
+    } catch (error) {
+      console.error("Erreur récupération salons:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la récupération des salons'
+      });
+    }
+  });
+
+  // Route des catégories de services
+  app.get('/api/service-categories', async (req, res) => {
+    try {
+      const categories = [
+        {
+          id: 'coiffure',
+          name: 'Coiffure',
+          description: 'Coupes, colorations, brushings',
+          icon: '✂️',
+          salonCount: 2
+        },
+        {
+          id: 'esthetique',
+          name: 'Esthétique',
+          description: 'Soins du visage, épilation',
+          icon: '💆‍♀️',
+          salonCount: 2
+        },
+        {
+          id: 'massage',
+          name: 'Massage',
+          description: 'Massages relaxants, thérapeutiques',
+          icon: '💆',
+          salonCount: 1
+        },
+        {
+          id: 'onglerie',
+          name: 'Onglerie',
+          description: 'Manucure, pédicure, nail art',
+          icon: '💅',
+          salonCount: 1
+        }
+      ];
+      
+      res.json({
+        success: true,
+        categories
+      });
+    } catch (error) {
+      console.error("Erreur récupération catégories:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la récupération des catégories'
       });
     }
   });

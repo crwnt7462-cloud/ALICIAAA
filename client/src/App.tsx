@@ -75,6 +75,7 @@ import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
 import SalonRegistration from "@/pages/SalonRegistration";
 import EditSalon from "@/pages/EditSalon";
+import SalonSelection from "@/pages/SalonSelection";
 import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
 import SalonSettings from "@/pages/SalonSettings";
@@ -563,6 +564,7 @@ function Router() {
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
           <Route path="/edit-salon" component={EditSalon} />
+          <Route path="/salon-selection" component={SalonSelection} />
           <Route path="/salon-payment" component={SalonPayment} />
           <Route path="/business-registration" component={BusinessRegistration} />
           <Route path="/business-success" component={BusinessSuccess} />
