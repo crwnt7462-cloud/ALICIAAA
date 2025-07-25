@@ -4,13 +4,15 @@ import Stripe from 'stripe';
 let stripe: Stripe | null = null;
 
 function initializeStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_51Rn0zHQbSa7XrNpD4exDqcZatGCbo1me8zCSnLgDNr5YGDPbvojp3IRmLRT31hC0lGZWw9ar5VZprCrzbV6tTnjK00I49zqfEu';
+  
+  if (!stripeKey) {
     console.warn('STRIPE_SECRET_KEY non configurée - services Stripe désactivés');
     return null;
   }
   
   if (!stripe) {
-    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    stripe = new Stripe(stripeKey, {
       apiVersion: '2024-06-20',
     });
   }

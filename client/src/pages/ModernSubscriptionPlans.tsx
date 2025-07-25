@@ -28,6 +28,10 @@ export default function ModernSubscriptionPlans() {
   const [, setLocation] = useLocation();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
+  const handleSelectPlan = (planId: string) => {
+    setLocation(`/subscribe/${planId}`);
+  };
+
   const plans = [
     {
       id: 'starter' as const,
@@ -123,10 +127,6 @@ export default function ModernSubscriptionPlans() {
       return Math.round((savings / plan.originalYearlyPrice) * 100);
     }
     return 0;
-  };
-
-  const handleSelectPlan = (planType: 'starter' | 'professional' | 'premium') => {
-    setLocation(`/subscription/signup/${planType}`);
   };
 
   return (
