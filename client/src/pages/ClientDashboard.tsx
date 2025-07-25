@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { useClientAuth } from '@/hooks/useClientAuth';
 import { 
   Calendar, 
   Clock, 
@@ -46,6 +47,14 @@ export default function ClientDashboard() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
+  const { clientData, isLoading: authLoading, isAuthenticated, logout: authLogout } = useClientAuth();
+
+  // Rediriger si pas authentifié
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      setLocation('/client-login');
+    }
+  }, [authLoading, isAuthenticated, setLocation]);
 
   // Récupérer les données du client
   const { data: clientData, isLoading: loadingClient } = useQuery({
@@ -62,25 +71,13 @@ export default function ClientDashboard() {
     queryKey: ['/api/client/messages'],
   });
 
-  // Mutation pour déconnexion
-  const logoutMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest('POST', '/api/client/logout', {});
-      if (!response.ok) throw new Error('Erreur de déconnexion');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Déconnexion réussie",
-        description: "À bientôt !"
-      });
-      queryClient.clear();
-      setLocation('/client-login');
-    }
-  });
-
   const handleLogout = () => {
-    logoutMutation.mutate();
+    authLogout();
+    queryClient.clear();
+    toast({
+      title: "Déconnexion réussie",
+      description: "À bientôt !"
+    });
   };
 
   const handleSearch = () => {
@@ -118,12 +115,17 @@ export default function ClientDashboard() {
     }
   };
 
-  if (loadingClient) {
+  if (authLoading || loadingClient) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
       </div>
     );
+  }
+
+  // Si pas authentifié, ne rien afficher (la redirection est gérée par useEffect)
+  if (!isAuthenticated) {
+    return null;
   }
 
   return (
@@ -157,7 +159,6 @@ export default function ClientDashboard() {
                 variant="ghost"
                 size="sm"
                 onClick={handleLogout}
-                disabled={logoutMutation.isPending}
               >
                 <LogOut className="h-4 w-4" />
               </Button>

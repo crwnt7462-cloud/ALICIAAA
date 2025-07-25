@@ -76,7 +76,9 @@ export default function ClientLogin() {
         });
         
         // Redirection immédiate vers le dashboard client
-        window.location.href = '/client-dashboard';
+        setTimeout(() => {
+          window.location.href = '/client-dashboard';
+        }, 100);
       } else {
         const error = await response.json();
         toast({

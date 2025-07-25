@@ -26,6 +26,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Compte test PRO
       if (email === 'test@monapp.com' && password === 'test1234') {
+        const proToken = `pro_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
         res.json({
           success: true,
           user: {
@@ -33,7 +35,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: 'test@monapp.com',
             handle: '@usemyrr',
             role: 'professional',
-            salon: 'Salon Excellence Paris'
+            salon: 'Salon Excellence Paris',
+            token: proToken
           },
           message: 'Connexion PRO réussie'
         });

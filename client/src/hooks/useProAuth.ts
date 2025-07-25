@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 
-interface ClientData {
+interface ProData {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  token: string;
+  handle: string;
+  role: string;
+  salon: string;
 }
 
-export function useClientAuth() {
+export function useProAuth() {
   const [, setLocation] = useLocation();
-  const [clientData, setClientData] = useState<ClientData | null>(null);
+  const [proData, setProData] = useState<ProData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -21,44 +21,44 @@ export function useClientAuth() {
 
   const checkAuthStatus = () => {
     try {
-      const token = localStorage.getItem('clientToken');
-      const storedData = localStorage.getItem('clientData');
+      const token = localStorage.getItem('proToken');
+      const storedData = localStorage.getItem('proData');
       
       if (token && storedData) {
         const parsedData = JSON.parse(storedData);
-        setClientData(parsedData);
+        setProData(parsedData);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
-        setClientData(null);
+        setProData(null);
       }
     } catch (error) {
-      console.error('Erreur vérification auth client:', error);
+      console.error('Erreur vérification auth pro:', error);
       setIsAuthenticated(false);
-      setClientData(null);
+      setProData(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('clientToken');
-    localStorage.removeItem('clientData');
-    setClientData(null);
+    localStorage.removeItem('proToken');
+    localStorage.removeItem('proData');
+    setProData(null);
     setIsAuthenticated(false);
-    setLocation('/client-login');
+    setLocation('/pro-login');
   };
 
   const requireAuth = () => {
     if (!isLoading && !isAuthenticated) {
-      setLocation('/client-login');
+      setLocation('/pro-login');
       return false;
     }
     return true;
   };
 
   return {
-    clientData,
+    proData,
     isLoading,
     isAuthenticated,
     logout,

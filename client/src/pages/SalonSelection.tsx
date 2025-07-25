@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import AuthGuard from "@/components/AuthGuard";
 
 interface Category {
   id: string;
@@ -95,7 +96,8 @@ export default function SalonSelection() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AuthGuard requiredAuth="client">
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
@@ -247,6 +249,7 @@ export default function SalonSelection() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </AuthGuard>
   );
 }

@@ -1,53 +1,47 @@
-import { useAuthSession } from "@/hooks/useAuthSession";
-import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect } from 'react';
+import { useLocation } from 'wouter';
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requireAuth?: boolean;
-  requireProfessional?: boolean;
-  requireClient?: boolean;
+  requiredAuth: 'client' | 'pro';
 }
 
-export function AuthGuard({ 
-  children, 
-  requireAuth = false, 
-  requireProfessional = false, 
-  requireClient = false 
-}: AuthGuardProps) {
-  const { isAuthenticated, isProfessional, isClient, isLoading } = useAuthSession();
+export default function AuthGuard({ children, requiredAuth }: AuthGuardProps) {
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    if (isLoading) return;
-
-    if (requireAuth && !isAuthenticated) {
-      setLocation('/pro-login');
-      return;
+    if (requiredAuth === 'client') {
+      const clientToken = localStorage.getItem('clientToken');
+      if (!clientToken) {
+        setLocation('/client-login');
+        return;
+      }
+    } else if (requiredAuth === 'pro') {
+      const proToken = localStorage.getItem('proToken');
+      if (!proToken) {
+        setLocation('/pro-login');
+        return;
+      }
     }
+  }, [requiredAuth, setLocation]);
 
-    if (requireProfessional && !isProfessional) {
-      setLocation('/pro-login');
-      return;
+  // Vérifier l'authentification
+  const isAuthenticated = () => {
+    if (requiredAuth === 'client') {
+      return !!localStorage.getItem('clientToken');
+    } else if (requiredAuth === 'pro') {
+      return !!localStorage.getItem('proToken');
     }
+    return false;
+  };
 
-    if (requireClient && !isClient) {
-      setLocation('/client-dashboard');
-      return;
-    }
-  }, [isLoading, isAuthenticated, isProfessional, isClient, requireAuth, requireProfessional, requireClient, setLocation]);
-
-  if (isLoading) {
+  if (!isAuthenticated()) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
-
-  if (requireAuth && !isAuthenticated) return null;
-  if (requireProfessional && !isProfessional) return null;
-  if (requireClient && !isClient) return null;
 
   return <>{children}</>;
 }
