@@ -372,6 +372,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Route pour créer un nouveau client
+  app.post("/api/clients", async (req: any, res) => {
+    try {
+      const { firstName, lastName, email, phone } = req.body;
+      
+      if (!firstName || !lastName || !email) {
+        return res.status(400).json({ 
+          error: 'Prénom, nom et email sont requis' 
+        });
+      }
+
+      const newClient = {
+        id: `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        firstName,
+        lastName,
+        email,
+        phone: phone || '',
+        createdAt: new Date().toISOString(),
+        totalSpent: 0,
+        totalAppointments: 0,
+        lastVisit: null,
+        status: 'active'
+      };
+
+      res.json({
+        success: true,
+        client: newClient,
+        message: 'Client créé avec succès'
+      });
+    } catch (error) {
+      console.error("Erreur création client:", error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création du client',
+        details: error.message 
+      });
+    }
+  });
+
   // Client Notes Management Routes
   app.get("/api/clients-with-notes", async (req: any, res) => {
     try {

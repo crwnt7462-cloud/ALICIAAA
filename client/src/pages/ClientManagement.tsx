@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Plus, Camera, Tag, AlertTriangle, Heart, User, Edit3, Save } from 'lucide-react';
+import { ArrowLeft, Plus, Camera, Tag, AlertTriangle, Heart, User } from 'lucide-react';
 import { useLocation } from 'wouter';
 import AuthGuard from '@/components/AuthGuard';
 import { apiRequest } from '@/lib/queryClient';
@@ -58,6 +58,13 @@ export default function ClientManagement() {
     photos: [] as string[]
   });
   const [newTag, setNewTag] = useState({ name: '', color: '#6366f1', category: 'general' });
+  const [newClient, setNewClient] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: ''
+  });
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -107,6 +114,29 @@ export default function ClientManagement() {
       });
       queryClient.invalidateQueries({ queryKey: ['/api/custom-tags'] });
       setNewTag({ name: '', color: '#6366f1', category: 'general' });
+    }
+  });
+
+  // Mutation pour créer un nouveau client
+  const createClientMutation = useMutation({
+    mutationFn: async (clientData: any) => {
+      return await apiRequest('POST', '/api/clients', clientData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Client créé",
+        description: "Le nouveau client a été ajouté avec succès"
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/clients-with-notes'] });
+      setNewClient({ firstName: '', lastName: '', email: '', phone: '' });
+      setIsCreateDialogOpen(false);
+    },
+    onError: () => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer le client",
+        variant: "destructive"
+      });
     }
   });
 
@@ -281,7 +311,66 @@ export default function ClientManagement() {
             <div className="lg:col-span-1">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Clients ({clients.length})</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Clients ({clients.length})</CardTitle>
+                    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                          <Plus className="w-4 h-4 mr-2" />
+                          Nouveau Client
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Ajouter un nouveau client</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <Label>Prénom</Label>
+                              <Input 
+                                value={newClient.firstName}
+                                onChange={(e) => setNewClient(prev => ({ ...prev, firstName: e.target.value }))}
+                                placeholder="Prénom" 
+                              />
+                            </div>
+                            <div>
+                              <Label>Nom</Label>
+                              <Input 
+                                value={newClient.lastName}
+                                onChange={(e) => setNewClient(prev => ({ ...prev, lastName: e.target.value }))}
+                                placeholder="Nom" 
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <Label>Email</Label>
+                            <Input 
+                              type="email" 
+                              value={newClient.email}
+                              onChange={(e) => setNewClient(prev => ({ ...prev, email: e.target.value }))}
+                              placeholder="email@exemple.com" 
+                            />
+                          </div>
+                          <div>
+                            <Label>Téléphone</Label>
+                            <Input 
+                              value={newClient.phone}
+                              onChange={(e) => setNewClient(prev => ({ ...prev, phone: e.target.value }))}
+                              placeholder="06 12 34 56 78" 
+                            />
+                          </div>
+                          <Button 
+                            onClick={() => createClientMutation.mutate(newClient)}
+                            disabled={!newClient.firstName || !newClient.lastName || !newClient.email || createClientMutation.isPending}
+                            className="w-full"
+                          >
+                            {createClientMutation.isPending ? "Création..." : "Créer le client"}
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </CardHeader>
                 <CardContent className="p-0">
                   <div className="max-h-96 overflow-y-auto">
@@ -350,23 +439,23 @@ export default function ClientManagement() {
                           <p className="text-sm text-gray-600">{selectedClient.email}</p>
                         </div>
                       </div>
-                      <Button
-                        onClick={() => setIsEditing(!isEditing)}
-                        variant={isEditing ? "default" : "outline"}
-                        size="sm"
-                      >
-                        {isEditing ? (
-                          <>
-                            <Save className="w-4 h-4 mr-2" />
-                            Sauvegarder
-                          </>
-                        ) : (
-                          <>
-                            <Edit3 className="w-4 h-4 mr-2" />
-                            Modifier
-                          </>
-                        )}
-                      </Button>
+{isEditing ? (
+                        <Button
+                          onClick={handleSaveNote}
+                          disabled={saveNoteMutation.isPending}
+                          size="sm"
+                        >
+                          Sauvegarder
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => setIsEditing(true)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Modifier
+                        </Button>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
