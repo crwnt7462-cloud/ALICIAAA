@@ -149,7 +149,7 @@ export default function BusinessFeatures() {
           
           <div className="grid grid-cols-2 gap-3">
             <Button 
-              onClick={() => setLocation("/pro-messaging-simple")}
+              onClick={() => setLocation("/pro-messaging-search")}
               className="bg-violet-600 hover:bg-violet-700 text-white"
             >
               Messagerie
@@ -227,7 +227,7 @@ export default function BusinessFeatures() {
                       <h4 className="font-medium text-amber-800">Nouveau message client</h4>
                       <p className="text-sm text-amber-600">2 messages non lus en attente</p>
                     </div>
-                    <Button size="sm" onClick={() => setLocation('/pro-messaging')}>
+                    <Button size="sm" onClick={() => setLocation('/pro-messaging-search')}>
                       Voir Messages
                     </Button>
                   </div>
