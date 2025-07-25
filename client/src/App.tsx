@@ -498,6 +498,15 @@ function Router() {
     );
   }
 
+  // Page de réservation salon
+  if (location === '/salon-booking-flow') {
+    return (
+      <div className="h-full">
+        <SalonBookingFlow />
+      </div>
+    );
+  }
+
   // Pages de salon personnalisées (salon-xxx-xxxx)
   if (location.startsWith('/salon-')) {
     const pageUrl = location.substring(1); // Remove leading slash

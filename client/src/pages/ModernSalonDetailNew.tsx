@@ -439,7 +439,7 @@ export default function ModernSalonDetail() {
         {/* Bouton de réservation avec violet */}
         <div className="bg-white border-t border-gray-100 p-3">
           <Button 
-            onClick={() => setLocation('/booking')}
+            onClick={() => setLocation('/salon-booking-flow')}
             className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
           >
             Réserver maintenant

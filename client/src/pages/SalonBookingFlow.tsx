@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Check, Clock, Euro } from 'lucide-react';
+import { ArrowLeft, Clock, Euro } from 'lucide-react';
 import { useLocation } from 'wouter';
 
 interface Professional {
@@ -117,7 +117,6 @@ export default function SalonBookingFlow() {
     }
 
     try {
-      // Créer une intention de paiement Stripe
       const response = await fetch('/api/stripe/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -128,25 +127,23 @@ export default function SalonBookingFlow() {
       });
 
       if (response.ok) {
-        const { clientSecret } = await response.json();
-        // Rediriger vers la page de paiement Stripe
-        setLocation(`/stripe-checkout?client_secret=${clientSecret}&booking_id=${Date.now()}`);
+        const { clientSecret, bookingId } = await response.json();
+        setLocation(`/stripe-checkout?client_secret=${clientSecret}&booking_id=${bookingId}&amount=${bookingData.totalPrice}`);
       } else {
         throw new Error('Erreur lors de la création du paiement');
       }
     } catch (error) {
       toast({
-        title: "Erreur",
-        description: "Impossible de procéder au paiement",
+        title: "Erreur de réservation",
+        description: "Une erreur est survenue. Veuillez réessayer.",
         variant: "destructive"
       });
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -156,78 +153,78 @@ export default function SalonBookingFlow() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">
-              {step === 1 && "Choisir un professionnel"}
-              {step === 2 && "Date & Heure"}
-              {step === 3 && "Confirmation"}
-            </h1>
+            <div className="text-center">
+              <h1 className="text-lg font-bold text-gray-900">Salon Excellence Paris</h1>
+              <p className="text-sm text-gray-600">Réservation</p>
+            </div>
             <div className="w-10" />
           </div>
         </div>
       </div>
 
       <div className="max-w-md mx-auto p-4">
-        {/* Progress indicator */}
-        <div className="flex items-center mb-6">
-          {[1, 2, 3].map((num) => (
-            <div key={num} className="flex items-center">
-              <div 
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  step >= num 
-                    ? 'bg-violet-600 text-white' 
-                    : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                {num}
-              </div>
-              {num < 3 && (
-                <div 
-                  className={`h-0.5 w-16 mx-2 ${
-                    step > num ? 'bg-violet-600' : 'bg-gray-200'
-                  }`} 
-                />
-              )}
-            </div>
-          ))}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-gray-600">Étape {step} sur 3</span>
+            <span className="text-sm text-violet-600 font-medium">
+              {step === 1 ? 'Choisir un professionnel' : 
+               step === 2 ? 'Date & Heure' : 
+               'Informations'}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-gradient-to-r from-violet-600 to-purple-700 h-2 rounded-full transition-all duration-300"
+              style={{ width: `${(step / 3) * 100}%` }}
+            />
+          </div>
         </div>
 
-        {/* Étape 1: Choix du professionnel */}
         {step === 1 && (
           <div className="space-y-4">
             <div className="text-center mb-6">
               <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Salon Excellence Paris
+                Choisir un professionnel
               </h2>
-              <p className="text-gray-600">Choisissez votre professionnel</p>
+              <p className="text-gray-600">Sélectionnez votre coiffeur ou esthéticienne</p>
             </div>
-
+            
             {professionals.map((pro) => (
-              <Card
-                key={pro.id}
-                className="cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => handleProfessionalSelect(pro)}
-              >
+              <Card key={pro.id} className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <img 
-                      src={pro.avatar} 
-                      alt={pro.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{pro.name}</h3>
-                      <p className="text-sm text-gray-600 mb-1">{pro.specialty}</p>
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center">
-                          <span className="text-yellow-400">★</span>
-                          <span className="text-sm font-medium text-gray-700">{pro.rating}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={pro.avatar}
+                        alt={pro.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{pro.name}</h3>
+                        <p className="text-sm text-gray-600">{pro.specialty}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <span 
+                                key={i} 
+                                className={`text-xs ${i < Math.floor(pro.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span className="text-xs text-gray-600">{pro.rating}</span>
+                          <span className="text-sm text-gray-400">•</span>
+                          <span className="text-sm font-bold text-gray-900">{pro.price}€</span>
                         </div>
-                        <span className="text-sm text-gray-400">•</span>
-                        <span className="text-sm font-bold text-gray-900">{pro.price}€</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleProfessionalSelect(pro)}
+                        className="bg-violet-600 hover:bg-violet-700"
+                      >
                         Choisir
                       </Button>
                     </div>
@@ -238,7 +235,6 @@ export default function SalonBookingFlow() {
           </div>
         )}
 
-        {/* Étape 2: Date & Heure */}
         {step === 2 && (
           <div className="space-y-4">
             <div className="text-center mb-6">
@@ -297,7 +293,6 @@ export default function SalonBookingFlow() {
           </div>
         )}
 
-        {/* Étape 3: Informations client */}
         {step === 3 && (
           <div className="space-y-4">
             <div className="text-center mb-6">
