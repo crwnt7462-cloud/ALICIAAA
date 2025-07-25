@@ -90,6 +90,16 @@ export const businessRegistrations = pgTable("business_registrations", {
 export type BusinessRegistration = typeof businessRegistrations.$inferSelect;
 export type InsertBusinessRegistration = typeof businessRegistrations.$inferInsert;
 
+// Schema for business registration validation
+export const businessRegistrationSchema = createInsertSchema(businessRegistrations).omit({
+  id: true,
+  status: true,
+  stripeCustomerId: true,
+  stripeSubscriptionId: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Subscription plans and business information
 export const subscriptions = pgTable("subscriptions", {
   id: serial("id").primaryKey(),

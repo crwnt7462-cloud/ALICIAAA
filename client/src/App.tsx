@@ -64,6 +64,8 @@ import ServiceCoiffure from "@/pages/ServiceCoiffure";
 import ServiceEsthetique from "@/pages/ServiceEsthetique";
 import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
+import BusinessRegistration from "@/pages/BusinessRegistration";
+import BusinessSuccess from "@/pages/BusinessSuccess";
 import PaymentStep from "@/pages/PaymentStep";
 import ClientLogin from "@/pages/ClientLogin";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
@@ -90,8 +92,6 @@ import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
 import BookingSuccess from "@/pages/BookingSuccess";
-import BusinessRegistration from "@/pages/BusinessRegistration";
-import BusinessSuccess from "@/pages/BusinessSuccess";
 
 
 function Router() {
@@ -353,6 +353,24 @@ function Router() {
     return (
       <div className="h-full">
         <ProfessionalPlans />
+      </div>
+    );
+  }
+
+  // Inscription d'entreprise
+  if (location.startsWith('/business-registration')) {
+    return (
+      <div className="h-full">
+        <BusinessRegistration />
+      </div>
+    );
+  }
+
+  // Succès d'inscription d'entreprise
+  if (location === '/business-success') {
+    return (
+      <div className="h-full">
+        <BusinessSuccess />
       </div>
     );
   }

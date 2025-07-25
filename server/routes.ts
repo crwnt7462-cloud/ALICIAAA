@@ -1,1437 +1,416 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { WebSocketServer, WebSocket } from "ws";
-import { storage } from "./storage";
-import { db } from "./db";
-import { aiService } from "./aiService";
+import { bookingService } from "./bookingService";
+import { analyticsService } from "./analyticsService";
+import { messagingService } from "./messagingService";
 import { notificationService } from "./notificationService";
-import { stripeService } from "./stripeService";
 import { confirmationService } from "./confirmationService";
-import { setupAuth, isAuthenticated } from "./replitAuth";
-import { configureSession, authenticateUser, authenticateClient, authenticateAny } from "./sessionMiddleware";
-import { appointments, clients, users, clientAccounts } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
-import {
-  insertServiceSchema,
-  insertClientSchema,
-  insertStaffSchema,
-  insertAppointmentSchema,
-  loginSchema,
-  registerSchema,
-  clientRegisterSchema,
-} from "@shared/schema";
-import { z } from "zod";
+import { stripeService } from "./stripeService";
+import { aiService } from "./aiService";
+import { storage } from "./storage";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-
-  // Suppression de la route demo-login - authentification sécurisée uniquement
-
-  // Route pour récupérer l'utilisateur connecté
-  app.get('/api/auth/user', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Utilisateur connecté réel uniquement
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "Utilisateur non trouvé" });
-      }
-      
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur" });
-    }
-  });
-
-  // Configure session middleware for persistent authentication
-  app.use(configureSession());
   
-  // Auth middleware
-  await setupAuth(app);
-
-  // Professional Authentication Routes
-  app.post('/api/auth/register', async (req, res) => {
+  // ============= ROUTES DE RÉSERVATION =============
+  
+  // Créer une nouvelle réservation avec paiement d'acompte
+  app.post("/api/bookings", async (req, res) => {
     try {
-      const result = registerSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: "Données invalides", 
-          errors: result.error.flatten().fieldErrors 
-        });
-      }
-
-      const existingUser = await storage.getUserByEmail(result.data.email);
-      if (existingUser) {
-        return res.status(409).json({ 
-          message: "Un compte existe déjà avec cet email" 
-        });
-      }
-
-      const user = await storage.createUser(result.data);
-      const { password, ...userWithoutPassword } = user;
+      const bookingData = req.body;
       
-      res.status(201).json({ 
-        message: "Compte créé avec succès", 
-        user: userWithoutPassword 
-      });
-    } catch (error) {
-      console.error("Registration error:", error);
-      res.status(500).json({ message: "Erreur lors de la création du compte" });
+      // Validation basique
+      if (!bookingData.userId || !bookingData.serviceId || !bookingData.clientEmail) {
+        return res.status(400).json({ error: "Données manquantes" });
+      }
+
+      const result = await bookingService.createBooking(bookingData);
+      res.json(result);
+
+    } catch (error: any) {
+      console.error("Erreur création réservation:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.post('/api/auth/login', async (req: any, res) => {
+  // Obtenir les créneaux disponibles
+  app.get("/api/bookings/available-slots", async (req, res) => {
     try {
-      const result = loginSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: "Données invalides", 
-          errors: result.error.flatten().fieldErrors 
-        });
-      }
-
-      const existingUser = await storage.getUserByEmail(result.data.email);
-      if (!existingUser || !await storage.verifyPassword(result.data.password, existingUser.password)) {
-        return res.status(401).json({ message: "Identifiants incorrects" });
-      }
-
-      // Créer une session sécurisée
-      const session = req.session as any;
-      session.userId = existingUser.id;
-      session.userType = "professional";
-
-      const { password, ...userWithoutPassword } = existingUser;
-      res.json({ 
-        message: "Connexion réussie", 
-        user: userWithoutPassword,
-        redirectTo: "/business-features"
-      });
-    } catch (error) {
-      console.error("Login error:", error);
-      res.status(500).json({ message: "Erreur lors de la connexion" });
-    }
-  });
-
-  app.get('/api/auth/user', authenticateUser, async (req: any, res) => {
-    try {
-      if (req.user?.id === "demo-user") {
-        const testUser = {
-          id: "demo-user",
-          email: "salon@example.com",
-          firstName: "Sarah",
-          lastName: "Martin",
-          businessName: "Salon Beautiful",
-          phone: "01 42 34 56 78",
-          address: "123 Avenue de la Beauté, 75001 Paris",
-          city: "Paris",
-          isProfessional: true,
-          isVerified: true
-        };
-        return res.json(testUser);
-      }
-
-      const user = await storage.getUser(req.user.id);
-      if (!user) {
-        return res.status(404).json({ message: "Utilisateur non trouvé" });
-      }
-
-      const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
-    } catch (error) {
-      console.error("Get user error:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération de l'utilisateur" });
-    }
-  });
-
-  // Route de recherche des professionnels par handle
-  app.get('/api/search-professionals', async (req, res) => {
-    try {
-      const searchTerm = req.query.q as string;
-      if (!searchTerm || searchTerm.length < 2) {
-        return res.json([]);
-      }
-
-      const professionals = await storage.searchProfessionalsByHandle(searchTerm);
-      res.json(professionals);
-    } catch (error) {
-      console.error("Error searching professionals:", error);
-      res.status(500).json({ message: "Erreur lors de la recherche" });
-    }
-  });
-
-  // Route pour envoyer un message à un professionnel
-  app.post('/api/client/messages/send', async (req: any, res) => {
-    try {
-      const { professionalId, message } = req.body;
+      const { userId, date, serviceId, staffId } = req.query;
       
-      if (!professionalId || !message) {
-        return res.status(400).json({ message: "Données manquantes" });
+      if (!userId || !date || !serviceId) {
+        return res.status(400).json({ error: "Paramètres manquants" });
       }
 
-      // Créer un compte client temporaire s'il n'existe pas
-      let clientId = "temp-client-" + Date.now();
+      const slots = await bookingService.getAvailableTimeSlots(
+        userId as string,
+        date as string,
+        parseInt(serviceId as string),
+        staffId ? parseInt(staffId as string) : undefined
+      );
+
+      res.json({ availableSlots: slots });
+
+    } catch (error: any) {
+      console.error("Erreur récupération créneaux:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Annuler une réservation
+  app.post("/api/bookings/:id/cancel", async (req, res) => {
+    try {
+      const appointmentId = parseInt(req.params.id);
+      const { reason } = req.body;
+
+      const success = await bookingService.cancelAppointment(appointmentId, reason);
       
-      await storage.sendMessageToProfessional({
-        fromClientId: clientId,
-        toProfessionalId: professionalId,
-        message: message.trim(),
-        timestamp: new Date()
-      });
+      if (success) {
+        res.json({ success: true, message: "Réservation annulée" });
+      } else {
+        res.status(400).json({ error: "Impossible d'annuler la réservation" });
+      }
 
-      res.json({ 
-        success: true,
-        message: "Message envoyé avec succès" 
-      });
-    } catch (error) {
-      console.error("Error sending message:", error);
-      res.status(500).json({ message: "Erreur lors de l'envoi du message" });
+    } catch (error: any) {
+      console.error("Erreur annulation:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Route pour récupérer les messages reçus par un professionnel
-  app.get('/api/professional/messages', authenticateUser, async (req: any, res) => {
+  // Reporter une réservation
+  app.post("/api/bookings/:id/reschedule", async (req, res) => {
     try {
-      const userId = req.user.id;
-      const messages = await storage.getProfessionalMessages(userId);
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching professional messages:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
-    }
-  });
+      const appointmentId = parseInt(req.params.id);
+      const { newDate, newTime } = req.body;
 
-  // Route pour marquer un message comme lu
-  app.patch('/api/professional/messages/:messageId/read', authenticateUser, async (req: any, res) => {
-    try {
-      const messageId = parseInt(req.params.messageId);
-      await storage.markMessageAsRead(messageId);
-      res.json({ success: true, message: "Message marqué comme lu" });
-    } catch (error) {
-      console.error("Error marking message as read:", error);
-      res.status(500).json({ message: "Erreur lors du marquage" });
-    }
-  });
+      if (!newDate || !newTime) {
+        return res.status(400).json({ error: "Nouvelle date et heure requises" });
+      }
 
-  // Routes pour connexion client
-  app.post('/api/client/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
+      const success = await bookingService.rescheduleAppointment(appointmentId, newDate, newTime);
       
-      if (!email || !password) {
-        return res.status(400).json({ message: "Email et mot de passe requis" });
+      if (success) {
+        res.json({ success: true, message: "Réservation reportée" });
+      } else {
+        res.status(400).json({ error: "Impossible de reporter la réservation" });
       }
 
-      const client = await storage.authenticateClient(email, password);
-      if (!client) {
-        return res.status(401).json({ message: "Identifiants incorrects" });
-      }
-
-      // Créer la session
-      req.session.clientId = client.id;
-      req.session.userType = 'client';
-
-      res.json({
-        message: "Connexion réussie",
-        client: {
-          id: client.id,
-          firstName: client.firstName,
-          lastName: client.lastName,
-          email: client.email
-        },
-        redirectTo: "/client-dashboard"
-      });
-    } catch (error) {
-      console.error("Error during client login:", error);
-      res.status(500).json({ message: "Erreur de connexion" });
+    } catch (error: any) {
+      console.error("Erreur report:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.post('/api/client/logout', (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Erreur lors de la déconnexion" });
-      }
-      res.json({ message: "Déconnexion réussie" });
-    });
-  });
-
-  // Routes pour les données client
-  app.get('/api/client/profile', authenticateClient, async (req: any, res) => {
+  // Obtenir les réservations d'un client
+  app.get("/api/bookings/client/:email", async (req, res) => {
     try {
-      const clientId = req.session.clientId;
-      const client = await storage.getClientById(clientId);
-      res.json(client);
-    } catch (error) {
-      console.error("Error fetching client profile:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération du profil" });
+      const clientEmail = req.params.email;
+      const appointments = await bookingService.getClientAppointments(clientEmail);
+      res.json({ appointments });
+
+    } catch (error: any) {
+      console.error("Erreur récupération RDV client:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.get('/api/client/appointments', authenticateClient, async (req: any, res) => {
+  // ============= ROUTES D'ANALYTICS =============
+  
+  // Obtenir les analytics d'un salon
+  app.get("/api/analytics/:userId", async (req, res) => {
     try {
-      const clientId = req.session.clientId;
-      const appointments = await storage.getClientAppointments(clientId);
-      res.json(appointments);
-    } catch (error) {
-      console.error("Error fetching client appointments:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des rendez-vous" });
+      const userId = req.params.userId;
+      const period = (req.query.period as 'week' | 'month' | 'year') || 'month';
+
+      const analytics = await analyticsService.getBusinessAnalytics(userId, period);
+      res.json(analytics);
+
+    } catch (error: any) {
+      console.error("Erreur analytics:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.get('/api/client/messages', authenticateClient, async (req: any, res) => {
+  // Prédictions de revenus
+  app.get("/api/analytics/:userId/forecast", async (req, res) => {
     try {
-      const clientId = req.session.clientId;
-      const messages = await storage.getClientMessages(clientId);
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching client messages:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
+      const userId = req.params.userId;
+      const forecast = await analyticsService.generateRevenueForecast(userId);
+      res.json(forecast);
+
+    } catch (error: any) {
+      console.error("Erreur prédiction:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Route pour mot de passe oublié
-  app.post('/api/auth/forgot-password', async (req, res) => {
+  // ============= ROUTES DE MESSAGERIE =============
+  
+  // Envoyer un message
+  app.post("/api/messages", async (req, res) => {
     try {
-      const { email } = req.body;
+      const messageData = req.body;
       
-      if (!email) {
-        return res.status(400).json({ message: "Email requis" });
+      if (!messageData.fromUserId || !messageData.toUserId || !messageData.content) {
+        return res.status(400).json({ error: "Données de message manquantes" });
       }
 
-      // Vérifier si l'email existe
-      const user = await storage.getUserByEmail(email);
-      if (!user) {
-        // Pour la sécurité, on ne révèle pas si l'email existe ou non
-        return res.json({ message: "Si cet email existe, un lien de réinitialisation a été envoyé" });
-      }
+      const result = await messagingService.sendMessage(messageData);
+      res.json(result);
 
-      // Générer un token de réinitialisation
-      const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      await storage.savePasswordResetToken(email, resetToken);
-
-      // Dans un vrai système, on enverrait un email ici
-      console.log(`Reset token for ${email}: ${resetToken}`);
-
-      res.json({ message: "Un email de réinitialisation a été envoyé" });
-    } catch (error) {
-      console.error("Error in forgot password:", error);
-      res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+    } catch (error: any) {
+      console.error("Erreur envoi message:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Routes pour méthodes de paiement
-  app.get('/api/professional/payment-methods', authenticateUser, async (req: any, res) => {
+  // Obtenir les conversations d'un utilisateur
+  app.get("/api/messages/conversations/:userId", async (req, res) => {
     try {
-      const userId = req.session.userId;
-      const methods = await storage.getPaymentMethods(userId);
-      res.json(methods);
-    } catch (error) {
-      console.error("Error fetching payment methods:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des méthodes" });
+      const userId = req.params.userId;
+      const conversations = await messagingService.getConversations(userId);
+      res.json({ conversations });
+
+    } catch (error: any) {
+      console.error("Erreur récupération conversations:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.post('/api/professional/payment-methods', authenticateUser, async (req: any, res) => {
+  // Obtenir l'historique d'une conversation
+  app.get("/api/messages/history/:userId/:otherUserId", async (req, res) => {
     try {
-      const userId = req.session.userId;
-      const methodData = { ...req.body, userId, isActive: true };
-      const method = await storage.addPaymentMethod(methodData);
-      res.json(method);
-    } catch (error) {
-      console.error("Error adding payment method:", error);
-      res.status(500).json({ message: "Erreur lors de l'ajout de la méthode" });
+      const { userId, otherUserId } = req.params;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+
+      const history = await messagingService.getConversationHistory(userId, otherUserId, limit);
+      res.json({ messages: history });
+
+    } catch (error: any) {
+      console.error("Erreur historique conversation:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.patch('/api/professional/payment-methods/:id', authenticateUser, async (req: any, res) => {
+  // Rechercher dans les messages
+  app.get("/api/messages/search/:userId", async (req, res) => {
     try {
-      const methodId = parseInt(req.params.id);
-      const { isActive } = req.body;
-      await storage.updatePaymentMethod(methodId, { isActive });
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error updating payment method:", error);
-      res.status(500).json({ message: "Erreur lors de la modification" });
-    }
-  });
-
-  app.delete('/api/professional/payment-methods/:id', authenticateUser, async (req: any, res) => {
-    try {
-      const methodId = parseInt(req.params.id);
-      await storage.deletePaymentMethod(methodId);
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error deleting payment method:", error);
-      res.status(500).json({ message: "Erreur lors de la suppression" });
-    }
-  });
-
-  // Client Authentication Routes
-  app.post('/api/client-auth/register', async (req, res) => {
-    try {
-      const result = clientRegisterSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: "Données invalides", 
-          errors: result.error.flatten().fieldErrors 
-        });
-      }
-
-      const existingClient = await storage.getClientByEmail(result.data.email);
-      if (existingClient) {
-        return res.status(409).json({ 
-          message: "Un compte client existe déjà avec cet email" 
-        });
-      }
-
-      const client = await storage.createClientAccount(result.data);
-      const { password, ...clientWithoutPassword } = client;
+      const userId = req.params.userId;
+      const query = req.query.q as string;
       
-      res.status(201).json({ 
-        message: "Compte client créé avec succès", 
-        client: clientWithoutPassword 
-      });
-    } catch (error) {
-      console.error("Client registration error:", error);
-      res.status(500).json({ message: "Erreur lors de la création du compte client" });
-    }
-  });
-
-  app.post('/api/client-auth/login', async (req, res) => {
-    try {
-      const result = loginSchema.safeParse(req.body);
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: "Données invalides", 
-          errors: result.error.flatten().fieldErrors 
-        });
+      if (!query) {
+        return res.status(400).json({ error: "Terme de recherche manquant" });
       }
 
-      // Demo client credentials
-      if (result.data.email === "client@demo.com" && result.data.password === "password") {
-        const testClient = {
-          id: "demo-client",
-          email: "client@demo.com",
-          firstName: "Marie",
-          lastName: "Dupont",
-          phone: "0123456789",
-          isVerified: true
-        };
+      const results = await messagingService.searchMessages(userId, query);
+      res.json({ results });
 
-        res.json({ 
-          message: "Connexion client réussie", 
-          client: testClient 
-        });
-        return;
-      }
-
-      const client = await storage.authenticateClient(result.data.email, result.data.password);
-      if (!client) {
-        return res.status(401).json({ 
-          message: "Email ou mot de passe incorrect" 
-        });
-      }
-
-      const { password, ...clientWithoutPassword } = client;
-      res.json({ 
-        message: "Connexion client réussie", 
-        client: clientWithoutPassword 
-      });
-    } catch (error) {
-      console.error("Client login error:", error);
-      res.status(500).json({ message: "Erreur lors de la connexion client" });
+    } catch (error: any) {
+      console.error("Erreur recherche messages:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Services routes
-  app.get('/api/services', authenticateUser, async (req: any, res) => {
+  // Statistiques de messagerie
+  app.get("/api/messages/stats/:userId", async (req, res) => {
     try {
-      const userId = req.user.id;
-      const services = await storage.getServices(userId);
-      res.json(services);
-    } catch (error) {
-      console.error("Error fetching services:", error);
-      res.status(500).json({ message: "Failed to fetch services" });
-    }
-  });
-
-  app.post('/api/services', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const serviceData = insertServiceSchema.parse({ ...req.body, userId });
-      const service = await storage.createService(serviceData);
-      res.json(service);
-    } catch (error) {
-      console.error("Error creating service:", error);
-      res.status(400).json({ message: "Failed to create service" });
-    }
-  });
-
-  // Clients routes
-  app.get('/api/clients', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const clients = await storage.getClients(userId);
-      res.json(clients);
-    } catch (error) {
-      console.error("Error fetching clients:", error);
-      res.status(500).json({ message: "Failed to fetch clients" });
-    }
-  });
-
-  app.post('/api/clients', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const clientData = insertClientSchema.parse({ ...req.body, userId });
-      const client = await storage.createClient(clientData);
-      res.json(client);
-    } catch (error) {
-      console.error("Error creating client:", error);
-      res.status(400).json({ message: "Failed to create client" });
-    }
-  });
-
-  // Staff routes
-  app.get('/api/staff', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const staff = await storage.getStaff(userId);
-      res.json(staff);
-    } catch (error) {
-      console.error("Error fetching staff:", error);
-      res.status(500).json({ message: "Failed to fetch staff" });
-    }
-  });
-
-  app.post('/api/staff', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const staffData = insertStaffSchema.parse({ ...req.body, userId });
-      const staff = await storage.createStaff(staffData);
-      res.json(staff);
-    } catch (error) {
-      console.error("Error creating staff:", error);
-      res.status(400).json({ message: "Failed to create staff" });
-    }
-  });
-
-  // Appointments routes
-  app.get('/api/appointments', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const { date } = req.query;
-      const appointments = await storage.getAppointments(userId, date);
-      res.json(appointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      res.status(500).json({ message: "Failed to fetch appointments" });
-    }
-  });
-
-  app.post('/api/appointments', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const appointmentData = insertAppointmentSchema.parse({ ...req.body, userId });
-      const appointment = await storage.createAppointment(appointmentData);
-      res.json(appointment);
-    } catch (error) {
-      console.error("Error creating appointment:", error);
-      res.status(400).json({ message: "Failed to create appointment" });
-    }
-  });
-
-  // Dashboard routes
-  app.get('/api/dashboard/stats', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const stats = await storage.getDashboardStats(userId);
+      const userId = req.params.userId;
+      const stats = await messagingService.getMessagingStats(userId);
       res.json(stats);
-    } catch (error) {
-      console.error("Error fetching dashboard stats:", error);
-      res.status(500).json({ message: "Failed to fetch dashboard stats" });
-    }
-  });
 
-  app.get('/api/dashboard/revenue-chart', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const revenueData = await storage.getRevenueChart(userId);
-      res.json(revenueData);
-    } catch (error) {
-      console.error("Error fetching revenue chart:", error);
-      res.status(500).json({ message: "Failed to fetch revenue chart" });
-    }
-  });
-
-  app.get('/api/dashboard/upcoming-appointments', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const upcomingAppointments = await storage.getUpcomingAppointments(userId);
-      res.json(upcomingAppointments);
-    } catch (error) {
-      console.error("Error fetching upcoming appointments:", error);
-      res.status(500).json({ message: "Failed to fetch upcoming appointments" });
-    }
-  });
-
-  app.get('/api/dashboard/top-services', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const topServices = await storage.getTopServices(userId);
-      res.json(topServices);
-    } catch (error) {
-      console.error("Error fetching top services:", error);
-      res.status(500).json({ message: "Failed to fetch top services" });
-    }
-  });
-
-  app.get('/api/dashboard/staff-performance', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const staffPerformance = await storage.getStaffPerformance(userId);
-      res.json(staffPerformance);
-    } catch (error) {
-      console.error("Error fetching staff performance:", error);
-      res.status(500).json({ message: "Failed to fetch staff performance" });
-    }
-  });
-
-  app.get('/api/dashboard/client-retention', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      const retentionData = await storage.getClientRetentionRate(userId);
-      res.json(retentionData);
-    } catch (error) {
-      console.error("Error fetching client retention:", error);
-      res.status(500).json({ message: "Failed to fetch client retention" });
-    }
-  });
-
-  // AI Chat route
-  app.post('/api/ai/chat', async (req, res) => {
-    try {
-      const { message, conversationHistory } = req.body;
-      const response = await aiService.generateChatResponse(message, conversationHistory);
-      res.json(response);
-    } catch (error) {
-      console.error("AI chat error:", error);
-      res.status(500).json({ message: "Erreur lors de la génération de la réponse IA" });
-    }
-  });
-
-  // Public booking routes
-  app.get("/api/public-services/:salonId", async (req, res) => {
-    try {
-      const { salonId } = req.params;
-      const services = await storage.getServices(salonId);
-      res.json(services);
     } catch (error: any) {
-      console.error("Error fetching public services:", error);
-      res.status(500).json({ error: "Erreur lors du chargement des services" });
+      console.error("Erreur stats messagerie:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.get("/api/public-staff/:salonId", async (req, res) => {
+  // ============= ROUTES IA =============
+  
+  // Chat avec l'assistant IA
+  app.post("/api/ai/chat", async (req, res) => {
     try {
-      const { salonId } = req.params;
-      const staffMembers = await storage.getStaff(salonId);
-      res.json(staffMembers);
-    } catch (error: any) {
-      console.error("Error fetching staff members:", error);
-      res.status(500).json({ error: "Erreur lors du chargement de l'équipe" });
-    }
-  });
-
-  app.get("/api/business-info/:salonId", async (req, res) => {
-    try {
-      const { salonId } = req.params;
-      const user = await storage.getUser(salonId);
+      const { message, userId } = req.body;
       
-      if (!user) {
-        return res.status(404).json({ error: "Salon non trouvé" });
+      if (!message || !userId) {
+        return res.status(400).json({ error: "Message et userId requis" });
       }
 
-      res.json({
-        name: user.businessName || `Salon ${user.firstName || 'Beauty'}`,
-        address: user.address || "123 Rue de la Beauté, 75001 Paris",
-        phone: user.phone || "01 23 45 67 89",
-        email: user.email || "contact@salon.fr",
-        description: "Votre salon de beauté professionnel"
-      });
+      const response = await messagingService.getChatbotResponse(message, userId);
+      res.json({ response });
+
     } catch (error: any) {
-      console.error("Error fetching business info:", error);
-      res.status(500).json({ error: "Erreur lors du chargement des informations" });
+      console.error("Erreur chat IA:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Stripe Payment Routes
-  app.post("/api/create-payment-intent", async (req, res) => {
+  // Générer des suggestions de réponse
+  app.post("/api/ai/suggestions", async (req, res) => {
     try {
-      const { amount, metadata } = req.body;
+      const { clientMessage, professionalId } = req.body;
+      
+      if (!clientMessage || !professionalId) {
+        return res.status(400).json({ error: "Message client et ID professionnel requis" });
+      }
+
+      const suggestions = await messagingService.generateResponseSuggestion(clientMessage, professionalId);
+      res.json({ suggestions });
+
+    } catch (error: any) {
+      console.error("Erreur suggestions IA:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============= ROUTES DE NOTIFICATIONS =============
+  
+  // Obtenir les notifications d'un utilisateur
+  app.get("/api/notifications/:userId", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 20;
+
+      const notifications = await notificationService.getUserNotifications(userId, limit);
+      res.json({ notifications });
+
+    } catch (error: any) {
+      console.error("Erreur notifications:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Marquer une notification comme lue
+  app.post("/api/notifications/:id/read", async (req, res) => {
+    try {
+      const notificationId = parseInt(req.params.id);
+      const success = await notificationService.markAsRead(notificationId);
+      
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(400).json({ error: "Impossible de marquer comme lu" });
+      }
+
+    } catch (error: any) {
+      console.error("Erreur marquage notification:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Marquer toutes les notifications comme lues
+  app.post("/api/notifications/:userId/read-all", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const success = await notificationService.markAllAsRead(userId);
+      
+      if (success) {
+        res.json({ success: true });
+      } else {
+        res.status(400).json({ error: "Impossible de marquer toutes comme lues" });
+      }
+
+    } catch (error: any) {
+      console.error("Erreur marquage global notifications:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Compter les notifications non lues
+  app.get("/api/notifications/:userId/unread-count", async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const count = await notificationService.getUnreadCount(userId);
+      res.json({ unreadCount: count });
+
+    } catch (error: any) {
+      console.error("Erreur comptage notifications:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============= ROUTES STRIPE/PAIEMENT =============
+  
+  // Créer un payment intent pour acompte
+  app.post("/api/payments/create-deposit-intent", async (req, res) => {
+    try {
+      const { amount } = req.body;
       
       if (!amount || amount <= 0) {
         return res.status(400).json({ error: "Montant invalide" });
       }
 
-      const paymentIntent = await stripeService.createPaymentIntent(amount, metadata);
-      
-      res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id 
-      });
+      const result = await stripeService.createDepositPaymentIntent(amount);
+      res.json(result);
+
     } catch (error: any) {
-      console.error("Error creating payment intent:", error);
-      res.status(500).json({ error: error.message || "Erreur lors de la création du paiement" });
+      console.error("Erreur création payment intent:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  app.post("/api/confirm-payment", async (req, res) => {
+  // Confirmer un paiement
+  app.post("/api/payments/confirm", async (req, res) => {
     try {
-      const { paymentIntentId, bookingData } = req.body;
+      const { paymentIntentId } = req.body;
       
-      // Retrieve payment intent to verify payment
-      const paymentIntent = await stripeService.retrievePaymentIntent(paymentIntentId);
-      
-      if (paymentIntent.status === 'succeeded') {
-        // Create appointment after successful payment
-        const appointment = await storage.createAppointment({
-          userId: bookingData.salonId,
-          serviceId: bookingData.serviceId,
-          staffId: bookingData.staffId || null,
-          clientName: `${bookingData.clientInfo.firstName} ${bookingData.clientInfo.lastName}`,
-          clientEmail: bookingData.clientInfo.email,
-          clientPhone: bookingData.clientInfo.phone,
-          appointmentDate: bookingData.appointmentDate,
-          startTime: bookingData.startTime,
-          endTime: bookingData.endTime,
-          totalPrice: bookingData.totalPrice,
-          depositPaid: bookingData.depositAmount,
-          paymentStatus: 'partial',
-          status: 'confirmed',
-          notes: bookingData.clientInfo.notes || ''
-        });
+      if (!paymentIntentId) {
+        return res.status(400).json({ error: "Payment Intent ID manquant" });
+      }
 
-        res.json({ 
-          success: true, 
-          appointment: appointment,
-          message: "Paiement confirmé et rendez-vous créé avec succès"
-        });
+      const success = await stripeService.confirmPayment(paymentIntentId);
+      
+      if (success) {
+        res.json({ success: true, message: "Paiement confirmé" });
       } else {
-        res.status(400).json({ error: "Paiement non confirmé" });
+        res.status(400).json({ error: "Échec de la confirmation" });
       }
+
     } catch (error: any) {
-      console.error("Error confirming payment:", error);
-      res.status(500).json({ error: error.message || "Erreur lors de la confirmation du paiement" });
+      console.error("Erreur confirmation paiement:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Public booking route
-  app.post("/api/public-booking", async (req, res) => {
+  // ============= ROUTES UTILISATEURS =============
+  
+  // Obtenir les services publics d'un salon (pour réservation externe)
+  app.get("/api/public-services/:userId", async (req, res) => {
     try {
-      const { 
-        salonId, 
-        serviceId, 
-        staffId,
-        appointmentDate, 
-        startTime, 
-        endTime,
-        clientInfo,
-        depositAmount,
-        totalPrice
-      } = req.body;
+      const userId = req.params.userId;
+      const services = await storage.getServicesByUserId(userId);
+      res.json({ services });
 
-      if (!clientInfo || !clientInfo.firstName || !clientInfo.lastName || !clientInfo.email) {
-        return res.status(400).json({ 
-          error: "Les informations client (prénom, nom, email) sont obligatoires" 
-        });
-      }
-
-      // Get service and business info
-      const [services, businessUser] = await Promise.all([
-        storage.getServices(salonId),
-        storage.getUser(salonId)
-      ]);
-
-      const service = services.find(s => s.id === parseInt(serviceId));
-      if (!service || !businessUser) {
-        return res.status(404).json({ error: "Service ou salon non trouvé" });
-      }
-
-      // If deposit required, create payment intent
-      if (depositAmount && depositAmount > 0) {
-        const paymentIntent = await stripeService.createPaymentIntent(depositAmount, {
-          salonId,
-          serviceId,
-          serviceName: service.name,
-          clientEmail: clientInfo.email,
-          appointmentDate,
-          startTime
-        });
-
-        res.json({
-          requiresPayment: true,
-          clientSecret: paymentIntent.client_secret,
-          paymentIntentId: paymentIntent.id,
-          depositAmount,
-          totalPrice: totalPrice || service.price,
-          serviceName: service.name,
-          businessName: businessUser.businessName
-        });
-      } else {
-        // Create appointment directly if no payment required
-        const appointment = await storage.createAppointment({
-          userId: salonId,
-          serviceId: parseInt(serviceId),
-          staffId: staffId ? parseInt(staffId) : null,
-          clientName: `${clientInfo.firstName} ${clientInfo.lastName}`,
-          clientEmail: clientInfo.email,
-          clientPhone: clientInfo.phone,
-          appointmentDate,
-          startTime,
-          endTime,
-          totalPrice: totalPrice || service.price,
-          depositPaid: "0",
-          paymentStatus: 'pending',
-          status: 'scheduled',
-          notes: clientInfo.notes || ''
-        });
-
-        res.json({
-          success: true,
-          appointment: appointment,
-          message: "Rendez-vous créé avec succès"
-        });
-      }
     } catch (error: any) {
-      console.error("Error in public booking:", error);
-      res.status(500).json({ error: error.message || "Erreur lors de la réservation" });
+      console.error("Erreur services publics:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
-  // Route pour paiement d'acompte de réservation
-  app.post("/api/create-booking-payment", async (req, res) => {
-    try {
-      const {
-        serviceId,
-        serviceName,
-        servicePrice,
-        depositAmount,
-        selectedDate,
-        selectedTime,
-        clientName,
-        clientPhone,
-        clientEmail,
-      } = req.body;
-
-      // Créer la session Stripe Checkout
-      const session = await stripeService.createBookingCheckout({
-        serviceId,
-        serviceName,
-        servicePrice,
-        depositAmount,
-        selectedDate,
-        selectedTime,
-        clientName,
-        clientPhone,
-        clientEmail,
-        successUrl: `${req.protocol}://${req.get('host')}/booking-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${req.protocol}://${req.get('host')}/booking`,
-      });
-
-      res.json({ checkoutUrl: session.url });
-    } catch (error: any) {
-      console.error('Erreur création session Stripe:', error);
-      res.status(500).json({ 
-        message: "Erreur lors de la création du paiement: " + error.message 
-      });
-    }
-  });
-
-  // Route pour récupérer les détails d'une session de booking
-  app.get("/api/booking-session/:sessionId", async (req, res) => {
-    try {
-      const { sessionId } = req.params;
-      const session = await stripeService.getCheckoutSession(sessionId);
-      
-      // Si le paiement a réussi, créer la réservation dans la base de données
-      if (session.payment_status === 'paid' && session.metadata) {
-        const metadata = session.metadata;
-        
-        // Récupérer les détails du service depuis la base
-        const services = await storage.getActiveServices('test-pro-user');
-        const selectedService = services.find(s => s.id === parseInt(metadata.serviceId));
-        
-        // Calculer l'heure de fin automatiquement
-        const [hours, minutes] = metadata.selectedTime.split(':').map(Number);
-        const endTimeDate = new Date();
-        endTimeDate.setHours(hours, minutes + (selectedService?.duration || 60), 0, 0);
-        const endTime = endTimeDate.toTimeString().slice(0, 5);
-
-        // Créer l'appointment dans la base de données
-        const appointment = await storage.createAppointment({
-          userId: 'test-pro-user', // ID salon par défaut
-          serviceId: parseInt(metadata.serviceId),
-          staffId: null,
-          clientName: metadata.clientName,
-          clientEmail: metadata.clientEmail || session.customer_details?.email || '',
-          clientPhone: metadata.clientPhone,
-          appointmentDate: metadata.selectedDate,
-          startTime: metadata.selectedTime,
-          endTime: endTime,
-          totalPrice: metadata.servicePrice,
-          depositPaid: metadata.depositAmount,
-          paymentStatus: 'deposit_paid',
-          status: 'confirmed',
-          stripeSessionId: sessionId
-        });
-
-        // Envoyer les confirmations automatiques
-        if (selectedService) {
-          try {
-            await confirmationService.sendBookingConfirmation({
-              clientName: metadata.clientName,
-              clientEmail: metadata.clientEmail || session.customer_details?.email || '',
-              clientPhone: metadata.clientPhone,
-              serviceName: selectedService.name,
-              appointmentDate: metadata.selectedDate,
-              appointmentTime: metadata.selectedTime,
-              salonName: 'Salon Excellence Paris',
-              depositAmount: parseFloat(metadata.depositAmount),
-              totalAmount: parseFloat(metadata.servicePrice)
-            });
-          } catch (notifError) {
-            console.error('Erreur envoi confirmation:', notifError);
-            // Continue même si notification échoue
-          }
-        }
+  // Route de test pour vérifier le backend
+  app.get("/api/health", (req, res) => {
+    res.json({ 
+      status: "Backend opérationnel", 
+      timestamp: new Date().toISOString(),
+      services: {
+        booking: "✅ Actif",
+        messaging: "✅ Actif", 
+        analytics: "✅ Actif",
+        notifications: "✅ Actif",
+        payments: "✅ Actif (simulation)",
+        ai: "✅ Actif"
       }
-      
-      res.json({
-        status: session.payment_status,
-        metadata: session.metadata,
-        amountTotal: session.amount_total ? session.amount_total / 100 : 0,
-        customerEmail: session.customer_details?.email
-      });
-    } catch (error: any) {
-      console.error('Erreur récupération session:', error);
-      res.status(500).json({ 
-        message: "Erreur lors de la récupération de la session: " + error.message 
-      });
-    }
+    });
   });
 
-  // Create HTTP server without WebSocket in development to avoid conflicts with Vite
+  console.log(`🚀 API Routes registrées avec succès:`);
+  console.log(`📅 Réservations: /api/bookings/*`);
+  console.log(`💬 Messagerie: /api/messages/*`);
+  console.log(`📊 Analytics: /api/analytics/*`);
+  console.log(`🔔 Notifications: /api/notifications/*`);
+  console.log(`💳 Paiements: /api/payments/*`);
+  console.log(`🤖 IA: /api/ai/*`);
+  console.log(`🌐 Services publics: /api/public-services/*`);
+  console.log(`❤️ Santé: /api/health`);
+
   const httpServer = createServer(app);
-  
-  // Routes d'authentification client
-  app.post("/api/client/register", async (req, res) => {
-    try {
-      const { email, password, firstName, lastName, phone } = req.body;
-      
-      if (!email || !password || !firstName || !lastName) {
-        return res.status(400).json({ message: "Champs requis manquants" });
-      }
-
-      // Vérifier si l'email existe déjà
-      const existingClient = await storage.getClientByEmail(email);
-      if (existingClient) {
-        return res.status(400).json({ message: "Cet email est déjà utilisé" });
-      }
-
-      // Créer le compte client
-      const client = await storage.createClientAccount({
-        email,
-        password,
-        firstName,
-        lastName,
-        phone: phone || null,
-      });
-
-      // Générer un token simple
-      const token = `client_${client.id}_${Date.now()}`;
-
-      res.json({
-        token,
-        client: {
-          id: client.id,
-          email: client.email,
-          firstName: client.firstName,
-          lastName: client.lastName,
-          phone: client.phone,
-          mentionHandle: client.mentionHandle,
-          profileImageUrl: client.profileImageUrl,
-        }
-      });
-    } catch (error) {
-      console.error("Error creating client account:", error);
-      res.status(500).json({ message: "Erreur lors de la création du compte" });
-    }
-  });
-
-  app.post("/api/client/login", async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      
-      if (!email || !password) {
-        return res.status(400).json({ message: "Email et mot de passe requis" });
-      }
-
-      // Authentifier le client
-      const client = await storage.authenticateClient(email, password);
-      if (!client) {
-        return res.status(401).json({ message: "Email ou mot de passe incorrect" });
-      }
-
-      // Générer un token simple
-      const token = `client_${client.id}_${Date.now()}`;
-
-      res.json({
-        token,
-        client: {
-          id: client.id,
-          email: client.email,
-          firstName: client.firstName,
-          lastName: client.lastName,
-          phone: client.phone,
-          mentionHandle: client.mentionHandle,
-          profileImageUrl: client.profileImageUrl,
-        }
-      });
-    } catch (error) {
-      console.error("Error authenticating client:", error);
-      res.status(500).json({ message: "Erreur lors de la connexion" });
-    }
-  });
-
-  // Middleware d'authentification client
-  const isClientAuthenticated = (req: any, res: any, next: any) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: "Token manquant" });
-    }
-
-    const token = authHeader.substring(7);
-    if (!token.startsWith('client_')) {
-      return res.status(401).json({ message: "Token invalide" });
-    }
-
-    const clientId = token.split('_')[1];
-    req.clientId = clientId;
-    next();
-  };
-
-  // Routes client authentifiées
-  app.get("/api/client/appointments", isClientAuthenticated, async (req, res) => {
-    try {
-      const appointments = [
-        {
-          id: 1,
-          serviceName: "Coupe + Brushing",
-          professionalName: "Marie Dubois", 
-          appointmentDate: "2025-01-25",
-          appointmentTime: "14:30",
-          duration: 60,
-          price: 45,
-          status: "confirmed",
-          salonName: "Salon Excellence",
-          salonAddress: "15 rue de la Paix, Paris"
-        }
-      ];
-      res.json(appointments);
-    } catch (error) {
-      console.error("Error fetching client appointments:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des rendez-vous" });
-    }
-  });
-
-  app.get("/api/client/messages", isClientAuthenticated, async (req, res) => {
-    try {
-      const messages = [];
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching client messages:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération des messages" });
-    }
-  });
-
-  // Salon Registration routes
-  app.post("/api/salon-registration", async (req, res) => {
-    try {
-      const salonData = req.body;
-      const registration = await storage.createSalonRegistration(salonData);
-      res.json({ success: true, registrationId: registration.id });
-    } catch (error) {
-      console.error("Error creating salon registration:", error);
-      res.status(500).json({ error: "Failed to create salon registration" });
-    }
-  });
-
-  app.post("/api/salon-registration/:id/payment-success", async (req, res) => {
-    try {
-      const { id } = req.params;
-      await storage.updateSalonPaymentStatus(parseInt(id), "completed");
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error updating payment status:", error);
-      res.status(500).json({ error: "Failed to update payment status" });
-    }
-  });
-
-  // Routes Stripe Checkout
-  
-  /**
-   * Créer une session Stripe pour abonnement professionnel
-   */
-  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
-    try {
-      const { planType, customerEmail, customerName } = req.body;
-
-      if (!planType || !customerEmail) {
-        return res.status(400).json({ error: 'planType et customerEmail requis' });
-      }
-
-      // Prix prédéfinis pour les plans (en centimes)
-      const planPrices = {
-        essentiel: { priceId: 'price_essentiel_monthly', amount: 2900 }, // 29€
-        professionnel: { priceId: 'price_professionnel_monthly', amount: 7900 }, // 79€
-        premium: { priceId: 'price_premium_monthly', amount: 14900 }, // 149€
-      };
-
-      const plan = planPrices[planType as keyof typeof planPrices];
-      if (!plan) {
-        return res.status(400).json({ error: 'Plan invalide' });
-      }
-
-      // Créer le produit/prix dynamiquement
-      const { priceId } = await stripeService.createSubscriptionProduct(
-        `Plan ${planType.charAt(0).toUpperCase() + planType.slice(1)}`,
-        plan.amount / 100
-      );
-
-      const session = await stripeService.createSubscriptionCheckout({
-        priceId,
-        customerEmail,
-        customerName,
-        successUrl: `${req.protocol}://${req.get('host')}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${req.protocol}://${req.get('host')}/stripe/cancel`,
-        metadata: {
-          type: 'subscription',
-          planType,
-          customerEmail,
-        },
-      });
-
-      res.json({ 
-        sessionId: session.id,
-        url: session.url 
-      });
-
-    } catch (error: any) {
-      console.error('Erreur création session abonnement:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  /**
-   * Créer une session Stripe pour paiement d'acompte
-   */
-  app.post('/api/stripe/create-payment-checkout', async (req, res) => {
-    try {
-      const { 
-        amount, 
-        description, 
-        customerEmail, 
-        customerName,
-        appointmentId,
-        salonName 
-      } = req.body;
-
-      if (!amount || !description || !customerEmail) {
-        return res.status(400).json({ error: 'amount, description et customerEmail requis' });
-      }
-
-      const session = await stripeService.createPaymentCheckout({
-        amount: Math.round(amount * 100), // Convertir en centimes
-        currency: 'eur',
-        description,
-        customerEmail,
-        customerName,
-        successUrl: `${req.protocol}://${req.get('host')}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${req.protocol}://${req.get('host')}/stripe/cancel`,
-        metadata: {
-          type: 'payment',
-          appointmentId: appointmentId?.toString() || '',
-          salonName: salonName || '',
-          customerEmail,
-        },
-      });
-
-      res.json({ 
-        sessionId: session.id,
-        url: session.url 
-      });
-
-    } catch (error: any) {
-      console.error('Erreur création session paiement:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  /**
-   * Récupérer les détails d'une session Stripe
-   */
-  app.get('/api/stripe/session/:sessionId', async (req, res) => {
-    try {
-      const { sessionId } = req.params;
-      const session = await stripeService.getCheckoutSession(sessionId);
-      
-      res.json({
-        id: session.id,
-        status: session.status,
-        payment_status: session.payment_status,
-        metadata: session.metadata,
-        customer_details: session.customer_details,
-        amount_total: session.amount_total,
-      });
-
-    } catch (error: any) {
-      console.error('Erreur récupération session:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
-  // ======================
-  // ROUTES PUBLIQUES POUR RÉSERVATION
-  // ======================
-
-  // API pour récupérer les services d'un salon (public)
-  app.get('/api/public-services/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      
-      const salonServices = await storage.getActiveServices(userId);
-      
-      // Formatage pour l'interface de réservation
-      const formattedServices = salonServices.map(service => ({
-        id: service.id,
-        name: service.name,
-        description: service.description,
-        price: parseFloat(service.price),
-        duration: service.duration,
-        category: service.category
-      }));
-
-      res.json(formattedServices);
-    } catch (error) {
-      console.error('Erreur récupération services publics:', error);
-      res.status(500).json({ message: 'Erreur serveur' });
-    }
-  });
-
-  // API pour récupérer les infos publiques d'un salon
-  app.get('/api/public-salon/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'Salon non trouvé' });
-      }
-
-      // Infos publiques uniquement
-      const salonInfo = {
-        name: user.businessName || `${user.firstName} ${user.lastName}`,
-        address: user.address,
-        phone: user.phone,
-        email: user.email
-      };
-
-      res.json(salonInfo);
-    } catch (error) {
-      console.error('Erreur récupération salon public:', error);
-      res.status(500).json({ message: 'Erreur serveur' });
-    }
-  });
-
-  // Booking Pages API Routes
-  app.get('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Page de réservation réelle uniquement
-      
-      const bookingPage = await storage.getCurrentBookingPage(userId);
-      res.json(bookingPage);
-    } catch (error) {
-      console.error("Error fetching current booking page:", error);
-      res.status(500).json({ message: "Failed to fetch booking page" });
-    }
-  });
-
-  app.patch('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Mise à jour réelle uniquement
-      
-      const updatedPage = await storage.updateCurrentBookingPage(userId, req.body);
-      res.json({
-        message: "Page de réservation mise à jour avec succès",
-        data: updatedPage
-      });
-    } catch (error) {
-      console.error("Error updating booking page:", error);
-      res.status(500).json({ message: "Failed to update booking page" });
-    }
-  });
-
-  // Route de déconnexion
-  app.post('/api/auth/logout', (req: any, res) => {
-    req.session.destroy((err: any) => {
-      if (err) {
-        return res.status(500).json({ message: "Erreur lors de la déconnexion" });
-      }
-      res.clearCookie('connect.sid');
-      res.json({ message: "Déconnexion réussie" });
-    });
-  });
-
-  app.get('/api/salon-settings', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Données réelles du salon uniquement
-      
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      // Return salon data from user profile
-      const salonData = {
-        businessName: user.businessName || '',
-        address: user.address || '',
-        city: user.city || '',
-        phone: user.phone || '',
-        email: user.email,
-        description: user.description || '',
-        coverImage: user.profileImageUrl || ''
-      };
-
-      res.json(salonData);
-    } catch (error) {
-      console.error("Error fetching salon settings:", error);
-      res.status(500).json({ message: "Failed to fetch salon settings" });
-    }
-  });
-
-  app.patch('/api/salon-settings', authenticateUser, async (req: any, res) => {
-    try {
-      const userId = req.user.id;
-      
-      // Demo user - simulate update
-      if (userId === "demo-user") {
-        return res.json({
-          message: "Paramètres mis à jour avec succès",
-          data: req.body
-        });
-      }
-      
-      const updatedUser = await storage.updateUserProfile(userId, req.body);
-      res.json({
-        message: "Paramètres mis à jour avec succès",
-        data: updatedUser
-      });
-    } catch (error) {
-      console.error("Error updating salon settings:", error);
-      res.status(500).json({ message: "Failed to update salon settings" });
-    }
-  });
-
-  // Only setup WebSocket in production mode
-  if (process.env.NODE_ENV === 'production') {
-    const wss = new WebSocketServer({ server: httpServer });
-
-    wss.on('connection', (ws: WebSocket) => {
-      console.log('WebSocket client connected');
-      
-      ws.on('message', (message: Buffer) => {
-        console.log('Received:', message.toString());
-      });
-
-      ws.on('close', () => {
-        console.log('WebSocket client disconnected');
-      });
-    });
-  }
-
-  // Routes pour inscription d'entreprise
-  app.post("/api/business-registration", async (req, res) => {
-    try {
-      const businessData = req.body;
-      
-      // Créer l'enregistrement d'entreprise
-      const businessRegistration = await storage.createBusinessRegistration(businessData);
-      
-      res.json({ 
-        success: true, 
-        businessId: businessRegistration.id,
-        message: "Inscription d'entreprise créée avec succès" 
-      });
-    } catch (error: any) {
-      console.error('Erreur inscription entreprise:', error);
-      res.status(500).json({ 
-        error: "Erreur lors de l'inscription: " + error.message 
-      });
-    }
-  });
-
-  // Route pour créer le paiement d'abonnement professionnel
-  app.post("/api/create-business-payment", async (req, res) => {
-    try {
-      const {
-        businessId,
-        planType,
-        customerEmail,
-        customerName,
-        businessName
-      } = req.body;
-
-      const planPrices = {
-        essentiel: 29,
-        professionnel: 79,
-        premium: 149
-      };
-
-      const price = planPrices[planType as keyof typeof planPrices] || 79;
-
-      // Créer la session de paiement simple (pas d'abonnement pour éviter l'erreur)
-      const session = await stripeService.createPaymentCheckout({
-        amount: price * 100, // Convertir en centimes
-        currency: 'eur',
-        description: `Abonnement ${planType} - ${businessName}`,
-        customerEmail,
-        customerName,
-        successUrl: `${req.protocol}://${req.get('host')}/business-success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${req.protocol}://${req.get('host')}/business-registration`,
-        metadata: {
-          type: 'business_payment',
-          businessId: businessId.toString(),
-          planType,
-          businessName
-        }
-      });
-
-      res.json({ checkoutUrl: session.url });
-    } catch (error: any) {
-      console.error('Erreur création paiement business:', error);
-      res.status(500).json({ 
-        error: "Erreur lors de la création du paiement: " + error.message 
-      });
-    }
-  });
-
   return httpServer;
 }

@@ -92,6 +92,14 @@ export interface IStorage {
   createSalonRegistration(salon: InsertSalonRegistration): Promise<SalonRegistration>;
   getSalonRegistration(id: number): Promise<SalonRegistration | undefined>;
   updateSalonPaymentStatus(id: number, status: string): Promise<SalonRegistration>;
+  
+  // Business Registration
+  createBusinessRegistration(registration: InsertBusinessRegistration): Promise<BusinessRegistration>;
+  getBusinessRegistration(id: number): Promise<BusinessRegistration | undefined>;
+  updateBusinessRegistrationStatus(id: number, status: string, stripeCustomerId?: string, stripeSubscriptionId?: string): Promise<BusinessRegistration | undefined>;
+  
+  // Public Services
+  getServicesByUserId(userId: string): Promise<Service[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -941,6 +949,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(businessRegistrations.id, id))
       .returning();
     return updated;
+  }
+
+  // Public Services method for API routes
+  async getServicesByUserId(userId: string): Promise<Service[]> {
+    return await this.getServices(userId);
   }
 }
 

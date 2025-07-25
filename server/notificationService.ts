@@ -1,262 +1,189 @@
-import { Expo, ExpoPushMessage, ExpoPushToken } from 'expo-server-sdk';
-import { db } from './db';
-import { appointments, clients, services } from '../shared/schema';
-import { eq, and, gte, lte, desc } from 'drizzle-orm';
+import { db } from "./db";
+import { notifications, users } from "@shared/schema";
+import { eq, desc, and, sql } from "drizzle-orm";
 
-interface NotificationData {
-  type: 'new_booking' | 'cancellation' | 'gap_detected' | 'reminder' | 'payment_received';
+export interface NotificationData {
+  userId: string;
   title: string;
-  body: string;
-  data?: any;
+  message: string;
+  type: 'booking' | 'message' | 'reminder' | 'payment' | 'system';
+  data?: Record<string, any>;
+  actionUrl?: string;
+}
+
+export interface MessageNotificationData {
+  recipientId: string;
+  senderName: string;
+  messagePreview: string;
+  messageId: number;
 }
 
 export class NotificationService {
-  private expo: Expo;
+  // Envoyer une notification générale
+  async sendNotification(notificationData: NotificationData): Promise<boolean> {
+    try {
+      await db
+        .insert(notifications)
+        .values({
+          userId: notificationData.userId,
+          title: notificationData.title,
+          message: notificationData.message,
+          type: notificationData.type,
+          data: notificationData.data ? JSON.stringify(notificationData.data) : null,
+          actionUrl: notificationData.actionUrl,
+          isRead: false,
+          createdAt: new Date()
+        });
 
-  constructor() {
-    this.expo = new Expo();
+      console.log(`🔔 Notification envoyée: ${notificationData.title} à ${notificationData.userId}`);
+      return true;
+
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de notification:", error);
+      return false;
+    }
   }
 
-  // Générer notification pour nouvelle réservation
-  async sendNewBookingNotification(appointmentId: number) {
+  // Notification de nouveau message
+  async sendMessageNotification(data: MessageNotificationData): Promise<boolean> {
+    return this.sendNotification({
+      userId: data.recipientId,
+      title: `Nouveau message de ${data.senderName}`,
+      message: data.messagePreview,
+      type: 'message',
+      data: { messageId: data.messageId, senderName: data.senderName },
+      actionUrl: `/messaging`
+    });
+  }
+
+  // Notification de nouvelle réservation
+  async sendBookingNotification(userId: string, clientName: string, serviceName: string, date: string, time: string): Promise<boolean> {
+    return this.sendNotification({
+      userId,
+      title: "Nouvelle réservation",
+      message: `${clientName} a réservé "${serviceName}" le ${date} à ${time}`,
+      type: 'booking',
+      data: { clientName, serviceName, date, time },
+      actionUrl: `/appointments`
+    });
+  }
+
+  // Notification de rappel de RDV
+  async sendAppointmentReminder(userId: string, serviceName: string, date: string, time: string): Promise<boolean> {
+    return this.sendNotification({
+      userId,
+      title: "Rappel de rendez-vous",
+      message: `N'oubliez pas votre rendez-vous "${serviceName}" demain à ${time}`,
+      type: 'reminder',
+      data: { serviceName, date, time },
+      actionUrl: `/appointments`
+    });
+  }
+
+  // Notification de paiement
+  async sendPaymentNotification(userId: string, amount: number, status: 'success' | 'failed'): Promise<boolean> {
+    const title = status === 'success' ? "Paiement confirmé" : "Problème de paiement";
+    const message = status === 'success' 
+      ? `Votre paiement de ${amount}€ a été traité avec succès`
+      : `Le paiement de ${amount}€ a échoué. Veuillez réessayer`;
+
+    return this.sendNotification({
+      userId,
+      title,
+      message,
+      type: 'payment',
+      data: { amount, status },
+      actionUrl: status === 'failed' ? `/payment` : `/appointments`
+    });
+  }
+
+  // Obtenir les notifications d'un utilisateur
+  async getUserNotifications(userId: string, limit: number = 20): Promise<any[]> {
     try {
-      const appointment = await db
+      const userNotifications = await db
         .select()
-        .from(appointments)
-        .leftJoin(clients, eq(appointments.clientId, clients.id))
-        .leftJoin(services, eq(appointments.serviceId, services.id))
-        .where(eq(appointments.id, appointmentId))
-        .limit(1);
+        .from(notifications)
+        .where(eq(notifications.userId, userId))
+        .orderBy(desc(notifications.createdAt))
+        .limit(limit);
 
-      if (!appointment[0]) return;
+      return userNotifications.map(notif => ({
+        ...notif,
+        data: notif.data ? JSON.parse(notif.data) : null
+      }));
 
-      const { appointments: apt, clients: client, services: service } = appointment[0];
-      
-      const date = new Date(apt.appointmentDate);
-      const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' });
-      const time = apt.startTime;
-      
-      const notification: NotificationData = {
-        type: 'new_booking',
-        title: '📅 Nouvelle résa confirmée',
-        body: `${client?.firstName} – ${service?.name} – ${dayName}. ${time}\n💳 ${apt.paymentStatus === 'paid' ? 'Acompte reçu' : 'En attente paiement'}`,
-        data: { appointmentId, type: 'new_booking' }
-      };
-
-      await this.sendToUser(apt.userId, notification);
     } catch (error) {
-      console.error('Erreur notification nouvelle réservation:', error);
+      console.error("Erreur lors de la récupération des notifications:", error);
+      return [];
     }
   }
 
-  // Générer notification pour annulation
-  async sendCancellationNotification(appointmentData: any) {
+  // Marquer une notification comme lue
+  async markAsRead(notificationId: number): Promise<boolean> {
     try {
-      const date = new Date(appointmentData.appointmentDate);
-      const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' });
-      const time = appointmentData.startTime;
+      await db
+        .update(notifications)
+        .set({ isRead: true, readAt: new Date() })
+        .where(eq(notifications.id, notificationId));
 
-      const notification: NotificationData = {
-        type: 'cancellation',
-        title: '❌ Annulation reçue',
-        body: `${appointmentData.clientName} – ${appointmentData.serviceName} – ${dayName}. ${time}\n➕ Placer quelqu'un de la liste d'attente ?`,
-        data: { 
-          appointmentId: appointmentData.id, 
-          type: 'cancellation',
-          suggestWaitingList: true 
-        }
-      };
+      return true;
 
-      await this.sendToUser(appointmentData.userId, notification);
     } catch (error) {
-      console.error('Erreur notification annulation:', error);
+      console.error("Erreur lors du marquage comme lu:", error);
+      return false;
     }
   }
 
-  // Détecter et notifier les créneaux libres
-  async detectAndNotifyGaps(userId: string, date: string) {
+  // Marquer toutes les notifications comme lues
+  async markAllAsRead(userId: string): Promise<boolean> {
     try {
-      const dayAppointments = await db
-        .select()
-        .from(appointments)
-        .leftJoin(clients, eq(appointments.clientId, clients.id))
-        .leftJoin(services, eq(appointments.serviceId, services.id))
-        .where(
-          and(
-            eq(appointments.userId, userId),
-            eq(appointments.appointmentDate, date),
-            eq(appointments.status, 'confirmed')
-          )
-        )
-        .orderBy(appointments.startTime);
+      await db
+        .update(notifications)
+        .set({ isRead: true, readAt: new Date() })
+        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
 
-      if (dayAppointments.length < 2) return;
+      return true;
 
-      // Analyser les gaps entre rendez-vous
-      for (let i = 0; i < dayAppointments.length - 1; i++) {
-        const current = dayAppointments[i];
-        const next = dayAppointments[i + 1];
-        
-        const currentEnd = this.addMinutesToTime(
-          current.appointments.startTime, 
-          current.services?.duration || 60
-        );
-        const nextStart = next.appointments.startTime;
-        
-        const gapMinutes = this.getTimeDifference(currentEnd, nextStart);
-        
-        // Si gap de 45min ou plus, envoyer notification
-        if (gapMinutes >= 45) {
-          const dayName = new Date(date).toLocaleDateString('fr-FR', { weekday: 'short' });
-          
-          const notification: NotificationData = {
-            type: 'gap_detected',
-            title: '⏱ Créneau libre détecté',
-            body: `${dayName}. ${currentEnd} – ${Math.floor(gapMinutes/60)}h${gapMinutes%60 > 0 ? gapMinutes%60 : ''} dispo\n📢 Lancer une promo express ?`,
-            data: { 
-              date,
-              startTime: currentEnd,
-              duration: gapMinutes,
-              type: 'gap_detected'
-            }
-          };
-
-          await this.sendToUser(userId, notification);
-        }
-      }
     } catch (error) {
-      console.error('Erreur détection gaps:', error);
+      console.error("Erreur lors du marquage global:", error);
+      return false;
     }
   }
 
-  // Notification rappel rendez-vous
-  async sendReminderNotification(appointmentId: number) {
+  // Compter les notifications non lues
+  async getUnreadCount(userId: string): Promise<number> {
     try {
-      const appointment = await db
-        .select()
-        .from(appointments)
-        .leftJoin(clients, eq(appointments.clientId, clients.id))
-        .leftJoin(services, eq(appointments.serviceId, services.id))
-        .where(eq(appointments.id, appointmentId))
-        .limit(1);
+      const result = await db
+        .select({ count: sql<number>`COUNT(*)` })
+        .from(notifications)
+        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
 
-      if (!appointment[0]) return;
+      return Number(result[0]?.count || 0);
 
-      const { appointments: apt, clients: client, services: service } = appointment[0];
-      
-      const notification: NotificationData = {
-        type: 'reminder',
-        title: '⏰ RDV dans 2h',
-        body: `${client?.firstName} – ${service?.name}\n💡 Préparer matériel et cabine`,
-        data: { appointmentId, type: 'reminder' }
-      };
-
-      await this.sendToUser(apt.userId, notification);
     } catch (error) {
-      console.error('Erreur notification rappel:', error);
+      console.error("Erreur lors du comptage:", error);
+      return 0;
     }
   }
 
-  // Notification paiement reçu
-  async sendPaymentNotification(appointmentId: number, amount: number) {
+  // Supprimer les anciennes notifications
+  async cleanupOldNotifications(daysOld: number = 30): Promise<number> {
     try {
-      const appointment = await db
-        .select()
-        .from(appointments)
-        .leftJoin(clients, eq(appointments.clientId, clients.id))
-        .where(eq(appointments.id, appointmentId))
-        .limit(1);
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-      if (!appointment[0]) return;
+      const result = await db
+        .delete(notifications)
+        .where(sql`${notifications.createdAt} < ${cutoffDate}`)
+        .returning();
 
-      const { appointments: apt, clients: client } = appointment[0];
-      
-      const notification: NotificationData = {
-        type: 'payment_received',
-        title: '💳 Paiement reçu',
-        body: `${client?.firstName} – ${amount}€\n✅ Acompte validé`,
-        data: { appointmentId, amount, type: 'payment_received' }
-      };
+      console.log(`🧹 ${result.length} notifications anciennes supprimées`);
+      return result.length;
 
-      await this.sendToUser(apt.userId, notification);
     } catch (error) {
-      console.error('Erreur notification paiement:', error);
+      console.error("Erreur lors du nettoyage:", error);
+      return 0;
     }
-  }
-
-  // Envoyer notification à un utilisateur spécifique
-  private async sendToUser(userId: string, notification: NotificationData) {
-    try {
-      // Récupérer le token push de l'utilisateur (à stocker en DB)
-      const pushToken = await this.getUserPushToken(userId);
-      
-      if (!pushToken || !Expo.isExpoPushToken(pushToken)) {
-        console.log(`Token push invalide pour user ${userId}`);
-        return;
-      }
-
-      const message: ExpoPushMessage = {
-        to: pushToken,
-        title: notification.title,
-        body: notification.body,
-        data: notification.data,
-        sound: 'default',
-        badge: 1,
-        priority: 'high',
-        channelId: 'beauty-pro-notifications'
-      };
-
-      const chunks = this.expo.chunkPushNotifications([message]);
-      
-      for (const chunk of chunks) {
-        try {
-          const ticketChunk = await this.expo.sendPushNotificationsAsync(chunk);
-          console.log('Notification envoyée:', ticketChunk);
-        } catch (error) {
-          console.error('Erreur envoi chunk:', error);
-        }
-      }
-    } catch (error) {
-      console.error('Erreur envoi notification:', error);
-    }
-  }
-
-  // Récupérer le token push de l'utilisateur
-  private async getUserPushToken(userId: string): Promise<string | null> {
-    try {
-      const { pushTokens } = await import('../shared/schema');
-      const tokenRecord = await db
-        .select()
-        .from(pushTokens)
-        .where(and(
-          eq(pushTokens.userId, userId),
-          eq(pushTokens.isActive, true)
-        ))
-        .orderBy(desc(pushTokens.lastUsed))
-        .limit(1);
-
-      return tokenRecord[0]?.token || null;
-    } catch (error) {
-      console.error('Erreur récupération token:', error);
-      return null;
-    }
-  }
-
-  // Utilitaires de temps
-  private addMinutesToTime(time: string, minutes: number): string {
-    const [hours, mins] = time.split(':').map(Number);
-    const totalMinutes = hours * 60 + mins + minutes;
-    const newHours = Math.floor(totalMinutes / 60);
-    const newMins = totalMinutes % 60;
-    return `${newHours.toString().padStart(2, '0')}:${newMins.toString().padStart(2, '0')}`;
-  }
-
-  private getTimeDifference(time1: string, time2: string): number {
-    const [h1, m1] = time1.split(':').map(Number);
-    const [h2, m2] = time2.split(':').map(Number);
-    const totalMinutes1 = h1 * 60 + m1;
-    const totalMinutes2 = h2 * 60 + m2;
-    return totalMinutes2 - totalMinutes1;
   }
 }
 
