@@ -117,6 +117,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes d'authentification client
+  app.post('/api/client/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Simuler une authentification client réussie
+      if (email && password) {
+        const clientToken = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        res.json({
+          success: true,
+          client: {
+            id: Date.now(),
+            email,
+            firstName: "Client",
+            lastName: "Test",
+            token: clientToken
+          },
+          message: 'Connexion réussie'
+        });
+      } else {
+        res.status(400).json({
+          error: 'Email et mot de passe requis'
+        });
+      }
+    } catch (error) {
+      console.error("Erreur login client:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la connexion',
+        details: error.message
+      });
+    }
+  });
+
+  app.post('/api/client/register', async (req, res) => {
+    try {
+      const { email, password, firstName, lastName, phone } = req.body;
+      
+      // Simuler une inscription client réussie
+      if (email && password && firstName && lastName) {
+        const clientToken = `client_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        res.json({
+          success: true,
+          client: {
+            id: Date.now(),
+            email,
+            firstName,
+            lastName,
+            phone,
+            token: clientToken
+          },
+          message: 'Inscription réussie'
+        });
+      } else {
+        res.status(400).json({
+          error: 'Informations requises manquantes'
+        });
+      }
+    } catch (error) {
+      console.error("Erreur inscription client:", error);
+      res.status(500).json({
+        error: 'Erreur lors de l\'inscription',
+        details: error.message
+      });
+    }
+  });
+
   // Route de santé
   app.get('/api/health', (req, res) => {
     res.json({ 
