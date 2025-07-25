@@ -61,19 +61,22 @@ export default function ClientLogin() {
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
         // Stocker le token JWT dans localStorage
-        if (data.token) {
-          localStorage.setItem('clientToken', data.token);
+        if (data.client && data.client.token) {
+          localStorage.setItem('clientToken', data.client.token);
+          localStorage.setItem('clientData', JSON.stringify(data.client));
         }
         
         toast({
           title: isLogin ? "Connexion réussie" : "Compte créé",
           description: isLogin ? "Bienvenue !" : "Votre compte a été créé avec succès"
         });
-        setLocation('/client-dashboard');
+        
+        // Redirection immédiate vers le dashboard client
+        window.location.href = '/client-dashboard';
       } else {
         const error = await response.json();
         toast({
