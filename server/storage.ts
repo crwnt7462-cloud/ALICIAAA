@@ -937,15 +937,27 @@ export class DatabaseStorage implements IStorage {
     return registration;
   }
 
-  async updateBusinessRegistrationPayment(id: number, stripeData: any): Promise<BusinessRegistration> {
+  async updateBusinessRegistrationStatus(
+    id: number, 
+    status: string, 
+    stripeCustomerId?: string, 
+    stripeSubscriptionId?: string
+  ): Promise<BusinessRegistration | undefined> {
+    const updateData: any = {
+      status,
+      updatedAt: new Date(),
+    };
+
+    if (stripeCustomerId) {
+      updateData.stripeCustomerId = stripeCustomerId;
+    }
+    if (stripeSubscriptionId) {
+      updateData.stripeSubscriptionId = stripeSubscriptionId;
+    }
+
     const [updated] = await db
       .update(businessRegistrations)
-      .set({
-        stripeCustomerId: stripeData.customerId,
-        stripeSubscriptionId: stripeData.subscriptionId,
-        status: 'approved',
-        updatedAt: new Date(),
-      })
+      .set(updateData)
       .where(eq(businessRegistrations.id, id))
       .returning();
     return updated;

@@ -70,7 +70,7 @@ export default function SubscriptionPlans() {
   const [billingType, setBillingType] = useState<"monthly" | "annual">("monthly");
 
   const handleSelectPlan = (planId: string) => {
-    setLocation(`/subscription/signup/${planId}`);
+    setLocation(`/multi-step-subscription/${planId}`);
   };
 
   return (

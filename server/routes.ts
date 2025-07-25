@@ -385,6 +385,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes pour l'inscription business multi-étapes
+  app.post('/api/business-registration', async (req, res) => {
+    try {
+      const registrationData = req.body;
+      
+      // Créer l'inscription en attente
+      const registration = await storage.createBusinessRegistration({
+        ...registrationData,
+        status: 'pending',
+        paymentStatus: 'pending',
+      });
+
+      res.json({ 
+        registrationId: registration.id,
+        status: 'created' 
+      });
+    } catch (error: any) {
+      console.error('Erreur création inscription business:', error);
+      res.status(500).json({ error: 'Erreur création inscription' });
+    }
+  });
+
+  app.get('/api/business-registration/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const registration = await storage.getBusinessRegistration(parseInt(id));
+      
+      if (!registration) {
+        return res.status(404).json({ error: 'Inscription non trouvée' });
+      }
+
+      res.json(registration);
+    } catch (error: any) {
+      console.error('Erreur récupération inscription:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // Route pour traiter le paiement d'abonnement
+  app.post('/api/payments/process-subscription', async (req, res) => {
+    try {
+      const { registrationId, paymentMethodId, planType } = req.body;
+      
+      // Simulation du traitement de paiement Stripe
+      const paymentProcessed = {
+        success: true,
+        subscriptionId: `sub_${Date.now()}`,
+        customerId: `cus_${Date.now()}`,
+      };
+
+      if (paymentProcessed.success) {
+        // Mettre à jour le statut de l'inscription
+        await storage.updateBusinessRegistrationStatus(
+          registrationId, 
+          'approved',
+          paymentProcessed.customerId,
+          paymentProcessed.subscriptionId
+        );
+
+        res.json({
+          success: true,
+          subscriptionId: paymentProcessed.subscriptionId,
+        });
+      } else {
+        res.status(400).json({ error: 'Paiement échoué' });
+      }
+    } catch (error: any) {
+      console.error('Erreur traitement paiement:', error);
+      res.status(500).json({ error: 'Erreur traitement paiement' });
+    }
+  });
+
   // Route de test pour vérifier le backend
   app.get("/api/health", (req, res) => {
     res.json({ 

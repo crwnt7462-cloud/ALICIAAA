@@ -29,7 +29,7 @@ export default function ModernSubscriptionPlans() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
   const handleSelectPlan = (planId: string) => {
-    setLocation(`/subscribe/${planId}`);
+    setLocation(`/multi-step-subscription/${planId}`);
   };
 
   const plans = [

@@ -41,6 +41,8 @@ import DirectMessaging from "@/pages/DirectMessaging";
 import SalonSearch from "@/pages/SalonSearch";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
+import MultiStepSubscription from "@/pages/MultiStepSubscription";
+import StripePayment from "@/pages/StripePayment";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
@@ -390,6 +392,26 @@ function Router() {
     return (
       <div className="h-full">
         <SubscriptionSignup selectedPlan={planType} />
+      </div>
+    );
+  }
+
+  // Page de souscription multi-étapes
+  if (location.startsWith('/multi-step-subscription')) {
+    const planType = location.split('/')[2] as "basic" | "premium" | undefined;
+    return (
+      <div className="h-full">
+        <MultiStepSubscription selectedPlan={planType} />
+      </div>
+    );
+  }
+
+  // Page de paiement Stripe
+  if (location.startsWith('/stripe-payment/')) {
+    const registrationId = location.split('/')[2];
+    return (
+      <div className="h-full">
+        <StripePayment registrationId={registrationId} />
       </div>
     );
   }
