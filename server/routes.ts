@@ -966,6 +966,129 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes Stripe Checkout
+  
+  /**
+   * Créer une session Stripe pour abonnement professionnel
+   */
+  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
+    try {
+      const { planType, customerEmail, customerName } = req.body;
+
+      if (!planType || !customerEmail) {
+        return res.status(400).json({ error: 'planType et customerEmail requis' });
+      }
+
+      // Prix prédéfinis pour les plans (en centimes)
+      const planPrices = {
+        essentiel: { priceId: 'price_essentiel_monthly', amount: 2900 }, // 29€
+        professionnel: { priceId: 'price_professionnel_monthly', amount: 7900 }, // 79€
+        premium: { priceId: 'price_premium_monthly', amount: 14900 }, // 149€
+      };
+
+      const plan = planPrices[planType as keyof typeof planPrices];
+      if (!plan) {
+        return res.status(400).json({ error: 'Plan invalide' });
+      }
+
+      // Créer le produit/prix dynamiquement
+      const { priceId } = await stripeService.createSubscriptionProduct(
+        `Plan ${planType.charAt(0).toUpperCase() + planType.slice(1)}`,
+        plan.amount / 100
+      );
+
+      const session = await stripeService.createSubscriptionCheckout({
+        priceId,
+        customerEmail,
+        customerName,
+        successUrl: `${req.protocol}://${req.get('host')}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${req.protocol}://${req.get('host')}/stripe/cancel`,
+        metadata: {
+          type: 'subscription',
+          planType,
+          customerEmail,
+        },
+      });
+
+      res.json({ 
+        sessionId: session.id,
+        url: session.url 
+      });
+
+    } catch (error: any) {
+      console.error('Erreur création session abonnement:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Créer une session Stripe pour paiement d'acompte
+   */
+  app.post('/api/stripe/create-payment-checkout', async (req, res) => {
+    try {
+      const { 
+        amount, 
+        description, 
+        customerEmail, 
+        customerName,
+        appointmentId,
+        salonName 
+      } = req.body;
+
+      if (!amount || !description || !customerEmail) {
+        return res.status(400).json({ error: 'amount, description et customerEmail requis' });
+      }
+
+      const session = await stripeService.createPaymentCheckout({
+        amount: Math.round(amount * 100), // Convertir en centimes
+        currency: 'eur',
+        description,
+        customerEmail,
+        customerName,
+        successUrl: `${req.protocol}://${req.get('host')}/stripe/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${req.protocol}://${req.get('host')}/stripe/cancel`,
+        metadata: {
+          type: 'payment',
+          appointmentId: appointmentId?.toString() || '',
+          salonName: salonName || '',
+          customerEmail,
+        },
+      });
+
+      res.json({ 
+        sessionId: session.id,
+        url: session.url 
+      });
+
+    } catch (error: any) {
+      console.error('Erreur création session paiement:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  /**
+   * Récupérer les détails d'une session Stripe
+   */
+  app.get('/api/stripe/session/:sessionId', async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await stripeService.getCheckoutSession(sessionId);
+      
+      res.json({
+        id: session.id,
+        status: session.status,
+        payment_status: session.payment_status,
+        metadata: session.metadata,
+        customer_details: session.customer_details,
+        amount_total: session.amount_total,
+      });
+
+    } catch (error: any) {
+      console.error('Erreur récupération session:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Booking Pages API Routes
   app.get('/api/booking-pages/current', authenticateUser, async (req: any, res) => {
     try {

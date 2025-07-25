@@ -1,101 +1,195 @@
-import Stripe from "stripe";
+import Stripe from 'stripe';
 
-// Make Stripe optional - app can run without it
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2025-06-30.basil",
-}) : null;
+// Configuration Stripe avec gestion des clés manquantes
+let stripe: Stripe | null = null;
+
+function initializeStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.warn('STRIPE_SECRET_KEY non configurée - services Stripe désactivés');
+    return null;
+  }
+  
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2024-06-20',
+    });
+  }
+  
+  return stripe;
+}
+
+function getStripe(): Stripe {
+  const stripeInstance = initializeStripe();
+  if (!stripeInstance) {
+    throw new Error('Stripe n\'est pas configuré - veuillez définir STRIPE_SECRET_KEY');
+  }
+  return stripeInstance;
+}
+
+export interface CreateSubscriptionCheckoutParams {
+  priceId: string;
+  customerEmail: string;
+  customerName?: string;
+  successUrl: string;
+  cancelUrl: string;
+  metadata?: Record<string, string>;
+}
+
+export interface CreatePaymentCheckoutParams {
+  amount: number; // en centimes
+  currency: string;
+  description: string;
+  customerEmail: string;
+  customerName?: string;
+  successUrl: string;
+  cancelUrl: string;
+  metadata?: Record<string, string>;
+}
 
 export class StripeService {
-  // Create payment intent for appointment deposit
-  async createPaymentIntent(amount: number, metadata: any = {}) {
-    if (!stripe) {
-      throw new Error("Stripe non configuré - veuillez configurer STRIPE_SECRET_KEY");
-    }
-    
+  
+  /**
+   * Créer une session Checkout pour un abonnement récurrent
+   */
+  async createSubscriptionCheckout(params: CreateSubscriptionCheckoutParams): Promise<Stripe.Checkout.Session> {
     try {
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: "eur",
-        metadata: {
-          type: "appointment_deposit",
-          ...metadata
-        },
-        automatic_payment_methods: {
-          enabled: true,
+      const stripeInstance = getStripe();
+      const session = await stripeInstance.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'subscription',
+        line_items: [
+          {
+            price: params.priceId,
+            quantity: 1,
+          },
+        ],
+        customer_email: params.customerEmail,
+        success_url: params.successUrl,
+        cancel_url: params.cancelUrl,
+        metadata: params.metadata || {},
+        allow_promotion_codes: true,
+        billing_address_collection: 'required',
+        customer_creation: 'always',
+        subscription_data: {
+          metadata: params.metadata || {},
         },
       });
-      
-      return paymentIntent;
+
+      return session;
     } catch (error) {
-      console.error("Stripe payment intent creation failed:", error);
-      throw new Error("Impossible de créer l'intention de paiement");
+      console.error('Erreur création session abonnement:', error);
+      throw error;
     }
   }
 
-  // Create customer for recurring clients
-  async createCustomer(email: string, name: string) {
-    if (!stripe) {
-      throw new Error("Stripe non configuré - veuillez configurer STRIPE_SECRET_KEY");
-    }
-    
+  /**
+   * Créer une session Checkout pour un paiement unique
+   */
+  async createPaymentCheckout(params: CreatePaymentCheckoutParams): Promise<Stripe.Checkout.Session> {
     try {
-      const customer = await stripe.customers.create({
-        email,
+      const stripeInstance = getStripe();
+      const session = await stripeInstance.checkout.sessions.create({
+        payment_method_types: ['card'],
+        mode: 'payment',
+        line_items: [
+          {
+            price_data: {
+              currency: params.currency,
+              product_data: {
+                name: params.description,
+              },
+              unit_amount: params.amount,
+            },
+            quantity: 1,
+          },
+        ],
+        customer_email: params.customerEmail,
+        success_url: params.successUrl,
+        cancel_url: params.cancelUrl,
+        metadata: params.metadata || {},
+        billing_address_collection: 'required',
+        customer_creation: 'always',
+      });
+
+      return session;
+    } catch (error) {
+      console.error('Erreur création session paiement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Récupérer une session Checkout
+   */
+  async getCheckoutSession(sessionId: string): Promise<Stripe.Checkout.Session> {
+    try {
+      const stripeInstance = getStripe();
+      const session = await stripeInstance.checkout.sessions.retrieve(sessionId, {
+        expand: ['customer', 'subscription', 'payment_intent'],
+      });
+      return session;
+    } catch (error) {
+      console.error('Erreur récupération session:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Créer un produit et un prix pour un abonnement
+   */
+  async createSubscriptionProduct(name: string, monthlyPrice: number): Promise<{ productId: string; priceId: string }> {
+    try {
+      const stripeInstance = getStripe();
+      // Créer le produit
+      const product = await stripeInstance.products.create({
         name,
+        type: 'service',
       });
-      
-      return customer;
-    } catch (error) {
-      console.error("Stripe customer creation failed:", error);
-      throw new Error("Impossible de créer le client");
-    }
-  }
 
-  // Retrieve payment intent
-  async retrievePaymentIntent(paymentIntentId: string) {
-    if (!stripe) {
-      throw new Error("Stripe non configuré - veuillez configurer STRIPE_SECRET_KEY");
-    }
-    
-    try {
-      return await stripe.paymentIntents.retrieve(paymentIntentId);
-    } catch (error) {
-      console.error("Failed to retrieve payment intent:", error);
-      throw new Error("Impossible de récupérer l'intention de paiement");
-    }
-  }
-
-  // Create refund for cancellation
-  async createRefund(paymentIntentId: string, amount?: number) {
-    if (!stripe) {
-      throw new Error("Stripe non configuré - veuillez configurer STRIPE_SECRET_KEY");
-    }
-    
-    try {
-      const refund = await stripe.refunds.create({
-        payment_intent: paymentIntentId,
-        amount: amount ? Math.round(amount * 100) : undefined,
+      // Créer le prix récurrent
+      const price = await stripeInstance.prices.create({
+        unit_amount: monthlyPrice * 100, // Convertir en centimes
+        currency: 'eur',
+        recurring: {
+          interval: 'month',
+        },
+        product: product.id,
       });
-      
-      return refund;
+
+      return {
+        productId: product.id,
+        priceId: price.id,
+      };
     } catch (error) {
-      console.error("Stripe refund failed:", error);
-      throw new Error("Impossible de créer le remboursement");
+      console.error('Erreur création produit/prix:', error);
+      throw error;
     }
   }
 
-  // List customer payment methods
-  async listPaymentMethods(customerId: string) {
-    if (!stripe) {
-      throw new Error("Stripe non configuré - veuillez configurer STRIPE_SECRET_KEY");
-    }
-    
+  /**
+   * Lister les abonnements d'un client
+   */
+  async getCustomerSubscriptions(customerEmail: string): Promise<Stripe.Subscription[]> {
     try {
-      return await stripe.customers.listPaymentMethods(customerId);
+      const stripeInstance = getStripe();
+      const customers = await stripeInstance.customers.list({
+        email: customerEmail,
+        limit: 1,
+      });
+
+      if (customers.data.length === 0) {
+        return [];
+      }
+
+      const subscriptions = await stripeInstance.subscriptions.list({
+        customer: customers.data[0].id,
+        status: 'all',
+      });
+
+      return subscriptions.data;
     } catch (error) {
-      console.error("Failed to list payment methods:", error);
-      throw new Error("Impossible de récupérer les moyens de paiement");
+      console.error('Erreur récupération abonnements:', error);
+      throw error;
     }
   }
 }

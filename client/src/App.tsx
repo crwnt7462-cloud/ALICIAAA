@@ -83,6 +83,9 @@ import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";
 import ProDashboard from "@/pages/ProDashboard";
 import ProMessaging from "@/pages/ProMessaging";
+import StripeDemo from "@/pages/StripeDemo";
+import StripeSuccess from "@/pages/StripeSuccess";
+import StripeCancel from "@/pages/StripeCancel";
 import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
@@ -498,6 +501,9 @@ function Router() {
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
           <Route path="/salon-payment" component={SalonPayment} />
+          <Route path="/stripe/demo" component={StripeDemo} />
+          <Route path="/stripe/success" component={StripeSuccess} />
+          <Route path="/stripe/cancel" component={StripeCancel} />
 
           <Route component={NotFound} />
         </Switch>
