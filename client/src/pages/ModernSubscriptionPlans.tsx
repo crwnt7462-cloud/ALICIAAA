@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,14 +23,13 @@ import {
   Wifi,
   Clock
 } from "lucide-react";
-import { useLocation } from "wouter";
-
 export default function ModernSubscriptionPlans() {
   const [, setLocation] = useLocation();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
   const handleSelectPlan = (planId: string) => {
-    setLocation(`/multi-step-subscription/${planId}`);
+    // Rediriger vers le workflow d'inscription salon avec le plan sélectionné
+    setLocation(`/salon-registration?plan=${planId}`);
   };
 
   const plans = [

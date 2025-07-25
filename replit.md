@@ -124,6 +124,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - WORKFLOW D'ABONNEMENT SALON COMPLET FONCTIONNEL (25 Janvier 12h09)
+- ✅ **Workflow complet Plan → Inscription → Paiement → Personnalisation** : Navigation fluide entre ModernSubscriptionPlans → SalonRegistration → Simulation Stripe → EditSalon
+- ✅ **Pages SalonRegistration et EditSalon créées** : Interfaces complètes de saisie informations salon et personnalisation (services, tags, paramètres)
+- ✅ **Stockage salon en mémoire intégré** : Méthodes createSalon(), getSalon(), updateSalon() dans DatabaseStorage avec données par défaut
+- ✅ **API Routes salon fonctionnelles** : POST /api/salon/register, GET/PUT /api/salon/:id, POST /api/stripe/checkout avec simulation paiement
+- ✅ **Authentification client JWT fixée** : Token localStorage, ClientLogin avec stockage sécurisé, navigation corrigée
+- ✅ **Suppression complète des icônes** : Interface sobre selon préférences utilisateur, remplacement par texte simple
+- ✅ **Routes App.tsx intégrées** : Navigation /subscription-plans → /salon-registration?plan=X → /edit-salon?salonId=X&success=true
+- ✅ **Simulation Stripe checkout** : Redirection automatique vers personnalisation salon après paiement simulé
+- ✅ **Interface mobile-first** : Design responsive optimisé pour écrans tactiles, formulaires complets
+- ✅ **Workflow professionnel complet** : Reproduction fidèle du processus Planity/Treatwell d'abonnement salon
+
 ### Janvier 2025 - BACKEND PRODUCTION-READY COMPLETEMENT OPÉRATIONNEL (25 Janvier 02h52)
 - ✅ **BACKEND PRODUCTION-READY COMPLET** : 7 services core opérationnels avec 34 endpoints API fonctionnels
 - ✅ **BookingService complet** : Réservations, créneaux, annulations, reports avec calculs automatiques

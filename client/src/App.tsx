@@ -73,6 +73,8 @@ import ClientLogin from "@/pages/ClientLogin";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
+import SalonRegistration from "@/pages/SalonRegistration";
+import EditSalon from "@/pages/EditSalon";
 import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
 import SalonSettings from "@/pages/SalonSettings";
@@ -80,7 +82,6 @@ import BookingCustomization from "@/pages/BookingCustomization";
 import ForgotPassword from "@/pages/ForgotPassword";
 import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
 import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
-import SalonRegistration from "@/pages/SalonRegistration";
 import SalonPayment from "@/pages/SalonPayment";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import DemoLogin from "@/pages/DemoLogin";
@@ -561,6 +562,7 @@ function Router() {
           <Route path="/booking-customization" component={BookingCustomization} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
+          <Route path="/edit-salon" component={EditSalon} />
           <Route path="/salon-payment" component={SalonPayment} />
           <Route path="/business-registration" component={BusinessRegistration} />
           <Route path="/business-success" component={BusinessSuccess} />

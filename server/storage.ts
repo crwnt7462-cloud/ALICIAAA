@@ -100,9 +100,16 @@ export interface IStorage {
   
   // Public Services
   getServicesByUserId(userId: string): Promise<Service[]>;
+
+  // Salon Management (in-memory storage)
+  createSalon(salonData: any): Promise<any>;
+  getSalon(salonId: string): Promise<any>;
+  updateSalon(salonId: string, updateData: any): Promise<any>;
 }
 
 export class DatabaseStorage implements IStorage {
+  // Stockage en mémoire pour les salons (développement)
+  private salons: Map<string, any> = new Map();
   async getUser(id: string): Promise<User | undefined> {
     // Return demo user for testing
     if (id === "demo") {
@@ -966,6 +973,61 @@ export class DatabaseStorage implements IStorage {
   // Public Services method for API routes
   async getServicesByUserId(userId: string): Promise<Service[]> {
     return await this.getServices(userId);
+  }
+
+  // Salon Management methods (in-memory storage)
+  async createSalon(salonData: any): Promise<any> {
+    const salon = {
+      id: salonData.id || Date.now().toString(),
+      name: salonData.name,
+      description: salonData.description || "Un salon de beauté moderne et professionnel",
+      address: salonData.address,
+      phone: salonData.phone || "",
+      email: salonData.email || "",
+      website: salonData.website || "",
+      subscriptionPlan: salonData.subscriptionPlan,
+      services: salonData.services || [
+        { id: 1, name: "Coupe & Brushing", price: 45, duration: 60, description: "Coupe personnalisée et brushing professionnel" },
+        { id: 2, name: "Coloration", price: 80, duration: 120, description: "Coloration complète avec soins" },
+        { id: 3, name: "Soin du visage", price: 65, duration: 75, description: "Soin hydratant et purifiant" }
+      ],
+      photos: salonData.photos || ["/salon-photo1.jpg", "/salon-photo2.jpg"],
+      tags: salonData.tags || ["moderne", "professionnel", "accessible"],
+      openingHours: salonData.openingHours || {
+        lundi: "9h00-19h00",
+        mardi: "9h00-19h00", 
+        mercredi: "9h00-19h00",
+        jeudi: "9h00-19h00",
+        vendredi: "9h00-19h00",
+        samedi: "9h00-18h00",
+        dimanche: "Fermé"
+      },
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    this.salons.set(salon.id, salon);
+    return salon;
+  }
+
+  async getSalon(salonId: string): Promise<any> {
+    return this.salons.get(salonId) || null;
+  }
+
+  async updateSalon(salonId: string, updateData: any): Promise<any> {
+    const existingSalon = this.salons.get(salonId);
+    if (!existingSalon) {
+      return null;
+    }
+
+    const updatedSalon = {
+      ...existingSalon,
+      ...updateData,
+      updatedAt: new Date()
+    };
+
+    this.salons.set(salonId, updatedSalon);
+    return updatedSalon;
   }
 }
 

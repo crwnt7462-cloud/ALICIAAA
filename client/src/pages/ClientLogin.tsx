@@ -63,6 +63,12 @@ export default function ClientLogin() {
 
       if (response.ok) {
         const data = await response.json();
+        
+        // Stocker le token JWT dans localStorage
+        if (data.token) {
+          localStorage.setItem('clientToken', data.token);
+        }
+        
         toast({
           title: isLogin ? "Connexion réussie" : "Compte créé",
           description: isLogin ? "Bienvenue !" : "Votre compte a été créé avec succès"
