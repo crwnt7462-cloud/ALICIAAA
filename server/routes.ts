@@ -372,6 +372,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Client Notes Management Routes
+  app.get("/api/clients-with-notes", async (req: any, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "Token manquant" });
+      }
+      
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const professionalId = decoded.userId;
+
+      const clients = await storage.getClientsByProfessional(professionalId);
+      res.json(clients);
+    } catch (error) {
+      console.error("Error fetching clients with notes:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des clients" });
+    }
+  });
+
+  app.post("/api/client-notes", async (req: any, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "Token manquant" });
+      }
+      
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const professionalId = decoded.userId;
+
+      const noteData = {
+        ...req.body,
+        professionalId
+      };
+
+      const note = await storage.createOrUpdateClientNote(noteData);
+      res.json(note);
+    } catch (error) {
+      console.error("Error saving client note:", error);
+      res.status(500).json({ message: "Erreur lors de la sauvegarde" });
+    }
+  });
+
+  // Custom Tags Management Routes
+  app.get("/api/custom-tags", async (req: any, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "Token manquant" });
+      }
+      
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const professionalId = decoded.userId;
+
+      const tags = await storage.getCustomTagsByProfessional(professionalId);
+      res.json(tags);
+    } catch (error) {
+      console.error("Error fetching custom tags:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération des tags" });
+    }
+  });
+
+  app.post("/api/custom-tags", async (req: any, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "Token manquant" });
+      }
+      
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
+      const professionalId = decoded.userId;
+
+      const tagData = {
+        ...req.body,
+        professionalId
+      };
+
+      const tag = await storage.createCustomTag(tagData);
+      res.json(tag);
+    } catch (error) {
+      console.error("Error creating custom tag:", error);
+      res.status(500).json({ message: "Erreur lors de la création du tag" });
+    }
+  });
+
+  app.delete("/api/custom-tags/:tagId", async (req: any, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ message: "Token manquant" });
+      }
+      
+      const { tagId } = req.params;
+      await storage.deleteCustomTag(tagId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting custom tag:", error);
+      res.status(500).json({ message: "Erreur lors de la suppression du tag" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

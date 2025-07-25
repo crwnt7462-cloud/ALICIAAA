@@ -13,6 +13,7 @@ import {
   date,
   numeric
 } from "drizzle-orm/pg-core";
+import { sql } from 'drizzle-orm';
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -825,6 +826,36 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// Notes client pour les professionnels
+export const clientNotes = pgTable("client_notes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull(),
+  professionalId: varchar("professional_id").notNull(),
+  notes: text("notes"),
+  photos: text("photos").array().default([]),
+  allergies: text("allergies").array().default([]),
+  tags: text("tags").array().default([]),
+  preferences: text("preferences"),
+  lastVisit: timestamp("last_visit"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Tags personnalisés pour les professionnels  
+export const customTags = pgTable("custom_tags", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  professionalId: varchar("professional_id").notNull(),
+  name: varchar("name").notNull(),
+  color: varchar("color").default("#6366f1"),
+  category: varchar("category").default("general"), // general, allergie, preference, comportement
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type ClientNote = typeof clientNotes.$inferSelect;
+export type InsertClientNote = typeof clientNotes.$inferInsert;
+export type CustomTag = typeof customTags.$inferSelect;
+export type InsertCustomTag = typeof customTags.$inferInsert;
 
 // Table pour les informations de salon lors de l'inscription
 export const salonRegistrations = pgTable("salon_registrations", {

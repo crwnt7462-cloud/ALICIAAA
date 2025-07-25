@@ -97,6 +97,7 @@ import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
 import BookingSuccess from "@/pages/BookingSuccess";
+import ClientManagement from "@/pages/ClientManagement";
 
 
 function Router() {
@@ -196,6 +197,15 @@ function Router() {
     return (
       <div className="h-full">
         <SalonSettingsComplete />
+      </div>
+    );
+  }
+
+  // Gestion clientèle professionnelle
+  if (location === '/client-management') {
+    return (
+      <div className="h-full">
+        <ClientManagement />
       </div>
     );
   }

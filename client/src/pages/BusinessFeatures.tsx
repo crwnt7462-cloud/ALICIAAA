@@ -147,12 +147,20 @@ export default function BusinessFeatures() {
             </div>
           </div>
           
-          <Button 
-            onClick={() => setLocation("/pro-messaging-simple")}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white"
-          >
-            Ouvrir la messagerie
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              onClick={() => setLocation("/pro-messaging-simple")}
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              Messagerie
+            </Button>
+            <Button 
+              onClick={() => setLocation("/client-management")}
+              className="bg-indigo-600 hover:bg-indigo-700 text-white"
+            >
+              Notes Clients
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

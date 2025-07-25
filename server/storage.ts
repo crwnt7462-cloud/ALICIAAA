@@ -7,6 +7,8 @@ import {
   appointments,
   subscriptions,
   clientMessages,
+  clientNotes,
+  customTags,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -24,6 +26,10 @@ import {
   type InsertAppointment,
   type ClientMessage,
   type InsertClientMessage,
+  type ClientNote,
+  type InsertClientNote,
+  type CustomTag,
+  type InsertCustomTag,
   salonRegistrations,
   type SalonRegistration,
   type InsertSalonRegistration,
@@ -1028,6 +1034,81 @@ export class DatabaseStorage implements IStorage {
 
     this.salons.set(salonId, updatedSalon);
     return updatedSalon;
+  }
+
+  // Client Notes Management for Professionals
+  async getClientNote(clientId: string, professionalId: string): Promise<ClientNote | undefined> {
+    const [note] = await db
+      .select()
+      .from(clientNotes)
+      .where(
+        and(
+          eq(clientNotes.clientId, clientId),
+          eq(clientNotes.professionalId, professionalId)
+        )
+      );
+    return note;
+  }
+
+  async createOrUpdateClientNote(noteData: InsertClientNote): Promise<ClientNote> {
+    const existingNote = await this.getClientNote(noteData.clientId, noteData.professionalId);
+    
+    if (existingNote) {
+      const [updatedNote] = await db
+        .update(clientNotes)
+        .set({
+          ...noteData,
+          updatedAt: new Date()
+        })
+        .where(eq(clientNotes.id, existingNote.id))
+        .returning();
+      return updatedNote;
+    } else {
+      const [newNote] = await db
+        .insert(clientNotes)
+        .values(noteData)
+        .returning();
+      return newNote;
+    }
+  }
+
+  async getClientsByProfessional(professionalId: string): Promise<(Client & { note?: ClientNote })[]> {
+    const clientsData = await db
+      .select()
+      .from(clients)
+      .where(eq(clients.userId, professionalId));
+
+    const clientsWithNotes = await Promise.all(
+      clientsData.map(async (client) => {
+        const note = await this.getClientNote(client.id.toString(), professionalId);
+        return { ...client, note };
+      })
+    );
+
+    return clientsWithNotes;
+  }
+
+  // Custom Tags Management
+  async getCustomTagsByProfessional(professionalId: string): Promise<CustomTag[]> {
+    return await db
+      .select()
+      .from(customTags)
+      .where(eq(customTags.professionalId, professionalId))
+      .orderBy(customTags.name);
+  }
+
+  async createCustomTag(tagData: InsertCustomTag): Promise<CustomTag> {
+    const [newTag] = await db
+      .insert(customTags)
+      .values(tagData)
+      .returning();
+    return newTag;
+  }
+
+  async deleteCustomTag(tagId: string): Promise<void> {
+    await db
+      .delete(customTags)
+      .where(eq(customTags.id, tagId));
   }
 }
 
