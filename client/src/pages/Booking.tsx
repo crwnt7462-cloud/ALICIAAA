@@ -176,230 +176,168 @@ export default function Booking() {
   const styles = getCustomStyles();
 
   return (
-    <div 
-      className="p-4 space-y-6 min-h-full"
-      style={{ 
-        background: customConfig?.headerStyle === "gradient" 
-          ? `linear-gradient(135deg, ${customConfig.primaryColor}20, ${customConfig.secondaryColor}20)`
-          : "linear-gradient(to bottom right, rgb(249 250 251 / 0.5), rgb(196 181 253 / 0.3))" 
-      }}
-    >
-      <div className="max-w-md mx-auto">
-        <div 
-          className="text-center mb-6 p-6 rounded-xl"
-          style={{ 
-            background: customConfig?.headerStyle === "gradient" 
-              ? `linear-gradient(135deg, ${customConfig.primaryColor}, ${customConfig.secondaryColor})`
-              : undefined,
-            color: customConfig?.headerStyle === "gradient" ? "white" : undefined
-          }}
-        >
-          <h1 className={`text-2xl font-bold ${customConfig?.headerStyle === "gradient" ? "text-white" : "text-gray-900"}`}>
-            {customConfig?.welcomeTitle || "Réserver un rendez-vous"}
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-sm mx-auto p-3">
+        {/* Header minimaliste */}
+        <div className="text-center mb-4">
+          <h1 className="text-lg font-medium text-gray-900 mb-1">
+            Réserver un rendez-vous
           </h1>
-          <p className={`text-sm mt-1 ${customConfig?.headerStyle === "gradient" ? "text-white/90" : "text-gray-600"}`}>
-            {customConfig?.description || "Rapide et simple"}
+          <p className="text-xs text-gray-500">
+            Simple et rapide
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Informations client */}
-          <Card className="border-0 shadow-sm bg-white rounded-2xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center">
-                <User className="w-5 h-5 mr-2 text-blue-600" />
+          <Card className="border-0 shadow-none bg-white rounded-xl">
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Vos informations
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+            <CardContent className="space-y-3 pt-0">
+              <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <Label htmlFor="firstName">Prénom *</Label>
                   <Input
-                    id="firstName"
+                    className="h-9 text-sm rounded-lg border-gray-200"
                     value={formData.firstName}
                     onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                    placeholder="Votre prénom"
+                    placeholder="Prénom"
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="lastName">Nom</Label>
                   <Input
-                    id="lastName"
+                    className="h-9 text-sm rounded-lg border-gray-200"
                     value={formData.lastName}
                     onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                    placeholder="Votre nom"
+                    placeholder="Nom"
                   />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  placeholder="06 12 34 56 78"
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  placeholder="votre@email.com"
-                />
-              </div>
+              <Input
+                className="h-9 text-sm rounded-lg border-gray-200"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                placeholder="Email"
+              />
+              <Input
+                className="h-9 text-sm rounded-lg border-gray-200"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                placeholder="Téléphone"
+              />
             </CardContent>
           </Card>
 
-          {/* Choix du service */}
-          <Card className="border-0 shadow-sm bg-white rounded-2xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center">
-                <CreditCard className="w-5 h-5 mr-2 text-green-600" />
-                Service souhaité
+          {/* Service */}
+          <Card className="border-0 shadow-none bg-white rounded-xl">
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm font-medium text-gray-700">
+                Service
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <Select 
                 value={formData.serviceId} 
                 onValueChange={(value) => setFormData({...formData, serviceId: value})}
               >
-                <SelectTrigger>
+                <SelectTrigger className="h-9 text-sm rounded-lg border-gray-200">
                   <SelectValue placeholder="Choisir un service" />
                 </SelectTrigger>
                 <SelectContent>
                   {services.map((service) => (
                     <SelectItem key={service.id} value={service.id.toString()}>
-                      <div className="flex justify-between w-full">
-                        <span>{service.name}</span>
-                        <span className="text-sm text-gray-500 ml-4">
-                          {service.duration}min • {service.price}€
-                        </span>
-                      </div>
+                      <span className="text-sm">{service.name} - {service.price}€</span>
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-              
-              {selectedService && (
-                <div className="mt-3 p-3 bg-green-50 rounded-lg">
-                  <div className="flex justify-between items-center text-sm">
-                    <span>Durée: {selectedService.duration} minutes</span>
-                    <span className="font-semibold text-green-700">Prix: {selectedService.price}€</span>
-                  </div>
-                </div>
-              )}
             </CardContent>
           </Card>
 
           {/* Date et heure */}
-          <Card className="border-0 shadow-sm bg-white rounded-2xl">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-lg flex items-center">
-                <Calendar className="w-5 h-5 mr-2 text-purple-600" />
+          <Card className="border-0 shadow-none bg-white rounded-xl">
+            <CardHeader className="pb-2 pt-3">
+              <CardTitle className="text-sm font-medium text-gray-700">
                 Date et heure
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="date">Date *</Label>
-                <Select 
-                  value={formData.date} 
-                  onValueChange={(value) => setFormData({...formData, date: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choisir une date" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getAvailableDates().map((date) => (
+            <CardContent className="space-y-2 pt-0">
+              <Select 
+                value={formData.date} 
+                onValueChange={(value) => setFormData({...formData, date: value})}
+              >
+                <SelectTrigger className="h-9 text-sm rounded-lg border-gray-200">
+                  <SelectValue placeholder="Date" />
+                </SelectTrigger>
+                <SelectContent>
+                  {getAvailableDates().map((date) => {
+                    const dateObj = new Date(date);
+                    const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+                      weekday: 'short',
+                      day: 'numeric',
+                      month: 'short'
+                    });
+                    return (
                       <SelectItem key={date} value={date}>
-                        {new Date(date).toLocaleDateString('fr-FR', {
-                          weekday: 'long',
-                          day: 'numeric',
-                          month: 'long'
-                        })}
+                        <span className="text-sm">{formattedDate}</span>
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
               
-              <div>
-                <Label htmlFor="time">Heure *</Label>
-                <Select 
-                  value={formData.time} 
-                  onValueChange={(value) => setFormData({...formData, time: value})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choisir un créneau" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {getTimeSlots().map((time) => (
-                      <SelectItem key={time} value={time}>
-                        {time}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+              <Select 
+                value={formData.time} 
+                onValueChange={(value) => setFormData({...formData, time: value})}
+              >
+                <SelectTrigger className="h-9 text-sm rounded-lg border-gray-200">
+                  <SelectValue placeholder="Heure" />
+                </SelectTrigger>
+                <SelectContent>
+                  {getTimeSlots().map((time) => (
+                    <SelectItem key={time} value={time}>
+                      <span className="text-sm">{time}</span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
 
-          {/* Acompte */}
+          {/* Acompte minimaliste */}
           {selectedService && (
-            <Card className="border-0 shadow-sm bg-white rounded-2xl">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg flex items-center">
-                  <CreditCard className="w-5 h-5 mr-2 text-orange-600" />
-                  Acompte
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-orange-50 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm text-gray-700">Prix total: {selectedService.price}€</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Acompte à régler:</span>
-                    <span className="text-xl font-bold text-orange-600">{formData.depositAmount}€</span>
-                  </div>
-                  <p className="text-xs text-gray-600 mt-2">
-                    Reste à payer sur place: {selectedService.price - formData.depositAmount}€
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="bg-gray-50 rounded-lg p-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Total: {selectedService.price}€</span>
+                <span className="font-medium text-gray-900">Acompte: {formData.depositAmount}€</span>
+              </div>
+            </div>
           )}
 
-          {/* Bouton de réservation avec paiement */}
+          {/* Bouton épuré */}
           <Button 
             type="submit" 
-            className="w-full h-14 text-lg font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-full h-10 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-xl transition-colors"
             disabled={createBookingMutation.isPending}
           >
             {createBookingMutation.isPending ? (
-              <div className="flex items-center">
-                <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+              <div className="flex items-center justify-center">
+                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
                 Traitement...
               </div>
             ) : (
-              <div className="flex items-center justify-center">
-                <CreditCard className="w-5 h-5 mr-2" />
-                Réserver et payer l'acompte
-                {selectedService && ` (${formData.depositAmount}€)`}
-              </div>
+              "Réserver maintenant"
             )}
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-xs text-gray-500">
-          <p>🔒 Paiement sécurisé par Stripe • Confirmation immédiate par email</p>
-          <p className="mt-1">✅ Annulation gratuite jusqu'à 24h avant le rendez-vous</p>
+        <div className="mt-4 text-center text-xs text-gray-400">
+          <p>Paiement sécurisé • Annulation 24h</p>
         </div>
       </div>
     </div>
