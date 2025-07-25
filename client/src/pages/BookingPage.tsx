@@ -1,21 +1,23 @@
-import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useLocation } from 'wouter';
-import AuthGuard from '@/components/AuthGuard';
 
 interface Service {
   id: string;
   name: string;
-  duration: number;
   price: number;
-  description: string;
+  duration: number;
+  specialist: string;
+}
+
+interface TimeSlot {
+  time: string;
+  available: boolean;
 }
 
 interface BookingData {
@@ -27,22 +29,11 @@ interface BookingData {
   clientEmail: string;
 }
 
-function BookingPageNew() {
-  const { toast } = useToast();
+export default function BookingPage() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   
-  // Récupérer les paramètres de l'URL
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const salonId = urlParams.get('salon');
-    const categoryId = urlParams.get('category');
-    
-    if (salonId) {
-      console.log('Salon sélectionné:', salonId);
-      console.log('Catégorie:', categoryId);
-    }
-  }, []);
   const [bookingData, setBookingData] = useState<BookingData>({
     selectedService: null,
     selectedDate: '',
@@ -52,193 +43,117 @@ function BookingPageNew() {
     clientEmail: ''
   });
 
-  // Services récupérés depuis l'API
-  const [services, setServices] = useState<Service[]>([]);
-  const [loadingServices, setLoadingServices] = useState(true);
-
-  useEffect(() => {
-    // Charger les services depuis l'API
-    const fetchServices = async () => {
-      try {
-        const response = await fetch('/api/public-services/test-pro-user');
-        if (response.ok) {
-          const servicesData = await response.json();
-          const formattedServices = servicesData.map((service: any) => ({
-            id: service.id.toString(),
-            name: service.name,
-            description: service.description,
-            price: parseFloat(service.price),
-            duration: service.duration
-          }));
-          setServices(formattedServices);
-        }
-      } catch (error) {
-        console.error('Erreur chargement services:', error);
-      } finally {
-        setLoadingServices(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  // Créneaux disponibles
-  const timeSlots = [
-    '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'
+  const services: Service[] = [
+    { id: '1', name: 'Coupe + Brushing', price: 65, duration: 90, specialist: 'Sarah' },
+    { id: '2', name: 'Coloration + Coupe', price: 120, duration: 180, specialist: 'Marie' },
+    { id: '3', name: 'Soin Hydratant', price: 45, duration: 60, specialist: 'Emma' },
+    { id: '4', name: 'Highlights', price: 85, duration: 120, specialist: 'Julie' }
   ];
 
-  // Récupérer les infos du salon
-  const { data: salonInfo } = useQuery({
-    queryKey: ['/api/salon-settings'],
-  });
-
-  const generateNextDays = (count: number) => {
-    const days = [];
-    for (let i = 1; i <= count; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      days.push({
-        date: date.toISOString().split('T')[0],
-        display: date.toLocaleDateString('fr-FR', { 
-          weekday: 'short', 
-          day: 'numeric', 
-          month: 'short' 
-        })
-      });
-    }
-    return days;
-  };
+  const timeSlots: TimeSlot[] = [
+    { time: '09:00', available: true },
+    { time: '10:30', available: false },
+    { time: '12:00', available: true },
+    { time: '14:00', available: true },
+    { time: '15:30', available: false },
+    { time: '17:00', available: true }
+  ];
 
   const handleServiceSelect = (service: Service) => {
     setBookingData(prev => ({ ...prev, selectedService: service }));
     setStep(2);
   };
 
-  const handleDateTimeSelect = (date: string, time: string) => {
+  const handleTimeSelect = (date: string, time: string) => {
     setBookingData(prev => ({ ...prev, selectedDate: date, selectedTime: time }));
     setStep(3);
   };
 
-  const handleBookingSubmit = async () => {
-    if (!bookingData.selectedService || !bookingData.clientName || !bookingData.clientPhone) {
+  const handleBookingSubmit = () => {
+    if (!bookingData.clientName || !bookingData.clientPhone) {
       toast({
         title: "Informations manquantes",
-        description: "Veuillez remplir tous les champs obligatoires",
+        description: "Veuillez remplir votre nom et téléphone",
         variant: "destructive"
       });
       return;
     }
-
-    try {
-      // Calculer l'acompte (30% du prix)
-      const depositAmount = Math.round(bookingData.selectedService.price * 0.3);
-      
-      // Créer une session de paiement Stripe
-      const response = await fetch('/api/create-booking-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          serviceId: bookingData.selectedService.id,
-          serviceName: bookingData.selectedService.name,
-          servicePrice: bookingData.selectedService.price,
-          depositAmount,
-          selectedDate: bookingData.selectedDate,
-          selectedTime: bookingData.selectedTime,
-          clientName: bookingData.clientName,
-          clientPhone: bookingData.clientPhone,
-          clientEmail: bookingData.clientEmail,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erreur lors de la création du paiement');
-      }
-
-      const { checkoutUrl } = await response.json();
-      
-      // Redirection vers Stripe Checkout
-      window.location.href = checkoutUrl;
-      
-    } catch (error) {
-      console.error('Erreur paiement:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de traiter le paiement. Veuillez réessayer.",
-        variant: "destructive"
-      });
-    }
+    
+    // Simuler paiement
+    toast({
+      title: "Paiement en cours...",
+      description: "Redirection vers Stripe"
+    });
+    
+    setTimeout(() => {
+      setStep(4);
+    }, 2000);
   };
 
   return (
-    <AuthGuard requiredAuth="client">
-      <div className="min-h-screen bg-gray-50">
-      {/* Header minimaliste */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-sm mx-auto px-3 py-3">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              size="sm"
-              onClick={() => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const categoryId = urlParams.get('category');
-                if (categoryId) {
-                  setLocation(`/salon-selection?category=${categoryId}`);
-                } else {
-                  setLocation('/salon-selection');
-                }
-              }}
-              className="p-1 h-8 w-8"
+              onClick={() => setLocation('/')}
+              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="h-4 w-4" />
             </Button>
-            <div className="text-center">
-              <h1 className="text-sm font-medium text-gray-900">
-                Salon Excellence Paris
-              </h1>
-              <p className="text-xs text-gray-500">Réservation</p>
-            </div>
-            <div className="w-8"></div>
+            <h1 className="text-lg font-semibold text-gray-900">Réservation</h1>
+            <div className="w-10" /> {/* Spacer */}
           </div>
         </div>
       </div>
 
-      <div className="max-w-sm mx-auto p-3">
+      <div className="max-w-md mx-auto p-4">
+        {/* Progress indicator */}
+        <div className="flex items-center mb-6">
+          {[1, 2, 3, 4].map((num) => (
+            <div key={num} className="flex items-center">
+              <div 
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  step >= num 
+                    ? 'bg-violet-600 text-white' 
+                    : 'bg-gray-200 text-gray-600'
+                }`}
+              >
+                {num}
+              </div>
+              {num < 4 && (
+                <div 
+                  className={`h-0.5 w-8 mx-2 ${
+                    step > num ? 'bg-violet-600' : 'bg-gray-200'
+                  }`} 
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
         {/* Étape 1: Services */}
         {step === 1 && (
-          <div className="space-y-3">
-            <div className="text-center mb-3">
-              <h2 className="text-sm font-medium text-gray-900">Choisir un service</h2>
-            </div>
-            
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Choisissez votre service
+            </h2>
             {services.map((service) => (
-              <Card 
-                key={service.id} 
-                className="cursor-pointer hover:shadow-sm transition-shadow border-gray-200"
+              <Card
+                key={service.id}
+                className="cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => handleServiceSelect(service)}
               >
-                <CardContent className="p-3">
+                <CardContent className="p-4">
                   <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 text-sm mb-1">
-                        {service.name}
-                      </h3>
-                      <p className="text-xs text-gray-600 mb-2">
-                        {service.description}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs px-2 py-0.5">
-                          {service.duration}min
-                        </Badge>
-                      </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{service.name}</h3>
+                      <p className="text-sm text-gray-600">{service.duration} min • {service.specialist}</p>
                     </div>
                     <div className="text-right">
-                      <span className="font-semibold text-gray-900 text-sm">
-                        {service.price}€
-                      </span>
+                      <p className="font-bold text-lg text-gray-900">{service.price}€</p>
                     </div>
                   </div>
                 </CardContent>
@@ -247,74 +162,70 @@ function BookingPageNew() {
           </div>
         )}
 
-        {/* Étape 2: Date et heure */}
-        {step === 2 && bookingData.selectedService && (
-          <div className="space-y-3">
-            <div className="text-center mb-3">
-              <h2 className="text-sm font-medium text-gray-900">Choisir date et heure</h2>
-              <p className="text-xs text-gray-600">
-                {bookingData.selectedService.name} - {bookingData.selectedService.price}€
-              </p>
-            </div>
-
-            {/* Sélection de date */}
+        {/* Étape 2: Date & Heure */}
+        {step === 2 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Choisissez une date
+            </h2>
+            
             <Card>
-              <CardContent className="p-3">
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Date</h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {generateNextDays(9).map((day) => (
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Aujourd'hui - 25 Janvier</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-2">
+                  {timeSlots.map((slot) => (
                     <Button
-                      key={day.date}
-                      variant={bookingData.selectedDate === day.date ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setBookingData(prev => ({ ...prev, selectedDate: day.date }))}
-                      className="h-12 text-xs flex flex-col"
+                      key={slot.time}
+                      variant={slot.available ? "outline" : "secondary"}
+                      disabled={!slot.available}
+                      onClick={() => handleTimeSelect('2025-01-25', slot.time)}
+                      className="h-10"
                     >
-                      <span className="text-xs">{day.display}</span>
+                      {slot.time}
                     </Button>
                   ))}
                 </div>
               </CardContent>
             </Card>
-
-            {/* Sélection d'heure */}
-            {bookingData.selectedDate && (
-              <Card>
-                <CardContent className="p-3">
-                  <h3 className="text-sm font-medium text-gray-900 mb-2">Heure</h3>
-                  <div className="grid grid-cols-4 gap-2">
-                    {timeSlots.map((time) => (
-                      <Button
-                        key={time}
-                        variant={bookingData.selectedTime === time ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => handleDateTimeSelect(bookingData.selectedDate, time)}
-                        className="h-8 text-xs"
-                      >
-                        {time}
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         )}
 
         {/* Étape 3: Informations client */}
         {step === 3 && (
-          <div className="space-y-3">
-            <div className="text-center mb-3">
-              <h2 className="text-sm font-medium text-gray-900">Vos informations</h2>
-              <p className="text-xs text-gray-600">
-                {bookingData.selectedService?.name} - {bookingData.selectedDate} à {bookingData.selectedTime}
-              </p>
-            </div>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Vos informations
+            </h2>
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Récapitulatif</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">Service:</span>
+                  <span className="text-sm font-medium">{bookingData.selectedService?.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">Date:</span>
+                  <span className="text-sm font-medium">{bookingData.selectedDate} à {bookingData.selectedTime}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-gray-600">Prix:</span>
+                  <span className="text-sm font-medium">{bookingData.selectedService?.price}€</span>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
-              <CardContent className="p-3 space-y-3">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Contact</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
                 <Input
-                  placeholder="Prénom *"
+                  placeholder="Nom complet *"
                   value={bookingData.clientName}
                   onChange={(e) => setBookingData(prev => ({ ...prev, clientName: e.target.value }))}
                   className="h-9 text-sm"
@@ -371,9 +282,6 @@ function BookingPageNew() {
           </div>
         )}
       </div>
-      </div>
-    </AuthGuard>
+    </div>
   );
 }
-
-export default BookingPageNew;

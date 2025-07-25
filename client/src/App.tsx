@@ -107,6 +107,7 @@ import ProMessagingMobile from "@/pages/ProMessagingMobile";
 import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import NotificationCenter from "@/pages/NotificationCenter";
+import SalonPageEditor from "@/pages/SalonPageEditor";
 
 
 function Router() {
@@ -597,6 +598,7 @@ function Router() {
           <Route path="/stripe/demo" component={StripeDemo} />
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />
+          <Route path="/salon-page-editor" component={SalonPageEditor} />
 
           <Route component={NotFound} />
         </Switch>

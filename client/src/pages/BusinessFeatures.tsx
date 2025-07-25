@@ -278,11 +278,38 @@ export default function BusinessFeatures() {
           </Card>
         </TabsContent>
 
-        {/* Pages Tab - SUPPRIMÉ COMME DEMANDÉ */}
+        {/* Pages Tab */}
         <TabsContent value="pages" className="space-y-4">
-          <div className="text-center py-8 text-gray-500">
-            <p>Section Pages supprimée</p>
-          </div>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Store className="h-4 w-4" />
+                Pages Salon
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-3">
+                <Button 
+                  onClick={() => setLocation("/salon-page-editor")}
+                  className="bg-violet-600 hover:bg-violet-700 text-white"
+                >
+                  Modifier ma page salon
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/page-builder")}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Créer nouvelle page
+                </Button>
+                <Button 
+                  onClick={() => setLocation("/pro-pages-manager")}
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Gérer pages existantes
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Stock Tab */}

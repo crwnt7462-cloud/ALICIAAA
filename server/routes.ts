@@ -104,6 +104,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API pour l'éditeur de page salon
+  app.put('/api/booking-pages/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      
+      // Simuler la mise à jour de la page salon
+      const updatedPage = {
+        id,
+        ...updateData,
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.json({
+        success: true,
+        page: updatedPage,
+        message: 'Page salon mise à jour avec succès'
+      });
+    } catch (error) {
+      console.error("Erreur mise à jour page salon:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la mise à jour de la page salon'
+      });
+    }
+  });
+
+  // API pour récupérer la page salon actuelle
+  app.get('/api/booking-pages/current', async (req, res) => {
+    try {
+      // Simuler récupération de la page salon actuelle
+      const currentPage = {
+        id: 'salon-test-pro-user',
+        salonName: 'Salon Excellence Paris',
+        salonDescription: 'Salon de beauté professionnel situé au cœur de Paris. Spécialisé en coiffure, soins esthétiques et bien-être.',
+        salonAddress: '123 Avenue des Champs-Élysées, 75008 Paris',
+        salonPhone: '01 42 25 76 88',
+        logoUrl: null,
+        coverImageUrl: null,
+        photos: [],
+        primaryColor: '#8B5CF6',
+        isPublished: true,
+        pageUrl: 'salon-excellence-paris'
+      };
+      
+      res.json(currentPage);
+    } catch (error) {
+      console.error("Erreur récupération page salon:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la récupération de la page salon'
+      });
+    }
+  });
+
   // Routes salon pour workflow d'abonnement
   app.post('/api/salon/register', async (req, res) => {
     try {
