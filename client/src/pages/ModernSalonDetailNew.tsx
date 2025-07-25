@@ -286,7 +286,7 @@ export default function ModernSalonDetail() {
                         <Button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            setLocation('/booking');
+                            setLocation('/salon-booking');
                           }}
                           className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-110 transform active:scale-95 shadow-lg hover:shadow-xl"
                         >

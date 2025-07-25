@@ -95,7 +95,6 @@ import StripeCancel from "@/pages/StripeCancel";
 import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
-import BookingSuccess from "@/pages/BookingSuccess";
 import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
@@ -108,6 +107,11 @@ import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
+import SalonBookingFlow from "@/pages/SalonBookingFlow";
+import StripeCheckout from "@/pages/StripeCheckout";
+import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
+import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
+import BookingSuccess from "@/pages/BookingSuccess";
 
 
 function Router() {
@@ -599,6 +603,11 @@ function Router() {
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />
           <Route path="/salon-page-editor" component={SalonPageEditor} />
+          <Route path="/salon-booking" component={SalonBookingFlow} />
+          <Route path="/stripe-checkout" component={StripeCheckout} />
+          <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
+          <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
+          <Route path="/booking-success" component={BookingSuccess} />
 
           <Route component={NotFound} />
         </Switch>

@@ -716,6 +716,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API pour le système de réservation
+  app.post('/api/stripe/create-payment-intent', async (req, res) => {
+    try {
+      const { amount, bookingData } = req.body;
+      
+      // Simulation de création d'intention de paiement Stripe
+      const clientSecret = `pi_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Sauvegarder les données de réservation temporairement
+      // En production, vous utiliseriez une vraie base de données
+      const bookingId = Date.now().toString();
+      
+      console.log('💳 Intention de paiement créée:', {
+        amount,
+        clientSecret,
+        bookingId,
+        bookingData
+      });
+
+      res.json({ 
+        clientSecret,
+        bookingId,
+        amount 
+      });
+    } catch (error) {
+      console.error('Erreur création payment intent:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du paiement' });
+    }
+  });
+
+  // API pour l'inscription salon avec paiement
+  app.post('/api/salon/register-with-payment', async (req, res) => {
+    try {
+      const registrationData = req.body;
+      
+      // Générer un ID d'inscription unique
+      const registrationId = `reg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Simulation de création d'intention de paiement Stripe pour l'abonnement
+      const planPrices = {
+        essential: 19,
+        professional: 49,
+        enterprise: 99
+      };
+      
+      const amount = planPrices[registrationData.selectedPlan as keyof typeof planPrices] || 19;
+      const stripeClientSecret = `pi_${Date.now()}_secret_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Sauvegarder temporairement les données d'inscription
+      console.log('🏢 Inscription salon créée:', {
+        registrationId,
+        salonName: registrationData.salonName,
+        ownerEmail: registrationData.ownerEmail,
+        selectedPlan: registrationData.selectedPlan,
+        amount
+      });
+
+      res.json({
+        registrationId,
+        stripeClientSecret,
+        amount,
+        planName: registrationData.selectedPlan
+      });
+    } catch (error) {
+      console.error('Erreur inscription salon:', error);
+      res.status(500).json({ error: 'Erreur lors de l\'inscription' });
+    }
+  });
+
+  // API pour confirmer le paiement d'inscription
+  app.post('/api/salon/confirm-payment', async (req, res) => {
+    try {
+      const { registrationId, paymentStatus } = req.body;
+      
+      if (paymentStatus === 'succeeded') {
+        // En production: créer le compte salon, l'abonnement, etc.
+        console.log('✅ Paiement confirmé pour inscription:', registrationId);
+        
+        res.json({
+          success: true,
+          salonId: `salon_${registrationId}`,
+          message: 'Salon créé avec succès'
+        });
+      } else {
+        res.status(400).json({ error: 'Paiement échoué' });
+      }
+    } catch (error) {
+      console.error('Erreur confirmation paiement:', error);
+      res.status(500).json({ error: 'Erreur lors de la confirmation' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
