@@ -63,6 +63,33 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Business registrations table for professional signups
+export const businessRegistrations = pgTable("business_registrations", {
+  id: serial("id").primaryKey(),
+  businessName: varchar("business_name").notNull(),
+  businessType: varchar("business_type").notNull(),
+  siret: varchar("siret").notNull().unique(),
+  address: text("address").notNull(),
+  city: varchar("city").notNull(),
+  postalCode: varchar("postal_code").notNull(),
+  phone: varchar("phone").notNull(),
+  email: varchar("email").notNull(),
+  ownerFirstName: varchar("owner_first_name").notNull(),
+  ownerLastName: varchar("owner_last_name").notNull(),
+  legalForm: varchar("legal_form").notNull(),
+  vatNumber: varchar("vat_number"),
+  description: text("description"),
+  planType: varchar("plan_type").notNull(),
+  status: varchar("status").default("pending"), // pending, approved, rejected
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type BusinessRegistration = typeof businessRegistrations.$inferSelect;
+export type InsertBusinessRegistration = typeof businessRegistrations.$inferInsert;
+
 // Subscription plans and business information
 export const subscriptions = pgTable("subscriptions", {
   id: serial("id").primaryKey(),

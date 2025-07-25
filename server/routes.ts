@@ -1367,5 +1367,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
 
+  // Routes pour inscription d'entreprise
+  app.post("/api/business-registration", async (req, res) => {
+    try {
+      const businessData = req.body;
+      
+      // Créer l'enregistrement d'entreprise
+      const businessRegistration = await storage.createBusinessRegistration(businessData);
+      
+      res.json({ 
+        success: true, 
+        businessId: businessRegistration.id,
+        message: "Inscription d'entreprise créée avec succès" 
+      });
+    } catch (error: any) {
+      console.error('Erreur inscription entreprise:', error);
+      res.status(500).json({ 
+        error: "Erreur lors de l'inscription: " + error.message 
+      });
+    }
+  });
+
+  // Route pour créer le paiement d'abonnement professionnel
+  app.post("/api/create-business-payment", async (req, res) => {
+    try {
+      const {
+        businessId,
+        planType,
+        customerEmail,
+        customerName,
+        businessName
+      } = req.body;
+
+      const planPrices = {
+        essentiel: 29,
+        professionnel: 79,
+        premium: 149
+      };
+
+      const price = planPrices[planType as keyof typeof planPrices] || 79;
+
+      // Créer la session de paiement simple (pas d'abonnement pour éviter l'erreur)
+      const session = await stripeService.createPaymentCheckout({
+        amount: price * 100, // Convertir en centimes
+        currency: 'eur',
+        description: `Abonnement ${planType} - ${businessName}`,
+        customerEmail,
+        customerName,
+        successUrl: `${req.protocol}://${req.get('host')}/business-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancelUrl: `${req.protocol}://${req.get('host')}/business-registration`,
+        metadata: {
+          type: 'business_payment',
+          businessId: businessId.toString(),
+          planType,
+          businessName
+        }
+      });
+
+      res.json({ checkoutUrl: session.url });
+    } catch (error: any) {
+      console.error('Erreur création paiement business:', error);
+      res.status(500).json({ 
+        error: "Erreur lors de la création du paiement: " + error.message 
+      });
+    }
+  });
+
   return httpServer;
 }

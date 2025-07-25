@@ -27,6 +27,9 @@ import {
   salonRegistrations,
   type SalonRegistration,
   type InsertSalonRegistration,
+  businessRegistrations,
+  type BusinessRegistration,
+  type InsertBusinessRegistration,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
@@ -905,6 +908,37 @@ export class DatabaseStorage implements IStorage {
       .update(salonRegistrations)
       .set({ paymentStatus: status, updatedAt: new Date() })
       .where(eq(salonRegistrations.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Business registration methods
+  async createBusinessRegistration(data: InsertBusinessRegistration): Promise<BusinessRegistration> {
+    const [registration] = await db
+      .insert(businessRegistrations)
+      .values(data)
+      .returning();
+    return registration;
+  }
+
+  async getBusinessRegistration(id: number): Promise<BusinessRegistration | undefined> {
+    const [registration] = await db
+      .select()
+      .from(businessRegistrations)
+      .where(eq(businessRegistrations.id, id));
+    return registration;
+  }
+
+  async updateBusinessRegistrationPayment(id: number, stripeData: any): Promise<BusinessRegistration> {
+    const [updated] = await db
+      .update(businessRegistrations)
+      .set({
+        stripeCustomerId: stripeData.customerId,
+        stripeSubscriptionId: stripeData.subscriptionId,
+        status: 'approved',
+        updatedAt: new Date(),
+      })
+      .where(eq(businessRegistrations.id, id))
       .returning();
     return updated;
   }

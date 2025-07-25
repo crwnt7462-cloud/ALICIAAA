@@ -90,6 +90,8 @@ import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
 import BookingPage from "@/pages/BookingPage";
 import BookingSuccess from "@/pages/BookingSuccess";
+import BusinessRegistration from "@/pages/BusinessRegistration";
+import BusinessSuccess from "@/pages/BusinessSuccess";
 
 
 function Router() {
@@ -520,6 +522,8 @@ function Router() {
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
           <Route path="/salon-payment" component={SalonPayment} />
+          <Route path="/business-registration" component={BusinessRegistration} />
+          <Route path="/business-success" component={BusinessSuccess} />
           <Route path="/stripe/demo" component={StripeDemo} />
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />

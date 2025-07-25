@@ -74,32 +74,9 @@ export default function ProfessionalPlans() {
     }
   ];
 
-  const handleSelectPlan = async (planId: string) => {
+  const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
-    
-    // Créer directement la session de paiement Stripe
-    try {
-      const response = await fetch('/api/stripe/create-subscription-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planType: planId,
-          customerEmail: 'professionnel@example.com',
-          customerName: 'Professionnel Test',
-        }),
-      });
-
-      const { url } = await response.json();
-      if (url) {
-        window.location.href = url;
-      } else {
-        throw new Error('URL de paiement manquante');
-      }
-    } catch (error: any) {
-      console.error('Erreur paiement:', error);
-      // Fallback vers la page d'inscription en cas d'erreur
-      setLocation(`/salon-registration?plan=${planId}`);
-    }
+    setLocation(`/business-registration?plan=${planId}`);
   };
 
   const getPrice = (plan: typeof plans[0]) => {
