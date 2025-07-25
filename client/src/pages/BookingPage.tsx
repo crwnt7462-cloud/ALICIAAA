@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useLocation } from 'wouter';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Service {
   id: string;
@@ -30,6 +31,18 @@ function BookingPageNew() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
+  
+  // Récupérer les paramètres de l'URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const salonId = urlParams.get('salon');
+    const categoryId = urlParams.get('category');
+    
+    if (salonId) {
+      console.log('Salon sélectionné:', salonId);
+      console.log('Catégorie:', categoryId);
+    }
+  }, []);
   const [bookingData, setBookingData] = useState<BookingData>({
     selectedService: null,
     selectedDate: '',
@@ -160,7 +173,8 @@ function BookingPageNew() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <AuthGuard requiredAuth="client">
+      <div className="min-h-screen bg-gray-50">
       {/* Header minimaliste */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-sm mx-auto px-3 py-3">
@@ -168,7 +182,15 @@ function BookingPageNew() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLocation('/')}
+              onClick={() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryId = urlParams.get('category');
+                if (categoryId) {
+                  setLocation(`/salon-selection?category=${categoryId}`);
+                } else {
+                  setLocation('/salon-selection');
+                }
+              }}
               className="p-1 h-8 w-8"
             >
               <ArrowLeft className="w-4 h-4" />
@@ -349,7 +371,8 @@ function BookingPageNew() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </AuthGuard>
   );
 }
 

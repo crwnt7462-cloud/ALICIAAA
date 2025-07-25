@@ -99,7 +99,7 @@ export default function SalonSelection() {
 
   const handleSalonSelect = (salon: Salon) => {
     // Rediriger vers la page de réservation du salon
-    setLocation(`/booking/${salon.id}`);
+    setLocation(`/booking?salon=${salon.id}&category=${selectedCategory}`);
   };
 
   return (
@@ -238,7 +238,10 @@ export default function SalonSelection() {
                         </div>
                       </div>
                       
-                      <Button className="ml-4">
+                      <Button 
+                        className="ml-4"
+                        onClick={() => handleSalonSelect(salon)}
+                      >
                         Réserver
                       </Button>
                     </div>
