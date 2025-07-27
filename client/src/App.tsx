@@ -83,6 +83,7 @@ import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
+import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
@@ -267,7 +268,7 @@ function Router() {
   }
   
   if (location === '/client-dashboard') {
-    return <div className="h-full"><ClientDashboard /></div>;
+    return <div className="h-full"><ClientDashboardNew /></div>;
   }
   
   if (location === '/client-accueil') {

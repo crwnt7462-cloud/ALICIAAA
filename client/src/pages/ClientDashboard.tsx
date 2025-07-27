@@ -30,29 +30,32 @@ export default function ClientDashboard() {
     );
   }
 
-  const renderContent = () => {
-    switch (activeTab) {
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    switch (tab) {
       case 'accueil':
         setLocation('/client-accueil');
-        return null;
+        break;
       case 'rdv':
         setLocation('/client-rdv');
-        return null;
+        break;
       case 'parametres':
         setLocation('/client-parametres');
-        return null;
-      default:
-        return (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Bonjour {clientData.firstName} !
-              </h2>
-              <p className="text-gray-600">Bienvenue dans votre espace client</p>
-            </div>
-          </div>
-        );
+        break;
     }
+  };
+
+  const renderContent = () => {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Bonjour {clientData.firstName} !
+          </h2>
+          <p className="text-gray-600">Bienvenue dans votre espace client</p>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -68,7 +71,7 @@ export default function ClientDashboard() {
           <div className="flex justify-around">
             <Button
               variant="ghost"
-              onClick={() => setActiveTab('accueil')}
+              onClick={() => handleTabChange('accueil')}
               className={`flex flex-col items-center py-3 px-4 ${
                 activeTab === 'accueil' ? 'text-violet-600' : 'text-gray-400'
               }`}
@@ -79,7 +82,7 @@ export default function ClientDashboard() {
 
             <Button
               variant="ghost"
-              onClick={() => setActiveTab('rdv')}
+              onClick={() => handleTabChange('rdv')}
               className={`flex flex-col items-center py-3 px-4 ${
                 activeTab === 'rdv' ? 'text-violet-600' : 'text-gray-400'
               }`}
@@ -90,7 +93,7 @@ export default function ClientDashboard() {
 
             <Button
               variant="ghost"
-              onClick={() => setActiveTab('parametres')}
+              onClick={() => handleTabChange('parametres')}
               className={`flex flex-col items-center py-3 px-4 ${
                 activeTab === 'parametres' ? 'text-violet-600' : 'text-gray-400'
               }`}
