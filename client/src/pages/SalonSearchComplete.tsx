@@ -183,6 +183,120 @@ export default function SalonSearchComplete() {
           </div>
         </div>
       </div>
+
+      {/* Section résultats avec cartes salons - visible en scrollant */}
+      <div className="bg-gray-50 min-h-screen pt-6">
+        <div className="px-4">
+          {/* Header des résultats */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {filteredSalons.length} salons trouvés
+            </h3>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Trier</span>
+              <select className="text-sm border-0 bg-transparent text-gray-700 font-medium">
+                <option>Distance</option>
+                <option>Note</option>
+                <option>Prix</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Cartes des salons avec photos - exactement comme screenshot */}
+          <div className="space-y-4 pb-6">
+            {filteredSalons.map((salon) => (
+              <div 
+                key={salon.id}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setLocation(`/salon/${salon.id}`)}
+              >
+                {/* Photo du salon en haut */}
+                <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+                  <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                  
+                  {/* Badges sur la photo */}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    {salon.verified && (
+                      <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    )}
+                    {salon.openNow && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                        Ouvert
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Bouton favoris */}
+                  <button className="absolute top-3 right-3 p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30">
+                    <Heart className="h-4 w-4 text-white" />
+                  </button>
+                  
+                  {/* Promotion en bas de l'image */}
+                  {salon.promotion && (
+                    <div className="absolute bottom-3 left-3">
+                      <span className="bg-orange-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                        {salon.promotion}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Informations du salon */}
+                <div className="p-4">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-gray-900 text-lg mb-1">{salon.name}</h4>
+                      <p className="text-sm text-gray-500 mb-2">{salon.location}</p>
+                    </div>
+                    <span className="text-sm text-gray-600 font-medium">{salon.price}</span>
+                  </div>
+                  
+                  {/* Note et distance */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-semibold">{salon.rating}</span>
+                      <span className="text-sm text-gray-500">({salon.reviews} avis)</span>
+                    </div>
+                    <span className="text-sm text-gray-500">• {salon.distance}</span>
+                  </div>
+                  
+                  {/* Services */}
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {salon.services.slice(0, 3).map((service, index) => (
+                      <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        {service}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  {/* Disponibilité et bouton réserver */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-green-600 font-medium">
+                        Dispo {salon.nextSlot}
+                      </span>
+                    </div>
+                    <button 
+                      className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocation('/booking');
+                      }}
+                    >
+                      Réserver
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
