@@ -124,6 +124,17 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - DASHBOARD CLIENT UNIFIÉ STYLE PROFESSIONNEL (27 Janvier 22h30)
+- ✅ **Design client identique aux professionnels** : Header iPhone avec logo "C", navigation à onglets horizontale
+- ✅ **Menu 3 sections intégré** : Accueil, Mes RDV, Paramètres dans un seul composant unifié
+- ✅ **Cartes avec design BusinessFeatures** : Badges colorés, icônes rounded-2xl, grilles métriques identiques
+- ✅ **Navigation professionnelle** : Onglets avec bordures violettes, hover effects, style cohérent
+- ✅ **Interface mobile-first optimisée** : Max-width lg, padding uniforme, design épuré
+- ✅ **Suppression menu en bas** : Navigation par onglets horizontaux comme les pros
+- ✅ **Cohérence totale avec pro** : Même header, même style cartes, même typographie
+- ✅ **3 pages complètes fonctionnelles** : Accueil avec RDV/fidélité, Mes RDV avec historique, Paramètres avec profil
+- ✅ **Application client professionnelle** : Équivalent Planity côté client avec design uniforme
+
 ### Janvier 2025 - BACKEND COMPLET PRODUCTION-READY FINALISÉ (27 Janvier 22h00)
 - ✅ **Backend complet 100% fonctionnel** : Toutes les erreurs LSP corrigées, serveur stable port 5000
 - ✅ **API Routes complètes implémentées** : 80+ routes pour gestion complète (services, clients, staff, appointments, dashboard)
