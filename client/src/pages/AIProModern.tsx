@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Mic, MicOff } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -32,6 +32,8 @@ export default function AIProModern() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showChatHistory, setShowChatHistory] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Historique des chats simulé (à remplacer par des vraies données)
@@ -61,6 +63,57 @@ export default function AIProModern() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showChatHistory]);
+
+  // Fonctions pour l'enregistrement vocal
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const audioChunks: BlobPart[] = [];
+
+      recorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        // Simulation de transcription vocale
+        const simulatedTranscriptions = [
+          "Comment optimiser mon planning de demain ?",
+          "Quels sont mes clients VIP cette semaine ?",
+          "Génère-moi un rapport de mes ventes",
+          "Aide-moi à créer une campagne marketing",
+          "Quels produits sont en rupture de stock ?"
+        ];
+        const randomTranscription = simulatedTranscriptions[Math.floor(Math.random() * simulatedTranscriptions.length)];
+        setInputValue(randomTranscription);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Erreur accès microphone:', error);
+      alert('Erreur: Impossible d\'accéder au microphone. Vérifiez les permissions.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setMediaRecorder(null);
+    }
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -249,6 +302,14 @@ export default function AIProModern() {
 
       {/* Input violet sur fond blanc */}
       <div className="p-6 border-t border-gray-100">
+        {/* Indicateur d'enregistrement */}
+        {isRecording && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-red-700 text-sm font-medium">Enregistrement en cours... Cliquez sur le micro pour arrêter</span>
+          </div>
+        )}
+        
         <div className="flex items-center gap-3">
           <div className="flex-1 relative">
             <input
@@ -256,9 +317,13 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask Rendly"
-              className="w-full bg-purple-50 rounded-full px-6 py-4 text-purple-900 placeholder-purple-400 border border-purple-200 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
-              disabled={isLoading}
+              placeholder={isRecording ? "Parlez maintenant..." : "Ask Rendly"}
+              className={`w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all ${
+                isRecording 
+                  ? 'bg-red-50 border-red-200 placeholder-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+                  : 'bg-purple-50 border-purple-200 placeholder-purple-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
+              }`}
+              disabled={isLoading || isRecording}
             />
           </div>
           
@@ -272,12 +337,19 @@ export default function AIProModern() {
           </Button>
           
           <Button
+            onClick={toggleRecording}
             size="sm"
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+            className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
+              isRecording 
+                ? 'bg-red-500 hover:bg-red-400 animate-pulse' 
+                : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500'
+            }`}
           >
-            <div className="w-5 h-5 rounded-full bg-white/30 flex items-center justify-center">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
+            {isRecording ? (
+              <MicOff className="w-5 h-5 text-white" />
+            ) : (
+              <Mic className="w-5 h-5 text-white" />
+            )}
           </Button>
         </div>
       </div>
