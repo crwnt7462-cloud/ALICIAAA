@@ -21,6 +21,8 @@ export default function SalonSearch() {
   const [searchQuery, setSearchQuery] = useState("barbier");
   const [locationQuery, setLocationQuery] = useState("Paris");
   const [activeFilter, setActiveFilter] = useState("all");
+  
+  // Page redesignée selon screenshot IMG_1258
 
   // Récupérer les paramètres de l'URL
   useEffect(() => {
@@ -130,7 +132,7 @@ export default function SalonSearch() {
             </div>
           </div>
 
-          {/* Titre simple */}
+          {/* Titre simple - NOUVEAU DESIGN SELON SCREENSHOT */}
           <h1 className="text-center text-xl text-gray-500 font-normal mb-16">
             Find your salon
           </h1>
