@@ -10,7 +10,7 @@ import {
   TrendingUp, BarChart3, Bell, Crown, Banknote
 } from "lucide-react";
 
-export default function BusinessFeatures() {
+export default function BusinessFeaturesOriginal() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
 
@@ -64,7 +64,7 @@ export default function BusinessFeatures() {
               <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setLocation('/salon-settings')}>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
                 <Settings className="h-4 w-4" />
               </Button>
             </div>
