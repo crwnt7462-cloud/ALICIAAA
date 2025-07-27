@@ -1,0 +1,125 @@
+Voici le prompt final complet, à copier-coller pour ton développeur sur Replit ou autre plateforme, avec absolument tout ce que tu m’as demandé jusqu’ici, y compris les nouvelles demandes de design avec cadres arrondis, couleurs, TTC, source des rendez-vous, planning mensuel, modification du salon, liaison compte client, etc.
+
+⸻
+
+🟣🧠🎯 PROMPT FINAL POUR DÉVELOPPEUR – Appli de réservation type Planity complète
+
+Merci de développer une application de réservation 100% fonctionnelle, fluide et complète, inspirée de Planity mais avec nos améliorations spécifiques. Voici toutes les fonctionnalités à mettre en place, ainsi que les contraintes techniques, design et UX/UI à respecter :
+
+⸻
+
+⚙️🔧 1. Fonctionnalités principales à finaliser
+
+✅ Réservation liée au compte client
+	•	Quand un client est connecté et réserve, le RDV est automatiquement lié à son compte
+	•	Dans son profil client, il voit uniquement ses rendez-vous passés et à venir
+	•	Si le client réserve avec son mail et crée un compte ensuite avec le même mail, les RDV doivent se retrouver liés
+
+✅ Suppression de certaines fonctions
+	•	Supprimer le système de messagerie dans l’espace pro et l’espace client
+	•	Supprimer le champ téléphone dans le profil client uniquement (il peut rester dans le formulaire de réservation si nécessaire)
+
+✅ Ajout de photos dans la page du salon
+	•	Depuis Pro Tools, permettre à chaque professionnel d’ajouter/modifier plusieurs images de leur salon
+	•	Exemple : logo, intérieur, équipe, résultats
+	•	Interface simple et responsive avec drag & drop ou boutons + aperçu
+	•	Ces images s’affichent ensuite sur la page publique du salon
+
+✅ Planning avec vue mensuelle
+	•	Ajouter une vue calendrier mensuel dans la section planning (Pro Tools)
+	•	Chaque jour affiche ses RDV, possibilité de cliquer pour voir les détails
+	•	100% compatible mobile
+
+✅ Modifier la page salon depuis l’espace pro
+	•	Dans “Paramètres du salon”, charger la vraie page publique du salon existante
+	•	Permettre la modification directe de :
+	•	Nom, description, tags, services, photos, horaires, lien réseaux sociaux
+	•	Sauvegarde instantanée ou bouton “Enregistrer”
+
+✅ Tracking de la provenance des RDV
+	•	Ajouter un champ source dans les réservations pour savoir d’où vient le client :
+	•	Options : instagram, google, facebook, tiktok, app_direct, autre
+	•	Deux méthodes :
+	•	Lecture de ?source= dans l’URL
+	•	OU champ facultatif dans le formulaire : “Comment avez-vous connu ce salon ?”
+
+✅ Affichage des prix avec mention “TTC”
+	•	Tous les prix affichés (services, offres, abonnements) doivent inclure “TTC” :
+	•	Exemple : 29,90 € TTC
+
+✅ Couleur personnalisée par service ou employé
+	•	Chaque service (ou employé) a une couleur différente
+	•	Affichée dans :
+	•	Le planning (fond ou bordure)
+	•	Les blocs de réservation
+	•	Option : permettre au pro de modifier la couleur dans les paramètres
+
+⸻
+
+🎨📱 2. Design UX/UI à respecter
+
+✅ Style visuel des blocs (cf. capture envoyée)
+	•	Appliquer le design suivant aux blocs :
+	•	Contours noirs fins
+	•	Coins arrondis
+	•	Fond blanc ou très clair
+	•	Espacements internes homogènes
+	•	Appliquer ce style dans :
+	•	Page d’accueil avec la liste des salons
+	•	Page de chaque salon
+	•	Page de réservation
+	•	Listes de services et offres
+	•	Les boutons aussi doivent suivre ce style :
+	•	Exemples : + Nouveau, Gérer stock
+
+⸻
+
+🧠🧾 3. Bonus IA + Back-end + Adaptabilité
+
+✅ Ajout d’une IA dans Pro Tools
+	•	Intégrer une IA (chat ou assistant) dans la page IA Pro
+	•	L’IA peut :
+	•	Répondre aux questions du pro
+	•	Aider à remplir la page salon
+	•	Optimiser les descriptions ou tags
+	•	Suggérer des promotions ou messages clients
+
+✅ Pages à créer / vérifier
+	•	Page d’accueil (avec tous les salons)
+	•	Page salon publique (avec images, services, prise de RDV)
+	•	Page de réservation
+	•	Page d’inscription client
+	•	Page d’inscription pro avec choix d’offre + paiement Stripe
+	•	Page de modification salon
+	•	Pages client + pro (avec leurs RDV, leurs infos)
+
+✅ Stripe (paiement)
+	•	Lorsque le pro s’inscrit via une offre :
+	•	Il doit obligatoirement créer un mot de passe
+	•	Après le formulaire, il est redirigé vers Stripe checkout
+	•	Une fois le paiement réussi → redirection vers page de personnalisation du salon
+
+✅ 100% Responsive
+	•	Toute l’application doit être parfaitement adaptée aux téléphones :
+	•	Layout fluide, boutons assez larges, textes lisibles, planning accessible
+
+⸻
+
+📌 Résumé final des tâches
+	•	Lier les RDV au compte client
+	•	Supprimer la messagerie (pro + client)
+	•	Supprimer le téléphone (profil client uniquement)
+	•	Ajout de photos dans les pages salon
+	•	Planning avec vue mensuelle
+	•	Modification directe de la page salon
+	•	Tracking de la provenance (source)
+	•	Affichage des prix en TTC
+	•	Couleurs personnalisées par service/employé
+	•	Appliquer le style visuel à bordures noires arrondies (cf. capture)
+	•	Intégration Stripe pour offres pro
+	•	IA dans l’espace pro
+	•	Responsive mobile total
+
+⸻
+
+Souhaite-tu que j’ajoute une section Analytics ou un tableau de bord avancé dans Pro Tools ?
