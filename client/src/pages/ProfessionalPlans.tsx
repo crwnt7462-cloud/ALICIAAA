@@ -100,46 +100,46 @@ export default function ProfessionalPlans() {
         </div>
       </header>
 
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Titre centré */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+      <div className="max-w-lg mx-auto px-4 py-6 md:max-w-6xl md:py-12">
+        {/* Titre responsive */}
+        <div className="text-center mb-8 md:mb-16">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3 md:text-4xl md:mb-4">
             Trouvez le plan parfait
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-base text-gray-600 mb-6 md:text-xl md:mb-8">
             Commencez gratuitement, upgradez quand vous voulez
           </p>
 
-          {/* Toggle facturation large */}
-          <div className="inline-flex items-center bg-gray-100 rounded-xl p-1">
+          {/* Toggle facturation responsive */}
+          <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-3 rounded-lg text-base font-medium transition-all ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'monthly' 
                   ? 'bg-white text-gray-900 shadow-md' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Facturation mensuelle
+              Mensuel
             </button>
             <button
               onClick={() => setBillingCycle('annual')}
-              className={`px-6 py-3 rounded-lg text-base font-medium transition-all ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'annual' 
                   ? 'bg-white text-gray-900 shadow-md' 
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Facturation annuelle
-              <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">
-                Économisez 25%
+              Annuel
+              <span className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full md:ml-2 md:px-2 md:py-1">
+                -25%
               </span>
             </button>
           </div>
         </div>
 
-        {/* Plans très espacés et larges */}
-        <div className="grid lg:grid-cols-3 gap-12 mb-16">
+        {/* Plans responsive */}
+        <div className="space-y-4 mb-8 md:grid md:grid-cols-3 md:gap-6 md:space-y-0 lg:gap-12 md:mb-16">
           {plans.map((plan) => {
             const currentPrice = getPrice(plan);
             const savings = getSavings(plan);
@@ -147,72 +147,74 @@ export default function ProfessionalPlans() {
             return (
               <div 
                 key={plan.id}
-                className={`relative bg-white rounded-2xl border-2 p-8 cursor-pointer transition-all duration-300 hover:shadow-2xl ${
+                className={`relative bg-white rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg md:p-8 md:rounded-2xl md:hover:shadow-2xl ${
                   plan.popular 
-                    ? 'border-purple-500 shadow-lg ring-4 ring-purple-100' 
+                    ? 'border-purple-500 shadow-md ring-2 ring-purple-100 md:ring-4' 
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
                 onClick={() => handleSelectPlan(plan.id)}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 md:-top-4">
+                    <div className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold md:px-4 md:py-2 md:text-sm">
                       Recommandé
                     </div>
                   </div>
                 )}
                 
-                {/* Icon et nom */}
-                <div className="text-center mb-8">
-                  <div className="flex justify-center mb-4">
-                    <div className="p-3 bg-gray-50 rounded-full">
+                {/* Icon et nom mobile */}
+                <div className="flex items-center gap-3 mb-4 md:text-center md:block md:mb-8">
+                  <div className="flex-shrink-0 md:flex md:justify-center md:mb-4">
+                    <div className="p-2 bg-gray-50 rounded-full md:p-3">
                       {plan.icon}
                     </div>
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="text-gray-600">
-                    {plan.tagline}
-                  </p>
+                  <div className="md:text-center">
+                    <h3 className="text-lg font-bold text-gray-900 mb-1 md:text-2xl md:mb-2">
+                      {plan.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 md:text-base">
+                      {plan.tagline}
+                    </p>
+                  </div>
                 </div>
                 
-                {/* Prix très visible */}
-                <div className="text-center mb-8">
-                  <div className="flex items-baseline justify-center gap-1 mb-2">
-                    <span className="text-5xl font-bold text-gray-900">
+                {/* Prix responsive */}
+                <div className="mb-4 md:text-center md:mb-8">
+                  <div className="flex items-baseline gap-1 md:justify-center md:mb-2">
+                    <span className="text-2xl font-bold text-gray-900 md:text-5xl">
                       {currentPrice}€
                     </span>
-                    <span className="text-xl text-gray-600">
+                    <span className="text-sm text-gray-600 md:text-xl">
                       /mois
                     </span>
                   </div>
                   
                   {billingCycle === 'annual' && savings > 0 && (
-                    <div className="text-green-600 font-semibold">
+                    <div className="text-sm text-green-600 font-medium md:font-semibold">
                       Économisez {savings}% par an
                     </div>
                   )}
                   
-                  <div className="text-gray-500 mt-2">
+                  <div className="text-sm text-gray-500 mt-1 md:mt-2">
                     {plan.limits}
                   </div>
                 </div>
 
-                {/* Fonctionnalités avec plus d'espace */}
-                <div className="space-y-4 mb-8">
+                {/* Fonctionnalités compactes */}
+                <div className="space-y-2 mb-4 md:space-y-4 md:mb-8">
                   {plan.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                      <span className="text-gray-700">{feature}</span>
+                    <div key={index} className="flex items-center gap-2 md:gap-3">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0 md:w-5 md:h-5" />
+                      <span className="text-sm text-gray-700 md:text-base">{feature}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* Bouton plus grand */}
+                {/* Bouton responsive */}
                 <Button 
-                  className={`w-full h-14 text-lg font-semibold rounded-xl ${
+                  className={`w-full h-10 text-sm font-medium rounded-lg md:h-14 md:text-lg md:font-semibold md:rounded-xl ${
                     plan.popular 
                       ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg' 
                       : 'bg-gray-900 hover:bg-gray-800 text-white'
@@ -229,18 +231,18 @@ export default function ProfessionalPlans() {
           })}
         </div>
 
-        {/* Section garantie spacieuse */}
-        <div className="text-center bg-gray-50 rounded-2xl p-12">
+        {/* Section garantie responsive */}
+        <div className="text-center bg-gray-50 rounded-xl p-6 md:rounded-2xl md:p-12">
           <div className="max-w-md mx-auto">
-            <div className="flex justify-center mb-6">
-              <div className="p-4 bg-white rounded-full shadow-md">
-                <Shield className="w-8 h-8 text-green-500" />
+            <div className="flex justify-center mb-4 md:mb-6">
+              <div className="p-3 bg-white rounded-full shadow-md md:p-4">
+                <Shield className="w-6 h-6 text-green-500 md:w-8 md:h-8" />
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-lg font-bold text-gray-900 mb-3 md:text-2xl md:mb-4">
               Essai gratuit de 14 jours
             </h3>
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-gray-600 text-sm leading-relaxed md:text-lg">
               Testez toutes les fonctionnalités sans engagement. 
               Aucune carte de crédit requise.
             </p>
