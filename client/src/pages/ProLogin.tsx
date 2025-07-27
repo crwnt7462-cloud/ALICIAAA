@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, Building2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { LogIn, Building2, Eye, EyeOff, ArrowLeft, Users, Sparkles, Shield } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function ProLogin() {
@@ -90,34 +90,55 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-violet-50 flex">
       {/* Bouton retour */}
       <div className="absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
           onClick={() => window.history.back()}
-          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm"
+          className="h-10 w-10 p-0 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white shadow-sm border border-white/50"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-4 w-4 text-gray-700" />
         </Button>
       </div>
 
       {/* Section gauche - Image et branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-amber-50/50"></div>
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-violet-600 via-violet-700 to-violet-800 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent"></div>
         
         <div className="relative z-10 flex items-center justify-center p-12">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="w-20 h-20 bg-violet-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl">
-              <Building2 className="h-10 w-10 text-white" />
+          <div className="text-center space-y-8 max-w-md">
+            <div className="relative">
+              <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl mx-auto flex items-center justify-center shadow-2xl border border-white/30">
+                <Building2 className="h-12 w-12 text-white" />
+              </div>
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-white" />
+              </div>
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold text-white mb-4">
                 Espace Professionnel
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-xl text-violet-100 leading-relaxed">
                 Gérez votre salon avec simplicité et efficacité
               </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 mt-8">
+              {[
+                { icon: Users, text: "Gestion clients avancée" },
+                { icon: Building2, text: "Planning intelligent" },
+                { icon: Shield, text: "Sécurité garantie" }
+              ].map((feature, index) => (
+                <div key={index} className="flex items-center gap-3 text-white/90">
+                  <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                    <feature.icon className="h-4 w-4" />
+                  </div>
+                  <span className="text-sm font-medium">{feature.text}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -125,81 +146,83 @@ export default function ProLogin() {
 
       {/* Section droite - Formulaire */}
       <div className="flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md border-2 border-black rounded-2xl">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-4">
-            <Building2 className="h-8 w-8 text-violet-600" />
-          </div>
-          <CardTitle className="text-2xl">Connexion Professionnelle</CardTitle>
-          <p className="text-gray-600">Accédez à votre espace Pro</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Email professionnel
-              </label>
-              <Input
-                type="email"
-                placeholder="votre@email.com"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Votre mot de passe"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pr-10"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
+        <div className="w-full max-w-md space-y-6">
+          <Card className="border-2 border-black/10 rounded-2xl shadow-2xl bg-white/95 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-4">
+                <Building2 className="h-8 w-8 text-violet-600" />
               </div>
-            </div>
+              <CardTitle className="text-2xl">Connexion Professionnelle</CardTitle>
+              <p className="text-gray-600">Accédez à votre espace Pro</p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email professionnel
+                  </label>
+                  <Input
+                    type="email"
+                    placeholder="votre@email.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full h-12 rounded-lg"
+                  />
+                </div>
 
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium"
-            >
-              <LogIn className="h-4 w-4 mr-2" />
-              {isLoading ? 'Connexion...' : 'Se connecter'}
-            </Button>
-          </form>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Mot de passe
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Votre mot de passe"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="w-full h-12 rounded-lg pr-10"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">Compte de test disponible</h3>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p><strong>Email:</strong> test@monapp.com</p>
-              <p><strong>Mot de passe:</strong> test1234</p>
-              <p><strong>Handle:</strong> @usemyrr</p>
-            </div>
-          </div>
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium h-12"
+                >
+                  <LogIn className="h-4 w-4 mr-2" />
+                  {isLoading ? 'Connexion...' : 'Se connecter'}
+                </Button>
+              </form>
 
-          <div className="text-center text-sm text-gray-500">
-            Connexion sécurisée uniquement avec compte existant
-          </div>
-        </CardContent>
-      </Card>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h3 className="font-medium text-blue-900 mb-2">Compte de test disponible</h3>
+                <div className="text-sm text-blue-700 space-y-1">
+                  <p><strong>Email:</strong> test@monapp.com</p>
+                  <p><strong>Mot de passe:</strong> test1234</p>
+                  <p><strong>Handle:</strong> @usemyrr</p>
+                </div>
+              </div>
+
+              <div className="text-center text-sm text-gray-500">
+                Connexion sécurisée uniquement avec compte existant
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
