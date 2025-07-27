@@ -39,7 +39,7 @@ import ModernBooking from "@/pages/ModernBooking";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
-import SalonSearch from "@/pages/SalonSearch";
+import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
@@ -259,7 +259,7 @@ function Router() {
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SalonSearch />
+        <SalonSearchComplete />
       </div>
     );
   }

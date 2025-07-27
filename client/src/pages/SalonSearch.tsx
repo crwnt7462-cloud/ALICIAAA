@@ -21,8 +21,10 @@ export default function SalonSearch() {
   const [searchQuery, setSearchQuery] = useState("barbier");
   const [locationQuery, setLocationQuery] = useState("Paris");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [showResults, setShowResults] = useState(true);
+  const [sortBy, setSortBy] = useState("distance");
   
-  // Page redesignée selon screenshot IMG_1258
+  // Page complète avec interface de recherche et résultats
 
   // Récupérer les paramètres de l'URL
   useEffect(() => {
@@ -32,6 +34,7 @@ export default function SalonSearch() {
     
     if (q) setSearchQuery(q);
     if (location) setLocationQuery(location);
+    if (q || location) setShowResults(true);
   }, []);
 
   const salons = [
@@ -103,6 +106,7 @@ export default function SalonSearch() {
 
   const handleSearch = () => {
     console.log("Recherche:", searchQuery, locationQuery);
+    setShowResults(true);
   };
 
   const filteredSalons = activeFilter === "all" 
