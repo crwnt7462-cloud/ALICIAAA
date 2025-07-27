@@ -1097,7 +1097,28 @@ export class DatabaseStorage implements IStorage {
     return clientsWithNotes;
   }
 
+  // Custom Tags Management
+  async getCustomTagsByProfessional(professionalId: string): Promise<CustomTag[]> {
+    return await db
+      .select()
+      .from(customTags)
+      .where(eq(customTags.professionalId, professionalId))
+      .orderBy(customTags.name);
+  }
 
+  async createCustomTag(tagData: InsertCustomTag): Promise<CustomTag> {
+    const [newTag] = await db
+      .insert(customTags)
+      .values(tagData)
+      .returning();
+    return newTag;
+  }
+
+  async deleteCustomTag(tagId: string): Promise<void> {
+    await db
+      .delete(customTags)
+      .where(eq(customTags.id, tagId));
+  }
 }
 
 export const storage = new DatabaseStorage();
