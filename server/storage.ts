@@ -239,8 +239,6 @@ export class DatabaseStorage implements IStorage {
       password: hashedPassword,
       firstName: clientData.firstName,
       lastName: clientData.lastName,
-      phone: clientData.phone || null,
-      dateOfBirth: clientData.dateOfBirth ? new Date(clientData.dateOfBirth) : null,
       loyaltyPoints: 0,
       clientStatus: "regular" as const,
       isActive: true,

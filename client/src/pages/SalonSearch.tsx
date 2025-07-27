@@ -217,7 +217,7 @@ export default function SalonSearch() {
                           e.stopPropagation();
                           setLocation('/booking');
                         }}
-                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium h-8"
+                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-md px-3 py-1 text-xs font-medium h-7 min-w-[70px]"
                         size="sm"
                       >
                         Réserver
