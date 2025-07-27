@@ -124,6 +124,17 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - REFONTE PAGE PLANS PROFESSIONNELS STYLE ÉPURÉ (27 Janvier 17h20)
+- ✅ **Page /professional-plans complètement redesignée** : Style ultra-minimaliste inspiré de l'image fournie
+- ✅ **Header simplifié** : Bouton retour, titre "Tarifs" centré, layout compact avec fond gris clair
+- ✅ **Design cards épuré** : Bordures nettes noires pour plan populaire, grises pour autres, fond blanc
+- ✅ **Layout optimisé** : 3 colonnes responsive, spacing réduit, padding uniforme de 6
+- ✅ **Typographie moderne** : Prix 3xl bold, fonctionnalités compactes avec checks verts
+- ✅ **Toggle facturation clean** : Capsule grise avec boutons blancs, économies inline
+- ✅ **Boutons CTA simplifiés** : Noir pour populaire, gris clair pour autres, hauteur uniforme
+- ✅ **Footer minimaliste** : Texte simple sur essai gratuit sans éléments visuels superflus
+- ✅ **Interface mobile-first** : Max-width 4xl, spacing cohérent, responsive optimisé
+
 ### Janvier 2025 - PRO TOOLS COMPLETS RESTAURÉS & STYLE PLANITY (27 Janvier 04h15)
 - ✅ **Transformation pages style Planity** : ClientLogin, SalonSearch, Booking et ClientDashboardSimple avec ergonomie épurée
 - ✅ **Pro Tools suite complète restaurée** : BusinessFeatures avec 6 onglets (Partage, Gestion, Paiements, Marketing, Analytics, Config)
