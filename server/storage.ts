@@ -53,9 +53,10 @@ export interface IStorage {
   authenticateUser(email: string, password: string): Promise<User | null>;
   
   // Client Authentication
-  getClientByEmail(email: string): Promise<ClientAccount | undefined>;
-  createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount>;
+  createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount>;
   authenticateClient(email: string, password: string): Promise<ClientAccount | null>;
+  getClientAccount(id: number): Promise<ClientAccount | undefined>;
+  getClientAccountByEmail(email: string): Promise<ClientAccount | undefined>;
 
   // Services
   getServices(userId: string): Promise<Service[]>;
@@ -226,6 +227,57 @@ export class DatabaseStorage implements IStorage {
 
     const [user] = await db.insert(users).values(newUser).returning();
     return user;
+  }
+
+  // Client Authentication Methods
+  async createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount> {
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(clientData.password, saltRounds);
+
+    const newClient = {
+      email: clientData.email,
+      password: hashedPassword,
+      firstName: clientData.firstName,
+      lastName: clientData.lastName,
+      phone: clientData.phone || null,
+      dateOfBirth: clientData.dateOfBirth ? new Date(clientData.dateOfBirth) : null,
+      loyaltyPoints: 0,
+      clientStatus: "regular" as const,
+      isActive: true,
+      isVerified: false,
+    };
+
+    const [created] = await db.insert(clientAccounts).values(newClient).returning();
+    return created;
+  }
+
+  async authenticateClient(email: string, password: string): Promise<ClientAccount | null> {
+    const client = await this.getClientAccountByEmail(email);
+    if (!client || !client.password) {
+      return null;
+    }
+
+    const isValidPassword = await bcrypt.compare(password, client.password);
+    if (!isValidPassword) {
+      return null;
+    }
+
+    // Update last login
+    await db.update(clientAccounts)
+      .set({ lastLoginAt: new Date() })
+      .where(eq(clientAccounts.id, client.id));
+
+    return client;
+  }
+
+  async getClientAccount(id: number): Promise<ClientAccount | undefined> {
+    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.id, id));
+    return client;
+  }
+
+  async getClientAccountByEmail(email: string): Promise<ClientAccount | undefined> {
+    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
+    return client;
   }
 
   async authenticateUser(email: string, password: string): Promise<User | null> {
