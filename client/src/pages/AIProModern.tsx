@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Send } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 
 interface Message {
@@ -14,6 +14,13 @@ interface Message {
 
 export default function AIProModern() {
   const [, setLocation] = useLocation();
+  
+  // Récupérer les infos du compte connecté
+  const { data: user } = useQuery({
+    queryKey: ["/api/auth/user"],
+    retry: false,
+  });
+  
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -112,7 +119,7 @@ export default function AIProModern() {
         {messages.length === 1 ? (
           <div className="text-center px-8">
             <h1 className="text-4xl font-light text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-purple-600 bg-clip-text mb-4">
-              Hello, Afzal
+              Bonjour, {user?.firstName || user?.name || 'Agash'}
             </h1>
             <p className="text-gray-600 text-sm">
               Votre assistant IA est prêt à vous aider
@@ -174,7 +181,7 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask Gemini"
+              placeholder="Ask Rendly"
               className="w-full bg-purple-50 rounded-full px-6 py-4 text-purple-900 placeholder-purple-400 border border-purple-200 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all"
               disabled={isLoading}
             />
