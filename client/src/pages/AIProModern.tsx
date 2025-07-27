@@ -345,11 +345,11 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "Parlez maintenant..." : "Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all ${
+              placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
+              className={`w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all font-medium ${
                 isRecording 
-                  ? 'bg-red-50 border-red-200 placeholder-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
-                  : 'bg-purple-50 border-purple-200 placeholder-purple-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
+                  ? 'bg-red-50 border-red-200 placeholder-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
+                  : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-300 placeholder-purple-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-300 shadow-sm'
               }`}
               disabled={isLoading || isRecording}
             />
