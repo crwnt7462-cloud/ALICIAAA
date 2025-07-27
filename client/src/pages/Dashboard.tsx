@@ -88,7 +88,7 @@ export default function Dashboard() {
           </nav>
         </div>
         <Button 
-          className="bg-white text-purple-600 hover:bg-gray-50 rounded-full px-6 py-2 text-sm font-medium"
+          className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 text-white rounded-full px-6 py-2 text-sm font-medium shadow-lg hover:scale-105 transition-all"
           onClick={() => setLocation('/business-features')}
         >
           Members Area
@@ -110,7 +110,7 @@ export default function Dashboard() {
           </p>
           <Button 
             size="lg"
-            className="bg-white text-purple-600 hover:bg-gray-50 rounded-full px-8 py-3 text-lg font-medium shadow-lg hover:scale-105 transition-all"
+            className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 text-white rounded-full px-8 py-3 text-lg font-medium shadow-lg hover:scale-105 transition-all"
             onClick={() => setLocation('/ai')}
           >
             Tester l'IA Gratuitement
@@ -181,7 +181,7 @@ export default function Dashboard() {
               pratiques d'amélioration de l'activité offrent des conseils sur les autres outils.
             </p>
             <Button 
-              className="bg-purple-600 text-white hover:bg-purple-700 rounded-lg px-6 py-2 text-sm"
+              className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 text-white rounded-full px-6 py-2 text-sm font-medium shadow-lg hover:scale-105 transition-all"
               onClick={() => setLocation('/business-features')}
             >
               Members Area →
@@ -232,7 +232,7 @@ export default function Dashboard() {
             sur ce que vous faites de mieux : sublimer vos clients.
           </p>
           <Button 
-            className="bg-purple-600 text-white hover:bg-purple-700 rounded-full px-8 py-3"
+            className="bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 text-white rounded-full px-8 py-3 font-medium shadow-lg hover:scale-105 transition-all"
             onClick={() => setLocation('/ai')}
           >
             Commencer Gratuitement
@@ -246,7 +246,7 @@ export default function Dashboard() {
           <h3 className="text-2xl font-semibold text-gray-900 mb-6">Puis devenir une référence.</h3>
           <Button 
             variant="outline"
-            className="border-purple-300 text-purple-700 hover:bg-purple-50 rounded-full px-6 py-2"
+            className="border-2 border-purple-400 text-purple-600 hover:bg-gradient-to-r hover:from-purple-500 hover:to-violet-600 hover:text-white hover:border-transparent rounded-full px-6 py-2 font-medium shadow-lg hover:scale-105 transition-all"
             onClick={() => setLocation('/business-features')}
           >
             Rejoindre Pro Desk
