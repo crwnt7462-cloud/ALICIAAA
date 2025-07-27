@@ -184,11 +184,279 @@ export default function BusinessFeatures() {
           </div>
         </div>
 
-        {/* Rendu conditionnel selon activeSection */}
-        {activeSection === 'paiements' && renderPaiements()}
-        {activeSection === 'stock' && renderStock()}
-        {activeSection === 'marketing' && renderMarketing()}
-        {activeSection === 'analytics' && renderAnalytics()}
+        {/* Section Paiements - Interface exacte selon screenshots */}
+        {activeSection === 'paiements' && (
+          <div className="space-y-4">
+            {/* Méthodes de Paiement */}
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <CreditCard className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Méthodes de Paiement</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="h-5 w-5 text-gray-700" />
+                      <span className="font-medium text-gray-900">Carte bancaire</span>
+                    </div>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <Euro className="h-5 w-5 text-gray-700" />
+                      <span className="font-medium text-gray-900">Espèces</span>
+                    </div>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <Check className="h-5 w-5 text-gray-700" />
+                      <span className="font-medium text-gray-900">Chèques</span>
+                    </div>
+                    <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full">Inactif</Badge>
+                  </div>
+                </div>
+                
+                <Button className="w-full mt-4 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl">
+                  Gérer paiements
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Transactions */}
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Euro className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Transactions</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Marie D.</div>
+                      <div className="text-sm text-gray-500">Aujourd'hui</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-gray-900">65€</div>
+                      <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Payé</Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Sophie L.</div>
+                      <div className="text-sm text-gray-500">Aujourd'hui</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-gray-900">45€</div>
+                      <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">En attente</Badge>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Emma M.</div>
+                      <div className="text-sm text-gray-500">Aujourd'hui</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-gray-900">80€</div>
+                      <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Payé</Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Section Stock */}
+        {activeSection === 'stock' && (
+          <div className="space-y-4">
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Package className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Inventaire</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Shampoing Pro</div>
+                      <div className="text-sm text-gray-500">Stock: 12</div>
+                    </div>
+                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5" />
+                      <div>
+                        <div className="font-medium text-gray-900">Masque Hydratant</div>
+                        <div className="text-sm text-gray-500">Stock: 3</div>
+                      </div>
+                    </div>
+                    <Badge className="bg-red-500 text-white px-3 py-1 rounded-full text-xs">Stock bas</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Sérum Anti-Âge</div>
+                      <div className="text-sm text-gray-500">Stock: 8</div>
+                    </div>
+                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 mt-4">
+                  <Button className="flex-1 bg-green-600 text-white hover:bg-green-700 rounded-xl">
+                    <Package className="h-4 w-4 mr-2" />
+                    Gérer Stock
+                  </Button>
+                  <Button variant="outline" className="px-4 rounded-xl">
+                    + Nouveau
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Section Marketing */}
+        {activeSection === 'marketing' && (
+          <div className="space-y-4">
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <TrendingUp className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Campagnes Marketing</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Promo Nouvel An</div>
+                      <div className="text-sm text-gray-500">156 clients</div>
+                    </div>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Active</Badge>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <div>
+                      <div className="font-medium text-gray-900">Fidélité VIP</div>
+                      <div className="text-sm text-gray-500">89 clients</div>
+                    </div>
+                    <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">Programmée</Badge>
+                  </div>
+                </div>
+                
+                <Button variant="outline" className="w-full mt-4 rounded-xl">
+                  + Nouvelle campagne
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Star className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Programme Fidélité</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Clients VIP</span>
+                    <span className="font-semibold">23</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Points distribués</span>
+                    <span className="font-semibold">1,240</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-700">Récompenses données</span>
+                    <span className="font-semibold">8</span>
+                  </div>
+                </div>
+                
+                <Button className="w-full mt-4 bg-violet-600 text-white hover:bg-violet-700 rounded-xl">
+                  Configurer programme
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Section Analytics */}
+        {activeSection === 'analytics' && (
+          <div className="space-y-4">
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <BarChart3 className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Analytics Pro</h2>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                    <div className="text-2xl font-bold text-blue-600 mb-1">156</div>
+                    <div className="text-sm text-gray-600">RDV ce mois</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                    <div className="text-2xl font-bold text-green-600 mb-1">€4,680</div>
+                    <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                    <div className="text-2xl font-bold text-violet-600 mb-1">89%</div>
+                    <div className="text-sm text-gray-600">Taux présence</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                    <div className="text-2xl font-bold text-orange-600 mb-1">4.8</div>
+                    <div className="text-sm text-gray-600">Note moyenne</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-sm rounded-2xl">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <TrendingUp className="h-5 w-5 text-gray-900" />
+                  <h2 className="text-lg font-semibold text-gray-900">Insights IA</h2>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+                    <Check className="h-4 w-4 text-green-600 mt-0.5" />
+                    <div className="text-sm text-gray-700">
+                      Votre taux de présence est excellent (89%)
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-blue-50 rounded-xl">
+                    <TrendingUp className="h-4 w-4 text-blue-600 mt-0.5" />
+                    <div className="text-sm text-gray-700">
+                      +15% de réservations vs mois dernier
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 p-3 bg-violet-50 rounded-xl">
+                    <Users className="h-4 w-4 text-violet-600 mt-0.5" />
+                    <div className="text-sm text-gray-700">
+                      23 nouveaux clients ce mois
+                    </div>
+                  </div>
+                </div>
+                
+                <Button className="w-full mt-4 bg-violet-600 text-white hover:bg-violet-700 rounded-xl">
+                  Voir rapport complet
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         
         {/* Message si aucune section active */}
         {activeSection === 'main' && (
@@ -200,95 +468,7 @@ export default function BusinessFeatures() {
     </div>
   );
 
-  // Section Paiements - Exact selon IMG_1235 et IMG_1236
-  const renderPaiements = () => (
-    <div className="space-y-4">
-      {/* Section Méthodes de Paiement */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <CreditCard className="h-5 w-5 text-gray-700" />
-            <h3 className="text-lg font-semibold text-gray-900">Méthodes de Paiement</h3>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <CreditCard className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-900">Carte bancaire</span>
-              </div>
-              <Badge className="bg-violet-600 text-white rounded-full px-3 py-1 text-xs">Actif</Badge>
-            </div>
-            
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <Banknote className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-900">Espèces</span>
-              </div>
-              <Badge className="bg-violet-600 text-white rounded-full px-3 py-1 text-xs">Actif</Badge>
-            </div>
 
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-3">
-                <CreditCard className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-900">Chèques</span>
-              </div>
-              <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs">Inactif</Badge>
-            </div>
-
-            <Button variant="ghost" className="w-full text-gray-600 py-3 rounded-xl">
-              Gérer paiements
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Section Transactions */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Euro className="h-5 w-5 text-gray-700" />
-            <h3 className="text-lg font-semibold text-gray-900">Transactions</h3>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Marie D.</div>
-                <div className="text-sm text-gray-600">Aujourd'hui</div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-gray-900">65€</div>
-                <Badge className="bg-violet-600 text-white rounded-full px-2 py-1 text-xs">Payé</Badge>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Sophie L.</div>
-                <div className="text-sm text-gray-600">Aujourd'hui</div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-gray-900">45€</div>
-                <Badge variant="secondary" className="rounded-full px-2 py-1 text-xs">En attente</Badge>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Emma M.</div>
-                <div className="text-sm text-gray-600">Aujourd'hui</div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-gray-900">80€</div>
-                <Badge className="bg-violet-600 text-white rounded-full px-2 py-1 text-xs">Payé</Badge>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
 
   // Section Stock - Exact selon IMG_1238
   const renderStock = () => (
