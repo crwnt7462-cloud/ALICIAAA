@@ -124,6 +124,17 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - PAGE DE RECHERCHE ULTRA-MINIMALISTE COMPLÈTE (27 Janvier 18h10)
+- ✅ **Page /search transformée** : Style ultra-minimaliste identique aux pages login/register
+- ✅ **Layout exact images référence** : Logo "Design" violet, titre "Find your salon", 2 champs épurés
+- ✅ **Interface cohérente** : Même espacement (mb-16), largeur (max-w-sm), champs (h-14, rounded-2xl)
+- ✅ **Bouton violet "Search"** : Style identique au bouton "Sign up" des autres pages
+- ✅ **Grid catégories 2x2** : Coiffure, Esthétique, Massage, Onglerie comme boutons sociaux
+- ✅ **Résultats élégants** : Fond gris clair, cards blanches avec emojis, bouton "Book" violet
+- ✅ **Navigation fonctionnelle** : Bouton retour, clicks vers détails salon, workflow booking
+- ✅ **Mobile-first parfait** : Design responsive optimisé pour écrans tactiles
+- ✅ **Cohérence totale** : Style strictement identique aux pages ClientLogin/ClientRegister
+
 ### Janvier 2025 - REFONTE PAGE PLANS PROFESSIONNELS STYLE ÉPURÉ (27 Janvier 17h20)
 - ✅ **Page /professional-plans complètement redesignée** : Style ultra-minimaliste inspiré de l'image fournie
 - ✅ **Header simplifié** : Bouton retour, titre "Tarifs" centré, layout compact avec fond gris clair
