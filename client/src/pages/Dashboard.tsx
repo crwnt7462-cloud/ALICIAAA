@@ -6,7 +6,6 @@ import { LoadingDashboard } from "@/components/ui/loading-spinner";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -43,405 +42,227 @@ export default function Dashboard() {
     }
   }, [lastMessage]);
 
-  const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
-
   if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading || retentionLoading) {
     return <LoadingDashboard />;
   }
 
   return (
-    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Tableau de bord</h1>
-          <p className="text-gray-600 mt-1 flex items-center text-xs">
-            <Calendar className="w-3 h-3 mr-1.5 text-purple-500" />
-            {new Date().toLocaleDateString('fr-FR', { 
-              weekday: 'short', 
-              month: 'short', 
-              day: 'numeric' 
-            })}
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-purple-400 via-purple-500 to-violet-600 relative overflow-hidden">
+      {/* Formes géométriques en arrière-plan */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-white/5 rounded-full blur-lg"></div>
+        <div className="absolute bottom-32 left-20 w-40 h-40 bg-white/8 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 right-10 w-28 h-28 bg-white/6 rounded-full blur-xl"></div>
+      </div>
+
+      {/* Header avec navigation */}
+      <div className="relative z-10 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <h1 className="text-white text-lg font-semibold">Ask Rendly</h1>
+          <nav className="hidden md:flex items-center gap-6">
+            <button 
+              onClick={() => setLocation('/dashboard')}
+              className="text-white/90 hover:text-white text-sm font-medium transition-colors"
+            >
+              Planning
+            </button>
+            <button 
+              onClick={() => setLocation('/clients')}
+              className="text-white/90 hover:text-white text-sm font-medium transition-colors"
+            >
+              Clients
+            </button>
+            <button 
+              onClick={() => setLocation('/ai')}
+              className="text-white/90 hover:text-white text-sm font-medium transition-colors"
+            >
+              IA
+            </button>
+            <button 
+              onClick={() => setLocation('/settings')}
+              className="text-white/90 hover:text-white text-sm font-medium transition-colors"
+            >
+              Contact
+            </button>
+          </nav>
         </div>
-        <div className="flex space-x-2">
+        <Button 
+          className="bg-white text-purple-600 hover:bg-gray-50 rounded-full px-6 py-2 text-sm font-medium"
+          onClick={() => setLocation('/business-features')}
+        >
+          Members Area
+        </Button>
+      </div>
+
+      {/* Contenu principal */}
+      <div className="relative z-10 px-6 py-12 text-center max-w-4xl mx-auto">
+        {/* Titre principal */}
+        <div className="mb-8">
+          <h2 className="text-4xl md:text-5xl font-light text-white mb-4 leading-tight">
+            Transformez Votre Salon
+            <br />
+            <span className="font-semibold">En Empire de Beauté</span>
+          </h2>
+          <p className="text-white/80 text-lg max-w-2xl mx-auto mb-8">
+            Nous permettons aux salons d'exceller grâce à l'intelligence artificielle, 
+            des conversations clients fluides et des outils d'analyse avancés pour maximiser votre croissance.
+          </p>
           <Button 
-            variant="outline" 
-            size="sm" 
-            className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
+            size="lg"
+            className="bg-white text-purple-600 hover:bg-gray-50 rounded-full px-8 py-3 text-lg font-medium shadow-lg hover:scale-105 transition-all"
             onClick={() => setLocation('/ai')}
           >
-            <TrendingUp className="w-3 h-3 mr-1" />
-            Analytics
+            Tester l'IA Gratuitement
           </Button>
-          <Button 
-            size="sm" 
-            className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5"
-            onClick={() => setLocation('/booking')}
-          >
-            <Plus className="w-3 h-3 mr-1" />
-            Nouveau RDV
-          </Button>
+        </div>
+
+        {/* Section des fonctionnalités */}
+        <div className="relative mb-16">
+          {/* Bulle centrale Community */}
+          <div className="relative mb-12">
+            <div className="w-64 h-64 mx-auto bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+              <div className="text-center">
+                <h3 className="text-white text-xl font-semibold mb-2">Community.</h3>
+                <p className="text-white/80 text-sm px-4">Connectez-vous avec d'autres professionnels</p>
+              </div>
+            </div>
+            
+            {/* Bulles satellites */}
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div 
+                className="absolute top-16 left-8 w-20 h-20 bg-white/15 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer hover:bg-white/25 transition-all"
+                onClick={() => setLocation('/ai')}
+              >
+                <span className="text-white text-sm font-medium">Training.</span>
+              </div>
+              <div 
+                className="absolute top-16 right-8 w-20 h-20 bg-white/15 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer hover:bg-white/25 transition-all"
+                onClick={() => setLocation('/business-features')}
+              >
+                <span className="text-white text-sm font-medium">Pro Desk.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Quick Access Menu */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      {/* Section inférieure blanche */}
+      <div className="bg-white rounded-t-[3rem] -mt-16 relative z-20 px-6 py-12">
+        {/* Titre section */}
+        <div className="text-center mb-12">
+          <h3 className="text-3xl font-light text-gray-900 mb-4">
+            Devenez Expert avec Ask Rendly
+          </h3>
+        </div>
 
-        <Button 
-          variant="outline"
-          className="h-14 border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl"
-          onClick={() => setLocation("/booking")}
-        >
-          <Plus className="w-5 h-5 mr-2" />
-          Nouvelle réservation
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-4 gap-2">
-        <Button 
-          variant="outline" 
-          className="h-16 flex-col border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl text-xs"
-          onClick={() => setLocation("/services")}
-        >
-          <Settings className="w-5 h-5 mb-1" />
-          Services
-        </Button>
-        <Button 
-          variant="outline" 
-          className="h-16 flex-col border-blue-200 text-blue-700 hover:bg-blue-50 rounded-xl text-xs"
-          onClick={() => setLocation("/staff")}
-        >
-          <UserCheck className="w-5 h-5 mb-1" />
-          Équipe
-        </Button>
-        <Button 
-          variant="outline" 
-          className="h-16 flex-col border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl text-xs"
-          onClick={() => setLocation("/clients")}
-        >
-          <Users className="w-5 h-5 mb-1" />
-          Clients
-        </Button>
-        <Button 
-          variant="outline" 
-          className="h-16 flex-col border-orange-200 text-orange-700 hover:bg-orange-50 rounded-xl text-xs"
-          onClick={() => setLocation("/planning")}
-        >
-          <Calendar className="w-5 h-5 mb-1" />
-          Planning
-        </Button>
-        <Button 
-          variant="outline" 
-          className="h-16 flex-col border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-xs"
-          onClick={() => setLocation("/settings")}
-        >
-          <Settings className="w-5 h-5 mb-1" />
-          Config
-        </Button>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">Aujourd'hui</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">
-                  {(stats as any)?.todayAppointments || 0}
-                </p>
-                <p className="text-xs text-gray-500">RDV</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
-                <CalendarCheck className="w-4 h-4 text-blue-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">CA Semaine</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">
-                  {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '0€'}
-                </p>
-                <p className="text-xs text-emerald-600 font-medium">+12%</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">Récurrence 30j</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">
-                  {clientRetention?.retentionRate30Days || 0}%
-                </p>
-                <p className="text-xs text-violet-600 font-medium">
-                  {clientRetention?.returningClients30Days || 0} clients
-                </p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-100 to-purple-100 rounded-lg flex items-center justify-center">
-                <UserCheck className="w-4 h-4 text-violet-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">Clients Fidèles</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">
-                  {clientRetention?.loyaltyRate || 0}%
-                </p>
-                <p className="text-xs text-orange-600 font-medium">
-                  {clientRetention?.loyalClients || 0} clients 3+ visites
-                </p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg flex items-center justify-center">
-                <Award className="w-4 h-4 text-orange-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">Clients</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">
-                  {(stats as any)?.totalClients || 0}
-                </p>
-                <p className="text-xs text-gray-500">Total</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center">
-                <Users className="w-4 h-4 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-gray-500">Taux</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">82%</p>
-                <p className="text-xs text-amber-600 font-medium">Semaine</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg flex items-center justify-center">
-                <Clock className="w-4 h-4 text-amber-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Revenue Chart */}
-      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Évolution du chiffre d'affaires</CardTitle>
-          <p className="text-sm text-gray-500">30 derniers jours</p>
-        </CardHeader>
-        <CardContent>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={Array.isArray(revenueChart) ? revenueChart : []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis 
-                  dataKey="date" 
-                  stroke="#64748b"
-                  fontSize={12}
-                  tickFormatter={(date) => new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}
-                />
-                <YAxis stroke="#6b7280" fontSize={12} />
-                <Tooltip 
-                  labelFormatter={(date) => new Date(date).toLocaleDateString('fr-FR')}
-                  formatter={(value) => [`${value}€`, 'Chiffre d\'affaires']}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="revenue" 
-                  stroke="#3B82F6" 
-                  strokeWidth={2}
-                  dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+        {/* Grid des fonctionnalités */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-16">
+          {/* Training & Community */}
+          <div className="text-left">
+            <h4 className="text-xl font-semibold text-gray-900 mb-4">
+              Training. Community.<br />Mentorship.
+            </h4>
+            <p className="text-gray-600 text-sm leading-relaxed mb-6">
+              Rejoignez notre communauté de professionnels de la beauté avec un programme 
+              de formation basé sur l'IA AVANT tout.<br /><br />
+              Profitez de notre plateforme étudiante pour les salons-partenaires nouvellement lancés 
+              et notre formidable communauté d'aide pour accélérer votre réussite.
+            </p>
           </div>
-        </CardContent>
-      </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Services */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Prestations les plus vendues</CardTitle>
-            <p className="text-sm text-gray-500">30 derniers jours</p>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={Array.isArray(topServices) ? topServices : []} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
-                  <XAxis type="number" stroke="#6b7280" fontSize={12} />
-                  <YAxis 
-                    type="category" 
-                    dataKey="serviceName" 
-                    stroke="#6b7280" 
-                    fontSize={12}
-                    width={80}
-                  />
-                  <Tooltip formatter={(value, name) => [value, name === 'count' ? 'Nombre de ventes' : 'Chiffre d\'affaires']} />
-                  <Bar dataKey="count" fill="#3B82F6" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Pro Desk */}
+          <div className="text-left">
+            <h4 className="text-xl font-semibold text-gray-900 mb-4">Pro Desk</h4>
+            <p className="text-gray-600 text-sm leading-relaxed mb-6">
+              Le point de départ où vous pouvez suivre suffisamment d'informations 
+              sur vos clients et votre salon.<br /><br />
+              Nos recommandations d'IA vous aident à optimiser vos créneaux. Les données 
+              pratiques d'amélioration de l'activité offrent des conseils sur les autres outils.
+            </p>
+            <Button 
+              className="bg-purple-600 text-white hover:bg-purple-700 rounded-lg px-6 py-2 text-sm"
+              onClick={() => setLocation('/business-features')}
+            >
+              Members Area →
+            </Button>
+          </div>
+        </div>
 
-        {/* Staff Performance */}
-        <Card className="border-0 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-gray-900">Classement équipe</CardTitle>
-            <p className="text-sm text-gray-500">Chiffre d'affaires par personne</p>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {Array.isArray(staffPerformance) && staffPerformance.map((staff: any, index: number) => (
-                <div key={staff.staffName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
-                      index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-600'
-                    }`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{staff.staffName}</p>
-                      <p className="text-sm text-gray-500">{staff.appointmentCount} RDV</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">{staff.revenue}€</p>
-                    {index === 0 && <Award className="w-4 h-4 text-yellow-500 ml-auto" />}
-                  </div>
-                </div>
-              )) || (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Aucune donnée de performance disponible</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Section statistiques */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-16">
+          <Card className="border-0 shadow-sm bg-gray-50 rounded-xl">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                {(stats as any)?.todayAppointments || 12}
+              </div>
+              <div className="text-xs text-gray-500">RDV Aujourd'hui</div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-gray-50 rounded-xl">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">
+                {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}` : '3,240'}€
+              </div>
+              <div className="text-xs text-gray-500">CA Semaine</div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-gray-50 rounded-xl">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">89%</div>
+              <div className="text-xs text-gray-500">Fidélisation</div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-gray-50 rounded-xl">
+            <CardContent className="p-4 text-center">
+              <div className="text-2xl font-bold text-gray-900 mb-1">156</div>
+              <div className="text-xs text-gray-500">Clients Actifs</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Section finale */}
+        <div className="text-center mb-16">
+          <h3 className="text-xl font-semibold text-gray-900 mb-4">Pourquoi Nous Choisir ?</h3>
+          <p className="text-gray-600 text-sm max-w-2xl mx-auto mb-8">
+            Nous gérons votre infrastructure technique pour que vous puissiez vous concentrer 
+            sur ce que vous faites de mieux : sublimer vos clients.
+          </p>
+          <Button 
+            className="bg-purple-600 text-white hover:bg-purple-700 rounded-full px-8 py-3"
+            onClick={() => setLocation('/ai')}
+          >
+            Commencer Gratuitement
+          </Button>
+        </div>
+
+        {/* Section inspiration */}
+        <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl p-8 text-center">
+          <h3 className="text-2xl font-light text-gray-900 mb-2">D'abord s'améliorer.</h3>
+          <h3 className="text-2xl font-light text-gray-900 mb-2">Puis conquérir le marché.</h3>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-6">Puis devenir une référence.</h3>
+          <Button 
+            variant="outline"
+            className="border-purple-300 text-purple-700 hover:bg-purple-50 rounded-full px-6 py-2"
+            onClick={() => setLocation('/business-features')}
+          >
+            Rejoindre Pro Desk
+          </Button>
+        </div>
+
+        {/* Section obstacles */}
+        <div className="mt-16 text-center">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-8">Surmontez Les Obstacles.</h3>
+          <div className="flex justify-center items-center gap-4 mb-8">
+            <div className="w-16 h-2 bg-purple-200 rounded-full"></div>
+            <div className="w-32 h-2 bg-purple-600 rounded-full"></div>
+            <div className="w-16 h-2 bg-purple-200 rounded-full"></div>
+          </div>
+        </div>
       </div>
-
-      {/* Client Retention Analysis */}
-      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Analyse de Fidélisation Client</CardTitle>
-          <p className="text-sm text-gray-500">Indicateurs de récurrence et fidélité</p>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-violet-800">Récurrence 30 jours</h4>
-                <UserCheck className="w-5 h-5 text-violet-600" />
-              </div>
-              <p className="text-2xl font-bold text-violet-900">
-                {clientRetention?.retentionRate30Days || 0}%
-              </p>
-              <p className="text-xs text-violet-600 mt-1">
-                {clientRetention?.returningClients30Days || 0} / {clientRetention?.totalClients || 0} clients
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl">
-              <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-orange-800">Clients VIP</h4>
-                <Award className="w-5 h-5 text-orange-600" />
-              </div>
-              <p className="text-2xl font-bold text-orange-900">
-                {clientRetention?.vipRate || 0}%
-              </p>
-              <p className="text-xs text-orange-600 mt-1">
-                {clientRetention?.vipClients || 0} clients (5+ visites)
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-3">
-            <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <p className="text-lg font-bold text-blue-900">
-                {clientRetention?.retentionRate90Days || 0}%
-              </p>
-              <p className="text-xs text-blue-600">Récurrence 90j</p>
-            </div>
-            <div className="text-center p-3 bg-emerald-50 rounded-lg">
-              <p className="text-lg font-bold text-emerald-900">
-                {clientRetention?.averageVisitsPerClient || 0}
-              </p>
-              <p className="text-xs text-emerald-600">Visites/client</p>
-            </div>
-            <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <p className="text-lg font-bold text-purple-900">
-                {clientRetention?.loyaltyRate || 0}%
-              </p>
-              <p className="text-xs text-purple-600">Clients fidèles</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Upcoming Appointments */}
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-gray-900">Prochains rendez-vous</CardTitle>
-          <p className="text-sm text-gray-500">7 prochains jours</p>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {Array.isArray(upcomingAppointments) && upcomingAppointments.length > 0 ? (
-              upcomingAppointments.map((appointment: any, index: number) => (
-                <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                      <CalendarCheck className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{appointment.clientName}</p>
-                      <p className="text-sm text-gray-500">{appointment.serviceName}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      {new Date(appointment.date).toLocaleDateString('fr-FR')}
-                    </p>
-                    <p className="text-sm text-gray-500">{appointment.time}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <CalendarCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p>Aucun rendez-vous prévu</p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
