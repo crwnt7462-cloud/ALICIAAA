@@ -123,6 +123,7 @@ import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
 import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBooking from "@/pages/SalonBooking";
+import SystemTest from "@/pages/SystemTest";
 
 
 function Router() {
@@ -384,6 +385,15 @@ function Router() {
     return (
       <div className="h-full">
         <Settings />
+      </div>
+    );
+  }
+
+  // Tests système
+  if (location === '/system-test') {
+    return (
+      <div className="h-full">
+        <SystemTest />
       </div>
     );
   }

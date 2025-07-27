@@ -298,10 +298,8 @@ export class DatabaseStorage implements IStorage {
   async createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount> {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
-    const clientId = nanoid();
 
     const newClient = {
-      id: clientId,
       email: userData.email,
       password: hashedPassword,
       firstName: userData.firstName,
@@ -309,6 +307,9 @@ export class DatabaseStorage implements IStorage {
       phone: userData.phone || null,
       dateOfBirth: userData.dateOfBirth || null,
       isVerified: false,
+      loyaltyPoints: 0,
+      clientStatus: 'regular',
+      mentionHandle: this.generateMentionHandle(userData.firstName, userData.lastName),
     };
 
     const [client] = await db.insert(clientAccounts).values(newClient).returning();
