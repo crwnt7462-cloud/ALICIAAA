@@ -7,9 +7,12 @@ import { useToast } from "@/hooks/use-toast";
 export default function ClientRegister() {
   const [, setLocation] = useLocation();
   const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    phone: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -17,10 +20,10 @@ export default function ClientRegister() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password || !formData.confirmPassword) {
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword) {
       toast({
         title: "Erreur",
-        description: "Veuillez remplir tous les champs",
+        description: "Veuillez remplir tous les champs obligatoires",
         variant: "destructive"
       });
       return;
@@ -53,8 +56,11 @@ export default function ClientRegister() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
-          password: formData.password
+          password: formData.password,
+          phone: formData.phone
         }),
         credentials: 'include'
       });
@@ -128,6 +134,30 @@ export default function ClientRegister() {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Champ Prénom */}
+            <div>
+              <Input
+                type="text"
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                placeholder="Prénom"
+                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                required
+              />
+            </div>
+
+            {/* Champ Nom */}
+            <div>
+              <Input
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                placeholder="Nom"
+                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                required
+              />
+            </div>
+
             {/* Champ Email */}
             <div>
               <Input
@@ -140,13 +170,24 @@ export default function ClientRegister() {
               />
             </div>
 
+            {/* Champ Téléphone */}
+            <div>
+              <Input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                placeholder="Téléphone (optionnel)"
+                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+
             {/* Champ Password */}
             <div>
               <Input
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
-                placeholder="Password"
+                placeholder="Mot de passe"
                 className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
                 required
               />
@@ -158,7 +199,7 @@ export default function ClientRegister() {
                 type="password"
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                placeholder="Confirm Password"
+                placeholder="Confirmer le mot de passe"
                 className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
                 required
               />

@@ -145,6 +145,42 @@ export default function ClientLogin() {
             <span className="text-gray-400 text-sm">or Sign in with</span>
           </div>
 
+          {/* Bouton Connexion Démo */}
+          <Button
+            type="button"
+            onClick={async () => {
+              setIsLoading(true);
+              try {
+                const response = await fetch('/api/client/login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ 
+                    email: 'client@test.com', 
+                    password: 'client123' 
+                  }),
+                  credentials: 'include'
+                });
+                
+                if (response.ok) {
+                  const data = await response.json();
+                  if (data.success && data.client) {
+                    localStorage.setItem('clientToken', data.client.token);
+                    localStorage.setItem('clientData', JSON.stringify(data.client));
+                    toast({ title: "Connexion démo réussie", description: "Bienvenue !" });
+                    window.location.href = '/client-dashboard';
+                  }
+                }
+              } catch (error) {
+                toast({ title: "Erreur", description: "Connexion démo échouée", variant: "destructive" });
+              } finally {
+                setIsLoading(false);
+              }
+            }}
+            className="w-full h-14 bg-green-600 hover:bg-green-700 text-white text-base font-semibold rounded-2xl shadow-lg mb-6"
+          >
+            Connexion Démo
+          </Button>
+
           {/* Boutons sociaux */}
           <div className="flex justify-center gap-4 mb-8">
             <Button
