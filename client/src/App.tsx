@@ -58,6 +58,7 @@ import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
+import AIProModern from "@/pages/AIProModern";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPage from "@/pages/SalonPage";
@@ -652,7 +653,8 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
-          <Route path="/ai" component={AIAssistantSimple} />
+          <Route path="/ai" component={AIProModern} />
+          <Route path="/ai-pro" component={AIProModern} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
