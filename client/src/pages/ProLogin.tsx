@@ -31,25 +31,54 @@ export default function ProLogin() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest('POST', '/api/auth/login', formData);
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+        credentials: 'include'
+      });
+      
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
       
       if (response.ok) {
-        const data = await response.json();
-        toast({
-          title: "Connexion réussie",
-          description: `Bienvenue ${data.user.firstName} !`,
-        });
-        // Redirection vers les Pro Tools
-        setLocation('/business-features');
+        try {
+          const data = JSON.parse(responseText);
+          console.log('Pro login response:', data);
+          
+          if (data.success && data.user) {
+            localStorage.setItem('proToken', data.user.id);
+            localStorage.setItem('proData', JSON.stringify(data.user));
+            
+            toast({
+              title: "Connexion réussie",
+              description: `Bienvenue ${data.user.firstName} !`,
+            });
+            
+            // Redirection immédiate vers les Pro Tools
+            window.location.href = '/business-features';
+          } else {
+            throw new Error('Format de réponse invalide');
+          }
+        } catch (parseError) {
+          console.error('Parse error:', parseError);
+          toast({
+            title: "Erreur de connexion",
+            description: "Réponse serveur invalide",
+            variant: "destructive"
+          });
+        }
       } else {
-        const errorData = await response.json();
         toast({
           title: "Erreur de connexion",
-          description: errorData.message || "Identifiants incorrects",
+          description: `Erreur ${response.status}: Identifiants incorrects`,
           variant: "destructive"
         });
       }
     } catch (error) {
+      console.error('Network error:', error);
       toast({
         title: "Erreur de connexion",
         description: "Une erreur est survenue lors de la connexion",

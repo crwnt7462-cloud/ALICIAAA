@@ -38,30 +38,40 @@ export default function ClientLogin() {
         credentials: 'include'
       });
 
+      const responseText = await response.text();
+      console.log('Raw response:', responseText);
+      
       if (response.ok) {
-        const data = await response.json();
-        console.log('Login response:', data);
-        
-        if (data.success && data.client) {
-          localStorage.setItem('clientToken', data.client.token);
-          localStorage.setItem('clientData', JSON.stringify(data.client));
+        try {
+          const data = JSON.parse(responseText);
+          console.log('Login response:', data);
           
+          if (data.success && data.client) {
+            localStorage.setItem('clientToken', data.client.token);
+            localStorage.setItem('clientData', JSON.stringify(data.client));
+            
+            toast({
+              title: "Connexion réussie",
+              description: `Bienvenue ${data.client.firstName} !`,
+            });
+            
+            // Redirection immédiate vers le dashboard client
+            window.location.href = '/client-dashboard';
+          } else {
+            throw new Error('Format de réponse invalide');
+          }
+        } catch (parseError) {
+          console.error('Parse error:', parseError);
           toast({
-            title: "Connexion réussie",
-            description: `Bienvenue ${data.client.firstName} !`,
+            title: "Erreur de connexion",
+            description: "Réponse serveur invalide",
+            variant: "destructive"
           });
-          
-          // Redirection vers le dashboard client
-          setTimeout(() => {
-            setLocation('/client-dashboard');
-          }, 500);
         }
       } else {
-        const error = await response.json();
-        console.error('Login error:', error);
         toast({
           title: "Erreur de connexion",
-          description: error.error || "Identifiants incorrects",
+          description: `Erreur ${response.status}: Identifiants incorrects`,
           variant: "destructive"
         });
       }
