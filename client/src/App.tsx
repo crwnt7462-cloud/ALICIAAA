@@ -344,8 +344,8 @@ function Router() {
     );
   }
 
-  // Page IA simplifiée
-  if (location === '/ai') {
+  // Page IA simplifiée (ancienne)
+  if (location === '/ai-chat') {
     return (
       <div className="h-full">
         <ChatGPTInterface />
