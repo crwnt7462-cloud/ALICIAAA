@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, Building2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function ProLogin() {
   const [, setLocation] = useLocation();
@@ -80,8 +78,8 @@ export default function ProLogin() {
     } catch (error) {
       console.error('Network error:', error);
       toast({
-        title: "Erreur de connexion",
-        description: "Une erreur est survenue lors de la connexion",
+        title: "Erreur de réseau",
+        description: "Impossible de se connecter au serveur",
         variant: "destructive"
       });
     } finally {
@@ -90,116 +88,109 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Bouton retour */}
-      <div className="absolute top-4 left-4 z-10">
-        <Button
-          variant="ghost"
-          onClick={() => window.history.back()}
-          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-      </div>
-
-      {/* Section gauche - Image et branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-amber-50/50"></div>
-        
-        <div className="relative z-10 flex items-center justify-center p-12">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="w-20 h-20 bg-violet-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl">
-              <Building2 className="h-10 w-10 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
-                Espace Professionnel
-              </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Gérez votre salon avec simplicité et efficacité
-              </p>
-            </div>
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Logo centré en haut */}
+      <div className="pt-16 pb-8 text-center">
+        <div className="flex items-center justify-center gap-2 mb-12">
+          <div className="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
+            <div className="w-6 h-1 bg-white rounded-full transform rotate-45"></div>
           </div>
+          <span className="text-2xl font-bold text-gray-900">Rendly Pro</span>
         </div>
       </div>
 
-      {/* Section droite - Formulaire */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md border-2 border-black rounded-2xl">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-4">
-            <Building2 className="h-8 w-8 text-violet-600" />
-          </div>
-          <CardTitle className="text-2xl">Connexion Professionnelle</CardTitle>
-          <p className="text-gray-600">Accédez à votre espace Pro</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Email professionnel
-              </label>
+      {/* Formulaire centré */}
+      <div className="flex-1 flex items-start justify-center px-6">
+        <div className="w-full max-w-sm">
+          <h1 className="text-xl font-medium text-gray-700 mb-8 text-center">
+            Login to your account
+          </h1>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Champ Email */}
+            <div>
               <Input
                 type="email"
-                placeholder="votre@email.com"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full"
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                placeholder="Email"
+                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                required
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Mot de passe
-              </label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Votre mot de passe"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pr-10"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+            {/* Champ Password */}
+            <div>
+              <Input
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                placeholder="Password"
+                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                required
+              />
             </div>
 
+            {/* Bouton Sign up */}
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium"
+              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white text-base font-semibold rounded-2xl shadow-lg"
             >
-              <LogIn className="h-4 w-4 mr-2" />
-              {isLoading ? 'Connexion...' : 'Se connecter'}
+              {isLoading ? "Connexion..." : "Sign up"}
             </Button>
           </form>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-medium text-blue-900 mb-2">Compte de test disponible</h3>
-            <div className="text-sm text-blue-700 space-y-1">
-              <p><strong>Email:</strong> test@monapp.com</p>
-              <p><strong>Mot de passe:</strong> test1234</p>
-              <p><strong>Handle:</strong> @usemyrr</p>
-            </div>
+          {/* Séparateur */}
+          <div className="my-8 text-center">
+            <span className="text-gray-400 text-sm">or Sign in with</span>
           </div>
 
-          <div className="text-center text-sm text-gray-500">
-            Connexion sécurisée uniquement avec compte existant
+          {/* Boutons sociaux */}
+          <div className="flex justify-center gap-4 mb-8">
+            <Button
+              variant="outline"
+              className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
+              onClick={() => console.log('Google login')}
+            >
+              <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                G
+              </div>
+            </Button>
+            <Button
+              variant="outline"
+              className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
+              onClick={() => console.log('Facebook login')}
+            >
+              <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">
+                f
+              </div>
+            </Button>
+            <Button
+              variant="outline"
+              className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
+              onClick={() => console.log('Twitter login')}
+            >
+              <div className="w-6 h-6 bg-black rounded text-white text-xs font-bold flex items-center justify-center">
+                X
+              </div>
+            </Button>
           </div>
-        </CardContent>
-      </Card>
+
+          {/* Lien inscription */}
+          <div className="text-center">
+            <span className="text-gray-500 text-sm">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                className="text-violet-600 font-semibold hover:text-violet-700"
+                onClick={() => setLocation('/professional-plans')}
+              >
+                Sign up
+              </button>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
