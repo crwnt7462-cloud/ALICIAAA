@@ -25,15 +25,7 @@ interface Review {
   verified: boolean;
 }
 
-interface Service {
-  id: number;
-  name: string;
-  duration: string;
-  price: number;
-  originalPrice?: number;
-  specialist: string;
-  description: string;
-}
+
 
 export default function ModernSalonDetail() {
   const [, setLocation] = useLocation();
@@ -147,34 +139,7 @@ export default function ModernSalonDetail() {
     ]
   };
 
-  const services: Service[] = [
-    {
-      id: 1,
-      name: "Coupe + Brushing Expert",
-      duration: "90 min",
-      price: 75,
-      originalPrice: 95,
-      specialist: "Sarah - Expert certifiée",
-      description: "Coupe personnalisée avec analyse morphologique"
-    },
-    {
-      id: 2,
-      name: "Coloration Premium",
-      duration: "2h30",
-      price: 120,
-      originalPrice: 150,
-      specialist: "Marie - Coloriste senior",
-      description: "Coloration sur mesure avec produits haut de gamme"
-    },
-    {
-      id: 3,
-      name: "Soin Réparateur Intense",
-      duration: "45 min",
-      price: 55,
-      specialist: "Lisa - Spécialiste soins",
-      description: "Traitement profond pour cheveux abîmés"
-    }
-  ];
+
 
   const reviews: Review[] = [
     {
