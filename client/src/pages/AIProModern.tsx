@@ -26,7 +26,7 @@ export default function AIProModern() {
     {
       id: '1',
       role: 'assistant',
-      content: 'Bonjour ! 👋\n\nJe suis votre assistant IA professionnel. Je peux vous aider avec l\'optimisation de votre salon, l\'analyse de performances, les stratégies marketing et bien plus.',
+      content: 'Bonjour ! 👋\n\nJe suis votre assistant IA MODERNE. Je peux vous aider avec l\'optimisation de votre salon, l\'analyse de performances, les stratégies marketing et bien plus.',
       timestamp: new Date()
     }
   ]);
@@ -139,7 +139,7 @@ export default function AIProModern() {
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-gray-900">Assistant IA Pro</h1>
+            <h1 className="font-bold text-gray-900">Assistant IA Moderne</h1>
           </div>
         </div>
         
