@@ -234,9 +234,9 @@ export default function ModernSalonDetail() {
           {/* Navigation Tabs */}
           <div className="flex border-b border-gray-800">
             {[
-              { id: 'services', label: 'Services' },
+              { id: 'services', label: 'Prendre RDV' },
               { id: 'avis', label: 'Avis' },
-              { id: 'infos', label: 'Infos' }
+              { id: 'infos', label: 'À-propos' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -295,8 +295,6 @@ export default function ModernSalonDetail() {
                   )}
                 </div>
               ))}
-              
-
             </div>
           )}
 
