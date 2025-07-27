@@ -236,7 +236,8 @@ export default function ModernSalonDetail() {
             {[
               { id: 'services', label: 'Prendre RDV' },
               { id: 'avis', label: 'Avis' },
-              { id: 'infos', label: 'À-propos' }
+              { id: 'infos', label: 'À-propos' },
+              { id: 'offrir', label: 'Offrir' }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -256,10 +257,9 @@ export default function ModernSalonDetail() {
         {/* Content */}
         <div className="p-4 pb-20">
           {activeTab === 'services' && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-light text-white mb-4">Choix de la prestation</h2>
-              
-              {serviceCategories.map((category, categoryIndex) => (
+            <div className="space-y-3">
+              <div className="space-y-3">
+                {serviceCategories.map((category, categoryIndex) => (
                 <div key={category.id} className="bg-gray-900 rounded-lg border border-gray-800">
                   <div 
                     className="flex items-center justify-between p-4 cursor-pointer"
@@ -294,7 +294,8 @@ export default function ModernSalonDetail() {
                     </div>
                   )}
                 </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
@@ -395,6 +396,17 @@ export default function ModernSalonDetail() {
                 <div className="flex items-center gap-3 text-sm">
                   <Clock className="w-4 h-4 text-gray-400" />
                   <span className="text-gray-300">Lun-Sam 9h-19h</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'offrir' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-xl font-light text-white mb-4">Offrir une prestation</h2>
+                <div className="text-center py-8">
+                  <p className="text-gray-400">Fonctionnalité bientôt disponible</p>
                 </div>
               </div>
             </div>
