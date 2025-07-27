@@ -31,7 +31,16 @@ export default function AIProModern() {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showChatHistory, setShowChatHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Historique des chats simulé (à remplacer par des vraies données)
+  const chatHistory = [
+    { id: 1, title: "Optimisation planning", lastMessage: "Comment optimiser mon planning ?", date: "Aujourd'hui" },
+    { id: 2, title: "Gestion des stocks", lastMessage: "Alerte stock produits", date: "Hier" },
+    { id: 3, title: "Analyse performances", lastMessage: "Rapport mensuel", date: "2 jours" },
+    { id: 4, title: "Conseils marketing", lastMessage: "Campagne fidélisation", date: "3 jours" }
+  ];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,6 +49,18 @@ export default function AIProModern() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Fermer le menu historique quand on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showChatHistory && !(event.target as Element).closest('.chat-history-menu')) {
+        setShowChatHistory(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showChatHistory]);
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -97,8 +118,11 @@ export default function AIProModern() {
   return (
     <div className="h-full flex flex-col bg-white max-w-md mx-auto relative overflow-hidden">
       {/* Header violet */}
-      <div className="px-6 py-4 flex items-center justify-between">
-        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center shadow-lg">
+      <div className="px-6 py-4 flex items-center justify-between relative">
+        <div 
+          className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform"
+          onClick={() => setShowChatHistory(!showChatHistory)}
+        >
           <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
             <div className="w-3 h-3 bg-white rounded-full"></div>
           </div>
@@ -112,6 +136,57 @@ export default function AIProModern() {
             />
           </div>
         </div>
+
+        {/* Menu historique des chats dépliable */}
+        {showChatHistory && (
+          <div className="absolute top-16 left-6 w-80 bg-white rounded-2xl shadow-2xl border border-purple-100 z-50 overflow-hidden chat-history-menu">
+            <div className="p-4 bg-gradient-to-r from-purple-500 to-violet-600">
+              <h3 className="text-white font-semibold text-lg">Historique des conversations</h3>
+            </div>
+            
+            <div className="max-h-96 overflow-y-auto">
+              {chatHistory.map((chat) => (
+                <div 
+                  key={chat.id}
+                  className="p-4 border-b border-gray-100 hover:bg-purple-50 cursor-pointer transition-colors"
+                  onClick={() => {
+                    // Charger la conversation
+                    setShowChatHistory(false);
+                  }}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-violet-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-gray-900 text-sm truncate">{chat.title}</h4>
+                      <p className="text-xs text-gray-500 truncate mt-1">{chat.lastMessage}</p>
+                      <p className="text-xs text-purple-500 mt-1">{chat.date}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <button 
+                className="w-full text-sm text-purple-600 hover:text-purple-700 font-medium"
+                onClick={() => {
+                  // Nouveau chat
+                  setMessages([{
+                    id: '1',
+                    role: 'assistant',
+                    content: 'Bonjour ! Je suis votre assistant IA.\nComment puis-je vous aider aujourd\'hui ?',
+                    timestamp: new Date()
+                  }]);
+                  setShowChatHistory(false);
+                }}
+              >
+                + Nouvelle conversation
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Message de salutation centré */}
@@ -119,7 +194,7 @@ export default function AIProModern() {
         {messages.length === 1 ? (
           <div className="text-center px-8">
             <h1 className="text-4xl font-light text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-purple-600 bg-clip-text mb-4">
-              Bonjour, {user?.firstName || user?.name || 'Agash'}
+              Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Agash'}
             </h1>
             <p className="text-gray-600 text-sm">
               Votre assistant IA est prêt à vous aider
