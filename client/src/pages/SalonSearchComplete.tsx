@@ -114,22 +114,22 @@ export default function SalonSearchComplete() {
           <ArrowLeft className="h-5 w-5 text-gray-700" />
         </button>
 
-        {/* Container principal - mêmes dimensions que screenshot */}
-        <div className="px-6 pt-20 pb-8">
+        {/* Container principal - plus compact */}
+        <div className="px-6 pt-16 pb-6">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo "Design" violet - exactement comme image */}
-            <div className="text-center mb-20">
+            {/* Logo "Design" violet - moins d'espace */}
+            <div className="text-center mb-12">
               <h1 className="text-3xl font-bold text-violet-600">Design</h1>
             </div>
 
-            {/* Titre - même position et style */}
-            <div className="text-center mb-16">
+            {/* Titre - moins d'espace */}
+            <div className="text-center mb-8">
               <h2 className="text-xl text-gray-500 font-normal">Find your salon</h2>
             </div>
           
-            {/* Champs de recherche - exactement comme screenshot */}
-            <div className="space-y-4 mb-8">
+            {/* Champs de recherche - plus compact */}
+            <div className="space-y-3 mb-6">
               <div className="relative">
                 <input
                   type="text"
@@ -151,16 +151,16 @@ export default function SalonSearchComplete() {
               </div>
             </div>
 
-            {/* Bouton Search - exactement comme screenshot */}
+            {/* Bouton Search - plus compact */}
             <button
               onClick={() => setActiveFilter("coiffure")}
-              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors mb-8"
+              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors mb-6"
             >
               Search
             </button>
 
             {/* Texte séparateur */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-6">
               <p className="text-gray-400 text-sm">or browse categories</p>
             </div>
           
