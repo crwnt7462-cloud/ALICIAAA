@@ -18,7 +18,7 @@ import {
 
 export default function SalonSearch() {
   const [, setLocation] = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("barbier");
   const [locationQuery, setLocationQuery] = useState("Paris");
   const [activeFilter, setActiveFilter] = useState("all");
 
@@ -136,19 +136,19 @@ export default function SalonSearch() {
           </h1>
 
           {/* Formulaire de recherche - style identique aux champs login */}
-          <div className="space-y-6 mb-8">
+          <div className="space-y-4 mb-8">
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Service"
-              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-white rounded-2xl text-base placeholder:text-gray-400 shadow-none"
+              placeholder="barbier"
+              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-2xl text-base placeholder:text-gray-400 shadow-none"
             />
             
             <Input
               value={locationQuery}
               onChange={(e) => setLocationQuery(e.target.value)}
-              placeholder="Location"
-              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-white rounded-2xl text-base placeholder:text-gray-400 shadow-none"
+              placeholder="Paris"
+              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-2xl text-base placeholder:text-gray-400 shadow-none"
             />
 
             <Button 
@@ -165,19 +165,25 @@ export default function SalonSearch() {
           </div>
 
           {/* Catégories en grid 2x2 style boutons sociaux */}
-          <div className="grid grid-cols-2 gap-3">
-            {categories.slice(1).map((category) => (
-              <button
-                key={category.id}
-                onClick={() => {
-                  setActiveFilter(category.id);
-                  handleSearch();
-                }}
-                className="h-14 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                {category.name}
-              </button>
-            ))}
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => {
+                setActiveFilter("coiffure");
+                handleSearch();
+              }}
+              className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+            >
+              Coiffure
+            </button>
+            <button
+              onClick={() => {
+                setActiveFilter("esthetique");
+                handleSearch();
+              }}
+              className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+            >
+              Esthétique
+            </button>
           </div>
 
         </div>
