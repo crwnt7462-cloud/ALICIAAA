@@ -626,6 +626,15 @@ function Router() {
     );
   }
 
+  // Page IA en plein écran SANS menu navigation (comme dans l'image)
+  if (location === '/ai') {
+    return (
+      <div className="h-full">
+        <AIProModern />
+      </div>
+    );
+  }
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
@@ -653,7 +662,6 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
-          <Route path="/ai" component={AIProModern} />
           <Route path="/ai-pro" component={AIProModern} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />

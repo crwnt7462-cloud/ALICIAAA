@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send, Mic, Sparkles, Brain, Zap } from 'lucide-react';
+import { ArrowLeft, Send } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 
@@ -13,20 +12,13 @@ interface Message {
   timestamp: Date;
 }
 
-interface SuggestionCard {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-}
-
 export default function AIProModern() {
   const [, setLocation] = useLocation();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
       role: 'assistant',
-      content: 'Bonjour ! 👋\n\nJe suis votre assistant IA MODERNE. Je peux vous aider avec l\'optimisation de votre salon, l\'analyse de performances, les stratégies marketing et bien plus.',
+      content: 'Bonjour ! Je suis votre assistant IA.\nComment puis-je vous aider aujourd\'hui ?',
       timestamp: new Date()
     }
   ]);
@@ -42,32 +34,11 @@ export default function AIProModern() {
     scrollToBottom();
   }, [messages]);
 
-  const suggestions: SuggestionCard[] = [
-    {
-      id: '1',
-      title: 'Optimiser mon planning',
-      description: 'Analysez et optimisez votre planning de la semaine',
-      icon: <Brain className="w-5 h-5 text-violet-600" />
-    },
-    {
-      id: '2',
-      title: 'Analyse des performances',
-      description: 'Obtenez des insights sur vos KPIs',
-      icon: <Sparkles className="w-5 h-5 text-violet-600" />
-    },
-    {
-      id: '3',
-      title: 'Stratégie marketing',
-      description: 'Créez des campagnes personnalisées',
-      icon: <Zap className="w-5 h-5 text-violet-600" />
-    }
-  ];
-
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest('POST', '/api/ai/chat', {
+      const response = await apiRequest("POST", "/api/ai/chat", {
         message,
-        conversationHistory: messages.slice(-5)
+        conversationHistory: messages.slice(-10)
       });
       return response.json();
     },
@@ -75,7 +46,7 @@ export default function AIProModern() {
       const assistantMessage: Message = {
         id: Date.now().toString(),
         role: 'assistant',
-        content: data.response || 'Je n\'ai pas pu traiter votre demande. Pouvez-vous reformuler ?',
+        content: data.response || "Je n'ai pas pu traiter votre demande. Pouvez-vous reformuler ?",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, assistantMessage]);
@@ -83,13 +54,6 @@ export default function AIProModern() {
     },
     onError: () => {
       setIsLoading(false);
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: 'Désolé, je rencontre des difficultés techniques. Réessayez dans quelques instants.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
     }
   });
 
@@ -106,12 +70,7 @@ export default function AIProModern() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     sendMessageMutation.mutate(inputValue);
-    setInputValue('');
-  };
-
-  const handleSuggestionClick = (suggestion: SuggestionCard) => {
-    setInputValue(suggestion.description);
-    setTimeout(() => handleSendMessage(), 100);
+    setInputValue("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -121,145 +80,110 @@ export default function AIProModern() {
     }
   };
 
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('fr-FR', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-b from-violet-50 to-white">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm border-b border-violet-100">
+    <div className="h-full flex flex-col bg-gray-100 max-w-md mx-auto">
+      {/* Header simple comme dans l'image */}
+      <div className="bg-white px-4 py-3 border-b border-gray-200 flex items-center gap-3">
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setLocation('/business-features')}
-          className="text-violet-600 hover:bg-violet-50"
+          onClick={() => setLocation('/dashboard')}
+          className="p-1 h-8 w-8"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Button>
         
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
           <div>
-            <h1 className="font-bold text-gray-900">Assistant IA Moderne</h1>
+            <h1 className="font-semibold text-gray-900 text-lg">Assistant IA</h1>
+            <p className="text-xs text-green-600">En ligne</p>
           </div>
         </div>
-        
-        <div className="w-8 h-8" />
       </div>
 
-      {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* Zone des messages */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                message.role === 'user'
-                  ? 'bg-violet-600 text-white'
-                  : 'bg-white border border-violet-100 text-gray-900 shadow-sm'
-              }`}
-            >
-              <div className="text-sm leading-relaxed whitespace-pre-wrap">
-                {message.content}
+          <div key={message.id} className="flex flex-col">
+            {message.role === 'assistant' ? (
+              <div className="self-start max-w-[85%]">
+                <div className="bg-white rounded-2xl px-4 py-3 shadow-sm">
+                  <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500 mt-1 ml-2">
+                  {formatTime(message.timestamp)}
+                </p>
               </div>
-              <div className={`text-xs mt-2 ${
-                message.role === 'user' ? 'text-violet-100' : 'text-gray-500'
-              }`}>
-                {message.timestamp.toLocaleTimeString('fr-FR', { 
-                  hour: '2-digit', 
-                  minute: '2-digit' 
-                })}
+            ) : (
+              <div className="self-end max-w-[85%]">
+                <div className="bg-blue-500 rounded-2xl px-4 py-3">
+                  <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
+                    {message.content}
+                  </p>
+                </div>
+                <p className="text-xs text-gray-500 mt-1 mr-2 text-right">
+                  {formatTime(message.timestamp)}
+                </p>
               </div>
-            </div>
+            )}
           </div>
         ))}
-
+        
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-white border border-violet-100 rounded-2xl px-4 py-3 shadow-sm">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce delay-100" />
-                  <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce delay-200" />
-                </div>
-                <span className="text-sm text-gray-600">L'IA réfléchit...</span>
+          <div className="self-start max-w-[85%]">
+            <div className="bg-white rounded-2xl px-4 py-3 shadow-sm">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
               </div>
             </div>
           </div>
         )}
-
-        {/* Suggestions - Only show when no messages from user */}
-        {messages.length === 1 && (
-          <div className="space-y-3 mt-6">
-            <h3 className="text-sm font-medium text-gray-600 text-center">
-              Suggestions pour commencer
-            </h3>
-            <div className="grid gap-3">
-              {suggestions.map((suggestion) => (
-                <Card
-                  key={suggestion.id}
-                  className="p-4 border border-violet-100 hover:border-violet-200 cursor-pointer transition-all hover:shadow-md bg-white/60 backdrop-blur-sm"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-violet-50 rounded-lg">
-                      {suggestion.icon}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 text-sm">
-                        {suggestion.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 mt-0.5">
-                        {suggestion.description}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
+        
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
-      <div className="p-4 bg-white/80 backdrop-blur-sm border-t border-violet-100">
-        <div className="flex items-end gap-3">
+      {/* Texte d'aide en bas */}
+      <div className="px-4 py-2">
+        <p className="text-xs text-gray-500 text-center">
+          L'assistant IA peut vous aider avec la gestion de votre salon, vos rendez-vous, et répondre à vos questions.
+        </p>
+      </div>
+
+      {/* Input message en bas exactement comme dans l'image */}
+      <div className="bg-white border-t border-gray-200 p-4">
+        <div className="flex items-center gap-3">
           <div className="flex-1 relative">
-            <textarea
+            <input
+              type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyPress}
+              onKeyPress={handleKeyPress}
               placeholder="Tapez votre message..."
-              className="w-full p-3 pr-12 bg-gray-50 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-sm"
-              rows={1}
-              style={{ minHeight: '44px', maxHeight: '120px' }}
+              className="w-full bg-gray-100 rounded-full px-4 py-3 text-sm border-none outline-none focus:bg-gray-50 transition-colors"
+              disabled={isLoading}
             />
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-violet-600"
-            >
-              <Mic className="w-4 h-4" />
-            </Button>
           </div>
           
           <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
-            className="w-12 h-12 rounded-2xl bg-violet-600 hover:bg-violet-700 disabled:opacity-50 flex items-center justify-center p-0"
+            size="sm"
+            className="w-10 h-10 rounded-full bg-gray-300 hover:bg-gray-400 text-gray-600 p-0 flex items-center justify-center"
           >
-            <Send className="w-5 h-5 text-white" />
+            <Send className="w-4 h-4" />
           </Button>
-        </div>
-        
-        <div className="text-center mt-2">
-          <p className="text-xs text-gray-500">
-            Propulsé par l'IA • Données sécurisées
-          </p>
         </div>
       </div>
     </div>
