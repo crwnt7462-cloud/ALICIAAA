@@ -313,9 +313,9 @@ export default function ModernSalonDetail() {
                     <div className="flex items-center justify-between pt-3 border-t border-gray-800">
                       <div className="flex items-center gap-3">
                         {service.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">{service.originalPrice}€</span>
+                          <span className="text-sm text-gray-500 line-through">{service.originalPrice}€ TTC</span>
                         )}
-                        <span className="text-xl font-light text-white">{service.price}€</span>
+                        <span className="text-xl font-light text-white">{service.price}€ TTC</span>
                         {service.originalPrice && (
                           <span className="text-xs bg-white/10 text-gray-300 px-2 py-1 rounded border border-white/20">
                             -{Math.round((1 - service.price / service.originalPrice) * 100)}%

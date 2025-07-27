@@ -196,7 +196,7 @@ export default function SubscriptionPlans() {
                 <div className="mt-4">
                   <div className="flex items-baseline justify-center">
                     <span className="text-4xl font-bold text-gray-900">
-                      {billingType === "monthly" ? plan.price : plan.priceAnnual}€
+                      {billingType === "monthly" ? plan.price : plan.priceAnnual}€ TTC
                     </span>
                     <span className="text-gray-500 ml-2">
                       /{billingType === "monthly" ? "mois" : "mois"}

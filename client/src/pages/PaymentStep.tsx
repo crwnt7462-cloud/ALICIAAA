@@ -291,17 +291,17 @@ export default function PaymentStep() {
                 <Separator className="my-2" />
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Prix total</span>
-                  <span className="font-medium">{bookingData.totalPrice}€</span>
+                  <span className="font-medium">{bookingData.totalPrice}€ TTC</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Acompte (30%)</span>
                   <Badge variant="secondary" className="bg-violet-100 text-violet-700">
-                    {bookingData.depositAmount}€
+                    {bookingData.depositAmount}€ TTC
                   </Badge>
                 </div>
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>Solde à régler sur place</span>
-                  <span>{(bookingData.totalPrice - bookingData.depositAmount).toFixed(2)}€</span>
+                  <span>{(bookingData.totalPrice - bookingData.depositAmount).toFixed(2)}€ TTC</span>
                 </div>
               </div>
             </div>

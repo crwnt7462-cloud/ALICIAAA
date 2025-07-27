@@ -23,6 +23,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes pour les photos de salon
+  app.get('/api/salon-photos/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const photos = await storage.getSalonPhotos(userId);
+      res.json(photos);
+    } catch (error) {
+      console.error("Error fetching salon photos:", error);
+      res.status(500).json({ error: "Failed to fetch salon photos" });
+    }
+  });
+
+  app.post('/api/salon-photos', async (req, res) => {
+    try {
+      const photo = await storage.addSalonPhoto(req.body);
+      res.json(photo);
+    } catch (error) {
+      console.error("Error adding salon photo:", error);
+      res.status(500).json({ error: "Failed to add salon photo" });
+    }
+  });
+
+  app.put('/api/salon-photos/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const photo = await storage.updateSalonPhoto(id, req.body);
+      res.json(photo);
+    } catch (error) {
+      console.error("Error updating salon photo:", error);
+      res.status(500).json({ error: "Failed to update salon photo" });
+    }
+  });
+
+  app.delete('/api/salon-photos/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteSalonPhoto(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting salon photo:", error);
+      res.status(500).json({ error: "Failed to delete salon photo" });
+    }
+  });
+
+  // Routes pour les rendez-vous liés aux comptes clients
+  app.get('/api/client-appointments/:clientAccountId', async (req, res) => {
+    try {
+      const { clientAccountId } = req.params;
+      const appointments = await storage.getClientAppointments(clientAccountId);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching client appointments:", error);
+      res.status(500).json({ error: "Failed to fetch client appointments" });
+    }
+  });
+
+  app.post('/api/appointments/:id/link-client', async (req, res) => {
+    try {
+      const appointmentId = parseInt(req.params.id);
+      const { clientAccountId } = req.body;
+      await storage.linkAppointmentToClient(appointmentId, clientAccountId);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error linking appointment to client:", error);
+      res.status(500).json({ error: "Failed to link appointment to client" });
+    }
+  });
+
 
 
   // Route de connexion PRO avec session persistante

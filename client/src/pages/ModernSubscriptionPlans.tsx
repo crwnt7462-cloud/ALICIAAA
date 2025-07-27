@@ -244,7 +244,7 @@ export default function ModernSubscriptionPlans() {
                         </span>
                       )}
                       <span className="text-4xl font-bold text-white">
-                        {currentPrice}€
+                        {currentPrice}€ TTC
                       </span>
                       <span className="text-gray-400 ml-2">
                         /{billingPeriod === 'monthly' ? 'mois' : 'an'}

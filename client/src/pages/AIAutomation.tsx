@@ -170,7 +170,7 @@ export default function AIAutomation() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm text-blue-700">
-                        {pricing.currentPrice}€ → {pricing.suggestedPrice}€
+                        {pricing.currentPrice}€ TTC → {pricing.suggestedPrice}€ TTC
                       </div>
                     </div>
                   </div>

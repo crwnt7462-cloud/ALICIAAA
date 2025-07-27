@@ -286,7 +286,7 @@ export default function SalonBookingFlow() {
                 </div>
                 <div className="flex justify-between font-semibold">
                   <span className="text-sm">Total:</span>
-                  <span className="text-sm">{bookingData.totalPrice}€</span>
+                  <span className="text-sm">{bookingData.totalPrice}€ TTC</span>
                 </div>
               </CardContent>
             </Card>
@@ -322,7 +322,7 @@ export default function SalonBookingFlow() {
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between font-semibold">
                     <span className="text-sm">Total à payer:</span>
-                    <span className="text-sm">{bookingData.totalPrice}€</span>
+                    <span className="text-sm">{bookingData.totalPrice}€ TTC</span>
                   </div>
                 </div>
               </CardContent>

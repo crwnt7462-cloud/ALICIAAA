@@ -73,6 +73,9 @@ import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
 import SalonRegistration from "@/pages/SalonRegistration";
+import SalonPhotosManager from "@/pages/SalonPhotosManager";
+import MonthlyCalendar from "@/pages/MonthlyCalendar";
+import AIProComplete from "@/pages/AIProComplete";
 import EditSalon from "@/pages/EditSalon";
 import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
@@ -587,6 +590,9 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
+          <Route path="/ai-pro-complete" component={AIProComplete} />
+          <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
+          <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
           <Route path="/messaging-test" component={MessagingTest} />
           <Route path="/pro-messaging-search" component={ProMessagingMobile} />
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />

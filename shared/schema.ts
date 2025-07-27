@@ -29,19 +29,7 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// Messages simples entre clients et professionnels
-export const clientMessages = pgTable("client_messages", {
-  id: serial("id").primaryKey(),
-  fromClientId: varchar("from_client_id").notNull(),
-  toProfessionalId: varchar("to_professional_id").notNull().references(() => users.id),
-  message: text("message").notNull(),
-  isRead: boolean("is_read").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export type ClientMessage = typeof clientMessages.$inferSelect;
-export type InsertClientMessage = typeof clientMessages.$inferInsert;
+// Suppression du système de messagerie selon les spécifications
 
 // User storage table (mandatory for Replit Auth)
 export const users = pgTable("users", {
@@ -172,10 +160,8 @@ export const clientAccounts = pgTable("client_accounts", {
   password: varchar("password"),
   firstName: varchar("first_name").notNull(),
   lastName: varchar("last_name").notNull(),
-  phone: varchar("phone"),
   dateOfBirth: date("date_of_birth"),
   isVerified: boolean("is_verified").default(false),
-  mentionHandle: varchar("mention_handle").unique(), // @identifiant unique pour mentions dans messagerie
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -188,7 +174,6 @@ export const clients = pgTable("clients", {
   firstName: varchar("first_name").notNull(),
   lastName: varchar("last_name").notNull(),
   email: varchar("email"),
-  phone: varchar("phone"),
   notes: text("notes"),
   preferences: text("preferences"),
   totalSpent: decimal("total_spent", { precision: 10, scale: 2 }).default("0"),
@@ -203,6 +188,7 @@ export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull().references(() => users.id),
   clientId: integer("client_id").references(() => clients.id),
+  clientAccountId: varchar("client_account_id").references(() => clientAccounts.id), // Lien vers compte client si connecté
   serviceId: integer("service_id").references(() => services.id),
   staffId: integer("staff_id").references(() => staff.id),
   clientName: varchar("client_name"), // for walk-in clients
@@ -217,6 +203,7 @@ export const appointments = pgTable("appointments", {
   depositPaid: decimal("deposit_paid", { precision: 10, scale: 2 }),
   paymentStatus: varchar("payment_status").default("pending"), // pending, partial, paid, refunded
   stripeSessionId: text("stripe_session_id"),
+  source: varchar("source").default("app_direct"), // instagram, google, facebook, tiktok, app_direct, autre
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -383,7 +370,18 @@ export const pushTokens = pgTable("push_tokens", {
   lastUsed: timestamp("last_used").defaultNow()
 });
 
-
+// Salon photos table
+export const salonPhotos = pgTable("salon_photos", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  photoUrl: text("photo_url").notNull(),
+  photoType: varchar("photo_type").default("gallery"), // logo, interior, team, results, gallery
+  caption: text("caption"),
+  sortOrder: integer("sort_order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
@@ -440,35 +438,7 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Messages between professionals and clients
-export const messages = pgTable("messages", {
-  id: serial("id").primaryKey(),
-  conversationId: varchar("conversation_id").notNull(),
-  fromUserId: varchar("from_user_id"), // professional user id
-  fromClientId: varchar("from_client_id"), // client account id
-  toUserId: varchar("to_user_id"), // professional user id  
-  toClientId: varchar("to_client_id"), // client account id
-  content: text("content").notNull(),
-  messageType: varchar("message_type").default("text"), // text, appointment, reminder, system
-  isRead: boolean("is_read").default(false),
-  attachments: text("attachments").array(), // URLs to attached files
-  mentions: text("mentions").array(), // Array of mentioned user IDs with @ functionality
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Conversations between professionals and clients
-export const conversations = pgTable("conversations", {
-  id: varchar("id").primaryKey(),
-  professionalUserId: varchar("professional_user_id").notNull().references(() => users.id),
-  clientAccountId: varchar("client_account_id").notNull().references(() => clientAccounts.id),
-  lastMessageAt: timestamp("last_message_at").defaultNow(),
-  lastMessageContent: text("last_message_content"),
-  isArchived: boolean("is_archived").default(false),
-  clientName: varchar("client_name"), // Cache client name for quick display
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+// Suppression des tables de messagerie selon les spécifications
 
 // SMS and notification logs
 export const smsNotifications = pgTable("sms_notifications", {
@@ -857,6 +827,19 @@ export type InsertClientNote = typeof clientNotes.$inferInsert;
 export type CustomTag = typeof customTags.$inferSelect;
 export type InsertCustomTag = typeof customTags.$inferInsert;
 
+// Types pour les photos de salon
+export type SalonPhoto = typeof salonPhotos.$inferSelect;
+export type InsertSalonPhoto = typeof salonPhotos.$inferInsert;
+
+// Schema d'insertion pour les photos de salon
+export const insertSalonPhotoSchema = createInsertSchema(salonPhotos).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertSalonPhotoType = z.infer<typeof insertSalonPhotoSchema>;
+
 // Table pour les informations de salon lors de l'inscription
 export const salonRegistrations = pgTable("salon_registrations", {
   id: serial("id").primaryKey(),
@@ -920,11 +903,7 @@ export type ClientRegisterRequest = z.infer<typeof clientRegisterSchema>;
 export type ClientAccount = typeof clientAccounts.$inferSelect;
 export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 
-// Message and conversation types
-export type Message = typeof messages.$inferSelect;
-export type InsertMessage = typeof messages.$inferInsert;
-export type Conversation = typeof conversations.$inferSelect;
-export type InsertConversation = typeof conversations.$inferInsert;
+// Suppression des types de messagerie selon les spécifications
 
 // Notification types
 export type SmsNotification = typeof smsNotifications.$inferSelect;

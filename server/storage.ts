@@ -6,9 +6,9 @@ import {
   staff,
   appointments,
   subscriptions,
-  clientMessages,
   clientNotes,
   customTags,
+  salonPhotos,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -24,12 +24,12 @@ import {
   type InsertStaff,
   type Appointment,
   type InsertAppointment,
-  type ClientMessage,
-  type InsertClientMessage,
   type ClientNote,
   type InsertClientNote,
   type CustomTag,
   type InsertCustomTag,
+  type SalonPhoto,
+  type InsertSalonPhoto,
   salonRegistrations,
   type SalonRegistration,
   type InsertSalonRegistration,
@@ -111,11 +111,43 @@ export interface IStorage {
   createSalon(salonData: any): Promise<any>;
   getSalon(salonId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
+
+  // Salon Photos Management
+  getSalonPhotos(userId: string): Promise<SalonPhoto[]>;
+  addSalonPhoto(photo: InsertSalonPhoto): Promise<SalonPhoto>;
+  updateSalonPhoto(id: number, photo: Partial<InsertSalonPhoto>): Promise<SalonPhoto>;
+  deleteSalonPhoto(id: number): Promise<void>;
+
+  // Client Appointments linked to accounts
+  getClientAppointments(clientAccountId: string): Promise<Appointment[]>;
+  linkAppointmentToClient(appointmentId: number, clientAccountId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
   // Stockage en mémoire pour les salons (développement)
   private salons: Map<string, any> = new Map();
+
+  // Implémentation des nouvelles fonctionnalités pour les photos de salon
+  async getSalonPhotos(userId: string): Promise<SalonPhoto[]> {
+    return await db.select().from(salonPhotos).where(eq(salonPhotos.userId, userId));
+  }
+
+  async addSalonPhoto(photo: InsertSalonPhoto): Promise<SalonPhoto> {
+    const [newPhoto] = await db.insert(salonPhotos).values(photo).returning();
+    return newPhoto;
+  }
+
+  async updateSalonPhoto(id: number, photo: Partial<InsertSalonPhoto>): Promise<SalonPhoto> {
+    const [updated] = await db.update(salonPhotos)
+      .set({ ...photo, updatedAt: new Date() })
+      .where(eq(salonPhotos.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteSalonPhoto(id: number): Promise<void> {
+    await db.delete(salonPhotos).where(eq(salonPhotos.id, id));
+  }
   async getUser(id: string): Promise<User | undefined> {
     // Return demo user for testing
     if (id === "demo") {
@@ -134,7 +166,7 @@ export class DatabaseStorage implements IStorage {
         isProfessional: true,
         isVerified: true,
         subscriptionStatus: "active",
-        subscriptionPlan: "pro",
+
         trialEndDate: null,
         reminderOptIn: true,
         createdAt: new Date(),
@@ -787,51 +819,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  // Envoyer un message à un professionnel
-  async sendMessageToProfessional(messageData: {
-    fromClientId: string;
-    toProfessionalId: string;
-    message: string;
-    timestamp: Date;
-  }): Promise<ClientMessage> {
-    const [newMessage] = await db.insert(clientMessages).values({
-      fromClientId: messageData.fromClientId,
-      toProfessionalId: messageData.toProfessionalId,
-      message: messageData.message,
-      isRead: false,
-      createdAt: messageData.timestamp,
-      updatedAt: messageData.timestamp
-    }).returning();
-    
-    return newMessage;
-  }
-
-  // Récupérer les messages d'un professionnel
-  async getProfessionalMessages(professionalId: string): Promise<any[]> {
-    const professionalMessages = await db
-      .select({
-        id: clientMessages.id,
-        fromClientId: clientMessages.fromClientId,
-        message: clientMessages.message,
-        isRead: clientMessages.isRead,
-        createdAt: clientMessages.createdAt,
-        clientName: sql<string>`COALESCE(${clientAccounts.firstName} || ' ' || ${clientAccounts.lastName}, 'Client inconnu')`
-      })
-      .from(clientMessages)
-      .leftJoin(clientAccounts, eq(clientMessages.fromClientId, clientAccounts.id))
-      .where(eq(clientMessages.toProfessionalId, professionalId))
-      .orderBy(desc(clientMessages.createdAt));
-
-    return professionalMessages;
-  }
-
-  // Marquer un message comme lu
-  async markMessageAsRead(messageId: number): Promise<void> {
-    await db
-      .update(clientMessages)
-      .set({ isRead: true, updatedAt: new Date() })
-      .where(eq(clientMessages.id, messageId));
-  }
+  // Suppression du système de messagerie selon les spécifications
   // Client authentication methods
   async authenticateClient(email: string, password: string): Promise<any | null> {
     const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
