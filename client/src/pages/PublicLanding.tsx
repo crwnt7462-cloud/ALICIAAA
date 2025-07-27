@@ -623,16 +623,18 @@ export default function PublicLanding() {
                     ))}
                   </div>
                   
-                  <Button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation(`/booking`);
-                    }}
-                    className="w-full gradient-bg hover:opacity-90"
-                    size="sm"
-                  >
-                    Réserver
-                  </Button>
+                  <div className="flex justify-end">
+                    <Button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocation(`/booking`);
+                      }}
+                      className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium"
+                      size="sm"
+                    >
+                      Réserver
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}

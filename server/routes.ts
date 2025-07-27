@@ -173,6 +173,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes pour authentification client
+  app.get('/api/client/auth/check', async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (token === 'mock-client-token') {
+      res.json({
+        id: 'client-1',
+        firstName: 'Marie',
+        lastName: 'Dupont',
+        email: 'marie.dupont@email.com'
+      });
+    } else {
+      res.status(401).json({ error: 'Non authentifié' });
+    }
+  });
+
   // API pour l'éditeur de page salon
   app.put('/api/booking-pages/:id', async (req, res) => {
     try {
