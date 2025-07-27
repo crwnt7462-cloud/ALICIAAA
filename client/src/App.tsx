@@ -121,6 +121,7 @@ import StripeCheckout from "@/pages/StripeCheckout";
 import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
 import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
 import BookingSuccess from "@/pages/BookingSuccess";
+import SalonBooking from "@/pages/SalonBooking";
 
 
 function Router() {
@@ -287,11 +288,20 @@ function Router() {
     );
   }
 
+  // Page de réservation salon
+  if (location === '/salon-booking') {
+    return (
+      <div className="h-full">
+        <SalonBooking />
+      </div>
+    );
+  }
+
   // Page de connexion client futuriste
   if (location === '/client-login') {
     return (
       <div className="h-full">
-        <ClientLoginWhite />
+        <ClientLogin />
       </div>
     );
   }

@@ -91,7 +91,7 @@ export default function ClientLogin() {
             </h1>
           </div>
 
-          <Card className="border-0 shadow-sm">
+          <Card className="border border-black shadow-lg hover:shadow-xl transition-shadow">
             <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">
@@ -148,7 +148,7 @@ export default function ClientLogin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-md"
+                  className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-md shadow-md hover:shadow-lg transition-all"
                 >
                   {isLoading ? 'Connexion...' : 'Se connecter'}
                 </Button>
@@ -161,7 +161,7 @@ export default function ClientLogin() {
                 <Button
                   variant="outline"
                   onClick={() => setLocation('/client-register')}
-                  className="h-12 px-8 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-medium"
+                  className="h-12 px-8 border-violet-600 text-violet-600 hover:bg-violet-600 hover:text-white font-medium transition-colors"
                 >
                   Créer mon compte
                 </Button>
