@@ -13,8 +13,6 @@ import {
   type UpsertUser,
   type InsertUser,
   type RegisterRequest,
-  type ClientAccount,
-  type InsertClientAccount,
   type ClientRegisterRequest,
   type Service,
   type InsertService,
@@ -37,6 +35,9 @@ import {
   type BusinessRegistration,
   type InsertBusinessRegistration,
 } from "@shared/schema";
+
+// Import types separately to avoid circular dependency
+import type { ClientAccount, InsertClientAccount } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
@@ -113,15 +114,22 @@ export interface IStorage {
   getSalon(salonId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
 
+  // Additional required methods
+  createSubscription(subscriptionData: any): Promise<any>;
+  getSubscriptionsByUserId(userId: string): Promise<any[]>;
+  getClientsByProfessional(professionalId: string): Promise<any[]>;
+  createOrUpdateClientNote(noteData: any): Promise<any>;
+  getCustomTagsByProfessional(professionalId: string): Promise<any[]>;
+  createCustomTag(tagData: any): Promise<any>;
+  deleteCustomTag(tagId: string): Promise<void>;
+
   // Salon Photos Management
   getSalonPhotos(userId: string): Promise<SalonPhoto[]>;
   addSalonPhoto(photo: InsertSalonPhoto): Promise<SalonPhoto>;
   updateSalonPhoto(id: number, photo: Partial<InsertSalonPhoto>): Promise<SalonPhoto>;
   deleteSalonPhoto(id: number): Promise<void>;
 
-  // Client Appointments linked to accounts
-  getClientAppointments(clientAccountId: string): Promise<Appointment[]>;
-  linkAppointmentToClient(appointmentId: number, clientAccountId: string): Promise<void>;
+  // Client Appointments linked to accounts (removed - using getAppointments instead)
 }
 
 export class DatabaseStorage implements IStorage {
@@ -227,44 +235,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  // Client Authentication Methods  
-  async createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount> {
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(clientData.password, saltRounds);
-
-    const newClient = {
-      email: clientData.email,
-      password: hashedPassword,
-      firstName: clientData.firstName,
-      lastName: clientData.lastName,
-      loyaltyPoints: 0,
-      clientStatus: "regular" as const,
-      isActive: true,
-      isVerified: false,
-    };
-
-    const [created] = await db.insert(clientAccounts).values(newClient).returning();
-    return created;
-  }
-
-  async authenticateClient(email: string, password: string): Promise<ClientAccount | null> {
-    const client = await this.getClientAccountByEmail(email);
-    if (!client || !client.password) {
-      return null;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, client.password);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    // Update last login
-    await db.update(clientAccounts)
-      .set({ lastLoginAt: new Date() })
-      .where(eq(clientAccounts.id, client.id));
-
-    return client;
-  }
+  // Client Authentication Methods
 
   async getClientAccount(id: number): Promise<ClientAccount | undefined> {
     const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.id, id));
@@ -290,11 +261,6 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getClientByEmail(email: string): Promise<ClientAccount | undefined> {
-    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
-    return client;
-  }
-
   async createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount> {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
@@ -309,7 +275,7 @@ export class DatabaseStorage implements IStorage {
       isVerified: false,
       loyaltyPoints: 0,
       clientStatus: 'regular',
-      mentionHandle: this.generateMentionHandle(userData.firstName, userData.lastName),
+      mentionHandle: `@${userData.firstName.toLowerCase()}${userData.lastName.toLowerCase()}${Math.floor(Math.random() * 1000)}`,
     };
 
     const [client] = await db.insert(clientAccounts).values(newClient).returning();
@@ -317,7 +283,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async authenticateClient(email: string, password: string): Promise<ClientAccount | null> {
-    const client = await this.getClientByEmail(email);
+    const client = await this.getClientAccountByEmail(email);
     if (!client || !client.password) {
       return null;
     }
@@ -340,7 +306,7 @@ export class DatabaseStorage implements IStorage {
           userId: "demo",
           name: "Coupe + Brushing",
           description: "Coupe personnalisée avec brushing professionnel",
-          price: 45,
+          price: "45",
           duration: 60,
           category: "coiffure",
           isActive: true,
@@ -354,7 +320,7 @@ export class DatabaseStorage implements IStorage {
           userId: "demo",
           name: "Coloration complète",
           description: "Coloration avec soins capillaires inclus",
-          price: 85,
+          price: "85",
           duration: 120,
           category: "coiffure",
           isActive: true,
@@ -368,7 +334,7 @@ export class DatabaseStorage implements IStorage {
           userId: "demo",
           name: "Soin visage relaxant",
           description: "Nettoyage de peau avec masque hydratant",
-          price: 65,
+          price: "65",
           duration: 75,
           category: "esthetique",
           isActive: true,
@@ -490,41 +456,9 @@ export class DatabaseStorage implements IStorage {
     return await query.orderBy(appointments.appointmentDate, appointments.startTime);
   }
 
-  async createAppointment(appointmentData: {
-    userId: string;
-    serviceId: number;
-    staffId?: number | null;
-    clientName: string;
-    clientEmail: string;
-    clientPhone: string;
-    appointmentDate: string;
-    startTime: string;
-    endTime?: string;
-    totalPrice: string | number;
-    depositPaid: string | number;
-    paymentStatus: string;
-    status: string;
-    notes?: string;
-    stripeSessionId?: string;
-  }): Promise<any> {
+  async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
     try {
-      const [newAppointment] = await db.insert(appointments).values({
-        userId: appointmentData.userId,
-        serviceId: appointmentData.serviceId,
-        staffId: appointmentData.staffId,
-        clientName: appointmentData.clientName,
-        clientEmail: appointmentData.clientEmail,
-        clientPhone: appointmentData.clientPhone,
-        appointmentDate: appointmentData.appointmentDate,
-        startTime: appointmentData.startTime,
-        endTime: appointmentData.endTime || '',
-        totalPrice: appointmentData.totalPrice.toString(),
-        depositPaid: appointmentData.depositPaid.toString(),
-        paymentStatus: appointmentData.paymentStatus,
-        status: appointmentData.status,
-        notes: appointmentData.notes || '',
-        stripeSessionId: appointmentData.stripeSessionId,
-      }).returning();
+      const [newAppointment] = await db.insert(appointments).values(appointment).returning();
       return newAppointment;
     } catch (error) {
       console.error('Erreur création appointment:', error);
@@ -899,6 +833,73 @@ export class DatabaseStorage implements IStorage {
     };
     console.log('Adding payment method:', newMethod);
     return newMethod;
+  }
+
+  // Implement missing methods
+  async createSubscription(subscriptionData: any): Promise<any> {
+    try {
+      const [subscription] = await db.insert(subscriptions).values(subscriptionData).returning();
+      return subscription;
+    } catch (error) {
+      console.error('Error creating subscription:', error);
+      throw error;
+    }
+  }
+
+  async getSubscriptionsByUserId(userId: string): Promise<any[]> {
+    try {
+      return await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
+    } catch (error) {
+      console.error('Error fetching subscriptions:', error);
+      return [];
+    }
+  }
+
+  async getClientsByProfessional(professionalId: string): Promise<any[]> {
+    try {
+      return await db.select().from(clients).where(eq(clients.userId, professionalId));
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      return [];
+    }
+  }
+
+  async createOrUpdateClientNote(noteData: any): Promise<any> {
+    try {
+      const [note] = await db.insert(clientNotes).values(noteData).returning();
+      return note;
+    } catch (error) {
+      console.error('Error creating client note:', error);
+      throw error;
+    }
+  }
+
+  async getCustomTagsByProfessional(professionalId: string): Promise<any[]> {
+    try {
+      return await db.select().from(customTags).where(eq(customTags.professionalId, professionalId));
+    } catch (error) {
+      console.error('Error fetching custom tags:', error);
+      return [];
+    }
+  }
+
+  async createCustomTag(tagData: any): Promise<any> {
+    try {
+      const [tag] = await db.insert(customTags).values(tagData).returning();
+      return tag;
+    } catch (error) {
+      console.error('Error creating custom tag:', error);
+      throw error;
+    }
+  }
+
+  async deleteCustomTag(tagId: string): Promise<void> {
+    try {
+      await db.delete(customTags).where(eq(customTags.id, tagId));
+    } catch (error) {
+      console.error('Error deleting custom tag:', error);
+      throw error;
+    }
   }
 
   async updatePaymentMethod(id: number, data: any): Promise<void> {

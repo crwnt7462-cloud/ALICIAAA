@@ -808,11 +808,7 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
-// Client account types for authentication
-export type ClientAccount = typeof clientAccounts.$inferSelect;
-export type InsertClientAccount = typeof clientAccounts.$inferInsert;
-export const insertClientAccountSchema = createInsertSchema(clientAccounts);
-export const selectClientAccountSchema = createInsertSchema(clientAccounts);
+// Client account types for authentication - removed duplicate
 
 // Notes client pour les professionnels
 export const clientNotes = pgTable("client_notes", {
@@ -917,8 +913,7 @@ export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
 export type ClientRegisterRequest = z.infer<typeof clientRegisterSchema>;
 
-export type ClientAccount = typeof clientAccounts.$inferSelect;
-export type InsertClientAccount = typeof clientAccounts.$inferInsert;
+// Client account types moved to end of file
 
 // Suppression des types de messagerie selon les spécifications
 
@@ -983,6 +978,10 @@ export type InsertPromotion = typeof promotions.$inferInsert;
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
+
+// Client account types - properly defined at end
+export type ClientAccount = typeof clientAccounts.$inferSelect;
+export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 
 // Schemas for validation
 export const insertServiceSchema = createInsertSchema(services).omit({

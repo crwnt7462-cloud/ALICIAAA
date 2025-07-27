@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/client-appointments/:clientAccountId', async (req, res) => {
     try {
       const { clientAccountId } = req.params;
-      const appointments = await storage.getClientAppointments(clientAccountId);
+      const appointments = await storage.getAppointments(clientAccountId);
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching client appointments:", error);
@@ -93,6 +93,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
 
+
+  // Routes d'inscription PRO
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const { email, password, businessName, firstName, lastName, phone, address, city } = req.body;
+
+      // Vérifier si l'utilisateur existe déjà
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ error: 'Un compte avec cet email existe déjà' });
+      }
+
+      // Créer le nouveau compte PRO
+      const newUser = await storage.createUser({
+        email,
+        password,
+        businessName,
+        firstName,
+        lastName,
+        phone,
+        address,
+        city
+      });
+
+      res.json({
+        success: true,
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          businessName: newUser.businessName
+        },
+        message: 'Compte PRO créé avec succès'
+      });
+    } catch (error) {
+      console.error("Erreur inscription PRO:", error);
+      res.status(500).json({
+        error: 'Erreur lors de la création du compte'
+      });
+    }
+  });
 
   // Route de connexion PRO avec session persistante
   app.post('/api/auth/login', async (req, res) => {
@@ -120,10 +162,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         return;
       }
-      
-      res.status(401).json({
-        error: 'Identifiants incorrects'
-      });
+
+      // Authentification réelle
+      const user = await storage.authenticateUser(email, password);
+      if (user) {
+        (req.session as any).user = {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          businessName: user.businessName,
+          role: 'professional',
+          userType: 'professional'
+        };
+        
+        res.json({
+          success: true,
+          user: (req.session as any).user,
+          message: 'Connexion PRO réussie'
+        });
+      } else {
+        res.status(401).json({
+          error: 'Identifiants incorrects'
+        });
+      }
     } catch (error) {
       console.error("Erreur login PRO:", error);
       res.status(500).json({
@@ -978,6 +1040,329 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Erreur confirmation paiement:', error);
       res.status(500).json({ error: 'Erreur lors de la confirmation' });
+    }
+  });
+
+  // ===== ROUTES COMPLÈTES POUR SYSTÈME COMPLET =====
+
+  // Services Management Routes
+  app.get('/api/services/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const services = await storage.getServices(userId);
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      res.status(500).json({ error: "Failed to fetch services" });
+    }
+  });
+
+  app.post('/api/services', async (req, res) => {
+    try {
+      const service = await storage.createService(req.body);
+      res.json(service);
+    } catch (error) {
+      console.error("Error creating service:", error);
+      res.status(500).json({ error: "Failed to create service" });
+    }
+  });
+
+  app.put('/api/services/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const service = await storage.updateService(id, req.body);
+      res.json(service);
+    } catch (error) {
+      console.error("Error updating service:", error);
+      res.status(500).json({ error: "Failed to update service" });
+    }
+  });
+
+  app.delete('/api/services/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteService(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      res.status(500).json({ error: "Failed to delete service" });
+    }
+  });
+
+  // Clients Management Routes
+  app.get('/api/clients/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const clients = await storage.getClients(userId);
+      res.json(clients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      res.status(500).json({ error: "Failed to fetch clients" });
+    }
+  });
+
+  app.post('/api/clients', async (req, res) => {
+    try {
+      const client = await storage.createClient(req.body);
+      res.json(client);
+    } catch (error) {
+      console.error("Error creating client:", error);
+      res.status(500).json({ error: "Failed to create client" });
+    }
+  });
+
+  app.put('/api/clients/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const client = await storage.updateClient(id, req.body);
+      res.json(client);
+    } catch (error) {
+      console.error("Error updating client:", error);
+      res.status(500).json({ error: "Failed to update client" });
+    }
+  });
+
+  app.delete('/api/clients/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteClient(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      res.status(500).json({ error: "Failed to delete client" });
+    }
+  });
+
+  // Staff Management Routes
+  app.get('/api/staff/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const staff = await storage.getStaff(userId);
+      res.json(staff);
+    } catch (error) {
+      console.error("Error fetching staff:", error);
+      res.status(500).json({ error: "Failed to fetch staff" });
+    }
+  });
+
+  app.post('/api/staff', async (req, res) => {
+    try {
+      const staff = await storage.createStaff(req.body);
+      res.json(staff);
+    } catch (error) {
+      console.error("Error creating staff:", error);
+      res.status(500).json({ error: "Failed to create staff" });
+    }
+  });
+
+  app.put('/api/staff/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const staff = await storage.updateStaff(id, req.body);
+      res.json(staff);
+    } catch (error) {
+      console.error("Error updating staff:", error);
+      res.status(500).json({ error: "Failed to update staff" });
+    }
+  });
+
+  app.delete('/api/staff/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteStaff(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting staff:", error);
+      res.status(500).json({ error: "Failed to delete staff" });
+    }
+  });
+
+  // Appointments Management Routes
+  app.get('/api/appointments/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { date } = req.query;
+      const appointments = await storage.getAppointments(userId, date as string);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      res.status(500).json({ error: "Failed to fetch appointments" });
+    }
+  });
+
+  app.post('/api/appointments', async (req, res) => {
+    try {
+      const appointment = await storage.createAppointment(req.body);
+      res.json(appointment);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      res.status(500).json({ error: "Failed to create appointment" });
+    }
+  });
+
+  app.put('/api/appointments/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const appointment = await storage.updateAppointment(id, req.body);
+      res.json(appointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ error: "Failed to update appointment" });
+    }
+  });
+
+  app.delete('/api/appointments/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteAppointment(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ error: "Failed to delete appointment" });
+    }
+  });
+
+  // Dashboard Routes
+  app.get('/api/dashboard/stats/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const stats = await storage.getDashboardStats(userId);
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard stats" });
+    }
+  });
+
+  app.get('/api/dashboard/revenue-chart', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const revenueChart = await storage.getRevenueChart(userId);
+      res.json(revenueChart);
+    } catch (error) {
+      console.error("Error fetching revenue chart:", error);
+      res.status(500).json({ error: "Failed to fetch revenue chart" });
+    }
+  });
+
+  app.get('/api/dashboard/upcoming-appointments', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const appointments = await storage.getUpcomingAppointments(userId);
+      res.json(appointments);
+    } catch (error) {
+      console.error("Error fetching upcoming appointments:", error);
+      res.status(500).json({ error: "Failed to fetch upcoming appointments" });
+    }
+  });
+
+  app.get('/api/dashboard/top-services', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const services = await storage.getTopServices(userId);
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching top services:", error);
+      res.status(500).json({ error: "Failed to fetch top services" });
+    }
+  });
+
+  app.get('/api/dashboard/staff-performance', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const performance = await storage.getStaffPerformance(userId);
+      res.json(performance);
+    } catch (error) {
+      console.error("Error fetching staff performance:", error);
+      res.status(500).json({ error: "Failed to fetch staff performance" });
+    }
+  });
+
+  app.get('/api/dashboard/client-retention', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const retention = await storage.getClientRetentionRate(userId);
+      res.json(retention);
+    } catch (error) {
+      console.error("Error fetching client retention:", error);
+      res.status(500).json({ error: "Failed to fetch client retention" });
+    }
+  });
+
+  // Business & Salon Management Routes
+  app.get('/api/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const salon = await storage.getSalon(id);
+      res.json(salon);
+    } catch (error) {
+      console.error("Error fetching salon:", error);
+      res.status(500).json({ error: "Failed to fetch salon" });
+    }
+  });
+
+  app.post('/api/salon/register', async (req, res) => {
+    try {
+      const salon = await storage.createSalon(req.body);
+      res.json({ success: true, salon });
+    } catch (error) {
+      console.error("Error creating salon:", error);
+      res.status(500).json({ error: "Failed to create salon" });
+    }
+  });
+
+  app.put('/api/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const salon = await storage.updateSalon(id, req.body);
+      res.json({ success: true, salon });
+    } catch (error) {
+      console.error("Error updating salon:", error);
+      res.status(500).json({ error: "Failed to update salon" });
+    }
+  });
+
+  // Business Registration Routes
+  app.post('/api/business/register', async (req, res) => {
+    try {
+      const registration = await storage.createBusinessRegistration(req.body);
+      res.json({ success: true, registration });
+    } catch (error) {
+      console.error("Error creating business registration:", error);
+      res.status(500).json({ error: "Failed to create business registration" });
+    }
+  });
+
+  app.get('/api/business/registration/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const registration = await storage.getBusinessRegistration(id);
+      res.json(registration);
+    } catch (error) {
+      console.error("Error fetching business registration:", error);
+      res.status(500).json({ error: "Failed to fetch business registration" });
+    }
+  });
+
+  // Subscription Management Routes
+  app.post('/api/subscriptions', async (req, res) => {
+    try {
+      const subscription = await storage.createSubscription(req.body);
+      res.json({ success: true, subscription });
+    } catch (error) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ error: "Failed to create subscription" });
+    }
+  });
+
+  app.get('/api/subscriptions/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const subscriptions = await storage.getSubscriptionsByUserId(userId);
+      res.json(subscriptions);
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+      res.status(500).json({ error: "Failed to fetch subscriptions" });
     }
   });
 
