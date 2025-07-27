@@ -11,8 +11,8 @@ export function BottomNavigation() {
     {
       label: 'Accueil',
       icon: Home,
-      path: '/dashboard',
-      active: location === '/' || location === '/dashboard'
+      path: '/business-features',
+      active: location === '/' || location === '/dashboard' || location === '/business-features'
     },
     {
       label: 'Planning',
