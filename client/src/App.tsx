@@ -583,8 +583,8 @@ function Router() {
     );
   }
 
-  // Page IA simple en plein écran
-  if (location === '/ai') {
+  // Page IA moderne en plein écran
+  if (location === '/ai-simple') {
     return (
       <div className="h-full">
         <AIAssistantSimple />
