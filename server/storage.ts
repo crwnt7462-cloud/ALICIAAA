@@ -275,7 +275,7 @@ export class DatabaseStorage implements IStorage {
       isVerified: false,
       loyaltyPoints: 0,
       clientStatus: 'regular',
-      mentionHandle: `@${userData.firstName.toLowerCase()}${userData.lastName.toLowerCase()}${Math.floor(Math.random() * 1000)}`,
+      mentionHandle: `@${userData.firstName?.toLowerCase() || 'user'}${userData.lastName?.toLowerCase() || 'client'}${Math.floor(Math.random() * 1000)}`,
     };
 
     const [client] = await db.insert(clientAccounts).values(newClient).returning();
