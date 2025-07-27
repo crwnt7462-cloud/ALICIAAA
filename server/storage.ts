@@ -128,12 +128,6 @@ export class DatabaseStorage implements IStorage {
   // Stockage en mémoire pour les salons (développement)
   private salons: Map<string, any> = new Map();
 
-  // Génère un handle unique pour les mentions
-  private generateMentionHandle(firstName: string, lastName: string): string {
-    const baseHandle = `${firstName.toLowerCase()}.${lastName.toLowerCase()}`.replace(/[^a-z0-9.]/g, '');
-    return `@${baseHandle}`;
-  }
-
   // Implémentation des nouvelles fonctionnalités pour les photos de salon
   async getSalonPhotos(userId: string): Promise<SalonPhoto[]> {
     return await db.select().from(salonPhotos).where(eq(salonPhotos.userId, userId));
@@ -315,6 +309,7 @@ export class DatabaseStorage implements IStorage {
       isVerified: false,
       loyaltyPoints: 0,
       clientStatus: 'regular',
+      mentionHandle: this.generateMentionHandle(userData.firstName, userData.lastName),
     };
 
     const [client] = await db.insert(clientAccounts).values(newClient).returning();

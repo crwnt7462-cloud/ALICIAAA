@@ -32,7 +32,6 @@ import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
-import BusinessFeatures from "@/pages/BusinessFeatures";
 import BusinessFeaturesModern from "@/pages/BusinessFeaturesModern";
 import BusinessFeaturesWithBottomSheets from "@/pages/BusinessFeaturesWithBottomSheets";
 import DashboardModern from "@/pages/DashboardModern";
@@ -647,7 +646,7 @@ function Router() {
           <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={PlanningModern} />
           <Route path="/clients" component={ClientsModern} />
-          <Route path="/business-features" component={BusinessFeatures} />
+          <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />

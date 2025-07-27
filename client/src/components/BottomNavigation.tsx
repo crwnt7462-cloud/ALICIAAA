@@ -11,8 +11,8 @@ export function BottomNavigation() {
     {
       label: 'Accueil',
       icon: Home,
-      path: '/business-features',
-      active: location === '/' || location === '/dashboard' || location === '/business-features'
+      path: '/dashboard',
+      active: location === '/' || location === '/dashboard'
     },
     {
       label: 'Planning',
@@ -33,7 +33,7 @@ export function BottomNavigation() {
       active: location === '/business-features' || location.includes('/pro-')
     },
     {
-      label: 'Ask Rendly',
+      label: 'IA',
       icon: Sparkles,
       path: '/ai',
       active: location === '/ai' || location.includes('/ai-')
