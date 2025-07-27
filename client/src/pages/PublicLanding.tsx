@@ -347,41 +347,143 @@ export default function PublicLanding() {
         </div>
       </header>
 
-      {/* Hero section épuré */}
-      <section className="bg-gradient-to-b from-violet-50/30 to-white py-8 md:py-12 lg:py-16 relative">
-        
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
-              <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
+      {/* Hero section inspiré Apteros */}
+      <section className="relative min-h-[85vh] bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-pink-300/20 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Badge modern */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 mb-8 border border-white/30">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              <span className="text-white font-medium">Nouvelle génération de réservation beauté</span>
             </div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
-              Réservez votre rendez-vous beauté
+
+            {/* Titre principal */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              Commencez votre voyage beauté
+              <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-pink-200 to-white bg-clip-text text-transparent">
+                Trouvez vos professionnels parfaits
+              </span>
             </h1>
-            <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
-              Trouvez et réservez chez les meilleurs professionnels près de chez vous
+
+            {/* Sous-titre */}
+            <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+              Nous connectons les clients avec des experts beauté, des conversations claires et des réservations 
+              en seulement quelques clics depuis votre mobile.
             </p>
+
+            {/* CTA principal */}
+            <Button 
+              onClick={() => setLocation("/search")}
+              className="bg-white text-violet-600 hover:bg-gray-50 px-8 py-4 text-lg font-semibold rounded-2xl mb-12 shadow-2xl transform hover:scale-105 transition-all duration-200"
+            >
+              Trouver mon salon parfait
+            </Button>
+
+            {/* Sections circulaires inspirées Apteros */}
+            <div className="relative mt-16">
+              <div className="flex justify-center items-center gap-8 md:gap-16">
+                {/* Formation */}
+                <div className="text-center">
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 mx-auto border border-white/20">
+                    <span className="text-white font-semibold text-lg md:text-xl">Planning</span>
+                  </div>
+                </div>
+
+                {/* Community - Centre */}
+                <div className="text-center">
+                  <div className="w-32 h-32 md:w-40 md:h-40 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 mx-auto border border-white/30 shadow-2xl">
+                    <span className="text-white font-bold text-xl md:text-2xl">Communauté</span>
+                  </div>
+                </div>
+
+                {/* Services */}
+                <div className="text-center">
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 mx-auto border border-white/20">
+                    <span className="text-white font-semibold text-lg md:text-xl">Services</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section transition moderne */}
+      <section className="py-16 md:py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Devenez vraiment bon avec Rendly
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              Nous connectons les clients avec des professionnels de beauté exceptionnels à travers 
+              une communauté basée sur la qualité et l'excellence du service.
+            </p>
+          </div>
+
+          {/* Card Services avec style Apteros */}
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Services Pro</h3>
+              <p className="text-gray-600 mb-6">
+                Le point central de toutes les offres pour tout ce qui est nécessaire 
+                pour faire grandir votre salon de beauté.
+              </p>
+              
+              <div className="space-y-4 mb-8">
+                <p className="text-gray-600">
+                  Nous offrons des outils de gestion salon avec une communauté 
+                  de professionnels basée sur l'entraide NURU pour 
+                  déterminer les meilleures pratiques 24/7 pour votre succès.
+                </p>
+                <p className="text-gray-600">
+                  Pour les professionnels sérieux de la beauté avec des adhésions qui permettent 
+                  de démarrer leur activité sur de bonnes bases. Demandez tout, ce sont de 
+                  vraies entreprises beauté qui réussissent.
+                </p>
+              </div>
+
+              <Button 
+                onClick={() => setLocation("/professional-plans")}
+                className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-2xl flex items-center gap-2"
+              >
+                Espace Membres
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </div>
+
+            {/* Recherche modernisée */}
+            <div className="bg-gray-50 rounded-3xl p-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
+                Rechercher un salon
+              </h3>
             
-            {/* Barre de recherche compacte */}
-            <div className="max-w-md mx-auto mb-5">
-              <div className="space-y-2">
+              {/* Barre de recherche compacte */}
+              <div className="space-y-3">
                 <div className="relative">
                   <Input
                     placeholder="Service (coiffure, massage...)"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
+                    className="h-12 pl-4 pr-10 text-sm rounded-xl border border-gray-200 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <Search className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
+                  <Search className="absolute right-3 top-3.5 w-5 h-5 text-gray-400" />
                 </div>
                 <div className="relative">
                   <Input
                     placeholder="Ville"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
+                    className="h-12 pl-4 pr-10 text-sm rounded-xl border border-gray-200 focus:border-violet-500"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
                   <button
@@ -395,7 +497,7 @@ export default function PublicLanding() {
                         );
                       }
                     }}
-                    className="absolute right-3 top-3 text-violet-500 active:text-violet-700 touch-manipulation"
+                    className="absolute right-3 top-3.5 text-violet-500 active:text-violet-700"
                     title="Utiliser ma position"
                   >
                     <MapPin className="w-5 h-5" />
@@ -403,49 +505,91 @@ export default function PublicLanding() {
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full h-11 gradient-bg text-white text-sm font-medium rounded-lg touch-manipulation"
+                  className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-xl"
                 >
                   <Search className="w-4 h-4 mr-2" />
-                  Rechercher un salon
+                  Rechercher
                 </Button>
               </div>
-            </div>
-            
 
-
-            {/* Recherches populaires compactes */}
-            <div className="max-w-md mx-auto mb-4">
-              <p className="text-xs text-gray-500 mb-2 text-center">Recherches populaires :</p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((search) => (
-                  <button
-                    key={search}
-                    onClick={() => {
-                      setSearchQuery(search);
-                      handleSearch();
-                    }}
-                    className="px-3 py-1 bg-gray-100 active:bg-violet-100 text-xs rounded-full transition-colors touch-manipulation"
-                  >
-                    {search}
-                  </button>
-                ))}
+              {/* Recherches populaires */}
+              <div className="mt-6">
+                <p className="text-xs text-gray-500 mb-3 text-center">Recherches populaires :</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((search) => (
+                    <button
+                      key={search}
+                      onClick={() => {
+                        setSearchQuery(search);
+                        handleSearch();
+                      }}
+                      className="px-3 py-1 bg-white hover:bg-violet-50 text-xs rounded-full border border-gray-200 transition-colors"
+                    >
+                      {search}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Bouton connexion salon */}
-            <div className="max-w-md mx-auto text-center">
-              <div className="text-xs text-gray-500 mb-2">Vous êtes un professionnel ?</div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLocation("/pro-login")}
-                className="px-4 py-2 border border-violet-300 text-violet-600 hover:bg-violet-50 text-sm"
-              >
-                Connexion Salon
-              </Button>
+      {/* Section gradient motivation */}
+      <section className="py-16 md:py-20 bg-gradient-to-r from-purple-100 to-pink-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+            Pourquoi me choisir ?
+          </h2>
+          <p className="text-lg text-gray-600 mb-8">
+            J'aime que chaque femme puisse être authentiquement elle même.
+          </p>
+          <Button
+            onClick={() => setLocation("/professional-plans")}
+            className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full"
+          >
+            Commencer
+          </Button>
+        </div>
+      </section>
+
+      {/* Section étapes progression */}
+      <section className="py-16 md:py-20 bg-gradient-to-b from-purple-50 to-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            D'abord devenir meilleure.
+          </h2>
+          <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Puis réussir.
+          </h3>
+          <h4 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+            Puis grandir encore plus.
+          </h4>
+          
+          <Button
+            onClick={() => setLocation("/professional-plans")}
+            variant="outline"
+            className="border-gray-300 text-gray-700 hover:bg-gray-50 px-6 py-3 rounded-full"
+          >
+            Rejoindre la communauté
+          </Button>
+        </div>
+      </section>
+
+      {/* Section obstacles finaux */}
+      <section className="py-16 md:py-20 bg-gray-900 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12">
+            Surmonter les obstacles.
+          </h2>
+          
+          {/* Barre de progression */}
+          <div className="flex justify-center mb-8">
+            <div className="flex space-x-2">
+              <div className="w-8 h-2 bg-violet-600 rounded-full"></div>
+              <div className="w-16 h-2 bg-gray-600 rounded-full"></div>
+              <div className="w-12 h-2 bg-gray-600 rounded-full"></div>
             </div>
-
-
           </div>
         </div>
       </section>
