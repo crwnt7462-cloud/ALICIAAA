@@ -80,6 +80,9 @@ import BusinessSuccess from "@/pages/BusinessSuccess";
 import PaymentStep from "@/pages/PaymentStep";
 import ClientLogin from "@/pages/ClientLogin";
 import ClientRegister from "@/pages/ClientRegister";
+import ClientAccueil from "@/pages/ClientAccueil";
+import ClientRdv from "@/pages/ClientRdv";
+import ClientParametres from "@/pages/ClientParametres";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
@@ -252,6 +255,31 @@ function Router() {
         <BookingPage />
       </div>
     );
+  }
+
+  // Pages client spécifiques
+  if (location === '/client-login') {
+    return <div className="h-full"><ClientLogin /></div>;
+  }
+  
+  if (location === '/client-register') {
+    return <div className="h-full"><ClientRegister /></div>;
+  }
+  
+  if (location === '/client-dashboard') {
+    return <div className="h-full"><ClientDashboard /></div>;
+  }
+  
+  if (location === '/client-accueil') {
+    return <div className="h-full"><ClientAccueil /></div>;
+  }
+  
+  if (location === '/client-rdv') {
+    return <div className="h-full"><ClientRdv /></div>;
+  }
+  
+  if (location === '/client-parametres') {
+    return <div className="h-full"><ClientParametres /></div>;
   }
 
   // Page d'accueil publique (sans header/nav mobile)
