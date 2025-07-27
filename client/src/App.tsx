@@ -33,6 +33,11 @@ import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeaturesModern from "@/pages/BusinessFeaturesModern";
+import SalonSettingsModern from "@/pages/SalonSettingsModern";
+import ProMessagingModern from "@/pages/ProMessagingModern";
+import InventoryModern from "@/pages/InventoryModern";
+import PlanningModern from "@/pages/PlanningModern";
+import ClientsModern from "@/pages/ClientsModern";
 import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
 import ModernBooking from "@/pages/ModernBooking";
@@ -205,7 +210,7 @@ function Router() {
   if (location === '/pro-messaging') {
     return (
       <div className="h-full">
-        <ProMessaging />
+        <ProMessagingModern />
       </div>
     );
   }
