@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Home, Calendar, Settings, Star, Heart, Gift, Bell, User, MapPin, Clock, Phone, Mail } from "lucide-react";
+import { Home, Calendar, Settings, Star, Heart, Search, Bell, MessageCircle, User } from "lucide-react";
 
 export default function ClientDashboardNew() {
   const [, setLocation] = useLocation();
@@ -34,15 +34,7 @@ export default function ClientDashboardNew() {
 
   // Page Accueil
   const renderAccueil = () => (
-    <div className="max-w-lg mx-auto p-4 space-y-4">
-      {/* Bannière Bienvenue */}
-      <div className="bg-gradient-to-r from-violet-400 to-purple-500 rounded-lg p-4">
-        <div className="text-white">
-          <h2 className="text-xl font-bold mb-1">Bonjour {clientData.firstName} !</h2>
-          <p className="text-violet-100">Découvrez vos prochains rendez-vous</p>
-        </div>
-      </div>
-
+    <div className="space-y-4">
       {/* Carte Prochain RDV */}
       <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-green-50/30">
         <CardContent className="p-6">
@@ -121,20 +113,21 @@ export default function ClientDashboardNew() {
               </div>
 
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg"
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 rounded-lg"
               >
-                Utiliser mes points
+                Utiliser points
               </Button>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Actions rapides */}
+      {/* Boutons d'action rapide */}
       <div className="grid grid-cols-2 gap-4">
         <Button 
           onClick={() => setLocation('/search')}
-          className="h-20 bg-violet-600 hover:bg-violet-700 text-white flex flex-col items-center justify-center rounded-lg"
+          variant="outline"
+          className="h-20 flex flex-col items-center justify-center border-2 rounded-lg"
         >
           <Calendar className="w-6 h-6 mb-2" />
           <span className="text-sm font-medium">Nouveau RDV</span>
@@ -154,7 +147,7 @@ export default function ClientDashboardNew() {
 
   // Page Mes RDV
   const renderRdv = () => (
-    <div className="max-w-lg mx-auto p-4 space-y-4">
+    <div className="space-y-4">
       {/* Bouton Nouveau RDV */}
       <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-lg p-4">
         <Button 
@@ -200,13 +193,14 @@ export default function ClientDashboardNew() {
 
               <div className="flex gap-2">
                 <Button 
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
+                  variant="outline"
+                  className="flex-1 text-blue-600 border-blue-600 hover:bg-blue-50"
                 >
-                  Modifier
+                  Déplacer
                 </Button>
                 <Button 
                   variant="outline"
-                  className="flex-1 border-red-200 text-red-600 hover:bg-red-50 font-medium py-2 rounded-lg"
+                  className="flex-1 text-red-600 border-red-600 hover:bg-red-50"
                 >
                   Annuler
                 </Button>
@@ -216,34 +210,26 @@ export default function ClientDashboardNew() {
         </CardContent>
       </Card>
 
-      {/* Carte Historique */}
+      {/* Historique */}
       <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-gray-600 rounded-2xl flex items-center justify-center">
-              <Clock className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Historique</h2>
-              
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="font-medium text-gray-900">Soin du visage</p>
-                    <p className="text-sm text-gray-600">Institut Belle Vie - 15 janv.</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">80€</p>
-                    <Badge variant="secondary" className="text-xs">Terminé</Badge>
-                  </div>
-                </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Historique</h3>
+          
+          <div className="space-y-3">
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+              <div>
+                <div className="font-medium text-gray-900">Coupe + Couleur</div>
+                <div className="text-sm text-gray-600">15 Décembre 2024</div>
               </div>
-
-              <Button 
-                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
-              >
-                Voir tout l'historique
-              </Button>
+              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">Terminé</Badge>
+            </div>
+            
+            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
+              <div>
+                <div className="font-medium text-gray-900">Brushing</div>
+                <div className="text-sm text-gray-600">28 Novembre 2024</div>
+              </div>
+              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">Terminé</Badge>
             </div>
           </div>
         </CardContent>
@@ -253,124 +239,87 @@ export default function ClientDashboardNew() {
 
   // Page Paramètres
   const renderParametres = () => (
-    <div className="max-w-lg mx-auto p-4 space-y-4">
-      {/* Carte Profil */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-violet-50/30">
+    <div className="space-y-4">
+      {/* Profil */}
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-violet-600 rounded-2xl flex items-center justify-center">
-              <User className="h-6 w-6 text-white" />
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-16 h-16 bg-violet-600 rounded-full flex items-center justify-center">
+              <User className="h-8 w-8 text-white" />
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">Mon Profil</h2>
-                <Badge className="bg-violet-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                  Client VIP
-                </Badge>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                {clientData.firstName} {clientData.lastName}
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="text-center">
-                  <div className="text-sm font-bold text-violet-600 mb-1">{clientData.email}</div>
-                  <div className="text-xs text-gray-600">Email</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-sm font-bold text-violet-600 mb-1">{clientData.phone || 'Non renseigné'}</div>
-                  <div className="text-xs text-gray-600">Téléphone</div>
-                </div>
-              </div>
-
-              <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg"
-              >
-                Modifier profil
-              </Button>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">{clientData.firstName} {clientData.lastName}</h2>
+              <p className="text-gray-600">{clientData.email}</p>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="text-lg font-bold text-violet-600 mb-1">{clientData.loyaltyPoints || 150}</div>
+              <div className="text-xs text-gray-600">Points fidélité</div>
+            </div>
+            <div className="text-center p-3 bg-gray-50 rounded-xl">
+              <div className="text-lg font-bold text-green-600 mb-1">5</div>
+              <div className="text-xs text-gray-600">RDV pris</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Carte Notifications */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-blue-50/30">
+      {/* Options */}
+      <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
-              <Bell className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Notifications</h2>
-              
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">Email</p>
-                    <p className="text-sm text-gray-600">Rappels par email</p>
-                  </div>
-                  <input type="checkbox" defaultChecked className="rounded" />
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-gray-900">SMS</p>
-                    <p className="text-sm text-gray-600">Rappels par SMS</p>
-                  </div>
-                  <input type="checkbox" defaultChecked className="rounded" />
-                </div>
-              </div>
-
-              <Button 
-                className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
-              >
-                Sauvegarder
-              </Button>
-            </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Paramètres</h3>
+          
+          <div className="space-y-3">
+            <Button variant="ghost" className="w-full justify-start h-12 text-left">
+              <Bell className="h-5 w-5 mr-3 text-gray-600" />
+              <span className="font-medium">Notifications</span>
+            </Button>
+            
+            <Button variant="ghost" className="w-full justify-start h-12 text-left">
+              <Heart className="h-5 w-5 mr-3 text-gray-600" />
+              <span className="font-medium">Mes favoris</span>
+            </Button>
+            
+            <Button variant="ghost" className="w-full justify-start h-12 text-left">
+              <Settings className="h-5 w-5 mr-3 text-gray-600" />
+              <span className="font-medium">Préférences</span>
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Actions */}
-      <div className="space-y-3">
-        <Button 
-          onClick={() => setLocation('/support')}
-          variant="outline" 
-          className="w-full h-12 justify-start rounded-lg"
-        >
-          Centre d'aide
-        </Button>
-        
-        <Button 
-          onClick={() => {
-            localStorage.removeItem('clientToken');
-            localStorage.removeItem('clientData');
-            setLocation('/client-login');
-          }}
-          variant="outline" 
-          className="w-full h-12 justify-start text-red-600 border-red-200 rounded-lg"
-        >
-          Se déconnecter
-        </Button>
-      </div>
+      {/* Déconnexion */}
+      <Button 
+        onClick={() => {
+          localStorage.removeItem('clientData');
+          setLocation('/client-login');
+        }}
+        variant="outline" 
+        className="w-full text-red-600 border-red-600 hover:bg-red-50"
+      >
+        Se déconnecter
+      </Button>
     </div>
   );
 
-  // Rendu principal avec sections 
   const renderMainView = () => {
-    if (activeSection === 'accueil') {
-      return renderAccueil();
-    } else if (activeSection === 'rdv') {
-      return renderRdv();
-    } else if (activeSection === 'parametres') {
-      return renderParametres();
+    switch (activeSection) {
+      case 'accueil':
+        return renderAccueil();
+      case 'rdv':
+        return renderRdv();
+      case 'parametres':
+        return renderParametres();
+      default:
+        return renderAccueil();
     }
-    return renderAccueil();
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header unique - Style iPhone identique aux pros */}
+      {/* Header iPhone - Style identique aux pros */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
@@ -378,79 +327,106 @@ export default function ClientDashboardNew() {
               <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold text-lg">C</span>
               </div>
-              <h1 className="text-lg font-semibold text-gray-900">Client Dashboard</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Mon Compte</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Bell className="h-5 w-5 text-gray-600" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-8 w-8"
-                onClick={() => {
-                  localStorage.removeItem('clientToken');
-                  localStorage.removeItem('clientData');
-                  setLocation('/client-login');
-                }}
-              >
-                <User className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setActiveSection('parametres')}>
+                <Settings className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Menu de navigation à onglets - Style professionnel */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-lg mx-auto px-4">
-          <div className="flex">
+      <div className="max-w-lg mx-auto p-4 space-y-4">
+        {/* Bannière Bienvenue */}
+        <div className="bg-gradient-to-r from-violet-400 to-purple-500 rounded-lg p-4">
+          <div className="text-white">
+            <h2 className="text-xl font-bold mb-1">Bonjour {clientData.firstName} !</h2>
+            <p className="text-violet-100">Bienvenue dans votre espace client</p>
+          </div>
+        </div>
+
+        {/* Grille des sections client - Style IDENTIQUE aux pros */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="grid grid-cols-3 gap-3">
             <Button
               variant="ghost"
-              onClick={() => setActiveSection('accueil')}
-              className={`flex-1 py-4 px-6 text-sm font-medium border-b-2 ${
+              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
                 activeSection === 'accueil' 
-                  ? 'text-violet-600 border-violet-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'bg-violet-50 text-violet-600' 
+                  : 'hover:bg-gray-50 text-gray-600'
               }`}
+              onClick={() => setActiveSection('accueil')}
             >
-              <Home className="w-4 h-4 mr-2" />
-              Accueil
+              <Home className="h-5 w-5" />
+              <span className="text-xs font-medium">Accueil</span>
             </Button>
 
             <Button
               variant="ghost"
-              onClick={() => setActiveSection('rdv')}
-              className={`flex-1 py-4 px-6 text-sm font-medium border-b-2 ${
+              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
                 activeSection === 'rdv' 
-                  ? 'text-violet-600 border-violet-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'bg-violet-50 text-violet-600' 
+                  : 'hover:bg-gray-50 text-gray-600'
               }`}
+              onClick={() => setActiveSection('rdv')}
             >
-              <Calendar className="w-4 h-4 mr-2" />
-              Mes RDV
+              <Calendar className="h-5 w-5" />
+              <span className="text-xs font-medium">Mes RDV</span>
             </Button>
 
             <Button
               variant="ghost"
-              onClick={() => setActiveSection('parametres')}
-              className={`flex-1 py-4 px-6 text-sm font-medium border-b-2 ${
+              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
                 activeSection === 'parametres' 
-                  ? 'text-violet-600 border-violet-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'bg-violet-50 text-violet-600' 
+                  : 'hover:bg-gray-50 text-gray-600'
               }`}
+              onClick={() => setActiveSection('parametres')}
             >
-              <Settings className="w-4 h-4 mr-2" />
-              Paramètres
+              <Settings className="h-5 w-5" />
+              <span className="text-xs font-medium">Paramètres</span>
+            </Button>
+
+            {/* Boutons supplémentaires pour remplir la grille comme les pros */}
+            <Button
+              variant="ghost"
+              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              onClick={() => setLocation('/search')}
+            >
+              <Search className="h-5 w-5 text-gray-600" />
+              <span className="text-xs font-medium text-gray-700">Recherche</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              onClick={() => setLocation('/support')}
+            >
+              <MessageCircle className="h-5 w-5 text-gray-600" />
+              <span className="text-xs font-medium text-gray-700">Support</span>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              onClick={() => setLocation('/search')}
+            >
+              <Heart className="h-5 w-5 text-gray-600" />
+              <span className="text-xs font-medium text-gray-700">Favoris</span>
             </Button>
           </div>
         </div>
-      </div>
 
-      {/* Contenu principal */}
-      <div className="py-6">
-        {renderMainView()}
+        {/* Contenu des sections */}
+        <div className="space-y-4">
+          {renderMainView()}
+        </div>
       </div>
     </div>
   );
