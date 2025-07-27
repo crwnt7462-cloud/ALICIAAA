@@ -1,89 +1,48 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
+import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  ArrowLeft, 
-  Eye, 
-  EyeOff, 
-  Lock, 
-  Mail, 
-  User,
-  Heart,
-  Calendar,
-  Shield,
-  Star
-} from "lucide-react";
 
 export default function ClientLogin() {
   const [, setLocation] = useLocation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    confirmPassword: "",
-    firstName: "",
-    lastName: "",
-    phone: ""
-  });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!isLogin && formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Erreur",
-        description: "Les mots de passe ne correspondent pas",
-        variant: "destructive"
-      });
-      return;
-    }
+    setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/client/${isLogin ? 'login' : 'register'}`, {
+      const response = await fetch('/api/client/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          ...(isLogin ? {} : {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone
-          })
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        // Stocker le token JWT dans localStorage
-        if (data.client && data.client.token) {
-          localStorage.setItem('clientToken', data.client.token);
-          localStorage.setItem('clientData', JSON.stringify(data.client));
-        }
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('clientToken', data.client.token);
+        localStorage.setItem('clientEmail', data.client.email);
         
         toast({
-          title: isLogin ? "Connexion réussie" : "Compte créé",
-          description: isLogin ? "Bienvenue !" : "Votre compte a été créé avec succès"
+          title: "Connexion réussie",
+          description: "Bienvenue sur votre espace client",
         });
         
-        // Redirection immédiate vers le dashboard client
-        setTimeout(() => {
-          window.location.href = '/client-dashboard';
-        }, 100);
+        setLocation('/client-dashboard');
       } else {
         const error = await response.json();
         toast({
-          title: "Erreur",
-          description: error.message || "Une erreur est survenue",
+          title: "Erreur de connexion",
+          description: error.error || "Identifiants incorrects",
           variant: "destructive"
         });
       }
@@ -93,214 +52,131 @@ export default function ClientLogin() {
         description: "Impossible de se connecter au serveur",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const benefits = [
-    { icon: <Calendar className="w-5 h-5" />, title: "Réservation instantanée", desc: "Prenez rendez-vous en 2 clics" },
-    { icon: <Heart className="w-5 h-5" />, title: "Favoris & Historique", desc: "Retrouvez vos salons préférés" },
-    { icon: <Star className="w-5 h-5" />, title: "Avis & Notes", desc: "Partagez votre expérience" },
-    { icon: <Shield className="w-5 h-5" />, title: "Paiement sécurisé", desc: "Transactions protégées" }
-  ];
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Header simple */}
       <div className="absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
           onClick={() => window.history.back()}
-          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm border border-gray-200 transition-all duration-300 text-gray-600 hover:scale-110"
+          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
       </div>
 
-      <div className="flex min-h-screen">
-        {/* Côté gauche - Benefits */}
-        <div className="hidden lg:flex lg:w-1/2 flex-col justify-center p-12 relative">
-          <div className="max-w-md mx-auto">
-            <div className="mb-8">
-              <h1 className="text-4xl font-light text-gray-900 mb-4">
-                Votre beauté
-                <span className="block text-2xl text-gray-700">à portée de main</span>
-              </h1>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Découvrez et réservez les meilleurs salons de beauté près de chez vous
-              </p>
-            </div>
-
-            <div className="space-y-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all duration-300">
-                  <div className="text-gray-600 mt-1">
-                    {benefit.icon}
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">{benefit.title}</h3>
-                    <p className="text-sm text-gray-600">{benefit.desc}</p>
-                  </div>
-                </div>
-              ))}
+      {/* Section gauche - Image et branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-amber-50/50"></div>
+        <div className="relative flex items-center justify-center w-full p-12">
+          <div className="w-80 h-80 bg-white rounded-full shadow-2xl flex items-center justify-center">
+            <div className="w-64 h-64 bg-gradient-to-br from-violet-600 to-amber-600 rounded-full shadow-inner flex items-center justify-center">
+              <div className="w-48 h-2 bg-white rounded-full transform rotate-45 shadow-lg"></div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Côté droit - Formulaire */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
-          <Card className="w-full max-w-md bg-white border-2 border-black shadow-sm rounded-lg">
-            <CardHeader className="space-y-2 text-center pb-6">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-3 bg-gray-50 rounded-full border border-gray-200">
-                  <User className="w-6 h-6 text-gray-600" />
-                </div>
-                <h2 className="text-2xl font-light text-gray-900">Espace Client</h2>
-              </div>
-              <div className="flex justify-center">
-                <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">
-                  <Button
-                    variant={isLogin ? "default" : "ghost"}
-                    onClick={() => setIsLogin(true)}
-                    className={`px-6 py-2 text-sm rounded-md font-medium ${isLogin ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    Connexion
-                  </Button>
-                  <Button
-                    variant={!isLogin ? "default" : "ghost"}
-                    onClick={() => setIsLogin(false)}
-                    className={`px-6 py-2 text-sm rounded-md font-medium ${!isLogin ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
-                  >
-                    Inscription
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
+      {/* Section droite - Formulaire */}
+      <div className="flex-1 lg:w-1/2 flex items-center justify-center p-8">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h1 className="text-2xl font-light text-gray-900 mb-2">
+              Vous avez déjà utilisé notre plateforme ?
+            </h1>
+          </div>
 
-            <CardContent className="space-y-6">
+          <Card className="border-0 shadow-sm">
+            <CardContent className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {!isLogin && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label className="text-gray-700">Prénom</Label>
-                      <Input
-                        type="text"
-                        placeholder="Marie"
-                        value={formData.firstName}
-                        onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                        className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-gray-700">Nom</Label>
-                      <Input
-                        type="text"
-                        placeholder="Dupont"
-                        value={formData.lastName}
-                        onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                        className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label className="text-gray-700">Téléphone</Label>
-                    <Input
-                      type="tel"
-                      placeholder="06 12 34 56 78"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                      required={!isLogin}
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Label className="text-gray-700">Email</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
                     <Input
                       type="email"
-                      placeholder="marie@example.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Email"
+                      className="h-12 border-gray-300 focus:border-violet-500 focus:ring-violet-500"
                       required
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label className="text-gray-700">Mot de passe</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={(e) => setFormData({...formData, password: e.target.value})}
-                      className="pl-10 pr-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-700"
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </div>
-
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label className="text-gray-700">Confirmer le mot de passe</Label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Mot de passe <span className="text-red-500">*</span>
+                    </label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                       <Input
-                        type="password"
-                        placeholder="••••••••"
-                        value={formData.confirmPassword}
-                        onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                        className="pl-10 bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        required={!isLogin}
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Mot de passe"
+                        className="h-12 border-gray-300 focus:border-violet-500 focus:ring-violet-500 pr-12"
+                        required
                       />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-12 px-3 hover:bg-transparent"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
                     </div>
                   </div>
-                )}
+                </div>
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 font-medium transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                <div className="text-right">
+                  <button 
+                    type="button"
+                    className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+                    onClick={() => setLocation('/forgot-password')}
+                  >
+                    Mot de passe oublié ?
+                  </button>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-md"
                 >
-                  {isLogin ? "Se connecter" : "Créer mon compte"}
+                  {isLoading ? 'Connexion...' : 'Se connecter'}
                 </Button>
               </form>
 
-              {isLogin && (
-                <div className="text-center">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setLocation('/forgot-password')}
-                    className="text-gray-600 hover:text-gray-900 text-sm"
-                  >
-                    Mot de passe oublié ?
-                  </Button>
-                </div>
-              )}
-
-              <div className="text-center pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-500">
-                  En continuant, vous acceptez nos conditions générales
+              <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+                <p className="text-sm text-gray-600 mb-4">
+                  Nouveau sur notre plateforme ?
                 </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setLocation('/client-register')}
+                  className="h-12 px-8 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white font-medium"
+                >
+                  Créer mon compte
+                </Button>
               </div>
             </CardContent>
           </Card>
+
+          {/* Informations de test */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+            <p className="text-sm text-blue-700 font-medium mb-2">Compte de démonstration</p>
+            <div className="text-xs text-blue-600 space-y-1">
+              <p><strong>Email:</strong> client@test.com</p>
+              <p><strong>Mot de passe:</strong> client123</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
