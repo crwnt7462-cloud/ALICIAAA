@@ -28,6 +28,94 @@ export default function ModernSalonDetail() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [serviceCategories, setServiceCategories] = useState([
+    {
+      id: 1,
+      name: 'Cheveux',
+      expanded: false,
+      services: [
+        { id: 1, name: 'Coupe Bonhomme', price: 39, duration: '30min' },
+        { id: 2, name: 'Coupe Dégradée (Américain & "à blanc")', price: 46, duration: '45min' },
+        { id: 3, name: 'Coupe Transformation', price: 45, duration: '45min' },
+        { id: 4, name: 'Repigmentation Camo', price: 26, duration: '30min' },
+        { id: 5, name: 'Coupe Petit Bonhomme (enfant -12 ans)', price: 25, duration: '30min' },
+        { id: 6, name: 'Forfait Cheveux + Barbe', price: 64, duration: '1h' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Barbe',
+      expanded: false,
+      services: [
+        { id: 7, name: 'Taille de barbe classique', price: 25, duration: '30min' },
+        { id: 8, name: 'Rasage traditionnel', price: 35, duration: '45min' },
+        { id: 9, name: 'Barbe + Moustache', price: 30, duration: '35min' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Rasage',
+      expanded: false,
+      services: [
+        { id: 10, name: 'Rasage complet', price: 40, duration: '45min' },
+        { id: 11, name: 'Rasage + Soins', price: 50, duration: '1h' }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Permanente & Défrisage',
+      expanded: false,
+      services: [
+        { id: 12, name: 'Permanente classique', price: 80, duration: '2h' },
+        { id: 13, name: 'Défrisage professionnel', price: 90, duration: '2h30' }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Épilations Barbiers',
+      expanded: false,
+      services: [
+        { id: 14, name: 'Épilation visage', price: 45, duration: '45min' },
+        { id: 15, name: 'Épilation sourcils', price: 20, duration: '20min' }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Soins Barbier',
+      expanded: false,
+      services: [
+        { id: 16, name: 'Soin hydratant visage', price: 55, duration: '45min' },
+        { id: 17, name: 'Masque purifiant', price: 40, duration: '30min' }
+      ]
+    },
+    {
+      id: 7,
+      name: 'Forfaits',
+      expanded: false,
+      services: [
+        { id: 18, name: 'Forfait complet', price: 95, duration: '2h' },
+        { id: 19, name: 'Forfait découverte', price: 70, duration: '1h30' }
+      ]
+    },
+    {
+      id: 8,
+      name: 'Coloration & Décoloration',
+      expanded: false,
+      services: [
+        { id: 20, name: 'Coloration homme', price: 55, duration: '1h' },
+        { id: 21, name: 'Décoloration', price: 65, duration: '1h30' }
+      ]
+    },
+    {
+      id: 9,
+      name: 'SPA DU CHEVEU',
+      expanded: false,
+      services: [
+        { id: 22, name: 'Soin capillaire premium', price: 60, duration: '1h' },
+        { id: 23, name: 'Traitement anti-chute', price: 75, duration: '1h15' }
+      ]
+    }
+  ]);
 
   const salon = {
     id: "salon-excellence",
@@ -248,52 +336,47 @@ export default function ModernSalonDetail() {
           {activeTab === 'services' && (
             <div className="space-y-3">
               <div className="mb-3">
-                <h2 className="text-base font-medium text-gray-900">Services</h2>
+                <h2 className="text-base font-medium text-gray-900">Choix de la prestation</h2>
               </div>
 
-              {services.map((service, index) => (
+              {serviceCategories.map((category, categoryIndex) => (
                 <Card 
-                  key={service.id} 
-                  className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300 cursor-pointer group animate-click-bounce"
-                  onClick={() => {
-                    // Animation de rebond au clic
-                    const card = document.querySelector(`[data-service="${service.id}"]`);
-                    if (card) {
-                      card.classList.add('animate-click-bounce');
-                      setTimeout(() => card.classList.remove('animate-click-bounce'), 300);
-                    }
-                  }}
-                  data-service={service.id}
+                  key={category.id} 
+                  className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300"
                 >
-                  <CardContent className="p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-gray-900 text-sm group-hover:text-violet-700 transition-colors">{service.name}</h3>
-                          <span className="text-xs text-gray-500 bg-gray-100 group-hover:bg-violet-100 group-hover:text-violet-600 px-2 py-0.5 rounded transition-colors">{service.duration}min</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-2">
-                          <span className="group-hover:text-violet-600 transition-colors">{service.specialist}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          {service.originalPrice && (
-                            <span className="text-xs text-gray-400 line-through block">{service.originalPrice}€</span>
-                          )}
-                          <span className="text-base font-medium text-gray-900 group-hover:text-violet-700 transition-colors">{service.price}€</span>
-                        </div>
-                        <Button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setLocation('/salon-booking');
-                          }}
-                          className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300 hover:scale-110 transform active:scale-95 shadow-lg hover:shadow-xl"
-                        >
-                          Réserver
-                        </Button>
+                  <CardContent className="p-0">
+                    <div 
+                      className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50"
+                      onClick={() => {
+                        const newCategories = [...serviceCategories];
+                        newCategories[categoryIndex].expanded = !newCategories[categoryIndex].expanded;
+                        setServiceCategories(newCategories);
+                      }}
+                    >
+                      <h3 className="font-medium text-gray-900 text-sm">{category.name}</h3>
+                      <div className="text-gray-400 text-lg">
+                        {category.expanded ? '−' : '+'}
                       </div>
                     </div>
+                    
+                    {category.expanded && (
+                      <div className="border-t border-gray-100">
+                        {category.services.map((service, serviceIndex) => (
+                          <div key={service.id} className={`p-4 flex items-center justify-between ${serviceIndex !== category.services.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900 text-sm mb-1">{service.name}</h4>
+                              <p className="text-xs text-gray-500">{service.price}€ • {service.duration}</p>
+                            </div>
+                            <Button 
+                              onClick={() => setLocation('/salon-booking')}
+                              className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300"
+                            >
+                              Choisir
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
