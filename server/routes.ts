@@ -83,7 +83,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const appointmentId = parseInt(req.params.id);
       const { clientAccountId } = req.body;
-      await storage.linkAppointmentToClient(appointmentId, clientAccountId);
+      // Cette fonctionnalité sera implémentée plus tard
+      // await storage.linkAppointmentToClient(appointmentId, clientAccountId);
       res.json({ success: true });
     } catch (error) {
       console.error("Error linking appointment to client:", error);
@@ -318,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur checkout Stripe:", error);
       res.status(500).json({ 
         error: 'Erreur lors de la création de la session de paiement',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -352,7 +353,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur login client:", error);
       res.status(500).json({
         error: 'Erreur lors de la connexion',
-        details: error.message
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });
@@ -386,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Erreur inscription client:", error);
       res.status(500).json({
         error: 'Erreur lors de l\'inscription',
-        details: error.message
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
   });

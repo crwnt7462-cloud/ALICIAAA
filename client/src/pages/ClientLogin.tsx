@@ -109,7 +109,7 @@ export default function ClientLogin() {
       <div className="absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
-          onClick={() => setLocation('/')}
+          onClick={() => window.history.back()}
           className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm border border-gray-200 transition-all duration-300 text-gray-600 hover:scale-110"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -148,7 +148,7 @@ export default function ClientLogin() {
 
         {/* Côté droit - Formulaire */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
-          <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm rounded-lg">
+          <Card className="w-full max-w-md bg-white border-2 border-black shadow-sm rounded-lg">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex items-center justify-center gap-3 mb-6">
                 <div className="p-3 bg-gray-50 rounded-full border border-gray-200">

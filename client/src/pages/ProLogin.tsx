@@ -62,7 +62,7 @@ export default function ProLogin() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md border-2 border-black">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-4">
             <Building2 className="h-8 w-8 text-violet-600" />

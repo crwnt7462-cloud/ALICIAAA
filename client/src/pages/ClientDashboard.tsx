@@ -129,36 +129,33 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+    <div className="min-h-screen bg-white">
+      {/* Header épuré */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
-                <User className="h-6 w-6 text-violet-600" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  Bonjour {clientData?.firstName || 'Client'} !
-                </h1>
-                <p className="text-gray-600 text-sm">
-                  {appointments.length} rendez-vous • {messages.length} messages
-                </p>
-              </div>
+            <div>
+              <h1 className="text-lg font-medium text-gray-900">
+                Bonjour {clientData?.firstName || 'Client'}
+              </h1>
+              <p className="text-gray-500 text-sm">
+                {appointments.length} RDV • {messages.length} messages
+              </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => setLocation('/client-settings')}
+                className="h-8 w-8"
               >
                 <Settings className="h-4 w-4" />
               </Button>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={handleLogout}
+                className="h-8 w-8"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
@@ -167,81 +164,56 @@ export default function ClientDashboard() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
-        {/* Recherche rapide */}
-        <Card>
-          <CardContent className="p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Rechercher un salon</h2>
-            <div className="flex gap-3">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Rechercher un salon ou un service..."
-                className="flex-1"
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-              <Button onClick={handleSearch} className="bg-violet-600 hover:bg-violet-700">
-                <Search className="h-4 w-4 mr-2" />
-                Rechercher
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Actions rapides */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/category-selection')}>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Search className="h-6 w-6 text-violet-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Nouveau rendez-vous</h3>
-              <p className="text-sm text-gray-600">Choisissez votre catégorie de service</p>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/client-messaging-search')}>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <MessageCircle className="h-6 w-6 text-blue-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Messages</h3>
-              <p className="text-sm text-gray-600">
-                {messages.length > 0 ? `${messages.length} nouveaux messages` : 'Contactez vos salons'}
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setLocation('/client-favorites')}>
-            <CardContent className="p-6 text-center">
-              <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Star className="h-6 w-6 text-amber-600" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Mes favoris</h3>
-              <p className="text-sm text-gray-600">Vos salons et services préférés</p>
-            </CardContent>
-          </Card>
+      <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
+        {/* Recherche rapide épurée */}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <div className="flex gap-2">
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Rechercher un salon ou un service..."
+              className="flex-1 bg-white border-gray-200"
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+            />
+            <Button onClick={handleSearch} className="bg-violet-600 hover:bg-violet-700">
+              <Search className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
 
-        {/* Prochains rendez-vous */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-violet-600" />
-                Mes rendez-vous
-              </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setLocation('/category-selection')}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Nouveau RDV
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent>
+        {/* Actions épurées */}
+        <div className="grid grid-cols-3 gap-3">
+          <button 
+            onClick={() => setLocation('/category-selection')}
+            className="bg-gray-50 hover:bg-gray-100 rounded-lg p-4 text-center transition-colors"
+          >
+            <Calendar className="h-6 w-6 text-violet-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-900">Nouveau RDV</p>
+          </button>
+          
+          <button 
+            onClick={() => setLocation('/client-messaging-search')}
+            className="bg-gray-50 hover:bg-gray-100 rounded-lg p-4 text-center transition-colors"
+          >
+            <MessageCircle className="h-6 w-6 text-blue-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-900">Messages</p>
+          </button>
+          
+          <button 
+            onClick={() => setLocation('/client-favorites')}
+            className="bg-gray-50 hover:bg-gray-100 rounded-lg p-4 text-center transition-colors"
+          >
+            <Star className="h-6 w-6 text-amber-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-900">Favoris</p>
+          </button>
+        </div>
+
+        {/* Rendez-vous épurés */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-medium text-gray-900">Mes rendez-vous</h2>
+          </div>
+          <div>
             {loadingAppointments ? (
               <div className="text-center py-8">
                 <div className="animate-spin w-6 h-6 border-4 border-violet-600 border-t-transparent rounded-full mx-auto"></div>

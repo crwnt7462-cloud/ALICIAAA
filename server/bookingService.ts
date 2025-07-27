@@ -69,7 +69,15 @@ export class BookingService {
         })
         .returning();
 
-      // 5. Envoyer les confirmations automatiques
+      // 5. Créer ou récupérer le compte client automatiquement
+      await this.createOrUpdateClientAccount({
+        email: bookingData.clientEmail,
+        name: bookingData.clientName,
+        phone: bookingData.clientPhone,
+        appointmentId: appointment.id
+      });
+
+      // 6. Envoyer les confirmations automatiques
       await confirmationService.sendBookingConfirmation({
         appointmentId: appointment.id,
         clientEmail: bookingData.clientEmail,
@@ -363,6 +371,90 @@ export class BookingService {
       return clientAppointments;
     } catch (error) {
       console.error("Erreur lors de la récupération des rendez-vous client:", error);
+      return [];
+    }
+  }
+
+  // Créer ou mettre à jour le compte client automatiquement lors d'une réservation
+  async createOrUpdateClientAccount(clientData: {
+    email: string;
+    name: string;
+    phone: string;
+    appointmentId: number;
+  }): Promise<void> {
+    try {
+      // Vérifier si le client existe déjà
+      const [existingClient] = await db
+        .select()
+        .from(clients)
+        .where(eq(clients.email, clientData.email));
+
+      if (!existingClient) {
+        // Créer un nouveau compte client
+        const [firstName, ...lastNameParts] = clientData.name.split(' ');
+        const lastName = lastNameParts.join(' ') || '';
+
+        await db.insert(clients).values({
+          email: clientData.email,
+          firstName: firstName,
+          lastName: lastName,
+          phone: clientData.phone,
+          totalAppointments: 1,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+
+        console.log(`✅ Nouveau compte client créé automatiquement: ${clientData.email}`);
+      } else {
+        // Mettre à jour le nombre de rendez-vous
+        await db
+          .update(clients)
+          .set({ 
+            totalAppointments: (existingClient.totalAppointments || 0) + 1,
+            updatedAt: new Date()
+          })
+          .where(eq(clients.id, existingClient.id));
+
+        console.log(`✅ Compte client mis à jour: ${clientData.email} (${(existingClient.totalAppointments || 0) + 1} RDV)`);
+      }
+    } catch (error) {
+      console.error('Erreur lors de la synchronisation du compte client:', error);
+    }
+  }
+
+  // Récupérer les rendez-vous d'un client avec informations du salon
+  async getAppointmentsForClient(clientEmail: string): Promise<any[]> {
+    try {
+      const clientAppointments = await db
+        .select({
+          id: appointments.id,
+          serviceName: appointments.serviceName,
+          salonName: users.businessName,
+          date: appointments.appointmentDate,
+          time: appointments.startTime,
+          status: appointments.status,
+          totalPrice: appointments.totalPrice,
+          depositPaid: appointments.depositPaid,
+          address: users.address,
+          professionalName: users.firstName,
+          professionalPhone: users.phone
+        })
+        .from(appointments)
+        .leftJoin(users, eq(appointments.userId, users.id))
+        .where(eq(appointments.clientEmail, clientEmail))
+        .orderBy(desc(appointments.appointmentDate));
+
+      // Calculer les informations supplémentaires
+      return clientAppointments.map(apt => ({
+        ...apt,
+        salonName: apt.salonName || 'Salon non défini',
+        address: apt.address || 'Adresse à confirmer',
+        canCancel: new Date(apt.date + ' ' + apt.time) > new Date(Date.now() + 24 * 60 * 60 * 1000),
+        remainingAmount: parseFloat(apt.totalPrice) - parseFloat(apt.depositPaid || '0')
+      }));
+
+    } catch (error) {
+      console.error('Erreur lors de la récupération des RDV client:', error);
       return [];
     }
   }

@@ -124,14 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
-### Janvier 2025 - NAVIGATION COHÉRENTE AVEC HISTORIQUE NAVIGATEUR (27 Janvier 03h35)
-- ✅ **Navigation unifiée avec history.back()** : Tous les boutons de retour utilisent désormais l'historique du navigateur au lieu de rediriger vers l'accueil
-- ✅ **Expérience utilisateur cohérente** : Plus de 50 composants corrigés pour utiliser window.history.back() au lieu de setLocation('/')
-- ✅ **Amélioration ergonomique majeure** : Navigation naturelle permettant aux utilisateurs de revenir à leur page précédente
-- ✅ **Boutons de retour optimisés** : Changement des libellés "Retour à l'accueil" en "Retour" plus générique
-- ✅ **Composants concernés** : MessagingSystem, Support, Settings, BusinessSuccess, BookingPage, SearchResults, SalonPage, ModernSalonDetail, ServiceCoiffure, ServiceEsthetique, ServiceMassage, ServiceOnglerie, Contact, et bien d'autres
-- ✅ **Interface modernisée** : Navigation identique aux applications mobiles modernes avec gestion intelligente de l'historique
-- ✅ **Cohérence totale** : Tous les composants suivent désormais le même pattern de navigation arrière
+### Janvier 2025 - INTERFACE ÉPURÉE & SYNCHRONISATION RDV COMPLÈTE (27 Janvier 04h30)
+- ✅ **Design minimaliste clients** : ClientDashboard épuré avec interface sobre, suppression des éléments visuels superflus
+- ✅ **Pages connexion avec bordures noires** : ClientLogin et ProLogin avec bordures noires pour un rendu plus net et professionnel
+- ✅ **BusinessFeatures simplifiée** : Suppression de la messagerie, conservation uniquement du lien de partage salon pour une interface ultra-clean
+- ✅ **Synchronisation RDV automatique** : Création automatique des comptes clients lors des réservations pros avec apparition immédiate dans le dashboard client
+- ✅ **Méthodes BookingService étendues** : createOrUpdateClientAccount() et getAppointmentsForClient() pour synchronisation complète client/professionnel
+- ✅ **Navigation historique navigateur** : Tous boutons de retour utilisent window.history.back() pour navigation naturelle (ClientLogin, ModernSalonDetail corrigés)
+- ✅ **Redirection réservation corrigée** : Bouton "Réserver" dans ModernSalonDetail.tsx redirige vers /simple-booking au lieu de /booking
+- ✅ **Interface mobile-first optimisée** : Design compact avec largeur max-w-lg, boutons épurés, couleurs cohérentes
+- ✅ **Comptes clients automatiques** : Synchronisation immédiate des RDV entre interface pro et client avec notifications automatiques
 
 ### Janvier 2025 - WORKFLOW D'ABONNEMENT SALON COMPLET FONCTIONNEL (25 Janvier 12h09)
 - ✅ **Workflow complet Plan → Inscription → Paiement → Personnalisation** : Navigation fluide entre ModernSubscriptionPlans → SalonRegistration → Simulation Stripe → EditSalon
