@@ -34,6 +34,8 @@ export default function AIProModern() {
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [showVoiceInterface, setShowVoiceInterface] = useState(false);
+  const [voiceTranscription, setVoiceTranscription] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Historique des chats simulé (à remplacer par des vraies données)
@@ -71,6 +73,9 @@ export default function AIProModern() {
       const recorder = new MediaRecorder(stream);
       const audioChunks: BlobPart[] = [];
 
+      setShowVoiceInterface(true);
+      setVoiceTranscription('');
+
       recorder.ondataavailable = (event) => {
         audioChunks.push(event.data);
       };
@@ -86,7 +91,15 @@ export default function AIProModern() {
           "Quels produits sont en rupture de stock ?"
         ];
         const randomTranscription = simulatedTranscriptions[Math.floor(Math.random() * simulatedTranscriptions.length)];
-        setInputValue(randomTranscription);
+        setVoiceTranscription(randomTranscription);
+        
+        // Après 2 secondes, fermer l'interface vocale et envoyer le message
+        setTimeout(() => {
+          setInputValue(randomTranscription);
+          setShowVoiceInterface(false);
+          setVoiceTranscription('');
+        }, 2000);
+        
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -105,6 +118,14 @@ export default function AIProModern() {
       setIsRecording(false);
       setMediaRecorder(null);
     }
+  };
+
+  const cancelVoiceInterface = () => {
+    if (isRecording) {
+      stopRecording();
+    }
+    setShowVoiceInterface(false);
+    setVoiceTranscription('');
   };
 
   const toggleRecording = () => {
@@ -170,6 +191,80 @@ export default function AIProModern() {
 
   return (
     <div className="h-full flex flex-col bg-white max-w-md mx-auto relative overflow-hidden">
+      {/* Interface vocale plein écran */}
+      {showVoiceInterface && (
+        <div className="absolute inset-0 bg-white z-50 flex flex-col items-center justify-center p-8">
+          {/* Header avec bouton fermer */}
+          <div className="absolute top-6 right-6">
+            <button
+              onClick={cancelVoiceInterface}
+              className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Grosse bulle centrale */}
+          <div className="relative flex items-center justify-center mb-8">
+            {/* Cercles d'animation */}
+            {isRecording && (
+              <>
+                <div className="absolute w-96 h-96 rounded-full bg-gradient-to-br from-purple-200/30 to-violet-200/30 animate-ping"></div>
+                <div className="absolute w-80 h-80 rounded-full bg-gradient-to-br from-purple-300/40 to-violet-300/40 animate-ping" style={{ animationDelay: '0.5s' }}></div>
+                <div className="absolute w-64 h-64 rounded-full bg-gradient-to-br from-purple-400/50 to-violet-400/50 animate-ping" style={{ animationDelay: '1s' }}></div>
+              </>
+            )}
+            
+            {/* Bulle principale */}
+            <div className={`w-48 h-48 rounded-full bg-gradient-to-br from-purple-400 to-violet-600 flex items-center justify-center shadow-2xl transition-all duration-300 ${
+              isRecording ? 'scale-110' : 'scale-100'
+            }`}>
+              <Mic className="w-16 h-16 text-white" />
+            </div>
+          </div>
+
+          {/* Texte de statut */}
+          <div className="text-center mb-8">
+            {isRecording ? (
+              <>
+                <h2 className="text-2xl font-light text-gray-800 mb-2">Je vous écoute...</h2>
+                <p className="text-gray-500">Parlez maintenant</p>
+              </>
+            ) : voiceTranscription ? (
+              <>
+                <h2 className="text-2xl font-light text-gray-800 mb-4">Transcription</h2>
+                <p className="text-lg text-purple-600 px-4">{voiceTranscription}</p>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-light text-gray-800 mb-2">Traitement...</h2>
+                <p className="text-gray-500">Analyse de votre message</p>
+              </>
+            )}
+          </div>
+
+          {/* Bouton d'action */}
+          <div className="flex items-center gap-4">
+            {isRecording ? (
+              <button
+                onClick={stopRecording}
+                className="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+              >
+                <MicOff className="w-8 h-8 text-white" />
+              </button>
+            ) : (
+              <button
+                onClick={startRecording}
+                className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+              >
+                <Mic className="w-8 h-8 text-white" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
       {/* Header violet */}
       <div className="px-6 py-4 flex items-center justify-between relative">
         <div 
@@ -337,19 +432,11 @@ export default function AIProModern() {
           </Button>
           
           <Button
-            onClick={toggleRecording}
+            onClick={() => setShowVoiceInterface(true)}
             size="sm"
-            className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
-              isRecording 
-                ? 'bg-red-500 hover:bg-red-400 animate-pulse' 
-                : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500'
-            }`}
+            className="w-12 h-12 rounded-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
           >
-            {isRecording ? (
-              <MicOff className="w-5 h-5 text-white" />
-            ) : (
-              <Mic className="w-5 h-5 text-white" />
-            )}
+            <Mic className="w-5 h-5 text-white" />
           </Button>
         </div>
       </div>
