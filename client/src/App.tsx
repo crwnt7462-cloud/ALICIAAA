@@ -18,6 +18,7 @@ import Booking from "@/pages/Booking";
 
 import AIAutomation from "@/pages/AIAutomationNew";
 import AIAssistant from "@/pages/ChatGPTInterface";
+import ChatGPTInterface from "@/pages/ChatGPTInterface";
 import NotificationTest from "@/pages/NotificationTest";
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
@@ -228,7 +229,7 @@ function Router() {
   }
 
   // Page de réservation publique
-  if (location.startsWith('/booking')) {
+  if (location === '/booking' || location.startsWith('/booking/')) {
     return (
       <div className="h-full">
         <BookingPage />
@@ -313,6 +314,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientDashboard />
+      </div>
+    );
+  }
+
+  // Page IA simplifiée
+  if (location === '/ai') {
+    return (
+      <div className="h-full">
+        <ChatGPTInterface />
       </div>
     );
   }
@@ -590,6 +600,7 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
+          <Route path="/ai" component={ChatGPTInterface} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />

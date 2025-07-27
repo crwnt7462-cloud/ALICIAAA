@@ -160,9 +160,14 @@ export default function ProfessionalPlans() {
           {plans.map((plan) => (
             <Card 
               key={plan.id}
-              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${
+              onClick={() => setSelectedPlan(selectedPlan === plan.id ? null : plan.id)}
+              className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer border-2 ${
+                selectedPlan === plan.id 
+                  ? 'border-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.5)]' 
+                  : 'border-black hover:border-purple-300'
+              } ${
                 plan.popular ? 'ring-2 ring-violet-500 shadow-lg' : 'hover:scale-[1.02]'
-              } ${selectedPlan === plan.id ? 'ring-2 ring-violet-500' : ''}`}
+              }`}
             >
               {plan.popular && (
                 <div className="absolute top-0 left-0 right-0">

@@ -37,11 +37,21 @@ export default function Planning() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<'day' | 'month'>('day');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["/api/appointments", selectedDate],
+    queryKey: ["/api/appointments", viewMode === 'day' ? selectedDate : 'all'],
+  });
+
+  // For month view, get all appointments for the current month
+  const currentMonth = new Date(selectedDate).getMonth();
+  const currentYear = new Date(selectedDate).getFullYear();
+  
+  const { data: monthlyAppointments = [] } = useQuery({
+    queryKey: ["/api/appointments/monthly", currentYear, currentMonth],
+    enabled: viewMode === 'month'
   });
 
   const { data: clients = [] } = useQuery({
@@ -97,7 +107,7 @@ export default function Planning() {
     },
   });
 
-  const filteredAppointments = appointments.filter((appointment: any) => {
+  const filteredAppointments = (appointments as any[]).filter((appointment: any) => {
     if (statusFilter === "all") return true;
     return appointment.status === statusFilter;
   });
@@ -134,34 +144,82 @@ export default function Planning() {
     createMutation.mutate(data);
   };
 
+  // Generate calendar days for month view
+  const generateCalendarDays = () => {
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const firstDayOfWeek = firstDay.getDay();
+    const daysInMonth = lastDay.getDate();
+    
+    const days = [];
+    
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDayOfWeek; i++) {
+      days.push(null);
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dayAppointments = (monthlyAppointments as any[]).filter((apt: any) => 
+        apt.appointmentDate === dateStr
+      );
+      days.push({ day, dateStr, appointments: dayAppointments });
+    }
+    
+    return days;
+  };
+
+  const calendarDays = generateCalendarDays();
+
   return (
     <div className="p-4 max-w-md mx-auto space-y-4">
-      {/* Header avec navigation de date */}
-      <div className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => changeDate(-1)}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        
-        <div className="text-center">
-          <h1 className="text-lg font-semibold capitalize">
-            {formatDate(selectedDate)}
-          </h1>
-          <p className="text-sm text-gray-500">
-            {filteredAppointments.length} rendez-vous
-          </p>
+      {/* Header avec navigation de date et toggle vue */}
+      <div className="bg-white rounded-lg p-4 shadow-sm space-y-4">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => viewMode === 'day' ? changeDate(-1) : changeDate(-30)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          
+          <div className="text-center">
+            <h1 className="text-lg font-semibold capitalize">
+              {viewMode === 'day' ? formatDate(selectedDate) : new Date(currentYear, currentMonth).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+            </h1>
+            <p className="text-sm text-gray-500">
+              {viewMode === 'day' ? `${filteredAppointments.length} rendez-vous` : `${(monthlyAppointments as any[]).length} rendez-vous ce mois`}
+            </p>
+          </div>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => viewMode === 'day' ? changeDate(1) : changeDate(30)}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
         </div>
-        
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => changeDate(1)}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+
+        {/* Toggle vue jour/mois */}
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant={viewMode === 'day' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('day')}
+          >
+            Jour
+          </Button>
+          <Button
+            variant={viewMode === 'month' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('month')}
+          >
+            Mois
+          </Button>
+        </div>
       </div>
 
       {/* Actions rapides */}
@@ -191,7 +249,7 @@ export default function Planning() {
                             <SelectValue placeholder="Sélectionner un client" />
                           </SelectTrigger>
                           <SelectContent>
-                            {clients.map((client: Client) => (
+                            {(clients as Client[]).map((client: Client) => (
                               <SelectItem key={client.id} value={client.id.toString()}>
                                 {client.firstName} {client.lastName}
                               </SelectItem>
@@ -216,7 +274,7 @@ export default function Planning() {
                             <SelectValue placeholder="Sélectionner un service" />
                           </SelectTrigger>
                           <SelectContent>
-                            {services.map((service: Service) => (
+                            {(services as Service[]).map((service: Service) => (
                               <SelectItem key={service.id} value={service.id.toString()}>
                                 {service.name} - {service.price}€
                               </SelectItem>
@@ -283,8 +341,71 @@ export default function Planning() {
         </Select>
       </div>
 
-      {/* Liste des rendez-vous */}
-      <div className="space-y-3">
+      {/* Vue mois - Calendrier */}
+      {viewMode === 'month' && (
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          {/* En-têtes des jours */}
+          <div className="grid grid-cols-7 bg-gray-50 border-b">
+            {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
+              <div key={day} className="p-3 text-center text-sm font-medium text-gray-600">
+                {day}
+              </div>
+            ))}
+          </div>
+          
+          {/* Grille du calendrier */}
+          <div className="grid grid-cols-7">
+            {calendarDays.map((dayData, index) => (
+              <div
+                key={index}
+                className={`min-h-[80px] p-2 border-r border-b border-gray-100 ${
+                  dayData ? 'cursor-pointer hover:bg-gray-50' : ''
+                } ${
+                  dayData?.dateStr === selectedDate ? 'bg-purple-50 border-purple-200' : ''
+                }`}
+                onClick={() => dayData && setSelectedDate(dayData.dateStr)}
+              >
+                {dayData && (
+                  <>
+                    <div className={`text-sm font-medium mb-1 ${
+                      dayData.dateStr === selectedDate ? 'text-purple-600' : 'text-gray-700'
+                    }`}>
+                      {dayData.day}
+                    </div>
+                    
+                    {/* Mini indicateurs de rendez-vous */}
+                    <div className="space-y-1">
+                      {dayData.appointments.slice(0, 3).map((apt: any, aptIndex: number) => (
+                        <div
+                          key={aptIndex}
+                          className={`text-xs px-2 py-1 rounded truncate ${
+                            apt.status === 'confirmed' ? 'bg-green-100 text-green-700' :
+                            apt.status === 'completed' ? 'bg-blue-100 text-blue-700' :
+                            apt.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {apt.startTime} {apt.client?.firstName}
+                        </div>
+                      ))}
+                      
+                      {dayData.appointments.length > 3 && (
+                        <div className="text-xs text-gray-500 text-center">
+                          +{dayData.appointments.length - 3} autres
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Liste des rendez-vous - Vue jour */}
+      {viewMode === 'day' && (
+        <div className="space-y-3">
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -373,22 +494,25 @@ export default function Planning() {
             </Card>
           ))
         )}
-      </div>
+        </div>
+      )}
 
-      {/* Sélecteur de date */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Changer de date</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="w-full"
-          />
-        </CardContent>
-      </Card>
+      {/* Sélecteur de date - Vue jour uniquement */}
+      {viewMode === 'day' && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Changer de date</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="w-full"
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
