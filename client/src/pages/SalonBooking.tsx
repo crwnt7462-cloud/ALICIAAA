@@ -63,12 +63,114 @@ export default function SalonBooking() {
     { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
   ];
 
+  // Catégories de services
+  const serviceCategories = [
+    {
+      id: 1,
+      name: 'Cheveux',
+      expanded: false,
+      services: [
+        { id: 1, name: 'Coupe Bonhomme', price: '39', duration: '30min' },
+        { id: 2, name: 'Coupe Dégradée (Américain & "à blanc")', price: '46', duration: '45min' },
+        { id: 3, name: 'Coupe Transformation', price: '45', duration: '45min' },
+        { id: 4, name: 'Repigmentation Camo', price: '26', duration: '30min' },
+        { id: 5, name: 'Coupe Petit Bonhomme (enfant -12 ans)', price: '25', duration: '30min' },
+        { id: 6, name: 'Forfait Cheveux + Barbe', price: '64', duration: '1h' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Barbe',
+      expanded: false,
+      services: [
+        { id: 7, name: 'Taille de barbe classique', price: '25', duration: '30min' },
+        { id: 8, name: 'Rasage traditionnel', price: '35', duration: '45min' },
+        { id: 9, name: 'Barbe + Moustache', price: '30', duration: '35min' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Rasage',
+      expanded: false,
+      services: [
+        { id: 10, name: 'Rasage complet', price: '40', duration: '45min' },
+        { id: 11, name: 'Rasage + Soins', price: '50', duration: '1h' }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Permanente & Défrisage',
+      expanded: false,
+      services: [
+        { id: 12, name: 'Permanente homme', price: '80', duration: '2h' },
+        { id: 13, name: 'Défrisage', price: '90', duration: '2h30' }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Épilations Barbiers',
+      expanded: false,
+      services: [
+        { id: 14, name: 'Épilation sourcils', price: '15', duration: '15min' },
+        { id: 15, name: 'Épilation nez/oreilles', price: '12', duration: '10min' }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Soins Barbier',
+      expanded: false,
+      services: [
+        { id: 16, name: 'Soin visage homme', price: '45', duration: '45min' },
+        { id: 17, name: 'Masque purifiant', price: '35', duration: '30min' }
+      ]
+    },
+    {
+      id: 7,
+      name: 'Forfaits',
+      expanded: false,
+      services: [
+        { id: 18, name: 'Forfait Complet', price: '85', duration: '1h30' },
+        { id: 19, name: 'Forfait Détente', price: '70', duration: '1h15' }
+      ]
+    },
+    {
+      id: 8,
+      name: 'Coloration & Décoloration',
+      expanded: false,
+      services: [
+        { id: 20, name: 'Coloration homme', price: '55', duration: '1h' },
+        { id: 21, name: 'Décoloration', price: '65', duration: '1h30' }
+      ]
+    },
+    {
+      id: 9,
+      name: 'SPA DU CHEVEU',
+      expanded: false,
+      services: [
+        { id: 22, name: 'Soin capillaire premium', price: '60', duration: '1h' },
+        { id: 23, name: 'Traitement anti-chute', price: '75', duration: '1h15' }
+      ]
+    }
+  ];
+
   const [dateStates, setDateStates] = useState(availableDates);
+  const [categoryStates, setCategoryStates] = useState(serviceCategories);
 
   const toggleDateExpansion = (index: number) => {
     setDateStates(prev => prev.map((date, i) => 
       i === index ? { ...date, expanded: !date.expanded } : date
     ));
+  };
+
+  const toggleCategoryExpansion = (index: number) => {
+    setCategoryStates(prev => prev.map((category, i) => 
+      i === index ? { ...category, expanded: !category.expanded } : category
+    ));
+  };
+
+  const handleServiceSelect = (service: any) => {
+    setSelectedService(service);
+    setCurrentStep(2);
   };
 
   const handleTimeSlotSelect = (time: string) => {
@@ -82,17 +184,81 @@ export default function SalonBooking() {
     setCurrentStep(3);
   };
 
-  // Étape 1: Sélection du service
+  // Étape 1: Sélection du service avec catégories
   const renderServiceSelection = () => (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+      {/* Tabs navigation */}
+      <div className="bg-white border-b border-gray-100">
         <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="icon" onClick={() => window.history.back()}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
-            <div></div>
+          <div className="flex space-x-6">
+            <button className="text-black font-medium border-b-2 border-black pb-2">
+              Prendre RDV
+            </button>
+            <button className="text-gray-500 pb-2">Avis</button>  
+            <button className="text-gray-500 pb-2">À-propos</button>
+            <button className="text-gray-500 pb-2">Offrir</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto p-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choix de la prestation</h2>
+        
+        <div className="space-y-3">
+          {categoryStates.map((category, index) => (
+            <div key={category.id} className="bg-white rounded-lg border border-gray-200">
+              <div 
+                className="p-4 flex items-center justify-between cursor-pointer"
+                onClick={() => toggleCategoryExpansion(index)}
+              >
+                <span className="font-medium text-gray-900">{category.name}</span>
+                {category.expanded ? (
+                  <ChevronUp className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-gray-400" />
+                )}
+              </div>
+              
+              {category.expanded && (
+                <div className="border-t border-gray-100">
+                  {category.services.map((service) => (
+                    <div key={service.id} className="p-4 border-b border-gray-50 last:border-b-0">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
+                          <p className="text-sm text-gray-600">{service.price} € • {service.duration}</p>
+                        </div>
+                        <Button 
+                          onClick={() => handleServiceSelect(service)}
+                          className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                          Choisir
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Étape 2: Sélection de la date 
+  const renderDateSelection = () => (
+    <div className="min-h-screen bg-gray-50">
+      {/* Tabs navigation */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-lg mx-auto px-4 py-3">
+          <div className="flex space-x-6">
+            <button className="text-black font-medium border-b-2 border-black pb-2">
+              Prendre RDV
+            </button>
+            <button className="text-gray-500 pb-2">Avis</button>  
+            <button className="text-gray-500 pb-2">À-propos</button>
+            <button className="text-gray-500 pb-2">Offrir</button>
           </div>
         </div>
       </div>
@@ -100,22 +266,19 @@ export default function SalonBooking() {
       <div className="max-w-lg mx-auto p-4 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-900 mb-1">1. Prestation sélectionnée</h2>
-        </div>
-
-        <Card className="border-0 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{service.name}</h3>
-                <p className="text-sm text-gray-600">{service.duration}min • {service.price} €</p>
+                <h3 className="font-semibold text-gray-900">{selectedService?.name || 'Coupe Bonhomme'}</h3>
+                <p className="text-sm text-gray-600">{selectedService?.duration || '30min'} • {selectedService?.price || '39'} €</p>
               </div>
-              <Button variant="ghost" className="text-violet-600 text-sm font-medium">
+              <Button variant="ghost" className="text-violet-600 text-sm font-medium" onClick={() => setCurrentStep(1)}>
                 Supprimer
               </Button>
             </div>
 
             <Select value={formData.staffMember} onValueChange={(value) => setFormData(prev => ({ ...prev, staffMember: value }))}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full mt-3">
                 <SelectValue placeholder="Avec qui ?" />
               </SelectTrigger>
               <SelectContent>
@@ -124,11 +287,11 @@ export default function SalonBooking() {
                 <SelectItem value="sophie">Sophie</SelectItem>
               </SelectContent>
             </Select>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <Button 
-          onClick={() => setCurrentStep(2)}
+          onClick={() => toast({ title: "Fonctionnalité", description: "Ajouter une prestation supplémentaire" })}
           className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium"
         >
           Ajouter une prestation à la suite
@@ -203,14 +366,6 @@ export default function SalonBooking() {
           </div>
         </div>
       </div>
-    </div>
-  );
-
-  // Étape 2: Sélection de la date (séparée)
-  const renderDateSelection = () => (
-    <div className="min-h-screen bg-gray-50">
-      {/* Contenu identique à l'étape 1 mais focalisé sur la sélection de date */}
-      {renderServiceSelection()}
     </div>
   );
 
