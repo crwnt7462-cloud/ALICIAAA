@@ -189,27 +189,39 @@ export default function SalonSearch() {
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        {salon.services.slice(0, 2).map((service, index) => (
-                          <Badge 
-                            key={index} 
-                            variant="secondary" 
-                            className="text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-1"
-                          >
-                            {service}
-                          </Badge>
-                        ))}
-                        {salon.services.length > 2 && (
-                          <span className="text-xs text-gray-500">
-                            +{salon.services.length - 2}
-                          </span>
-                        )}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          {salon.services.slice(0, 2).map((service, index) => (
+                            <Badge 
+                              key={index} 
+                              variant="secondary" 
+                              className="text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-1"
+                            >
+                              {service}
+                            </Badge>
+                          ))}
+                          {salon.services.length > 2 && (
+                            <span className="text-xs text-gray-500">
+                              +{salon.services.length - 2}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                          <Clock className="h-3 w-3" />
+                          <span>{salon.nextSlot}</span>
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
-                        <Clock className="h-3 w-3" />
-                        <span>{salon.nextSlot}</span>
-                      </div>
+                      <Button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/booking');
+                        }}
+                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium h-8"
+                        size="sm"
+                      >
+                        Réserver
+                      </Button>
                     </div>
                   </div>
                 </div>

@@ -324,7 +324,8 @@ export default function ModernSalonDetail() {
                       </div>
                       <Button 
                         onClick={() => setLocation('/booking')}
-                        className="bg-white text-black hover:bg-gray-200 h-9 px-6 text-sm font-medium border border-white/20"
+                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium h-8"
+                        size="sm"
                       >
                         Réserver
                       </Button>
@@ -534,10 +535,10 @@ export default function ModernSalonDetail() {
         </div>
 
         {/* Bouton de réservation fixe */}
-        <div className="sticky bottom-0 bg-white border-t p-4">
+        <div className="sticky bottom-0 bg-black border-t border-gray-800 p-4">
           <Button 
             onClick={() => setLocation('/simple-booking')}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white h-12 text-base font-medium"
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white h-12 text-base font-medium rounded-full"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Réserver maintenant
