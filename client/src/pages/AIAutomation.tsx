@@ -147,7 +147,7 @@ export default function AIAutomation() {
             </div>
           ) : clientTrends ? (
             <div className="space-y-4">
-              {clientTrends.newServices?.map((service: any, idx: number) => (
+              {(clientTrends as any)?.newServices?.map((service: any, idx: number) => (
                 <div key={idx} className="p-3 bg-green-50 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div>
@@ -161,7 +161,7 @@ export default function AIAutomation() {
                 </div>
               ))}
               
-              {clientTrends.pricingOptimization?.map((pricing: any, idx: number) => (
+              {(clientTrends as any)?.pricingOptimization?.map((pricing: any, idx: number) => (
                 <div key={idx} className="p-3 bg-blue-50 rounded-lg">
                   <div className="flex justify-between items-center">
                     <div>
@@ -199,7 +199,7 @@ export default function AIAutomation() {
             </div>
           ) : churnRisk ? (
             <div className="space-y-4">
-              {churnRisk.churnRisks?.map((risk: any, idx: number) => (
+              {(churnRisk as any)?.churnRisks?.map((risk: any, idx: number) => (
                 <div key={idx} className={`p-3 rounded-lg ${
                   risk.urgency === 'high' ? 'bg-red-50' : 
                   risk.urgency === 'medium' ? 'bg-yellow-50' : 'bg-green-50'
@@ -231,11 +231,11 @@ export default function AIAutomation() {
                 </div>
               ))}
               
-              {churnRisk.overallChurnRate && (
+              {(churnRisk as any)?.overallChurnRate && (
                 <div className="p-3 bg-gray-50 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-600">Taux de départ global</span>
-                    <span className="font-medium">{Math.round(churnRisk.overallChurnRate * 100)}%</span>
+                    <span className="font-medium">{Math.round((churnRisk as any).overallChurnRate * 100)}%</span>
                   </div>
                 </div>
               )}
@@ -262,7 +262,7 @@ export default function AIAutomation() {
             </div>
           ) : businessOpportunities ? (
             <div className="space-y-4">
-              {businessOpportunities.crossSellingOpportunities?.map((opportunity: any, idx: number) => (
+              {(businessOpportunities as any)?.crossSellingOpportunities?.map((opportunity: any, idx: number) => (
                 <div key={idx} className="p-3 bg-purple-50 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div>
@@ -283,7 +283,7 @@ export default function AIAutomation() {
                 </div>
               ))}
               
-              {businessOpportunities.seasonalPredictions?.map((prediction: any, idx: number) => (
+              {(businessOpportunities as any)?.seasonalPredictions?.map((prediction: any, idx: number) => (
                 <div key={idx} className="p-3 bg-indigo-50 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div>
@@ -381,7 +381,7 @@ export default function AIAutomation() {
             </div>
           ) : trendyLooks ? (
             <div className="space-y-4">
-              {trendyLooks.suggestedLooks?.map((look: any, idx: number) => (
+              {(trendyLooks as any)?.suggestedLooks?.map((look: any, idx: number) => (
                 <div key={idx} className="p-3 bg-pink-50 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div>
