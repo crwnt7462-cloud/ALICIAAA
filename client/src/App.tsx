@@ -627,11 +627,12 @@ function Router() {
 
   // Application principale avec navigation
   return (
-    <div className="h-full flex flex-col max-w-md mx-auto bg-white overflow-hidden">
-      <main className="flex-1 overflow-y-auto bg-white pb-20">
+    <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
+      <Header />
+      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/" component={DashboardModern} />
-          <Route path="/dashboard" component={DashboardModern} />
+          <Route path="/" component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={PlanningModern} />
           <Route path="/clients" component={ClientsModern} />
