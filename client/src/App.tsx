@@ -24,7 +24,7 @@ import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
 import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
-import ProLogin from "@/pages/ProLogin";
+import ProLoginModernModern from "@/pages/ProLoginModernModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
@@ -32,7 +32,7 @@ import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
-import BusinessFeatures from "@/pages/BusinessFeatures";
+import BusinessFeaturesModernModern from "@/pages/BusinessFeaturesModernModern";
 import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
 import ModernBooking from "@/pages/ModernBooking";
@@ -74,7 +74,7 @@ import ClientLogin from "@/pages/ClientLogin";
 import ClientRegister from "@/pages/ClientRegister";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
-import FuturisticProLogin from "@/pages/FuturisticProLogin";
+
 import PlanityStyleClientLogin from "@/pages/PlanityStyleClientLogin";
 import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
 import PlanityStyleProfessionalList from "@/pages/PlanityStyleProfessionalList";
@@ -178,7 +178,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLogin />
+        <ProLoginModern />
       </div>
     );
   }
@@ -313,7 +313,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <FuturisticProLogin />
+        <ProLoginModern />
       </div>
     );
   }
@@ -412,7 +412,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLogin />
+        <ProLoginModern />
       </div>
     );
   }
@@ -597,7 +597,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLogin />
+        <ProLoginModern />
       </div>
     );
   }
@@ -628,7 +628,7 @@ function Router() {
           <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={Planning} />
           <Route path="/clients" component={Clients} />
-          <Route path="/business-features" component={BusinessFeatures} />
+          <Route path="/business-features" component={BusinessFeaturesModern} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />
