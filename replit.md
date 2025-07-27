@@ -124,6 +124,19 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - PAGES STYLE PLANITY CRÉÉES AVEC NOTRE IDENTITÉ GRAPHIQUE (27 Janvier 04h00)
+- ✅ **5 nouvelles pages inspirées Planity** : PlanityStyleClientLogin, PlanityStyleBooking, PlanityStyleProfessionalList, PlanityStyleAccount, PlanityStyleBeautyInstitute
+- ✅ **Design Planity avec notre style** : Conservation de nos couleurs violet/amber et typographies tout en adoptant l'ergonomie Planity
+- ✅ **Interface connexion épurée** : Page de connexion avec image de marque et formulaire simplifié style Planity
+- ✅ **Réservation multi-étapes** : Processus de réservation fluide (service → créneau → confirmation) identique à Planity
+- ✅ **Listing professionnels moderne** : Grille de salons avec filtres, recherche et cartes interactives
+- ✅ **Compte client complet** : Onglets Profil/RDV/Favoris/Paramètres avec historique et préférences
+- ✅ **Page instituts beauté** : Présentation par villes avec cartes visuelles et informations complètes
+- ✅ **Routes intégrées** : /planity-client-login, /planity-booking, /planity-professionals, /planity-account, /planity-beauty-institute
+- ✅ **Navigation cohérente** : Boutons de retour avec window.history.back() sur toutes les pages
+- ✅ **Mobile-first responsive** : Design optimisé pour écrans tactiles avec cartes et formulaires adaptés
+- ✅ **Deux versions disponibles** : Pages originales conservées + nouvelles pages style Planity pour plus d'options
+
 ### Janvier 2025 - INTERFACE ÉPURÉE & SYNCHRONISATION RDV COMPLÈTE (27 Janvier 04h30)
 - ✅ **Design minimaliste clients** : ClientDashboard épuré avec interface sobre, suppression des éléments visuels superflus
 - ✅ **Pages connexion avec bordures noires** : ClientLogin et ProLogin avec bordures noires pour un rendu plus net et professionnel

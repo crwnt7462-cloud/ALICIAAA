@@ -73,6 +73,11 @@ import ClientLogin from "@/pages/ClientLogin";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
+import PlanityStyleClientLogin from "@/pages/PlanityStyleClientLogin";
+import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
+import PlanityStyleProfessionalList from "@/pages/PlanityStyleProfessionalList";
+import PlanityStyleAccount from "@/pages/PlanityStyleAccount";
+import PlanityStyleBeautyInstitute from "@/pages/PlanityStyleBeautyInstitute";
 import SalonRegistration from "@/pages/SalonRegistration";
 import SalonPhotosManager from "@/pages/SalonPhotosManager";
 import MonthlyCalendar from "@/pages/MonthlyCalendar";
@@ -634,6 +639,13 @@ function Router() {
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
           <Route path="/booking-success" component={BookingSuccess} />
+          
+          {/* Pages style Planity */}
+          <Route path="/planity-client-login" component={PlanityStyleClientLogin} />
+          <Route path="/planity-booking" component={PlanityStyleBooking} />
+          <Route path="/planity-professionals" component={PlanityStyleProfessionalList} />
+          <Route path="/planity-account" component={PlanityStyleAccount} />
+          <Route path="/planity-beauty-institute" component={PlanityStyleBeautyInstitute} />
 
           <Route component={NotFound} />
         </Switch>
