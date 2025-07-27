@@ -109,134 +109,142 @@ export default function SalonSearch() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header ultra-minimaliste style IMG_1257 */}
-      <div className="bg-white px-6 pt-16 pb-8">
-        <div className="max-w-sm mx-auto text-center">
-          {/* Logo "Design" comme dans l'image */}
-          <div className="mb-12">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => window.history.back()}
-              className="absolute left-4 top-16 h-8 w-8 rounded-full hover:bg-gray-50"
-            >
-              <ArrowLeft className="h-4 w-4 text-gray-600" />
-            </Button>
-            <div className="flex items-center justify-center mb-2">
+      {/* Interface exactement identique aux pages login/register */}
+      <div className="px-6 py-16">
+        <div className="max-w-sm mx-auto">
+          
+          {/* Bouton retour discret */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => window.history.back()}
+            className="absolute left-4 top-16 h-8 w-8 rounded-full hover:bg-gray-50"
+          >
+            <ArrowLeft className="h-4 w-4 text-gray-600" />
+          </Button>
+
+          {/* Logo "Design" violet identique */}
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center mb-8">
               <span className="text-3xl font-bold text-violet-600">Design</span>
             </div>
           </div>
 
-          {/* Titre principal */}
-          <h1 className="text-xl text-gray-500 font-normal mb-12">
+          {/* Titre simple */}
+          <h1 className="text-center text-xl text-gray-500 font-normal mb-16">
             Find your salon
           </h1>
 
-          {/* Champs de recherche ultra-simples */}
-          <div className="space-y-6">
-            <div className="relative">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Service"
-                className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-xl text-base font-normal placeholder:text-gray-400"
-              />
-            </div>
+          {/* Formulaire de recherche - style identique aux champs login */}
+          <div className="space-y-6 mb-8">
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Service"
+              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-white rounded-2xl text-base placeholder:text-gray-400 shadow-none"
+            />
             
-            <div className="relative">
-              <Input
-                value={locationQuery}
-                onChange={(e) => setLocationQuery(e.target.value)}
-                placeholder="Location"
-                className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-xl text-base font-normal placeholder:text-gray-400"
-              />
-            </div>
+            <Input
+              value={locationQuery}
+              onChange={(e) => setLocationQuery(e.target.value)}
+              placeholder="Location"
+              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-white rounded-2xl text-base placeholder:text-gray-400 shadow-none"
+            />
 
-            {/* Bouton de recherche */}
             <Button 
               onClick={handleSearch}
-              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-base font-semibold mt-8"
+              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-semibold"
             >
               Search
             </Button>
           </div>
 
-          {/* Séparateur */}
-          <div className="my-10">
+          {/* Séparateur style login */}
+          <div className="text-center my-8">
             <p className="text-gray-400 text-sm">or browse categories</p>
           </div>
 
-          {/* Catégories style minimaliste */}
-          <div className="grid grid-cols-2 gap-3 mb-8">
+          {/* Catégories en grid 2x2 style boutons sociaux */}
+          <div className="grid grid-cols-2 gap-3">
             {categories.slice(1).map((category) => (
               <button
                 key={category.id}
-                onClick={() => setActiveFilter(category.id)}
-                className={`p-4 rounded-xl text-sm font-medium transition-all ${
-                  activeFilter === category.id
-                    ? 'bg-violet-600 text-white'
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                }`}
+                onClick={() => {
+                  setActiveFilter(category.id);
+                  handleSearch();
+                }}
+                className="h-14 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
               >
                 {category.name}
               </button>
             ))}
           </div>
+
         </div>
       </div>
 
-      {/* Résultats (si recherche effectuée) */}
-      {(searchQuery || activeFilter !== "all") && (
-        <div className="max-w-sm mx-auto px-6 pb-20">
-          <div className="mb-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
-              Results
+      {/* Résultats de recherche */}
+      {(searchQuery || activeFilter !== "all") && filteredSalons.length > 0 && (
+        <div className="bg-gray-50 min-h-screen pt-8">
+          <div className="max-w-sm mx-auto px-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-6 text-center">
+              Available salons
             </h2>
-          </div>
 
-          <div className="space-y-4">
-            {filteredSalons.map((salon) => (
-              <Card 
-                key={salon.id} 
-                className="border-0 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => setLocation(`/salon/${salon.id}`)}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-white rounded-lg flex-shrink-0 flex items-center justify-center">
-                      <span className="text-xl">{salon.image}</span>
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-medium text-gray-900 mb-1">
-                        {salon.name}
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-2">
-                        {salon.location}
-                      </p>
-                      <div className="flex items-center gap-4 text-xs text-gray-600">
-                        <span className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-amber-400 fill-current" />
-                          {salon.rating}
-                        </span>
-                        <span>{salon.distance}</span>
-                        <span className="text-green-600">{salon.nextSlot}</span>
+            <div className="space-y-3 pb-20">
+              {filteredSalons.map((salon) => (
+                <Card 
+                  key={salon.id} 
+                  className="border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all"
+                  onClick={() => setLocation(`/salon/${salon.id}`)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gray-50 rounded-xl flex-shrink-0 flex items-center justify-center">
+                        <span className="text-lg">{salon.image}</span>
                       </div>
-                    </div>
 
-                    <Button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setLocation('/booking');
-                      }}
-                      className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-3 py-1 text-xs font-medium h-7"
-                    >
-                      Book
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base font-medium text-gray-900 mb-1 truncate">
+                          {salon.name}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-2 truncate">
+                          {salon.location}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-gray-600">
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3 text-amber-400 fill-current" />
+                            {salon.rating}
+                          </span>
+                          <span>{salon.distance}</span>
+                          <span className="text-green-600 font-medium">{salon.nextSlot}</span>
+                        </div>
+                      </div>
+
+                      <Button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/booking');
+                        }}
+                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl px-3 py-1.5 text-xs font-medium"
+                      >
+                        Book
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Message si aucun résultat */}
+      {(searchQuery || activeFilter !== "all") && filteredSalons.length === 0 && (
+        <div className="bg-gray-50 min-h-96 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-500">No salons found</p>
+            <p className="text-sm text-gray-400 mt-1">Try different keywords</p>
           </div>
         </div>
       )}
