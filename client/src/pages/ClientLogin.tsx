@@ -37,7 +37,10 @@ export default function ClientLogin() {
           description: "Bienvenue sur votre espace client",
         });
         
-        setLocation('/client-dashboard');
+        // Redirection immédiate vers le dashboard client
+        setTimeout(() => {
+          setLocation('/client-dashboard');
+        }, 100);
       } else {
         const error = await response.json();
         toast({

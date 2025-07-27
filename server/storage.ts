@@ -168,7 +168,7 @@ export class DatabaseStorage implements IStorage {
         subscriptionStatus: "active",
 
         trialEndDate: null,
-        reminderOptIn: true,
+
         createdAt: new Date(),
         updatedAt: new Date()
       };

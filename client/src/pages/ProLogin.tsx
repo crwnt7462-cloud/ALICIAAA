@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, Building2, Eye, EyeOff } from 'lucide-react';
+import { LogIn, Building2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function ProLogin() {
@@ -61,8 +61,42 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-2 border-black">
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Bouton retour */}
+      <div className="absolute top-4 left-4 z-10">
+        <Button
+          variant="ghost"
+          onClick={() => window.history.back()}
+          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm"
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {/* Section gauche - Image et branding */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-100 to-slate-200 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/50 to-amber-50/50"></div>
+        
+        <div className="relative z-10 flex items-center justify-center p-12">
+          <div className="text-center space-y-6 max-w-md">
+            <div className="w-20 h-20 bg-violet-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl">
+              <Building2 className="h-10 w-10 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Espace Professionnel
+              </h1>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Gérez votre salon avec simplicité et efficacité
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section droite - Formulaire */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <Card className="w-full max-w-md border-2 border-black rounded-2xl">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mb-4">
             <Building2 className="h-8 w-8 text-violet-600" />
@@ -137,6 +171,7 @@ export default function ProLogin() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

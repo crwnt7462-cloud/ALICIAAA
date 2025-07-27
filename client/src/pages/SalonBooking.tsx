@@ -230,7 +230,7 @@ export default function SalonBooking() {
                         </div>
                         <Button 
                           onClick={() => handleServiceSelect(service)}
-                          className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-full text-sm font-medium shadow-md hover:shadow-lg transition-all"
                         >
                           Choisir
                         </Button>
@@ -292,7 +292,7 @@ export default function SalonBooking() {
 
         <Button 
           onClick={() => toast({ title: "Fonctionnalité", description: "Ajouter une prestation supplémentaire" })}
-          className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium"
+          className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
         >
           Ajouter une prestation à la suite
         </Button>
@@ -312,7 +312,7 @@ export default function SalonBooking() {
                     <Button
                       key={time}
                       variant="outline"
-                      className="py-2 text-sm border-gray-200 hover:border-violet-600 hover:text-violet-600"
+                      className="py-2 text-sm border-gray-200 hover:border-violet-600 hover:text-violet-600 rounded-full hover:bg-violet-50 transition-all"
                       onClick={() => handleTimeSlotSelect(time)}
                     >
                       {time}
@@ -345,7 +345,7 @@ export default function SalonBooking() {
                         <Button
                           key={time}
                           variant="outline"
-                          className="py-2 text-sm border-gray-200 hover:border-violet-600 hover:text-violet-600"
+                          className="py-2 text-sm border-gray-200 hover:border-violet-600 hover:text-violet-600 rounded-full hover:bg-violet-50 transition-all"
                           onClick={() => {
                             setSelectedDate(dateInfo.full);
                             handleTimeSlotSelect(time);
@@ -425,7 +425,7 @@ export default function SalonBooking() {
           <Button 
             onClick={() => setCurrentStep(4)}
             variant="outline"
-            className="w-full py-3 mb-6 border-gray-300 text-gray-900 font-medium rounded-lg"
+            className="w-full py-3 mb-6 border-violet-300 text-violet-700 font-medium rounded-full hover:bg-violet-50 transition-all"
           >
             Créer mon compte
           </Button>
@@ -499,7 +499,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={() => setCurrentStep(5)}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password}
             >
               Créer mon compte
@@ -568,7 +568,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={() => setCurrentStep(6)}
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-lg font-medium"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.firstName || !formData.lastName}
             >
               Confirmer mon inscription
@@ -812,7 +812,7 @@ export default function SalonBooking() {
               });
               setLocation('/');
             }}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium"
+            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
           >
             Confirmer la réservation
           </Button>
