@@ -167,7 +167,7 @@ export default function PublicLanding() {
   };
 
   const handleBookSalon = (salonId: string) => {
-    setLocation(`/booking`);
+    setLocation(`/salon/salon-elegance`);
   };
 
   const handleSalonClick = (salonId: string) => {
@@ -330,7 +330,7 @@ export default function PublicLanding() {
               </Button>
               <Button 
                 className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
-                onClick={() => setLocation("/booking")}
+                onClick={() => setLocation("/salon/salon-elegance")}
               >
                 Réserver
               </Button>
@@ -486,7 +486,7 @@ export default function PublicLanding() {
                   className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setLocation('/salon-booking');
+                    setLocation(`/salon/${slot.id}`);
                   }}
                 >
                   Réserver
@@ -627,7 +627,7 @@ export default function PublicLanding() {
                     <Button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLocation(`/salon-booking`);
+                        setLocation(`/salon/${salon.id}`);
                       }}
                       className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium"
                       size="sm"
