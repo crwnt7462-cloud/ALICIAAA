@@ -17,6 +17,7 @@ export default function SalonBooking() {
   const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
+  const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
@@ -71,6 +72,42 @@ export default function SalonBooking() {
     duration: "30min"
   };
 
+  // Professionnels disponibles
+  const professionals = [
+    {
+      id: 1,
+      name: "Lucas",
+      specialties: ["Coupe", "Barbe"],
+      rating: 4.9,
+      nextSlot: "Aujourd'hui 10:00",
+      image: "👨‍💼"
+    },
+    {
+      id: 2,
+      name: "Emma",
+      specialties: ["Coloration", "Soin"],
+      rating: 4.8,
+      nextSlot: "Aujourd'hui 11:30",
+      image: "👩‍💼"
+    },
+    {
+      id: 3,
+      name: "Alex",
+      specialties: ["Coupe Moderne", "Style"],
+      rating: 4.7,
+      nextSlot: "Demain 9:00",
+      image: "👨‍🎨"
+    },
+    {
+      id: 4,
+      name: "Sophie",
+      specialties: ["Permanente", "Défrisage"],
+      rating: 4.9,
+      nextSlot: "Demain 14:00",
+      image: "👩‍🔬"
+    }
+  ];
+
   const [dateStates, setDateStates] = useState(availableDates);
 
   const toggleDateExpansion = (index: number) => {
@@ -81,22 +118,27 @@ export default function SalonBooking() {
 
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
+    setCurrentStep(3);
+  };
+
+  const handleProfessionalSelect = (professional: any) => {
+    setSelectedProfessional(professional);
     setCurrentStep(2);
   };
 
   const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
-    setCurrentStep(3);
+    setCurrentStep(4);
   };
 
   const handleDateSelect = (dateInfo: any) => {
     setSelectedDate(dateInfo.full);
     setSelectedSlot({ date: dateInfo.full, time: '10:00' });
-    setCurrentStep(3);
+    setCurrentStep(4);
   };
 
-  // Étape 1: Sélection de la date directement
-  const renderServiceSelection = () => (
+  // Étape 1: Sélection du professionnel
+  const renderProfessionalSelection = () => (
     <div className="min-h-screen bg-gray-50">
       {/* Header simple avec retour */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
@@ -118,6 +160,81 @@ export default function SalonBooking() {
       </div>
 
       <div className="max-w-lg mx-auto p-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
+        
+        <div className="space-y-3">
+          {professionals.map((pro) => (
+            <Card 
+              key={pro.id}
+              className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              onClick={() => handleProfessionalSelect(pro)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">{pro.image}</div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-medium text-gray-900">{pro.name}</h3>
+                      <div className="flex items-center gap-1">
+                        <span className="text-amber-400">★</span>
+                        <span className="text-sm text-gray-600">{pro.rating}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {pro.specialties.map((specialty, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {specialty}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-sm text-violet-600">{pro.nextSlot}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Étape 2: Affichage du service par défaut et redirection vers dates
+  const renderServiceSelection = () => (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simple avec retour */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentStep(1)}
+              className="h-10 w-10 p-0 rounded-full"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="font-semibold text-gray-900">Service sélectionné</h1>
+              <p className="text-sm text-gray-600">Choisir la date</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto p-4">
+        <div className="bg-white rounded-lg p-4 border border-gray-100 mb-6">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-xl">{selectedProfessional?.image}</div>
+            <div>
+              <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
+              <p className="text-sm text-gray-600">{selectedProfessional?.specialties?.join(', ')}</p>
+            </div>
+          </div>
+          <div className="border-t pt-3">
+            <h4 className="font-medium text-gray-900">{defaultService.name}</h4>
+            <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price}€</p>
+          </div>
+        </div>
+
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un créneau</h2>
         
         <div className="space-y-3">
@@ -158,7 +275,7 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Étape 2: Sélection de la date 
+  // Étape 3: Sélection de la date 
   const renderDateSelection = () => (
     <div className="min-h-screen bg-gray-50">
       {/* Tabs navigation */}
@@ -177,28 +294,22 @@ export default function SalonBooking() {
 
       <div className="max-w-lg mx-auto p-4 space-y-6">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">1. Prestation sélectionnée</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">1. Professionnel sélectionné</h2>
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-gray-900">{selectedService?.name || 'Coupe Bonhomme'}</h3>
-                <p className="text-sm text-gray-600">{selectedService?.duration || '30min'} • {selectedService?.price || '39'} €</p>
+              <div className="flex items-center gap-3">
+                <div className="text-xl">{selectedProfessional?.image}</div>
+                <div>
+                  <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
+                  <p className="text-sm text-gray-600">
+                    {selectedProfessional?.specialties?.join(', ')} • ★ {selectedProfessional?.rating}
+                  </p>
+                </div>
               </div>
               <Button variant="ghost" className="text-violet-600 text-sm font-medium" onClick={() => setCurrentStep(1)}>
-                Supprimer
+                Changer
               </Button>
             </div>
-
-            <Select value={formData.staffMember} onValueChange={(value) => setFormData(prev => ({ ...prev, staffMember: value }))}>
-              <SelectTrigger className="w-full mt-3">
-                <SelectValue placeholder="Avec qui ?" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Peu importe</SelectItem>
-                <SelectItem value="marie">Marie</SelectItem>
-                <SelectItem value="sophie">Sophie</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
@@ -736,18 +847,20 @@ export default function SalonBooking() {
   // Navigation entre les étapes
   switch (currentStep) {
     case 1:
-      return renderServiceSelection();
+      return renderProfessionalSelection();
     case 2:
-      return renderDateSelection();
+      return renderServiceSelection();
     case 3:
-      return renderIdentification();
+      return renderDateSelection();
     case 4:
-      return renderAccountCompletion();
+      return renderIdentification();
     case 5:
-      return renderPayment();
+      return renderAccountCompletion();
     case 6:
+      return renderPayment();
+    case 7:
       return renderPaymentForm();
     default:
-      return renderServiceSelection();
+      return renderProfessionalSelection();
   }
 }
