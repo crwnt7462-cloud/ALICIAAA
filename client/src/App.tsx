@@ -71,6 +71,7 @@ import BusinessRegistration from "@/pages/BusinessRegistration";
 import BusinessSuccess from "@/pages/BusinessSuccess";
 import PaymentStep from "@/pages/PaymentStep";
 import ClientLogin from "@/pages/ClientLogin";
+import ClientRegister from "@/pages/ClientRegister";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import FuturisticProLogin from "@/pages/FuturisticProLogin";
@@ -353,6 +354,15 @@ function Router() {
     );
   }
 
+  // Page d'inscription client
+  if (location === '/client-register') {
+    return (
+      <div className="h-full">
+        <ClientRegister />
+      </div>
+    );
+  }
+
   // Page tableau de bord client
   if (location === '/client/dashboard') {
     return (
@@ -596,6 +606,14 @@ function Router() {
     return (
       <div className="h-full">
         <ClientLogin />
+      </div>
+    );
+  }
+
+  if (location === '/client-register') {
+    return (
+      <div className="h-full">
+        <ClientRegister />
       </div>
     );
   }
