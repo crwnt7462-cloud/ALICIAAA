@@ -109,153 +109,137 @@ export default function SalonSearch() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header ultra-minimaliste */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
+      {/* Header ultra-minimaliste style IMG_1257 */}
+      <div className="bg-white px-6 pt-16 pb-8">
+        <div className="max-w-sm mx-auto text-center">
+          {/* Logo "Design" comme dans l'image */}
+          <div className="mb-12">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => window.history.back()}
-              className="h-9 w-9 rounded-full hover:bg-gray-50"
+              className="absolute left-4 top-16 h-8 w-8 rounded-full hover:bg-gray-50"
             >
               <ArrowLeft className="h-4 w-4 text-gray-600" />
             </Button>
-            <h1 className="text-lg font-medium text-gray-900">Recherche</h1>
-            <Button
-              variant="ghost" 
-              size="icon"
-              className="h-9 w-9 rounded-full hover:bg-gray-50"
+            <div className="flex items-center justify-center mb-2">
+              <span className="text-3xl font-bold text-violet-600">Design</span>
+            </div>
+          </div>
+
+          {/* Titre principal */}
+          <h1 className="text-xl text-gray-500 font-normal mb-12">
+            Find your salon
+          </h1>
+
+          {/* Champs de recherche ultra-simples */}
+          <div className="space-y-6">
+            <div className="relative">
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Service"
+                className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-xl text-base font-normal placeholder:text-gray-400"
+              />
+            </div>
+            
+            <div className="relative">
+              <Input
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+                placeholder="Location"
+                className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-xl text-base font-normal placeholder:text-gray-400"
+              />
+            </div>
+
+            {/* Bouton de recherche */}
+            <Button 
+              onClick={handleSearch}
+              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-base font-semibold mt-8"
             >
-              <SlidersHorizontal className="h-4 w-4 text-gray-600" />
+              Search
             </Button>
           </div>
+
+          {/* Séparateur */}
+          <div className="my-10">
+            <p className="text-gray-400 text-sm">or browse categories</p>
+          </div>
+
+          {/* Catégories style minimaliste */}
+          <div className="grid grid-cols-2 gap-3 mb-8">
+            {categories.slice(1).map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setActiveFilter(category.id)}
+                className={`p-4 rounded-xl text-sm font-medium transition-all ${
+                  activeFilter === category.id
+                    ? 'bg-violet-600 text-white'
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4">
-        {/* Barre de recherche centrée */}
-        <div className="py-6 space-y-3">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Que recherchez-vous ?"
-              className="h-12 pl-12 pr-4 border-gray-200 focus:border-violet-500 focus:ring-0 bg-gray-50 rounded-xl text-base"
-            />
+      {/* Résultats (si recherche effectuée) */}
+      {(searchQuery || activeFilter !== "all") && (
+        <div className="max-w-sm mx-auto px-6 pb-20">
+          <div className="mb-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">
+              Results
+            </h2>
           </div>
-          
-          <div className="relative">
-            <Navigation className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              value={locationQuery}
-              onChange={(e) => setLocationQuery(e.target.value)}
-              placeholder="Où ?"
-              className="h-12 pl-12 pr-4 border-gray-200 focus:border-violet-500 focus:ring-0 bg-gray-50 rounded-xl text-base"
-            />
-          </div>
-        </div>
 
-        {/* Catégories horizontales */}
-        <div className="flex gap-2 pb-6 overflow-x-auto">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveFilter(category.id)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                activeFilter === category.id
-                  ? 'bg-violet-100 text-violet-700 border border-violet-200'
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-              }`}
-            >
-              {category.name} ({category.count})
-            </button>
-          ))}
-        </div>
+          <div className="space-y-4">
+            {filteredSalons.map((salon) => (
+              <Card 
+                key={salon.id} 
+                className="border-0 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => setLocation(`/salon/${salon.id}`)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 bg-white rounded-lg flex-shrink-0 flex items-center justify-center">
+                      <span className="text-xl">{salon.image}</span>
+                    </div>
 
-        {/* Résultats épurés */}
-        <div className="space-y-3 pb-20">
-          {filteredSalons.map((salon) => (
-            <Card 
-              key={salon.id} 
-              className="border border-gray-100 hover:border-gray-200 transition-all duration-200 cursor-pointer bg-white rounded-2xl overflow-hidden"
-              onClick={() => setLocation(`/salon/${salon.id}`)}
-            >
-              <CardContent className="p-0">
-                <div className="flex">
-                  {/* Image/Avatar */}
-                  <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 flex-shrink-0 flex items-center justify-center">
-                    <span className="text-2xl">
-                      {salon.image}
-                    </span>
-                  </div>
-
-                  {/* Contenu */}
-                  <div className="flex-1 p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-base font-medium text-gray-900 truncate">
-                            {salon.name}
-                          </h3>
-                          {salon.verified && (
-                            <CheckCircle2 className="h-4 w-4 text-violet-500 flex-shrink-0" />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 text-sm text-gray-500 mb-1">
-                          <MapPin className="h-3 w-3" />
-                          <span className="truncate">{salon.location}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-1 text-sm">
-                        <Star className="h-3 w-3 text-amber-400 fill-current" />
-                        <span className="font-medium text-gray-900">{salon.rating}</span>
-                        <span className="text-gray-400">({salon.reviews})</span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-medium text-gray-900 mb-1">
+                        {salon.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-2">
+                        {salon.location}
+                      </p>
+                      <div className="flex items-center gap-4 text-xs text-gray-600">
+                        <span className="flex items-center gap-1">
+                          <Star className="h-3 w-3 text-amber-400 fill-current" />
+                          {salon.rating}
+                        </span>
+                        <span>{salon.distance}</span>
+                        <span className="text-green-600">{salon.nextSlot}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 text-sm text-green-600">
-                          <Clock className="h-3 w-3" />
-                          <span className="font-medium">{salon.nextSlot}</span>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900">{salon.price}</span>
-                        <span className="text-sm text-gray-500">• {salon.distance}</span>
-                      </div>
-
-                      <Button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setLocation('/booking');
-                        }}
-                        className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-4 py-1.5 text-sm font-medium h-8"
-                      >
-                        Réserver
-                      </Button>
-                    </div>
+                    <Button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLocation('/booking');
+                      }}
+                      className="bg-violet-600 hover:bg-violet-700 text-white rounded-lg px-3 py-1 text-xs font-medium h-7"
+                    >
+                      Book
+                    </Button>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Message si aucun résultat */}
-        {filteredSalons.length === 0 && (
-          <div className="text-center py-12">
-            <Sparkles className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Aucun résultat trouvé
-            </h3>
-            <p className="text-gray-500">
-              Essayez avec d'autres mots-clés ou une autre localisation
-            </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
