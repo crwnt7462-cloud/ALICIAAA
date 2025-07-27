@@ -33,6 +33,8 @@ import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeaturesModern from "@/pages/BusinessFeaturesModern";
+import BusinessFeaturesWithBottomSheets from "@/pages/BusinessFeaturesWithBottomSheets";
+import DashboardModern from "@/pages/DashboardModern";
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
 import InventoryModern from "@/pages/InventoryModern";
@@ -625,15 +627,14 @@ function Router() {
 
   // Application principale avec navigation
   return (
-    <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
-      <Header />
-      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
+    <div className="h-full flex flex-col max-w-md mx-auto bg-white overflow-hidden">
+      <main className="flex-1 overflow-y-auto bg-white pb-20">
         <Switch>
-          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/dashboard" component={DashboardModern} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
-          <Route path="/planning" component={Planning} />
-          <Route path="/clients" component={Clients} />
-          <Route path="/business-features" component={BusinessFeaturesModern} />
+          <Route path="/planning" component={PlanningModern} />
+          <Route path="/clients" component={ClientsModern} />
+          <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />
@@ -641,7 +642,7 @@ function Router() {
           <Route path="/share-booking" component={ShareBooking} />
           <Route path="/services" component={Services} />
           <Route path="/staff" component={Staff} />
-          <Route path="/inventory" component={Inventory} />
+          <Route path="/inventory" component={InventoryModern} />
           <Route path="/booking-pages" component={BookingPages} />
 
           <Route path="/notifications" component={NotificationTest} />
@@ -649,7 +650,7 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
-          <Route path="/ai" component={ChatGPTInterface} />
+          <Route path="/ai" component={AIAssistantSimple} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
@@ -664,7 +665,7 @@ function Router() {
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
           <Route path="/pro-pages" component={ProPagesManager} />
-          <Route path="/salon-settings" component={SalonSettings} />
+          <Route path="/salon-settings" component={SalonSettingsModern} />
           <Route path="/booking-customization" component={BookingCustomization} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />

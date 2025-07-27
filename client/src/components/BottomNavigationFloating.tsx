@@ -4,7 +4,7 @@ import {
   Sparkles, Users, BarChart3 
 } from 'lucide-react';
 
-export function BottomNavigation() {
+export function BottomNavigationFloating() {
   const [location, setLocation] = useLocation();
 
   const navItems = [
