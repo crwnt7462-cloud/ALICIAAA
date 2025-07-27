@@ -89,7 +89,7 @@ export default function ChatGPTInterface() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLocation('/dashboard')}
+            onClick={() => window.history.back()}
             className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
           >
             <ArrowLeft className="h-4 w-4" />

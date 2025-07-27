@@ -124,6 +124,15 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - NAVIGATION COHÉRENTE AVEC HISTORIQUE NAVIGATEUR (27 Janvier 03h35)
+- ✅ **Navigation unifiée avec history.back()** : Tous les boutons de retour utilisent désormais l'historique du navigateur au lieu de rediriger vers l'accueil
+- ✅ **Expérience utilisateur cohérente** : Plus de 50 composants corrigés pour utiliser window.history.back() au lieu de setLocation('/')
+- ✅ **Amélioration ergonomique majeure** : Navigation naturelle permettant aux utilisateurs de revenir à leur page précédente
+- ✅ **Boutons de retour optimisés** : Changement des libellés "Retour à l'accueil" en "Retour" plus générique
+- ✅ **Composants concernés** : MessagingSystem, Support, Settings, BusinessSuccess, BookingPage, SearchResults, SalonPage, ModernSalonDetail, ServiceCoiffure, ServiceEsthetique, ServiceMassage, ServiceOnglerie, Contact, et bien d'autres
+- ✅ **Interface modernisée** : Navigation identique aux applications mobiles modernes avec gestion intelligente de l'historique
+- ✅ **Cohérence totale** : Tous les composants suivent désormais le même pattern de navigation arrière
+
 ### Janvier 2025 - WORKFLOW D'ABONNEMENT SALON COMPLET FONCTIONNEL (25 Janvier 12h09)
 - ✅ **Workflow complet Plan → Inscription → Paiement → Personnalisation** : Navigation fluide entre ModernSubscriptionPlans → SalonRegistration → Simulation Stripe → EditSalon
 - ✅ **Pages SalonRegistration et EditSalon créées** : Interfaces complètes de saisie informations salon et personnalisation (services, tags, paramètres)

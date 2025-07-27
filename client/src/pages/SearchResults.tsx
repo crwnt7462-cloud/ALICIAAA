@@ -315,10 +315,10 @@ export default function SearchResults() {
               Essayez de modifier vos critères de recherche
             </p>
             <Button 
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="bg-purple-600 hover:bg-purple-700 text-white"
             >
-              Nouvelle recherche
+              Retour
             </Button>
           </div>
         )}

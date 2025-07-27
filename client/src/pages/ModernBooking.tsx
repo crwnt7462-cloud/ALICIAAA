@@ -154,7 +154,7 @@ export default function ModernBooking() {
             <Button
               variant="ghost" 
               size="sm"
-              onClick={() => setLocation("/")}
+              onClick={() => window.history.back()}
               className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
             >
               <ArrowLeft className="w-4 h-4" />

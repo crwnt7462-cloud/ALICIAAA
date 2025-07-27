@@ -98,7 +98,7 @@ export default function BookingPage() {
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -274,10 +274,10 @@ export default function BookingPage() {
               Vous recevrez un SMS de confirmation
             </p>
             <Button
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="bg-gray-900 hover:bg-gray-800 text-white"
             >
-              Retour à l'accueil
+              Retour
             </Button>
           </div>
         )}

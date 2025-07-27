@@ -280,7 +280,7 @@ export default function MessagingSystem() {
           <div className="flex items-center justify-between mb-4">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/dashboard')}
+              onClick={() => window.history.back()}
               className="h-10 w-10 rounded-full p-0"
             >
               <ArrowLeft className="h-5 w-5" />

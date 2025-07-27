@@ -136,10 +136,10 @@ export default function BookingSuccess() {
         {/* Action Buttons */}
         <div className="space-y-3">
           <Button
-            onClick={() => setLocation('/')}
+            onClick={() => window.history.back()}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white h-12"
           >
-            Retour à l'accueil
+            Retour
           </Button>
           
           <Button

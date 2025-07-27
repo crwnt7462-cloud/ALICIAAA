@@ -55,11 +55,11 @@ export default function StripeCancel() {
               
               <Button 
                 variant="outline"
-                onClick={() => setLocation("/")}
+                onClick={() => window.history.back()}
                 className="flex-1"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour à l'accueil
+                Retour
               </Button>
             </div>
 

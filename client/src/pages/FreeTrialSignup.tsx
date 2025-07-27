@@ -219,11 +219,11 @@ export default function FreeTrialSignup() {
       <div className="p-4 border-b bg-white">
         <Button
           variant="ghost"
-          onClick={() => setLocation("/professional-plans")}
+          onClick={() => window.history.back()}
           className="text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour aux plans
+          Retour
         </Button>
       </div>
 

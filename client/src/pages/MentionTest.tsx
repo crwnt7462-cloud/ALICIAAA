@@ -87,7 +87,7 @@ export default function MentionTest() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="text-gray-600"
             >
               <ArrowLeft className="w-5 h-5" />

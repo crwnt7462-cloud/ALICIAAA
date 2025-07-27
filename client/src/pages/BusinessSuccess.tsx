@@ -69,10 +69,10 @@ export default function BusinessSuccess() {
             
             <Button
               variant="outline"
-              onClick={() => setLocation("/")}
+              onClick={() => window.history.back()}
               className="w-full h-10 text-gray-600 border-gray-300 hover:bg-gray-50"
             >
-              Retour à l'accueil
+              Retour
             </Button>
           </div>
         </div>

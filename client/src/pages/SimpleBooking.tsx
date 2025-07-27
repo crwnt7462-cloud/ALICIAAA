@@ -188,7 +188,7 @@ export default function SimpleBooking() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setLocation('/')}
+                onClick={() => window.history.back()}
                 className="p-2"
               >
                 <ArrowLeft className="w-4 h-4" />

@@ -29,7 +29,7 @@ export default function Support() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="p-2"
             >
               <ArrowLeft className="w-5 h-5" />

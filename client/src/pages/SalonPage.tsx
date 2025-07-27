@@ -164,8 +164,8 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
           <CardContent className="text-center py-8">
             <h2 className="text-lg font-semibold mb-2">Page non trouvée</h2>
             <p className="text-gray-600 mb-4">Cette page de salon n'existe pas ou a été supprimée.</p>
-            <Button onClick={() => setLocation('/')}>
-              Retour à l'accueil
+            <Button onClick={() => window.history.back()}>
+              Retour
             </Button>
           </CardContent>
         </Card>

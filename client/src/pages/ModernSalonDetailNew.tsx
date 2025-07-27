@@ -174,7 +174,7 @@ export default function ModernSalonDetail() {
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/')}
+              onClick={() => window.history.back()}
               className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
