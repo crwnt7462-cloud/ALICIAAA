@@ -33,7 +33,7 @@ export function BottomNavigation() {
       active: location === '/business-features' || location.includes('/pro-')
     },
     {
-      label: 'IA',
+      label: 'Ask Rendly',
       icon: Sparkles,
       path: '/ai',
       active: location === '/ai' || location.includes('/ai-')
