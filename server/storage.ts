@@ -163,13 +163,11 @@ export class DatabaseStorage implements IStorage {
         phone: "01 42 34 56 78",
         address: "123 Avenue de la Beauté, 75001 Paris",
         city: "Paris",
-
         isProfessional: true,
         isVerified: true,
         subscriptionStatus: "active",
-
         trialEndDate: null,
-
+        mentionHandle: "@demo",
         createdAt: new Date(),
         updatedAt: new Date()
       };
@@ -229,7 +227,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  // Client Authentication Methods
+  // Client Authentication Methods  
   async createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount> {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(clientData.password, saltRounds);
@@ -870,41 +868,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Suppression du système de messagerie selon les spécifications
-  // Client authentication methods
-  async authenticateClient(email: string, password: string): Promise<any | null> {
-    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.email, email));
-    if (!client) return null;
-    
-    const bcrypt = require('bcrypt');
-    const isValid = await bcrypt.compare(password, client.password || '');
-    if (!isValid) return null;
-    
-    return client;
-  }
-
-  async getClientById(id: string): Promise<any | undefined> {
-    const [client] = await db.select().from(clientAccounts).where(eq(clientAccounts.id, id));
-    return client;
-  }
-
-  async getClientAppointments(clientId: string): Promise<any[]> {
-    const appointmentsList = await db
-      .select({
-        id: appointments.id,
-        serviceName: appointments.serviceName,
-        salonName: appointments.salonName,
-        date: appointments.date,
-        time: appointments.time,
-        status: appointments.status,
-        price: appointments.price,
-        address: appointments.address
-      })
-      .from(appointments)
-      .where(eq(appointments.clientId, clientId))
-      .orderBy(desc(appointments.date));
-    
-    return appointmentsList;
-  }
 
   async getClientMessages(clientId: string): Promise<any[]> {
     // For now, return empty array - will be implemented with real messaging
