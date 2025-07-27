@@ -630,6 +630,7 @@ function Router() {
     <div className="h-full flex flex-col max-w-md mx-auto bg-white overflow-hidden">
       <main className="flex-1 overflow-y-auto bg-white pb-20">
         <Switch>
+          <Route path="/" component={DashboardModern} />
           <Route path="/dashboard" component={DashboardModern} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={PlanningModern} />
