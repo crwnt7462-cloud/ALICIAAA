@@ -111,83 +111,90 @@ export default function SalonSearch() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Interface exactement identique aux pages login/register */}
-      <div className="px-6 py-16">
-        <div className="max-w-sm mx-auto">
-          
-          {/* Bouton retour discret */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => window.history.back()}
-            className="absolute left-4 top-16 h-8 w-8 rounded-full hover:bg-gray-50"
-          >
-            <ArrowLeft className="h-4 w-4 text-gray-600" />
-          </Button>
+      {/* Layout ultra-minimaliste selon screenshot IMG_1258 */}
+      <div className="relative">
+        
+        {/* Bouton retour en haut à gauche */}
+        <button
+          onClick={() => window.history.back()}
+          className="absolute left-4 top-4 z-10 p-2"
+        >
+          <ArrowLeft className="h-5 w-5 text-gray-700" />
+        </button>
 
-          {/* Logo "Design" violet identique */}
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center mb-8">
-              <span className="text-3xl font-bold text-violet-600">Design</span>
-            </div>
-          </div>
-
-          {/* Titre simple - NOUVEAU DESIGN SELON SCREENSHOT */}
-          <h1 className="text-center text-xl text-gray-500 font-normal mb-16">
-            Find your salon
-          </h1>
-
-          {/* Formulaire de recherche - style identique aux champs login */}
-          <div className="space-y-4 mb-8">
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="barbier"
-              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-2xl text-base placeholder:text-gray-400 shadow-none"
-            />
+        {/* Container principal centré */}
+        <div className="px-6 pt-20 pb-8">
+          <div className="max-w-sm mx-auto">
             
-            <Input
-              value={locationQuery}
-              onChange={(e) => setLocationQuery(e.target.value)}
-              placeholder="Paris"
-              className="h-14 px-6 border-gray-200 focus:border-gray-300 focus:ring-0 bg-gray-50 rounded-2xl text-base placeholder:text-gray-400 shadow-none"
-            />
+            {/* Logo "Design" violet centré */}
+            <div className="text-center mb-20">
+              <h1 className="text-3xl font-bold text-violet-600">Design</h1>
+            </div>
 
-            <Button 
+            {/* Titre en gris */}
+            <div className="text-center mb-16">
+              <h2 className="text-xl text-gray-500 font-normal">Find your salon</h2>
+            </div>
+
+            {/* Champs de recherche */}
+            <div className="space-y-4 mb-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="barbier"
+                  className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                />
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="text"
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                  placeholder="Paris"
+                  className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                />
+              </div>
+            </div>
+
+            {/* Bouton Search violet */}
+            <button
               onClick={handleSearch}
-              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-semibold"
+              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors"
             >
               Search
-            </Button>
-          </div>
-
-          {/* Séparateur style login */}
-          <div className="text-center my-8">
-            <p className="text-gray-400 text-sm">or browse categories</p>
-          </div>
-
-          {/* Catégories en grid 2x2 style boutons sociaux */}
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => {
-                setActiveFilter("coiffure");
-                handleSearch();
-              }}
-              className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-            >
-              Coiffure
             </button>
-            <button
-              onClick={() => {
-                setActiveFilter("esthetique");
-                handleSearch();
-              }}
-              className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-            >
-              Esthétique
-            </button>
-          </div>
 
+            {/* Texte "or browse categories" */}
+            <div className="text-center my-8">
+              <p className="text-gray-400 text-sm">or browse categories</p>
+            </div>
+
+            {/* Catégories en bas selon screenshot */}
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => {
+                  setActiveFilter("coiffure");
+                  handleSearch();
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Coiffure
+              </button>
+              <button
+                onClick={() => {
+                  setActiveFilter("esthetique");
+                  handleSearch();
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Esthétique
+              </button>
+            </div>
+
+          </div>
         </div>
       </div>
 
