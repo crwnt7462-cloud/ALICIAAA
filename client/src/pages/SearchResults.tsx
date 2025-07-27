@@ -290,7 +290,7 @@ export default function SearchResults() {
                       className="bg-purple-600 hover:bg-purple-700 text-white"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLocation(`/book/${salon.id}`);
+                        setLocation('/salon-booking');
                       }}
                     >
                       Réserver

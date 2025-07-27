@@ -38,6 +38,94 @@ interface Service {
 export default function ModernSalonDetail() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
+  const [serviceCategories, setServiceCategories] = useState([
+    {
+      id: 1,
+      name: 'Cheveux',
+      expanded: false,
+      services: [
+        { id: 1, name: 'Coupe Bonhomme', price: 39, duration: '30min' },
+        { id: 2, name: 'Coupe Dégradée (Américain & "à blanc")', price: 46, duration: '45min' },
+        { id: 3, name: 'Coupe Transformation', price: 45, duration: '45min' },
+        { id: 4, name: 'Repigmentation Camo', price: 26, duration: '30min' },
+        { id: 5, name: 'Coupe Petit Bonhomme (enfant -12 ans)', price: 25, duration: '30min' },
+        { id: 6, name: 'Forfait Cheveux + Barbe', price: 64, duration: '1h' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Barbe',
+      expanded: false,
+      services: [
+        { id: 7, name: 'Taille de barbe classique', price: 25, duration: '30min' },
+        { id: 8, name: 'Rasage traditionnel', price: 35, duration: '45min' },
+        { id: 9, name: 'Barbe + Moustache', price: 30, duration: '35min' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Rasage',
+      expanded: false,
+      services: [
+        { id: 10, name: 'Rasage complet', price: 40, duration: '45min' },
+        { id: 11, name: 'Rasage + Soins', price: 50, duration: '1h' }
+      ]
+    },
+    {
+      id: 4,
+      name: 'Permanente & Défrisage',
+      expanded: false,
+      services: [
+        { id: 12, name: 'Permanente homme', price: 80, duration: '2h' },
+        { id: 13, name: 'Défrisage', price: 90, duration: '2h30' }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Épilations Barbiers',
+      expanded: false,
+      services: [
+        { id: 14, name: 'Épilation sourcils', price: 15, duration: '15min' },
+        { id: 15, name: 'Épilation nez/oreilles', price: 12, duration: '10min' }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Soins Barbier',
+      expanded: false,
+      services: [
+        { id: 16, name: 'Soin visage homme', price: 45, duration: '45min' },
+        { id: 17, name: 'Masque purifiant', price: 35, duration: '30min' }
+      ]
+    },
+    {
+      id: 7,
+      name: 'Forfaits',
+      expanded: false,
+      services: [
+        { id: 18, name: 'Forfait Complet', price: 85, duration: '1h30' },
+        { id: 19, name: 'Forfait Détente', price: 70, duration: '1h15' }
+      ]
+    },
+    {
+      id: 8,
+      name: 'Coloration & Décoloration',
+      expanded: false,
+      services: [
+        { id: 20, name: 'Coloration homme', price: 55, duration: '1h' },
+        { id: 21, name: 'Décoloration', price: 65, duration: '1h30' }
+      ]
+    },
+    {
+      id: 9,
+      name: 'SPA DU CHEVEU',
+      expanded: false,
+      services: [
+        { id: 22, name: 'Soin capillaire premium', price: 60, duration: '1h' },
+        { id: 23, name: 'Traitement anti-chute', price: 75, duration: '1h15' }
+      ]
+    }
+  ]);
 
   const salon = {
     id: 1,
@@ -169,49 +257,46 @@ export default function ModernSalonDetail() {
         <div className="p-4 pb-20">
           {activeTab === 'services' && (
             <div className="space-y-4">
-              <h2 className="text-xl font-light text-white mb-4">Nos services</h2>
+              <h2 className="text-xl font-light text-white mb-4">Choix de la prestation</h2>
               
-              {services.map((service) => (
-                <Card key={service.id} className="bg-gray-900 border-gray-800">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-white mb-1">{service.name}</h3>
-                        <p className="text-sm text-gray-400 mb-2">{service.description}</p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Clock className="w-3 h-3" />
-                          <span>{service.duration}</span>
-                          <span>•</span>
-                          <span>{service.specialist}</span>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right ml-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-lg font-semibold text-white">{service.price}€</span>
-                          {service.originalPrice && (
-                            <span className="text-sm text-gray-500 line-through">
-                              {service.originalPrice}€
-                            </span>
-                          )}
-                          {service.originalPrice && (
-                            <span className="text-xs bg-red-600 text-white px-1.5 py-0.5 rounded">
-                              -{Math.round((1 - service.price / service.originalPrice) * 100)}%
-                            </span>
-                          )}
-                        </div>
-                        <Button 
-                          onClick={() => setLocation('/booking')}
-                          className="bg-violet-600 hover:bg-violet-700 text-white rounded-md px-3 py-1 text-xs font-medium h-7"
-                          size="sm"
-                        >
-                          Réserver
-                        </Button>
-                      </div>
+              {serviceCategories.map((category, categoryIndex) => (
+                <div key={category.id} className="bg-gray-900 rounded-lg border border-gray-800">
+                  <div 
+                    className="flex items-center justify-between p-4 cursor-pointer"
+                    onClick={() => {
+                      const newCategories = [...serviceCategories];
+                      newCategories[categoryIndex].expanded = !newCategories[categoryIndex].expanded;
+                      setServiceCategories(newCategories);
+                    }}
+                  >
+                    <h3 className="font-medium text-white">{category.name}</h3>
+                    <div className="text-gray-400">
+                      {category.expanded ? '−' : '+'}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                  
+                  {category.expanded && (
+                    <div className="border-t border-gray-800">
+                      {category.services.map((service, serviceIndex) => (
+                        <div key={service.id} className={`p-4 flex items-center justify-between ${serviceIndex !== category.services.length - 1 ? 'border-b border-gray-800' : ''}`}>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-white mb-1">{service.name}</h4>
+                            <p className="text-sm text-gray-400">{service.price}€ • {service.duration}</p>
+                          </div>
+                          <Button 
+                            onClick={() => setLocation('/salon-booking')}
+                            className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 text-sm font-medium"
+                          >
+                            Choisir
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               ))}
+              
+
             </div>
           )}
 
@@ -321,7 +406,7 @@ export default function ModernSalonDetail() {
         {/* Bouton de réservation fixe - plus compact */}
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
           <Button 
-            onClick={() => setLocation('/simple-booking')}
+            onClick={() => setLocation('/salon-booking')}
             className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10 text-sm font-medium rounded-lg"
           >
             <Calendar className="w-3 h-3 mr-2" />

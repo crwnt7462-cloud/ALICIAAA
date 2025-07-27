@@ -486,7 +486,7 @@ export default function PublicLanding() {
                   className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleBookSalon(slot.id);
+                    setLocation('/salon-booking');
                   }}
                 >
                   Réserver
@@ -627,7 +627,7 @@ export default function PublicLanding() {
                     <Button 
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLocation(`/booking`);
+                        setLocation(`/salon-booking`);
                       }}
                       className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium"
                       size="sm"
