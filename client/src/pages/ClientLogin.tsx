@@ -16,6 +16,16 @@ export default function ClientLogin() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -25,24 +35,30 @@ export default function ClientLogin() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include'
       });
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('clientToken', data.client.token);
-        localStorage.setItem('clientEmail', data.client.email);
+        console.log('Login response:', data);
         
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue sur votre espace client",
-        });
-        
-        // Redirection immédiate vers le dashboard client
-        setTimeout(() => {
-          setLocation('/client-dashboard');
-        }, 100);
+        if (data.success && data.client) {
+          localStorage.setItem('clientToken', data.client.token);
+          localStorage.setItem('clientData', JSON.stringify(data.client));
+          
+          toast({
+            title: "Connexion réussie",
+            description: `Bienvenue ${data.client.firstName} !`,
+          });
+          
+          // Redirection vers le dashboard client
+          setTimeout(() => {
+            setLocation('/client-dashboard');
+          }, 500);
+        }
       } else {
         const error = await response.json();
+        console.error('Login error:', error);
         toast({
           title: "Erreur de connexion",
           description: error.error || "Identifiants incorrects",
@@ -50,6 +66,7 @@ export default function ClientLogin() {
         });
       }
     } catch (error) {
+      console.error('Network error:', error);
       toast({
         title: "Erreur de connexion",
         description: "Impossible de se connecter au serveur",
