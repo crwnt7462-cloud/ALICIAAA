@@ -5,8 +5,17 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { messagingService, type Message } from "./messagingService";
 import { registerFullStackRoutes } from "./fullStackRoutes";
+import Stripe from "stripe";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
+
+// Configuration Stripe
+let stripe: Stripe | null = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2023-10-16",
+  });
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
