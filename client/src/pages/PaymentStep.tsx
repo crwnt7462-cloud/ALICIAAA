@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, CreditCard, Check, AlertCircle, Loader2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import logoImage from "@assets/3_1753714984824.png";
 
 // Initialize Stripe with fallback key
 const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo';
@@ -155,6 +156,7 @@ export default function PaymentStep() {
   const [bookingData, setBookingData] = useState<any>(null);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [appointmentDetails, setAppointmentDetails] = useState<any>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('partial');
 
   useEffect(() => {
     // Retrieve booking data from sessionStorage

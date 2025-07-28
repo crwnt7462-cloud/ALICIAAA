@@ -79,6 +79,7 @@ import ServiceOnglerie from "@/pages/ServiceOnglerie";
 import BusinessRegistration from "@/pages/BusinessRegistration";
 import BusinessSuccess from "@/pages/BusinessSuccess";
 import PaymentStep from "@/pages/PaymentStep";
+import PaymentStepCustom from "@/pages/PaymentStepCustom";
 import ClientLogin from "@/pages/ClientLogin";
 import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
@@ -146,7 +147,7 @@ function Router() {
   if (location.startsWith('/booking/') && location.includes('/payment')) {
     return (
       <div className="h-full">
-        <PaymentStep />
+        <PaymentStepCustom />
       </div>
     );
   }
