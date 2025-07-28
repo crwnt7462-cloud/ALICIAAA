@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import logoImage from "@assets/3_1753714984824.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Search, Star, MapPin, Clock, Award, Shield, CheckCircle2, 
@@ -117,9 +118,7 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-sm font-bold text-white">B</span>
-              </div>
+              <img src={logoImage} alt="Logo" className="h-12 w-auto" />
               <Badge className="ml-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
                 Premium
               </Badge>
@@ -429,9 +428,7 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                <span className="text-sm font-bold text-white">B</span>
-              </div>
+              <img src={logoImage} alt="Logo" className="h-12 w-auto mb-4" />
               <p className="text-gray-400 mb-4">
                 La plateforme beauté premium qui révolutionne votre expérience.
               </p>

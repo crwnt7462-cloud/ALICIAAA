@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Check, ArrowLeft, CreditCard, Shield, Clock, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import logoImage from "@assets/3_1753714984824.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
@@ -89,9 +90,7 @@ export default function Subscribe() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <div className="w-6 h-6 bg-gradient-to-r from-violet-600 to-purple-600 rounded flex items-center justify-center">
-                <span className="text-xs font-bold text-white">B</span>
-              </div>
+              <img src={logoImage} alt="Logo" className="h-10 w-auto" />
               <p className="text-xs text-gray-500 -mt-1">Inscription</p>
             </div>
             
