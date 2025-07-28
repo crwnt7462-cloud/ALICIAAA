@@ -837,4 +837,48 @@ export function registerFullStackRoutes(app: Express) {
       res.status(500).json({ error: "Erreur lors de la confirmation" });
     }
   });
+
+  // ========== PAIEMENTS PROFESSIONNELS ==========
+  
+  // Créer un Payment Intent pour abonnement professionnel
+  app.post('/api/create-professional-payment-intent', async (req, res) => {
+    try {
+      const { salonId, plan, amount } = req.body;
+      
+      if (!stripe) {
+        return res.status(500).json({ error: 'Stripe non configuré' });
+      }
+
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: 'Montant invalide' });
+      }
+
+      // Créer le Payment Intent pour abonnement professionnel
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convertir en centimes
+        currency: 'eur',
+        metadata: {
+          type: 'professional_subscription',
+          salon_id: salonId || 'demo-salon',
+          plan: plan || 'professional',
+          subscription_period: 'monthly'
+        },
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      console.log(`✅ Payment Intent Pro créé: ${paymentIntent.id} pour ${amount}€ (Plan: ${plan})`);
+
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        plan: plan,
+        amount: amount
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur Payment Intent Pro:', error);
+      res.status(500).json({ error: error.message || 'Erreur lors de la création du paiement professionnel' });
+    }
+  });
 }
