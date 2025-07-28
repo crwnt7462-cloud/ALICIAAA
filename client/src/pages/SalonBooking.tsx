@@ -159,8 +159,8 @@ export default function SalonBooking() {
     // Sauvegarder en sessionStorage pour récupération dans PaymentStep
     sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
-    // Rediriger directement vers la page de paiement
-    setLocation('/booking/bonhomme-paris-archives/payment');
+    // Rediriger vers la page de succès
+    setLocation('/booking-success');
   };
 
   // Étape 1: Sélection du professionnel
@@ -471,15 +471,34 @@ export default function SalonBooking() {
             <p className="text-gray-900 font-medium">Nouveau sur Planity ?</p>
           </div>
 
-          <Button 
-            onClick={() => setCurrentStep(4)}
-            variant="outline"
-            className="w-full py-3 mb-6 border-violet-300 text-violet-700 font-medium rounded-full hover:bg-violet-50 transition-all"
-          >
-            Créer mon compte
-          </Button>
-
           <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Prénom <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Prénom"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Nom"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Téléphone portable <span className="text-red-500">*</span>
@@ -549,9 +568,9 @@ export default function SalonBooking() {
             <Button 
               onClick={handleAccountCreation}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
-              disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password}
+              disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName}
             >
-              Créer mon compte
+              Créer mon compte et continuer
             </Button>
 
             <p className="text-xs text-gray-500 text-center leading-4">
@@ -567,7 +586,7 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Étape 4: Finalisation inscription
+  // Étape 4: Supprimée - nom/prénom maintenant dans étape 3
   const renderAccountCompletion = () => (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-100 sticky top-0 z-10">

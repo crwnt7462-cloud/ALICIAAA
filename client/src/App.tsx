@@ -78,7 +78,7 @@ import ServiceMassage from "@/pages/ServiceMassage";
 import ServiceOnglerie from "@/pages/ServiceOnglerie";
 import BusinessRegistration from "@/pages/BusinessRegistration";
 import BusinessSuccess from "@/pages/BusinessSuccess";
-import PaymentStep from "@/pages/PaymentStep";
+
 import ClientLogin from "@/pages/ClientLogin";
 import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
@@ -142,13 +142,10 @@ import SystemTest from "@/pages/SystemTest";
 function Router() {
   const [location] = useLocation();
   
-  // Page publique pour réservation client (sans header/nav)
+  // Redirection des pages de paiement vers accueil
   if (location.startsWith('/booking/') && location.includes('/payment')) {
-    return (
-      <div className="h-full">
-        <PaymentStep />
-      </div>
-    );
+    window.location.href = '/';
+    return null;
   }
   
   if (location.startsWith('/booking/') && location !== '/booking') {
