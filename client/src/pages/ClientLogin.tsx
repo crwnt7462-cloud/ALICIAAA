@@ -93,7 +93,7 @@ export default function ClientLogin() {
       {/* Logo centré en haut */}
       <div className="pt-16 pb-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-12">
-          <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+          <img src={logoImage} alt="Logo" className="h-32 w-auto" />
         </div>
       </div>
 

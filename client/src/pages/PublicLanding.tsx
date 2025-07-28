@@ -317,7 +317,7 @@ export default function PublicLanding() {
               </button>
 
               <div>
-                <img src={logoImage} alt="Logo" className="h-12 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-16 w-auto" />
               </div>
             </div>
             
@@ -857,7 +857,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="mb-4">
-                <img src={logoImage} alt="Logo" className="h-10 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-14 w-auto" />
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 La plateforme de référence pour réserver vos rendez-vous beauté en France. 

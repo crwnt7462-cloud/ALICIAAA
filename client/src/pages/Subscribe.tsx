@@ -90,7 +90,7 @@ export default function Subscribe() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <img src={logoImage} alt="Logo" className="h-10 w-auto" />
+              <img src={logoImage} alt="Logo" className="h-14 w-auto" />
               <p className="text-xs text-gray-500 -mt-1">Inscription</p>
             </div>
             
