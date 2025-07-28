@@ -98,9 +98,9 @@ export default function ClientLogin() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Logo centré en haut */}
-      <div className="pt-16 pb-8 text-center">
-        <div className="flex items-center justify-center gap-2 mb-12">
-          <img src={logoImage} alt="Logo" className="h-32 w-auto" />
+      <div className="pt-12 pb-6 text-center">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <img src={logoImage} alt="Logo" className="h-20 w-auto" />
         </div>
       </div>
 

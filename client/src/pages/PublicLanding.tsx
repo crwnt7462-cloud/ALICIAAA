@@ -317,7 +317,7 @@ export default function PublicLanding() {
               </button>
 
               <div>
-                <img src={logoImage} alt="Logo" className="h-16 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
               </div>
             </div>
             
