@@ -264,9 +264,46 @@ export default function SalonBooking() {
     setCurrentStep(2);
   };
 
-  const handleTimeSlotSelect = (time: string) => {
+  const handleTimeSlotSelect = async (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
-    setCurrentStep(4);
+    
+    try {
+      // Créer directement un Payment Intent avec Stripe - SKIP ÉTAPE 3
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 20.50, // Prix de l'acompte 30%
+          currency: 'eur',
+          metadata: {
+            salon: salon.name,
+            professional: selectedProfessional?.name,
+            service: defaultService.name,
+            time: time,
+            date: selectedDate || 'lundi 28 juillet 2025'
+          }
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+        // Afficher directement le bottom sheet de paiement Stripe
+        setTimeout(() => {
+          setShowPaymentSheet(true);
+        }, 500);
+      } else {
+        throw new Error(data.error || 'Erreur lors de la création du paiement');
+      }
+    } catch (error: any) {
+      console.error('Erreur Payment Intent:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Erreur lors de la préparation du paiement",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleDateSelect = (dateInfo: any) => {
@@ -1307,16 +1344,15 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Navigation entre les étapes avec bottom sheet
+  // Navigation entre les étapes avec bottom sheet - ÉTAPES 3+ SUPPRIMÉES
   return (
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && renderIdentification()}
-      {currentStep === 4 && renderAccountCompletion()}
+      {/* ÉTAPE 3 (identification/nom) SUPPRIMÉE - PASSAGE DIRECT AU PAIEMENT STRIPE */}
       
-      {/* Bottom Sheet de Paiement */}
-      {renderPaymentBottomSheet()}
+      {/* Bottom Sheet de Paiement Stripe réel */}
+      {showPaymentSheet && renderPaymentBottomSheet()}
     </>
   );
 }
