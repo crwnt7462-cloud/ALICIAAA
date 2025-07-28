@@ -211,8 +211,12 @@ export default function BusinessRegistration() {
         throw new Error("Erreur lors de l'inscription");
       }
     } catch (error) {
-      console.error("Erreur:", error);
-      alert("Une erreur s'est produite lors de l'inscription");
+      console.error("❌ Erreur complète:", error);
+      toast({
+        title: "Erreur d'inscription", 
+        description: "Une erreur s'est produite lors de l'inscription",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }

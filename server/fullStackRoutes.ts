@@ -45,6 +45,42 @@ const authenticateClient = async (req: any, res: any, next: any) => {
 export function registerFullStackRoutes(app: Express) {
   
   // ========== AUTHENTIFICATION ==========
+
+  // Inscription Business (avec informations complètes)
+  app.post('/api/business-registration', async (req, res) => {
+    try {
+      const { 
+        businessName, businessType, siret, legalForm, address, city, postalCode, 
+        phone, email, ownerFirstName, ownerLastName, vatNumber, description, planId 
+      } = req.body;
+
+      // Validation des champs requis
+      if (!businessName || !businessType || !siret || !legalForm || !address || !city || !postalCode || !phone || !email || !ownerFirstName || !ownerLastName) {
+        return res.status(400).json({ error: 'Tous les champs requis doivent être remplis' });
+      }
+
+      // Créer un business ID temporaire
+      const businessId = `business_${Date.now()}`;
+      
+      console.log(`📝 Inscription business: ${businessName} (${email}) - Plan: ${planId}`);
+      console.log(`🏢 Type: ${businessType}, SIRET: ${siret}, ${address} ${postalCode} ${city}`);
+
+      // Simuler la sauvegarde des données business
+      // Dans un vrai système, on sauvegarderait en base de données
+      
+      res.json({
+        success: true,
+        message: 'Inscription business réussie',
+        businessId: businessId,
+        businessName: businessName,
+        planId: planId,
+        email: email
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur inscription business:', error);
+      res.status(500).json({ error: 'Erreur serveur lors de l\'inscription' });
+    }
+  });
   
   // Inscription PRO
   app.post('/api/pro/register', async (req, res) => {
