@@ -23,6 +23,13 @@ export default function SalonBooking() {
   const [showPassword, setShowPassword] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [showPaymentSheet, setShowPaymentSheet] = useState(false);
+  const [paymentData, setPaymentData] = useState({
+    cardNumber: '',
+    expiryDate: '',
+    cvc: '',
+    cardholderName: ''
+  });
   const [formData, setFormData] = useState({
     staffMember: '',
     phone: '',
@@ -69,6 +76,10 @@ export default function SalonBooking() {
       setIsUserLoggedIn(true);
       // Si connecté, aller directement à l'étape 4
       setCurrentStep(4);
+      // Afficher le bottom sheet de paiement
+      setTimeout(() => {
+        setShowPaymentSheet(true);
+      }, 800);
     }
   }, []);
 
@@ -179,6 +190,11 @@ export default function SalonBooking() {
     localStorage.setItem('clientToken', 'demo-token');
     setIsUserLoggedIn(true);
     setCurrentStep(4);
+    
+    // Afficher le bottom sheet de paiement avec délai pour l'animation
+    setTimeout(() => {
+      setShowPaymentSheet(true);
+    }, 500);
 
     // Sauvegarder les données de réservation pour la page de paiement
     const bookingData = {
@@ -209,6 +225,42 @@ export default function SalonBooking() {
   // Fonction pour rediriger vers le paiement
   const handlePayment = () => {
     setLocation('/stripe-payment');
+  };
+
+  // Fonction pour valider le paiement depuis le bottom sheet
+  const handlePaymentConfirm = () => {
+    // Validation basique
+    if (!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvc) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez remplir tous les champs de paiement.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Simuler le traitement du paiement
+    setShowPaymentSheet(false);
+    
+    toast({
+      title: "Paiement en cours...",
+      description: "Traitement de votre paiement sécurisé."
+    });
+
+    // Rediriger vers la confirmation après 2 secondes
+    setTimeout(() => {
+      setLocation('/stripe-payment');
+    }, 2000);
+  };
+
+  // Fonction pour formater le numéro de carte
+  const formatCardNumber = (value: string) => {
+    return value.replace(/\s+/g, '').replace(/(\d{4})/g, '$1 ').trim();
+  };
+
+  // Fonction pour formater la date d'expiration
+  const formatExpiryDate = (value: string) => {
+    return value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
   };
 
   // Étape 1: Sélection du professionnel
@@ -726,6 +778,181 @@ export default function SalonBooking() {
     </div>
   );
 
+  // Bottom Sheet de Paiement - Style Apple Pay/Planity
+  const renderPaymentBottomSheet = () => (
+    <>
+      {/* Overlay */}
+      <div 
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+          showPaymentSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setShowPaymentSheet(false)}
+      />
+      
+      {/* Bottom Sheet */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
+          showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ maxHeight: '90vh' }}
+      >
+        {/* Handle barre de glissement */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        </div>
+
+        <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Finaliser le paiement</h2>
+            <p className="text-gray-600">Réglez votre acompte de manière sécurisée</p>
+          </div>
+
+          {/* Récapitulatif rapide */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Service</span>
+              <span className="font-medium">{service.name}</span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Date & Heure</span>
+              <span className="font-medium">{selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}</span>
+            </div>
+            <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
+              <span className="text-gray-600">Professionnel</span>
+              <span className="font-medium">{selectedProfessional?.name || 'Lucas'}</span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Prix total</span>
+              <span className="font-medium">{service.price},00 €</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-violet-600">Acompte</span>
+              <span className="font-bold text-violet-600 text-lg">20,50 €</span>
+            </div>
+          </div>
+
+          {/* Sélection méthode de paiement */}
+          <div className="mb-6">
+            <h3 className="font-semibold text-gray-900 mb-3">Méthode de paiement</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 p-3 border-2 border-violet-600 rounded-lg bg-violet-50">
+                <div className="w-5 h-5 rounded-full border-2 border-violet-600 bg-violet-600 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
+                  <span className="font-medium">Carte bancaire</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Formulaire de carte */}
+          <div className="space-y-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Nom du porteur
+              </label>
+              <Input
+                type="text"
+                placeholder="Nom sur la carte"
+                value={paymentData.cardholderName}
+                onChange={(e) => setPaymentData(prev => ({ ...prev, cardholderName: e.target.value }))}
+                className="w-full h-12"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Numéro de carte
+              </label>
+              <Input
+                type="text"
+                placeholder="1234 5678 9012 3456"
+                value={paymentData.cardNumber}
+                onChange={(e) => {
+                  const formatted = formatCardNumber(e.target.value);
+                  if (formatted.length <= 19) {
+                    setPaymentData(prev => ({ ...prev, cardNumber: formatted }));
+                  }
+                }}
+                className="w-full h-12"
+                maxLength={19}
+              />
+            </div>
+
+            <div className="flex space-x-4">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Date d'expiration
+                </label>
+                <Input
+                  type="text"
+                  placeholder="MM/YY"
+                  value={paymentData.expiryDate}
+                  onChange={(e) => {
+                    const formatted = formatExpiryDate(e.target.value);
+                    if (formatted.length <= 5) {
+                      setPaymentData(prev => ({ ...prev, expiryDate: formatted }));
+                    }
+                  }}
+                  className="w-full h-12"
+                  maxLength={5}
+                />
+              </div>
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CVC
+                </label>
+                <Input
+                  type="text"
+                  placeholder="123"
+                  value={paymentData.cvc}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, '');
+                    if (value.length <= 4) {
+                      setPaymentData(prev => ({ ...prev, cvc: value }));
+                    }
+                  }}
+                  className="w-full h-12"
+                  maxLength={4}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sécurité */}
+          <div className="flex items-center justify-center space-x-2 mb-6 text-sm text-gray-500">
+            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <span>Paiement sécurisé SSL 256-bit</span>
+          </div>
+
+          {/* Boutons */}
+          <div className="space-y-3">
+            <Button 
+              onClick={handlePaymentConfirm}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+              disabled={!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvc || !paymentData.cardholderName}
+            >
+              Confirmer & Payer 20,50 €
+            </Button>
+            
+            <Button 
+              onClick={() => setShowPaymentSheet(false)}
+              variant="outline"
+              className="w-full py-3 rounded-full font-medium border-gray-300"
+            >
+              Annuler
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   // Étape 4: Supprimée - nom/prénom maintenant dans étape 3
   const renderAccountCompletion = () => (
     <div className="min-h-screen bg-gray-50">
@@ -1029,23 +1256,16 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Navigation entre les étapes
-  switch (currentStep) {
-    case 1:
-      return renderProfessionalSelection();
-    case 2:
-      return renderServiceSelection();
-    case 3:
-      return renderDateSelection();
-    case 4:
-      return renderIdentification();
-    case 5:
-      return renderAccountCompletion();
-    case 6:
-      return renderPayment();
-    case 7:
-      return renderPaymentForm();
-    default:
-      return renderProfessionalSelection();
-  }
+  // Navigation entre les étapes avec bottom sheet
+  return (
+    <>
+      {currentStep === 1 && renderProfessionalSelection()}
+      {currentStep === 2 && renderDateSelection()}
+      {currentStep === 3 && renderIdentification()}
+      {currentStep === 4 && renderAccountCompletion()}
+      
+      {/* Bottom Sheet de Paiement */}
+      {renderPaymentBottomSheet()}
+    </>
+  );
 }
