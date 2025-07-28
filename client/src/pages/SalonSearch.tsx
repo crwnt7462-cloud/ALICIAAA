@@ -243,7 +243,7 @@ export default function SalonSearch() {
                       <Button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          setLocation('/booking');
+                          setLocation('/salon-booking');
                         }}
                         className="bg-violet-600 hover:bg-violet-700 text-white rounded-xl px-3 py-1.5 text-xs font-medium"
                       >
