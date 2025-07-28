@@ -114,19 +114,22 @@ export default function SalonBooking() {
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
-  // Vérifier si l'utilisateur est connecté au chargement
+  // Vérifier si l'utilisateur est connecté au chargement initial seulement
   useEffect(() => {
     const token = localStorage.getItem('clientToken');
     if (token) {
       setIsUserLoggedIn(true);
-      // Si l'utilisateur est connecté et on est à l'étape 3, ouvrir le shell
-      if (currentStep === 3) {
-        setTimeout(() => {
-          createPaymentIntentAndOpenSheet();
-        }, 500);
-      }
     }
-  }, [currentStep]);
+  }, []); // Pas de dépendance sur currentStep
+
+  // Ouvrir le shell seulement quand l'utilisateur devient connecté ET qu'on est à l'étape 3
+  useEffect(() => {
+    if (isUserLoggedIn && currentStep === 3) {
+      setTimeout(() => {
+        createPaymentIntentAndOpenSheet();
+      }, 500);
+    }
+  }, [isUserLoggedIn]); // Seulement quand isUserLoggedIn change
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({

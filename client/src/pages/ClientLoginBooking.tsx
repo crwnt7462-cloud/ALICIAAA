@@ -40,10 +40,10 @@ export default function ClientLoginBooking() {
           description: "Redirection vers la réservation..."
         });
         
-        // Rediriger vers la page de réservation
+        // Rediriger vers la page de réservation où le shell s'ouvrira automatiquement
         setTimeout(() => {
           setLocation('/salon-booking');
-        }, 1000);
+        }, 800);
       } else {
         toast({
           title: "Erreur de connexion",
