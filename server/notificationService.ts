@@ -1,189 +1,253 @@
-import { db } from "./db";
-import { notifications, users } from "@shared/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { websocketService } from './websocketService';
+import { reminderService } from './reminderService';
+import { storage } from './storage';
 
-export interface NotificationData {
-  userId: string;
+interface NotificationData {
+  type: 'appointment' | 'payment' | 'reminder' | 'cancellation' | 'system';
   title: string;
   message: string;
-  type: 'booking' | 'message' | 'reminder' | 'payment' | 'system';
-  data?: Record<string, any>;
-  actionUrl?: string;
+  userId?: string;
+  clientId?: string;
+  data?: any;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
 }
 
-export interface MessageNotificationData {
-  recipientId: string;
-  senderName: string;
-  messagePreview: string;
-  messageId: number;
-}
+class NotificationService {
+  private notifications: Map<string, NotificationData[]> = new Map();
 
-export class NotificationService {
-  // Envoyer une notification générale
-  async sendNotification(notificationData: NotificationData): Promise<boolean> {
+  // Envoyer une notification à un professionnel
+  async notifyProfessional(userId: string, notification: NotificationData) {
     try {
-      await db
-        .insert(notifications)
-        .values({
-          userId: notificationData.userId,
-          title: notificationData.title,
-          message: notificationData.message,
-          type: notificationData.type,
-          data: notificationData.data ? JSON.stringify(notificationData.data) : null,
-          actionUrl: notificationData.actionUrl,
-          isRead: false,
-          createdAt: new Date()
-        });
+      // Stocker la notification
+      const userNotifications = this.notifications.get(userId) || [];
+      userNotifications.unshift({ ...notification, userId });
+      this.notifications.set(userId, userNotifications.slice(0, 50)); // Garder max 50 notifications
 
-      console.log(`🔔 Notification envoyée: ${notificationData.title} à ${notificationData.userId}`);
-      return true;
+      // Envoyer via WebSocket temps réel
+      websocketService.notifyProfessional(userId, notification);
 
+      console.log(`🔔 Notification PRO envoyée à ${userId}: ${notification.title}`);
     } catch (error) {
-      console.error("Erreur lors de l'envoi de notification:", error);
-      return false;
+      console.error('Erreur envoi notification PRO:', error);
     }
   }
 
-  // Notification de nouveau message
-  async sendMessageNotification(data: MessageNotificationData): Promise<boolean> {
-    return this.sendNotification({
-      userId: data.recipientId,
-      title: `Nouveau message de ${data.senderName}`,
-      message: data.messagePreview,
-      type: 'message',
-      data: { messageId: data.messageId, senderName: data.senderName },
-      actionUrl: `/messaging`
-    });
+  // Envoyer une notification à un client
+  async notifyClient(clientId: string, notification: NotificationData) {
+    try {
+      // Stocker la notification
+      const clientNotifications = this.notifications.get(`client_${clientId}`) || [];
+      clientNotifications.unshift({ ...notification, clientId });
+      this.notifications.set(`client_${clientId}`, clientNotifications.slice(0, 50));
+
+      // Envoyer via WebSocket temps réel
+      websocketService.notifyClient(clientId, notification);
+
+      console.log(`🔔 Notification CLIENT envoyée à ${clientId}: ${notification.title}`);
+    } catch (error) {
+      console.error('Erreur envoi notification CLIENT:', error);
+    }
   }
 
   // Notification de nouvelle réservation
-  async sendBookingNotification(userId: string, clientName: string, serviceName: string, date: string, time: string): Promise<boolean> {
-    return this.sendNotification({
-      userId,
-      title: "Nouvelle réservation",
-      message: `${clientName} a réservé "${serviceName}" le ${date} à ${time}`,
-      type: 'booking',
-      data: { clientName, serviceName, date, time },
-      actionUrl: `/appointments`
+  async notifyNewAppointment(appointmentData: any) {
+    const professionalId = appointmentData.userId;
+    
+    // Notifier le professionnel
+    await this.notifyProfessional(professionalId, {
+      type: 'appointment',
+      title: 'Nouvelle réservation',
+      message: `${appointmentData.clientName} a réservé ${appointmentData.serviceName}`,
+      priority: 'high',
+      data: appointmentData
     });
+
+    // Programmer les rappels automatiques
+    reminderService.scheduleReminders(appointmentData);
+
+    // Notifier le client de confirmation
+    if (appointmentData.clientAccountId) {
+      await this.notifyClient(appointmentData.clientAccountId, {
+        type: 'appointment',
+        title: 'Réservation confirmée',
+        message: `Votre rendez-vous ${appointmentData.serviceName} est confirmé`,
+        priority: 'medium',
+        data: appointmentData
+      });
+    }
   }
 
-  // Notification de rappel de RDV
-  async sendAppointmentReminder(userId: string, serviceName: string, date: string, time: string): Promise<boolean> {
-    return this.sendNotification({
-      userId,
-      title: "Rappel de rendez-vous",
-      message: `N'oubliez pas votre rendez-vous "${serviceName}" demain à ${time}`,
-      type: 'reminder',
-      data: { serviceName, date, time },
-      actionUrl: `/appointments`
+  // Notification d'annulation
+  async notifyAppointmentCancellation(appointmentData: any, cancelledBy: 'professional' | 'client') {
+    const professionalId = appointmentData.userId;
+    const clientId = appointmentData.clientAccountId;
+
+    // Annuler les rappels programmés
+    reminderService.cancelReminders(appointmentData.id);
+
+    if (cancelledBy === 'client') {
+      // Notifier le professionnel
+      await this.notifyProfessional(professionalId, {
+        type: 'cancellation',
+        title: 'Annulation de rendez-vous',
+        message: `${appointmentData.clientName} a annulé son rendez-vous`,
+        priority: 'medium',
+        data: appointmentData
+      });
+    } else {
+      // Notifier le client
+      if (clientId) {
+        await this.notifyClient(clientId, {
+          type: 'cancellation',
+          title: 'Rendez-vous annulé',
+          message: 'Votre rendez-vous a été annulé par le salon',
+          priority: 'high',
+          data: appointmentData
+        });
+      }
+    }
+  }
+
+  // Notification de modification
+  async notifyAppointmentUpdate(appointmentData: any, changes: string[]) {
+    const professionalId = appointmentData.userId;
+    const clientId = appointmentData.clientAccountId;
+
+    // Reprogrammer les rappels si la date/heure a changé
+    if (changes.includes('date') || changes.includes('time')) {
+      reminderService.rescheduleReminders(appointmentData.id, appointmentData);
+    }
+
+    // Notifier le client des modifications
+    if (clientId) {
+      await this.notifyClient(clientId, {
+        type: 'appointment',
+        title: 'Rendez-vous modifié',
+        message: `Votre rendez-vous a été mis à jour: ${changes.join(', ')}`,
+        priority: 'medium',
+        data: appointmentData
+      });
+    }
+  }
+
+  // Notification de paiement confirmé
+  async notifyPaymentConfirmed(paymentData: any) {
+    const { appointmentData, amount, clientId } = paymentData;
+
+    if (clientId) {
+      await this.notifyClient(clientId, {
+        type: 'payment',
+        title: 'Paiement confirmé',
+        message: `Votre paiement de ${amount}€ a été accepté`,
+        priority: 'low',
+        data: paymentData
+      });
+    }
+
+    // Notifier le professionnel
+    if (appointmentData?.userId) {
+      await this.notifyProfessional(appointmentData.userId, {
+        type: 'payment',
+        title: 'Paiement reçu',
+        message: `Paiement de ${amount}€ confirmé pour ${appointmentData.clientName}`,
+        priority: 'low',
+        data: paymentData
+      });
+    }
+  }
+
+  // Récupérer les notifications d'un utilisateur
+  getUserNotifications(userId: string): NotificationData[] {
+    return this.notifications.get(userId) || [];
+  }
+
+  // Récupérer les notifications d'un client
+  getClientNotifications(clientId: string): NotificationData[] {
+    return this.notifications.get(`client_${clientId}`) || [];
+  }
+
+  // Marquer les notifications comme lues
+  markNotificationsAsRead(userId: string, notificationIds?: string[]) {
+    // Pour l'instant, on supprime simplement les notifications
+    // Dans un vrai système, on ajouterait un flag 'read'
+    if (notificationIds) {
+      // Marquer spécifiquement certaines notifications
+      console.log(`Notifications ${notificationIds.join(', ')} marquées comme lues pour ${userId}`);
+    } else {
+      // Marquer toutes les notifications comme lues
+      this.notifications.delete(userId);
+      console.log(`Toutes les notifications marquées comme lues pour ${userId}`);
+    }
+  }
+
+  // Notification système (maintenance, nouveautés, etc.)
+  async broadcastSystemNotification(notification: Omit<NotificationData, 'userId' | 'clientId'>) {
+    try {
+      // Diffuser à tous les clients connectés
+      if (websocketService.clients) {
+        Array.from(websocketService.clients.values()).forEach((client) => {
+        if (client.userType === 'professional' && client.userId) {
+          this.notifyProfessional(client.userId, {
+            ...notification,
+            type: 'system'
+          });
+        } else if (client.userType === 'client' && client.clientId) {
+          this.notifyClient(client.clientId, {
+            ...notification,
+            type: 'system'
+          });
+        }
+        });
+      }
+
+      console.log(`📢 Notification système diffusée: ${notification.title}`);
+    } catch (error) {
+      console.error('Erreur diffusion notification système:', error);
+    }
+  }
+
+  // Obtenir les statistiques de notifications
+  getNotificationStats() {
+    let totalNotifications = 0;
+    let professionalNotifications = 0;
+    let clientNotifications = 0;
+
+    this.notifications.forEach((notifications, key) => {
+      totalNotifications += notifications.length;
+      if (key.startsWith('client_')) {
+        clientNotifications += notifications.length;
+      } else {
+        professionalNotifications += notifications.length;
+      }
     });
+
+    return {
+      total: totalNotifications,
+      professionals: professionalNotifications,
+      clients: clientNotifications,
+      users: this.notifications.size
+    };
   }
 
-  // Notification de paiement
-  async sendPaymentNotification(userId: string, amount: number, status: 'success' | 'failed'): Promise<boolean> {
-    const title = status === 'success' ? "Paiement confirmé" : "Problème de paiement";
-    const message = status === 'success' 
-      ? `Votre paiement de ${amount}€ a été traité avec succès`
-      : `Le paiement de ${amount}€ a échoué. Veuillez réessayer`;
+  // Nettoyer les anciennes notifications
+  cleanupOldNotifications(maxAgeHours: number = 168) { // 7 jours par défaut
+    const cutoff = new Date(Date.now() - maxAgeHours * 60 * 60 * 1000);
+    let cleaned = 0;
 
-    return this.sendNotification({
-      userId,
-      title,
-      message,
-      type: 'payment',
-      data: { amount, status },
-      actionUrl: status === 'failed' ? `/payment` : `/appointments`
+    this.notifications.forEach((notifications, key) => {
+      const filtered = notifications.filter(n => {
+        // Si pas de timestamp, garder la notification
+        if (!n.data?.timestamp) return true;
+        return new Date(n.data.timestamp) > cutoff;
+      });
+      
+      if (filtered.length !== notifications.length) {
+        cleaned += notifications.length - filtered.length;
+        this.notifications.set(key, filtered);
+      }
     });
-  }
 
-  // Obtenir les notifications d'un utilisateur
-  async getUserNotifications(userId: string, limit: number = 20): Promise<any[]> {
-    try {
-      const userNotifications = await db
-        .select()
-        .from(notifications)
-        .where(eq(notifications.userId, userId))
-        .orderBy(desc(notifications.createdAt))
-        .limit(limit);
-
-      return userNotifications.map(notif => ({
-        ...notif,
-        data: notif.data ? JSON.parse(notif.data) : null
-      }));
-
-    } catch (error) {
-      console.error("Erreur lors de la récupération des notifications:", error);
-      return [];
-    }
-  }
-
-  // Marquer une notification comme lue
-  async markAsRead(notificationId: number): Promise<boolean> {
-    try {
-      await db
-        .update(notifications)
-        .set({ isRead: true, readAt: new Date() })
-        .where(eq(notifications.id, notificationId));
-
-      return true;
-
-    } catch (error) {
-      console.error("Erreur lors du marquage comme lu:", error);
-      return false;
-    }
-  }
-
-  // Marquer toutes les notifications comme lues
-  async markAllAsRead(userId: string): Promise<boolean> {
-    try {
-      await db
-        .update(notifications)
-        .set({ isRead: true, readAt: new Date() })
-        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
-
-      return true;
-
-    } catch (error) {
-      console.error("Erreur lors du marquage global:", error);
-      return false;
-    }
-  }
-
-  // Compter les notifications non lues
-  async getUnreadCount(userId: string): Promise<number> {
-    try {
-      const result = await db
-        .select({ count: sql<number>`COUNT(*)` })
-        .from(notifications)
-        .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
-
-      return Number(result[0]?.count || 0);
-
-    } catch (error) {
-      console.error("Erreur lors du comptage:", error);
-      return 0;
-    }
-  }
-
-  // Supprimer les anciennes notifications
-  async cleanupOldNotifications(daysOld: number = 30): Promise<number> {
-    try {
-      const cutoffDate = new Date();
-      cutoffDate.setDate(cutoffDate.getDate() - daysOld);
-
-      const result = await db
-        .delete(notifications)
-        .where(sql`${notifications.createdAt} < ${cutoffDate}`)
-        .returning();
-
-      console.log(`🧹 ${result.length} notifications anciennes supprimées`);
-      return result.length;
-
-    } catch (error) {
-      console.error("Erreur lors du nettoyage:", error);
-      return 0;
-    }
+    console.log(`🧹 Nettoyage des notifications: ${cleaned} notifications expirées supprimées`);
   }
 }
 

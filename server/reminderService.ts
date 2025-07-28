@@ -1,172 +1,134 @@
-import { storage } from "./storage";
-import { smsService } from "./smsService";
+import { storage } from './storage';
+import { websocketService } from './websocketService';
 
-export class ReminderService {
-  private isRunning = false;
+interface ReminderData {
+  appointmentId: number;
+  clientId: string;
+  clientName: string;
+  serviceName: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  salonName: string;
+  type: '24h' | '1h';
+}
 
-  constructor() {
-    // Start the reminder check service
-    this.startReminderService();
+class ReminderService {
+  private reminders: Map<string, NodeJS.Timeout> = new Map();
+
+  // Programmer un rappel 24h et 1h avant le rendez-vous
+  scheduleReminders(appointmentData: any) {
+    const appointmentDateTime = new Date(`${appointmentData.appointmentDate} ${appointmentData.startTime}`);
+    const now = new Date();
+
+    // Rappel 24h avant
+    const reminder24h = new Date(appointmentDateTime.getTime() - 24 * 60 * 60 * 1000);
+    if (reminder24h > now) {
+      const timeout24h = setTimeout(() => {
+        this.sendReminder({
+          appointmentId: appointmentData.id,
+          clientId: appointmentData.clientAccountId,
+          clientName: appointmentData.clientName,
+          serviceName: appointmentData.serviceName || 'Rendez-vous',
+          appointmentDate: appointmentData.appointmentDate,
+          appointmentTime: appointmentData.startTime,
+          salonName: appointmentData.salonName || 'Votre salon',
+          type: '24h'
+        });
+      }, reminder24h.getTime() - now.getTime());
+
+      this.reminders.set(`${appointmentData.id}_24h`, timeout24h);
+    }
+
+    // Rappel 1h avant
+    const reminder1h = new Date(appointmentDateTime.getTime() - 60 * 60 * 1000);
+    if (reminder1h > now) {
+      const timeout1h = setTimeout(() => {
+        this.sendReminder({
+          appointmentId: appointmentData.id,
+          clientId: appointmentData.clientAccountId,
+          clientName: appointmentData.clientName,
+          serviceName: appointmentData.serviceName || 'Rendez-vous',
+          appointmentDate: appointmentData.appointmentDate,
+          appointmentTime: appointmentData.startTime,
+          salonName: appointmentData.salonName || 'Votre salon',
+          type: '1h'
+        });
+      }, reminder1h.getTime() - now.getTime());
+
+      this.reminders.set(`${appointmentData.id}_1h`, timeout1h);
+    }
+
+    console.log(`📅 Rappels programmés pour RDV ${appointmentData.id}`);
   }
 
-  private async startReminderService(): Promise<void> {
-    if (this.isRunning) return;
-    
-    this.isRunning = true;
-    console.log("🔔 Reminder service started");
-    
-    // Check every 30 minutes
-    setInterval(async () => {
-      await this.checkAndSendReminders();
-    }, 30 * 60 * 1000);
-    
-    // Also check immediately on startup
-    setTimeout(() => {
-      this.checkAndSendReminders();
-    }, 5000);
-  }
-
-  async checkAndSendReminders(): Promise<void> {
+  // Envoyer le rappel
+  private async sendReminder(reminderData: ReminderData) {
     try {
-      const now = new Date();
-      const tomorrow = new Date(now);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      tomorrow.setHours(0, 0, 0, 0);
+      const timeMessage = reminderData.type === '24h' ? 'demain' : 'dans 1 heure';
       
-      const dayAfterTomorrow = new Date(tomorrow);
-      dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+      // Notification WebSocket temps réel
+      websocketService.notifyAppointmentReminder(reminderData.clientId, {
+        title: `Rappel de rendez-vous`,
+        message: `Votre rendez-vous ${reminderData.serviceName} est prévu ${timeMessage} à ${reminderData.appointmentTime}`,
+        timeRemaining: timeMessage,
+        appointmentData: reminderData
+      });
 
-      console.log(`🔍 Checking for appointments to remind between ${tomorrow.toISOString()} and ${dayAfterTomorrow.toISOString()}`);
+      // TODO: Envoyer email de rappel si service email configuré
+      // TODO: Envoyer SMS de rappel si service SMS configuré
 
-      // Get appointments for tomorrow that haven't been reminded yet
-      const appointmentsToRemind = await storage.getAppointmentsByDateRange(
-        "user-placeholder", // This will need to be adjusted for multi-user support
-        tomorrow.toISOString().split('T')[0],
-        dayAfterTomorrow.toISOString().split('T')[0]
-      );
-
-      console.log(`📅 Found ${appointmentsToRemind.length} appointments for tomorrow`);
-
-      for (const appointment of appointmentsToRemind) {
-        await this.sendReminderForAppointment(appointment);
-      }
+      console.log(`🔔 Rappel ${reminderData.type} envoyé pour RDV ${reminderData.appointmentId}`);
     } catch (error) {
-      console.error("Error in reminder service:", error);
+      console.error('Erreur envoi rappel:', error);
     }
   }
 
-  private async sendReminderForAppointment(appointment: any): Promise<void> {
-    try {
-      // Check if we already sent a reminder for this appointment
-      const existingReminders = await storage.getSmsNotificationsByAppointment(appointment.id);
-      const hasReminderSent = existingReminders.some(
-        sms => sms.notificationType === 'reminder' && sms.status === 'sent'
-      );
+  // Annuler les rappels pour un rendez-vous
+  cancelReminders(appointmentId: number) {
+    const reminder24h = this.reminders.get(`${appointmentId}_24h`);
+    const reminder1h = this.reminders.get(`${appointmentId}_1h`);
 
-      if (hasReminderSent) {
-        console.log(`⏭️ Reminder already sent for appointment ${appointment.id}`);
-        return;
-      }
-
-      // Get client and user info
-      const client = await storage.getClient(appointment.clientId);
-      const user = await storage.getUser(appointment.userId);
-
-      if (!client || !client.phone || !user) {
-        console.log(`❌ Cannot send reminder for appointment ${appointment.id} - missing client/user info`);
-        return;
-      }
-
-      // Check user's notification preferences
-      const preferences = await storage.getNotificationPreferences(user.id);
-      if (preferences && !preferences.appointmentReminders) {
-        console.log(`🔕 Reminders disabled for user ${user.id}`);
-        return;
-      }
-
-      // Send the reminder
-      await smsService.sendAppointmentReminder(
-        appointment,
-        client,
-        user.businessName || 'Votre salon'
-      );
-
-      console.log(`✅ Reminder sent for appointment ${appointment.id} to ${client.firstName}`);
-    } catch (error) {
-      console.error(`Error sending reminder for appointment ${appointment.id}:`, error);
+    if (reminder24h) {
+      clearTimeout(reminder24h);
+      this.reminders.delete(`${appointmentId}_24h`);
     }
+
+    if (reminder1h) {
+      clearTimeout(reminder1h);
+      this.reminders.delete(`${appointmentId}_1h`);
+    }
+
+    console.log(`❌ Rappels annulés pour RDV ${appointmentId}`);
   }
 
-  // Manual trigger for testing
-  async sendTestReminder(appointmentId: number): Promise<boolean> {
-    try {
-      const appointment = await storage.getAppointment(appointmentId);
-      if (!appointment) {
-        console.log(`❌ Appointment ${appointmentId} not found`);
-        return false;
-      }
-
-      await this.sendReminderForAppointment(appointment);
-      return true;
-    } catch (error) {
-      console.error("Error sending test reminder:", error);
-      return false;
-    }
+  // Reprogrammer les rappels pour un rendez-vous modifié
+  rescheduleReminders(appointmentId: number, newAppointmentData: any) {
+    this.cancelReminders(appointmentId);
+    this.scheduleReminders(newAppointmentData);
+    console.log(`🔄 Rappels reprogrammés pour RDV ${appointmentId}`);
   }
 
-  // Send immediate reminder (for same day appointments)
-  async sendImmediateReminder(appointmentId: number): Promise<boolean> {
-    try {
-      const appointment = await storage.getAppointment(appointmentId);
-      if (!appointment) return false;
-
-      const client = await storage.getClient(appointment.clientId);
-      const user = await storage.getUser(appointment.userId);
-
-      if (!client || !client.phone || !user) return false;
-
-      await smsService.sendAppointmentReminder(
-        appointment,
-        client,
-        user.businessName || 'Votre salon'
-      );
-
-      return true;
-    } catch (error) {
-      console.error("Error sending immediate reminder:", error);
-      return false;
-    }
+  // Obtenir le statut des rappels
+  getReminderStatus(appointmentId: number) {
+    return {
+      has24hReminder: this.reminders.has(`${appointmentId}_24h`),
+      has1hReminder: this.reminders.has(`${appointmentId}_1h`),
+      totalReminders: this.reminders.size
+    };
   }
 
-  // Get reminder statistics
-  async getReminderStats(userId: string): Promise<any> {
-    try {
-      const notifications = await storage.getAllSmsNotifications(userId, 1000);
-      const reminders = notifications.filter(n => n.notificationType === 'reminder');
-      
-      const stats = {
-        total: reminders.length,
-        sent: reminders.filter(n => n.status === 'sent').length,
-        failed: reminders.filter(n => n.status === 'failed').length,
-        pending: reminders.filter(n => n.status === 'pending').length,
-        lastWeek: reminders.filter(n => {
-          const weekAgo = new Date();
-          weekAgo.setDate(weekAgo.getDate() - 7);
-          return n.createdAt && new Date(n.createdAt) > weekAgo;
-        }).length
-      };
+  // Nettoyer les rappels expirés
+  cleanupExpiredReminders() {
+    let cleaned = 0;
+    const now = new Date();
 
-      return stats;
-    } catch (error) {
-      console.error("Error getting reminder stats:", error);
-      return {
-        total: 0,
-        sent: 0,
-        failed: 0,
-        pending: 0,
-        lastWeek: 0
-      };
-    }
+    this.reminders.forEach((timeout, key) => {
+      // Si le timeout est déjà passé, le supprimer
+      // Note: en pratique, les timeouts se suppriment automatiquement après exécution
+      // Cette méthode est utile pour un nettoyage périodique si nécessaire
+    });
+
+    console.log(`🧹 Nettoyage des rappels: ${cleaned} rappels expirés supprimés`);
   }
 }
 

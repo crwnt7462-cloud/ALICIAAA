@@ -1,432 +1,500 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Home, Calendar, Settings, Star, Heart, Search, Bell, MessageCircle, User } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { useToast } from '@/hooks/use-toast';
+import { Bell, Calendar, Gift, User, MapPin, Clock, Star, CreditCard } from 'lucide-react';
+
+interface ClientData {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  loyaltyPoints: number;
+  clientStatus: string;
+  totalSpent?: number;
+  nextLoyaltyLevel?: string;
+}
+
+interface Appointment {
+  id: number;
+  serviceName: string;
+  appointmentDate: string;
+  startTime: string;
+  endTime: string;
+  status: string;
+  salonName: string;
+  totalPrice: string;
+  depositPaid?: string;
+}
+
+interface LoyaltyInfo {
+  currentPoints: number;
+  nextLevel: string;
+  pointsToNext: number;
+}
 
 export default function ClientDashboardNew() {
-  const [, setLocation] = useLocation();
-  const [activeSection, setActiveSection] = useState('accueil');
-  const [clientData, setClientData] = useState<any>(null);
+  const [client, setClient] = useState<ClientData | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loyaltyInfo, setLoyaltyInfo] = useState<LoyaltyInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('accueil');
+  const { toast } = useToast();
+
+  // WebSocket pour notifications temps réel
+  const { isConnected, notifications, clearNotifications, unreadCount } = useWebSocket({
+    userType: 'client',
+    clientId: client?.id.toString(),
+    autoReconnect: true
+  });
 
   useEffect(() => {
-    // Récupérer les données client depuis localStorage
-    const storedClientData = localStorage.getItem('clientData');
-    if (storedClientData) {
-      setClientData(JSON.parse(storedClientData));
-    } else {
-      // Redirection vers login si pas de données client
-      setLocation('/client-login');
-    }
-  }, [setLocation]);
+    loadClientDashboard();
+  }, []);
 
-  if (!clientData) {
+  const loadClientDashboard = async () => {
+    try {
+      const token = localStorage.getItem('clientToken');
+      if (!token) {
+        window.location.href = '/client-login';
+        return;
+      }
+
+      const response = await fetch('/api/client/dashboard', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setClient(data.client);
+        setAppointments(data.appointments || []);
+        setLoyaltyInfo(data.loyaltyInfo);
+      } else {
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de charger vos données",
+          variant: "destructive"
+        });
+        window.location.href = '/client-login';
+      }
+    } catch (error) {
+      console.error('Erreur chargement dashboard:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors du chargement",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'completed': return 'bg-blue-100 text-blue-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getLoyaltyLevelColor = (level: string) => {
+    switch (level) {
+      case 'VIP': return 'bg-purple-100 text-purple-800';
+      case 'Premium': return 'bg-amber-100 text-amber-800';
+      case 'Bronze': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const cancelAppointment = async (appointmentId: number) => {
+    try {
+      const token = localStorage.getItem('clientToken');
+      const response = await fetch(`/api/appointments/${appointmentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Succès",
+          description: "Votre rendez-vous a été annulé"
+        });
+        loadClientDashboard(); // Recharger les données
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Impossible d'annuler le rendez-vous",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('clientToken');
+    window.location.href = '/client-login';
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (!client) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement de votre compte...</p>
+          <h2 className="text-xl font-semibold mb-4">Session expirée</h2>
+          <Button onClick={() => window.location.href = '/client-login'}>
+            Se reconnecter
+          </Button>
         </div>
       </div>
     );
   }
 
-  // Page Accueil
-  const renderAccueil = () => (
-    <div className="space-y-4">
-      {/* Carte Prochain RDV */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-green-50/30">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">Prochain RDV</h2>
-                <Badge className="bg-green-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                  Confirmé
-                </Badge>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                Coupe + Brushing - Salon Excellence
-              </p>
-              
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-green-600 mb-1">30</div>
-                  <div className="text-xs text-gray-600">Janvier</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-green-600 mb-1">14h30</div>
-                  <div className="text-xs text-gray-600">Heure</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-green-600 mb-1">45€</div>
-                  <div className="text-xs text-gray-600">Prix</div>
-                </div>
-              </div>
-
-              <Button 
-                onClick={() => setActiveSection('rdv')}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg"
-              >
-                Gérer RDV
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Carte Fidélité */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-amber-50/30">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-amber-600 rounded-2xl flex items-center justify-center">
-              <Star className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">Programme Fidélité</h2>
-                <Badge className="bg-amber-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                  VIP
-                </Badge>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                {clientData.loyaltyPoints || 150} points disponibles
-              </p>
-              
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-amber-600 mb-1">25€</div>
-                  <div className="text-xs text-gray-600">Crédit</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-amber-600 mb-1">5</div>
-                  <div className="text-xs text-gray-600">Visites</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-amber-600 mb-1">20%</div>
-                  <div className="text-xs text-gray-600">Réduction</div>
-                </div>
-              </div>
-
-              <Button 
-                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 rounded-lg"
-              >
-                Utiliser points
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Boutons d'action rapide */}
-      <div className="grid grid-cols-2 gap-4">
-        <Button 
-          onClick={() => setLocation('/search')}
-          variant="outline"
-          className="h-20 flex flex-col items-center justify-center border-2 rounded-lg"
-        >
-          <Calendar className="w-6 h-6 mb-2" />
-          <span className="text-sm font-medium">Nouveau RDV</span>
-        </Button>
-        
-        <Button 
-          onClick={() => setLocation('/search')}
-          variant="outline"
-          className="h-20 flex flex-col items-center justify-center border-2 rounded-lg"
-        >
-          <Heart className="w-6 h-6 mb-2" />
-          <span className="text-sm font-medium">Mes favoris</span>
-        </Button>
-      </div>
-    </div>
-  );
-
-  // Page Mes RDV
-  const renderRdv = () => (
-    <div className="space-y-4">
-      {/* Bouton Nouveau RDV */}
-      <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-lg p-4">
-        <Button 
-          className="w-full bg-transparent hover:bg-white/10 text-white font-medium py-2 rounded-lg"
-          onClick={() => setLocation('/search')}
-        >
-          Prendre un nouveau rendez-vous
-        </Button>
-      </div>
-
-      {/* Carte RDV À venir */}
-      <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-blue-50/30">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h2 className="text-lg font-semibold text-gray-900">Rendez-vous à venir</h2>
-                <Badge className="bg-blue-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                  1 RDV
-                </Badge>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                Coupe + Brushing - Salon Excellence
-              </p>
-              
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-blue-600 mb-1">30</div>
-                  <div className="text-xs text-gray-600">Janvier</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-blue-600 mb-1">14h30</div>
-                  <div className="text-xs text-gray-600">Heure</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-blue-600 mb-1">45€</div>
-                  <div className="text-xs text-gray-600">Prix</div>
-                </div>
-              </div>
-
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline"
-                  className="flex-1 text-blue-600 border-blue-600 hover:bg-blue-50"
-                >
-                  Déplacer
-                </Button>
-                <Button 
-                  variant="outline"
-                  className="flex-1 text-red-600 border-red-600 hover:bg-red-50"
-                >
-                  Annuler
-                </Button>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Historique */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Historique</h3>
-          
-          <div className="space-y-3">
-            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Coupe + Couleur</div>
-                <div className="text-sm text-gray-600">15 Décembre 2024</div>
-              </div>
-              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">Terminé</Badge>
-            </div>
-            
-            <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Brushing</div>
-                <div className="text-sm text-gray-600">28 Novembre 2024</div>
-              </div>
-              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">Terminé</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  // Page Paramètres
-  const renderParametres = () => (
-    <div className="space-y-4">
-      {/* Profil */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-violet-600 rounded-full flex items-center justify-center">
-              <User className="h-8 w-8 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">{clientData.firstName} {clientData.lastName}</h2>
-              <p className="text-gray-600">{clientData.email}</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="text-lg font-bold text-violet-600 mb-1">{clientData.loyaltyPoints || 150}</div>
-              <div className="text-xs text-gray-600">Points fidélité</div>
-            </div>
-            <div className="text-center p-3 bg-gray-50 rounded-xl">
-              <div className="text-lg font-bold text-green-600 mb-1">5</div>
-              <div className="text-xs text-gray-600">RDV pris</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Options */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Paramètres</h3>
-          
-          <div className="space-y-3">
-            <Button variant="ghost" className="w-full justify-start h-12 text-left">
-              <Bell className="h-5 w-5 mr-3 text-gray-600" />
-              <span className="font-medium">Notifications</span>
-            </Button>
-            
-            <Button variant="ghost" className="w-full justify-start h-12 text-left">
-              <Heart className="h-5 w-5 mr-3 text-gray-600" />
-              <span className="font-medium">Mes favoris</span>
-            </Button>
-            
-            <Button variant="ghost" className="w-full justify-start h-12 text-left">
-              <Settings className="h-5 w-5 mr-3 text-gray-600" />
-              <span className="font-medium">Préférences</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Déconnexion */}
-      <Button 
-        onClick={() => {
-          localStorage.removeItem('clientData');
-          setLocation('/client-login');
-        }}
-        variant="outline" 
-        className="w-full text-red-600 border-red-600 hover:bg-red-50"
-      >
-        Se déconnecter
-      </Button>
-    </div>
-  );
-
-  const renderMainView = () => {
-    switch (activeSection) {
-      case 'accueil':
-        return renderAccueil();
-      case 'rdv':
-        return renderRdv();
-      case 'parametres':
-        return renderParametres();
-      default:
-        return renderAccueil();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header iPhone - Style identique aux pros */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
-              </div>
-              <h1 className="text-lg font-semibold text-gray-900">Mon Compte</h1>
+      {/* Header unifié */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="max-w-lg mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-violet-600 rounded-2xl flex items-center justify-center">
+              <span className="text-white font-bold text-lg">C</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-              </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setActiveSection('parametres')}>
-                <Settings className="h-4 w-4" />
-              </Button>
+            <div>
+              <h1 className="text-lg font-semibold text-gray-900">
+                {client.firstName} {client.lastName}
+              </h1>
+              <p className="text-sm text-gray-500">{client.email}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {isConnected && (
+              <div className="w-2 h-2 bg-green-400 rounded-full" title="Connecté"></div>
+            )}
+            <div className="relative">
+              <Bell className="w-5 h-5 text-gray-600" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto p-4 space-y-4">
-        {/* Bannière Bienvenue */}
-        <div className="bg-gradient-to-r from-violet-400 to-purple-500 rounded-lg p-4">
-          <div className="text-white">
-            <h2 className="text-xl font-bold mb-1">Bonjour {clientData.firstName} !</h2>
-            <p className="text-violet-100">Bienvenue dans votre espace client</p>
-          </div>
+      {/* Navigation à onglets */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-lg mx-auto">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3 bg-transparent">
+              <TabsTrigger 
+                value="accueil" 
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+              >
+                Accueil
+              </TabsTrigger>
+              <TabsTrigger 
+                value="rdv"
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+              >
+                Mes RDV
+              </TabsTrigger>
+              <TabsTrigger 
+                value="profil"
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+              >
+                Profil
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
+      </div>
 
-        {/* Grille des sections client - Style IDENTIQUE aux pros */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="grid grid-cols-3 gap-3">
-            <Button
-              variant="ghost"
-              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
-                activeSection === 'accueil' 
-                  ? 'bg-violet-50 text-violet-600' 
-                  : 'hover:bg-gray-50 text-gray-600'
-              }`}
-              onClick={() => setActiveSection('accueil')}
-            >
-              <Home className="h-5 w-5" />
-              <span className="text-xs font-medium">Accueil</span>
-            </Button>
+      <div className="max-w-lg mx-auto px-6 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {/* ONGLET ACCUEIL */}
+          <TabsContent value="accueil" className="space-y-4">
+            {/* Programme de fidélité */}
+            <Card className="bg-gradient-to-br from-violet-50 to-purple-50 border-violet-200">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Gift className="w-5 h-5 text-violet-600" />
+                    <span>Programme Fidélité</span>
+                  </CardTitle>
+                  <Badge className={getLoyaltyLevelColor(client.clientStatus)}>
+                    {client.clientStatus}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Points actuels</span>
+                  <span className="text-lg font-bold text-violet-600">{client.loyaltyPoints}</span>
+                </div>
+                {loyaltyInfo && loyaltyInfo.pointsToNext > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>Vers {loyaltyInfo.nextLevel}</span>
+                      <span>{loyaltyInfo.pointsToNext} points restants</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-violet-600 h-2 rounded-full transition-all duration-300"
+                        style={{ 
+                          width: `${Math.max(10, ((loyaltyInfo.currentPoints) / (loyaltyInfo.currentPoints + loyaltyInfo.pointsToNext)) * 100)}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-            <Button
-              variant="ghost"
-              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
-                activeSection === 'rdv' 
-                  ? 'bg-violet-50 text-violet-600' 
-                  : 'hover:bg-gray-50 text-gray-600'
-              }`}
-              onClick={() => setActiveSection('rdv')}
-            >
-              <Calendar className="h-5 w-5" />
-              <span className="text-xs font-medium">Mes RDV</span>
-            </Button>
+            {/* Prochain rendez-vous */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center space-x-2">
+                  <Calendar className="w-5 h-5 text-violet-600" />
+                  <span>Prochain rendez-vous</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {appointments.length > 0 ? (
+                  <div className="space-y-3">
+                    {appointments.slice(0, 1).map((appointment) => (
+                      <div key={appointment.id} className="border border-gray-200 rounded-xl p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
+                            <p className="text-sm text-gray-600">{appointment.salonName}</p>
+                          </div>
+                          <Badge className={getStatusColor(appointment.status)}>
+                            {appointment.status === 'confirmed' ? 'Confirmé' : appointment.status}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1">
+                            <Calendar className="w-4 h-4" />
+                            <span>{appointment.appointmentDate}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{appointment.startTime}</span>
+                          </div>
+                        </div>
+                        <div className="mt-3 flex space-x-2">
+                          <Button variant="outline" size="sm" className="flex-1">
+                            Modifier
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => cancelAppointment(appointment.id)}
+                          >
+                            Annuler
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-6">
+                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-500 mb-4">Aucun rendez-vous prévu</p>
+                    <Button className="w-full bg-violet-600 hover:bg-violet-700">
+                      Prendre rendez-vous
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-            <Button
-              variant="ghost"
-              className={`h-16 flex flex-col items-center justify-center gap-1 rounded-xl ${
-                activeSection === 'parametres' 
-                  ? 'bg-violet-50 text-violet-600' 
-                  : 'hover:bg-gray-50 text-gray-600'
-              }`}
-              onClick={() => setActiveSection('parametres')}
-            >
-              <Settings className="h-5 w-5" />
-              <span className="text-xs font-medium">Paramètres</span>
-            </Button>
+            {/* Statistiques rapides */}
+            <div className="grid grid-cols-2 gap-4">
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-violet-600">
+                    {appointments.filter(a => a.status === 'completed').length}
+                  </div>
+                  <div className="text-sm text-gray-600">RDV terminés</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <div className="text-2xl font-bold text-violet-600">
+                    {client.totalSpent?.toFixed(0) || '0'}€
+                  </div>
+                  <div className="text-sm text-gray-600">Total dépensé</div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-            {/* Boutons supplémentaires pour remplir la grille comme les pros */}
-            <Button
-              variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
-              onClick={() => setLocation('/search')}
-            >
-              <Search className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Recherche</span>
-            </Button>
+          {/* ONGLET MES RDV */}
+          <TabsContent value="rdv" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold">Mes rendez-vous</h2>
+              <Button size="sm" className="bg-violet-600 hover:bg-violet-700">
+                Nouveau RDV
+              </Button>
+            </div>
 
-            <Button
-              variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
-              onClick={() => setLocation('/support')}
-            >
-              <MessageCircle className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Support</span>
-            </Button>
+            {appointments.length > 0 ? (
+              <div className="space-y-3">
+                {appointments.map((appointment) => (
+                  <Card key={appointment.id}>
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
+                          <p className="text-sm text-gray-600">{appointment.salonName}</p>
+                        </div>
+                        <Badge className={getStatusColor(appointment.status)}>
+                          {appointment.status === 'confirmed' ? 'Confirmé' : 
+                           appointment.status === 'completed' ? 'Terminé' : 
+                           appointment.status === 'cancelled' ? 'Annulé' : appointment.status}
+                        </Badge>
+                      </div>
 
-            <Button
-              variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
-              onClick={() => setLocation('/search')}
-            >
-              <Heart className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Favoris</span>
-            </Button>
-          </div>
-        </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
+                        <div className="flex items-center space-x-1">
+                          <Calendar className="w-4 h-4" />
+                          <span>{appointment.appointmentDate}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="w-4 h-4" />
+                          <span>{appointment.startTime} - {appointment.endTime}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <CreditCard className="w-4 h-4" />
+                          <span>{appointment.totalPrice}€</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Star className="w-4 h-4" />
+                          <span>Note: -/5</span>
+                        </div>
+                      </div>
 
-        {/* Contenu des sections */}
-        <div className="space-y-4">
-          {renderMainView()}
-        </div>
+                      {appointment.status === 'confirmed' && (
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm" className="flex-1">
+                            Modifier
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => cancelAppointment(appointment.id)}
+                          >
+                            Annuler
+                          </Button>
+                        </div>
+                      )}
+
+                      {appointment.status === 'completed' && (
+                        <Button variant="outline" size="sm" className="w-full">
+                          Laisser un avis
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun rendez-vous</h3>
+                <p className="text-gray-500 mb-4">Commencez par prendre votre premier rendez-vous</p>
+                <Button className="bg-violet-600 hover:bg-violet-700">
+                  Trouver un salon
+                </Button>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ONGLET PROFIL */}
+          <TabsContent value="profil" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <User className="w-5 h-5 text-violet-600" />
+                  <span>Informations personnelles</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Prénom</label>
+                    <div className="mt-1 text-sm text-gray-900">{client.firstName}</div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">Nom</label>
+                    <div className="mt-1 text-sm text-gray-900">{client.lastName}</div>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700">Email</label>
+                  <div className="mt-1 text-sm text-gray-900">{client.email}</div>
+                </div>
+                <Button variant="outline" className="w-full">
+                  Modifier mes informations
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Préférences</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Notifications par email</span>
+                  <input type="checkbox" defaultChecked className="rounded" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Rappels de rendez-vous</span>
+                  <input type="checkbox" defaultChecked className="rounded" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Offres promotionnelles</span>
+                  <input type="checkbox" className="rounded" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="space-y-2">
+              <Button variant="outline" className="w-full">
+                Aide et support
+              </Button>
+              <Button variant="outline" className="w-full text-red-600" onClick={handleLogout}>
+                Se déconnecter
+              </Button>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

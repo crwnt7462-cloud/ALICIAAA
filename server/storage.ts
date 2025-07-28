@@ -310,44 +310,50 @@ export class DatabaseStorage implements IStorage {
         {
           id: 1,
           userId: "demo",
+          categoryId: 1,
           name: "Coupe + Brushing",
           description: "Coupe personnalisée avec brushing professionnel",
           price: "45",
           duration: 60,
-          category: "coiffure",
           isActive: true,
+          isOnlineBookable: true,
           requiresDeposit: true,
-          depositPercentage: 30,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          depositAmount: "13.50",
+          maxAdvanceBooking: 30,
+          color: "#8B5CF6",
+          createdAt: new Date()
         },
         {
           id: 2,
           userId: "demo",
+          categoryId: 1,
           name: "Coloration complète",
           description: "Coloration avec soins capillaires inclus",
           price: "85",
           duration: 120,
-          category: "coiffure",
           isActive: true,
+          isOnlineBookable: true,
           requiresDeposit: true,
-          depositPercentage: 30,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          depositAmount: "25.50",
+          maxAdvanceBooking: 30,
+          color: "#8B5CF6",
+          createdAt: new Date()
         },
         {
           id: 3,
           userId: "demo",
+          categoryId: 2,
           name: "Soin visage relaxant",
           description: "Nettoyage de peau avec masque hydratant",
           price: "65",
           duration: 75,
-          category: "esthetique",
           isActive: true,
+          isOnlineBookable: true,
           requiresDeposit: true,
-          depositPercentage: 30,
-          createdAt: new Date(),
-          updatedAt: new Date()
+          depositAmount: "19.50",
+          maxAdvanceBooking: 30,
+          color: "#F59E0B",
+          createdAt: new Date()
         }
       ];
     }
@@ -861,24 +867,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getClientsByProfessional(professionalId: string): Promise<any[]> {
-    try {
-      return await db.select().from(clients).where(eq(clients.userId, professionalId));
-    } catch (error) {
-      console.error('Error fetching clients:', error);
-      return [];
-    }
-  }
 
-  async createOrUpdateClientNote(noteData: any): Promise<any> {
-    try {
-      const [note] = await db.insert(clientNotes).values(noteData).returning();
-      return note;
-    } catch (error) {
-      console.error('Error creating client note:', error);
-      throw error;
-    }
-  }
 
   async getCustomTagsByProfessional(professionalId: string): Promise<any[]> {
     try {

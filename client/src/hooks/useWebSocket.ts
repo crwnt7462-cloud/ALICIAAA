@@ -1,61 +1,131 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-interface WebSocketMessage {
-  type: string;
-  data: any;
+interface WebSocketConfig {
+  userType: 'professional' | 'client';
+  userId?: string;
+  clientId?: string;
+  autoReconnect?: boolean;
 }
 
-export function useWebSocket() {
-  const ws = useRef<WebSocket | null>(null);
+interface NotificationData {
+  type: 'appointment' | 'payment' | 'reminder' | 'cancellation' | 'system';
+  title: string;
+  message: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  data?: any;
+}
+
+export function useWebSocket(config: WebSocketConfig) {
   const [isConnected, setIsConnected] = useState(false);
-  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
 
-  useEffect(() => {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    
-    ws.current = new WebSocket(wsUrl);
-
-    ws.current.onopen = () => {
-      console.log('WebSocket connected');
-      setIsConnected(true);
-    };
-
-    ws.current.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        setLastMessage(message);
-      } catch (error) {
-        console.error('Failed to parse WebSocket message:', error);
+  const connect = () => {
+    try {
+      // En développement, on simule juste la connexion
+      if (process.env.NODE_ENV === 'development') {
+        setIsConnected(true);
+        console.log('WebSocket simulé connecté');
+        return;
       }
-    };
 
-    ws.current.onclose = () => {
-      console.log('WebSocket disconnected');
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      
+      const ws = new WebSocket(wsUrl);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        setIsConnected(true);
+        console.log('WebSocket connecté');
+        
+        // S'identifier auprès du serveur
+        ws.send(JSON.stringify({
+          type: 'auth',
+          userType: config.userType,
+          userId: config.userId,
+          clientId: config.clientId
+        }));
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'notification') {
+            setNotifications(prev => [data.notification, ...prev.slice(0, 49)]);
+            setUnreadCount(prev => prev + 1);
+          }
+        } catch (error) {
+          console.error('Erreur parsing message WebSocket:', error);
+        }
+      };
+
+      ws.onclose = () => {
+        setIsConnected(false);
+        console.log('WebSocket déconnecté');
+        
+        // Reconnexion automatique si activée
+        if (config.autoReconnect) {
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connect();
+          }, 3000);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('Erreur WebSocket:', error);
+        setIsConnected(false);
+      };
+
+    } catch (error) {
+      console.error('Erreur connexion WebSocket:', error);
       setIsConnected(false);
-    };
-
-    ws.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setIsConnected(false);
-    };
-
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  }, []);
-
-  const sendMessage = (type: string, data: any) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({ type, data }));
     }
   };
 
+  const disconnect = () => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+    }
+    
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    
+    setIsConnected(false);
+  };
+
+  const clearNotifications = () => {
+    setNotifications([]);
+    setUnreadCount(0);
+  };
+
+  const markAsRead = (count: number = 0) => {
+    if (count === 0) {
+      setUnreadCount(0);
+    } else {
+      setUnreadCount(prev => Math.max(0, prev - count));
+    }
+  };
+
+  useEffect(() => {
+    connect();
+    
+    return () => {
+      disconnect();
+    };
+  }, [config.userId, config.clientId]);
+
   return {
     isConnected,
-    lastMessage,
-    sendMessage,
+    notifications,
+    unreadCount,
+    clearNotifications,
+    markAsRead,
+    reconnect: connect,
+    disconnect
   };
 }

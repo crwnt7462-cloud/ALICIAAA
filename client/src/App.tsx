@@ -57,6 +57,7 @@ import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
+import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIProModern from "@/pages/AIProModern";
 import MessagingHub from "@/pages/MessagingHub";
@@ -83,7 +84,6 @@ import ClientRegister from "@/pages/ClientRegister";
 import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
-import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
@@ -271,6 +271,10 @@ function Router() {
     return <div className="h-full"><ClientDashboardNew /></div>;
   }
   
+  if (location === '/client-dashboard-new') {
+    return <div className="h-full"><ClientDashboardNew /></div>;
+  }
+  
   if (location === '/client-accueil') {
     return <div className="h-full"><ClientAccueil /></div>;
   }
@@ -337,23 +341,7 @@ function Router() {
     );
   }
 
-  // Page de connexion client futuriste
-  if (location === '/client-login') {
-    return (
-      <div className="h-full">
-        <ClientLogin />
-      </div>
-    );
-  }
 
-  // Page de connexion pro futuriste
-  if (location === '/pro-login') {
-    return (
-      <div className="h-full">
-        <ProLoginModern />
-      </div>
-    );
-  }
 
   // Pro Pages Manager
   if (location === '/pro-pages') {
@@ -364,14 +352,7 @@ function Router() {
     );
   }
 
-  // Dashboard client original
-  if (location === '/client-dashboard') {
-    return (
-      <div className="h-full">
-        <ClientDashboard />
-      </div>
-    );
-  }
+
 
   // Page IA simplifiée (ancienne)
   if (location === '/ai-chat') {

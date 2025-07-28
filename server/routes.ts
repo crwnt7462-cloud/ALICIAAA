@@ -4,12 +4,16 @@ import jwt from 'jsonwebtoken';
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { messagingService, type Message } from "./messagingService";
+import { registerFullStackRoutes } from "./fullStackRoutes";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+  
+  // Register all full-stack routes
+  registerFullStackRoutes(app);
 
   // Routes existantes (API d'authentification, etc.)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -1367,5 +1371,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+
+  // Initialize WebSocket service for real-time notifications
+  const { websocketService } = await import('./websocketService');
+  websocketService.initialize(httpServer);
+
   return httpServer;
 }
