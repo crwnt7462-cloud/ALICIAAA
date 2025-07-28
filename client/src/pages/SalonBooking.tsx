@@ -264,46 +264,10 @@ export default function SalonBooking() {
     setCurrentStep(2);
   };
 
-  const handleTimeSlotSelect = async (time: string) => {
+  const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
-    
-    try {
-      // Créer directement un Payment Intent avec Stripe - SKIP ÉTAPE 3
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          amount: 20.50, // Prix de l'acompte 30%
-          currency: 'eur',
-          metadata: {
-            salon: salon.name,
-            professional: selectedProfessional?.name,
-            service: defaultService.name,
-            time: time,
-            date: selectedDate || 'lundi 28 juillet 2025'
-          }
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-        // Afficher directement le bottom sheet de paiement Stripe
-        setTimeout(() => {
-          setShowPaymentSheet(true);
-        }, 500);
-      } else {
-        throw new Error(data.error || 'Erreur lors de la création du paiement');
-      }
-    } catch (error: any) {
-      console.error('Erreur Payment Intent:', error);
-      toast({
-        title: "Erreur",
-        description: error.message || "Erreur lors de la préparation du paiement",
-        variant: "destructive"
-      });
-    }
+    // Aller à l'étape de connexion/inscription
+    setCurrentStep(3);
   };
 
   const handleDateSelect = (dateInfo: any) => {
@@ -1344,12 +1308,201 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Navigation entre les étapes avec bottom sheet - ÉTAPES 3+ SUPPRIMÉES
+  // Étape 3: Connexion/Inscription (sans nom/prénom)
+  const renderLoginSignup = () => (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" size="icon" onClick={() => setCurrentStep(2)}>
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto p-4 space-y-6">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">Récapitulatif</h2>
+          <div className="bg-white rounded-lg p-4 border border-gray-100 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
+                <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
+                <p className="text-sm text-gray-600">{selectedSlot?.time} • {selectedSlot?.date || selectedDate}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-6 shadow-sm">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Créer un compte ou se connecter</h2>
+            <p className="text-sm text-gray-600">Pour finaliser votre réservation</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Email <span className="text-red-500">*</span>
+              </label>
+              <Input
+                type="email"
+                placeholder="votre@email.com"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Téléphone <span className="text-red-500">*</span>
+              </label>
+              <Input
+                type="tel"
+                placeholder="06 12 34 56 78"
+                value={formData.phone}
+                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Mot de passe <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Créer un mot de passe"
+                  value={formData.password}
+                  onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                  className="w-full pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="terms"
+                checked={formData.termsAccepted}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, termsAccepted: !!checked }))}
+              />
+              <label htmlFor="terms" className="text-sm text-gray-600 leading-5">
+                J'accepte les conditions générales d'utilisation et la politique de confidentialité
+              </label>
+            </div>
+
+            <Button 
+              onClick={handleCreateAccountAndPay}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+              disabled={!formData.email || !formData.phone || !formData.password || !formData.termsAccepted}
+            >
+              Créer un compte et continuer
+            </Button>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Déjà un compte ?{' '}
+                <Button variant="link" className="text-violet-600 p-0 h-auto">
+                  Se connecter
+                </Button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Fonction pour créer le compte et passer au paiement
+  const handleCreateAccountAndPay = async () => {
+    try {
+      // 1. Créer le compte client
+      const response = await fetch('/api/client/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        localStorage.setItem('clientToken', data.client.token);
+        
+        // 2. Créer le Payment Intent Stripe
+        const paymentResponse = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: 20.50,
+            currency: 'eur',
+            metadata: {
+              salon: salon.name,
+              professional: selectedProfessional?.name,
+              service: defaultService.name,
+              time: selectedSlot?.time,
+              date: selectedSlot?.date || selectedDate,
+              clientEmail: formData.email
+            }
+          })
+        });
+        
+        const paymentData = await paymentResponse.json();
+        
+        if (paymentData.clientSecret) {
+          setClientSecret(paymentData.clientSecret);
+          // 3. Afficher le bottom sheet de paiement
+          setTimeout(() => {
+            setShowPaymentSheet(true);
+          }, 500);
+        } else {
+          throw new Error(paymentData.error || 'Erreur Payment Intent');
+        }
+      } else {
+        toast({
+          title: "Erreur",
+          description: data.error || "Erreur lors de la création du compte",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      console.error('Erreur création compte:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Navigation entre les étapes avec connexion/inscription
   return (
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {/* ÉTAPE 3 (identification/nom) SUPPRIMÉE - PASSAGE DIRECT AU PAIEMENT STRIPE */}
+      {currentStep === 3 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel */}
       {showPaymentSheet && renderPaymentBottomSheet()}
