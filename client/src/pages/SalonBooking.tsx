@@ -113,6 +113,20 @@ export default function SalonBooking() {
   const [showPassword, setShowPassword] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  // Vérifier si l'utilisateur est connecté au chargement
+  useEffect(() => {
+    const token = localStorage.getItem('clientToken');
+    if (token) {
+      setIsUserLoggedIn(true);
+      // Si l'utilisateur est connecté et on est à l'étape 3, ouvrir le shell
+      if (currentStep === 3) {
+        setTimeout(() => {
+          createPaymentIntentAndOpenSheet();
+        }, 500);
+      }
+    }
+  }, [currentStep]);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({
@@ -1363,7 +1377,7 @@ export default function SalonBooking() {
           <Button 
             variant="outline"
             className="w-full mb-4 py-3 border-gray-300 text-gray-700 rounded-full"
-            onClick={handleLogin}
+            onClick={() => window.location.href = '/client-login-booking'}
           >
             J'ai déjà un compte - Se connecter
           </Button>
@@ -1638,7 +1652,16 @@ export default function SalonBooking() {
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && renderLoginSignup()}
+      {currentStep === 3 && !isUserLoggedIn && renderLoginSignup()}
+      {currentStep === 3 && isUserLoggedIn && (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center p-6">
+            <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Préparation du paiement...</h2>
+            <p className="text-gray-600">Vous êtes connecté ! Ouverture du formulaire de paiement.</p>
+          </div>
+        </div>
+      )}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}

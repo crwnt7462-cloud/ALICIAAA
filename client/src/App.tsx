@@ -135,6 +135,7 @@ import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
 import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBooking from "@/pages/SalonBooking";
+import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 
@@ -354,6 +355,15 @@ function Router() {
     return (
       <div className="h-full">
         <SalonBooking />
+      </div>
+    );
+  }
+
+  // Page de connexion pour réservation
+  if (location === '/client-login-booking') {
+    return (
+      <div className="h-full">
+        <ClientLoginBooking />
       </div>
     );
   }
