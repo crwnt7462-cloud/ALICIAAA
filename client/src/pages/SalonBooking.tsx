@@ -137,6 +137,32 @@ export default function SalonBooking() {
     setCurrentStep(4);
   };
 
+  // Fonction pour créer le compte et rediriger vers le paiement
+  const handleAccountCreation = () => {
+    // Sauvegarder les données de réservation pour la page de paiement
+    const bookingData = {
+      salonId: 'bonhomme-paris-archives',
+      salonName: salon.name,
+      salonLocation: salon.location,
+      serviceName: service.name,
+      servicePrice: service.price,
+      serviceDuration: service.duration,
+      selectedDate: selectedDate || 'lundi 28 juillet 2025',
+      selectedTime: selectedSlot?.time || '10:00',
+      clientName: `${formData.firstName} ${formData.lastName}`,
+      clientEmail: formData.email,
+      clientPhone: formData.phone,
+      professionalName: selectedProfessional?.name || 'Lucas',
+      totalPrice: service.price
+    };
+
+    // Sauvegarder en sessionStorage pour récupération dans PaymentStep
+    sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
+
+    // Rediriger directement vers la page de paiement
+    setLocation('/booking/bonhomme-paris-archives/payment');
+  };
+
   // Étape 1: Sélection du professionnel
   const renderProfessionalSelection = () => (
     <div className="min-h-screen bg-gray-50">
@@ -521,7 +547,7 @@ export default function SalonBooking() {
             </div>
 
             <Button 
-              onClick={() => setCurrentStep(5)}
+              onClick={handleAccountCreation}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password}
             >
@@ -590,11 +616,11 @@ export default function SalonBooking() {
             </div>
 
             <Button 
-              onClick={() => setCurrentStep(6)}
+              onClick={handleAccountCreation}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.firstName || !formData.lastName}
             >
-              Confirmer mon inscription
+              Continuer vers le paiement
             </Button>
 
             <Button variant="ghost" className="w-full text-gray-600 text-sm">
