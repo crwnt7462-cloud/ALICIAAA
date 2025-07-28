@@ -305,7 +305,7 @@ export function registerFullStackRoutes(app: Express) {
   app.delete('/api/appointments/:id', authenticatePro, async (req: any, res) => {
     try {
       const appointmentId = parseInt(req.params.id);
-      const appointment = await storage.getAppointment(appointmentId);
+      const appointments = await storage.getAppointments();
       
       await storage.deleteAppointment(appointmentId);
       
@@ -622,6 +622,140 @@ export function registerFullStackRoutes(app: Express) {
     } catch (error) {
       console.error("Erreur déconnexion:", error);
       res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // ========== ROUTES STRIPE POUR PAIEMENTS ==========
+
+  // Créer session Stripe pour abonnement professionnel
+  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
+    try {
+      const { planType, customerEmail, customerName } = req.body;
+      
+      if (!planType || !customerEmail || !customerName) {
+        return res.status(400).json({ message: "Paramètres manquants" });
+      }
+
+      if (!stripe) {
+        return res.status(500).json({ message: "Stripe non configuré" });
+      }
+
+      const planPrices = {
+        essentiel: { amount: 2900 }, // 29€/mois
+        professionnel: { amount: 7900 }, // 79€/mois  
+        premium: { amount: 14900 } // 149€/mois
+      };
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const successUrl = `${baseUrl}/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${baseUrl}/stripe/cancel`;
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'eur',
+              product_data: {
+                name: `Abonnement ${planType.charAt(0).toUpperCase() + planType.slice(1)}`,
+                description: `Plan ${planType} pour votre salon`,
+              },
+              unit_amount: planPrices[planType as keyof typeof planPrices].amount,
+              recurring: {
+                interval: 'month',
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        customer_email: customerEmail,
+        metadata: {
+          planType,
+          customerName,
+          type: 'subscription'
+        },
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+        subscription_data: {
+          trial_period_days: 14, // 14 jours d'essai gratuit
+        },
+      });
+
+      console.log(`✅ Session abonnement créée: ${session.id}`);
+      res.json({ sessionId: session.id, url: session.url });
+    } catch (error: any) {
+      console.error("Erreur création checkout abonnement:", error);
+      res.status(500).json({ message: "Erreur lors de la création du paiement", error: error.message });
+    }
+  });
+
+  // Créer session Stripe pour acompte de réservation
+  app.post('/api/stripe/create-deposit-checkout', async (req, res) => {
+    try {
+      const { amount, description, customerEmail, customerName, appointmentId, salonName } = req.body;
+      
+      if (!amount || !description || !customerEmail || !customerName) {
+        return res.status(400).json({ message: "Paramètres manquants" });
+      }
+
+      if (!stripe) {
+        return res.status(500).json({ message: "Stripe non configuré" });
+      }
+
+      const baseUrl = `${req.protocol}://${req.get('host')}`;
+      const successUrl = `${baseUrl}/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${baseUrl}/stripe/cancel`;
+
+      const session = await stripe.checkout.sessions.create({
+        mode: 'payment',
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'eur',
+              product_data: {
+                name: `Acompte - ${description}`,
+                description: `Réservation chez ${salonName || 'Salon'}`,
+              },
+              unit_amount: Math.round(amount * 100), // Convertir en centimes
+            },
+            quantity: 1,
+          },
+        ],
+        customer_email: customerEmail,
+        metadata: {
+          appointmentId: appointmentId || 'temp',
+          customerName,
+          salonName: salonName || 'Salon',
+          type: 'booking_deposit'
+        },
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+      });
+
+      console.log(`✅ Session acompte créée: ${session.id} pour ${amount}€`);
+      res.json({ sessionId: session.id, url: session.url });
+    } catch (error: any) {
+      console.error("Erreur création checkout acompte:", error);
+      res.status(500).json({ message: "Erreur lors de la création du paiement", error: error.message });
+    }
+  });
+
+  // Récupérer les détails d'une session Stripe
+  app.get('/api/stripe/session/:sessionId', async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      
+      if (!stripe) {
+        return res.status(500).json({ message: "Stripe non configuré" });
+      }
+
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      res.json(session);
+    } catch (error: any) {
+      console.error("Erreur récupération session:", error);
+      res.status(500).json({ message: "Erreur récupération session", error: error.message });
     }
   });
 }
