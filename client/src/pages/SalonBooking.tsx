@@ -481,7 +481,7 @@ export default function SalonBooking() {
         </div>
       </div>
 
-      <div className={`max-w-lg mx-auto p-4 space-y-6 ${isUserLoggedIn ? 'pb-32' : ''}`}>
+      <div className="max-w-lg mx-auto p-4 space-y-6">
         <div>
           <h2 className="text-lg font-semibold text-gray-900 mb-1">1. Prestation sélectionnée</h2>
           <div className="bg-white rounded-lg p-4 border border-gray-100">
@@ -652,14 +652,62 @@ export default function SalonBooking() {
                 Créer mon compte et continuer
               </Button>
             ) : (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-green-800">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Compte créé avec succès !</span>
+              <div className="space-y-4">
+                {/* Confirmation de compte créé */}
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-green-800">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="font-medium">Compte créé avec succès !</span>
+                  </div>
                 </div>
-                <p className="text-sm text-green-700 mt-1">
-                  Vous pouvez maintenant procéder au paiement sécurisé.
-                </p>
+
+                {/* Section de paiement intégrée */}
+                <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Finaliser votre réservation</h3>
+                  
+                  {/* Récapitulatif */}
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-medium text-gray-900">{service.name}</h4>
+                        <p className="text-sm text-gray-600">
+                          {selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          avec {selectedProfessional?.name || 'Lucas'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">{service.price},00 €</p>
+                        <p className="text-xs text-gray-500">Prix total</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Montant de l'acompte */}
+                  <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg p-4 mb-4">
+                    <div className="text-white text-center">
+                      <p className="text-sm font-medium mb-1">Acompte à régler maintenant</p>
+                      <p className="text-3xl font-bold mb-1">20,50 €</p>
+                      <p className="text-sm opacity-90">Solde à régler sur place : 18,50 €</p>
+                    </div>
+                  </div>
+
+                  {/* Bouton de paiement */}
+                  <Button 
+                    onClick={handlePayment}
+                    className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all"
+                  >
+                    Payer 20,50 € avec Stripe
+                  </Button>
+                  
+                  <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-500">
+                    <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="w-1 h-1 bg-white rounded-full"></div>
+                    </div>
+                    <span>Paiement 100% sécurisé par Stripe</span>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -674,52 +722,7 @@ export default function SalonBooking() {
         </div>
       </div>
 
-      {/* Section de paiement sticky en bas - Apparaît après connexion/inscription */}
-      {isUserLoggedIn && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-          <div className="max-w-lg mx-auto px-4 py-4">
-            <div className="flex items-center justify-between mb-3">
-              <div>
-                <h3 className="font-semibold text-gray-900">Récapitulatif</h3>
-                <p className="text-sm text-gray-600">
-                  {service.name} • {selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-gray-900">{service.price},00 €</p>
-                <p className="text-xs text-gray-500">Total</p>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg p-3 mb-3">
-              <div className="flex items-center justify-between text-white">
-                <div>
-                  <p className="text-sm font-medium">Acompte à régler maintenant</p>
-                  <p className="text-xs opacity-90">50% du montant total</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-xl font-bold">20,50 €</p>
-                  <p className="text-xs opacity-90">19,50 € sur place</p>
-                </div>
-              </div>
-            </div>
 
-            <Button 
-              onClick={handlePayment}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
-            >
-              Payer 20,50 € avec Stripe
-            </Button>
-            
-            <div className="flex items-center justify-center gap-2 mt-2 text-xs text-gray-500">
-              <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
-                <div className="w-1 h-1 bg-white rounded-full"></div>
-              </div>
-              <span>Paiement 100% sécurisé</span>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 
