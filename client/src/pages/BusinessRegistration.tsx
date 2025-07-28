@@ -8,6 +8,111 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { X, CreditCard } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+// Configuration Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
+
+// Composant de paiement Stripe pour business
+function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPrice }: { 
+  onSuccess: () => void, 
+  clientSecret: string,
+  planName: string,
+  planPrice: number
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    
+    if (!stripe || !elements || !clientSecret) return;
+    
+    setIsProcessing(true);
+    setError(null);
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    try {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: "Professionnel Business",
+            email: "business@example.com",
+          },
+        },
+      });
+
+      if (error) {
+        setError(error.message || "Erreur lors du paiement");
+      } else if (paymentIntent?.status === 'succeeded') {
+        onSuccess();
+      }
+    } catch (err) {
+      setError("Erreur lors du paiement. Veuillez réessayer.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="text-center pb-4 border-b border-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900">Finaliser votre abonnement</h3>
+        <p className="text-sm text-gray-600 mt-1">Plan {planName} - {planPrice}€/mois</p>
+      </div>
+
+      <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+            },
+          }}
+        />
+      </div>
+      
+      {error && (
+        <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+      
+      <Button 
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+      >
+        {isProcessing ? (
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Traitement en cours...
+          </div>
+        ) : (
+          `Confirmer & Payer ${planPrice}€`
+        )}
+      </Button>
+
+      <div className="text-center text-xs text-gray-500">
+        <p>🔒 Paiement sécurisé par Stripe</p>
+        <p>Votre abonnement sera actif immédiatement</p>
+      </div>
+    </form>
+  );
+}
 
 // Schéma de validation
 const formSchema = z.object({
@@ -54,6 +159,9 @@ const plans = [
 export default function BusinessRegistration() {
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPaymentSheet, setShowPaymentSheet] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const { toast } = useToast();
 
   // Récupérer le plan sélectionné
   const searchParams = new URLSearchParams(window.location.search);
@@ -89,7 +197,16 @@ export default function BusinessRegistration() {
       });
 
       if (response.ok) {
-        setLocation("/business-success");
+        const data = await response.json();
+        toast({
+          title: "Inscription réussie",
+          description: "Ouverture du paiement..."
+        });
+        
+        // Créer le Payment Intent et ouvrir le shell
+        setTimeout(() => {
+          createBusinessPaymentIntent(data.businessId || 'demo-business');
+        }, 800);
       } else {
         throw new Error("Erreur lors de l'inscription");
       }
@@ -100,6 +217,88 @@ export default function BusinessRegistration() {
       setIsLoading(false);
     }
   };
+
+  // Fonction pour créer le Payment Intent business
+  const createBusinessPaymentIntent = async (businessId: string) => {
+    try {
+      const response = await fetch('/api/create-professional-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          salonId: businessId,
+          plan: planId,
+          amount: currentPlan.price
+        }),
+      });
+
+      const data = await response.json();
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setShowPaymentSheet(true);
+      }
+    } catch (error) {
+      console.error('Erreur Payment Intent:', error);
+      toast({
+        title: "Erreur de paiement",
+        description: "Impossible de préparer le paiement",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Fonction appelée après paiement réussi
+  const handlePaymentSuccess = () => {
+    setShowPaymentSheet(false);
+    toast({
+      title: "Paiement confirmé !",
+      description: "Votre abonnement est maintenant actif"
+    });
+    
+    // Rediriger vers la page de succès
+    setTimeout(() => {
+      setLocation("/business-success");
+    }, 1500);
+  };
+
+  // Rendu du Bottom Sheet de paiement business
+  const renderBusinessPaymentSheet = () => (
+    showPaymentSheet && clientSecret && (
+      <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
+        <div className="bg-white w-full max-w-lg rounded-t-3xl max-h-[90vh] overflow-y-auto">
+          <div className="sticky top-0 bg-white border-b border-gray-100 p-4 rounded-t-3xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CreditCard className="h-6 w-6 text-violet-600" />
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">Paiement Business</h2>
+                  <p className="text-sm text-gray-600">Abonnement {currentPlan.name}</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowPaymentSheet(false)}
+                className="h-8 w-8"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="p-6">
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <BusinessStripePaymentForm
+                onSuccess={handlePaymentSuccess}
+                clientSecret={clientSecret}
+                planName={currentPlan.name}
+                planPrice={currentPlan.price}
+              />
+            </Elements>
+          </div>
+        </div>
+      </div>
+    )
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -408,6 +607,9 @@ export default function BusinessRegistration() {
           </div>
         </div>
       </div>
+
+      {/* Bottom Sheet de paiement business */}
+      {renderBusinessPaymentSheet()}
     </div>
   );
 }
