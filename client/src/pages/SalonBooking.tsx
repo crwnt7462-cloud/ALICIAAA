@@ -120,16 +120,7 @@ export default function SalonBooking() {
     if (token) {
       setIsUserLoggedIn(true);
     }
-  }, []); // Pas de dépendance sur currentStep
-
-  // Ouvrir le shell seulement quand l'utilisateur devient connecté ET qu'on est à l'étape 3
-  useEffect(() => {
-    if (isUserLoggedIn && currentStep === 3) {
-      setTimeout(() => {
-        createPaymentIntentAndOpenSheet();
-      }, 500);
-    }
-  }, [isUserLoggedIn]); // Seulement quand isUserLoggedIn change
+  }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({
@@ -1581,8 +1572,13 @@ export default function SalonBooking() {
           description: "Préparation du paiement..."
         });
         
+        // Marquer comme connecté puis créer le Payment Intent
+        setIsUserLoggedIn(true);
+        
         // Créer automatiquement le Payment Intent et ouvrir le shell
-        await createPaymentIntentAndOpenSheet();
+        setTimeout(() => {
+          createPaymentIntentAndOpenSheet();
+        }, 500);
       } else {
         toast({
           title: "Erreur de connexion",
@@ -1631,8 +1627,13 @@ export default function SalonBooking() {
           description: "Préparation du paiement..."
         });
         
-        // 2. Créer automatiquement le Payment Intent et ouvrir le shell
-        await createPaymentIntentAndOpenSheet();
+        // 2. Marquer comme connecté puis créer le Payment Intent
+        setIsUserLoggedIn(true);
+        
+        // Créer automatiquement le Payment Intent et ouvrir le shell
+        setTimeout(() => {
+          createPaymentIntentAndOpenSheet();
+        }, 500);
       } else {
         toast({
           title: "Erreur inscription",
@@ -1655,16 +1656,7 @@ export default function SalonBooking() {
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && !isUserLoggedIn && renderLoginSignup()}
-      {currentStep === 3 && isUserLoggedIn && (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center p-6">
-            <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Préparation du paiement...</h2>
-            <p className="text-gray-600">Vous êtes connecté ! Ouverture du formulaire de paiement.</p>
-          </div>
-        </div>
-      )}
+      {currentStep === 3 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}
