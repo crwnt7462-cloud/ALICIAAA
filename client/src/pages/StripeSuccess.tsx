@@ -1,215 +1,216 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowLeft, Download, ExternalLink } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-
-interface SessionDetails {
-  id: string;
-  status: string;
-  payment_status: string;
-  metadata: {
-    type: string;
-    planType?: string;
-    customerEmail: string;
-    appointmentId?: string;
-    salonName?: string;
-  };
-  customer_details: {
-    email: string;
-    name?: string;
-  };
-  amount_total: number;
-}
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle, Calendar, CreditCard, ArrowRight } from "lucide-react";
+import logoImage from "@assets/3_1753714984824.png";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function StripeSuccess() {
   const [, setLocation] = useLocation();
-  const [sessionDetails, setSessionDetails] = useState<SessionDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [sessionData, setSessionData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get('session_id');
+    const processPaymentSuccess = async () => {
+      try {
+        // Récupérer le session_id depuis l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        
+        if (!sessionId) {
+          setLocation('/');
+          return;
+        }
 
-    if (sessionId) {
-      fetchSessionDetails(sessionId);
-    } else {
-      setLoading(false);
-    }
-  }, []);
+        // Récupérer les détails de la session Stripe
+        const session = await apiRequest('GET', `/api/stripe/session/${sessionId}`);
+        setSessionData(session);
 
-  const fetchSessionDetails = async (sessionId: string) => {
-    try {
-      const response = await fetch(`/api/stripe/session/${sessionId}`);
-      const data = await response.json();
+        // Déterminer le type de paiement (abonnement ou acompte)
+        if ((session as any).metadata?.type === 'subscription') {
+          // Traitement pour abonnement professionnel
+          const registrationData = localStorage.getItem('pendingRegistration');
+          if (registrationData) {
+            const userData = JSON.parse(registrationData);
+            
+            // Finaliser l'inscription professionnelle
+            await apiRequest('POST', '/api/auth/register-professional', {
+              ...userData,
+              stripeSessionId: sessionId,
+              subscriptionActive: true
+            });
 
-      if (response.ok) {
-        setSessionDetails(data);
-      } else {
-        console.error('Erreur récupération session:', data);
+            localStorage.removeItem('pendingRegistration');
+          }
+        } else if ((session as any).metadata?.type === 'booking_deposit') {
+          // Traitement pour acompte de réservation
+          const bookingData = localStorage.getItem('bookingInProgress');
+          if (bookingData) {
+            const booking = JSON.parse(bookingData);
+            
+            // Finaliser la réservation
+            await apiRequest('POST', '/api/appointments', {
+              ...booking,
+              stripeSessionId: sessionId,
+              depositPaid: true,
+              status: 'confirmed'
+            });
+
+            localStorage.removeItem('bookingInProgress');
+            localStorage.removeItem('pendingBooking');
+          }
+        }
+      } catch (error) {
+        console.error('Erreur traitement paiement:', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Erreur:', error);
-    } finally {
-      setLoading(false);
+    };
+
+    processPaymentSuccess();
+  }, [setLocation]);
+
+  const handleContinue = () => {
+    if ((sessionData as any)?.metadata?.type === 'subscription') {
+      setLocation('/business-features');
+    } else {
+      setLocation('/client-dashboard');
     }
   };
 
-  const formatAmount = (amount: number) => {
-    return (amount / 100).toFixed(2);
-  };
-
-  const getPaymentTypeLabel = (metadata: SessionDetails['metadata']) => {
-    if (metadata.type === 'subscription') {
-      return `Abonnement ${metadata.planType}`;
-    }
-    return 'Paiement d\'acompte';
-  };
-
-  const getSuccessMessage = (metadata: SessionDetails['metadata']) => {
-    if (metadata.type === 'subscription') {
-      return `Votre abonnement ${metadata.planType} a été activé avec succès !`;
-    }
-    return `Votre paiement d'acompte a été traité avec succès !`;
-  };
-
-  const getNextSteps = (metadata: SessionDetails['metadata']) => {
-    if (metadata.type === 'subscription') {
-      return (
-        <div className="space-y-2">
-          <p>• Accédez à votre tableau de bord professionnel</p>
-          <p>• Configurez votre salon et vos services</p>
-          <p>• Commencez à recevoir des réservations</p>
-        </div>
-      );
-    }
+  if (isLoading) {
     return (
-      <div className="space-y-2">
-        <p>• Votre rendez-vous est confirmé</p>
-        <p>• Vous recevrez un email de confirmation</p>
-        <p>• Le solde sera réglé lors du rendez-vous</p>
-      </div>
-    );
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-white">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Vérification du paiement...</p>
+          <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-600">Traitement de votre paiement...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50/30 p-4">
-      <div className="max-w-2xl mx-auto pt-16">
-        {sessionDetails ? (
-          <Card className="border-0 shadow-xl">
-            <CardHeader className="text-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-t-lg">
-              <div className="flex justify-center mb-4">
-                <CheckCircle className="w-16 h-16" />
-              </div>
-              <CardTitle className="text-2xl">Paiement Réussi !</CardTitle>
-              <p className="text-green-100 mt-2">
-                {getSuccessMessage(sessionDetails.metadata)}
-              </p>
-            </CardHeader>
-            
-            <CardContent className="p-8 space-y-6">
-              {/* Détails du paiement */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">Détails du paiement</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-600">Type:</span>
-                    <p className="font-medium">{getPaymentTypeLabel(sessionDetails.metadata)}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Montant:</span>
-                    <p className="font-medium">{formatAmount(sessionDetails.amount_total)}€</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Email:</span>
-                    <p className="font-medium">{sessionDetails.customer_details.email}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Statut:</span>
-                    <p className="font-medium text-green-600">Confirmé</p>
-                  </div>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+      {/* Header */}
+      <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center h-16">
+            <img src={logoImage} alt="Logo" className="h-14 w-auto" />
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-2xl mx-auto px-4 py-12">
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="text-center pb-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-green-600" />
+            </div>
+            <CardTitle className="text-2xl text-gray-900">
+              {(sessionData as any)?.metadata?.type === 'subscription' 
+                ? 'Abonnement activé !' 
+                : 'Paiement confirmé !'}
+            </CardTitle>
+            <p className="text-gray-600 mt-2">
+              {(sessionData as any)?.metadata?.type === 'subscription' 
+                ? 'Votre essai gratuit de 14 jours a commencé' 
+                : 'Votre réservation est confirmée'}
+            </p>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            {/* Détails du paiement */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h3 className="font-semibold mb-3">Détails du paiement</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Montant</span>
+                  <span className="font-medium">
+                    {(sessionData as any)?.amount_total ? 
+                      `${((sessionData as any).amount_total / 100).toFixed(2)}€` : 
+                      'Essai gratuit'}
+                  </span>
                 </div>
-                
-                {sessionDetails.metadata.salonName && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <span className="text-gray-600">Salon:</span>
-                    <p className="font-medium">{sessionDetails.metadata.salonName}</p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Statut</span>
+                  <span className="font-medium text-green-600">Confirmé</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Date</span>
+                  <span className="font-medium">
+                    {new Date().toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+                {(sessionData as any)?.customer_email && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Email</span>
+                    <span className="font-medium">{(sessionData as any).customer_email}</span>
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* Prochaines étapes */}
-              <div className="bg-blue-50 rounded-lg p-6">
-                <h3 className="font-semibold text-blue-900 mb-4">Prochaines étapes</h3>
-                <div className="text-blue-800 text-sm">
-                  {getNextSteps(sessionDetails.metadata)}
-                </div>
-              </div>
+            {/* Prochaines étapes */}
+            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+              <h4 className="font-medium text-blue-800 mb-2">Prochaines étapes</h4>
+              {(sessionData as any)?.metadata?.type === 'subscription' ? (
+                <ul className="space-y-1 text-sm text-blue-700">
+                  <li>• Accès immédiat à votre dashboard professionnel</li>
+                  <li>• Configuration de votre salon</li>
+                  <li>• Première facturation dans 14 jours</li>
+                  <li>• Support disponible 7j/7</li>
+                </ul>
+              ) : (
+                <ul className="space-y-1 text-sm text-blue-700">
+                  <li>• Confirmation envoyée par email</li>
+                  <li>• Rappel automatique 24h avant</li>
+                  <li>• Solde à régler sur place</li>
+                  <li>• Annulation gratuite jusqu'à 24h avant</li>
+                </ul>
+              )}
+            </div>
 
-              {/* Actions */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button 
-                  onClick={() => window.history.back()}
-                  className="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Retour
-                </Button>
-                
-                {sessionDetails.metadata.type === 'subscription' && (
-                  <Button 
-                    variant="outline"
-                    onClick={() => setLocation("/business-features")}
-                    className="flex-1"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Dashboard Pro
-                  </Button>
-                )}
+            {/* Email de confirmation */}
+            <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
+              <div className="flex items-center gap-2 text-amber-800 mb-2">
+                <CreditCard className="w-4 h-4" />
+                <span className="font-medium">Email de confirmation</span>
               </div>
-
-              {/* Informations de contact */}
-              <div className="text-center text-sm text-gray-500 pt-4 border-t border-gray-200">
-                <p>Un email de confirmation a été envoyé à {sessionDetails.customer_details.email}</p>
-                <p className="mt-1">
-                  Besoin d'aide ? Contactez notre support : 
-                  <a href="mailto:support@rendly.fr" className="text-blue-600 hover:underline ml-1">
-                    support@rendly.fr
-                  </a>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="border-0 shadow-xl">
-            <CardContent className="p-8 text-center">
-              <div className="text-red-500 mb-4">
-                <ExternalLink className="w-16 h-16 mx-auto" />
-              </div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                Session de paiement introuvable
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Impossible de récupérer les détails de votre paiement.
+              <p className="text-sm text-amber-700">
+                Un email de confirmation a été envoyé à {(sessionData as any)?.customer_email || 'votre adresse email'} 
+                avec tous les détails {(sessionData as any)?.metadata?.type === 'subscription' ? 'de votre abonnement' : 'de votre réservation'}.
               </p>
-              <Button onClick={() => setLocation("/")}>
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour à l'accueil
+            </div>
+
+            {/* Bouton de continuation */}
+            <div className="pt-4">
+              <Button
+                onClick={handleContinue}
+                className="w-full bg-violet-600 hover:bg-violet-700 h-12 text-base font-medium"
+              >
+                {(sessionData as any)?.metadata?.type === 'subscription' ? (
+                  <>
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Accéder à mon dashboard
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="w-4 h-4 mr-2" />
+                    Voir mes rendez-vous
+                  </>
+                )}
               </Button>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+
+            <p className="text-xs text-center text-gray-500">
+              Besoin d'aide ? Contactez notre support à{' '}
+              <a href="mailto:support@salon-app.com" className="text-violet-600 hover:underline">
+                support@salon-app.com
+              </a>
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -6,9 +6,13 @@ import logoImage from "@assets/3_1753714984824.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Subscribe() {
   const [location, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -60,14 +64,59 @@ export default function Subscribe() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Ici, vous pourriez intégrer avec Stripe ou un autre processeur de paiement
-    console.log('Données d\'inscription:', { ...formData, plan: selectedPlan, billing: billingCycle });
     
-    // Simulation d'un processus d'inscription réussi
-    alert(`Félicitations ! Votre essai gratuit de 14 jours pour le plan ${currentPlan?.name} commence maintenant.`);
-    setLocation('/dashboard');
+    if (!selectedPlan || !currentPlan) {
+      toast({
+        title: "Erreur",
+        description: "Plan non sélectionné",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validation des champs requis
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.salonName) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Créer la session de checkout Stripe
+      const response = await apiRequest('POST', '/api/stripe/create-subscription-checkout', {
+        planType: selectedPlan,
+        customerEmail: formData.email,
+        customerName: `${formData.firstName} ${formData.lastName}`
+      });
+
+      if (response.url) {
+        // Sauvegarder les données d'inscription avant redirection
+        localStorage.setItem('pendingRegistration', JSON.stringify({
+          ...formData,
+          planType: selectedPlan,
+          billingCycle,
+          sessionId: response.sessionId
+        }));
+        
+        // Rediriger vers Stripe Checkout
+        window.location.href = response.url;
+      }
+    } catch (error: any) {
+      console.error('Erreur création paiement:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer la session de paiement. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!currentPlan) {
@@ -250,9 +299,20 @@ export default function Subscribe() {
               <div className="pt-4">
                 <Button 
                   type="submit" 
+                  disabled={isLoading}
                   className="w-full h-12 gradient-bg text-white font-semibold hover:opacity-90"
                 >
-                  Commencer mon essai gratuit de 14 jours
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Préparation du paiement...
+                    </div>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Commencer mon essai gratuit de 14 jours
+                    </>
+                  )}
                 </Button>
               </div>
 

@@ -305,7 +305,7 @@ export function registerFullStackRoutes(app: Express) {
   app.delete('/api/appointments/:id', authenticatePro, async (req: any, res) => {
     try {
       const appointmentId = parseInt(req.params.id);
-      const appointments = await storage.getAppointments();
+      const appointment = await storage.getAppointments().find((apt: any) => apt.id === appointmentId);
       
       await storage.deleteAppointment(appointmentId);
       

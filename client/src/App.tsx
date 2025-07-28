@@ -168,6 +168,23 @@ function Router() {
     );
   }
 
+  // Pages Stripe
+  if (location === '/stripe-success' || location.startsWith('/stripe-success?')) {
+    return (
+      <div className="h-full">
+        <StripeSuccess />
+      </div>
+    );
+  }
+
+  if (location === '/stripe-cancel' || location.startsWith('/stripe-cancel?')) {
+    return (
+      <div className="h-full">
+        <StripeCancel />
+      </div>
+    );
+  }
+
   // Page de réservation principale
   if (location === '/booking') {
     return (
