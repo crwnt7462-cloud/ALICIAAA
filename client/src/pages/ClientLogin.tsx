@@ -91,10 +91,7 @@ export default function ClientLogin() {
       {/* Logo centré en haut */}
       <div className="pt-16 pb-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-12">
-          <div className="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
-            <div className="w-6 h-1 bg-white rounded-full transform rotate-45"></div>
-          </div>
-          <span className="text-2xl font-bold text-gray-900">Rendly</span>
+          <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-12 w-auto" />
         </div>
       </div>
 

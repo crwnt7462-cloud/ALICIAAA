@@ -421,7 +421,7 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
             <span>✅ Annulation gratuite 24h</span>
           </div>
           <p className="mt-4">
-            Propulsé par <span className="font-semibold">Rendly</span> - 
+            Propulsé par notre plateforme - 
             Solution de réservation pour professionnels de la beauté
           </p>
         </div>

@@ -39,7 +39,7 @@ export default function AIAssistant() {
     {
       id: '1',
       type: 'assistant',
-      content: 'Bienvenue dans Rendly AI Pro ! Je suis votre assistant intelligent spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et bien plus encore.',
+      content: 'Bienvenue dans votre assistant IA Pro ! Je suis votre assistant intelligent spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et bien plus encore.',
       timestamp: new Date(),
       category: 'greeting',
       insights: [
@@ -143,7 +143,7 @@ export default function AIAssistant() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-semibold text-gray-900">Rendly AI Pro</h1>
+            <h1 className="font-semibold text-gray-900">Assistant IA Pro</h1>
             <p className="text-sm text-gray-500">Assistant IA spécialisé beauté</p>
           </div>
         </div>

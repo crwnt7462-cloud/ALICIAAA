@@ -124,6 +124,17 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - REBRAND COMPLET ET LOGO PERSONNALISÉ (28 Janvier 15h00)
+- ✅ **Remplacement total du logo "Rendly"** : Tous les logos remplacés par le logo personnalisé (3_1753714421825.png)
+- ✅ **Branding uniforme sur toute la plateforme** : Logo appliqué sur toutes les pages (landing, login, dashboard, IA)
+- ✅ **Mise à jour des références textuelles** : "Rendly" remplacé par des termes génériques ou le nouveau branding
+- ✅ **Headers et footers modernisés** : Logo intégré de manière cohérente avec la charte graphique existante  
+- ✅ **Pages d'authentification mises à jour** : ClientLogin et ProLogin avec nouveau logo centré
+- ✅ **Assistant IA rebrandé** : Références "Rendly AI" remplacées par "Assistant IA" générique
+- ✅ **Cohérence visuelle totale** : Logo respectant les proportions et tailles sur tous les écrans
+- ✅ **Documentation mise à jour** : Changements de branding documentés dans replit.md
+- ✅ **Application complètement rebrandée** : Identité visuelle personnalisée sur l'ensemble de la plateforme
+
 ### Janvier 2025 - SYSTÈME FULL-STACK 100% OPÉRATIONNEL FINALISÉ (28 Janvier 03h00)
 - ✅ **Backend production-ready complet** : API routes full-stack avec authentification JWT PRO/CLIENT sécurisée
 - ✅ **WebSocket service intégré** : Notifications temps réel avec service de rappels automatiques (24h/1h avant RDV)

@@ -117,9 +117,7 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                Rendly
-              </h1>
+              <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto" />
               <Badge className="ml-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
                 Premium
               </Badge>
@@ -429,9 +427,7 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                Rendly
-              </h3>
+              <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto mb-4" />
               <p className="text-gray-400 mb-4">
                 La plateforme beauté premium qui révolutionne votre expérience.
               </p>
@@ -481,13 +477,13 @@ export default function UltraModernLanding() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Rendly. Tous droits réservés.</p>
+            <p>&copy; 2025 Beauty Platform. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
 
       {/* Styles pour les animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes blob {
           0% {
             transform: translate(0px, 0px) scale(1);

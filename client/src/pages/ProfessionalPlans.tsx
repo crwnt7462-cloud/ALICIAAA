@@ -55,7 +55,7 @@ export default function ProfessionalPlans() {
       originalYearlyPrice: 1788,
       features: [
         'Tout du Professionnel',
-        'IA Rendly Assistant',
+        'Assistant IA intégré',
         'Messagerie clients illimitée',
         'Établissements illimités',
         'Support VIP 24/7'

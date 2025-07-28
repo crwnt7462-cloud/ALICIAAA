@@ -436,8 +436,8 @@
   animation: slideDown 0.3s ease-out;
 }
 
-/* Style pour le logo Rendly professionnel */
-.rendly-logo {
+/* Style pour le logo personnalisé */
+.custom-logo {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-weight: 600;
   letter-spacing: 0.02em;

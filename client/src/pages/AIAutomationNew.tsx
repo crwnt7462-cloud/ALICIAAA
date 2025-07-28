@@ -142,7 +142,7 @@ export default function AIAutomation() {
             <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
               <Brain className="h-5 w-5 text-white" />
             </div>
-            <h1 className="text-lg font-semibold text-gray-900">Rendly IA</h1>
+            <h1 className="text-lg font-semibold text-gray-900">IA Assistant</h1>
           </div>
           <div className="text-sm text-gray-500">GPT-4o</div>
         </div>
@@ -231,7 +231,7 @@ export default function AIAutomation() {
                 <textarea
                   value={chatMessage}
                   onChange={(e) => setChatMessage(e.target.value)}
-                  placeholder="Envoyez un message à Rendly AI"
+                  placeholder="Envoyez un message à votre assistant IA"
                   disabled={chatMutation.isPending}
                   className="w-full bg-transparent border-0 resize-none focus:outline-none placeholder-gray-500 text-gray-900 max-h-32"
                   rows={1}
@@ -266,7 +266,7 @@ export default function AIAutomation() {
             </div>
           </form>
           <p className="text-xs text-gray-500 mt-2 text-center">
-            Rendly AI peut faire des erreurs. Pensez à vérifier les informations importantes.
+            L'assistant IA peut faire des erreurs. Pensez à vérifier les informations importantes.
           </p>
         </div>
       </div>

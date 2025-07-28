@@ -41,7 +41,7 @@ export default function AIAssistantNew() {
     {
       id: '1',
       type: 'assistant',
-      content: '👋 Bonjour ! Je suis Rendly AI, votre assistant intelligent spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et vous donner des conseils personnalisés pour développer votre activité.',
+      content: '👋 Bonjour ! Je suis votre assistant IA, spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et vous donner des conseils personnalisés pour développer votre activité.',
       timestamp: new Date(),
       category: 'greeting',
       insights: [

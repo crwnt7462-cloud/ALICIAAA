@@ -315,7 +315,7 @@ export default function PublicLanding() {
               </button>
 
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</h1>
+                <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto" />
               </div>
             </div>
             
@@ -855,7 +855,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="mb-4">
-                <h3 className="text-xl font-semibold text-gray-900 tracking-wide" style={{ fontFamily: '"Inter", system-ui, -apple-system, sans-serif', fontWeight: 600, letterSpacing: '0.02em' }}>Rendly</h3>
+                <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-6 w-auto" />
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 La plateforme de référence pour réserver vos rendez-vous beauté en France. 
@@ -885,7 +885,7 @@ export default function PublicLanding() {
           </div>
           
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
-            <p>&copy; 2025 Rendly. Tous droits réservés.</p>
+            <p>&copy; 2025 Beauty Platform. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
