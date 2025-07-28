@@ -56,8 +56,15 @@ export default function ClientLogin() {
               description: `Bienvenue ${data.client.firstName} !`,
             });
             
-            // Redirection immédiate vers le dashboard client
-            window.location.href = '/client-dashboard';
+            // Vérifier s'il y a une réservation en cours
+            const hasBookingInProgress = sessionStorage.getItem('currentBooking');
+            if (hasBookingInProgress) {
+              // Rediriger vers la page de réservation pour continuer
+              window.location.href = '/salon-booking';
+            } else {
+              // Redirection normale vers le dashboard
+              window.location.href = '/client-dashboard';
+            }
           } else {
             throw new Error('Format de réponse invalide');
           }

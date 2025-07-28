@@ -36,6 +36,33 @@ export default function SalonBooking() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Restaurer l'état de réservation si l'utilisateur revient de la connexion
+  useEffect(() => {
+    const savedBooking = sessionStorage.getItem('currentBooking');
+    if (savedBooking) {
+      try {
+        const bookingState = JSON.parse(savedBooking);
+        if (bookingState.currentStep) {
+          setCurrentStep(bookingState.currentStep);
+          setSelectedDate(bookingState.selectedDate);
+          if (bookingState.selectedTime) {
+            setSelectedSlot({ time: bookingState.selectedTime, date: bookingState.selectedDate });
+          }
+          // Restaurer le professionnel et service sélectionnés
+          if (bookingState.professionalName) {
+            const prof = professionals.find(p => p.name === bookingState.professionalName);
+            if (prof) setSelectedProfessional(prof);
+          }
+          if (bookingState.serviceName) {
+            setSelectedService(defaultService);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur lors de la restauration de la réservation:', error);
+      }
+    }
+  }, []);
+
   // Données du salon
   const salon = {
     name: "Bonhomme",
@@ -470,7 +497,22 @@ export default function SalonBooking() {
           <div className="text-center mb-6">
             <p className="text-gray-900 font-medium mb-4">Nouveau sur Planity ?</p>
             <Button 
-              onClick={() => setLocation('/client-login')}
+              onClick={() => {
+                // Sauvegarder l'état de réservation avant la connexion
+                const bookingState = {
+                  salonName: "Salon Excellence Paris",
+                  salonLocation: "75004 Paris",
+                  serviceName: selectedService?.name || "Coupe + Shampoing",
+                  servicePrice: selectedService?.price || 39,
+                  serviceDuration: selectedService?.duration || "45 min",
+                  selectedDate: selectedDate || "lundi 28 juillet 2025",
+                  selectedTime: selectedSlot?.time || "10:00",
+                  professionalName: selectedProfessional?.name || "Sarah Martin",
+                  currentStep: currentStep
+                };
+                sessionStorage.setItem('currentBooking', JSON.stringify(bookingState));
+                setLocation('/client-login');
+              }}
               variant="outline"
               className="w-full py-3 mb-4 border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition-all"
             >
