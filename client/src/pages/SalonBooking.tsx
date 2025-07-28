@@ -22,6 +22,7 @@ export default function SalonBooking() {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [formData, setFormData] = useState({
     staffMember: '',
     phone: '',
@@ -60,6 +61,14 @@ export default function SalonBooking() {
       } catch (error) {
         console.error('Erreur lors de la restauration de la réservation:', error);
       }
+    }
+
+    // Vérifier si l'utilisateur est connecté (simulation)
+    const userToken = localStorage.getItem('clientToken');
+    if (userToken) {
+      setIsUserLoggedIn(true);
+      // Si connecté, aller directement à l'étape 4
+      setCurrentStep(4);
     }
   }, []);
 
@@ -164,8 +173,13 @@ export default function SalonBooking() {
     setCurrentStep(4);
   };
 
-  // Fonction pour créer le compte et rediriger vers le paiement
+  // Fonction pour créer le compte et afficher la section de paiement
   const handleAccountCreation = () => {
+    // Simuler la création de compte
+    localStorage.setItem('clientToken', 'demo-token');
+    setIsUserLoggedIn(true);
+    setCurrentStep(4);
+
     // Sauvegarder les données de réservation pour la page de paiement
     const bookingData = {
       salonId: 'bonhomme-paris-archives',
@@ -183,10 +197,17 @@ export default function SalonBooking() {
       totalPrice: service.price
     };
 
-    // Sauvegarder en sessionStorage pour récupération dans PaymentStep
+    // Sauvegarder en sessionStorage pour récupération dans la page de paiement
     sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
-    // Rediriger vers la page de paiement Stripe
+    toast({
+      title: "Compte créé avec succès !",
+      description: "Vous pouvez maintenant procéder au paiement."
+    });
+  };
+
+  // Fonction pour rediriger vers le paiement
+  const handlePayment = () => {
     setLocation('/stripe-payment');
   };
 
@@ -460,7 +481,7 @@ export default function SalonBooking() {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto p-4 space-y-6">
+      <div className={`max-w-lg mx-auto p-4 space-y-6 ${isUserLoggedIn ? 'pb-32' : ''}`}>
         <div>
           <h2 className="text-lg font-semibold text-gray-900 mb-1">1. Prestation sélectionnée</h2>
           <div className="bg-white rounded-lg p-4 border border-gray-100">
@@ -508,7 +529,7 @@ export default function SalonBooking() {
                   selectedDate: selectedDate || "lundi 28 juillet 2025",
                   selectedTime: selectedSlot?.time || "10:00",
                   professionalName: selectedProfessional?.name || "Sarah Martin",
-                  currentStep: currentStep
+                  currentStep: 4 // Revenir à l'étape finale
                 };
                 sessionStorage.setItem('currentBooking', JSON.stringify(bookingState));
                 setLocation('/client-login');
@@ -622,13 +643,25 @@ export default function SalonBooking() {
               </label>
             </div>
 
-            <Button 
-              onClick={handleAccountCreation}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
-              disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName}
-            >
-              Créer mon compte et continuer
-            </Button>
+            {!isUserLoggedIn ? (
+              <Button 
+                onClick={handleAccountCreation}
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+                disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName}
+              >
+                Créer mon compte et continuer
+              </Button>
+            ) : (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 text-green-800">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="font-medium">Compte créé avec succès !</span>
+                </div>
+                <p className="text-sm text-green-700 mt-1">
+                  Vous pouvez maintenant procéder au paiement sécurisé.
+                </p>
+              </div>
+            )}
 
             <p className="text-xs text-gray-500 text-center leading-4">
               Vos informations sont traitées par Planity, consultez notre{' '}
@@ -640,6 +673,53 @@ export default function SalonBooking() {
           </div>
         </div>
       </div>
+
+      {/* Section de paiement sticky en bas - Apparaît après connexion/inscription */}
+      {isUserLoggedIn && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="max-w-lg mx-auto px-4 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="font-semibold text-gray-900">Récapitulatif</h3>
+                <p className="text-sm text-gray-600">
+                  {service.name} • {selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold text-gray-900">{service.price},00 €</p>
+                <p className="text-xs text-gray-500">Total</p>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg p-3 mb-3">
+              <div className="flex items-center justify-between text-white">
+                <div>
+                  <p className="text-sm font-medium">Acompte à régler maintenant</p>
+                  <p className="text-xs opacity-90">50% du montant total</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xl font-bold">20,50 €</p>
+                  <p className="text-xs opacity-90">19,50 € sur place</p>
+                </div>
+              </div>
+            </div>
+
+            <Button 
+              onClick={handlePayment}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+            >
+              Payer 20,50 € avec Stripe
+            </Button>
+            
+            <div className="flex items-center justify-center gap-2 mt-2 text-xs text-gray-500">
+              <div className="w-3 h-3 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="w-1 h-1 bg-white rounded-full"></div>
+              </div>
+              <span>Paiement 100% sécurisé</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
