@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, CreditCard, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, CreditCard, Check, AlertCircle, Loader2, Shield, Lock } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import logoImage from "@assets/3_1753714984824.png";
 
@@ -234,113 +234,152 @@ export default function PaymentStep() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto p-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation(`/booking/${params?.salonId || 'demo'}`)}
-            className="flex items-center space-x-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Retour</span>
-          </Button>
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-violet-600">1</span>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-purple-50/30">
+      {/* Header avec logo */}
+      <header className="bg-white/95 backdrop-blur-lg border-b border-gray-200/50 sticky top-0 z-40">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-4">
+              <img src={logoImage} alt="Logo" className="h-12 w-auto" />
+              <div>
+                <p className="font-semibold text-gray-900">4. Moyen de paiement</p>
+                <p className="text-sm text-gray-500">Comment souhaitez-vous payer ?</p>
+              </div>
             </div>
-            <div className="w-8 h-1 bg-violet-200"></div>
-            <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-violet-600">2</span>
-            </div>
-            <div className="w-8 h-1 bg-violet-200"></div>
-            <div className="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center">
-              <span className="text-xs font-medium text-white">3</span>
-            </div>
+            
+            <Button 
+              variant="ghost" 
+              onClick={() => setLocation(`/booking/${params?.salonId || 'demo'}`)}
+              className="text-gray-600 hover:text-violet-600 gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Retour
+            </Button>
           </div>
         </div>
+      </header>
 
-        {/* Payment Section */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <CreditCard className="h-5 w-5 text-violet-600" />
-              <span>Paiement de l'acompte</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {/* Booking Summary */}
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="font-semibold mb-3">Récapitulatif de la réservation</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Service</span>
-                  <span className="font-medium">{bookingData.serviceName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Date et heure</span>
-                  <span className="font-medium">
-                    {bookingData.appointmentDate} à {bookingData.startTime}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Client</span>
-                  <span className="font-medium">
-                    {bookingData.clientInfo.firstName} {bookingData.clientInfo.lastName}
-                  </span>
-                </div>
-                <Separator className="my-2" />
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Prix total</span>
-                  <span className="font-medium">{bookingData.totalPrice}€ TTC</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Acompte (30%)</span>
-                  <Badge variant="secondary" className="bg-violet-100 text-violet-700">
-                    {bookingData.depositAmount}€ TTC
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <span>Solde à régler sur place</span>
-                  <span>{(bookingData.totalPrice - bookingData.depositAmount).toFixed(2)}€ TTC</span>
-                </div>
-              </div>
+      <div className="max-w-lg mx-auto px-4 py-8 space-y-6">
+
+        {/* Options de paiement */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900">Comment souhaitez-vous payer ?</h3>
+          
+          {/* Option 1 - Payer une partie maintenant */}
+          <label className="flex items-start gap-4 p-4 bg-white rounded-2xl border-2 border-violet-600 cursor-pointer group hover:bg-violet-50/50 transition-colors">
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="partial"
+              defaultChecked
+              className="w-5 h-5 text-violet-600 border-violet-300 focus:ring-violet-500 mt-1" 
+            />
+            <div className="flex-1">
+              <p className="font-medium text-gray-900 mb-1">
+                Payer une partie maintenant, le reste sur place
+              </p>
+              <p className="text-sm text-gray-600 mb-2">
+                Payer une partie 20 € maintenant puis le reste 20 € sur place.
+              </p>
             </div>
+          </label>
+          
+          {/* Option 2 - Payer la totalité */}
+          <label className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-gray-200 cursor-pointer group hover:bg-gray-50 transition-colors">
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="total"
+              className="w-5 h-5 text-violet-600 border-gray-300 focus:ring-violet-500 mt-1" 
+            />
+            <div className="flex-1">
+              <p className="font-medium text-gray-900 mb-1">Payer la totalité</p>
+              <p className="text-sm text-gray-600">
+                Payer maintenant le montant total 39,00 € de votre réservation.
+              </p>
+            </div>
+          </label>
+          
+          {/* Option 3 - Carte cadeau */}
+          <label className="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-200 cursor-pointer opacity-60">
+            <input 
+              type="radio" 
+              name="paymentMethod" 
+              value="gift"
+              disabled
+              className="w-5 h-5 text-violet-600 border-gray-300 focus:ring-violet-500 mt-1" 
+            />
+            <div className="flex-1">
+              <p className="font-medium text-gray-700 mb-1">Payer avec une carte cadeau</p>
+              <p className="text-sm text-gray-500">
+                La carte cadeau ne sera pas prélevée maintenant, vous paierez avec sur place.
+              </p>
+            </div>
+          </label>
+        </div>
 
-            {/* Payment Form */}
-            {stripePromise ? (
-              <Elements stripe={stripePromise}>
-                <PaymentForm 
-                  bookingData={bookingData} 
-                  onSuccess={handlePaymentSuccess}
-                />
-              </Elements>
-            ) : (
-              <div className="p-4 text-center text-gray-500">
-                Configuration des paiements en cours...
+        {/* Récapitulatif */}
+        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center text-lg font-semibold mb-4">
+              <span>{bookingData.serviceName || 'Coupe Bonhomme'}</span>
+              <span>39,00 €</span>
+            </div>
+            
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Total</span>
+                <span className="font-medium">39,00 €</span>
               </div>
-            )}
-
-            {/* Security Info */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-start space-x-2">
-                <div className="w-4 h-4 mt-0.5">
-                  <svg viewBox="0 0 24 24" className="fill-blue-600">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
+              
+              <Separator />
+              
+              <div className="bg-violet-50 rounded-lg p-3 border border-violet-200">
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-600">À régler maintenant</span>
+                  <span className="font-semibold text-violet-700">20,50 €</span>
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-900">Paiement 100% sécurisé</p>
-                  <p className="text-xs text-blue-700">
-                    Vos données bancaires sont protégées par Stripe et cryptées SSL. 
-                    Annulation gratuite jusqu'à 24h avant le rendez-vous.
-                  </p>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">À régler sur place</span>
+                  <span className="font-semibold">20,50 €</span>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* Formulaire de paiement */}
+        {stripePromise ? (
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CreditCard className="h-5 w-5 text-violet-600" />
+                Informations de paiement
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Elements stripe={stripePromise}>
+                <PaymentForm bookingData={bookingData} onSuccess={handlePaymentSuccess} />
+              </Elements>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+            <CardContent className="text-center py-8">
+              <AlertCircle className="mx-auto h-12 w-12 text-yellow-500 mb-4" />
+              <p className="text-gray-600 mb-4">
+                Service de paiement temporairement indisponible.
+              </p>
+              <Button 
+                onClick={() => handlePaymentSuccess({ appointment: { id: 'demo' } })}
+                className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                size="lg"
+              >
+                Simuler le paiement (Demo)
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
