@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import {
-  ArrowLeft, ChevronDown, ChevronUp, Eye, EyeOff
+  ArrowLeft, ChevronDown, ChevronUp, Eye, EyeOff, X
 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
@@ -113,6 +113,11 @@ export default function SalonBooking() {
   const [showPassword, setShowPassword] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  });
 
   // Vérifier si l'utilisateur est connecté au chargement initial seulement
   useEffect(() => {
@@ -1371,7 +1376,7 @@ export default function SalonBooking() {
           <Button 
             variant="outline"
             className="w-full mb-4 py-3 border-gray-300 text-gray-700 rounded-full"
-            onClick={() => window.location.href = '/client-login-booking'}
+            onClick={() => setShowLoginModal(true)}
           >
             J'ai déjà un compte - Se connecter
           </Button>
@@ -1651,6 +1656,119 @@ export default function SalonBooking() {
     }
   };
 
+  // Fonction pour se connecter avec le modal et passer au paiement
+  const handleModalLogin = async () => {
+    try {
+      const response = await fetch('/api/client/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: loginData.email,
+          password: loginData.password
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success && data.client?.token) {
+        localStorage.setItem('clientToken', data.client.token);
+        
+        // Fermer le modal de connexion
+        setShowLoginModal(false);
+        
+        toast({
+          title: "Connexion réussie !",
+          description: "Ouverture du paiement..."
+        });
+        
+        // Marquer comme connecté puis créer le Payment Intent
+        setIsUserLoggedIn(true);
+        
+        // Créer automatiquement le Payment Intent et ouvrir le shell
+        setTimeout(() => {
+          createPaymentIntentAndOpenSheet();
+        }, 500);
+      } else {
+        toast({
+          title: "Erreur de connexion",
+          description: data.error || "Email ou mot de passe incorrect",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      console.error('Erreur connexion:', error);
+      toast({
+        title: "Erreur de connexion",
+        description: "Impossible de se connecter. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Modal de connexion
+  const renderLoginModal = () => (
+    showLoginModal && (
+      <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
+        <div className="bg-white w-full max-w-lg rounded-t-3xl p-6 space-y-6 animate-in slide-in-from-bottom-2">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900">Se connecter</h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowLoginModal(false)}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
+              <Input
+                type="email"
+                placeholder="Votre email"
+                value={loginData.email}
+                onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">Mot de passe</label>
+              <Input
+                type="password"
+                placeholder="Votre mot de passe"
+                value={loginData.password}
+                onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                className="w-full"
+              />
+            </div>
+
+            <Button
+              onClick={handleModalLogin}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium"
+            >
+              Se connecter
+            </Button>
+
+            <div className="text-center text-sm text-gray-600">
+              <button 
+                onClick={() => {
+                  setShowLoginModal(false);
+                  // Focus sur le formulaire d'inscription
+                }}
+                className="text-violet-600 hover:text-violet-700 underline"
+              >
+                Pas encore de compte ? Créer un compte
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  );
+
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
@@ -1660,6 +1778,9 @@ export default function SalonBooking() {
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}
+      
+      {/* Modal de connexion */}
+      {renderLoginModal()}
     </>
   );
 }
