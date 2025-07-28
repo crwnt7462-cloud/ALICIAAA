@@ -1379,6 +1379,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes Stripe pour paiements réels
+  app.post('/api/create-payment-intent', async (req, res) => {
+    try {
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe not configured. Please set STRIPE_SECRET_KEY." });
+      }
+
+      const { amount, currency = 'eur', metadata = {} } = req.body;
+      
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Invalid amount" });
+      }
+
+      // Créer un Payment Intent avec Stripe
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convertir en centimes
+        currency,
+        metadata,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      res.json({
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error: any) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ error: error?.message || "Failed to create payment intent" });
+    }
+  });
+
+  app.post('/api/confirm-booking-payment', async (req, res) => {
+    try {
+      const { paymentIntentId, bookingData } = req.body;
+      
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe not configured" });
+      }
+
+      // Vérifier le statut du paiement
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded') {
+        // Créer la réservation en base
+        const appointment = await storage.createAppointment({
+          clientAccountId: bookingData.clientId,
+          salonId: bookingData.salonId || 1,
+          serviceId: bookingData.serviceId || 1,
+          staffId: bookingData.staffId || 1,
+          appointmentDate: new Date(bookingData.date),
+          appointmentTime: bookingData.time,
+          status: 'confirmed',
+          totalPrice: bookingData.totalPrice,
+          depositPaid: bookingData.depositAmount,
+          paymentIntentId: paymentIntentId,
+          notes: bookingData.notes || ''
+        });
+
+        res.json({
+          success: true,
+          appointment,
+          paymentStatus: paymentIntent.status
+        });
+      } else {
+        res.status(400).json({
+          error: "Payment not completed",
+          paymentStatus: paymentIntent.status
+        });
+      }
+    } catch (error: any) {
+      console.error("Error confirming booking payment:", error);
+      res.status(500).json({ error: error?.message || "Failed to confirm payment" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // Initialize WebSocket service for real-time notifications

@@ -27,11 +27,49 @@ function PaymentForm({ bookingData, onSuccess }: { bookingData: BookingData; onS
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+  // Créer le Payment Intent au chargement
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        const response = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: 20.50, // Montant de l'acompte
+            currency: 'eur',
+            metadata: {
+              salonName: bookingData.salonName,
+              serviceName: bookingData.serviceName,
+              clientEmail: bookingData.clientEmail,
+              appointmentDate: bookingData.selectedDate,
+              appointmentTime: bookingData.selectedTime
+            }
+          }),
+        });
+
+        const data = await response.json();
+        
+        if (data.clientSecret) {
+          setClientSecret(data.clientSecret);
+        } else {
+          setError(data.error || "Erreur lors de la création du paiement");
+        }
+      } catch (err) {
+        setError("Erreur de connexion. Veuillez réessayer.");
+      }
+    };
+
+    createPaymentIntent();
+  }, [bookingData]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     
-    if (!stripe || !elements) return;
+    if (!stripe || !elements || !clientSecret) return;
     
     setIsProcessing(true);
     setError(null);
@@ -40,11 +78,57 @@ function PaymentForm({ bookingData, onSuccess }: { bookingData: BookingData; onS
     if (!cardElement) return;
 
     try {
-      // Simuler le paiement pour la démo
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Rediriger vers succès
-      onSuccess();
+      // Confirmer le paiement avec Stripe
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: bookingData.clientName,
+            email: bookingData.clientEmail,
+          },
+        },
+      });
+
+      if (error) {
+        setError(error.message || "Erreur lors du paiement");
+      } else if (paymentIntent?.status === 'succeeded') {
+        // Confirmer la réservation côté serveur
+        const bookingResponse = await fetch('/api/confirm-booking-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            paymentIntentId: paymentIntent.id,
+            bookingData: {
+              clientId: 1, // À récupérer depuis le contexte client
+              salonId: 1,
+              serviceId: 1,
+              staffId: 1,
+              date: bookingData.selectedDate,
+              time: bookingData.selectedTime,
+              totalPrice: bookingData.servicePrice,
+              depositAmount: 20.50,
+              notes: `Réservation de ${bookingData.serviceName} chez ${bookingData.salonName}`
+            }
+          }),
+        });
+
+        const bookingResult = await bookingResponse.json();
+        
+        if (bookingResult.success) {
+          // Sauvegarder les détails de la réservation confirmée
+          sessionStorage.setItem('confirmedBooking', JSON.stringify({
+            ...bookingData,
+            paymentId: paymentIntent.id,
+            appointmentId: bookingResult.appointment?.id
+          }));
+          
+          onSuccess();
+        } else {
+          setError("Paiement effectué mais erreur lors de la confirmation de réservation");
+        }
+      }
     } catch (err) {
       setError("Erreur lors du paiement. Veuillez réessayer.");
     } finally {

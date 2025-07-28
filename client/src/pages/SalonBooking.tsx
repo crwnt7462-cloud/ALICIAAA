@@ -12,6 +12,96 @@ import { apiRequest } from "@/lib/queryClient";
 import {
   ArrowLeft, ChevronDown, ChevronUp, Eye, EyeOff
 } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+
+// Configuration Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
+
+// Composant de paiement Stripe intégré
+function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void, clientSecret: string }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    
+    if (!stripe || !elements || !clientSecret) return;
+    
+    setIsProcessing(true);
+    setError(null);
+
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) return;
+
+    try {
+      // Confirmer le paiement avec Stripe
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: "Client",
+            email: "client@example.com",
+          },
+        },
+      });
+
+      if (error) {
+        setError(error.message || "Erreur lors du paiement");
+      } else if (paymentIntent?.status === 'succeeded') {
+        // Paiement réussi
+        onSuccess();
+      }
+    } catch (err) {
+      setError("Erreur lors du paiement. Veuillez réessayer.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+            },
+          }}
+        />
+      </div>
+      
+      {error && (
+        <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+      
+      <Button 
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+      >
+        {isProcessing ? (
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Traitement en cours...
+          </div>
+        ) : (
+          'Confirmer & Payer 20,50 €'
+        )}
+      </Button>
+    </form>
+  );
+}
 
 export default function SalonBooking() {
   const [, setLocation] = useLocation();
@@ -24,6 +114,7 @@ export default function SalonBooking() {
   const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [paymentData, setPaymentData] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -184,42 +275,120 @@ export default function SalonBooking() {
     setCurrentStep(4);
   };
 
+  // Créer un Payment Intent quand l'utilisateur se connecte/s'inscrit
+  const createPaymentIntent = async () => {
+    try {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 20.50, // Montant de l'acompte
+          currency: 'eur',
+          metadata: {
+            salonName: salon.name,
+            serviceName: service.name,
+            clientEmail: formData.email,
+            appointmentDate: selectedDate,
+            appointmentTime: selectedSlot?.time
+          }
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      } else {
+        toast({
+          title: "Erreur",
+          description: data.error || "Erreur lors de la préparation du paiement",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Fonction pour créer le compte et afficher la section de paiement
-  const handleAccountCreation = () => {
-    // Simuler la création de compte
-    localStorage.setItem('clientToken', 'demo-token');
-    setIsUserLoggedIn(true);
-    setCurrentStep(4);
-    
-    // Afficher le bottom sheet de paiement avec délai pour l'animation
-    setTimeout(() => {
-      setShowPaymentSheet(true);
-    }, 500);
+  const handleAccountCreation = async () => {
+    try {
+      // Simuler la création de compte
+      const response = await fetch('/api/client/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone
+        }),
+      });
 
-    // Sauvegarder les données de réservation pour la page de paiement
-    const bookingData = {
-      salonId: 'bonhomme-paris-archives',
-      salonName: salon.name,
-      salonLocation: salon.location,
-      serviceName: service.name,
-      servicePrice: service.price,
-      serviceDuration: service.duration,
-      selectedDate: selectedDate || 'lundi 28 juillet 2025',
-      selectedTime: selectedSlot?.time || '10:00',
-      clientName: `${formData.firstName} ${formData.lastName}`,
-      clientEmail: formData.email,
-      clientPhone: formData.phone,
-      professionalName: selectedProfessional?.name || 'Lucas',
-      totalPrice: service.price
-    };
+      const data = await response.json();
+      
+      if (data.success) {
+        // Stocker le token
+        localStorage.setItem('clientToken', data.client.token);
+        localStorage.setItem('clientData', JSON.stringify(data.client));
+        
+        setIsUserLoggedIn(true);
+        setCurrentStep(4);
+        
+        toast({
+          title: "Compte créé avec succès !",
+          description: "Vous pouvez maintenant finaliser votre réservation."
+        });
 
-    // Sauvegarder en sessionStorage pour récupération dans la page de paiement
-    sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
+        // Créer le Payment Intent pour Stripe
+        await createPaymentIntent();
 
-    toast({
-      title: "Compte créé avec succès !",
-      description: "Vous pouvez maintenant procéder au paiement."
-    });
+        // Sauvegarder les données de réservation pour la confirmation
+        const bookingData = {
+          salonId: 'bonhomme-paris-archives',
+          salonName: salon.name,
+          salonLocation: salon.location,
+          serviceName: service.name,
+          servicePrice: service.price,
+          serviceDuration: service.duration,
+          selectedDate: selectedDate || 'lundi 28 juillet 2025',
+          selectedTime: selectedSlot?.time || '10:00',
+          clientName: `${formData.firstName} ${formData.lastName}`,
+          clientEmail: formData.email,
+          clientPhone: formData.phone,
+          professionalName: selectedProfessional?.name || 'Lucas',
+          totalPrice: service.price
+        };
+        sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
+
+        // Déclencher l'affichage du bottom sheet de paiement
+        setTimeout(() => {
+          setShowPaymentSheet(true);
+        }, 500);
+      } else {
+        toast({
+          title: "Erreur",
+          description: data.error || "Erreur lors de la création du compte",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Erreur création compte:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Fonction pour rediriger vers le paiement
@@ -788,98 +957,40 @@ export default function SalonBooking() {
             </div>
           </div>
 
-          {/* Formulaire de carte */}
-          <div className="space-y-4 mb-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nom du porteur
-              </label>
-              <Input
-                type="text"
-                placeholder="Nom sur la carte"
-                value={paymentData.cardholderName}
-                onChange={(e) => setPaymentData(prev => ({ ...prev, cardholderName: e.target.value }))}
-                className="w-full h-12"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Numéro de carte
-              </label>
-              <Input
-                type="text"
-                placeholder="1234 5678 9012 3456"
-                value={paymentData.cardNumber}
-                onChange={(e) => {
-                  const formatted = formatCardNumber(e.target.value);
-                  if (formatted.length <= 19) {
-                    setPaymentData(prev => ({ ...prev, cardNumber: formatted }));
-                  }
+          {/* Composant Stripe intégré */}
+          {clientSecret ? (
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <StripePaymentForm 
+                onSuccess={() => {
+                  setShowPaymentSheet(false);
+                  toast({
+                    title: "Paiement réussi !",
+                    description: "Votre réservation a été confirmée."
+                  });
+                  setTimeout(() => {
+                    setLocation('/');
+                  }, 2000);
                 }}
-                className="w-full h-12"
-                maxLength={19}
+                clientSecret={clientSecret}
               />
+            </Elements>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Préparation du paiement...</p>
             </div>
-
-            <div className="flex space-x-4">
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date d'expiration
-                </label>
-                <Input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={paymentData.expiryDate}
-                  onChange={(e) => {
-                    const formatted = formatExpiryDate(e.target.value);
-                    if (formatted.length <= 5) {
-                      setPaymentData(prev => ({ ...prev, expiryDate: formatted }));
-                    }
-                  }}
-                  className="w-full h-12"
-                  maxLength={5}
-                />
-              </div>
-              <div className="flex-1">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  CVC
-                </label>
-                <Input
-                  type="text"
-                  placeholder="123"
-                  value={paymentData.cvc}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '');
-                    if (value.length <= 4) {
-                      setPaymentData(prev => ({ ...prev, cvc: value }));
-                    }
-                  }}
-                  className="w-full h-12"
-                  maxLength={4}
-                />
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Sécurité */}
-          <div className="flex items-center justify-center space-x-2 mb-6 text-sm text-gray-500">
+          <div className="flex items-center justify-center space-x-2 mt-4 mb-2 text-sm text-gray-500">
             <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
               <div className="w-2 h-2 bg-white rounded-full"></div>
             </div>
-            <span>Paiement sécurisé SSL 256-bit</span>
+            <span>Paiement sécurisé par Stripe</span>
           </div>
 
-          {/* Boutons */}
-          <div className="space-y-3">
-            <Button 
-              onClick={handlePaymentConfirm}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
-              disabled={!paymentData.cardNumber || !paymentData.expiryDate || !paymentData.cvc || !paymentData.cardholderName}
-            >
-              Confirmer & Payer 20,50 €
-            </Button>
-            
+          {/* Bouton annulation */}
+          <div className="mt-4">
             <Button 
               onClick={() => setShowPaymentSheet(false)}
               variant="outline"

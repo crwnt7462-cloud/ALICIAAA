@@ -305,7 +305,8 @@ export function registerFullStackRoutes(app: Express) {
   app.delete('/api/appointments/:id', authenticatePro, async (req: any, res) => {
     try {
       const appointmentId = parseInt(req.params.id);
-      const appointment = await storage.getAppointments().find((apt: any) => apt.id === appointmentId);
+      const appointments = await storage.getAppointments();
+      const appointment = appointments.find((apt: any) => apt.id === appointmentId);
       
       await storage.deleteAppointment(appointmentId);
       
@@ -756,6 +757,84 @@ export function registerFullStackRoutes(app: Express) {
     } catch (error: any) {
       console.error("Erreur récupération session:", error);
       res.status(500).json({ message: "Erreur récupération session", error: error.message });
+    }
+  });
+
+  // ========== PAIEMENTS STRIPE PAYMENT INTENTS ==========
+  
+  // Créer un Payment Intent pour le paiement dans le bottom sheet
+  app.post('/api/create-payment-intent', async (req, res) => {
+    try {
+      const { amount, currency = 'eur', metadata = {} } = req.body;
+      
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe non configuré" });
+      }
+
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ error: "Montant invalide" });
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convertir en centimes
+        currency,
+        metadata,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      console.log(`✅ Payment Intent créé: ${paymentIntent.id} pour ${amount}€`);
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id 
+      });
+    } catch (error: any) {
+      console.error("Erreur création Payment Intent:", error);
+      res.status(500).json({ error: "Erreur lors de la création du paiement" });
+    }
+  });
+
+  // Confirmer la réservation après paiement réussi
+  app.post('/api/confirm-booking-payment', async (req, res) => {
+    try {
+      const { paymentIntentId, bookingData } = req.body;
+      
+      if (!stripe) {
+        return res.status(500).json({ error: "Stripe non configuré" });
+      }
+
+      // Vérifier le statut du paiement
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status !== 'succeeded') {
+        return res.status(400).json({ error: "Paiement non confirmé" });
+      }
+
+      // Créer la réservation en base
+      const appointment = await storage.createAppointment({
+        userId: 'demo-user', // ID du salon/professionnel
+        clientId: bookingData.clientId,
+        clientAccountId: bookingData.clientId?.toString(),
+        appointmentDate: bookingData.date,
+        startTime: bookingData.time,
+        endTime: '11:00', // Calculer selon la durée
+        status: 'confirmed',
+        notes: bookingData.notes || '',
+        totalPrice: bookingData.totalPrice,
+        depositPaid: bookingData.depositAmount > 0,
+        source: 'booking_stripe'
+      });
+
+      console.log(`✅ Réservation confirmée: ${appointment.id} avec paiement ${paymentIntentId}`);
+      res.json({ 
+        success: true, 
+        appointment,
+        paymentStatus: 'succeeded'
+      });
+    } catch (error: any) {
+      console.error("Erreur confirmation réservation:", error);
+      res.status(500).json({ error: "Erreur lors de la confirmation" });
     }
   });
 }
