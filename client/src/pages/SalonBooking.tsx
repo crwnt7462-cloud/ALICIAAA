@@ -1417,7 +1417,11 @@ export default function SalonBooking() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 Déjà un compte ?{' '}
-                <Button variant="link" className="text-violet-600 p-0 h-auto">
+                <Button 
+                  variant="link" 
+                  className="text-violet-600 p-0 h-auto"
+                  onClick={handleLogin}
+                >
                   Se connecter
                 </Button>
               </p>
@@ -1427,6 +1431,101 @@ export default function SalonBooking() {
       </div>
     </div>
   );
+
+  // Fonction commune pour créer Payment Intent et ouvrir le shell
+  const createPaymentIntentAndOpenSheet = async () => {
+    try {
+      // Créer le Payment Intent Stripe
+      const paymentResponse = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 20.50,
+          currency: 'eur',
+          metadata: {
+            salon: salon.name,
+            professional: selectedProfessional?.name,
+            service: defaultService.name,
+            time: selectedSlot?.time,
+            date: selectedSlot?.date || selectedDate,
+            clientEmail: formData.email
+          }
+        })
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (paymentData.clientSecret) {
+        setClientSecret(paymentData.clientSecret);
+        
+        // Afficher le bottom sheet automatiquement après succès
+        toast({
+          title: "Prêt pour le paiement",
+          description: "Ouverture du formulaire de paiement sécurisé"
+        });
+        
+        setTimeout(() => {
+          setShowPaymentSheet(true);
+        }, 800);
+      } else {
+        throw new Error(paymentData.error || 'Erreur Payment Intent');
+      }
+    } catch (error: any) {
+      console.error('Erreur Payment Intent:', error);
+      toast({
+        title: "Erreur paiement",
+        description: "Impossible de préparer le paiement. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Fonction pour se connecter (utilisateur existant)
+  const handleLogin = async () => {
+    try {
+      toast({
+        title: "Connexion en cours...",
+        description: "Vérification des identifiants"
+      });
+
+      const response = await fetch('/api/client/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        localStorage.setItem('clientToken', data.client.token);
+        setIsUserLoggedIn(true);
+        
+        toast({
+          title: "Connexion réussie !",
+          description: "Préparation du paiement..."
+        });
+        
+        // Créer automatiquement le Payment Intent et ouvrir le shell
+        await createPaymentIntentAndOpenSheet();
+      } else {
+        toast({
+          title: "Erreur de connexion",
+          description: data.error || "Email ou mot de passe incorrect",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      console.error('Erreur connexion:', error);
+      toast({
+        title: "Erreur de connexion",
+        description: "Impossible de se connecter. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Fonction pour créer le compte et passer au paiement
   const handleCreateAccountAndPay = async () => {
@@ -1457,41 +1556,8 @@ export default function SalonBooking() {
           description: "Préparation du paiement..."
         });
         
-        // 2. Créer le Payment Intent Stripe seulement après inscription réussie
-        const paymentResponse = await fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            amount: 20.50,
-            currency: 'eur',
-            metadata: {
-              salon: salon.name,
-              professional: selectedProfessional?.name,
-              service: defaultService.name,
-              time: selectedSlot?.time,
-              date: selectedSlot?.date || selectedDate,
-              clientEmail: formData.email
-            }
-          })
-        });
-        
-        const paymentData = await paymentResponse.json();
-        
-        if (paymentData.clientSecret) {
-          setClientSecret(paymentData.clientSecret);
-          
-          // 3. Afficher le bottom sheet SEULEMENT après inscription ET Payment Intent réussis
-          toast({
-            title: "Prêt pour le paiement",
-            description: "Ouverture du formulaire de paiement sécurisé"
-          });
-          
-          setTimeout(() => {
-            setShowPaymentSheet(true);
-          }, 1000); // Délai plus long pour que l'utilisateur voit les messages
-        } else {
-          throw new Error(paymentData.error || 'Erreur Payment Intent');
-        }
+        // 2. Créer automatiquement le Payment Intent et ouvrir le shell
+        await createPaymentIntentAndOpenSheet();
       } else {
         toast({
           title: "Erreur inscription",
@@ -1514,23 +1580,9 @@ export default function SalonBooking() {
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && !isUserLoggedIn && renderLoginSignup()}
-      {currentStep === 3 && isUserLoggedIn && (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Vous êtes connecté !</h2>
-            <p className="text-gray-600 mb-6">Prêt à finaliser votre réservation ?</p>
-            <Button 
-              onClick={handleCreateAccountAndPay}
-              className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full font-medium"
-            >
-              Procéder au paiement
-            </Button>
-          </div>
-        </div>
-      )}
+      {currentStep === 3 && renderLoginSignup()}
       
-      {/* Bottom Sheet de Paiement Stripe réel - NE S'OUVRE QUE sur action utilisateur */}
+      {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}
     </>
   );
