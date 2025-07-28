@@ -3,6 +3,8 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import logoImage from "@assets/3_1753714984824.png";
+
 import { Eye, EyeOff } from 'lucide-react';
 
 export default function ProLogin() {
@@ -92,7 +94,7 @@ export default function ProLogin() {
       {/* Logo centré en haut */}
       <div className="pt-16 pb-8 text-center">
         <div className="flex items-center justify-center gap-2 mb-12">
-          <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-12 w-auto" />
+          <img src={logoImage} alt="Logo" className="h-16 w-auto" />
         </div>
       </div>
 

@@ -117,7 +117,9 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto" />
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-sm font-bold text-white">B</span>
+              </div>
               <Badge className="ml-3 bg-gradient-to-r from-violet-500 to-purple-600 text-white text-xs">
                 Premium
               </Badge>
@@ -427,7 +429,9 @@ export default function UltraModernLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto mb-4" />
+              <div className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg flex items-center justify-center mb-4">
+                <span className="text-sm font-bold text-white">B</span>
+              </div>
               <p className="text-gray-400 mb-4">
                 La plateforme beauté premium qui révolutionne votre expérience.
               </p>

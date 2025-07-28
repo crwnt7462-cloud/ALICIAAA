@@ -89,7 +89,9 @@ export default function Subscribe() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-6 w-auto" />
+              <div className="w-6 h-6 bg-gradient-to-r from-violet-600 to-purple-600 rounded flex items-center justify-center">
+                <span className="text-xs font-bold text-white">B</span>
+              </div>
               <p className="text-xs text-gray-500 -mt-1">Inscription</p>
             </div>
             

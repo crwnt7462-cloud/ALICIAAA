@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import logoImage from "@assets/3_1753714984824.png";
+
 
 export default function PublicLanding() {
   const [, setLocation] = useLocation();
@@ -315,7 +317,7 @@ export default function PublicLanding() {
               </button>
 
               <div>
-                <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-8 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-8 w-auto" />
               </div>
             </div>
             
@@ -855,7 +857,7 @@ export default function PublicLanding() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="mb-4">
-                <img src="/attached_assets/3_1753714421825.png" alt="Logo" className="h-6 w-auto" />
+                <img src={logoImage} alt="Logo" className="h-6 w-auto" />
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 La plateforme de référence pour réserver vos rendez-vous beauté en France. 
