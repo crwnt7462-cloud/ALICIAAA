@@ -98,14 +98,14 @@ export default function ClientLogin() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Logo centré en haut */}
-      <div className="pt-12 pb-6 text-center">
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <img src={logoImage} alt="Logo" className="h-20 w-auto" />
+      <div className="pt-12 text-center">
+        <div className="flex items-center justify-center gap-2">
+          <img src={logoImage} alt="Logo" className="h-28 w-auto" />
         </div>
       </div>
 
       {/* Formulaire centré */}
-      <div className="flex-1 flex items-start justify-center px-6">
+      <div className="flex-1 flex items-start justify-center px-6 pt-8">
         <div className="w-full max-w-sm">
           <h1 className="text-xl font-medium text-gray-700 mb-8 text-center">
             Login to your account
