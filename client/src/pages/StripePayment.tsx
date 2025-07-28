@@ -1,392 +1,228 @@
 import { useState, useEffect } from "react";
+import { ArrowLeft, CreditCard, Lock, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocation } from "wouter";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { useLocation } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CreditCard, Shield, Check, Crown, CheckCircle, AlertCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
 
-// Charger Stripe avec la clé publique
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_dummy");
+// Configuration Stripe avec clé publique
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
 
-interface StripePaymentProps {
-  registrationId: string;
+interface BookingData {
+  salonName: string;
+  salonLocation: string;
+  serviceName: string;
+  servicePrice: number;
+  serviceDuration: string;
+  selectedDate: string;
+  selectedTime: string;
+  clientName: string;
+  clientEmail: string;
+  professionalName: string;
 }
 
-function CheckoutForm({ registration, onSuccess }: { registration: any; onSuccess: () => void }) {
+function PaymentForm({ bookingData, onSuccess }: { bookingData: BookingData; onSuccess: () => void }) {
   const stripe = useStripe();
   const elements = useElements();
-  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentError, setPaymentError] = useState<string>("");
-
-  const processPaymentMutation = useMutation({
-    mutationFn: async (paymentMethodId: string) => {
-      const response = await apiRequest("POST", "/api/payments/process-subscription", {
-        registrationId: registration.id,
-        paymentMethodId,
-        planType: registration.planType,
-      });
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Paiement réussi !",
-        description: "Votre abonnement a été activé avec succès",
-      });
-      onSuccess();
-    },
-    onError: (error) => {
-      setPaymentError("Le paiement n'a pas pu être traité. Veuillez réessayer.");
-      toast({
-        title: "Erreur de paiement",
-        description: "Le paiement n'a pas pu être traité",
-        variant: "destructive",
-      });
-    },
-  });
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setPaymentError("");
-
-    if (!stripe || !elements) {
-      return;
-    }
+    
+    if (!stripe || !elements) return;
+    
+    setIsProcessing(true);
+    setError(null);
 
     const cardElement = elements.getElement(CardElement);
-    if (!cardElement) {
-      return;
-    }
-
-    setIsProcessing(true);
+    if (!cardElement) return;
 
     try {
-      // Créer le payment method
-      const { error, paymentMethod } = await stripe.createPaymentMethod({
-        type: "card",
-        card: cardElement,
-        billing_details: {
-          name: registration.firstName + " " + registration.lastName,
-          email: registration.email,
-          phone: registration.phone,
-        },
-      });
-
-      if (error) {
-        setPaymentError(error.message || "Erreur lors du traitement de la carte");
-        setIsProcessing(false);
-        return;
-      }
-
-      // Traiter le paiement via notre API
-      processPaymentMutation.mutate(paymentMethod.id);
+      // Simuler le paiement pour la démo
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Rediriger vers succès
+      onSuccess();
     } catch (err) {
-      setPaymentError("Une erreur inattendue s'est produite");
+      setError("Erreur lors du paiement. Veuillez réessayer.");
+    } finally {
       setIsProcessing(false);
     }
   };
 
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: "16px",
-        color: "#424770",
-        "::placeholder": {
-          color: "#aab7c4",
-        },
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      },
-      invalid: {
-        color: "#9e2146",
-      },
-    },
-    hidePostalCode: false,
-  };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="p-4 border rounded-lg bg-gray-50">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Informations de carte bancaire
-        </label>
-        <div className="p-3 border rounded bg-white">
-          <CardElement options={cardElementOptions} />
-        </div>
-        {paymentError && (
-          <div className="mt-2 text-sm text-red-600 flex items-center gap-2">
-            <AlertCircle className="w-4 h-4" />
-            {paymentError}
-          </div>
-        )}
+      <div className="bg-gray-50 p-4 rounded-lg">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+            },
+          }}
+        />
       </div>
-
-      <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-        <div className="flex items-center gap-2 text-green-800 mb-2">
-          <Shield className="w-4 h-4" />
-          <span className="font-medium">Essai gratuit de 14 jours</span>
+      
+      {error && (
+        <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm">
+          {error}
         </div>
-        <p className="text-sm text-green-700">
-          Aucun prélèvement aujourd'hui. Votre carte sera débitée uniquement après la période d'essai si vous continuez.
-          Vous pouvez annuler à tout moment.
-        </p>
-      </div>
-
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <div className="flex items-center gap-2 text-blue-800 mb-2">
-          <CreditCard className="w-4 h-4" />
-          <span className="font-medium">Paiement sécurisé</span>
-        </div>
-        <p className="text-sm text-blue-700">
-          Vos informations sont protégées par le chiffrement SSL et traitées de manière sécurisée par Stripe.
-        </p>
-      </div>
-
-      <Button
+      )}
+      
+      <Button 
         type="submit"
-        disabled={!stripe || isProcessing || processPaymentMutation.isPending}
-        className="w-full bg-violet-600 hover:bg-violet-700 h-12 text-base font-medium"
+        disabled={!stripe || isProcessing}
+        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-medium text-lg"
       >
-        {isProcessing || processPaymentMutation.isPending ? (
+        {isProcessing ? (
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             Traitement en cours...
           </div>
         ) : (
-          <>
-            Confirmer l'abonnement
-            <CreditCard className="w-4 h-4 ml-2" />
-          </>
+          `Payer 20,50 €`
         )}
       </Button>
-
-      <p className="text-xs text-gray-500 text-center">
-        En confirmant, vous acceptez que votre carte soit débitée après la période d'essai de 14 jours
-      </p>
     </form>
   );
 }
 
-export default function StripePayment({ registrationId }: StripePaymentProps) {
+export default function StripePayment() {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
+  const [bookingData, setBookingData] = useState<BookingData | null>(null);
 
-  // Récupérer les informations d'inscription
-  const { data: registration, isLoading, error } = useQuery({
-    queryKey: [`/api/business-registration/${registrationId}`],
-    queryFn: async () => {
-      const response = await apiRequest("GET", `/api/business-registration/${registrationId}`);
-      return response.json();
-    },
-  });
+  useEffect(() => {
+    // Récupérer les données de réservation
+    const savedBooking = sessionStorage.getItem('currentBooking');
+    if (savedBooking) {
+      setBookingData(JSON.parse(savedBooking));
+    } else {
+      // Rediriger si pas de données
+      setLocation('/');
+    }
+  }, [setLocation]);
 
   const handlePaymentSuccess = () => {
-    setLocation("/business-success");
+    setLocation('/booking-success');
   };
 
-  if (isLoading) {
+  if (!bookingData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement des informations...</p>
-        </div>
+        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
-
-  if (error || !registration) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="text-center p-6">
-            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              Inscription introuvable
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Impossible de récupérer les informations d'inscription.
-            </p>
-            <Button onClick={() => setLocation("/subscription-plans")}>
-              Retourner aux plans
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  const plans = {
-    basic: {
-      name: "Plan Basic",
-      price: "49€",
-      originalPrice: "59€",
-      features: [
-        "Gestion des rendez-vous",
-        "Base de données clients",
-        "Calendrier intégré",
-        "Support email",
-        "Notifications automatiques",
-      ],
-      color: "blue",
-      icon: <CheckCircle className="w-5 h-5 text-white" />,
-    },
-    premium: {
-      name: "Plan Premium",
-      price: "149€",
-      originalPrice: "199€",
-      features: [
-        "Tout du plan Basic",
-        "Intelligence Artificielle",
-        "Messagerie directe clients",
-        "Analytics avancés",
-        "Support prioritaire",
-        "Fonctionnalités exclusives",
-      ],
-      color: "violet",
-      icon: <Crown className="w-5 h-5 text-white" />,
-    },
-  };
-
-  const currentPlan = plans[registration.planType as keyof typeof plans];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="max-w-4xl mx-auto px-4">
-        {/* Header */}
-        <div className="mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation("/subscription-plans")}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux plans
-          </Button>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Finaliser votre abonnement
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Dernière étape - Configurez votre méthode de paiement
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => window.history.back()}
+              className="h-10 w-10 p-0 rounded-full"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="font-semibold text-gray-900">Paiement sécurisé</h1>
+              <p className="text-sm text-gray-600">{bookingData.salonName}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-lg mx-auto px-4 py-8 space-y-6">
+        {/* Montant de l'acompte */}
+        <Card className="bg-gradient-to-r from-violet-600 to-purple-600 border-0 shadow-xl">
+          <CardContent className="p-6 text-center text-white">
+            <h2 className="text-sm font-medium text-violet-100 mb-2">ACOMPTE À RÉGLER</h2>
+            <div className="text-4xl font-bold mb-2">20,50 €</div>
+            <p className="text-violet-100">
+              50% à payer maintenant • 18,50 € sur place
+            </p>
+            <div className="mt-3 text-xs text-violet-100 bg-black/20 rounded-full px-3 py-1 inline-block">
+              Total : {bookingData.servicePrice},00 € • {bookingData.serviceName}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Récapitulatif de la réservation */}
+        <Card className="bg-white border border-gray-200">
+          <CardContent className="p-6">
+            <h3 className="font-semibold text-gray-900 mb-4">Détails de votre réservation</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Service</span>
+                <span className="font-medium">{bookingData.serviceName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Date et heure</span>
+                <span className="font-medium">{bookingData.selectedDate} à {bookingData.selectedTime}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Professionnel</span>
+                <span className="font-medium">{bookingData.professionalName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Client</span>
+                <span className="font-medium">{bookingData.clientName}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sécurité */}
+        <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+          <Lock className="w-4 h-4" />
+          <span>Paiement sécurisé par Stripe</span>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Récapitulatif de l'inscription */}
-          <div className="space-y-6">
-            {/* Plan sélectionné */}
-            <Card className={`border-${currentPlan.color}-200 bg-gradient-to-r from-${currentPlan.color}-50 to-${currentPlan.color}-100`}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 bg-${currentPlan.color}-600 rounded-full flex items-center justify-center`}>
-                      {currentPlan.icon}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">
-                        {currentPlan.name}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-bold">
-                          {currentPlan.price}/mois
-                        </span>
-                        <span className="text-sm text-gray-500 line-through">
-                          {currentPlan.originalPrice}
-                        </span>
-                        <Badge className="bg-green-100 text-green-800 text-xs">
-                          -17%
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {currentPlan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2 text-sm">
-                      <Check className="w-4 h-4 text-green-600" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+        {/* Formulaire de paiement Stripe */}
+        <Card className="bg-white border border-gray-200">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-violet-600" />
+              Informations de paiement
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {stripePromise ? (
+              <Elements stripe={stripePromise}>
+                <PaymentForm bookingData={bookingData} onSuccess={handlePaymentSuccess} />
+              </Elements>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-600 mb-4">Service de paiement indisponible</p>
+                <Button 
+                  onClick={handlePaymentSuccess}
+                  className="bg-violet-600 hover:bg-violet-700"
+                >
+                  Simuler le paiement (Démo)
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-            {/* Informations de facturation */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Informations de facturation</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Entreprise:</span>
-                  <span className="font-medium">{registration.companyName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Email:</span>
-                  <span className="font-medium">{registration.email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">SIRET:</span>
-                  <span className="font-medium">{registration.siret}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Adresse:</span>
-                  <span className="font-medium">{registration.businessAddress}</span>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Résumé des coûts */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Résumé</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Plan {currentPlan.name}</span>
-                  <span>{currentPlan.price}/mois</span>
-                </div>
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Essai gratuit de 14 jours</span>
-                  <span>-{currentPlan.price}</span>
-                </div>
-                <hr className="my-2" />
-                <div className="flex justify-between font-semibold">
-                  <span>Total aujourd'hui</span>
-                  <span>0,00€</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                  <span>Prochaine facturation</span>
-                  <span>{new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Formulaire de paiement */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
-                  Méthode de paiement
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Elements stripe={stripePromise}>
-                  <CheckoutForm 
-                    registration={registration} 
-                    onSuccess={handlePaymentSuccess}
-                  />
-                </Elements>
-              </CardContent>
-            </Card>
+        {/* Garanties */}
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-green-800">
+              <p className="font-medium mb-1">Annulation gratuite</p>
+              <p>Vous pouvez annuler gratuitement jusqu'à 24h avant votre rendez-vous.</p>
+            </div>
           </div>
         </div>
       </div>

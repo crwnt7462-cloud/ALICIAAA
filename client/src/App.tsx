@@ -50,7 +50,6 @@ import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
-import StripePayment from "@/pages/StripePayment";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
@@ -137,15 +136,19 @@ import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBooking from "@/pages/SalonBooking";
 import SystemTest from "@/pages/SystemTest";
+import StripePayment from "@/pages/StripePayment";
 
 
 function Router() {
   const [location] = useLocation();
   
-  // Redirection des pages de paiement vers accueil
-  if (location.startsWith('/booking/') && location.includes('/payment')) {
-    window.location.href = '/';
-    return null;
+  // Page de paiement Stripe
+  if (location === '/stripe-payment') {
+    return (
+      <div className="h-full">
+        <StripePayment />
+      </div>
+    );
   }
   
   if (location.startsWith('/booking/') && location !== '/booking') {
@@ -514,15 +517,7 @@ function Router() {
     );
   }
 
-  // Page de paiement Stripe
-  if (location.startsWith('/stripe-payment/')) {
-    const registrationId = location.split('/')[2];
-    return (
-      <div className="h-full">
-        <StripePayment registrationId={registrationId} />
-      </div>
-    );
-  }
+  // Page de paiement Stripe (supprimé - incompatible)
 
   // Page de paiement de souscription
   if (location.startsWith('/subscription/payment/')) {

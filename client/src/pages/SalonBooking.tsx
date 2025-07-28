@@ -159,8 +159,8 @@ export default function SalonBooking() {
     // Sauvegarder en sessionStorage pour récupération dans PaymentStep
     sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
-    // Rediriger vers la page de succès
-    setLocation('/booking-success');
+    // Rediriger vers la page de paiement Stripe
+    setLocation('/stripe-payment');
   };
 
   // Étape 1: Sélection du professionnel
@@ -468,7 +468,22 @@ export default function SalonBooking() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">3. Identification</h2>
           
           <div className="text-center mb-6">
-            <p className="text-gray-900 font-medium">Nouveau sur Planity ?</p>
+            <p className="text-gray-900 font-medium mb-4">Nouveau sur Planity ?</p>
+            <Button 
+              onClick={() => setLocation('/client-login')}
+              variant="outline"
+              className="w-full py-3 mb-4 border-gray-300 text-gray-700 font-medium rounded-full hover:bg-gray-50 transition-all"
+            >
+              J'ai déjà un compte - Se connecter
+            </Button>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-gray-50 text-gray-500">ou créer un nouveau compte</span>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">
