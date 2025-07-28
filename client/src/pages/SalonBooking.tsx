@@ -161,16 +161,12 @@ export default function SalonBooking() {
       }
     }
 
-    // Vérifier si l'utilisateur est connecté (simulation)
+    // Vérifier si l'utilisateur est connecté
     const userToken = localStorage.getItem('clientToken');
     if (userToken) {
       setIsUserLoggedIn(true);
-      // Si connecté, aller directement à l'étape 4
-      setCurrentStep(4);
-      // Afficher le bottom sheet de paiement
-      setTimeout(() => {
-        setShowPaymentSheet(true);
-      }, 800);
+      // L'utilisateur est connecté mais on n'ouvre PAS automatiquement le paiement
+      // Il faut qu'il passe par le flux normal de réservation
     }
   }, []);
 
@@ -1402,8 +1398,8 @@ export default function SalonBooking() {
             <div className="flex items-start space-x-2">
               <Checkbox
                 id="terms"
-                checked={formData.termsAccepted}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, termsAccepted: !!checked }))}
+                checked={formData.acceptCGU}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, acceptCGU: !!checked }))}
               />
               <label htmlFor="terms" className="text-sm text-gray-600 leading-5">
                 J'accepte les conditions générales d'utilisation et la politique de confidentialité
@@ -1413,7 +1409,7 @@ export default function SalonBooking() {
             <Button 
               onClick={handleCreateAccountAndPay}
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
-              disabled={!formData.email || !formData.phone || !formData.password || !formData.termsAccepted}
+              disabled={!formData.email || !formData.phone || !formData.password || !formData.acceptCGU}
             >
               Créer un compte et continuer
             </Button>
@@ -1435,6 +1431,11 @@ export default function SalonBooking() {
   // Fonction pour créer le compte et passer au paiement
   const handleCreateAccountAndPay = async () => {
     try {
+      toast({
+        title: "Création du compte en cours...",
+        description: "Veuillez patienter"
+      });
+
       // 1. Créer le compte client
       const response = await fetch('/api/client/register', {
         method: 'POST',
@@ -1451,7 +1452,12 @@ export default function SalonBooking() {
       if (data.success) {
         localStorage.setItem('clientToken', data.client.token);
         
-        // 2. Créer le Payment Intent Stripe
+        toast({
+          title: "Compte créé avec succès !",
+          description: "Préparation du paiement..."
+        });
+        
+        // 2. Créer le Payment Intent Stripe seulement après inscription réussie
         const paymentResponse = await fetch('/api/create-payment-intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -1473,16 +1479,22 @@ export default function SalonBooking() {
         
         if (paymentData.clientSecret) {
           setClientSecret(paymentData.clientSecret);
-          // 3. Afficher le bottom sheet de paiement
+          
+          // 3. Afficher le bottom sheet SEULEMENT après inscription ET Payment Intent réussis
+          toast({
+            title: "Prêt pour le paiement",
+            description: "Ouverture du formulaire de paiement sécurisé"
+          });
+          
           setTimeout(() => {
             setShowPaymentSheet(true);
-          }, 500);
+          }, 1000); // Délai plus long pour que l'utilisateur voit les messages
         } else {
           throw new Error(paymentData.error || 'Erreur Payment Intent');
         }
       } else {
         toast({
-          title: "Erreur",
+          title: "Erreur inscription",
           description: data.error || "Erreur lors de la création du compte",
           variant: "destructive"
         });
@@ -1490,8 +1502,8 @@ export default function SalonBooking() {
     } catch (error: any) {
       console.error('Erreur création compte:', error);
       toast({
-        title: "Erreur",
-        description: "Erreur de connexion. Veuillez réessayer.",
+        title: "Erreur de connexion",
+        description: "Impossible de créer le compte. Veuillez réessayer.",
         variant: "destructive"
       });
     }
@@ -1502,9 +1514,23 @@ export default function SalonBooking() {
     <>
       {currentStep === 1 && renderProfessionalSelection()}
       {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && renderLoginSignup()}
+      {currentStep === 3 && !isUserLoggedIn && renderLoginSignup()}
+      {currentStep === 3 && isUserLoggedIn && (
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Vous êtes connecté !</h2>
+            <p className="text-gray-600 mb-6">Prêt à finaliser votre réservation ?</p>
+            <Button 
+              onClick={handleCreateAccountAndPay}
+              className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full font-medium"
+            >
+              Procéder au paiement
+            </Button>
+          </div>
+        </div>
+      )}
       
-      {/* Bottom Sheet de Paiement Stripe réel */}
+      {/* Bottom Sheet de Paiement Stripe réel - NE S'OUVRE QUE sur action utilisateur */}
       {showPaymentSheet && renderPaymentBottomSheet()}
     </>
   );
