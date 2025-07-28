@@ -261,6 +261,20 @@ export default function PaymentStep() {
 
       <div className="max-w-lg mx-auto px-4 py-8 space-y-6">
 
+        {/* Montant de l'acompte en évidence */}
+        <Card className="bg-gradient-to-r from-violet-600 to-purple-600 border-0 shadow-xl">
+          <CardContent className="p-6 text-center text-white">
+            <h2 className="text-sm font-medium text-violet-100 mb-2">ACOMPTE À RÉGLER</h2>
+            <div className="text-4xl font-bold mb-2">20,50 €</div>
+            <p className="text-violet-100">
+              50% à payer maintenant • 18,50 € sur place
+            </p>
+            <div className="mt-3 text-xs text-violet-100 bg-black/20 rounded-full px-3 py-1 inline-block">
+              Total : 39,00 € • Coupe Bonhomme
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Options de paiement */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">Comment souhaitez-vous payer ?</h3>
@@ -334,14 +348,26 @@ export default function PaymentStep() {
               
               <Separator />
               
-              <div className="bg-violet-50 rounded-lg p-3 border border-violet-200">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">À régler maintenant</span>
-                  <span className="font-semibold text-violet-700">20,50 €</span>
+              <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
+                <div className="text-center mb-3">
+                  <h3 className="text-lg font-bold text-violet-800">Acompte à régler maintenant</h3>
+                  <div className="text-3xl font-bold text-violet-900 mt-1">20,50 €</div>
+                  <p className="text-sm text-violet-600 mt-1">50% du montant total</p>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">À régler sur place</span>
-                  <span className="font-semibold">20,50 €</span>
+                
+                <div className="border-t border-violet-200 pt-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Acompte maintenant</span>
+                    <span className="font-semibold text-violet-700">20,50 €</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Solde sur place</span>
+                    <span className="font-semibold text-gray-700">18,50 €</span>
+                  </div>
+                  <div className="flex justify-between text-base font-bold border-t border-violet-200 pt-2">
+                    <span>Total prestation</span>
+                    <span>39,00 €</span>
+                  </div>
                 </div>
               </div>
             </div>
