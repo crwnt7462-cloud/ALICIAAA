@@ -1304,7 +1304,7 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Étape 3: Connexion/Inscription (sans nom/prénom)
+  // Étape 3: Interface exacte comme les captures d'écran
   const renderLoginSignup = () => (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
@@ -1320,53 +1320,115 @@ export default function SalonBooking() {
       </div>
 
       <div className="max-w-lg mx-auto p-4 space-y-6">
+        {/* 1. Prestation sélectionnée */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Récapitulatif</h2>
-          <div className="bg-white rounded-lg p-4 border border-gray-100 space-y-3">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">1. Prestation sélectionnée</h2>
+          <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
                 <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
               </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
-                <p className="text-sm text-gray-600">{selectedSlot?.time} • {selectedSlot?.date || selectedDate}</p>
-              </div>
+              <Button variant="link" className="text-violet-600 text-sm">
+                Supprimer
+              </Button>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Créer un compte ou se connecter</h2>
-            <p className="text-sm text-gray-600">Pour finaliser votre réservation</p>
+        {/* 2. Date et heure sélectionnées */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">2. Date et heure sélectionnées</h2>
+          <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">{selectedSlot?.date || selectedDate}</h3>
+                <p className="text-sm text-gray-600">à {selectedSlot?.time}</p>
+              </div>
+              <Button variant="link" className="text-violet-600 text-sm">
+                Modifier
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Identification */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">3. Identification</h2>
+          
+          <div className="text-center mb-4">
+            <p className="text-gray-600">Nouveau sur Planity ?</p>
+          </div>
+
+          <Button 
+            variant="outline"
+            className="w-full mb-4 py-3 border-gray-300 text-gray-700 rounded-full"
+            onClick={handleLogin}
+          >
+            J'ai déjà un compte - Se connecter
+          </Button>
+
+          <div className="flex items-center mb-4">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <span className="px-3 text-sm text-gray-500">ou créer un nouveau compte</span>
+            <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
           <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Prénom <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Prénom"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Nom <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Nom"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                  className="w-full"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">
+                Téléphone portable <span className="text-red-500">*</span>
+              </label>
+              <div className="flex">
+                <div className="flex items-center px-3 border border-r-0 border-gray-300 rounded-l-md bg-gray-50">
+                  <span className="text-sm">🇫🇷</span>
+                </div>
+                <Input
+                  type="tel"
+                  placeholder="Entrer votre numéro..."
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="flex-1 rounded-l-none"
+                />
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Email <span className="text-red-500">*</span>
               </label>
               <Input
                 type="email"
-                placeholder="votre@email.com"
+                placeholder="Email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Téléphone <span className="text-red-500">*</span>
-              </label>
-              <Input
-                type="tel"
-                placeholder="06 12 34 56 78"
-                value={formData.phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 className="w-full"
               />
             </div>
@@ -1378,7 +1440,7 @@ export default function SalonBooking() {
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Créer un mot de passe"
+                  placeholder="Mot de passe"
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   className="w-full pr-10"
@@ -1402,30 +1464,24 @@ export default function SalonBooking() {
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, acceptCGU: !!checked }))}
               />
               <label htmlFor="terms" className="text-sm text-gray-600 leading-5">
-                J'accepte les conditions générales d'utilisation et la politique de confidentialité
+                J'accepte les <span className="underline">CGU</span> de Planity.
               </label>
             </div>
 
             <Button 
               onClick={handleCreateAccountAndPay}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
-              disabled={!formData.email || !formData.phone || !formData.password || !formData.acceptCGU}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all"
+              disabled={!formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName || !formData.acceptCGU}
             >
-              Créer un compte et continuer
+              Créer mon compte et continuer
             </Button>
 
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Déjà un compte ?{' '}
-                <Button 
-                  variant="link" 
-                  className="text-violet-600 p-0 h-auto"
-                  onClick={handleLogin}
-                >
-                  Se connecter
-                </Button>
-              </p>
-            </div>
+            <p className="text-xs text-gray-500 text-center leading-4">
+              Vos informations sont traitées par Planity, consultez notre{' '}
+              <span className="underline">politique de confidentialité</span>. Ce site est protégé par reCAPTCHA 
+              et est soumis à la <span className="underline">Politique de confidentialité</span> et aux{' '}
+              <span className="underline">Conditions d'utilisation</span> de Google.
+            </p>
           </div>
         </div>
       </div>
@@ -1535,14 +1591,16 @@ export default function SalonBooking() {
         description: "Veuillez patienter"
       });
 
-      // 1. Créer le compte client
+      // 1. Créer le compte client avec prénom/nom
       const response = await fetch('/api/client/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          phone: formData.phone
+          phone: formData.phone,
+          firstName: formData.firstName,
+          lastName: formData.lastName
         }),
       });
 
