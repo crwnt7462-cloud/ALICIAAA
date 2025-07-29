@@ -54,19 +54,19 @@ export default function ClientDashboard() {
         <div className="min-h-screen bg-gray-50 px-6 pt-16 pb-24">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className="text-xl font-semibold text-gray-900">Привычки</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Habitudes beauté</h1>
           </div>
 
           {/* Habitude Card */}
           <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm">
             <div className="space-y-6">
               <div>
-                <h3 className="font-medium text-gray-900 mb-3">Привычка:</h3>
-                <p className="text-gray-700 text-base">Пить не менее 2 литров воды в день</p>
+                <h3 className="font-medium text-gray-900 mb-3">Habitude :</h3>
+                <p className="text-gray-700 text-base">Prendre soin de sa beauté au moins 2 fois par semaine</p>
               </div>
 
               <div>
-                <h4 className="font-medium text-gray-900 mb-4">Процент внедрения привычки:</h4>
+                <h4 className="font-medium text-gray-900 mb-4">Pourcentage de maintien de l'habitude :</h4>
                 <div className="space-y-3">
                   <div className="text-3xl font-bold text-gray-900">50%</div>
                   <div className="w-full bg-gray-200 rounded-full h-4">
@@ -76,7 +76,7 @@ export default function ClientDashboard() {
                     ></div>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    За прошедшую неделю привычка была выполнена в 5 из 7 дней
+                    Au cours de la semaine passée, l'habitude a été maintenue 5 jours sur 7
                   </p>
                 </div>
               </div>
@@ -86,9 +86,9 @@ export default function ClientDashboard() {
                   <div className="w-8 h-8 bg-purple-100 rounded-2xl flex items-center justify-center flex-shrink-0 mt-1">
                     <Calendar className="w-5 h-5 text-purple-600" />
                   </div>
-                  <span className="font-medium text-gray-900 leading-tight">Количество дней без перерыва:</span>
+                  <span className="font-medium text-gray-900 leading-tight">Nombre de jours sans interruption :</span>
                 </div>
-                <div className="text-3xl font-bold text-gray-900 ml-11">10 дней</div>
+                <div className="text-3xl font-bold text-gray-900 ml-11">10 jours</div>
               </div>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function ClientDashboard() {
                 <ChevronLeft className="w-5 h-5 text-gray-600" />
               </Button>
               <h3 className="font-medium text-gray-900 text-lg">
-                June 2024
+                Juin 2024
               </h3>
               <Button variant="ghost" size="sm" className="p-2" onClick={() => {
                 const newMonth = new Date(currentMonth);
@@ -117,7 +117,7 @@ export default function ClientDashboard() {
 
             {/* Jours de la semaine */}
             <div className="grid grid-cols-7 gap-1 mb-4">
-              {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((day) => (
+              {['Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa', 'Di'].map((day) => (
                 <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
                   {day}
                 </div>
@@ -165,11 +165,11 @@ export default function ClientDashboard() {
             <div className="space-y-3 text-sm">
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700">Дни когда выполнила</span>
+                <span className="text-gray-700">Jours où j'ai maintenu l'habitude</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-                <span className="text-gray-700">Дни когда не выполнила</span>
+                <span className="text-gray-700">Jours où je n'ai pas maintenu l'habitude</span>
               </div>
             </div>
           </div>
