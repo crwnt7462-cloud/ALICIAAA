@@ -231,23 +231,23 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="max-w-lg mx-auto">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-lg mx-auto bg-white shadow-lg">
         {/* Header avec boutons d'action */}
-        <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
+        <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
           <div className="flex items-center justify-between p-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => window.history.back()}
-              className="text-white hover:bg-white/10"
+              className="text-gray-700 hover:bg-gray-100"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
@@ -256,7 +256,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditing(!isEditing)}
-                className={`text-white ${isEditing ? 'bg-violet-600' : 'hover:bg-white/10'}`}
+                className={`text-gray-700 ${isEditing ? 'bg-violet-100 text-violet-700' : 'hover:bg-gray-100'}`}
               >
                 <Edit3 className="w-4 h-4 mr-1" />
                 {isEditing ? 'Mode Aperçu' : 'Modifier'}
@@ -266,7 +266,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   size="sm"
                   onClick={handleSave}
                   disabled={saveMutation.isPending}
-                  className="bg-violet-600 hover:bg-violet-700"
+                  className="bg-violet-600 hover:bg-violet-700 text-white"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
@@ -276,27 +276,8 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           </div>
         </div>
 
-        {/* Photo de couverture éditable */}
-        <div className="relative h-48 bg-gradient-to-br from-violet-600 to-purple-700">
-          {salonData.coverImageUrl ? (
-            <img src={salonData.coverImageUrl} alt="Cover" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-violet-600 to-purple-700 flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold mb-2">{salonData.name}</h1>
-                <p className="text-sm opacity-90">{salonData.description}</p>
-              </div>
-            </div>
-          )}
-          {isEditing && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <Button className="bg-white/20 backdrop-blur-sm text-white border-white/30">
-                <Upload className="w-4 h-4 mr-2" />
-                Changer la photo
-              </Button>
-            </div>
-          )}
-        </div>
+        {/* Photo de couverture éditable - SUPPRIMÉE */}
+        {/* La bannière violette est complètement supprimée */}
 
         {/* Informations du salon */}
         <div className="p-4 space-y-4">
@@ -306,18 +287,18 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               <Input
                 value={salonData.name}
                 onChange={(e) => updateField('name', e.target.value)}
-                className="text-xl font-bold bg-gray-800 border-gray-700 text-white"
+                className="text-xl font-bold bg-white border-gray-300 text-gray-900"
                 placeholder="Nom du salon"
               />
             ) : (
-              <h1 className="text-xl font-bold text-white">{salonData.name}</h1>
+              <h1 className="text-xl font-bold text-gray-900">{salonData.name}</h1>
             )}
             <div className="flex items-center gap-1 mt-1">
-              <Star className="w-4 h-4 text-yellow-400 fill-current" />
-              <span className="text-yellow-400 font-medium">{salonData.rating}</span>
-              <span className="text-gray-400">({salonData.reviews} avis)</span>
+              <Star className="w-4 h-4 text-yellow-500 fill-current" />
+              <span className="text-yellow-600 font-medium">{salonData.rating}</span>
+              <span className="text-gray-500">({salonData.reviews} avis)</span>
               {salonData.verified && (
-                <CheckCircle className="w-4 h-4 text-blue-400 ml-2" />
+                <CheckCircle className="w-4 h-4 text-blue-500 ml-2" />
               )}
             </div>
           </div>
@@ -328,37 +309,37 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               <Textarea
                 value={salonData.description}
                 onChange={(e) => updateField('description', e.target.value)}
-                className="bg-gray-800 border-gray-700 text-white text-sm"
+                className="bg-white border-gray-300 text-gray-900 text-sm"
                 placeholder="Description courte du salon"
                 rows={2}
               />
             ) : (
-              <p className="text-gray-300 text-sm">{salonData.description}</p>
+              <p className="text-gray-600 text-sm">{salonData.description}</p>
             )}
           </div>
 
           {/* Adresse et téléphone */}
           <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2 text-gray-300">
+            <div className="flex items-center gap-2 text-gray-600">
               <MapPin className="w-4 h-4" />
               {isEditing ? (
                 <Input
                   value={salonData.address}
                   onChange={(e) => updateField('address', e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white text-sm"
+                  className="bg-white border-gray-300 text-gray-900 text-sm"
                   placeholder="Adresse"
                 />
               ) : (
                 <span>{salonData.address}</span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-gray-300">
+            <div className="flex items-center gap-2 text-gray-600">
               <Phone className="w-4 h-4" />
               {isEditing ? (
                 <Input
                   value={salonData.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white text-sm"
+                  className="bg-white border-gray-300 text-gray-900 text-sm"
                   placeholder="Téléphone"
                 />
               ) : (
@@ -369,7 +350,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         </div>
 
         {/* Navigation par onglets */}
-        <div className="sticky top-16 z-40 bg-black/95 backdrop-blur-sm border-b border-gray-800">
+        <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
           <div className="flex">
             {['services', 'infos', 'avis'].map((tab) => (
               <button
@@ -377,8 +358,8 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 onClick={() => setActiveTab(tab)}
                 className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
                   activeTab === tab
-                    ? 'text-violet-400 border-b-2 border-violet-400'
-                    : 'text-gray-400 hover:text-white'
+                    ? 'text-violet-600 border-b-2 border-violet-600'
+                    : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
                 {tab === 'services' && 'Services'}
@@ -394,13 +375,13 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           {activeTab === 'services' && (
             <div className="space-y-4">
               {salonData.serviceCategories.map((category) => (
-                <Card key={category.id} className="bg-gray-800 border-gray-700">
+                <Card key={category.id} className="bg-white border-gray-200 shadow-sm">
                   <CardContent className="p-4">
                     <div 
                       className="flex items-center justify-between cursor-pointer"
                       onClick={() => toggleCategory(category.id)}
                     >
-                      <h3 className="font-semibold text-white">{category.name}</h3>
+                      <h3 className="font-semibold text-gray-900">{category.name}</h3>
                       <div className="flex items-center gap-2">
                         {isEditing && (
                           <Button
@@ -410,12 +391,12 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                               e.stopPropagation();
                               addService(category.id);
                             }}
-                            className="text-violet-400 hover:bg-violet-900"
+                            className="text-violet-600 hover:bg-violet-50"
                           >
                             <Plus className="w-4 h-4" />
                           </Button>
                         )}
-                        <span className="text-gray-400">
+                        <span className="text-gray-500">
                           {category.expanded ? '−' : '+'}
                         </span>
                       </div>
@@ -424,21 +405,21 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                     {category.expanded && (
                       <div className="mt-3 space-y-3">
                         {category.services.map((service) => (
-                          <div key={service.id} className="border-t border-gray-700 pt-3">
+                          <div key={service.id} className="border-t border-gray-200 pt-3">
                             {isEditing ? (
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                   <Input
                                     value={service.name}
                                     onChange={(e) => updateService(category.id, service.id, { name: e.target.value })}
-                                    className="bg-gray-700 border-gray-600 text-white text-sm"
+                                    className="bg-white border-gray-300 text-gray-900 text-sm"
                                     placeholder="Nom du service"
                                   />
                                   <Button
                                     size="sm"
                                     variant="ghost"
                                     onClick={() => deleteService(category.id, service.id)}
-                                    className="text-red-400 hover:bg-red-900"
+                                    className="text-red-600 hover:bg-red-50"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
@@ -448,20 +429,20 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                     type="number"
                                     value={service.price}
                                     onChange={(e) => updateService(category.id, service.id, { price: parseInt(e.target.value) })}
-                                    className="bg-gray-700 border-gray-600 text-white text-sm"
+                                    className="bg-white border-gray-300 text-gray-900 text-sm"
                                     placeholder="Prix"
                                   />
                                   <Input
                                     value={service.duration}
                                     onChange={(e) => updateService(category.id, service.id, { duration: e.target.value })}
-                                    className="bg-gray-700 border-gray-600 text-white text-sm"
+                                    className="bg-white border-gray-300 text-gray-900 text-sm"
                                     placeholder="Durée"
                                   />
                                 </div>
                                 <Textarea
                                   value={service.description || ''}
                                   onChange={(e) => updateService(category.id, service.id, { description: e.target.value })}
-                                  className="bg-gray-700 border-gray-600 text-white text-sm"
+                                  className="bg-white border-gray-300 text-gray-900 text-sm"
                                   placeholder="Description"
                                   rows={2}
                                 />
@@ -469,19 +450,19 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                             ) : (
                               <div className="flex justify-between items-start">
                                 <div className="flex-1">
-                                  <h4 className="font-medium text-white">{service.name}</h4>
+                                  <h4 className="font-medium text-gray-900">{service.name}</h4>
                                   {service.description && (
-                                    <p className="text-gray-400 text-xs mt-1">{service.description}</p>
+                                    <p className="text-gray-600 text-xs mt-1">{service.description}</p>
                                   )}
                                   <div className="flex items-center gap-3 mt-2 text-sm">
-                                    <div className="flex items-center gap-1 text-gray-400">
+                                    <div className="flex items-center gap-1 text-gray-500">
                                       <Clock className="w-3 h-3" />
                                       <span>{service.duration}</span>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="text-lg font-bold text-violet-400">{service.price}€</div>
+                                  <div className="text-lg font-bold text-violet-600">{service.price}€</div>
                                   <Button 
                                     size="sm" 
                                     className="mt-2 bg-violet-600 hover:bg-violet-700 text-white"
@@ -504,18 +485,18 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           {activeTab === 'infos' && (
             <div className="space-y-4">
               {/* Histoire du salon */}
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200 shadow-sm">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-white mb-3">À propos du salon</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">À propos du salon</h3>
                   {isEditing ? (
                     <Textarea
                       value={salonData.longDescription}
                       onChange={(e) => updateField('longDescription', e.target.value)}
-                      className="bg-gray-700 border-gray-600 text-white text-sm min-h-[120px]"
+                      className="bg-white border-gray-300 text-gray-900 text-sm min-h-[120px]"
                       placeholder="Histoire et description détaillée du salon"
                     />
                   ) : (
-                    <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                    <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
                       {salonData.longDescription}
                     </div>
                   )}
@@ -523,14 +504,14 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               </Card>
 
               {/* Certifications */}
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200 shadow-sm">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-white mb-3">Certifications</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">Certifications</h3>
                   <div className="space-y-2">
                     {salonData.certifications.map((cert, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <Award className="w-4 h-4 text-yellow-400" />
-                        <span className="text-gray-300 text-sm">{cert}</span>
+                        <Award className="w-4 h-4 text-yellow-500" />
+                        <span className="text-gray-700 text-sm">{cert}</span>
                       </div>
                     ))}
                   </div>
@@ -538,14 +519,14 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               </Card>
 
               {/* Récompenses */}
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200 shadow-sm">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-white mb-3">Récompenses</h3>
+                  <h3 className="font-semibold text-gray-900 mb-3">Récompenses</h3>
                   <div className="space-y-2">
                     {salonData.awards.map((award, index) => (
                       <div key={index} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-400" />
-                        <span className="text-gray-300 text-sm">{award}</span>
+                        <CheckCircle className="w-4 h-4 text-green-500" />
+                        <span className="text-gray-700 text-sm">{award}</span>
                       </div>
                     ))}
                   </div>
@@ -556,10 +537,10 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
           {activeTab === 'avis' && (
             <div className="space-y-4">
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-white border-gray-200 shadow-sm">
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-white mb-3">Avis clients</h3>
-                  <div className="text-center text-gray-400">
+                  <h3 className="font-semibold text-gray-900 mb-3">Avis clients</h3>
+                  <div className="text-center text-gray-500">
                     <p>Section en développement</p>
                     <p className="text-sm mt-1">Les avis clients seront bientôt disponibles</p>
                   </div>
