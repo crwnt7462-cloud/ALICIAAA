@@ -146,26 +146,31 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   // Mutation pour sauvegarder
   const saveMutation = useMutation({
     mutationFn: async (updatedData: Partial<SalonData>) => {
+      // Sauvegarder les données du salon
       const response = await apiRequest('PUT', `/api/salon/${salonData.id}`, updatedData);
       return response.json();
     },
     onSuccess: () => {
       toast({
         title: "Salon mis à jour",
-        description: "Vos modifications ont été sauvegardées avec succès",
+        description: "Votre page salon est maintenant en ligne ! Lien disponible dans Pro Tools.",
       });
+      // Invalider les caches pour forcer le rechargement
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages/salon-demo'] });
     },
     onError: (error: any) => {
+      console.error('Erreur sauvegarde:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les modifications",
+        title: "Erreur de sauvegarde",
+        description: "Impossible de sauvegarder. Vérifiez votre connexion.",
         variant: "destructive",
       });
     }
   });
 
   const handleSave = () => {
+    console.log('💾 Déclenchement sauvegarde salon:', salonData.id);
     saveMutation.mutate(salonData);
   };
 

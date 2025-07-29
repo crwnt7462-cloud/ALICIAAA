@@ -59,6 +59,10 @@ export interface IStorage {
   getClientAccount(id: number): Promise<ClientAccount | undefined>;
   getClientAccountByEmail(email: string): Promise<ClientAccount | undefined>;
 
+  // Salon Data Management
+  getSalonData(salonId: string): Promise<any | undefined>;
+  saveSalonData(salonId: string, salonData: any): Promise<void>;
+
   // Services
   getServices(userId: string): Promise<Service[]>;
   createService(service: InsertService): Promise<Service>;
@@ -1086,6 +1090,36 @@ export class DatabaseStorage implements IStorage {
     return clientsWithNotes;
   }
 
+  // Salon Data Management for Editor
+  async getSalonData(salonId: string): Promise<any | undefined> {
+    // Récupérer depuis le stockage en mémoire
+    const salon = this.salons.get(salonId);
+    if (salon) {
+      console.log('📖 Salon trouvé en mémoire:', salonId);
+      return salon;
+    }
+    
+    console.log('ℹ️ Salon non trouvé, retour données par défaut:', salonId);
+    return undefined;
+  }
+
+  async saveSalonData(salonId: string, salonData: any): Promise<void> {
+    console.log('💾 Sauvegarde salon dans le stockage:', salonId);
+    
+    // Merger avec les données existantes si elles existent
+    const existingSalon = this.salons.get(salonId);
+    const updatedSalon = {
+      ...existingSalon,
+      ...salonData,
+      id: salonId,
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Sauvegarder en mémoire
+    this.salons.set(salonId, updatedSalon);
+    
+    console.log('✅ Salon sauvegardé avec succès:', salonId);
+  }
 
 }
 

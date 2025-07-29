@@ -67,14 +67,33 @@ export default function BusinessFeatures() {
               <Globe className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">MA PAGE SALON</h2>
-            <p className="text-gray-600 text-lg mb-6">
+            <p className="text-gray-600 text-lg mb-4">
               Modifiez votre page publique
             </p>
             
+            {/* Lien de partage */}
+            <div className="bg-white rounded-lg p-3 mb-4 border">
+              <div className="text-xs text-gray-500 mb-1">Lien de partage :</div>
+              <div className="text-sm font-mono text-blue-600 break-all">
+                {window.location.origin}/salon/salon-demo
+              </div>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                className="mt-2 text-xs"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/salon/salon-demo`);
+                  toast({ title: "Lien copié !" });
+                }}
+              >
+                Copier le lien
+              </Button>
+            </div>
+            
             <Button 
               onClick={() => {
-                console.log('🔥 CLIC SUR MA PAGE - Navigation vers /salon');
-                setLocation('/salon');
+                console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
+                setLocation('/salon-page-editor');
               }}
               className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-lg text-xl"
             >

@@ -644,6 +644,76 @@ export function registerFullStackRoutes(app: Express) {
     }
   });
 
+  // ========== GESTION DES PAGES SALON ==========
+
+  // Récupérer les données d'une page salon
+  app.get('/api/booking-pages/:pageUrl', async (req, res) => {
+    try {
+      const { pageUrl } = req.params;
+      console.log('📖 Récupération page salon:', pageUrl);
+      
+      // Récupérer depuis le stockage ou données par défaut
+      const salonData = await storage.getSalonData?.(pageUrl) || {
+        id: pageUrl,
+        name: 'Excellence Paris',
+        description: 'Salon de beauté moderne et professionnel',
+        longDescription: 'Notre salon vous accueille dans un cadre moderne et chaleureux...',
+        address: '15 Avenue des Champs-Élysées, 75008 Paris',
+        phone: '01 42 25 76 89',
+        rating: 4.8,
+        reviews: 247,
+        verified: true,
+        coverImageUrl: '',
+        logoUrl: '',
+        certifications: ['Salon labellisé L\'Oréal Professionnel'],
+        awards: ['Élu Meilleur Salon Paris 8ème 2023'],
+        serviceCategories: [
+          {
+            id: 1,
+            name: 'Cheveux',
+            expanded: true,
+            services: [
+              { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée' }
+            ]
+          }
+        ]
+      };
+      
+      res.json(salonData);
+    } catch (error) {
+      console.error('Erreur récupération page salon:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // Sauvegarder les données d'une page salon  
+  app.put('/api/salon/:salonId', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const salonData = req.body;
+      
+      console.log('💾 Sauvegarde salon:', salonId, Object.keys(salonData));
+      
+      // Sauvegarder dans le stockage
+      if (storage.saveSalonData) {
+        await storage.saveSalonData(salonId, salonData);
+      } else {
+        console.log('📝 Stockage en mémoire (temporaire):', salonId);
+      }
+      
+      res.json({ 
+        success: true, 
+        message: 'Salon sauvegardé avec succès',
+        salonId,
+        shareUrl: `${req.protocol}://${req.get('host')}/salon/${salonId}`,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Erreur sauvegarde salon:', error);
+      res.status(500).json({ error: 'Erreur lors de la sauvegarde' });
+    }
+  });
+
   // ========== DÉCONNEXION ==========
 
   app.post('/api/auth/logout', async (req, res) => {
