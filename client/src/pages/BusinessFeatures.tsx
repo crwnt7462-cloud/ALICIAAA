@@ -81,6 +81,38 @@ export default function BusinessFeatures() {
           </Button>
         </div>
 
+        {/* Carte MA PAGE - BOUTON PRINCIPAL */}
+        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-100 to-orange-200/50 border-4 border-orange-500">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
+                <Globe className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h2 className="text-lg font-semibold text-gray-900">Ma Page Salon</h2>
+                  <Badge className="bg-orange-600 text-white px-2 py-1 text-xs font-medium rounded-full">
+                    NOUVEAU
+                  </Badge>
+                </div>
+                <p className="text-gray-600 text-sm mb-4">
+                  Gérez votre page salon publique et personnalisez-la
+                </p>
+                
+                <Button 
+                  onClick={() => {
+                    console.log('Navigation vers /salon');
+                    setLocation('/salon');
+                  }}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg"
+                >
+                  MODIFIER MA PAGE
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Carte Messagerie Pro */}
         <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-violet-50/30">
           <CardContent className="p-6">
