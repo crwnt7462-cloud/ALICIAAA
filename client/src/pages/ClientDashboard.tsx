@@ -52,11 +52,36 @@ export default function ClientDashboard() {
   const renderContent = () => {
     if (activeTab === 'accueil') {
       return (
-        <div className="min-h-screen bg-gray-50 px-6 pt-16 pb-24">
+        <div className="min-h-screen bg-gray-50">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-xl font-semibold text-gray-900">Habitudes beauté</h1>
+          <div className="bg-white shadow-sm px-6 py-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                  <User className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-gray-900">
+                    {clientData?.firstName || 'Client'} {clientData?.lastName || ''}
+                  </h2>
+                  <p className="text-sm text-gray-500">Votre tableau de bord beauté</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <Bell className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
+
+          <div className="px-6 pb-24">
+            {/* Title */}
+            <div className="text-center mb-8">
+              <h1 className="text-xl font-semibold text-gray-900">Habitudes beauté</h1>
+            </div>
 
           {/* Habitude Card */}
           <div className="bg-white rounded-3xl p-6 mb-6 shadow-sm">
@@ -173,6 +198,7 @@ export default function ClientDashboard() {
                 <span className="text-gray-700">Jours où je n'ai pas maintenu l'habitude</span>
               </div>
             </div>
+          </div>
           </div>
         </div>
       );
