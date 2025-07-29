@@ -59,8 +59,8 @@ export default function ModernSalonDetail() {
   const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/booking-pages', salonId],
     retry: 2,
-    refetchOnWindowFocus: false,
-    staleTime: 5000 // Cache seulement 5 secondes pour voir les changements plus vite
+    refetchOnWindowFocus: true, // Recharger quand on revient sur l'onglet
+    staleTime: 1000 // Cache très court pour voir les changements immédiatement
   });
   
   // Données de fallback si API échoue
@@ -194,6 +194,7 @@ export default function ModernSalonDetail() {
   useEffect(() => {
     if (salonData?.customColors) {
       console.log('🎨 PAGE PUBLIQUE - Couleurs reçues de l\'API:', salonData.customColors);
+      console.log('🎨 PAGE PUBLIQUE - Couleurs appliquées:', customColors);
     }
   }, [salonData?.customColors]);
   const customColors = salonData?.customColors || {
@@ -314,10 +315,11 @@ export default function ModernSalonDetail() {
                           </div>
                           <Button 
                             onClick={() => setLocation('/salon-booking')}
-                            className="rounded-full px-6 py-2 text-sm font-medium"
+                            className="rounded-full px-6 py-2 text-sm font-medium !text-current"
                             style={{ 
                               backgroundColor: customColors.primary,
-                              color: customColors.buttonText
+                              color: customColors.buttonText,
+                              borderColor: customColors.primary
                             }}
                           >
                             Choisir
@@ -444,13 +446,14 @@ export default function ModernSalonDetail() {
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
           <Button 
             onClick={() => setLocation('/salon-booking')}
-            className="w-full h-10 text-sm font-medium rounded-lg"
+            className="w-full h-10 text-sm font-medium rounded-lg !text-current"
             style={{ 
               backgroundColor: customColors.primary,
-              color: customColors.buttonText
+              color: customColors.buttonText,
+              borderColor: customColors.primary
             }}
           >
-            <Calendar className="w-3 h-3 mr-2" />
+            <Calendar className="w-3 h-3 mr-2" style={{ color: customColors.buttonText }} />
             Réserver maintenant
           </Button>
         </div>
