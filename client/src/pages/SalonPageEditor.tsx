@@ -61,6 +61,8 @@ interface SalonData {
     primary: string;
     accent: string;
     buttonText: string;
+    priceColor: string;
+    neonFrame: string;
   };
 }
 
@@ -99,7 +101,9 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     customColors: {
       primary: '#7c3aed', // violet-600 par défaut
       accent: '#a855f7',  // violet-500 par défaut
-      buttonText: '#ffffff' // blanc par défaut
+      buttonText: '#ffffff', // blanc par défaut
+      priceColor: '#7c3aed', // violet-600 par défaut
+      neonFrame: '#a855f7' // violet-500 par défaut
     },
     serviceCategories: [
       {
@@ -153,7 +157,9 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         customColors: salon.customColors || {
           primary: '#7c3aed',
           accent: '#a855f7',
-          buttonText: '#ffffff'
+          buttonText: '#ffffff',
+          priceColor: '#7c3aed',
+          neonFrame: '#a855f7'
         }
       }));
     }
@@ -200,7 +206,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   };
 
   // Gestion des couleurs personnalisées avec forçage temps réel
-  const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText', color: string) => {
+  const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText' | 'priceColor' | 'neonFrame', color: string) => {
     console.log('🎨 Mise à jour couleur:', colorType, '=', color);
     setSalonData(prev => ({
       ...prev,
@@ -208,6 +214,8 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         primary: prev.customColors?.primary || '#7c3aed',
         accent: prev.customColors?.accent || '#a855f7',
         buttonText: prev.customColors?.buttonText || '#ffffff',
+        priceColor: prev.customColors?.priceColor || '#7c3aed',
+        neonFrame: prev.customColors?.neonFrame || '#a855f7',
         [colorType]: color
       }
     }));
@@ -215,18 +223,25 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
   // FORÇAGE TEMPS RÉEL des couleurs dans l'aperçu
   useEffect(() => {
-    if (salonData.customColors?.primary) {
-      // Forcer tous les boutons dans l'aperçu
+    if (salonData.customColors) {
       const forcePreviewColors = () => {
+        // Forcer les boutons
         const previewButtons = document.querySelectorAll('.reservation-preview-btn');
         previewButtons.forEach((btn: any) => {
-          btn.style.backgroundColor = salonData.customColors.primary;
-          btn.style.color = salonData.customColors.buttonText;
+          btn.style.backgroundColor = salonData.customColors?.primary || '#7c3aed';
+          btn.style.color = salonData.customColors?.buttonText || '#ffffff';
+          btn.style.boxShadow = `0 0 10px ${salonData.customColors?.neonFrame || '#a855f7'}40`;
+          btn.style.border = `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
+        });
+
+        // Forcer les prix
+        const previewPrices = document.querySelectorAll('.price-preview');
+        previewPrices.forEach((price: any) => {
+          price.style.color = salonData.customColors?.priceColor || '#7c3aed';
         });
       };
 
       forcePreviewColors();
-      // Re-forcer après un petit délai pour s'assurer que ça marche
       setTimeout(forcePreviewColors, 50);
     }
   }, [salonData.customColors]);
@@ -622,12 +637,21 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="text-lg font-bold text-violet-600">{service.price}€</div>
+                                  <div 
+                                    className="text-lg font-bold price-preview"
+                                    style={{
+                                      color: salonData.customColors?.priceColor || '#7c3aed'
+                                    }}
+                                  >
+                                    {service.price}€
+                                  </div>
                                   <button 
-                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn"
+                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn neon-frame-preview"
                                     style={{
                                       backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                                      color: salonData.customColors?.buttonText || '#ffffff'
+                                      color: salonData.customColors?.buttonText || '#ffffff',
+                                      boxShadow: `0 0 10px ${salonData.customColors?.neonFrame || '#a855f7'}40`,
+                                      border: `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
                                     }}
                                   >
                                     Réserver
@@ -742,41 +766,139 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => updateCustomColor('buttonText', '#ffffff')}
-                          className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors bg-white"
-                          title="Blanc #ffffff"
-                        />
-                        <button
-                          onClick={() => updateCustomColor('buttonText', '#000000')}
-                          className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors bg-black"
-                          title="Noir #000000"
-                        />
+                        {['#ffffff', '#000000'].map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => updateCustomColor('buttonText', color)}
+                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
                       </div>
                     </div>
 
-                    {/* Aperçu */}
+                    {/* Couleur des prix */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Couleur des prix
+                      </label>
+                      <div className="flex items-center gap-3 mb-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.priceColor || '#7c3aed'}
+                          onChange={(e) => updateCustomColor('priceColor', e.target.value)}
+                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={salonData.customColors?.priceColor || '#7c3aed'}
+                          onChange={(e) => updateCustomColor('priceColor', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                          placeholder="#7c3aed"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {predefinedColors.map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => updateCustomColor('priceColor', color)}
+                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Couleur du cadre néon */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Couleur du cadre néon (effet lumineux)
+                      </label>
+                      <div className="flex items-center gap-3 mb-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.neonFrame || '#a855f7'}
+                          onChange={(e) => updateCustomColor('neonFrame', e.target.value)}
+                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={salonData.customColors?.neonFrame || '#a855f7'}
+                          onChange={(e) => updateCustomColor('neonFrame', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                          placeholder="#a855f7"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {predefinedColors.map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => updateCustomColor('neonFrame', color)}
+                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Aperçu complet */}
                     <div className="pt-4 border-t border-gray-200">
-                      <h4 className="font-medium text-gray-900 mb-3">Aperçu</h4>
-                      <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
-                        <Button 
-                          className="w-full"
+                      <h4 className="font-medium text-gray-900 mb-3">🔍 Aperçu des couleurs</h4>
+                      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                        {/* Bouton principal avec effet néon */}
+                        <button 
+                          className="w-full px-4 py-3 rounded-lg font-medium transition-all"
                           style={{ 
                             backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                            color: salonData.customColors?.buttonText || '#ffffff'
+                            color: salonData.customColors?.buttonText || '#ffffff',
+                            boxShadow: `0 0 15px ${salonData.customColors?.neonFrame || '#a855f7'}60`,
+                            border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
                           }}
                         >
-                          Réserver maintenant
-                        </Button>
-                        <div 
-                          className="p-3 rounded-lg border-2"
-                          style={{ 
-                            borderColor: salonData.customColors?.accent || '#a855f7'
-                          }}
-                        >
-                          <span style={{ color: salonData.customColors?.primary || '#7c3aed' }}>
-                            Exemple de texte avec couleur principale
-                          </span>
+                          🎯 Bouton "Réserver" avec effet néon
+                        </button>
+
+                        {/* Exemple de prix */}
+                        <div className="flex justify-between items-center p-3 bg-white rounded-lg">
+                          <div className="text-gray-700">Coupe + Brushing</div>
+                          <div 
+                            className="text-xl font-bold"
+                            style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}
+                          >
+                            45€
+                          </div>
+                        </div>
+
+                        {/* Exemple de service avec bouton */}
+                        <div className="bg-white p-4 rounded-lg space-y-2">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h5 className="font-medium text-gray-900">Coloration complète</h5>
+                              <p className="text-sm text-gray-600">Avec soin professionnel</p>
+                            </div>
+                            <div className="text-right">
+                              <div 
+                                className="text-lg font-bold mb-2"
+                                style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}
+                              >
+                                80€
+                              </div>
+                              <button 
+                                className="px-3 py-1.5 text-sm rounded-md font-medium"
+                                style={{ 
+                                  backgroundColor: salonData.customColors?.primary || '#7c3aed',
+                                  color: salonData.customColors?.buttonText || '#ffffff',
+                                  boxShadow: `0 0 8px ${salonData.customColors?.neonFrame || '#a855f7'}40`,
+                                  border: `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
+                                }}
+                              >
+                                Réserver
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
