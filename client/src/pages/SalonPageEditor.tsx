@@ -230,14 +230,19 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         previewButtons.forEach((btn: any) => {
           btn.style.backgroundColor = salonData.customColors?.primary || '#7c3aed';
           btn.style.color = salonData.customColors?.buttonText || '#ffffff';
-          btn.style.boxShadow = `0 0 10px ${salonData.customColors?.neonFrame || '#a855f7'}40`;
-          btn.style.border = `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
         });
 
         // Forcer les prix
         const previewPrices = document.querySelectorAll('.price-preview');
         previewPrices.forEach((price: any) => {
           price.style.color = salonData.customColors?.priceColor || '#7c3aed';
+        });
+
+        // Forcer les cartes de catégories avec effet néon
+        const categoryCards = document.querySelectorAll('.category-card-preview');
+        categoryCards.forEach((card: any) => {
+          card.style.border = `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
+          card.style.boxShadow = `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`;
         });
       };
 
@@ -550,7 +555,14 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           {activeTab === 'services' && (
             <div className="space-y-4">
               {salonData.serviceCategories.map((category) => (
-                <Card key={category.id} className="bg-white border-gray-200 shadow-sm">
+                <Card 
+                  key={category.id} 
+                  className="bg-white shadow-sm category-card-preview"
+                  style={{
+                    border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
+                    boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
+                  }}
+                >
                   <CardContent className="p-4">
                     <div 
                       className="flex items-center justify-between cursor-pointer"
@@ -646,12 +658,10 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                     {service.price}€
                                   </div>
                                   <button 
-                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn neon-frame-preview"
+                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn"
                                     style={{
                                       backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                                      color: salonData.customColors?.buttonText || '#ffffff',
-                                      boxShadow: `0 0 10px ${salonData.customColors?.neonFrame || '#a855f7'}40`,
-                                      border: `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
+                                      color: salonData.customColors?.buttonText || '#ffffff'
                                     }}
                                   >
                                     Réserver
@@ -872,9 +882,16 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                           </div>
                         </div>
 
-                        {/* Exemple de service avec bouton */}
-                        <div className="bg-white p-4 rounded-lg space-y-2">
-                          <div className="flex justify-between items-start">
+                        {/* Exemple de catégorie avec effet néon */}
+                        <div 
+                          className="bg-white p-4 rounded-lg space-y-2"
+                          style={{
+                            border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
+                            boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
+                          }}
+                        >
+                          <h4 className="font-semibold text-gray-900 mb-2">💇‍♀️ Cheveux (avec cadre néon)</h4>
+                          <div className="flex justify-between items-start border-t border-gray-200 pt-2">
                             <div>
                               <h5 className="font-medium text-gray-900">Coloration complète</h5>
                               <p className="text-sm text-gray-600">Avec soin professionnel</p>
@@ -890,9 +907,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                 className="px-3 py-1.5 text-sm rounded-md font-medium"
                                 style={{ 
                                   backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                                  color: salonData.customColors?.buttonText || '#ffffff',
-                                  boxShadow: `0 0 8px ${salonData.customColors?.neonFrame || '#a855f7'}40`,
-                                  border: `1px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
+                                  color: salonData.customColors?.buttonText || '#ffffff'
                                 }}
                               >
                                 Réserver
