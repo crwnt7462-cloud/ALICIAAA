@@ -195,8 +195,18 @@ export default function ModernSalonDetail() {
     if (salonData?.customColors) {
       console.log('🎨 PAGE PUBLIQUE - Couleurs reçues de l\'API:', salonData.customColors);
       console.log('🎨 PAGE PUBLIQUE - Couleurs appliquées:', customColors);
+      
+      // Forcer l'application des styles sur tous les boutons
+      const buttons = document.querySelectorAll('[data-color-button="true"]');
+      buttons.forEach((button: any) => {
+        if (button) {
+          button.style.backgroundColor = customColors.primary;
+          button.style.color = customColors.buttonText;
+          button.style.borderColor = customColors.primary;
+        }
+      });
     }
-  }, [salonData?.customColors]);
+  }, [salonData?.customColors, customColors]);
 
 
 
@@ -311,10 +321,12 @@ export default function ModernSalonDetail() {
                           <button 
                             onClick={() => setLocation('/salon-booking')}
                             className="rounded-full px-6 py-2 text-sm font-medium border-none outline-none cursor-pointer"
+                            data-color-button="true"
                             style={{ 
-                              backgroundColor: customColors.primary + ' !important',
-                              color: customColors.buttonText + ' !important',
-                              border: 'none'
+                              backgroundColor: customColors.primary,
+                              color: customColors.buttonText,
+                              border: 'none',
+                              boxShadow: 'none'
                             }}
                           >
                             Choisir
@@ -442,10 +454,12 @@ export default function ModernSalonDetail() {
           <button 
             onClick={() => setLocation('/salon-booking')}
             className="w-full h-10 text-sm font-medium rounded-lg border-none outline-none cursor-pointer flex items-center justify-center"
+            data-color-button="true"
             style={{ 
-              backgroundColor: customColors.primary + ' !important',
-              color: customColors.buttonText + ' !important',
-              border: 'none'
+              backgroundColor: customColors.primary,
+              color: customColors.buttonText,
+              border: 'none',
+              boxShadow: 'none'
             }}
           >
             <Calendar className="w-3 h-3 mr-2" style={{ color: customColors.buttonText }} />
