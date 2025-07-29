@@ -198,15 +198,24 @@ export default function ModernSalonDetail() {
       
       // Forcer immédiatement puis re-forcer après render
       const applyColors = () => {
-        // Cibler tous les éléments de réservation
-        const reservationElements = document.querySelectorAll('.reservation-button, [class*="reservation"], div, button');
-        reservationElements.forEach((element: any) => {
+        // Cibler spécifiquement les boutons de service et de réservation
+        const serviceButtons = document.querySelectorAll('.service-button, .reservation-button');
+        const allElements = document.querySelectorAll('div, button');
+        
+        // Forcer d'abord les boutons avec classe
+        serviceButtons.forEach((element: any) => {
+          console.log('🔧 FORÇAGE couleur sur bouton de service →', salonData.customColors.primary);
+          element.style.setProperty('background-color', salonData.customColors.primary, 'important');
+          element.style.setProperty('color', salonData.customColors.buttonText, 'important');
+        });
+        
+        // Puis chercher par texte
+        allElements.forEach((element: any) => {
           const text = element.textContent?.toLowerCase() || '';
-          if (text.includes('réserver') || text.includes('choisir')) {
-            console.log('🔧 FORÇAGE couleur sur:', text.trim(), '→', salonData.customColors.primary);
+          if (text.includes('réserver') && !text.includes('maintenant')) {
+            console.log('🔧 FORÇAGE couleur sur bouton réserver:', text.trim(), '→', salonData.customColors.primary);
             element.style.setProperty('background-color', salonData.customColors.primary, 'important');
             element.style.setProperty('color', salonData.customColors.buttonText, 'important');
-            element.style.removeProperty('background');
           }
         });
       };
@@ -330,13 +339,13 @@ export default function ModernSalonDetail() {
                           </div>
                           <div 
                             onClick={() => setLocation('/salon-booking')}
-                            className="rounded-full px-6 py-2 text-sm font-medium cursor-pointer text-center"
+                            className="rounded-full px-6 py-2 text-sm font-medium cursor-pointer text-center service-button"
                             style={{ 
-                              backgroundColor: salonData?.customColors?.primary || '#3b82f6',
+                              backgroundColor: salonData?.customColors?.primary || '#7c3aed',
                               color: salonData?.customColors?.buttonText || '#ffffff'
                             }}
                           >
-                            Choisir
+                            Réserver
                           </div>
                         </div>
                       ))}
