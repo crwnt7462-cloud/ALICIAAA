@@ -171,6 +171,62 @@ export async function seedDatabase() {
     console.log('Compte PRO: test@monapp.com / test1234');
     console.log('Handle PRO: @usemyrr');
     console.log('Compte CLIENT: client@test.com / client123');
+    
+    // Créer un salon pour le compte test (après les imports)
+    setTimeout(() => {
+      import('./storage.js').then(({ storage }) => {
+        storage.saveSalonData('salon-demo', {
+          id: 'salon-demo',
+          userId: testUserId,
+          name: 'Excellence Paris - Salon Demo',
+          description: 'Salon de beauté moderne lié au compte test@monapp.com',
+          longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. 
+          
+Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
+
+Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de services pour sublimer votre beauté naturelle.`,
+          address: '15 Avenue des Champs-Élysées, 75008 Paris',
+          phone: '01 42 25 76 89',
+          rating: 4.8,
+          reviews: 247,
+          verified: true,
+          certifications: [
+            'Salon labellisé L\'Oréal Professionnel',
+            'Formation continue Kérastase',
+            'Certification bio Shu Uemura'
+          ],
+          awards: [
+            'Élu Meilleur Salon Paris 8ème 2023',
+            'Prix de l\'Innovation Beauté 2022',
+            'Certification Éco-responsable'
+          ],
+          serviceCategories: [
+            {
+              id: 1,
+              name: 'Cheveux',
+              expanded: true,
+              services: [
+                { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée et brushing professionnel' },
+                { id: 2, name: 'Coloration', price: 80, duration: '2h', description: 'Coloration complète avec soins' },
+                { id: 3, name: 'Mèches', price: 120, duration: '2h30', description: 'Mèches naturelles ou colorées' },
+                { id: 4, name: 'Coupe Enfant', price: 25, duration: '30min', description: 'Coupe adaptée aux enfants -12 ans' }
+              ]
+            },
+            {
+              id: 2,
+              name: 'Soins Visage',
+              expanded: false,
+              services: [
+                { id: 5, name: 'Soin du visage classique', price: 65, duration: '1h15', description: 'Nettoyage, gommage et hydratation' },
+                { id: 6, name: 'Soin anti-âge', price: 95, duration: '1h30', description: 'Soin complet avec technologies avancées' },
+                { id: 7, name: 'Épilation sourcils', price: 20, duration: '20min', description: 'Épilation et restructuration' }
+              ]
+            }
+          ]
+        });
+        console.log('💎 SALON DEMO: salon-demo lié au compte test');
+      });
+    }, 100);
 
   } catch (error) {
     console.error('❌ Erreur lors du seeding:', error);

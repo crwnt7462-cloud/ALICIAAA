@@ -126,22 +126,23 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     ]
   });
 
-  // Récupérer les données du salon (désactivé temporairement)
-  const isLoading = false;
-  // const { data: currentSalon, isLoading } = useQuery({
-  //   queryKey: ['/api/salon/current'],
-  //   retry: false,
-  // });
+  // Récupérer les données du salon depuis l'API
+  const { data: currentSalon, isLoading } = useQuery({
+    queryKey: ['/api/booking-pages/salon-demo'],
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
 
-  // useEffect(() => {
-  //   if (currentSalon && typeof currentSalon === 'object') {
-  //     const salon = currentSalon as any;
-  //     setSalonData(prev => ({
-  //       ...prev,
-  //       ...salon
-  //     }));
-  //   }
-  // }, [currentSalon]);
+  useEffect(() => {
+    if (currentSalon && typeof currentSalon === 'object') {
+      console.log('📖 Données salon récupérées depuis l\'API:', currentSalon.id || 'salon-demo');
+      const salon = currentSalon as any;
+      setSalonData(prev => ({
+        ...prev,
+        ...salon
+      }));
+    }
+  }, [currentSalon]);
 
   // Mutation pour sauvegarder
   const saveMutation = useMutation({
