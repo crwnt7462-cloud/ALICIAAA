@@ -199,7 +199,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     }));
   };
 
-  // Gestion des couleurs personnalisées
+  // Gestion des couleurs personnalisées avec forçage temps réel
   const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText', color: string) => {
     console.log('🎨 Mise à jour couleur:', colorType, '=', color);
     setSalonData(prev => ({
@@ -212,6 +212,24 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
       }
     }));
   };
+
+  // FORÇAGE TEMPS RÉEL des couleurs dans l'aperçu
+  useEffect(() => {
+    if (salonData.customColors?.primary) {
+      // Forcer tous les boutons dans l'aperçu
+      const forcePreviewColors = () => {
+        const previewButtons = document.querySelectorAll('.reservation-preview-btn');
+        previewButtons.forEach((btn: any) => {
+          btn.style.backgroundColor = salonData.customColors.primary;
+          btn.style.color = salonData.customColors.buttonText;
+        });
+      };
+
+      forcePreviewColors();
+      // Re-forcer après un petit délai pour s'assurer que ça marche
+      setTimeout(forcePreviewColors, 50);
+    }
+  }, [salonData.customColors]);
 
   // Couleurs prédéfinies
   const predefinedColors = [
@@ -605,12 +623,15 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                 </div>
                                 <div className="text-right">
                                   <div className="text-lg font-bold text-violet-600">{service.price}€</div>
-                                  <Button 
-                                    size="sm" 
-                                    className="mt-2 bg-violet-600 hover:bg-violet-700 text-white"
+                                  <button 
+                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn"
+                                    style={{
+                                      backgroundColor: salonData.customColors?.primary || '#7c3aed',
+                                      color: salonData.customColors?.buttonText || '#ffffff'
+                                    }}
                                   >
                                     Réserver
-                                  </Button>
+                                  </button>
                                 </div>
                               </div>
                             )}
