@@ -57,9 +57,9 @@ export function Header() {
           </Button>
           <div>
             <h1 className="font-semibold text-gray-900 text-sm">{getPageTitle()}</h1>
-            {user?.firstName && (
+            {user?.businessName && (
               <p className="text-xs text-gray-500">
-                Bonjour, {user.firstName}
+                {user.businessName}
               </p>
             )}
           </div>

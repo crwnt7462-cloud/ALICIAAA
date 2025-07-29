@@ -267,81 +267,87 @@ export default function PublicLanding() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Menu hamburger overlay avec animations modernes */}
+      {/* Menu hamburger overlay style ProQuote */}
       <div 
-        className={`fixed inset-0 z-50 transition-all duration-500 ${
-          isMenuOpen ? 'visible opacity-100' : 'invisible opacity-0'
+        className={`fixed inset-0 z-50 ${
+          isMenuOpen ? 'visible' : 'invisible'
         }`}
       >
-        {/* Backdrop avec blur et fade */}
+        {/* Backdrop animé */}
         <div 
-          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-all duration-500 ${
-            isMenuOpen ? 'opacity-100' : 'opacity-0'
+          className={`absolute inset-0 bg-black transition-all duration-300 ease-out ${
+            isMenuOpen ? 'bg-opacity-50' : 'bg-opacity-0'
           }`}
           onClick={closeMenu}
         />
         
-        {/* Panel du menu avec slide et scale */}
+        {/* Panel principal avec animation slide-scale */}
         <div 
           id="hamburger-menu"
-          className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transition-all duration-500 ease-out ${
-            isMenuOpen ? 'translate-x-0 scale-100' : '-translate-x-full scale-95'
+          className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-all duration-300 ease-out ${
+            isMenuOpen 
+              ? 'translate-x-0 scale-100 opacity-100' 
+              : 'translate-x-full scale-95 opacity-0'
           }`}
+          style={{
+            transformOrigin: 'right center'
+          }}
         >
-          {/* Header du menu avec close button */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <img src={logoImage} alt="Logo" className="h-8 w-auto" />
-              <span className="font-semibold text-gray-900">Menu</span>
-            </div>
+          {/* Header épuré */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-100/80">
+            <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
             <button
               onClick={closeMenu}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
             >
-              <X className="w-5 h-5 text-gray-600" />
+              <X className="w-5 h-5 text-gray-500" />
             </button>
           </div>
 
-          {/* Items du menu avec animations en cascade */}
-          <div className="py-6">
+          {/* Navigation items avec animation staggered */}
+          <nav className="py-4">
             {menuItems.map((item, index) => (
               <button
                 key={item.id}
                 onClick={() => handleMenuItemClick(item)}
-                className={`w-full flex items-center gap-4 px-6 py-4 hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 transition-all duration-300 text-left group transform ${
-                  isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-8 opacity-0'
+                className={`w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-gray-50/80 transition-all duration-200 group ${
+                  isMenuOpen 
+                    ? 'translate-x-0 opacity-100' 
+                    : 'translate-x-6 opacity-0'
                 }`}
                 style={{
-                  transitionDelay: isMenuOpen ? `${index * 80}ms` : '0ms',
-                  animationFillMode: 'forwards'
+                  transitionDelay: isMenuOpen ? `${100 + index * 50}ms` : '0ms',
+                  transitionDuration: '400ms',
+                  transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
                 }}
               >
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 text-violet-600 group-hover:scale-110 transition-transform duration-200">
+                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-violet-100 group-hover:text-violet-600 transition-all duration-200">
                   {item.icon}
                 </div>
-                <div className="flex-1">
-                  <span className="text-gray-900 font-medium group-hover:text-violet-700 transition-colors duration-200">
-                    {item.label}
-                  </span>
+                <span className="text-gray-900 font-medium text-sm group-hover:text-gray-700 transition-colors duration-200">
+                  {item.label}
+                </span>
+                <div className="ml-auto">
+                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all duration-200" />
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-violet-600 group-hover:translate-x-1 transition-all duration-200" />
               </button>
             ))}
-          </div>
+          </nav>
 
-          {/* Footer du menu */}
-          <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-100 bg-gray-50">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-3">
-                Besoin d'aide ?
-              </p>
+          {/* Bottom section */}
+          <div className="absolute bottom-6 left-6 right-6">
+            <div className="bg-gray-50/80 rounded-xl p-4 text-center">
+              <p className="text-sm text-gray-600 mb-3">Une question ?</p>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="w-full border-violet-200 text-violet-600 hover:bg-violet-50"
-                onClick={() => setLocation('/support')}
+                className="w-full h-9 border-gray-200 text-gray-700 hover:bg-gray-100 text-sm"
+                onClick={() => {
+                  setLocation('/support');
+                  closeMenu();
+                }}
               >
-                Contacter le support
+                Aide & Support
               </Button>
             </div>
           </div>
@@ -353,36 +359,30 @@ export default function PublicLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
-              {/* Bouton hamburger animé */}
+              {/* Bouton hamburger style moderne */}
               <button
                 id="hamburger-button"
                 onClick={toggleMenu}
-                className="relative p-3 hover:bg-gray-100 rounded-xl transition-all duration-300 lg:hidden group"
-                aria-label="Ouvrir le menu"
+                className="relative p-2 hover:bg-gray-100/80 rounded-lg transition-all duration-200 lg:hidden"
+                aria-label="Menu"
               >
-                <div className="w-6 h-6 relative">
-                  {/* Ligne du haut */}
+                <div className="w-5 h-5 flex flex-col justify-center items-center">
                   <span 
-                    className={`absolute top-0 left-0 w-6 h-0.5 bg-gray-700 transition-all duration-300 ease-out ${
-                      isMenuOpen ? 'rotate-45 translate-y-2.5' : 'rotate-0 translate-y-0'
+                    className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
+                      isMenuOpen ? 'rotate-45 translate-y-1' : ''
                     }`}
                   />
-                  {/* Ligne du milieu */}
                   <span 
-                    className={`absolute top-2.5 left-0 w-6 h-0.5 bg-gray-700 transition-all duration-300 ease-out ${
-                      isMenuOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+                    className={`block w-5 h-0.5 bg-gray-700 my-1 transition-all duration-300 ease-in-out ${
+                      isMenuOpen ? 'opacity-0' : 'opacity-100'
                     }`}
                   />
-                  {/* Ligne du bas */}
                   <span 
-                    className={`absolute top-5 left-0 w-6 h-0.5 bg-gray-700 transition-all duration-300 ease-out ${
-                      isMenuOpen ? '-rotate-45 -translate-y-2.5' : 'rotate-0 translate-y-0'
+                    className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
+                      isMenuOpen ? '-rotate-45 -translate-y-1' : ''
                     }`}
                   />
                 </div>
-                
-                {/* Effet de highlight au hover */}
-                <div className="absolute inset-0 rounded-xl bg-violet-100 opacity-0 group-hover:opacity-30 transition-opacity duration-200" />
               </button>
 
               <div>
