@@ -103,8 +103,8 @@ export default function Dashboard() {
           variant="outline" 
           className="h-16 flex-col border-4 border-orange-500 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl text-xs font-bold"
           onClick={() => {
-            console.log('🔥 CLIC MA PAGE depuis Dashboard');
-            setLocation("/salon");
+            console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
+            setLocation("/salon-page-editor");
           }}
         >
           <Share2 className="w-5 h-5 mb-1" />
