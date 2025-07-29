@@ -101,11 +101,14 @@ export default function Dashboard() {
       <div className="grid grid-cols-4 gap-2">
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl text-xs"
-          onClick={() => setLocation("/services")}
+          className="h-16 flex-col border-4 border-orange-500 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl text-xs font-bold"
+          onClick={() => {
+            console.log('🔥 CLIC MA PAGE depuis Dashboard');
+            setLocation("/salon");
+          }}
         >
-          <Settings className="w-5 h-5 mb-1" />
-          Services
+          <Share2 className="w-5 h-5 mb-1" />
+          MA PAGE
         </Button>
         <Button 
           variant="outline" 
