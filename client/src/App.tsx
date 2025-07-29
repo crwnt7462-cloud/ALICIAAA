@@ -143,6 +143,9 @@ import StripePayment from "@/pages/StripePayment";
 function Router() {
   const [location] = useLocation();
   
+  // Pages qui ne doivent pas avoir la barre violette en bas
+  const hideBottomNavPages = ['/salon-page-editor'];
+  
   // Page de paiement Stripe
   if (location === '/stripe-payment') {
     return (
@@ -745,7 +748,7 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <BottomNavigation />
+      {!hideBottomNavPages.includes(location) && <BottomNavigation />}
     </div>
   );
 }
