@@ -286,7 +286,7 @@ function Router() {
   }
   
   if (location === '/client-dashboard') {
-    return <div className="h-full"><ClientDashboardNew /></div>;
+    return <div className="h-full"><ClientDashboard /></div>;
   }
   
   if (location === '/client-dashboard-new') {
