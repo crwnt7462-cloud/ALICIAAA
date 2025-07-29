@@ -1,0 +1,89 @@
+Voici le prompt mis à jour pour inclure le chiffre d’affaires mensuel sous le CA journalier dans le planning, en plus de tous les tests :
+
+⸻
+
+✅ Merci de tester l’ensemble des fonctionnalités du site Rendly de façon exhaustive et corriger tous les problèmes :
+
+⸻
+
+🔐 Authentification
+	•	Test complet de la connexion / inscription client & pro
+	•	Redirection correcte vers la page client ou pro après connexion
+	•	Gestion des erreurs (mauvais mot de passe, compte inexistant…)
+	•	Sécurité et robustesse du système auth
+
+⸻
+
+📅 Réservations & Planning
+	•	Réservation depuis la page salon
+	•	Ajout automatique au planning du professionnel
+	•	Annulation / modification par le client avec mise à jour en temps réel
+	•	Affichage des rendez-vous passés et à venir (jour / semaine / mois)
+	•	Afficher sous le chiffre d’affaires du jour le CA mensuel cumulé
+
+⸻
+
+💼 Dashboard Pro
+	•	Dashboard réel (pas factice) fonctionnel
+	•	Accès aux plannings, services, et disponibilité
+	•	Gestion des créneaux horaires, jours fériés, congés
+	•	Tous les boutons doivent fonctionner correctement
+	•	Aucun doublon de header (bug actuel dans Pro Tools)
+
+⸻
+
+👤 Compte Client
+	•	Affichage des rendez-vous (à venir + passés)
+	•	Paiements : historique + factures téléchargeables (PDF)
+	•	Gestion des cartes enregistrées (ajout / suppression)
+	•	Historique des soins + bouton “Rebook”
+	•	Système de fidélité : points cumulés, badges, offres
+
+⸻
+
+💳 Paiements
+	•	Paiement fonctionnel (test ou réel)
+	•	Vérification du statut des paiements (payé, en attente, refusé)
+	•	Téléchargement des factures PDF
+	•	Carte enregistrée : ajouter / supprimer
+
+⸻
+
+✉️ Notifications & Emails
+	•	Emails / notifications envoyés à la réservation
+	•	Rappels automatiques : 24h et 1h avant le RDV
+	•	Mise à jour dynamique (sans rechargement)
+
+⸻
+
+🔍 Recherche & Filtres
+	•	Recherche par type de soin, salon, localisation
+	•	Filtres par note, dispo, service
+	•	Résultats dynamiques et à jour
+
+⸻
+
+⚙️ Expérience & Technique
+	•	Responsive mobile, tablette, desktop
+	•	Navigation fluide, aucun bug d’interface
+	•	Test complet de toutes les pages et boutons
+	•	Tous les boutons “Réserver” doivent pointer vers /salon-booking
+
+⸻
+
+🔐 Sécurité
+	•	Authentification sécurisée
+	•	Gestion des rôles (clients ≠ pros)
+	•	Données sensibles protégées
+
+⸻
+
+✅ Vérifie également :
+	•	Qu’un lien salon unique est généré automatiquement (partageable)
+	•	Que la connexion client affiche bien la bonne interface (et pas une page vide)
+	•	Que toutes les données (réservations, dispos, notifications) sont en temps réel
+	•	Que le chiffre d’affaires mensuel est visible dans la section planning sous celui du jour
+
+⸻
+
+🧪 Merci de tester TOUT le site de A à Z, corriger tous les bugs, activer les boutons inactifs, et t’assurer que tout est prêt pour un vrai lancement.
