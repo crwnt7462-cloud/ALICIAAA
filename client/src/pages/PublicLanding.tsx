@@ -15,6 +15,16 @@ export default function PublicLanding() {
   const [searchLocation, setSearchLocation] = useState("");
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentWord, setCurrentWord] = useState(0);
+  
+  const words = ["beauté", "barber", "cils", "manucure"];
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWord((prev) => (prev + 1) % words.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [words.length]);
 
   const handleSearchService = (service: string) => {
     setLocation(`/services/${service}`);
@@ -465,7 +475,17 @@ export default function PublicLanding() {
               <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
-              Réservez votre rendez-vous beauté
+              Réservez votre rendez-vous{" "}
+              <motion.span 
+                key={currentWord}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="inline-block border-2 border-violet-500 bg-violet-50 text-violet-700 px-3 py-1 rounded-lg"
+              >
+                {words[currentWord]}
+              </motion.span>
             </h1>
             <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
               Trouvez et réservez chez les meilleurs professionnels près de chez vous
