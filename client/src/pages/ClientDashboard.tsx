@@ -3,13 +3,14 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, Calendar, Settings, User, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Home, Calendar, Settings, User, ChevronLeft, ChevronRight, Plus, CalendarDays, MessageSquare, Bell } from "lucide-react";
 
 export default function ClientDashboard() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('accueil');
   const [clientData, setClientData] = useState<any>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [showFloatingMenu, setShowFloatingMenu] = useState(false);
 
   useEffect(() => {
     // Récupérer les données client depuis localStorage
@@ -194,80 +195,74 @@ export default function ClientDashboard() {
       {/* Contenu principal */}
       {renderContent()}
 
-      {/* Menu de navigation en bas */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 safe-area-pb">
-        <div className="flex justify-around py-3">
-          <Button
-            variant="ghost"
-            onClick={() => handleTabChange('accueil')}
-            className={`flex flex-col items-center py-2 px-6 ${
-              activeTab === 'accueil' ? 'text-purple-600' : 'text-gray-400'
-            }`}
-          >
-            <div className="w-6 h-6 mb-1 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={activeTab === 'accueil' ? 'text-purple-600' : 'text-gray-400'}>
-                <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M9 22V12H15V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </Button>
+      {/* Floating Action Button */}
+      <div className="fixed bottom-6 right-6 z-50">
+        {/* Menu options - apparaît quand showFloatingMenu est true */}
+        {showFloatingMenu && (
+          <div className="absolute bottom-16 right-0 flex flex-col gap-3 mb-2">
+            <Button
+              onClick={() => {
+                setLocation('/search');
+                setShowFloatingMenu(false);
+              }}
+              className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+              variant="ghost"
+            >
+              <Calendar className="w-6 h-6" />
+            </Button>
+            <Button
+              onClick={() => {
+                setLocation('/client-rdv');
+                setShowFloatingMenu(false);
+              }}
+              className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+              variant="ghost"
+            >
+              <CalendarDays className="w-6 h-6" />
+            </Button>
+            <Button
+              onClick={() => {
+                setLocation('/settings');
+                setShowFloatingMenu(false);
+              }}
+              className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+              variant="ghost"
+            >
+              <Settings className="w-6 h-6" />
+            </Button>
+            <Button
+              onClick={() => {
+                setLocation('/client-messaging');
+                setShowFloatingMenu(false);
+              }}
+              className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+              variant="ghost"
+            >
+              <MessageSquare className="w-6 h-6" />
+            </Button>
+          </div>
+        )}
 
-          <Button
-            variant="ghost"
-            onClick={() => handleTabChange('rdv')}
-            className={`flex flex-col items-center py-2 px-6 ${
-              activeTab === 'rdv' ? 'text-purple-600' : 'text-gray-400'
-            }`}
-          >
-            <div className="w-6 h-6 mb-1 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={activeTab === 'rdv' ? 'text-purple-600' : 'text-gray-400'}>
-                <path d="M8 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M16 2V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            onClick={() => handleTabChange('parametres')}
-            className={`flex flex-col items-center py-2 px-6 ${
-              activeTab === 'parametres' ? 'text-purple-600' : 'text-gray-400'
-            }`}
-          >
-            <div className="w-6 h-6 mb-1 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={activeTab === 'parametres' ? 'text-purple-600' : 'text-gray-400'}>
-                <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="flex flex-col items-center py-2 px-6 text-gray-400"
-          >
-            <div className="w-6 h-6 mb-1 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="flex flex-col items-center py-2 px-6 text-gray-400"
-          >
-            <div className="w-6 h-6 mb-1 flex items-center justify-center">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-400">
-                <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </Button>
-        </div>
+        {/* Bouton principal + */}
+        <Button
+          onClick={() => setShowFloatingMenu(!showFloatingMenu)}
+          className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center ${
+            showFloatingMenu 
+              ? 'bg-gray-600 hover:bg-gray-700 rotate-45' 
+              : 'bg-blue-600 hover:bg-blue-700'
+          }`}
+        >
+          <Plus className="w-7 h-7 text-white" />
+        </Button>
       </div>
+
+      {/* Overlay pour fermer le menu */}
+      {showFloatingMenu && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-20 z-40"
+          onClick={() => setShowFloatingMenu(false)}
+        />
+      )}
     </div>
   );
 }
