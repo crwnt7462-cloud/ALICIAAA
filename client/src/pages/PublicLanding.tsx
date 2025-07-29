@@ -343,8 +343,8 @@ export default function PublicLanding() {
                       whileHover={{ x: 20 }}
                       whileTap={{ scale: 0.95 }}
                     >
-                      <div className="py-4 border-b border-gray-100 group-hover:border-violet-200 transition-colors duration-300">
-                        <h2 className="text-lg font-medium text-gray-900 group-hover:text-violet-600 transition-colors duration-300">
+                      <div className="py-3 border-b border-gray-100 group-hover:border-violet-200 transition-colors duration-300">
+                        <h2 className="text-sm font-medium text-gray-900 group-hover:text-violet-600 transition-colors duration-300">
                           {item.label}
                         </h2>
                       </div>
