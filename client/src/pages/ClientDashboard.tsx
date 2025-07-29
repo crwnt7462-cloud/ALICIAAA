@@ -425,57 +425,65 @@ export default function ClientDashboard() {
     <div className="min-h-screen bg-gray-50">
       {renderContent()}
       
-      {/* Menu de navigation en bas - Style pro violet */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-        <div className="max-w-lg mx-auto">
-          <div className="grid grid-cols-4 gap-1">
+      {/* Navigation flottante violette - EXACTEMENT comme BottomNavigation.tsx des pros */}
+      <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
+        {/* Barre flottante violette plus longue */}
+        <div className="bg-violet-600 rounded-full shadow-lg px-8 py-2">
+          <div className="flex items-center gap-6">
             <button
               onClick={() => setActiveTab('accueil')}
-              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
                 activeTab === 'accueil'
-                  ? 'text-violet-600 bg-violet-50'
-                  : 'text-gray-600 hover:text-violet-600'
+                  ? 'text-white transform scale-105'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
-              <Home className="w-5 h-5 mb-1" />
-              <span>Accueil</span>
+              <Home className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Accueil</span>
             </button>
             
             <button
               onClick={() => setActiveTab('rdv')}
-              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
                 activeTab === 'rdv'
-                  ? 'text-violet-600 bg-violet-50'
-                  : 'text-gray-600 hover:text-violet-600'
+                  ? 'text-white transform scale-105'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
-              <CalendarDays className="w-5 h-5 mb-1" />
-              <span>Mes RDV</span>
+              <Calendar className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Planning</span>
             </button>
             
             <button
               onClick={() => setActiveTab('messages')}
-              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors relative ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
                 activeTab === 'messages'
-                  ? 'text-violet-600 bg-violet-50'
-                  : 'text-gray-600 hover:text-violet-600'
+                  ? 'text-white transform scale-105'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
-              <MessageCircle className="w-5 h-5 mb-1" />
-              <span>Messages</span>
-              <div className="absolute top-1 right-3 w-2 h-2 bg-red-500 rounded-full"></div>
+              <MessageCircle className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Messages</span>
             </button>
             
             <button
               onClick={() => setActiveTab('profil')}
-              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
                 activeTab === 'profil'
-                  ? 'text-violet-600 bg-violet-50'
-                  : 'text-gray-600 hover:text-violet-600'
+                  ? 'text-white transform scale-105'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
-              <User className="w-5 h-5 mb-1" />
-              <span>Profil</span>
+              <User className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Profil</span>
+            </button>
+            
+            <button
+              onClick={() => setLocation('/search')}
+              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 text-white/70 hover:text-white"
+            >
+              <Sparkles className="h-4 w-4" />
+              <span className="text-[10px] font-medium">Découvrir</span>
             </button>
           </div>
         </div>
