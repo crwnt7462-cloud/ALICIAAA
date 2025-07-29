@@ -427,12 +427,12 @@ export default function ClientDashboard() {
       
       {/* Navigation flottante violette - EXACTEMENT comme BottomNavigation.tsx des pros */}
       <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-        {/* Barre flottante violette plus longue */}
-        <div className="bg-violet-600 rounded-full shadow-lg px-8 py-2">
-          <div className="flex items-center gap-6">
+        {/* Barre flottante violette compacte */}
+        <div className="bg-violet-600 rounded-full shadow-lg px-4 py-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTab('accueil')}
-              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'accueil'
                   ? 'text-white transform scale-105'
                   : 'text-white/70 hover:text-white'
@@ -444,7 +444,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setActiveTab('rdv')}
-              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'rdv'
                   ? 'text-white transform scale-105'
                   : 'text-white/70 hover:text-white'
@@ -456,7 +456,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setActiveTab('messages')}
-              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'messages'
                   ? 'text-white transform scale-105'
                   : 'text-white/70 hover:text-white'
@@ -468,7 +468,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setActiveTab('profil')}
-              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'profil'
                   ? 'text-white transform scale-105'
                   : 'text-white/70 hover:text-white'
@@ -480,7 +480,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setLocation('/search')}
-              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 text-white/70 hover:text-white"
+              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 text-white/70 hover:text-white"
             >
               <Sparkles className="h-4 w-4" />
               <span className="text-[10px] font-medium">Découvrir</span>
