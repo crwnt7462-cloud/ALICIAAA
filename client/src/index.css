@@ -76,54 +76,55 @@
   }
 }
 
-/* Animations style ProQuote pour le menu (depuis la gauche) */
-@keyframes proquote-slide-bounce {
+/* Animations ProQuote exactes */
+@keyframes slide-in-left {
   0% {
+    transform: translateX(-100%) scale(0.95);
     opacity: 0;
-    transform: translateX(-100%) scale(0.9);
   }
-  70% {
-    transform: translateX(2%) scale(1.02);
+  60% {
+    transform: translateX(5px) scale(1.02);
   }
   100% {
-    opacity: 1;
     transform: translateX(0) scale(1);
+    opacity: 1;
   }
 }
 
-@keyframes proquote-fade-backdrop {
+@keyframes fade-in-backdrop {
   from {
-    opacity: 0;
     backdrop-filter: blur(0px);
+    background-color: rgba(0, 0, 0, 0);
   }
   to {
-    opacity: 1;
-    backdrop-filter: blur(6px);
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.5);
   }
 }
 
-@keyframes proquote-item-slide {
-  0% {
+@keyframes slide-in-staggered {
+  from {
+    transform: translateX(-25px);
     opacity: 0;
-    transform: translateX(-30px) translateY(5px);
   }
-  100% {
+  to {
+    transform: translateX(0);
     opacity: 1;
-    transform: translateX(0) translateY(0);
   }
 }
 
-/* Classes d'animation */
-.proquote-slide-bounce {
-  animation: proquote-slide-bounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+/* Classes utilitaires */
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.proquote-fade-backdrop {
-  animation: proquote-fade-backdrop 0.4s ease-out forwards;
+.animate-fade-in-backdrop {
+  animation: fade-in-backdrop 0.5s ease-out forwards;
 }
 
-.proquote-item-slide {
-  animation: proquote-item-slide 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+.animate-slide-in-staggered {
+  animation: slide-in-staggered 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
 }
 
 .animate-slide-up {

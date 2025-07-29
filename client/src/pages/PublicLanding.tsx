@@ -273,26 +273,22 @@ export default function PublicLanding() {
           isMenuOpen ? 'visible' : 'invisible'
         }`}
       >
-        {/* Backdrop animé avec blur progressif */}
+        {/* Backdrop ProQuote style */}
         <div 
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-400 ease-out ${
-            isMenuOpen ? 'opacity-100 backdrop-blur-md' : 'opacity-0 backdrop-blur-none'
+          className={`absolute inset-0 ${
+            isMenuOpen ? 'animate-fade-in-backdrop' : 'bg-transparent backdrop-blur-none'
           }`}
           onClick={closeMenu}
         />
         
-        {/* Panel principal avec animation slide-scale */}
+        {/* Panel principal avec animation ProQuote exacte */}
         <div 
           id="hamburger-menu"
-          className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-all duration-400 ${
+          className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl ${
             isMenuOpen 
-              ? 'translate-x-0 scale-100 opacity-100' 
-              : '-translate-x-full scale-95 opacity-0'
+              ? 'animate-slide-in-left' 
+              : 'transform -translate-x-full opacity-0'
           }`}
-          style={{
-            transformOrigin: 'left center',
-            transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-          }}
         >
           {/* Header épuré */}
           <div className="flex items-center justify-between p-6 border-b border-gray-100/80">
@@ -312,14 +308,10 @@ export default function PublicLanding() {
                 key={item.id}
                 onClick={() => handleMenuItemClick(item)}
                 className={`w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-gray-50/80 transition-all duration-200 group ${
-                  isMenuOpen 
-                    ? 'translate-x-0 opacity-100' 
-                    : 'translate-x-6 opacity-0'
+                  isMenuOpen ? 'animate-slide-in-staggered' : ''
                 }`}
                 style={{
-                  transitionDelay: isMenuOpen ? `${150 + index * 60}ms` : '0ms',
-                  transitionDuration: '500ms',
-                  transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+                  animationDelay: isMenuOpen ? `${200 + index * 80}ms` : '0ms'
                 }}
               >
                 <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-violet-100 group-hover:text-violet-600 transition-all duration-200">
