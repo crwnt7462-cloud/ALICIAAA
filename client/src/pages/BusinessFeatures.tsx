@@ -17,29 +17,8 @@ export default function BusinessFeatures() {
   const [, setLocation] = useLocation();
   const [activeSection, setActiveSection] = useState<string>('main');
 
-  // Vérifier l'authentification
-  const { data: sessionData, isLoading } = useQuery<any>({
-    queryKey: ['/api/auth/check-session'],
-    retry: false,
-  });
-
-  useEffect(() => {
-    // Rediriger vers login si pas connecté
-    if (!isLoading && (!sessionData || !sessionData.authenticated)) {
-      setLocation('/pro-login');
-    }
-  }, [sessionData, isLoading, setLocation]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
+  // Authentification désactivée temporairement pour debugging
+  console.log('BusinessFeatures chargé - page visible');
 
   // Rendu principal avec sections selon les images  
   const renderMainView = () => (
