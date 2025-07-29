@@ -197,11 +197,6 @@ export default function ModernSalonDetail() {
       console.log('🎨 PAGE PUBLIQUE - Couleurs appliquées:', customColors);
     }
   }, [salonData?.customColors]);
-  const customColors = salonData?.customColors || {
-    primary: '#7c3aed',
-    accent: '#a855f7', 
-    buttonText: '#ffffff'
-  };
 
 
 
@@ -313,17 +308,17 @@ export default function ModernSalonDetail() {
                             <h4 className="font-medium text-white mb-1">{service.name}</h4>
                             <p className="text-sm text-gray-400">{service.price}€ • {service.duration}</p>
                           </div>
-                          <Button 
+                          <button 
                             onClick={() => setLocation('/salon-booking')}
-                            className="rounded-full px-6 py-2 text-sm font-medium !text-current"
+                            className="rounded-full px-6 py-2 text-sm font-medium border-none outline-none cursor-pointer"
                             style={{ 
-                              backgroundColor: customColors.primary,
-                              color: customColors.buttonText,
-                              borderColor: customColors.primary
+                              backgroundColor: customColors.primary + ' !important',
+                              color: customColors.buttonText + ' !important',
+                              border: 'none'
                             }}
                           >
                             Choisir
-                          </Button>
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -444,18 +439,18 @@ export default function ModernSalonDetail() {
 
         {/* Bouton de réservation fixe - plus compact */}
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
-          <Button 
+          <button 
             onClick={() => setLocation('/salon-booking')}
-            className="w-full h-10 text-sm font-medium rounded-lg !text-current"
+            className="w-full h-10 text-sm font-medium rounded-lg border-none outline-none cursor-pointer flex items-center justify-center"
             style={{ 
-              backgroundColor: customColors.primary,
-              color: customColors.buttonText,
-              borderColor: customColors.primary
+              backgroundColor: customColors.primary + ' !important',
+              color: customColors.buttonText + ' !important',
+              border: 'none'
             }}
           >
             <Calendar className="w-3 h-3 mr-2" style={{ color: customColors.buttonText }} />
             Réserver maintenant
-          </Button>
+          </button>
         </div>
       </div>
     </div>
