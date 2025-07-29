@@ -60,80 +60,26 @@ export default function BusinessFeatures() {
           </Button>
         </div>
 
-        {/* Carte MA PAGE - BOUTON PRINCIPAL */}
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-orange-100 to-orange-200/50 border-4 border-orange-500">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-lg font-semibold text-gray-900">Ma Page Salon</h2>
-                  <Badge className="bg-orange-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                    NOUVEAU
-                  </Badge>
-                </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Gérez votre page salon publique et personnalisez-la
-                </p>
-                
-                <Button 
-                  onClick={() => {
-                    console.log('Navigation vers /salon');
-                    setLocation('/salon');
-                  }}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 rounded-lg"
-                >
-                  MODIFIER MA PAGE
-                </Button>
-              </div>
+        {/* BOUTON MA PAGE - ULTRA VISIBLE */}
+        <Card className="border-4 border-red-500 shadow-lg bg-gradient-to-br from-orange-100 to-orange-200">
+          <CardContent className="p-8 text-center">
+            <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Globe className="h-8 w-8 text-white" />
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Carte Messagerie Pro */}
-        <Card className="border-0 shadow-sm bg-gradient-to-br from-gray-50 to-violet-50/30">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-violet-600 rounded-2xl flex items-center justify-center">
-                <MessageCircle className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <h2 className="text-lg font-semibold text-gray-900">Messagerie Pro</h2>
-                  <Crown className="h-4 w-4 text-violet-600" />
-                  <Badge className="bg-violet-600 text-white px-2 py-1 text-xs font-medium rounded-full">
-                    Premium
-                  </Badge>
-                </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Communiquez directement avec vos clients
-                </p>
-                
-                <div className="grid grid-cols-3 gap-4 mb-4">
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-violet-600 mb-1">24h</div>
-                    <div className="text-xs text-gray-600">Réponse rapide</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-violet-600 mb-1">∞</div>
-                    <div className="text-xs text-gray-600">Messages illimités</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-xl font-bold text-violet-600 mb-1">100%</div>
-                    <div className="text-xs text-gray-600">Sécurisé</div>
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={() => setLocation('/pro-messaging')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg"
-                >
-                  Messages
-                </Button>
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">MA PAGE SALON</h2>
+            <p className="text-gray-600 text-lg mb-6">
+              Modifiez votre page publique
+            </p>
+            
+            <Button 
+              onClick={() => {
+                console.log('🔥 CLIC SUR MA PAGE - Navigation vers /salon');
+                setLocation('/salon');
+              }}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-lg text-xl"
+            >
+              🔥 MODIFIER MA PAGE 🔥
+            </Button>
           </CardContent>
         </Card>
 
