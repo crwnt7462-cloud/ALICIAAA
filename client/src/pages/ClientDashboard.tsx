@@ -227,7 +227,7 @@ export default function ClientDashboard() {
         {/* Menu radial qui se déploie en arc */}
         {showFloatingMenu && (
           <div className="absolute inset-0 w-14 h-14">
-            {/* Bouton 1 - en haut à gauche */}
+            {/* Bouton 1 - Orange/Rouge */}
             <div 
               className={`absolute transition-all duration-300 ease-out ${
                 showFloatingMenu 
@@ -243,14 +243,13 @@ export default function ClientDashboard() {
                   setLocation('/search');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
-                variant="ghost"
+                className="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 shadow-lg text-white flex items-center justify-center"
               >
                 <Calendar className="w-5 h-5" />
               </Button>
             </div>
 
-            {/* Bouton 2 - en haut */}
+            {/* Bouton 2 - Vert */}
             <div 
               className={`absolute transition-all duration-300 ease-out ${
                 showFloatingMenu 
@@ -266,14 +265,13 @@ export default function ClientDashboard() {
                   setLocation('/client-rdv');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
-                variant="ghost"
+                className="w-12 h-12 rounded-full bg-green-500 hover:bg-green-600 shadow-lg text-white flex items-center justify-center"
               >
                 <CalendarDays className="w-5 h-5" />
               </Button>
             </div>
 
-            {/* Bouton 3 - en haut à droite */}
+            {/* Bouton 3 - Rouge/Rose */}
             <div 
               className={`absolute transition-all duration-300 ease-out ${
                 showFloatingMenu 
@@ -289,14 +287,13 @@ export default function ClientDashboard() {
                   setLocation('/settings');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
-                variant="ghost"
+                className="w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-600 shadow-lg text-white flex items-center justify-center"
               >
                 <Settings className="w-5 h-5" />
               </Button>
             </div>
 
-            {/* Bouton 4 - à gauche */}
+            {/* Bouton 4 - Violet */}
             <div 
               className={`absolute transition-all duration-300 ease-out ${
                 showFloatingMenu 
@@ -312,8 +309,7 @@ export default function ClientDashboard() {
                   setLocation('/client-messaging');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
-                variant="ghost"
+                className="w-12 h-12 rounded-full bg-purple-500 hover:bg-purple-600 shadow-lg text-white flex items-center justify-center"
               >
                 <MessageSquare className="w-5 h-5" />
               </Button>
