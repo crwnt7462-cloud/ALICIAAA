@@ -38,6 +38,11 @@ interface SalonData {
   awards: string[];
   longDescription: string;
   serviceCategories: any[];
+  customColors?: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+  };
 }
 
 
@@ -178,6 +183,18 @@ export default function ModernSalonDetail() {
     longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
   };
 
+  // Couleurs personnalisées depuis l'API
+  const customColors = salonData?.customColors || {
+    primary: '#7c3aed',
+    accent: '#a855f7', 
+    buttonText: '#ffffff'
+  };
+  const customColors = salonData?.customColors || {
+    primary: '#7c3aed',
+    accent: '#a855f7', 
+    buttonText: '#ffffff'
+  };
+
 
 
   const reviews: Review[] = [
@@ -248,9 +265,10 @@ export default function ModernSalonDetail() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-3 text-sm font-medium transition-colors ${
                   activeTab === tab.id
-                    ? 'text-white border-b-2 border-violet-600'
+                    ? 'text-white border-b-2'
                     : 'text-gray-400 hover:text-gray-300'
                 }`}
+                style={activeTab === tab.id ? { borderBottomColor: customColors.primary } : {}}
               >
                 {tab.label}
               </button>
@@ -289,7 +307,11 @@ export default function ModernSalonDetail() {
                           </div>
                           <Button 
                             onClick={() => setLocation('/salon-booking')}
-                            className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 text-sm font-medium"
+                            className="rounded-full px-6 py-2 text-sm font-medium"
+                            style={{ 
+                              backgroundColor: customColors.primary,
+                              color: customColors.buttonText
+                            }}
                           >
                             Choisir
                           </Button>
@@ -415,7 +437,11 @@ export default function ModernSalonDetail() {
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
           <Button 
             onClick={() => setLocation('/salon-booking')}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white h-10 text-sm font-medium rounded-lg"
+            className="w-full h-10 text-sm font-medium rounded-lg"
+            style={{ 
+              backgroundColor: customColors.primary,
+              color: customColors.buttonText
+            }}
           >
             <Calendar className="w-3 h-3 mr-2" />
             Réserver maintenant

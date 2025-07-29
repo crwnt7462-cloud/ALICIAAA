@@ -57,6 +57,11 @@ interface SalonData {
   verified: boolean;
   certifications: string[];
   awards: string[];
+  customColors?: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+  };
 }
 
 export default function SalonPageEditor() {
@@ -91,6 +96,11 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
       'Prix de l\'Innovation Beauté 2022',
       'Certification Éco-responsable'
     ],
+    customColors: {
+      primary: '#7c3aed', // violet-600 par défaut
+      accent: '#a855f7',  // violet-500 par défaut
+      buttonText: '#ffffff' // blanc par défaut
+    },
     serviceCategories: [
       {
         id: 1,
@@ -181,6 +191,29 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
       [field]: value
     }));
   };
+
+  // Gestion des couleurs personnalisées
+  const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText', color: string) => {
+    setSalonData(prev => ({
+      ...prev,
+      customColors: {
+        ...prev.customColors,
+        [colorType]: color
+      }
+    }));
+  };
+
+  // Couleurs prédéfinies
+  const predefinedColors = [
+    '#7c3aed', // violet
+    '#ef4444', // rouge
+    '#22c55e', // vert  
+    '#3b82f6', // bleu
+    '#f59e0b', // orange
+    '#ec4899', // rose
+    '#06b6d4', // cyan
+    '#8b5cf6', // purple
+  ];
 
   // Gestion de l'upload de photo de couverture
   const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -450,7 +483,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         {/* Navigation par onglets */}
         <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
           <div className="flex">
-            {['services', 'infos', 'avis'].map((tab) => (
+            {['services', 'couleurs', 'infos', 'avis'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -461,6 +494,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 }`}
               >
                 {tab === 'services' && 'Services'}
+                {tab === 'couleurs' && 'Couleurs'}
                 {tab === 'infos' && 'Infos'}
                 {tab === 'avis' && 'Avis'}
               </button>
@@ -577,6 +611,147 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          )}
+
+          {activeTab === 'couleurs' && (
+            <div className="space-y-6">
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-gray-900 mb-4">🎨 Personnaliser les couleurs</h3>
+                  <p className="text-gray-600 text-sm mb-6">
+                    Personnalisez les couleurs de votre salon pour refléter votre identité visuelle.
+                  </p>
+
+                  <div className="space-y-6">
+                    {/* Couleur principale */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Couleur principale (boutons et liens)
+                      </label>
+                      <div className="flex items-center gap-3 mb-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.primary || '#7c3aed'}
+                          onChange={(e) => updateCustomColor('primary', e.target.value)}
+                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={salonData.customColors?.primary || '#7c3aed'}
+                          onChange={(e) => updateCustomColor('primary', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                          placeholder="#7c3aed"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {predefinedColors.map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => updateCustomColor('primary', color)}
+                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Couleur d'accent */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Couleur d'accent (hover et bordures)
+                      </label>
+                      <div className="flex items-center gap-3 mb-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.accent || '#a855f7'}
+                          onChange={(e) => updateCustomColor('accent', e.target.value)}
+                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={salonData.customColors?.accent || '#a855f7'}
+                          onChange={(e) => updateCustomColor('accent', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                          placeholder="#a855f7"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {predefinedColors.map((color, index) => (
+                          <button
+                            key={index}
+                            onClick={() => updateCustomColor('accent', color)}
+                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
+                            style={{ backgroundColor: color }}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Couleur du texte des boutons */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Couleur du texte des boutons
+                      </label>
+                      <div className="flex items-center gap-3 mb-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.buttonText || '#ffffff'}
+                          onChange={(e) => updateCustomColor('buttonText', e.target.value)}
+                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={salonData.customColors?.buttonText || '#ffffff'}
+                          onChange={(e) => updateCustomColor('buttonText', e.target.value)}
+                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                          placeholder="#ffffff"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => updateCustomColor('buttonText', '#ffffff')}
+                          className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors bg-white"
+                          title="Blanc #ffffff"
+                        />
+                        <button
+                          onClick={() => updateCustomColor('buttonText', '#000000')}
+                          className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors bg-black"
+                          title="Noir #000000"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Aperçu */}
+                    <div className="pt-4 border-t border-gray-200">
+                      <h4 className="font-medium text-gray-900 mb-3">Aperçu</h4>
+                      <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                        <Button 
+                          className="w-full"
+                          style={{ 
+                            backgroundColor: salonData.customColors?.primary || '#7c3aed',
+                            color: salonData.customColors?.buttonText || '#ffffff'
+                          }}
+                        >
+                          Réserver maintenant
+                        </Button>
+                        <div 
+                          className="p-3 rounded-lg border-2"
+                          style={{ 
+                            borderColor: salonData.customColors?.accent || '#a855f7'
+                          }}
+                        >
+                          <span style={{ color: salonData.customColors?.primary || '#7c3aed' }}>
+                            Exemple de texte avec couleur principale
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
