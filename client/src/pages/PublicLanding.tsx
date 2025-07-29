@@ -325,93 +325,54 @@ export default function PublicLanding() {
                 </motion.button>
               </div>
 
-              {/* Navigation principal */}
-              <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto px-6">
-                <nav className="space-y-2">
+              {/* Navigation simple et épurée */}
+              <div className="flex-1 flex flex-col justify-center max-w-2xl mx-auto px-6">
+                <nav className="space-y-4">
                   {menuItems.map((item, index) => (
                     <motion.button
                       key={item.id}
                       onClick={() => handleMenuItemClick(item)}
-                      className="w-full group text-left"
-                      initial={{ x: -50, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
+                      className="w-full text-left group"
+                      initial={{ y: 30, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
                       transition={{ 
-                        delay: 0.1 + index * 0.1,
-                        duration: 0.6,
-                        type: "spring",
-                        stiffness: 200,
-                        damping: 20
+                        delay: 0.2 + index * 0.1,
+                        duration: 0.5,
+                        ease: "easeOut"
                       }}
-                      whileHover={{ scale: 1.02, x: 10 }}
-                      whileTap={{ scale: 0.98 }}
+                      whileHover={{ x: 20 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <div className="flex items-center gap-6 py-6 px-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 group">
-                        <motion.div 
-                          className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center text-violet-600"
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                        >
-                          {item.icon}
-                        </motion.div>
-                        <div className="flex-1">
-                          <h3 className="text-2xl font-semibold text-gray-900 group-hover:text-violet-600 transition-colors duration-300">
-                            {item.label}
-                          </h3>
-                          <p className="text-gray-500 mt-1">
-                            {item.id === 'client-login' ? 'Accéder à votre espace personnel' :
-                             item.id === 'login' ? 'Interface pour les professionnels' :
-                             item.id === 'pro' ? 'Rejoindre notre réseau de partenaires' :
-                             'Découvrir nos services de qualité'}
-                          </p>
-                        </div>
-                        <motion.div
-                          className="text-gray-400 group-hover:text-violet-600"
-                          whileHover={{ x: 5 }}
-                        >
-                          <ArrowRight className="w-6 h-6" />
-                        </motion.div>
+                      <div className="py-6 border-b border-gray-100 group-hover:border-violet-200 transition-colors duration-300">
+                        <h2 className="text-4xl md:text-5xl font-light text-gray-900 group-hover:text-violet-600 transition-colors duration-300">
+                          {item.label}
+                        </h2>
                       </div>
                     </motion.button>
                   ))}
                 </nav>
               </div>
 
-              {/* Footer du menu */}
+              {/* Footer simple */}
               <motion.div 
-                className="p-6 border-t border-gray-100"
-                initial={{ y: 50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
+                className="p-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.4 }}
               >
-                <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="text-center sm:text-left">
-                    <p className="text-gray-600 mb-2">Une question ? Besoin d'aide ?</p>
-                    <Button 
-                      variant="outline" 
-                      className="border-violet-200 text-violet-600 hover:bg-violet-50"
+                <div className="max-w-2xl mx-auto text-center">
+                  <p className="text-gray-500 text-sm">
+                    Une question ? 
+                    <button 
+                      className="text-violet-600 hover:text-violet-700 ml-2 underline"
                       onClick={() => {
                         setLocation('/support');
                         closeMenu();
                       }}
                     >
-                      Contacter le support
-                    </Button>
-                  </div>
-                  <div className="flex gap-4">
-                    <motion.button
-                      className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Phone className="w-5 h-5 text-gray-600" />
-                    </motion.button>
-                    <motion.button
-                      className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Share2 className="w-5 h-5 text-gray-600" />
-                    </motion.button>
-                  </div>
+                      Contactez-nous
+                    </button>
+                  </p>
                 </div>
               </motion.div>
             </motion.div>
