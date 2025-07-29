@@ -190,23 +190,27 @@ export default function ModernSalonDetail() {
     buttonText: '#ffffff'
   };
 
-  // Debug des couleurs reçues
+  // FORCER LES COULEURS - SYSTÈME BRUTAL
   useEffect(() => {
     if (salonData?.customColors) {
-      console.log('🎨 PAGE PUBLIQUE - Couleurs reçues de l\'API:', salonData.customColors);
-      console.log('🎨 PAGE PUBLIQUE - Couleurs appliquées:', customColors);
+      console.log('🎨 PAGE PUBLIQUE - Couleurs reçues:', salonData.customColors);
       
-      // Forcer l'application des styles sur tous les boutons
-      const buttons = document.querySelectorAll('[data-color-button="true"]');
-      buttons.forEach((button: any) => {
-        if (button) {
-          button.style.backgroundColor = customColors.primary;
-          button.style.color = customColors.buttonText;
-          button.style.borderColor = customColors.primary;
-        }
-      });
+      // Attendre que les éléments soient rendus puis forcer les styles
+      setTimeout(() => {
+        // Sélectionner TOUS les boutons de réservation
+        const allButtons = document.querySelectorAll('button');
+        allButtons.forEach((button: any) => {
+          const text = button.textContent?.toLowerCase() || '';
+          if (text.includes('choisir') || text.includes('réserver')) {
+            console.log('🔧 FORÇAGE couleur sur bouton:', text, '→', salonData.customColors.primary);
+            button.style.setProperty('background-color', salonData.customColors.primary, 'important');
+            button.style.setProperty('color', salonData.customColors.buttonText, 'important');
+            button.style.setProperty('border-color', salonData.customColors.primary, 'important');
+          }
+        });
+      }, 100);
     }
-  }, [salonData?.customColors, customColors]);
+  }, [salonData]);
 
 
 
@@ -318,19 +322,16 @@ export default function ModernSalonDetail() {
                             <h4 className="font-medium text-white mb-1">{service.name}</h4>
                             <p className="text-sm text-gray-400">{service.price}€ • {service.duration}</p>
                           </div>
-                          <button 
+                          <div 
                             onClick={() => setLocation('/salon-booking')}
-                            className="rounded-full px-6 py-2 text-sm font-medium border-none outline-none cursor-pointer"
-                            data-color-button="true"
+                            className="rounded-full px-6 py-2 text-sm font-medium cursor-pointer text-center"
                             style={{ 
-                              backgroundColor: customColors.primary,
-                              color: customColors.buttonText,
-                              border: 'none',
-                              boxShadow: 'none'
+                              backgroundColor: salonData?.customColors?.primary || '#3b82f6',
+                              color: salonData?.customColors?.buttonText || '#ffffff'
                             }}
                           >
                             Choisir
-                          </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -451,20 +452,17 @@ export default function ModernSalonDetail() {
 
         {/* Bouton de réservation fixe - plus compact */}
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
-          <button 
+          <div 
             onClick={() => setLocation('/salon-booking')}
-            className="w-full h-10 text-sm font-medium rounded-lg border-none outline-none cursor-pointer flex items-center justify-center"
-            data-color-button="true"
+            className="w-full h-10 text-sm font-medium rounded-lg cursor-pointer flex items-center justify-center"
             style={{ 
-              backgroundColor: customColors.primary,
-              color: customColors.buttonText,
-              border: 'none',
-              boxShadow: 'none'
+              backgroundColor: salonData?.customColors?.primary || '#3b82f6',
+              color: salonData?.customColors?.buttonText || '#ffffff'
             }}
           >
-            <Calendar className="w-3 h-3 mr-2" style={{ color: customColors.buttonText }} />
+            <Calendar className="w-3 h-3 mr-2" style={{ color: salonData?.customColors?.buttonText || '#ffffff' }} />
             Réserver maintenant
-          </button>
+          </div>
         </div>
       </div>
     </div>
