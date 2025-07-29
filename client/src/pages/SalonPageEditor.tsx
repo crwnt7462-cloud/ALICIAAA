@@ -145,11 +145,16 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
   useEffect(() => {
     if (currentSalon && typeof currentSalon === 'object') {
-      console.log('📖 Données salon récupérées depuis l\'API:', currentSalon.id || 'salon-demo');
       const salon = currentSalon as any;
+      console.log('📖 Données salon récupérées depuis l\'API:', salon.id || 'salon-demo');
       setSalonData(prev => ({
         ...prev,
-        ...salon
+        ...salon,
+        customColors: salon.customColors || {
+          primary: '#7c3aed',
+          accent: '#a855f7',
+          buttonText: '#ffffff'
+        }
       }));
     }
   }, [currentSalon]);
@@ -168,6 +173,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
       });
       // Invalider les caches pour forcer le rechargement
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages', 'salon-demo'] });
       queryClient.invalidateQueries({ queryKey: ['/api/booking-pages/salon-demo'] });
     },
     onError: (error: any) => {
@@ -182,6 +188,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
   const handleSave = () => {
     console.log('💾 Déclenchement sauvegarde salon:', salonData.id);
+    console.log('🎨 Couleurs à sauvegarder:', salonData.customColors);
     saveMutation.mutate(salonData);
   };
 
@@ -194,10 +201,13 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
   // Gestion des couleurs personnalisées
   const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText', color: string) => {
+    console.log('🎨 Mise à jour couleur:', colorType, '=', color);
     setSalonData(prev => ({
       ...prev,
       customColors: {
-        ...prev.customColors,
+        primary: prev.customColors?.primary || '#7c3aed',
+        accent: prev.customColors?.accent || '#a855f7',
+        buttonText: prev.customColors?.buttonText || '#ffffff',
         [colorType]: color
       }
     }));

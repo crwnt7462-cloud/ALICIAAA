@@ -60,7 +60,7 @@ export default function ModernSalonDetail() {
     queryKey: ['/api/booking-pages', salonId],
     retry: 2,
     refetchOnWindowFocus: false,
-    staleTime: 30000 // Cache 30 secondes
+    staleTime: 5000 // Cache seulement 5 secondes pour voir les changements plus vite
   });
   
   // Données de fallback si API échoue
@@ -189,6 +189,13 @@ export default function ModernSalonDetail() {
     accent: '#a855f7', 
     buttonText: '#ffffff'
   };
+
+  // Debug des couleurs reçues
+  useEffect(() => {
+    if (salonData?.customColors) {
+      console.log('🎨 PAGE PUBLIQUE - Couleurs reçues de l\'API:', salonData.customColors);
+    }
+  }, [salonData?.customColors]);
   const customColors = salonData?.customColors || {
     primary: '#7c3aed',
     accent: '#a855f7', 
