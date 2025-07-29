@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -30,6 +31,20 @@ interface Review {
 export default function ModernSalonDetail() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
+  const [location] = useLocation();
+  
+  // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
+  const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
+  
+  // Récupérer les vraies données du salon depuis l'API
+  const { data: salonData, isLoading } = useQuery({
+    queryKey: ['/api/booking-pages', salonId],
+    retry: 2,
+    refetchOnWindowFocus: false,
+    staleTime: 30000 // Cache 30 secondes
+  });
+  
+  // Données de fallback si API échoue
   const [serviceCategories, setServiceCategories] = useState([
     {
       id: 1,
@@ -119,24 +134,34 @@ export default function ModernSalonDetail() {
     }
   ]);
 
+  // Effect pour mettre à jour les données depuis l'API
+  useEffect(() => {
+    if (salonData && salonData.serviceCategories) {
+      console.log('🔄 MISE À JOUR PAGE PUBLIQUE avec données API:', salonData.name);
+      setServiceCategories(salonData.serviceCategories);
+    }
+  }, [salonData]);
+
+  // Utiliser les vraies données de l'API ou fallback
   const salon = {
-    id: 1,
-    name: "Excellence Paris",
-    rating: 4.8,
-    reviews: 247,
-    address: "15 Avenue des Champs-Élysées, 75008 Paris",
-    phone: "01 42 25 76 89",
-    verified: true,
-    certifications: [
+    id: salonData?.id || 1,
+    name: salonData?.name || "Excellence Paris",
+    rating: salonData?.rating || 4.8,
+    reviews: salonData?.reviews || 247,
+    address: salonData?.address || "15 Avenue des Champs-Élysées, 75008 Paris",
+    phone: salonData?.phone || "01 42 25 76 89",
+    verified: salonData?.verified || true,
+    certifications: salonData?.certifications || [
       "Salon labellisé L'Oréal Professionnel",
       "Formation continue Kérastase",
       "Certification bio Shu Uemura"
     ],
-    awards: [
+    awards: salonData?.awards || [
       "Élu Meilleur Salon Paris 8ème 2023",
       "Prix de l'Innovation Beauté 2022",
       "Certification Éco-responsable"
-    ]
+    ],
+    longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
   };
 
 
@@ -325,15 +350,9 @@ export default function ModernSalonDetail() {
           {activeTab === 'infos' && (
             <div className="space-y-6">
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-                <h3 className="text-lg font-medium text-white mb-4">Histoire du salon</h3>
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                  Fondé en 2015 par Marie Dubois, passionnée de beauté et diplômée de l'École Française de Coiffure, 
-                  notre salon s'est rapidement imposé comme une référence dans le quartier. Notre philosophie repose 
-                  sur l'excellence technique, l'innovation et l'écoute de nos clients.
-                </p>
-                <p className="text-gray-300 text-sm leading-relaxed">
-                  Nous travaillons exclusivement avec des marques premium comme L'Oréal Professionnel, 
-                  Kérastase et Shu Uemura pour garantir des résultats exceptionnels à chaque visite.
+                <h3 className="text-lg font-medium text-white mb-4">À propos du salon</h3>
+                <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
+                  {salon.longDescription}
                 </p>
               </div>
                 
