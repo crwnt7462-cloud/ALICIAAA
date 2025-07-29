@@ -77,17 +77,30 @@ export default function BusinessFeatures() {
               <div className="text-sm font-mono text-blue-600 break-all">
                 {window.location.origin}/salon/salon-demo
               </div>
-              <Button 
-                size="sm" 
-                variant="ghost" 
-                className="mt-2 text-xs"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/salon/salon-demo`);
-                  toast({ title: "Lien copié !" });
-                }}
-              >
-                Copier le lien
-              </Button>
+              <div className="flex gap-2 mt-2">
+                <Button 
+                  size="sm" 
+                  variant="ghost" 
+                  className="text-xs"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/salon/salon-demo`);
+                    toast({ title: "Lien copié !" });
+                  }}
+                >
+                  Copier le lien
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="text-xs"
+                  onClick={() => {
+                    console.log('🔗 OUVERTURE SALON PUBLIC depuis lien partage');
+                    window.open('/salon/salon-demo', '_blank');
+                  }}
+                >
+                  Voir la page
+                </Button>
+              </div>
             </div>
             
             <Button 
@@ -127,8 +140,8 @@ export default function BusinessFeatures() {
               variant="ghost"
               className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl border-2 border-orange-500"
               onClick={() => {
-                console.log('Bouton Ma Page cliqué!');
-                setLocation('/salon');
+                console.log('🔗 LIEN SALON - Vers page publique salon-demo');
+                window.open('/salon/salon-demo', '_blank');
               }}
             >
               <Globe className="h-5 w-5 text-orange-600" />
