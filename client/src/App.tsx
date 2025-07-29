@@ -444,6 +444,15 @@ function Router() {
     );
   }
 
+  // Page salon professionnelle - modification existante
+  if (location === '/salon') {
+    return (
+      <div className="h-full">
+        <SalonPage pageUrl="salon-demo" />
+      </div>
+    );
+  }
+
   // Tests système
   if (location === '/system-test') {
     return (

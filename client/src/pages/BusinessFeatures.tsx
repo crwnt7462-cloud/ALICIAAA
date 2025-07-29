@@ -150,10 +150,10 @@ export default function BusinessFeatures() {
             <Button
               variant="ghost"
               className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
-              onClick={() => toast({ title: "Pages", description: "Section supprimée" })}
+              onClick={() => setLocation('/salon')}
             >
               <Globe className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Pages</span>
+              <span className="text-xs font-medium text-gray-700">Ma Page</span>
             </Button>
 
             <Button

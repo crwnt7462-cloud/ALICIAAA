@@ -47,16 +47,18 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
   });
 
   // Filtrer les services selon ceux sélectionnés par le salon
-  const availableServices = allServices.filter((service: any) => 
-    pageData?.selectedServices?.includes(service.id)
-  );
+  const availableServices = Array.isArray(allServices) ? allServices.filter((service: any) => 
+    pageData && pageData.selectedServices && Array.isArray(pageData.selectedServices) ? 
+    pageData.selectedServices.includes(service.id) : false
+  ) : [];
 
   const selectedService = availableServices.find((s: any) => s.id.toString() === formData.serviceId);
 
   // Calculer l'acompte
   useEffect(() => {
-    if (selectedService && pageData?.requireDeposit) {
-      const deposit = Math.round((selectedService.price * (pageData.depositPercentage || 30)) / 100);
+    if (selectedService && pageData && pageData.requireDeposit) {
+      const depositPercentage = pageData.depositPercentage || 30;
+      const deposit = Math.round((selectedService.price * depositPercentage) / 100);
       setFormData(prev => ({ ...prev, depositAmount: deposit }));
     }
   }, [selectedService, pageData]);
@@ -173,10 +175,13 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
     );
   }
 
+  const primaryColor = pageData?.primaryColor || '#8b5cf6';
+  const secondaryColor = pageData?.secondaryColor || '#f59e0b';
+  
   const styles = {
-    background: `linear-gradient(135deg, ${pageData.primaryColor}20, ${pageData.secondaryColor}20)`,
-    headerBg: `linear-gradient(135deg, ${pageData.primaryColor}, ${pageData.secondaryColor})`,
-    buttonBg: `linear-gradient(to right, ${pageData.primaryColor}, ${pageData.secondaryColor})`
+    background: `linear-gradient(135deg, ${primaryColor}20, ${secondaryColor}20)`,
+    headerBg: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+    buttonBg: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`
   };
 
   return (
@@ -190,25 +195,25 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
         style={{ background: styles.headerBg }}
       >
         <div className="max-w-2xl mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-3">{pageData.salonName}</h1>
-          {pageData.salonDescription && (
+          <h1 className="text-3xl font-bold mb-3">{pageData?.salonName || 'Mon Salon'}</h1>
+          {pageData?.salonDescription && (
             <p className="text-lg opacity-90 mb-4">{pageData.salonDescription}</p>
           )}
           
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            {pageData.salonAddress && (
+            {pageData?.salonAddress && (
               <div className="flex items-center">
                 <MapPin className="w-4 h-4 mr-2" />
                 {pageData.salonAddress}
               </div>
             )}
-            {pageData.salonPhone && (
+            {pageData?.salonPhone && (
               <div className="flex items-center">
                 <Phone className="w-4 h-4 mr-2" />
                 {pageData.salonPhone}
               </div>
             )}
-            {pageData.salonEmail && (
+            {pageData?.salonEmail && (
               <div className="flex items-center">
                 <Mail className="w-4 h-4 mr-2" />
                 {pageData.salonEmail}
@@ -224,7 +229,7 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
           <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Sparkles className="w-5 h-5 mr-2" style={{ color: pageData.primaryColor }} />
+                <Sparkles className="w-5 h-5 mr-2" style={{ color: primaryColor }} />
                 Nos services
               </CardTitle>
             </CardHeader>
