@@ -16,38 +16,15 @@ export default function PublicLanding() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentWord, setCurrentWord] = useState(0);
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(true);
   
   const words = ["beauté", "barber", "cils", "manucure"];
   
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-    const currentFullWord = words[currentWord];
-    
-    if (isTyping) {
-      // Animation machine à écrire
-      if (displayedText.length < currentFullWord.length) {
-        timeout = setTimeout(() => {
-          setDisplayedText(currentFullWord.slice(0, displayedText.length + 1));
-        }, 100);
-      } else {
-        // Mot complet, attendre avant de passer au suivant
-        timeout = setTimeout(() => {
-          setIsTyping(false);
-          setDisplayedText("");
-          setCurrentWord((prev) => (prev + 1) % words.length);
-        }, 2000);
-      }
-    } else {
-      // Petit délai avant de commencer à taper le nouveau mot
-      timeout = setTimeout(() => {
-        setIsTyping(true);
-      }, 200);
-    }
-    
-    return () => clearTimeout(timeout);
-  }, [currentWord, displayedText, isTyping, words]);
+    const interval = setInterval(() => {
+      setCurrentWord((prev) => (prev + 1) % words.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [words.length]);
 
   const handleSearchService = (service: string) => {
     setLocation(`/services/${service}`);
@@ -500,27 +477,30 @@ export default function PublicLanding() {
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
               <span className="inline-block border-2 border-violet-500 bg-violet-50 text-violet-700 px-3 py-1 rounded-lg relative overflow-hidden min-w-[120px] text-center">
-                <motion.span
-                  key={`${currentWord}-${displayedText}`}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ 
-                    type: "spring",
-                    stiffness: 400,
-                    damping: 25,
-                    duration: 0.3
-                  }}
-                  className="inline-block"
-                >
-                  {displayedText}
+                <AnimatePresence mode="wait">
                   <motion.span
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 0.8, repeat: Infinity }}
-                    className="inline-block ml-0.5"
+                    key={currentWord}
+                    className="inline-block"
                   >
-                    |
+                    {words[currentWord].split('').map((letter, index) => (
+                      <motion.span
+                        key={`${currentWord}-${index}`}
+                        initial={{ y: 30, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        exit={{ y: -30, opacity: 0 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 20,
+                          delay: index * 0.05
+                        }}
+                        className="inline-block"
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
                   </motion.span>
-                </motion.span>
+                </AnimatePresence>
               </span>
             </h1>
             <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
