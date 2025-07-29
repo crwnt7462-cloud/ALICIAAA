@@ -222,72 +222,115 @@ export default function ClientDashboard() {
       {/* Contenu principal */}
       {renderContent()}
 
-      {/* Floating Action Button - Animation exacte du GIF */}
+      {/* Floating Action Button - Animation radiale comme le GIF */}
       <div className="fixed bottom-6 right-6 z-50">
-        {/* Menu flottant qui apparaît */}
+        {/* Menu radial qui se déploie en arc */}
         {showFloatingMenu && (
-          <div className="absolute bottom-16 right-0 space-y-3 mb-2">
-            <div className="animate-in slide-in-from-bottom-1 fade-in duration-150 delay-0">
+          <div className="absolute inset-0 w-14 h-14">
+            {/* Bouton 1 - en haut à gauche */}
+            <div 
+              className={`absolute transition-all duration-300 ease-out ${
+                showFloatingMenu 
+                  ? 'transform -translate-x-16 -translate-y-8 opacity-100 scale-100' 
+                  : 'transform translate-x-0 translate-y-0 opacity-0 scale-50'
+              }`}
+              style={{ 
+                transitionDelay: showFloatingMenu ? '50ms' : '0ms'
+              }}
+            >
               <Button
                 onClick={() => {
                   setLocation('/search');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
                 variant="ghost"
               >
-                <Calendar className="w-6 h-6" />
+                <Calendar className="w-5 h-5" />
               </Button>
             </div>
-            <div className="animate-in slide-in-from-bottom-1 fade-in duration-150 delay-75">
+
+            {/* Bouton 2 - en haut */}
+            <div 
+              className={`absolute transition-all duration-300 ease-out ${
+                showFloatingMenu 
+                  ? 'transform -translate-x-7 -translate-y-16 opacity-100 scale-100' 
+                  : 'transform translate-x-0 translate-y-0 opacity-0 scale-50'
+              }`}
+              style={{ 
+                transitionDelay: showFloatingMenu ? '100ms' : '25ms'
+              }}
+            >
               <Button
                 onClick={() => {
                   setLocation('/client-rdv');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
                 variant="ghost"
               >
-                <CalendarDays className="w-6 h-6" />
+                <CalendarDays className="w-5 h-5" />
               </Button>
             </div>
-            <div className="animate-in slide-in-from-bottom-1 fade-in duration-150 delay-150">
+
+            {/* Bouton 3 - en haut à droite */}
+            <div 
+              className={`absolute transition-all duration-300 ease-out ${
+                showFloatingMenu 
+                  ? 'transform translate-x-2 -translate-y-16 opacity-100 scale-100' 
+                  : 'transform translate-x-0 translate-y-0 opacity-0 scale-50'
+              }`}
+              style={{ 
+                transitionDelay: showFloatingMenu ? '150ms' : '50ms'
+              }}
+            >
               <Button
                 onClick={() => {
                   setLocation('/settings');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
                 variant="ghost"
               >
-                <Settings className="w-6 h-6" />
+                <Settings className="w-5 h-5" />
               </Button>
             </div>
-            <div className="animate-in slide-in-from-bottom-1 fade-in duration-150 delay-225">
+
+            {/* Bouton 4 - à gauche */}
+            <div 
+              className={`absolute transition-all duration-300 ease-out ${
+                showFloatingMenu 
+                  ? 'transform -translate-x-16 translate-y-1 opacity-100 scale-100' 
+                  : 'transform translate-x-0 translate-y-0 opacity-0 scale-50'
+              }`}
+              style={{ 
+                transitionDelay: showFloatingMenu ? '200ms' : '75ms'
+              }}
+            >
               <Button
                 onClick={() => {
                   setLocation('/client-messaging');
                   setShowFloatingMenu(false);
                 }}
-                className="w-12 h-12 rounded-full bg-white shadow-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center"
+                className="w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 flex items-center justify-center"
                 variant="ghost"
               >
-                <MessageSquare className="w-6 h-6" />
+                <MessageSquare className="w-5 h-5" />
               </Button>
             </div>
           </div>
         )}
 
-        {/* Bouton principal - exactement comme dans le GIF */}
+        {/* Bouton principal avec rotation et changement de couleur */}
         <Button
           onClick={() => setShowFloatingMenu(!showFloatingMenu)}
-          className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 ease-in-out flex items-center justify-center ${
+          className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 ease-out flex items-center justify-center relative ${
             showFloatingMenu 
-              ? 'bg-gray-600 hover:bg-gray-700 rotate-45' 
-              : 'bg-blue-600 hover:bg-blue-700'
+              ? 'bg-gray-500 hover:bg-gray-600 rotate-45' 
+              : 'bg-blue-600 hover:bg-blue-700 rotate-0'
           }`}
         >
-          <Plus className="w-7 h-7 text-white" />
+          <Plus className="w-6 h-6 text-white transition-transform duration-300" />
         </Button>
       </div>
 
