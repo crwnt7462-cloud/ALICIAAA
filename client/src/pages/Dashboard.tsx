@@ -35,7 +35,7 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/client-retention"],
   });
 
-  const webSocketData = useWebSocket();
+  const webSocketData = useWebSocket("");
 
   useEffect(() => {
     if (webSocketData?.notifications?.length > 0) {

@@ -149,11 +149,14 @@ export default function BusinessFeatures() {
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
-              onClick={() => setLocation('/salon')}
+              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl border-2 border-orange-500"
+              onClick={() => {
+                console.log('Bouton Ma Page cliqué!');
+                setLocation('/salon');
+              }}
             >
-              <Globe className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Ma Page</span>
+              <Globe className="h-5 w-5 text-orange-600" />
+              <span className="text-xs font-medium text-orange-700">MA PAGE</span>
             </Button>
 
             <Button
