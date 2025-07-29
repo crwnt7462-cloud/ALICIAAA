@@ -607,7 +607,7 @@ function Router() {
     const pageUrl = location.substring(1); // Remove leading slash
     return (
       <div className="h-full">
-        <SalonPage pageUrl={pageUrl} />
+        <SalonPageFixed pageUrl={pageUrl} />
       </div>
     );
   }
