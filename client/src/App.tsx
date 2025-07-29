@@ -602,8 +602,8 @@ function Router() {
     );
   }
 
-  // Pages de salon personnalisées (salon-xxx-xxxx)
-  if (location.startsWith('/salon-')) {
+  // Pages de salon personnalisées (salon-xxx-xxxx) - MAIS PAS salon-page-editor
+  if (location.startsWith('/salon-') && !location.startsWith('/salon-page-editor') && !location.startsWith('/salon-booking') && !location.startsWith('/salon-settings')) {
     const pageUrl = location.substring(1); // Remove leading slash
     return (
       <div className="h-full">
