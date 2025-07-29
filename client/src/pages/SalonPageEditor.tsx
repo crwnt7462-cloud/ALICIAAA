@@ -176,6 +176,53 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     }));
   };
 
+  // Gestion de l'upload de photo de couverture
+  const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Vérification de la taille (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Fichier trop volumineux",
+          description: "La photo ne doit pas dépasser 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Vérification du type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Format non supporté",
+          description: "Veuillez sélectionner un fichier image",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Créer un aperçu avec FileReader
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageUrl = event.target?.result as string;
+        updateField('coverImageUrl', imageUrl);
+        toast({
+          title: "Photo mise à jour",
+          description: "La photo de couverture a été modifiée",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Supprimer la photo de couverture
+  const removeCoverImage = () => {
+    updateField('coverImageUrl', '');
+    toast({
+      title: "Photo supprimée",
+      description: "La photo de couverture a été supprimée",
+    });
+  };
+
   const addService = (categoryId: number) => {
     setSalonData(prev => ({
       ...prev,
@@ -276,8 +323,53 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           </div>
         </div>
 
-        {/* Photo de couverture éditable - SUPPRIMÉE */}
-        {/* La bannière violette est complètement supprimée */}
+        {/* Photo de couverture éditable */}
+        <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
+          {salonData.coverImageUrl ? (
+            <img 
+              src={salonData.coverImageUrl} 
+              alt="Photo de couverture" 
+              className="w-full h-full object-cover" 
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center border-2 border-dashed border-gray-300">
+              <div className="text-center text-gray-500">
+                <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                <p className="text-sm">Photo de couverture</p>
+                <p className="text-xs">Cliquez pour ajouter</p>
+              </div>
+            </div>
+          )}
+          
+          {isEditing && (
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+              <div className="flex gap-2">
+                <label htmlFor="cover-upload" className="cursor-pointer">
+                  <div className="bg-white/90 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-white transition-colors">
+                    <Upload className="w-4 h-4" />
+                    Changer la photo
+                  </div>
+                  <input
+                    id="cover-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverImageUpload}
+                    className="hidden"
+                  />
+                </label>
+                {salonData.coverImageUrl && (
+                  <button
+                    onClick={removeCoverImage}
+                    className="bg-red-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-red-600 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Informations du salon */}
         <div className="p-4 space-y-4">
