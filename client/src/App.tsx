@@ -61,7 +61,7 @@ import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIProModern from "@/pages/AIProModern";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
-import SalonPage from "@/pages/SalonPage";
+import SalonPageFixed from "@/pages/SalonPageFixed";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
@@ -448,7 +448,7 @@ function Router() {
   if (location === '/salon') {
     return (
       <div className="h-full">
-        <SalonPage pageUrl="salon-demo" />
+        <SalonPageFixed pageUrl="salon-demo" />
       </div>
     );
   }
