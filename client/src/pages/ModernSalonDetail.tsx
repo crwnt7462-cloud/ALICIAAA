@@ -26,6 +26,20 @@ interface Review {
   verified: boolean;
 }
 
+interface SalonData {
+  id: string;
+  name: string;
+  rating: number;
+  reviews: number;
+  address: string;
+  phone: string;
+  verified: boolean;
+  certifications: string[];
+  awards: string[];
+  longDescription: string;
+  serviceCategories: any[];
+}
+
 
 
 export default function ModernSalonDetail() {
@@ -37,7 +51,7 @@ export default function ModernSalonDetail() {
   const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
   
   // Récupérer les vraies données du salon depuis l'API
-  const { data: salonData, isLoading } = useQuery({
+  const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/booking-pages', salonId],
     retry: 2,
     refetchOnWindowFocus: false,
@@ -359,7 +373,7 @@ export default function ModernSalonDetail() {
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
                 <h3 className="font-medium text-white mb-3">Nos certifications</h3>
                 <div className="space-y-2">
-                  {salon.certifications.map((cert, idx) => (
+                  {salon.certifications.map((cert: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
                       <span className="text-gray-300">{cert}</span>
