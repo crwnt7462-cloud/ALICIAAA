@@ -190,46 +190,50 @@ export default function ModernSalonDetail() {
     buttonText: '#ffffff'
   };
 
-  // FORCER LES COULEURS - SYSTÈME ULTRA-BRUTAL QUI MARCHE
+  // SYSTÈME INFAILLIBLE - Variables CSS + Forçage Direct
   useEffect(() => {
     if (salonData?.customColors?.primary) {
-      console.log('🎨 FORÇAGE BRUTAL - Couleur:', salonData.customColors.primary);
+      console.log('🎨 FORÇAGE VARIABLES CSS:', salonData.customColors);
       
-      const forceColors = () => {
-        // 1. Tous les boutons avec "réserver" dans le texte
-        document.querySelectorAll('*').forEach((el: any) => {
-          if (el.textContent && el.textContent.toLowerCase().includes('réserver')) {
-            console.log('💥 FORCE sur:', el.textContent.trim());
-            el.style.backgroundColor = salonData.customColors.primary + ' !important';
-            el.style.color = salonData.customColors.buttonText + ' !important';
-          }
-        });
-        
-        // 2. Injection CSS globale
-        const styleId = 'force-colors-' + Math.random();
-        let style = document.getElementById(styleId);
-        if (!style) {
-          style = document.createElement('style');
-          style.id = styleId;
-          document.head.appendChild(style);
+      // 1. Définir les variables CSS sur le root
+      document.documentElement.style.setProperty('--salon-primary', salonData.customColors.primary);
+      document.documentElement.style.setProperty('--salon-text', salonData.customColors.buttonText);
+      
+      // 2. Injection CSS infaillible
+      let globalStyle = document.getElementById('salon-colors-global');
+      if (!globalStyle) {
+        globalStyle = document.createElement('style');
+        globalStyle.id = 'salon-colors-global';
+        document.head.appendChild(globalStyle);
+      }
+      
+      globalStyle.textContent = `
+        .reservation-btn,
+        .service-button,
+        .reservation-button {
+          background-color: ${salonData.customColors.primary} !important;
+          color: ${salonData.customColors.buttonText} !important;
+          border: none !important;
         }
-        style.textContent = `
-          .service-button, 
-          [class*="service"], 
-          div:has-text("Réserver"),
-          div:contains("Réserver") {
-            background-color: ${salonData.customColors.primary} !important;
-            color: ${salonData.customColors.buttonText} !important;
-          }
-        `;
-      };
-
-      // Forcer en boucle
-      forceColors();
-      const interval = setInterval(forceColors, 100);
-      setTimeout(() => clearInterval(interval), 3000);
+        
+        .reservation-btn:hover,
+        .service-button:hover,
+        .reservation-button:hover {
+          background-color: ${salonData.customColors.primary} !important;
+          opacity: 0.9 !important;
+        }
+      `;
+      
+      // 3. Forçage direct des éléments existants
+      setTimeout(() => {
+        document.querySelectorAll('.reservation-btn, .service-button, .reservation-button').forEach((btn: any) => {
+          btn.style.setProperty('background-color', salonData.customColors.primary, 'important');
+          btn.style.setProperty('color', salonData.customColors.buttonText, 'important');
+          console.log('✅ Bouton forcé:', btn.textContent?.trim());
+        });
+      }, 100);
     }
-  }, [salonData?.customColors?.primary]);
+  }, [salonData]);
 
 
 
@@ -343,13 +347,7 @@ export default function ModernSalonDetail() {
                           </div>
                           <button 
                             onClick={() => setLocation('/salon-booking')}
-                            className="rounded-full px-6 py-2 text-sm font-medium cursor-pointer service-button reservation-btn"
-                            style={{ 
-                              backgroundColor: salonData?.customColors?.primary || '#7c3aed',
-                              color: salonData?.customColors?.buttonText || '#ffffff',
-                              border: 'none',
-                              outline: 'none'
-                            }}
+                            className="reservation-btn service-button rounded-full px-6 py-2 text-sm font-medium cursor-pointer"
                           >
                             Réserver
                           </button>
@@ -475,15 +473,9 @@ export default function ModernSalonDetail() {
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
           <button 
             onClick={() => setLocation('/salon-booking')}
-            className="w-full h-10 text-sm font-medium rounded-lg cursor-pointer flex items-center justify-center reservation-button reservation-btn"
-            style={{ 
-              backgroundColor: salonData?.customColors?.primary || '#7c3aed',
-              color: salonData?.customColors?.buttonText || '#ffffff',
-              border: 'none',
-              outline: 'none'
-            }}
+            className="reservation-btn reservation-button w-full h-10 text-sm font-medium rounded-lg cursor-pointer flex items-center justify-center"
           >
-            <Calendar className="w-3 h-3 mr-2" style={{ color: salonData?.customColors?.buttonText || '#ffffff' }} />
+            <Calendar className="w-3 h-3 mr-2" />
             Réserver maintenant
           </button>
         </div>
