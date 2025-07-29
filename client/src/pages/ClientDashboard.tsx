@@ -6,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import {
   Calendar, Star, Settings, Bell, User, MessageCircle,
-  Clock, MapPin, CreditCard, Gift, Heart, Sparkles
+  Clock, MapPin, CreditCard, Gift, Heart, Sparkles, Home, CalendarDays
 } from "lucide-react";
 
 export default function ClientDashboard() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
-  const [activeSection, setActiveSection] = useState<string>('main');
+  const [activeTab, setActiveTab] = useState<string>('accueil');
   const [clientData, setClientData] = useState<any>(null);
 
   useEffect(() => {
@@ -293,5 +293,193 @@ export default function ClientDashboard() {
     </div>
   );
 
-  return renderMainView();
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'accueil':
+        return renderMainView();
+      case 'rdv':
+        return (
+          <div className="min-h-screen bg-gray-50">
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+              <div className="max-w-lg mx-auto px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">C</span>
+                    </div>
+                    <h1 className="text-lg font-semibold text-gray-900">Mes Rendez-vous</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-lg mx-auto p-4">
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Prochain RDV</h2>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-medium text-gray-900">Coupe + Brushing</h3>
+                        <Badge className="bg-green-600 text-white">Confirmé</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-1">Salon Excellence</p>
+                      <p className="text-sm text-gray-500">Demain, 30 janvier - 14h30</p>
+                      <p className="text-sm font-medium text-gray-900 mt-2">45€</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      case 'messages':
+        return (
+          <div className="min-h-screen bg-gray-50">
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+              <div className="max-w-lg mx-auto px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">C</span>
+                    </div>
+                    <h1 className="text-lg font-semibold text-gray-900">Messages</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-lg mx-auto p-4">
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2>
+                  <div className="space-y-3">
+                    <div className="p-4 bg-white rounded-lg border border-gray-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-900">Salon Excellence</h3>
+                          <p className="text-sm text-gray-600">Votre rendez-vous est confirmé</p>
+                        </div>
+                        <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      case 'profil':
+        return (
+          <div className="min-h-screen bg-gray-50">
+            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+              <div className="max-w-lg mx-auto px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">C</span>
+                    </div>
+                    <h1 className="text-lg font-semibold text-gray-900">Mon Profil</h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="max-w-lg mx-auto p-4">
+              <Card className="border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <div className="text-center mb-6">
+                    <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                    <h2 className="text-lg font-semibold text-gray-900">{clientData?.firstName || 'Client'}</h2>
+                    <p className="text-gray-600">{clientData?.email}</p>
+                  </div>
+                  <div className="space-y-3">
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => setLocation('/settings')}
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Paramètres
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start"
+                      onClick={() => {
+                        localStorage.removeItem('clientData');
+                        setLocation('/client-login');
+                      }}
+                    >
+                      Déconnexion
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        );
+      default:
+        return renderMainView();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {renderContent()}
+      
+      {/* Menu de navigation en bas - Style pro violet */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <div className="max-w-lg mx-auto">
+          <div className="grid grid-cols-4 gap-1">
+            <button
+              onClick={() => setActiveTab('accueil')}
+              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+                activeTab === 'accueil'
+                  ? 'text-violet-600 bg-violet-50'
+                  : 'text-gray-600 hover:text-violet-600'
+              }`}
+            >
+              <Home className="w-5 h-5 mb-1" />
+              <span>Accueil</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('rdv')}
+              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+                activeTab === 'rdv'
+                  ? 'text-violet-600 bg-violet-50'
+                  : 'text-gray-600 hover:text-violet-600'
+              }`}
+            >
+              <CalendarDays className="w-5 h-5 mb-1" />
+              <span>Mes RDV</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('messages')}
+              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors relative ${
+                activeTab === 'messages'
+                  ? 'text-violet-600 bg-violet-50'
+                  : 'text-gray-600 hover:text-violet-600'
+              }`}
+            >
+              <MessageCircle className="w-5 h-5 mb-1" />
+              <span>Messages</span>
+              <div className="absolute top-1 right-3 w-2 h-2 bg-red-500 rounded-full"></div>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab('profil')}
+              className={`flex flex-col items-center justify-center py-2 px-1 text-xs transition-colors ${
+                activeTab === 'profil'
+                  ? 'text-violet-600 bg-violet-50'
+                  : 'text-gray-600 hover:text-violet-600'
+              }`}
+            >
+              <User className="w-5 h-5 mb-1" />
+              <span>Profil</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
