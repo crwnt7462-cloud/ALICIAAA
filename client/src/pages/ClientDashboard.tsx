@@ -181,112 +181,60 @@ export default function ClientDashboard() {
 
       {/* Floating Action Button - Animation radiale comme le GIF */}
       <div className="fixed bottom-6 right-6 z-50">
-        {/* Menu radial avec positions exactes du GIF */}
-        <div className="absolute bottom-0 right-0 w-14 h-14">
-          {/* Bouton 1 - Position radiale */}
-          <div 
-            className={`absolute bottom-0 right-0 transition-all duration-300 ease-out ${
-              showFloatingMenu 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-0'
-            }`}
-            style={{ 
-              transform: showFloatingMenu ? 'translate(-60px, -30px)' : 'translate(0, 0)',
-              transitionDelay: showFloatingMenu ? '0ms' : '200ms'
-            }}
-          >
-            <Button
+        {/* Animation exacte du GIF avec coordonnées précises */}
+        <div className="relative w-14 h-14">
+          {/* Boutons qui apparaissent radialement */}
+          {showFloatingMenu && [
+            { x: -50, y: -20, color: 'bg-red-400', icon: Calendar, delay: 0 },
+            { x: -20, y: -50, color: 'bg-green-400', icon: CalendarDays, delay: 100 },
+            { x: 20, y: -50, color: 'bg-yellow-400', icon: Settings, delay: 200 },
+            { x: -50, y: 20, color: 'bg-purple-400', icon: MessageSquare, delay: 300 }
+          ].map((btn, i) => (
+            <div
+              key={i}
+              className={`absolute w-11 h-11 rounded-full ${btn.color} shadow-lg flex items-center justify-center text-white transition-all duration-500 ease-out`}
+              style={{
+                transform: `translate(${btn.x}px, ${btn.y}px) scale(${showFloatingMenu ? 1 : 0})`,
+                opacity: showFloatingMenu ? 1 : 0,
+                transitionDelay: `${btn.delay}ms`,
+                left: '50%',
+                top: '50%',
+                marginLeft: '-22px',
+                marginTop: '-22px'
+              }}
               onClick={() => {
-                setLocation('/search');
+                if (i === 0) setLocation('/search');
+                else if (i === 1) setLocation('/client-rdv');
+                else if (i === 2) setLocation('/settings');
+                else setLocation('/client-messaging');
                 setShowFloatingMenu(false);
               }}
-              className="w-12 h-12 rounded-full bg-orange-500 hover:bg-orange-600 shadow-lg text-white flex items-center justify-center"
             >
-              <Calendar className="w-5 h-5" />
-            </Button>
-          </div>
+              <btn.icon className="w-5 h-5" />
+            </div>
+          ))}
 
-          {/* Bouton 2 - Position radiale */}
-          <div 
-            className={`absolute bottom-0 right-0 transition-all duration-300 ease-out ${
+          {/* Bouton principal - exactement comme le GIF */}
+          <Button
+            onClick={() => setShowFloatingMenu(!showFloatingMenu)}
+            className={`w-14 h-14 rounded-full shadow-xl transition-all duration-300 ease-out flex items-center justify-center relative overflow-hidden ${
               showFloatingMenu 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-0'
+                ? 'bg-blue-800 rotate-45' 
+                : 'bg-blue-600 hover:bg-blue-700'
             }`}
-            style={{ 
-              transform: showFloatingMenu ? 'translate(-30px, -60px)' : 'translate(0, 0)',
-              transitionDelay: showFloatingMenu ? '50ms' : '150ms'
+            style={{
+              background: showFloatingMenu 
+                ? 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)' 
+                : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
             }}
           >
-            <Button
-              onClick={() => {
-                setLocation('/client-rdv');
-                setShowFloatingMenu(false);
-              }}
-              className="w-12 h-12 rounded-full bg-green-500 hover:bg-green-600 shadow-lg text-white flex items-center justify-center"
-            >
-              <CalendarDays className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Bouton 3 - Position radiale */}
-          <div 
-            className={`absolute bottom-0 right-0 transition-all duration-300 ease-out ${
-              showFloatingMenu 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-0'
-            }`}
-            style={{ 
-              transform: showFloatingMenu ? 'translate(10px, -60px)' : 'translate(0, 0)',
-              transitionDelay: showFloatingMenu ? '100ms' : '100ms'
-            }}
-          >
-            <Button
-              onClick={() => {
-                setLocation('/settings');
-                setShowFloatingMenu(false);
-              }}
-              className="w-12 h-12 rounded-full bg-pink-500 hover:bg-pink-600 shadow-lg text-white flex items-center justify-center"
-            >
-              <Settings className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Bouton 4 - Position radiale */}
-          <div 
-            className={`absolute bottom-0 right-0 transition-all duration-300 ease-out ${
-              showFloatingMenu 
-                ? 'opacity-100 scale-100' 
-                : 'opacity-0 scale-0'
-            }`}
-            style={{ 
-              transform: showFloatingMenu ? 'translate(-60px, 10px)' : 'translate(0, 0)',
-              transitionDelay: showFloatingMenu ? '150ms' : '50ms'
-            }}
-          >
-            <Button
-              onClick={() => {
-                setLocation('/client-messaging');
-                setShowFloatingMenu(false);
-              }}
-              className="w-12 h-12 rounded-full bg-purple-500 hover:bg-purple-600 shadow-lg text-white flex items-center justify-center"
-            >
-              <MessageSquare className="w-5 h-5" />
-            </Button>
-          </div>
+            <Plus 
+              className={`w-6 h-6 text-white transition-all duration-300 ease-out ${
+                showFloatingMenu ? 'rotate-45' : 'rotate-0'
+              }`} 
+            />
+          </Button>
         </div>
-
-        {/* Bouton principal avec rotation et changement de couleur */}
-        <Button
-          onClick={() => setShowFloatingMenu(!showFloatingMenu)}
-          className={`w-14 h-14 rounded-full shadow-lg transition-all duration-300 ease-out flex items-center justify-center relative ${
-            showFloatingMenu 
-              ? 'bg-gray-500 hover:bg-gray-600 rotate-45' 
-              : 'bg-blue-600 hover:bg-blue-700 rotate-0'
-          }`}
-        >
-          <Plus className="w-6 h-6 text-white transition-transform duration-300" />
-        </Button>
       </div>
 
       {/* Overlay pour fermer le menu */}
