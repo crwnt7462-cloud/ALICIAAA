@@ -273,10 +273,10 @@ export default function PublicLanding() {
           isMenuOpen ? 'visible' : 'invisible'
         }`}
       >
-        {/* Backdrop animé */}
+        {/* Backdrop animé avec blur progressif */}
         <div 
-          className={`absolute inset-0 bg-black transition-all duration-300 ease-out ${
-            isMenuOpen ? 'bg-opacity-50' : 'bg-opacity-0'
+          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-all duration-400 ease-out ${
+            isMenuOpen ? 'opacity-100 backdrop-blur-md' : 'opacity-0 backdrop-blur-none'
           }`}
           onClick={closeMenu}
         />
@@ -284,13 +284,14 @@ export default function PublicLanding() {
         {/* Panel principal avec animation slide-scale */}
         <div 
           id="hamburger-menu"
-          className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-all duration-300 ease-out ${
+          className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-all duration-400 ${
             isMenuOpen 
               ? 'translate-x-0 scale-100 opacity-100' 
-              : 'translate-x-full scale-95 opacity-0'
+              : '-translate-x-full scale-95 opacity-0'
           }`}
           style={{
-            transformOrigin: 'right center'
+            transformOrigin: 'left center',
+            transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
           }}
         >
           {/* Header épuré */}
@@ -316,9 +317,9 @@ export default function PublicLanding() {
                     : 'translate-x-6 opacity-0'
                 }`}
                 style={{
-                  transitionDelay: isMenuOpen ? `${100 + index * 50}ms` : '0ms',
-                  transitionDuration: '400ms',
-                  transitionTimingFunction: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                  transitionDelay: isMenuOpen ? `${150 + index * 60}ms` : '0ms',
+                  transitionDuration: '500ms',
+                  transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
               >
                 <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-violet-100 group-hover:text-violet-600 transition-all duration-200">
