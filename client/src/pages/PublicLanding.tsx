@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell, Share2, Copy, Menu, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -267,116 +268,198 @@ export default function PublicLanding() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Menu hamburger overlay style ProQuote */}
-      <div 
-        className={`fixed inset-0 z-50 ${
-          isMenuOpen ? 'visible' : 'invisible'
-        }`}
-      >
-        {/* Backdrop ProQuote style */}
-        <div 
-          className={`absolute inset-0 ${
-            isMenuOpen ? 'animate-fade-in-backdrop' : 'bg-transparent backdrop-blur-none'
-          }`}
-          onClick={closeMenu}
-        />
-        
-        {/* Panel principal avec animation ProQuote exacte */}
-        <div 
-          id="hamburger-menu"
-          className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl ${
-            isMenuOpen 
-              ? 'animate-slide-in-left' 
-              : 'transform -translate-x-full opacity-0'
-          }`}
-        >
-          {/* Header épuré */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-100/80">
-            <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
-            <button
+      {/* Menu plein écran style ProQuote avec Framer Motion */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            className="fixed inset-0 z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            {/* Backdrop avec blur */}
+            <motion.div 
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
+              initial={{ backdropFilter: "blur(0px)" }}
+              animate={{ backdropFilter: "blur(12px)" }}
+              exit={{ backdropFilter: "blur(0px)" }}
               onClick={closeMenu}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
+            />
+            
+            {/* Menu principal plein écran */}
+            <motion.div 
+              className="relative w-full h-full bg-white"
+              initial={{ y: "-100%", opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: "-100%", opacity: 0 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                mass: 0.8
+              }}
             >
-              <X className="w-5 h-5 text-gray-500" />
-            </button>
-          </div>
+              {/* Header du menu plein écran */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                <motion.div 
+                  className="flex items-center gap-3"
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  <img src={logoImage} alt="Logo" className="h-10 w-auto" />
+                  <span className="text-xl font-bold text-gray-900">Menu</span>
+                </motion.div>
+                
+                <motion.button
+                  onClick={closeMenu}
+                  className="p-3 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <X className="w-6 h-6 text-gray-600" />
+                </motion.button>
+              </div>
 
-          {/* Navigation items avec animation staggered */}
-          <nav className="py-4">
-            {menuItems.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => handleMenuItemClick(item)}
-                className={`w-full flex items-center gap-4 px-6 py-4 text-left hover:bg-gray-50/80 transition-all duration-200 group ${
-                  isMenuOpen ? 'animate-slide-in-staggered' : ''
-                }`}
-                style={{
-                  animationDelay: isMenuOpen ? `${200 + index * 80}ms` : '0ms'
-                }}
-              >
-                <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-violet-100 group-hover:text-violet-600 transition-all duration-200">
-                  {item.icon}
-                </div>
-                <span className="text-gray-900 font-medium text-sm group-hover:text-gray-700 transition-colors duration-200">
-                  {item.label}
-                </span>
-                <div className="ml-auto">
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all duration-200" />
-                </div>
-              </button>
-            ))}
-          </nav>
+              {/* Navigation principal */}
+              <div className="flex-1 flex flex-col justify-center max-w-4xl mx-auto px-6">
+                <nav className="space-y-2">
+                  {menuItems.map((item, index) => (
+                    <motion.button
+                      key={item.id}
+                      onClick={() => handleMenuItemClick(item)}
+                      className="w-full group text-left"
+                      initial={{ x: -50, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ 
+                        delay: 0.1 + index * 0.1,
+                        duration: 0.6,
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 20
+                      }}
+                      whileHover={{ scale: 1.02, x: 10 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center gap-6 py-6 px-4 rounded-2xl hover:bg-gray-50 transition-all duration-300 group">
+                        <motion.div 
+                          className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center text-violet-600"
+                          whileHover={{ scale: 1.1, rotate: 5 }}
+                        >
+                          {item.icon}
+                        </motion.div>
+                        <div className="flex-1">
+                          <h3 className="text-2xl font-semibold text-gray-900 group-hover:text-violet-600 transition-colors duration-300">
+                            {item.label}
+                          </h3>
+                          <p className="text-gray-500 mt-1">
+                            {item.id === 'client-login' ? 'Accéder à votre espace personnel' :
+                             item.id === 'login' ? 'Interface pour les professionnels' :
+                             item.id === 'pro' ? 'Rejoindre notre réseau de partenaires' :
+                             'Découvrir nos services de qualité'}
+                          </p>
+                        </div>
+                        <motion.div
+                          className="text-gray-400 group-hover:text-violet-600"
+                          whileHover={{ x: 5 }}
+                        >
+                          <ArrowRight className="w-6 h-6" />
+                        </motion.div>
+                      </div>
+                    </motion.button>
+                  ))}
+                </nav>
+              </div>
 
-          {/* Bottom section */}
-          <div className="absolute bottom-6 left-6 right-6">
-            <div className="bg-gray-50/80 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-600 mb-3">Une question ?</p>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="w-full h-9 border-gray-200 text-gray-700 hover:bg-gray-100 text-sm"
-                onClick={() => {
-                  setLocation('/support');
-                  closeMenu();
-                }}
+              {/* Footer du menu */}
+              <motion.div 
+                className="p-6 border-t border-gray-100"
+                initial={{ y: 50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
               >
-                Aide & Support
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
+                <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-center sm:text-left">
+                    <p className="text-gray-600 mb-2">Une question ? Besoin d'aide ?</p>
+                    <Button 
+                      variant="outline" 
+                      className="border-violet-200 text-violet-600 hover:bg-violet-50"
+                      onClick={() => {
+                        setLocation('/support');
+                        closeMenu();
+                      }}
+                    >
+                      Contacter le support
+                    </Button>
+                  </div>
+                  <div className="flex gap-4">
+                    <motion.button
+                      className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Phone className="w-5 h-5 text-gray-600" />
+                    </motion.button>
+                    <motion.button
+                      className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Share2 className="w-5 h-5 text-gray-600" />
+                    </motion.button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Header professionnel */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-4">
-              {/* Bouton hamburger style moderne */}
-              <button
+              {/* Bouton hamburger animé avec Framer Motion */}
+              <motion.button
                 id="hamburger-button"
                 onClick={toggleMenu}
-                className="relative p-2 hover:bg-gray-100/80 rounded-lg transition-all duration-200 lg:hidden"
+                className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200 lg:hidden"
                 aria-label="Menu"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="w-5 h-5 flex flex-col justify-center items-center">
-                  <span 
-                    className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
-                      isMenuOpen ? 'rotate-45 translate-y-1' : ''
-                    }`}
+                <div className="w-6 h-6 flex flex-col justify-center items-center gap-1">
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      rotate: isMenuOpen ? 45 : 0,
+                      y: isMenuOpen ? 6 : 0
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                   />
-                  <span 
-                    className={`block w-5 h-0.5 bg-gray-700 my-1 transition-all duration-300 ease-in-out ${
-                      isMenuOpen ? 'opacity-0' : 'opacity-100'
-                    }`}
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      opacity: isMenuOpen ? 0 : 1,
+                      scale: isMenuOpen ? 0 : 1
+                    }}
+                    transition={{ duration: 0.2 }}
                   />
-                  <span 
-                    className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ease-in-out ${
-                      isMenuOpen ? '-rotate-45 -translate-y-1' : ''
-                    }`}
+                  <motion.span 
+                    className="block w-6 h-0.5 bg-gray-700 rounded-full"
+                    animate={{
+                      rotate: isMenuOpen ? -45 : 0,
+                      y: isMenuOpen ? -6 : 0
+                    }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
                   />
                 </div>
-              </button>
+              </motion.button>
 
               <div>
                 <img src={logoImage} alt="Logo" className="h-24 w-auto" />
