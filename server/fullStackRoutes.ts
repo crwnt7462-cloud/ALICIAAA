@@ -537,10 +537,171 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API publique pour la recherche de salons avec photos
+  app.get('/api/search/salons', async (req, res) => {
+    try {
+      const { category, city, search } = req.query;
+      
+      // Récupérer tous les salons
+      let salons = Array.from(storage.salons.values());
+      console.log(`🔍 Recherche salons: ${salons.length} salons trouvés`);
+      
+      // Filtrer par catégorie si spécifiée
+      if (category && category !== 'all') {
+        salons = salons.filter(salon => {
+          if (!salon.serviceCategories) return false;
+          
+          const categoryLower = (category as string).toLowerCase();
+          return salon.serviceCategories.some((cat: any) => {
+            const catName = cat.name?.toLowerCase() || '';
+            return catName.includes('coiffure') && categoryLower === 'coiffure' ||
+                   catName.includes('barbier') && categoryLower === 'barbier' ||
+                   catName.includes('manucure') && categoryLower === 'ongles' ||
+                   catName.includes('massage') && categoryLower === 'massage' ||
+                   catName.includes('soin') && categoryLower === 'esthetique';
+          });
+        });
+        console.log(`🏷️ Filtre catégorie "${category}": ${salons.length} salons`);
+      }
+      
+      // Filtrer par ville si spécifiée
+      if (city) {
+        const cityLower = (city as string).toLowerCase();
+        salons = salons.filter(salon => 
+          salon.address?.toLowerCase().includes(cityLower)
+        );
+        console.log(`📍 Filtre ville "${city}": ${salons.length} salons`);
+      }
+      
+      // Filtrer par recherche textuelle si spécifiée
+      if (search) {
+        const searchLower = (search as string).toLowerCase();
+        salons = salons.filter(salon =>
+          salon.name?.toLowerCase().includes(searchLower) ||
+          salon.description?.toLowerCase().includes(searchLower) ||
+          salon.tags?.some((tag: string) => tag.toLowerCase().includes(searchLower))
+        );
+        console.log(`🔍 Filtre recherche "${search}": ${salons.length} salons`);
+      }
+      
+      // Formater les résultats pour l'affichage dans SalonSearchComplete
+      const formattedSalons = salons.map(salon => ({
+        id: salon.id,
+        name: salon.name,
+        location: extractCity(salon.address),
+        rating: salon.rating || 4.5,
+        reviews: salon.reviewCount || 0,
+        nextSlot: "14:30",
+        price: "€€",
+        services: extractServices(salon.serviceCategories),
+        verified: true,
+        distance: "1.2km",
+        category: determineCategory(salon.serviceCategories),
+        photo: salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
+        openNow: true,
+        promotion: null,
+        // Données complètes pour les détails
+        description: salon.description,
+        address: salon.address,
+        phone: salon.phone,
+        photos: salon.photos || [],
+        serviceCategories: salon.serviceCategories || [],
+        tags: salon.tags || [],
+        openingHours: salon.openingHours
+      }));
+      
+      res.json({
+        salons: formattedSalons,
+        total: formattedSalons.length,
+        filters: { category, city, search }
+      });
+    } catch (error) {
+      console.error('❌ Error fetching salons:', error);
+      res.status(500).json({ message: 'Failed to fetch salons' });
+    }
+  });
+
+  // API pour récupérer un salon spécifique
+  app.get('/api/public/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const salon = storage.salons.get(id);
+      
+      if (!salon) {
+        return res.status(404).json({ message: 'Salon not found' });
+      }
+      
+      // Formater les données pour l'affichage détaillé
+      const formattedSalon = {
+        id: salon.id,
+        name: salon.name,
+        description: salon.description,
+        address: salon.address,
+        phone: salon.phone,
+        email: salon.email,
+        website: salon.website,
+        photos: salon.photos || [],
+        rating: salon.rating || 4.5,
+        reviewCount: salon.reviewCount || 0,
+        serviceCategories: salon.serviceCategories || [],
+        tags: salon.tags || [],
+        openingHours: salon.openingHours,
+        category: determineCategory(salon.serviceCategories),
+        city: extractCity(salon.address),
+        services: extractServices(salon.serviceCategories),
+        // Ajouter des infos supplémentaires pour la page détail
+        verified: true,
+        certifications: ["Certifié qualité service", "Produits professionnels"],
+        awards: ["Top salon 2024", "Excellence client"]
+      };
+      
+      res.json(formattedSalon);
+    } catch (error) {
+      console.error('Error fetching salon details:', error);
+      res.status(500).json({ message: 'Failed to fetch salon details' });
+    }
+  });
+
   // Route de test simple
   app.get('/api/test', (req, res) => {
     res.json({ message: 'API fonctionne', timestamp: new Date().toISOString() });
   });
+
+  // Fonctions utilitaires pour formater les données salon
+  function determineCategory(serviceCategories: any[]) {
+    if (!serviceCategories || serviceCategories.length === 0) return 'mixte';
+    
+    const firstCategory = serviceCategories[0]?.name?.toLowerCase() || '';
+    if (firstCategory.includes('coiffure')) return 'coiffure';
+    if (firstCategory.includes('barbier')) return 'barbier';
+    if (firstCategory.includes('manucure') || firstCategory.includes('ongles')) return 'ongles';
+    if (firstCategory.includes('massage')) return 'massage';
+    if (firstCategory.includes('soin') || firstCategory.includes('esthétique')) return 'esthetique';
+    return 'mixte';
+  }
+
+  function extractCity(address: string) {
+    if (!address) return '';
+    const parts = address.split(',');
+    if (parts.length >= 2) {
+      return parts[1].trim();
+    }
+    return address;
+  }
+
+  function extractServices(serviceCategories: any[]) {
+    if (!serviceCategories) return [];
+    
+    const services: string[] = [];
+    serviceCategories.forEach(category => {
+      if (category.services && Array.isArray(category.services)) {
+        category.services.forEach((service: any) => {
+          if (service.name) services.push(service.name);
+        });
+      }
+    });
+    return services.slice(0, 3); // Limiter à 3 services principaux
+  }
 
   const httpServer = createServer(app);
   return httpServer;

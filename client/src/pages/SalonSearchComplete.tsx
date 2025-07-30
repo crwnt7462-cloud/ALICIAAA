@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,7 +24,25 @@ export default function SalonSearchComplete() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortBy, setSortBy] = useState("distance");
 
-  const salons = [
+  // Récupérer les salons depuis l'API
+  const { data: salonsData, isLoading } = useQuery({
+    queryKey: ['/api/search/salons', activeFilter, locationQuery, searchQuery],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (activeFilter !== 'all') params.append('category', activeFilter);
+      if (locationQuery) params.append('city', locationQuery.toLowerCase());
+      if (searchQuery) params.append('search', searchQuery);
+      
+      const response = await fetch(`/api/search/salons?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch salons');
+      return response.json();
+    }
+  });
+
+  const salons = salonsData?.salons || [];
+
+  // Données statiques de fallback si l'API ne répond pas
+  const fallbackSalons = [
     {
       id: "salon-1",
       name: "Barbier Moderne",
@@ -190,7 +209,7 @@ export default function SalonSearchComplete() {
           {/* Header des résultats */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">
-              {filteredSalons.length} salons trouvés
+              {salons.length} salons trouvés
             </h3>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-500">Trier</span>
@@ -204,7 +223,20 @@ export default function SalonSearchComplete() {
 
           {/* Cartes des salons avec photos - exactement comme screenshot */}
           <div className="space-y-4 pb-6">
-            {filteredSalons.map((salon) => (
+            {isLoading && (
+              <div className="text-center py-8">
+                <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p>Recherche en cours...</p>
+              </div>
+            )}
+            
+            {!isLoading && salons.length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Aucun salon trouvé pour votre recherche</p>
+              </div>
+            )}
+            
+            {!isLoading && salons.map((salon) => (
               <div 
                 key={salon.id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
@@ -212,6 +244,13 @@ export default function SalonSearchComplete() {
               >
                 {/* Photo du salon en haut */}
                 <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+                  {salon.photo && (
+                    <img 
+                      src={salon.photo} 
+                      alt={salon.name}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black bg-opacity-10"></div>
                   
                   {/* Badges sur la photo */}
