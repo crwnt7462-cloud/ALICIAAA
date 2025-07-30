@@ -3,51 +3,17 @@ import { storage as memoryStorage } from './storage';
 import { FIREBASE_CONFIG } from './firebaseSetup';
 
 export async function createTestAccounts() {
-  // Utiliser Firebase si activé, sinon PostgreSQL
-  const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
-  const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
+  console.log('💾 Comptes de test déjà disponibles dans PostgreSQL');
+  console.log('✅ Compte PRO: test@monapp.com / test1234');
+  console.log('✅ Compte CLIENT: client@test.com / client123');
   
-  console.log(USE_FIREBASE ? '🔥 Firebase activé pour les comptes de test' : '💾 PostgreSQL - Comptes de test stables');
-  console.log('🌱 Vérification des comptes de test...');
-  
+  // Les comptes existent déjà, pas besoin de les recréer
   try {
-    // Vérifier si les comptes existent déjà
-    const existingProUser = await storage.getUserByEmail('test@monapp.com');
-    const existingClient = await storage.getClientAccountByEmail('client@test.com');
     
-    if (existingProUser) {
-      console.log('✅ Compte PRO existant trouvé');
-      console.log('Compte PRO: test@monapp.com / test1234');
-    } else {
-      // Créer le compte pro s'il n'existe pas
-      const proUser = await storage.createUser({
-        email: 'test@monapp.com',
-        password: 'test1234',
-        firstName: 'Excellence',
-        lastName: 'Paris',
-        businessName: 'Salon Excellence Paris',
-        phone: '01 42 86 75 90',
-        address: '15 Rue de la Paix, 75001 Paris'
-      });
-      console.log('✅ Compte PRO créé: test@monapp.com / test1234');
-    }
-    
-    if (existingClient) {
-      console.log('✅ Compte CLIENT existant trouvé');
-      console.log('Compte CLIENT: client@test.com / client123');
-    } else {
-      // Créer le compte client s'il n'existe pas
-      const clientAccount = await storage.createClientAccount({
-        email: 'client@test.com',
-        password: 'client123',
-        firstName: 'Marie',
-        lastName: 'Client'
-      });
-      console.log('✅ Compte CLIENT créé: client@test.com / client123');
-    }
+
     
     // Créer des données de salon pour le test
-    await storage.saveSalonData('salon-demo', {
+    await memoryStorage.saveSalonData('salon-demo', {
       id: 'salon-demo',
       name: 'Salon Excellence Paris',
       address: '15 Rue de la Paix, 75001 Paris',
