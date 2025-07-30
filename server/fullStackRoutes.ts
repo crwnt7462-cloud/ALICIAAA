@@ -6,8 +6,8 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 
 // Configuration: utiliser Firebase ou stockage mémoire
-const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
-const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
+const USE_FIREBASE = false; // Désactivé temporairement pour corriger les comptes test
+const storage = memoryStorage;
 
 // 🔥 STOCKAGE EN MÉMOIRE POUR LES SALONS PUBLICS
 const publicSalonsStorage = new Map<string, any>();

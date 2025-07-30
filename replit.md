@@ -124,6 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - COMPTES DE TEST RESTAURÉS ET OPÉRATIONNELS (30 Janvier 16h15)
+- ✅ **Système de comptes de test corrigé** : Firebase temporairement désactivé pour résoudre les conflits
+- ✅ **Comptes fonctionnels créés** : PRO (test@monapp.com/test1234) et CLIENT (client@test.com/client123) 
+- ✅ **Salon de démo complet** : salon-demo avec catégories de services (Coiffure, Esthétique) et données réalistes
+- ✅ **Stockage PostgreSQL stable** : Base de données fonctionnelle avec vérification des comptes existants
+- ✅ **Système d'ajout de catégories opérationnel** : Interface complète pour créer/modifier catégories de services
+- ✅ **Workflow de test validé** : Connexion PRO → Modifier salon → Ajouter catégories → Sauvegarde automatique
+- ✅ **Intégration système recherche maintenue** : Salons publiés automatiquement avec détection intelligente des catégories
+- ✅ **Application complètement fonctionnelle** : Tous les comptes de test permettent de tester toutes les fonctionnalités
+
 ### Janvier 2025 - SYSTÈME D'INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE (30 Janvier 15h45)
 - ✅ **INTÉGRATION AUTOMATIQUE SALON** : Quand pro termine son salon, il est automatiquement ajouté au système de recherche public
 - ✅ **Détection catégorie intelligente** : Algorithme analyse les services pour déterminer automatiquement la catégorie (coiffure, barbier, ongles, esthétique, massage)

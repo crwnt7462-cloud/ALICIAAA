@@ -1,7 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { registerFullStackRoutes } from "./fullStackRoutes";
-import { seedDatabase } from "./seedData";
+import { createTestAccounts } from "./seedTestAccounts";
 import { setupVite, serveStatic, log } from "./vite";
 import { configureSession } from "./sessionMiddleware";
 
@@ -46,8 +46,8 @@ app.use((req, res, next) => {
   // Utiliser les routes Firebase-compatible
   const server = await registerFullStackRoutes(app);
   
-  // Créer les données de test au démarrage
-  await seedDatabase();
+  // Créer les comptes de test au démarrage
+  await createTestAccounts();
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
