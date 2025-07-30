@@ -9,9 +9,10 @@ import type {
   Staff,
   Review,
   Notification,
-  Message,
   BookingPage,
-  Subscription
+  Subscription,
+  RegisterRequest,
+  ClientRegisterRequest
 } from '@shared/schema';
 
 export class FirebaseStorage implements IStorage {
@@ -23,16 +24,163 @@ export class FirebaseStorage implements IStorage {
       if (!userDoc.exists) return undefined;
       
       const data = userDoc.data();
-      return {
-        ...data,
-        createdAt: data?.createdAt,
-        updatedAt: data?.updatedAt
-      } as User;
+      return data as User;
     } catch (error) {
       console.error('Erreur getUser Firebase:', error);
       return undefined;
     }
   }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    try {
+      const userSnapshot = await adminDb.collection('users').where('email', '==', email).limit(1).get();
+      if (userSnapshot.empty) return undefined;
+      
+      const data = userSnapshot.docs[0].data();
+      return data as User;
+    } catch (error) {
+      console.error('Erreur getUserByEmail Firebase:', error);
+      return undefined;
+    }
+  }
+
+  async createUser(userData: RegisterRequest): Promise<User> {
+    try {
+      const userRef = adminDb.collection('users').doc();
+      const now = new Date();
+      
+      const newUser = {
+        id: userRef.id,
+        ...userData,
+        createdAt: now,
+        updatedAt: now
+      };
+      
+      await userRef.set(newUser);
+      return newUser as User;
+    } catch (error) {
+      console.error('Erreur createUser Firebase:', error);
+      throw error;
+    }
+  }
+
+  async authenticateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.getUserByEmail(email);
+    if (user && user.password === password) {
+      return user;
+    }
+    return null;
+  }
+
+  // Client Account operations
+  async createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount> {
+    try {
+      const clientRef = adminDb.collection('clients').doc();
+      const now = new Date();
+      
+      const newClient = {
+        id: parseInt(clientRef.id.substring(0, 8), 16), // Convert to number
+        ...clientData,
+        createdAt: now,
+        updatedAt: now
+      };
+      
+      await clientRef.set(newClient);
+      return newClient as ClientAccount;
+    } catch (error) {
+      console.error('Erreur createClientAccount Firebase:', error);
+      throw error;
+    }
+  }
+
+  async getClientAccountByEmail(email: string): Promise<ClientAccount | undefined> {
+    try {
+      const clientSnapshot = await adminDb.collection('clients').where('email', '==', email).limit(1).get();
+      if (clientSnapshot.empty) return undefined;
+      
+      const data = clientSnapshot.docs[0].data();
+      return data as ClientAccount;
+    } catch (error) {
+      console.error('Erreur getClientAccountByEmail Firebase:', error);
+      return undefined;
+    }
+  }
+
+  async authenticateClient(email: string, password: string): Promise<ClientAccount | null> {
+    const client = await this.getClientAccountByEmail(email);
+    if (client && client.password === password) {
+      return client;
+    }
+    return null;
+  }
+
+  // Salon Data operations
+  async getSalonData(salonId: string): Promise<any | undefined> {
+    try {
+      const salonDoc = await adminDb.collection('salons').doc(salonId).get();
+      if (!salonDoc.exists) return undefined;
+      return salonDoc.data();
+    } catch (error) {
+      console.error('Erreur getSalonData Firebase:', error);
+      return undefined;
+    }
+  }
+
+  async saveSalonData(salonId: string, salonData: any): Promise<void> {
+    try {
+      await adminDb.collection('salons').doc(salonId).set(salonData);
+      console.log('💾 Sauvegarde salon Firebase:', salonId);
+    } catch (error) {
+      console.error('Erreur saveSalonData Firebase:', error);
+      throw error;
+    }
+  }
+
+  // Stub implementations for remaining IStorage methods
+  async getServices(userId: string) { return []; }
+  async createService(service: any) { return service; }
+  async updateService(id: number, service: any) { return service; }
+  async deleteService(id: number) { return; }
+  async getClients(userId: string) { return []; }
+  async updateClient(id: number, client: any) { return client; }
+  async deleteClient(id: number) { return; }
+  async getStaff(userId: string) { return []; }
+  async createStaff(staff: any) { return staff; }
+  async updateStaff(id: number, staff: any) { return staff; }
+  async deleteStaff(id: number) { return; }
+  async getAppointments(userId: string) { return []; }
+  async createAppointment(appointment: any) { return appointment; }
+  async updateAppointment(id: number, appointment: any) { return appointment; }
+  async deleteAppointment(id: number) { return; }
+  async getClientNotes(clientId: number) { return []; }
+  async createClientNote(note: any) { return note; }
+  async updateClientNote(id: number, note: any) { return note; }
+  async deleteClientNote(id: number) { return; }
+  async getCustomTags(userId: string) { return []; }
+  async createCustomTag(tag: any) { return tag; }
+  async updateCustomTag(id: number, tag: any) { return tag; }
+  async deleteCustomTag(id: number) { return; }
+  async getSalonPhotos(salonId: string) { return []; }
+  async createSalonPhoto(photo: any) { return photo; }
+  async deleteSalonPhoto(id: number) { return; }
+  async createSalonRegistration(registration: any) { return registration; }
+  async getSalonRegistration(id: string) { return undefined; }
+  async updateSalonRegistration(id: string, registration: any) { return registration; }
+  async deleteSalonRegistration(id: string) { return; }
+  async createBusinessRegistration(registration: any) { return registration; }
+  async getBusinessRegistration(id: string) { return undefined; }
+  async updateBusinessRegistration(id: string, registration: any) { return registration; }
+  async deleteBusinessRegistration(id: string) { return; }
+  async getReviews(salonId: string) { return []; }
+  async createReview(review: any) { return review; }
+  async getNotifications(userId: string) { return []; }
+  async createNotification(notification: any) { return notification; }
+  async markNotificationAsRead(id: number) { return; }
+  async getSubscriptions(userId: string) { return []; }
+  async createSubscription(subscription: any) { return subscription; }
+  async updateSubscription(id: number, subscription: any) { return subscription; }
+  async getMessages(conversationId: string) { return []; }
+  async createMessage(message: any) { return message; }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
     try {

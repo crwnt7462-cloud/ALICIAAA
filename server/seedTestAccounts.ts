@@ -1,7 +1,13 @@
-import { storage } from './storage';
+import { firebaseStorage } from './firebaseStorage';
+import { storage as memoryStorage } from './storage';
+import { FIREBASE_CONFIG } from './firebaseSetup';
 
 export async function createTestAccounts() {
-  console.log('💾 Utilisation du stockage en mémoire');
+  // Utiliser Firebase si activé, sinon PostgreSQL
+  const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
+  const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
+  
+  console.log(USE_FIREBASE ? '🔥 Firebase activé pour les comptes de test' : '💾 PostgreSQL - Comptes de test stables');
   console.log('🌱 Vérification des comptes de test...');
   
   try {

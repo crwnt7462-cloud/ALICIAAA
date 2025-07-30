@@ -1,7 +1,7 @@
 // Configuration pour activer Firebase facilement
 export const FIREBASE_CONFIG = {
-  // Par défaut, utiliser le stockage en mémoire pour la stabilité
-  USE_FIREBASE: process.env.USE_FIREBASE === 'true' || false,
+  // Firebase désactivé temporairement - problème d'authentification sur Replit
+  USE_FIREBASE: false, // process.env.USE_FIREBASE === 'true' || false,
   
   // Vérifier si toutes les clés Firebase sont présentes
   hasFirebaseSecrets: () => {
@@ -18,10 +18,10 @@ export const FIREBASE_CONFIG = {
       if (FIREBASE_CONFIG.hasFirebaseSecrets()) {
         console.log('🔥 Firebase configuré et activé');
       } else {
-        console.log('⚠️ Firebase activé mais secrets manquants, fallback vers stockage mémoire');
+        console.log('⚠️ Firebase activé mais secrets manquants, fallback vers stockage PostgreSQL');
       }
     } else {
-      console.log('💾 Utilisation du stockage en mémoire (PostgreSQL)');
+      console.log('💾 Firebase disponible mais désactivé - Utilisation PostgreSQL');
     }
   }
 };

@@ -70,18 +70,23 @@ Token Firebase → Validation côté serveur → Accès données PostgreSQL
 ## Configuration Actuelle
 
 ```javascript
-// Activation Firebase
-USE_FIREBASE=true
+// Firebase disponible mais désactivé temporairement
+USE_FIREBASE=false
 
-// Secrets requis
-VITE_FIREBASE_API_KEY=xxx
-VITE_FIREBASE_PROJECT_ID=xxx  
-VITE_FIREBASE_APP_ID=xxx
+// Secrets Firebase présents et configurés
+VITE_FIREBASE_API_KEY=✅ Configuré
+VITE_FIREBASE_PROJECT_ID=✅ Configuré  
+VITE_FIREBASE_APP_ID=✅ Configuré
 ```
+
+**Pourquoi PostgreSQL actuellement :**
+- Firebase secrets configurés mais problème d'auth sur Replit
+- PostgreSQL offre stabilité parfaite pour le développement
+- Migration vers Firebase possible à tout moment
 
 ## Comptes de Test
 
-Avec Firebase activé, les comptes de test sont gérés automatiquement :
+Avec PostgreSQL, les comptes de test sont parfaitement stables :
 
 - **PRO** : test@monapp.com / test1234
 - **CLIENT** : client@test.com / client123
