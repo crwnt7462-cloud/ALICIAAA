@@ -172,7 +172,10 @@ export default function SalonSearchComplete() {
 
             {/* Bouton Search - plus compact */}
             <button
-              onClick={() => setActiveFilter("coiffure")}
+              onClick={() => {
+                // Déclencher la recherche avec les paramètres actuels
+                setSearchQuery(searchQuery || "salon");
+              }}
               className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors mb-6"
             >
               Search
@@ -186,16 +189,58 @@ export default function SalonSearchComplete() {
             {/* Catégories - exactement comme screenshot en bas */}
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => setActiveFilter("coiffure")}
+                onClick={() => {
+                  setActiveFilter("coiffure");
+                  setSearchQuery("");
+                }}
                 className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
               >
                 Coiffure
               </button>
               <button
-                onClick={() => setActiveFilter("esthetique")}
+                onClick={() => {
+                  setActiveFilter("esthetique");
+                  setSearchQuery("");
+                }}
                 className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
               >
                 Esthétique
+              </button>
+              <button
+                onClick={() => {
+                  setActiveFilter("barbier");
+                  setSearchQuery("");
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Barbier
+              </button>
+              <button
+                onClick={() => {
+                  setActiveFilter("ongles");
+                  setSearchQuery("");
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Manucure
+              </button>
+              <button
+                onClick={() => {
+                  setActiveFilter("massage");
+                  setSearchQuery("");
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Massage
+              </button>
+              <button
+                onClick={() => {
+                  setActiveFilter("all");
+                  setSearchQuery("");
+                }}
+                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+              >
+                Tous
               </button>
             </div>
 

@@ -554,11 +554,12 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           const categoryLower = (category as string).toLowerCase();
           return salon.serviceCategories.some((cat: any) => {
             const catName = cat.name?.toLowerCase() || '';
-            return catName.includes('coiffure') && categoryLower === 'coiffure' ||
-                   catName.includes('barbier') && categoryLower === 'barbier' ||
-                   catName.includes('manucure') && categoryLower === 'ongles' ||
-                   catName.includes('massage') && categoryLower === 'massage' ||
-                   catName.includes('soin') && categoryLower === 'esthetique';
+            return (catName.includes('coiffure') && categoryLower === 'coiffure') ||
+                   (catName.includes('barbier') && categoryLower === 'barbier') ||
+                   (catName.includes('manucure') && categoryLower === 'ongles') ||
+                   (catName.includes('massage') && categoryLower === 'massage') ||
+                   (catName.includes('soin') && categoryLower === 'esthetique') ||
+                   (catName.includes('esthétique') && categoryLower === 'esthetique');
           });
         });
         console.log(`🏷️ Filtre catégorie "${category}": ${salons.length} salons`);
