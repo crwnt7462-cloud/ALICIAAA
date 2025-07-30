@@ -26,22 +26,27 @@ export default function BusinessFeatures() {
       {/* Barre de notifications temps réel */}
       <RealtimeNotificationBar />
       
-      {/* Header unique - Style iPhone */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-3">
+      {/* Header violet moderne - Style iPhone identique client */}
+      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
+        <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+                <span className="text-white font-bold text-lg">P</span>
               </div>
-              <h1 className="text-lg font-semibold text-gray-900">Salon Manager</h1>
+              <h1 className="text-lg font-semibold text-white">Pro Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                <Bell className="h-5 w-5 text-white/80" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full"></div>
               </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setLocation('/salon-settings')}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/10" 
+                onClick={() => setLocation('/salon-settings')}
+              >
                 <Settings className="h-4 w-4" />
               </Button>
             </div>

@@ -14,7 +14,8 @@ import {
   Send, 
   User,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  Plus
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -149,34 +150,34 @@ export default function ProMessaging() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      {/* Header violet moderne - Style iPhone identique client */}
+      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
+        <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
+            <div className="flex items-center gap-3">
+              <button 
                 onClick={() => setLocation('/business-features')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+                className="p-2 hover:bg-white/10 rounded-full text-white/80 hover:text-white"
               >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Messagerie Professionnelle</h1>
-                <p className="text-gray-600">
-                  {messages.length} messages • {messages.filter((m: Message) => !m.isRead).length} non lus
-                </p>
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+                <MessageCircle className="h-5 w-5 text-white" />
               </div>
+              <h1 className="text-lg font-semibold text-white">Messagerie Pro</h1>
             </div>
-            
-            {/* Bouton Nouveau Message */}
-            <Button
-              onClick={() => setIsNewMessageOpen(true)}
-              className="bg-violet-600 hover:bg-violet-700 text-white"
-            >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Nouveau
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="text-xs text-white/80 bg-white/10 px-2 py-1 rounded-full">
+                {messages.filter((m: Message) => !m.isRead).length} non lus
+              </div>
+              <Button
+                onClick={() => setIsNewMessageOpen(true)}
+                className="bg-white/20 hover:bg-white/30 text-white border-0 h-8 text-xs"
+              >
+                <Plus className="w-3 h-3 mr-1" />
+                Nouveau
+              </Button>
+            </div>
           </div>
         </div>
       </div>

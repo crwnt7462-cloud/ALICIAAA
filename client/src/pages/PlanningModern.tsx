@@ -133,30 +133,39 @@ export default function PlanningModern() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      
-      {/* Header */}
-      <div className="relative">
-        
-        {/* Bouton retour */}
-        <button
-          onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 p-2"
-        >
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
-
-        {/* Container principal */}
-        <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto">
-            
-            {/* Logo */}
-            <div className="text-center mb-12">
-              <h1 className="text-3xl font-bold text-violet-600">Planning</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header violet moderne - Style iPhone identique client */}
+      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setLocation('/business-features')}
+                className="p-2 hover:bg-white/10 rounded-full text-white/80 hover:text-white"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
+                <Calendar className="h-5 w-5 text-white" />
+              </div>
+              <h1 className="text-lg font-semibold text-white">Planning</h1>
             </div>
+            <button 
+              onClick={() => setShowAddForm(true)}
+              className="p-2 bg-white/20 hover:bg-white/30 text-white rounded-full border border-white/30"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
 
-            {/* Navigation date */}
-            <div className="bg-gray-50 rounded-2xl p-4 mb-6">
+      <div className="max-w-lg mx-auto p-4 space-y-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+          <h2 className="text-xl font-bold text-violet-600 text-center mb-6">Planning du Jour</h2>
+
+          {/* Navigation date */}
+          <div className="bg-gray-50 rounded-2xl p-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <button onClick={() => navigateDate('prev')} className="p-2 hover:bg-gray-200 rounded-full">
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
@@ -191,20 +200,20 @@ export default function PlanningModern() {
                   <div className="text-xs text-gray-500">CA prévu</div>
                 </div>
               </div>
-            </div>
+          </div>
 
-            {/* Bouton nouveau RDV */}
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
-            >
-              <Plus className="h-4 w-4" />
-              Nouveau rendez-vous
-            </button>
+          {/* Bouton nouveau RDV */}
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
+          >
+            <Plus className="h-4 w-4" />
+            Nouveau rendez-vous
+          </button>
 
-            {/* Planning des créneaux */}
-            <div className="space-y-2">
-              {timeSlots.map(time => {
+          {/* Planning des créneaux */}
+          <div className="space-y-2">
+            {timeSlots.map(time => {
                 const appointment = getAppointmentForTime(time);
                 
                 return (
@@ -283,10 +292,8 @@ export default function PlanningModern() {
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-
+            ))}
+          </div>
           </div>
         </div>
       </div>
