@@ -375,6 +375,55 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     }));
   };
 
+  // 🔥 AJOUTER UNE NOUVELLE CATÉGORIE DE SERVICES
+  const addCategory = () => {
+    const newCategory = {
+      id: Date.now(),
+      name: 'Nouvelle catégorie',
+      expanded: true,
+      services: [{
+        id: Date.now() + 1,
+        name: 'Nouvelle prestation',
+        price: 0,
+        duration: '1h',
+        description: ''
+      }]
+    };
+    
+    setSalonData(prev => ({
+      ...prev,
+      serviceCategories: [...prev.serviceCategories, newCategory]
+    }));
+    
+    toast({
+      title: "Catégorie ajoutée",
+      description: "Nouvelle catégorie de services créée. Vous pouvez maintenant la personnaliser.",
+    });
+  };
+
+  // 🔥 SUPPRIMER UNE CATÉGORIE COMPLÈTE
+  const deleteCategory = (categoryId: number) => {
+    setSalonData(prev => ({
+      ...prev,
+      serviceCategories: prev.serviceCategories.filter(cat => cat.id !== categoryId)
+    }));
+    
+    toast({
+      title: "Catégorie supprimée",
+      description: "La catégorie et tous ses services ont été supprimés.",
+    });
+  };
+
+  // 🔥 MODIFIER LE NOM D'UNE CATÉGORIE
+  const updateCategoryName = (categoryId: number, newName: string) => {
+    setSalonData(prev => ({
+      ...prev,
+      serviceCategories: prev.serviceCategories.map(cat => 
+        cat.id === categoryId ? { ...cat, name: newName } : cat
+      )
+    }));
+  };
+
   const toggleCategory = (categoryId: number) => {
     setSalonData(prev => ({
       ...prev,
@@ -575,6 +624,19 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         <div className="p-4">
           {activeTab === 'services' && (
             <div className="space-y-4">
+              {/* Bouton pour ajouter une nouvelle catégorie */}
+              {isEditing && (
+                <div className="text-center">
+                  <Button
+                    onClick={addCategory}
+                    className="bg-violet-100 text-violet-700 hover:bg-violet-200 border-2 border-dashed border-violet-300 w-full py-6"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Ajouter une catégorie (ex: Cheveux, Visage, Ongles...)
+                  </Button>
+                </div>
+              )}
+              
               {salonData.serviceCategories.map((category) => (
                 <Card 
                   key={category.id} 
@@ -591,20 +653,50 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                       className="flex items-center justify-between cursor-pointer"
                       onClick={() => toggleCategory(category.id)}
                     >
-                      <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                      {/* Nom de la catégorie éditable */}
+                      {isEditing ? (
+                        <Input
+                          value={category.name}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            updateCategoryName(category.id, e.target.value);
+                          }}
+                          onClick={(e) => e.stopPropagation()}
+                          className="bg-white border-gray-300 text-gray-900 font-semibold text-base max-w-xs"
+                          placeholder="Nom de la catégorie (ex: Cheveux, Visage...)"
+                        />
+                      ) : (
+                        <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                      )}
+                      
                       <div className="flex items-center gap-2">
                         {isEditing && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              addService(category.id);
-                            }}
-                            className="text-violet-600 hover:bg-violet-50"
-                          >
-                            <Plus className="w-4 h-4" />
-                          </Button>
+                          <>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addService(category.id);
+                              }}
+                              className="text-violet-600 hover:bg-violet-50"
+                              title="Ajouter un service"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteCategory(category.id);
+                              }}
+                              className="text-red-600 hover:bg-red-50"
+                              title="Supprimer cette catégorie"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </>
                         )}
                         <span className="text-gray-500">
                           {category.expanded ? '−' : '+'}
