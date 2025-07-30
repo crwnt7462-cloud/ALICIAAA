@@ -1,24 +1,9 @@
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  updateDoc, 
-  deleteDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
-  limit,
-  Timestamp,
-  addDoc
-} from 'firebase/firestore';
 import { adminDb } from './firebaseAdmin';
 import type { IStorage } from './storage';
 import type { 
   User, 
   UpsertUser,
-  Client,
+  ClientAccount,
   Appointment,
   Service,
   Staff,
@@ -40,8 +25,8 @@ export class FirebaseStorage implements IStorage {
       const data = userDoc.data();
       return {
         ...data,
-        createdAt: data?.createdAt?.toDate(),
-        updatedAt: data?.updatedAt?.toDate()
+        createdAt: data?.createdAt,
+        updatedAt: data?.updatedAt
       } as User;
     } catch (error) {
       console.error('Erreur getUser Firebase:', error);
@@ -60,14 +45,14 @@ export class FirebaseStorage implements IStorage {
         // Update existing user
         await userRef.update({
           ...userData,
-          updatedAt: Timestamp.fromDate(now)
+          updatedAt: now
         });
       } else {
         // Create new user
         await userRef.set({
           ...userData,
-          createdAt: Timestamp.fromDate(now),
-          updatedAt: Timestamp.fromDate(now)
+          createdAt: now,
+          updatedAt: now
         });
       }
       
@@ -76,8 +61,8 @@ export class FirebaseStorage implements IStorage {
       
       return {
         ...data,
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate()
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt
       } as User;
     } catch (error) {
       console.error('Erreur upsertUser Firebase:', error);
@@ -86,11 +71,10 @@ export class FirebaseStorage implements IStorage {
   }
 
   // Client operations
-  async getClientByEmail(email: string): Promise<Client | undefined> {
+  async getClientByEmail(email: string): Promise<ClientAccount | undefined> {
     try {
       const clientsRef = adminDb.collection('clients');
-      const q = query(clientsRef, where('email', '==', email), limit(1));
-      const snapshot = await q.get();
+      const snapshot = await clientsRef.where('email', '==', email).limit(1).get();
       
       if (snapshot.empty) return undefined;
       
@@ -102,20 +86,20 @@ export class FirebaseStorage implements IStorage {
         id: doc.id,
         createdAt: data.createdAt?.toDate(),
         updatedAt: data.updatedAt?.toDate()
-      } as Client;
+      } as ClientAccount;
     } catch (error) {
       console.error('Erreur getClientByEmail Firebase:', error);
       return undefined;
     }
   }
 
-  async createClient(clientData: Omit<Client, 'id' | 'createdAt' | 'updatedAt'>): Promise<Client> {
+  async createClient(clientData: any): Promise<ClientAccount> {
     try {
       const now = new Date();
       const docRef = await adminDb.collection('clients').add({
         ...clientData,
-        createdAt: Timestamp.fromDate(now),
-        updatedAt: Timestamp.fromDate(now)
+        createdAt: now,
+        updatedAt: now
       });
       
       const doc = await docRef.get();
@@ -124,9 +108,9 @@ export class FirebaseStorage implements IStorage {
       return {
         ...data,
         id: doc.id,
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate()
-      } as Client;
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt
+      } as ClientAccount;
     } catch (error) {
       console.error('Erreur createClient Firebase:', error);
       throw error;
@@ -142,7 +126,7 @@ export class FirebaseStorage implements IStorage {
       const data = salonDoc.data();
       return {
         ...data,
-        updatedAt: data?.updatedAt?.toDate()
+        updatedAt: data?.updatedAt
       } as BookingPage;
     } catch (error) {
       console.error('Erreur getSalon Firebase:', error);
@@ -157,7 +141,7 @@ export class FirebaseStorage implements IStorage {
       
       await salonRef.set({
         ...salonData,
-        updatedAt: Timestamp.fromDate(now)
+        updatedAt: now
       }, { merge: true });
       
       const updatedDoc = await salonRef.get();
@@ -165,7 +149,7 @@ export class FirebaseStorage implements IStorage {
       
       return {
         ...data,
-        updatedAt: data.updatedAt?.toDate()
+        updatedAt: data.updatedAt
       } as BookingPage;
     } catch (error) {
       console.error('Erreur saveSalon Firebase:', error);
@@ -174,14 +158,14 @@ export class FirebaseStorage implements IStorage {
   }
 
   // Appointment operations
-  async createAppointment(appointmentData: Omit<Appointment, 'id' | 'createdAt' | 'updatedAt'>): Promise<Appointment> {
+  async createAppointment(appointmentData: any): Promise<Appointment> {
     try {
       const now = new Date();
       const docRef = await adminDb.collection('appointments').add({
         ...appointmentData,
-        dateTime: Timestamp.fromDate(appointmentData.dateTime),
-        createdAt: Timestamp.fromDate(now),
-        updatedAt: Timestamp.fromDate(now)
+        dateTime: appointmentData.dateTime,
+        createdAt: now,
+        updatedAt: now
       });
       
       const doc = await docRef.get();
@@ -190,9 +174,9 @@ export class FirebaseStorage implements IStorage {
       return {
         ...data,
         id: doc.id,
-        dateTime: data.dateTime?.toDate(),
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate()
+        dateTime: data.dateTime,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt
       } as Appointment;
     } catch (error) {
       console.error('Erreur createAppointment Firebase:', error);
@@ -203,21 +187,19 @@ export class FirebaseStorage implements IStorage {
   async getAppointmentsByUserId(userId: string): Promise<Appointment[]> {
     try {
       const appointmentsRef = adminDb.collection('appointments');
-      const q = query(
-        appointmentsRef, 
-        where('userId', '==', userId),
-        orderBy('dateTime', 'desc')
-      );
-      const snapshot = await q.get();
+      const snapshot = await appointmentsRef
+        .where('userId', '==', userId)
+        .orderBy('dateTime', 'desc')
+        .get();
       
       return snapshot.docs.map(doc => {
         const data = doc.data();
         return {
           ...data,
           id: doc.id,
-          dateTime: data.dateTime?.toDate(),
-          createdAt: data.createdAt?.toDate(),
-          updatedAt: data.updatedAt?.toDate()
+          dateTime: data.dateTime,
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt
         } as Appointment;
       });
     } catch (error) {
@@ -227,12 +209,12 @@ export class FirebaseStorage implements IStorage {
   }
 
   // Notification operations
-  async createNotification(notificationData: Omit<Notification, 'id' | 'createdAt'>): Promise<Notification> {
+  async createNotification(notificationData: any): Promise<Notification> {
     try {
       const now = new Date();
       const docRef = await adminDb.collection('notifications').add({
         ...notificationData,
-        createdAt: Timestamp.fromDate(now)
+        createdAt: now
       });
       
       const doc = await docRef.get();
@@ -241,7 +223,7 @@ export class FirebaseStorage implements IStorage {
       return {
         ...data,
         id: doc.id,
-        createdAt: data.createdAt?.toDate()
+        createdAt: data.createdAt
       } as Notification;
     } catch (error) {
       console.error('Erreur createNotification Firebase:', error);
@@ -252,20 +234,18 @@ export class FirebaseStorage implements IStorage {
   async getNotificationsByUserId(userId: string): Promise<Notification[]> {
     try {
       const notificationsRef = adminDb.collection('notifications');
-      const q = query(
-        notificationsRef, 
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc'),
-        limit(50)
-      );
-      const snapshot = await q.get();
+      const snapshot = await notificationsRef
+        .where('userId', '==', userId)
+        .orderBy('createdAt', 'desc')
+        .limit(50)
+        .get();
       
       return snapshot.docs.map(doc => {
         const data = doc.data();
         return {
           ...data,
           id: doc.id,
-          createdAt: data.createdAt?.toDate()
+          createdAt: data.createdAt
         } as Notification;
       });
     } catch (error) {

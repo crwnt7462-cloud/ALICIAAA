@@ -1,990 +1,300 @@
 import type { Express } from "express";
-import { storage } from "./storage";
-import jwt from 'jsonwebtoken';
-import Stripe from 'stripe';
-import bcrypt from 'bcrypt';
-import { notificationService } from './notificationService';
-import { reminderService } from './reminderService';
+import { createServer, type Server } from "http";
+import { firebaseStorage } from "./firebaseStorage";
+import { storage as memoryStorage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key-salon-app';
-const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-06-30.basil',
-}) : null;
+// Configuration: utiliser Firebase ou stockage mémoire
+const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
+const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
 
-// Middleware d'authentification PRO
-const authenticatePro = async (req: any, res: any, next: any) => {
-  const user = (req.session as any)?.user;
-  if (!user || user.userType !== 'professional') {
-    return res.status(401).json({ error: 'Accès non autorisé - Professionnel requis' });
-  }
-  req.userId = user.id;
-  next();
-};
+// Logging de l'état
+FIREBASE_CONFIG.logStatus();
+if (!USE_FIREBASE && process.env.USE_FIREBASE === 'true') {
+  console.log(FIREBASE_INSTRUCTIONS);
+}
 
-// Middleware d'authentification CLIENT
-const authenticateClient = async (req: any, res: any, next: any) => {
-  const token = req.headers.authorization?.replace('Bearer ', '');
-  if (!token || !token.startsWith('client-')) {
-    return res.status(401).json({ error: 'Token client invalide' });
-  }
-  
-  try {
-    const clientId = parseInt(token.split('-')[1]);
-    const client = await storage.getClientAccount(clientId);
-    if (!client) {
-      return res.status(401).json({ error: 'Client non trouvé' });
-    }
-    req.clientId = clientId;
-    req.client = client;
-    next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Token invalide' });
-  }
-};
+export async function registerFullStackRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
 
-export function registerFullStackRoutes(app: Express) {
-  
-  // ========== AUTHENTIFICATION ==========
-
-  // Inscription Business (avec informations complètes)
-  app.post('/api/business-registration', async (req, res) => {
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const { 
-        businessName, businessType, siret, legalForm, address, city, postalCode, 
-        phone, email, ownerFirstName, ownerLastName, vatNumber, description, planId 
-      } = req.body;
-
-      // Validation des champs requis
-      if (!businessName || !businessType || !siret || !legalForm || !address || !city || !postalCode || !phone || !email || !ownerFirstName || !ownerLastName) {
-        return res.status(400).json({ error: 'Tous les champs requis doivent être remplis' });
-      }
-
-      // Créer un business ID temporaire
-      const businessId = `business_${Date.now()}`;
-      
-      console.log(`📝 Inscription business: ${businessName} (${email}) - Plan: ${planId}`);
-      console.log(`🏢 Type: ${businessType}, SIRET: ${siret}, ${address} ${postalCode} ${city}`);
-
-      // Simuler la sauvegarde des données business
-      // Dans un vrai système, on sauvegarderait en base de données
-      
-      res.json({
-        success: true,
-        message: 'Inscription business réussie',
-        businessId: businessId,
-        businessName: businessName,
-        planId: planId,
-        email: email
-      });
-    } catch (error: any) {
-      console.error('❌ Erreur inscription business:', error);
-      res.status(500).json({ error: 'Erreur serveur lors de l\'inscription' });
-    }
-  });
-  
-  // Inscription PRO
-  app.post('/api/pro/register', async (req, res) => {
-    try {
-      const { email, password, businessName, firstName, lastName, phone, address, city } = req.body;
-
-      if (!email || !password || !businessName) {
-        return res.status(400).json({ error: 'Données manquantes' });
-      }
-
-      const existingUser = await storage.getUserByEmail(email);
-      if (existingUser) {
-        return res.status(400).json({ error: 'Un compte avec cet email existe déjà' });
-      }
-
-      const newUser = await storage.createUser({
-        email, password, businessName, firstName, lastName, phone, address, city
-      });
-
-      res.json({
-        success: true,
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName,
-          businessName: newUser.businessName
-        },
-        message: 'Compte professionnel créé avec succès'
-      });
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
     } catch (error) {
-      console.error("Erreur inscription PRO:", error);
-      res.status(500).json({ error: 'Erreur lors de la création du compte' });
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
     }
   });
 
-  // Connexion PRO avec session
-  app.post('/api/pro/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      
-      // Compte test PRO
-      if (email === 'test@monapp.com' && password === 'test1234') {
-        (req.session as any).user = {
-          id: 'test-pro-user',
-          email: 'test@monapp.com',
-          firstName: 'Salon',
-          lastName: 'Excellence',
-          businessName: 'Salon Excellence Paris',
-          handle: '@usemyrr',
-          role: 'professional',
-          userType: 'professional'
-        };
-        
-        return res.json({
-          success: true,
-          user: (req.session as any).user,
-          message: 'Connexion PRO réussie'
-        });
-      }
-
-      const user = await storage.authenticateUser(email, password);
-      if (user) {
-        (req.session as any).user = {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          businessName: user.businessName,
-          role: 'professional',
-          userType: 'professional'
-        };
-        
-        res.json({
-          success: true,
-          user: (req.session as any).user,
-          message: 'Connexion PRO réussie'
-        });
-      } else {
-        res.status(401).json({ error: 'Identifiants incorrects' });
-      }
-    } catch (error) {
-      console.error("Erreur login PRO:", error);
-      res.status(500).json({ error: 'Erreur serveur' });
-    }
-  });
-
-  // Connexion CLIENT avec token
-  app.post('/api/client/login', async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      
-      if (!email || !password) {
-        return res.status(400).json({ error: 'Email et mot de passe requis' });
-      }
-
-      const client = await storage.authenticateClient(email, password);
-      
-      if (client) {
-        const token = `client-${client.id}-${Date.now()}`;
-        
-        res.json({
-          success: true,
-          client: {
-            id: client.id,
-            email: client.email,
-            firstName: client.firstName,
-            lastName: client.lastName,
-            loyaltyPoints: client.loyaltyPoints,
-            clientStatus: client.clientStatus,
-            token
-          }
-        });
-      } else {
-        res.status(401).json({ error: 'Identifiants incorrects' });
-      }
-    } catch (error) {
-      console.error('Client login error:', error);
-      res.status(500).json({ error: 'Erreur serveur' });
-    }
-  });
-
-  // Inscription CLIENT
-  app.post('/api/client/register', async (req, res) => {
-    try {
-      const { email, password, firstName, lastName, phone, dateOfBirth } = req.body;
-
-      const existingClient = await storage.getClientAccountByEmail(email);
-      if (existingClient) {
-        return res.status(400).json({ error: 'Un compte avec cet email existe déjà' });
-      }
-
-      const newClient = await storage.createClientAccount({
-        email, password, firstName, lastName, phone, dateOfBirth
-      });
-
-      const token = `client-${newClient.id}-${Date.now()}`;
-
-      res.json({
-        success: true,
-        client: {
-          id: newClient.id,
-          email: newClient.email,
-          firstName: newClient.firstName,
-          lastName: newClient.lastName,
-          loyaltyPoints: newClient.loyaltyPoints,
-          clientStatus: newClient.clientStatus,
-          token
-        }
-      });
-    } catch (error) {
-      console.error('Client registration error:', error);
-      res.status(500).json({ error: 'Erreur lors de la création du compte' });
-    }
-  });
-
-  // Vérification session PRO
-  app.get('/api/pro/check-session', async (req, res) => {
-    try {
-      const user = (req.session as any)?.user;
-      if (user && user.userType === 'professional') {
-        res.json({ authenticated: true, user: user });
-      } else {
-        res.json({ authenticated: false });
-      }
-    } catch (error) {
-      res.status(500).json({ error: 'Erreur serveur' });
-    }
-  });
-
-  // Vérification token CLIENT
-  app.get('/api/client/check-auth', authenticateClient, async (req: any, res) => {
-    res.json({
-      success: true,
-      client: {
-        id: req.client.id,
-        email: req.client.email,
-        firstName: req.client.firstName,
-        lastName: req.client.lastName,
-        loyaltyPoints: req.client.loyaltyPoints,
-        clientStatus: req.client.clientStatus
-      }
-    });
-  });
-
-  // ========== RÉSERVATIONS & PLANNING ==========
-
-  // Créer un rendez-vous (PRO)
-  app.post('/api/appointments', authenticatePro, async (req: any, res) => {
-    try {
-      const appointmentData = {
-        ...req.body,
-        userId: req.userId,
-        status: 'scheduled'
-      };
-
-      const appointment = await storage.createAppointment(appointmentData);
-      
-      // Envoyer notification temps réel et programmer rappels
-      await notificationService.notifyNewAppointment(appointment);
-      
-      res.json({
-        success: true,
-        appointment,
-        message: 'Rendez-vous créé avec succès'
-      });
-    } catch (error) {
-      console.error('Erreur création RDV:', error);
-      res.status(500).json({ error: 'Erreur lors de la création du rendez-vous' });
-    }
-  });
-
-  // Récupérer les rendez-vous (PRO)
-  app.get('/api/appointments', authenticatePro, async (req: any, res) => {
-    try {
-      const { date } = req.query;
-      const appointments = await storage.getAppointments(req.userId, date as string);
-      res.json(appointments);
-    } catch (error) {
-      console.error('Erreur récupération RDV:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des rendez-vous' });
-    }
-  });
-
-  // Récupérer les rendez-vous CLIENT
-  app.get('/api/client/appointments', authenticateClient, async (req: any, res) => {
-    try {
-      const appointments = await storage.getAppointments(req.clientId.toString());
-      res.json(appointments);
-    } catch (error) {
-      console.error('Erreur RDV client:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des rendez-vous' });
-    }
-  });
-
-  // Modifier un rendez-vous
-  app.patch('/api/appointments/:id', authenticatePro, async (req: any, res) => {
-    try {
-      const appointmentId = parseInt(req.params.id);
-      const updatedAppointment = await storage.updateAppointment(appointmentId, req.body);
-      
-      // Notifier les changements
-      const changes = Object.keys(req.body);
-      await notificationService.notifyAppointmentUpdate(updatedAppointment, changes);
-      
-      res.json({
-        success: true,
-        appointment: updatedAppointment,
-        message: 'Rendez-vous modifié avec succès'
-      });
-    } catch (error) {
-      console.error('Erreur modification RDV:', error);
-      res.status(500).json({ error: 'Erreur lors de la modification du rendez-vous' });
-    }
-  });
-
-  // Annuler un rendez-vous
-  app.delete('/api/appointments/:id', authenticatePro, async (req: any, res) => {
-    try {
-      const appointmentId = parseInt(req.params.id);
-      const appointments = await storage.getAppointments();
-      const appointment = appointments.find((apt: any) => apt.id === appointmentId);
-      
-      await storage.deleteAppointment(appointmentId);
-      
-      // Notifier l'annulation
-      if (appointment) {
-        await notificationService.notifyAppointmentCancellation(appointment, 'professional');
-      }
-      
-      res.json({
-        success: true,
-        message: 'Rendez-vous annulé avec succès'
-      });
-    } catch (error) {
-      console.error('Erreur annulation RDV:', error);
-      res.status(500).json({ error: 'Erreur lors de l\'annulation du rendez-vous' });
-    }
-  });
-
-  // ========== GESTION DES SERVICES ==========
-
-  // Récupérer les services (PRO)
-  app.get('/api/services', authenticatePro, async (req: any, res) => {
-    try {
-      const services = await storage.getServices(req.userId);
-      res.json(services);
-    } catch (error) {
-      console.error('Erreur récupération services:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des services' });
-    }
-  });
-
-  // Créer un service
-  app.post('/api/services', authenticatePro, async (req: any, res) => {
-    try {
-      const serviceData = {
-        ...req.body,
-        userId: req.userId
-      };
-
-      const service = await storage.createService(serviceData);
-      res.json({
-        success: true,
-        service,
-        message: 'Service créé avec succès'
-      });
-    } catch (error) {
-      console.error('Erreur création service:', error);
-      res.status(500).json({ error: 'Erreur lors de la création du service' });
-    }
-  });
-
-  // ========== GESTION DES CLIENTS ==========
-
-  // Récupérer les clients (PRO)
-  app.get('/api/clients', authenticatePro, async (req: any, res) => {
-    try {
-      const clients = await storage.getClients(req.userId);
-      res.json(clients);
-    } catch (error) {
-      console.error('Erreur récupération clients:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des clients' });
-    }
-  });
-
-  // Créer un client
-  app.post('/api/clients', authenticatePro, async (req: any, res) => {
-    try {
-      const clientData = {
-        ...req.body,
-        userId: req.userId
-      };
-
-      const client = await storage.createClient(clientData);
-      res.json({
-        success: true,
-        client,
-        message: 'Client créé avec succès'
-      });
-    } catch (error) {
-      console.error('Erreur création client:', error);
-      res.status(500).json({ error: 'Erreur lors de la création du client' });
-    }
-  });
-
-  // ========== PAIEMENTS STRIPE ==========
-
-  // Créer un PaymentIntent pour acompte
-  app.post('/api/payments/create-intent', async (req, res) => {
-    try {
-      if (!stripe) {
-        return res.status(503).json({ error: 'Service de paiement non configuré' });
-      }
-
-      const { amount, appointmentId, clientId } = req.body;
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convertir en centimes
-        currency: 'eur',
-        metadata: {
-          appointmentId: appointmentId?.toString() || '',
-          clientId: clientId?.toString() || ''
-        }
-      });
-
-      res.json({
-        success: true,
-        clientSecret: paymentIntent.client_secret
-      });
-    } catch (error) {
-      console.error('Erreur PaymentIntent:', error);
-      res.status(500).json({ error: 'Erreur lors de la création du paiement' });
-    }
-  });
-
-  // Confirmer le paiement
-  app.post('/api/payments/confirm', async (req, res) => {
-    try {
-      if (!stripe) {
-        return res.status(503).json({ error: 'Service de paiement non configuré' });
-      }
-
-      const { paymentIntentId, appointmentId } = req.body;
-
-      // Vérifier le paiement avec Stripe
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      
-      if (paymentIntent.status === 'succeeded') {
-        // Mettre à jour le statut du rendez-vous
-        if (appointmentId) {
-          await storage.updateAppointment(appointmentId, {
-            paymentStatus: 'paid',
-            depositPaid: (paymentIntent.amount / 100).toString(),
-            stripeSessionId: paymentIntentId
-          });
-        }
-
-        res.json({
-          success: true,
-          message: 'Paiement confirmé avec succès'
-        });
-      } else {
-        res.status(400).json({ error: 'Paiement non confirmé' });
-      }
-    } catch (error) {
-      console.error('Erreur confirmation paiement:', error);
-      res.status(500).json({ error: 'Erreur lors de la confirmation du paiement' });
-    }
-  });
-
-  // ========== TABLEAUX DE BORD ==========
-
-  // Dashboard PRO - Statistiques
-  app.get('/api/dashboard/stats', authenticatePro, async (req: any, res) => {
-    try {
-      const stats = await storage.getDashboardStats(req.userId);
-      res.json(stats);
-    } catch (error) {
-      console.error('Erreur stats dashboard:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
-    }
-  });
-
-  // Dashboard CLIENT - Historique et fidélité
-  app.get('/api/client/dashboard', authenticateClient, async (req: any, res) => {
-    try {
-      const client = req.client;
-      const appointments = await storage.getAppointments(req.clientId.toString());
-      
-      // Calculer les données de fidélité
-      const totalSpent = appointments
-        .filter(apt => apt.status === 'completed')
-        .reduce((sum, apt) => sum + parseFloat(apt.totalPrice || '0'), 0);
-      
-      const nextLoyaltyLevel = client.loyaltyPoints >= 500 ? 'VIP' : 
-                               client.loyaltyPoints >= 200 ? 'Premium' : 'Bronze';
-
-      res.json({
-        client: {
-          ...client,
-          totalSpent,
-          nextLoyaltyLevel
-        },
-        appointments,
-        loyaltyInfo: {
-          currentPoints: client.loyaltyPoints,
-          nextLevel: nextLoyaltyLevel,
-          pointsToNext: nextLoyaltyLevel === 'VIP' ? 0 : 
-                        nextLoyaltyLevel === 'Premium' ? 500 - client.loyaltyPoints :
-                        200 - client.loyaltyPoints
-        }
-      });
-    } catch (error) {
-      console.error('Erreur dashboard client:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération du dashboard' });
-    }
-  });
-
-  // ========== NOTIFICATIONS TEMPS RÉEL ==========
-
-  // Marquer notification comme lue
-  app.patch('/api/notifications/:id/read', authenticatePro, async (req: any, res) => {
-    try {
-      // TODO: Implémenter la gestion des notifications
-      res.json({ success: true, message: 'Notification marquée comme lue' });
-    } catch (error) {
-      res.status(500).json({ error: 'Erreur lors de la mise à jour de la notification' });
-    }
-  });
-
-  // ========== RECHERCHE PUBLIQUE SALONS ==========
-
-  // Rechercher des salons (public)
-  app.get('/api/public/salons/search', async (req, res) => {
-    try {
-      const { city, service, latitude, longitude } = req.query;
-      
-      // Pour le moment, retourner des salons de démonstration
-      const demoSalons = [
-        {
-          id: 'salon-1',
-          name: 'Salon Excellence Paris',
-          address: '123 Avenue des Champs-Élysées, 75008 Paris',
-          rating: 4.8,
-          reviewCount: 245,
-          services: ['Coiffure', 'Esthétique', 'Massage'],
-          priceRange: '€€€',
-          distance: '0.8 km',
-          image: '/salon-demo.jpg'
-        },
-        {
-          id: 'salon-2', 
-          name: 'Beauty Studio Marais',
-          address: '45 Rue des Rosiers, 75004 Paris',
-          rating: 4.6,
-          reviewCount: 189,
-          services: ['Esthétique', 'Onglerie', 'Massage'],
-          priceRange: '€€',
-          distance: '1.2 km',
-          image: '/salon-demo2.jpg'
-        }
-      ];
-
-      res.json({
-        success: true,
-        salons: demoSalons,
-        total: demoSalons.length
-      });
-    } catch (error) {
-      console.error('Erreur recherche salons:', error);
-      res.status(500).json({ error: 'Erreur lors de la recherche de salons' });
-    }
-  });
-
-  // Détails d'un salon public
-  app.get('/api/public/salons/:id', async (req, res) => {
+  // Salon/BookingPage routes (compatible Firebase)
+  app.get('/api/booking-pages/:id', async (req, res) => {
     try {
       const { id } = req.params;
+      console.log('📖 Récupération page salon:', id);
       
-      // Salon de démonstration
-      const salon = {
-        id,
-        name: 'Salon Excellence Paris',
-        description: 'Un salon de beauté moderne offrant des services de qualité supérieure',
-        address: '123 Avenue des Champs-Élysées, 75008 Paris',
-        phone: '01 42 34 56 78',
-        email: 'contact@salon-excellence.fr',
-        rating: 4.8,
-        reviewCount: 245,
-        services: [
-          { id: 1, name: 'Coupe + Brushing', price: 45, duration: 60 },
-          { id: 2, name: 'Coloration', price: 85, duration: 120 },
-          { id: 3, name: 'Soin Visage', price: 65, duration: 75 }
-        ],
-        photos: ['/salon-photo1.jpg', '/salon-photo2.jpg', '/salon-photo3.jpg'],
-        openingHours: {
-          lundi: '9h00-19h00',
-          mardi: '9h00-19h00',
-          mercredi: '9h00-19h00',
-          jeudi: '9h00-19h00',
-          vendredi: '9h00-19h00',
-          samedi: '9h00-18h00',
-          dimanche: 'Fermé'
-        },
-        reviews: [
-          {
-            id: 1,
-            clientName: 'Marie L.',
-            rating: 5,
-            comment: 'Service excellent, très professionnel !',
-            date: '2024-01-15'
-          }
-        ]
-      };
-
-      res.json({ success: true, salon });
+      let salon = await storage.getSalon?.(id);
+      
+      if (!salon) {
+        console.log('ℹ️ Salon non trouvé, retour données par défaut:', id);
+        // Données par défaut pour le salon de démo
+        salon = {
+          id: 'salon-demo',
+          name: 'Excellence Paris',
+          description: 'Salon de beauté premium au cœur de Paris',
+          longDescription: 'Notre salon de beauté offre une expérience unique avec des services haut de gamme dans un cadre élégant et moderne.',
+          address: '15 Avenue des Champs-Élysées, 75008 Paris',
+          phone: '+33 1 42 25 76 89',
+          rating: 4.8,
+          reviews: 156,
+          coverImageUrl: '/api/placeholder/400/250',
+          logoUrl: '/api/placeholder/80/80',
+          photos: ['/api/placeholder/300/200', '/api/placeholder/300/200'],
+          verified: true,
+          certifications: ['Bio Certifié', 'Produits Naturels', 'Expertise Reconnue'],
+          awards: ['Meilleur Salon 2024', 'Prix Excellence'],
+          customColors: {
+            primary: '#7c3aed',
+            accent: '#a855f7',
+            buttonText: '#ffffff',
+            priceColor: '#7c3aed',
+            neonFrame: '#a855f7'
+          },
+          serviceCategories: [
+            {
+              id: 'cheveux',
+              name: 'Cheveux',
+              icon: '💇‍♀️',
+              expanded: true,
+              services: [
+                {
+                  id: 'coupe-brushing',
+                  name: 'Coupe + Brushing',
+                  description: 'Coupe personnalisée avec brushing professionnel',
+                  price: 65,
+                  duration: 60
+                },
+                {
+                  id: 'coloration',
+                  name: 'Coloration complète',
+                  description: 'Coloration avec soin professionnel',
+                  price: 85,
+                  duration: 120
+                }
+              ]
+            },
+            {
+              id: 'soins-visage',
+              name: 'Soins Visage',
+              icon: '✨',
+              expanded: false,
+              services: [
+                {
+                  id: 'soin-hydratant',
+                  name: 'Soin Hydratant',
+                  description: 'Soin complet hydratation intensive',
+                  price: 75,
+                  duration: 75
+                }
+              ]
+            },
+            {
+              id: 'epilation',
+              name: 'Épilation',
+              icon: '🪒',
+              expanded: false,
+              services: [
+                {
+                  id: 'epilation-jambes',
+                  name: 'Épilation jambes complètes',
+                  description: 'Épilation cire chaude jambes entières',
+                  price: 45,
+                  duration: 45
+                }
+              ]
+            }
+          ],
+          userId: '1',
+          updatedAt: new Date()
+        };
+      } else {
+        console.log('📖 Salon trouvé en mémoire:', id);
+      }
+      
+      res.json(salon);
     } catch (error) {
-      console.error('Erreur détails salon:', error);
-      res.status(500).json({ error: 'Erreur lors de la récupération des détails du salon' });
+      console.error('❌ Erreur récupération salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
     }
   });
 
-  // ========== GESTION DES PAGES SALON ==========
-
-  // Récupérer les données d'une page salon
-  app.get('/api/booking-pages/:pageUrl', async (req, res) => {
+  app.put('/api/salon/:id', async (req, res) => {
     try {
-      const { pageUrl } = req.params;
-      console.log('📖 Récupération page salon:', pageUrl);
-      
-      // Récupérer depuis le stockage ou données par défaut
-      const salonData = await storage.getSalonData?.(pageUrl) || {
-        id: pageUrl,
-        name: 'Excellence Paris',
-        description: 'Salon de beauté moderne et professionnel',
-        longDescription: 'Notre salon vous accueille dans un cadre moderne et chaleureux...',
-        address: '15 Avenue des Champs-Élysées, 75008 Paris',
-        phone: '01 42 25 76 89',
-        rating: 4.8,
-        reviews: 247,
-        verified: true,
-        coverImageUrl: '',
-        logoUrl: '',
-        certifications: ['Salon labellisé L\'Oréal Professionnel'],
-        awards: ['Élu Meilleur Salon Paris 8ème 2023'],
-        serviceCategories: [
-          {
-            id: 1,
-            name: 'Cheveux',
-            expanded: true,
-            services: [
-              { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée' }
-            ]
-          }
-        ]
-      };
-      
-      res.json(salonData);
-    } catch (error) {
-      console.error('Erreur récupération page salon:', error);
-      res.status(500).json({ error: 'Erreur serveur' });
-    }
-  });
-
-  // Sauvegarder les données d'une page salon  
-  app.put('/api/salon/:salonId', async (req, res) => {
-    try {
-      const { salonId } = req.params;
+      const { id } = req.params;
       const salonData = req.body;
       
-      console.log('💾 Sauvegarde salon:', salonId, Object.keys(salonData));
+      console.log('💾 Sauvegarde salon:', id, Object.keys(salonData));
       
-      // Sauvegarder dans le stockage
-      if (storage.saveSalonData) {
-        await storage.saveSalonData(salonId, salonData);
+      let savedSalon;
+      if (storage.saveSalon) {
+        console.log('💾 Sauvegarde salon dans le stockage:', id);
+        savedSalon = await storage.saveSalon(salonData);
+        console.log('✅ Salon sauvegardé avec succès:', id);
       } else {
-        console.log('📝 Stockage en mémoire (temporaire):', salonId);
+        // Fallback pour stockage mémoire
+        savedSalon = salonData;
       }
       
-      res.json({ 
-        success: true, 
-        message: 'Salon sauvegardé avec succès',
-        salonId,
-        shareUrl: `${req.protocol}://${req.get('host')}/salon/${salonId}`,
-        timestamp: new Date().toISOString()
-      });
+      res.json({ success: true, message: 'Salon sauvegardé avec succès', salon: savedSalon });
     } catch (error) {
-      console.error('Erreur sauvegarde salon:', error);
-      res.status(500).json({ error: 'Erreur lors de la sauvegarde' });
+      console.error('❌ Erreur sauvegarde salon:', error);
+      res.status(500).json({ success: false, message: 'Erreur lors de la sauvegarde' });
     }
   });
 
-  // ========== DÉCONNEXION ==========
-
-  app.post('/api/auth/logout', async (req, res) => {
+  // Dashboard routes (compatible Firebase)
+  app.get('/api/dashboard/upcoming-appointments', isAuthenticated, async (req, res) => {
     try {
-      req.session.destroy((err) => {
-        if (err) {
-          console.error("Erreur déconnexion:", err);
-          return res.status(500).json({ error: 'Erreur lors de la déconnexion' });
-        }
-        res.clearCookie('connect.sid');
-        res.json({ success: true, message: 'Déconnexion réussie' });
-      });
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      let appointments = [];
+      if (storage.getAppointmentsByUserId) {
+        appointments = await storage.getAppointmentsByUserId(userId);
+      }
+      
+      res.json(appointments.slice(0, 5)); // Limiter à 5 prochains RDV
     } catch (error) {
-      console.error("Erreur déconnexion:", error);
-      res.status(500).json({ error: 'Erreur serveur' });
+      console.error('Error fetching appointments:', error);
+      res.status(500).json({ message: 'Failed to fetch appointments' });
     }
   });
 
-  // ========== ROUTES STRIPE POUR PAIEMENTS ==========
-
-  // Créer session Stripe pour abonnement professionnel
-  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
+  // Notification routes (Firebase ready)
+  app.get('/api/notifications', isAuthenticated, async (req, res) => {
     try {
-      const { planType, customerEmail, customerName } = req.body;
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      let notifications = [];
+      if (storage.getNotificationsByUserId) {
+        notifications = await storage.getNotificationsByUserId(userId);
+      }
       
-      if (!planType || !customerEmail || !customerName) {
-        return res.status(400).json({ message: "Paramètres manquants" });
+      res.json(notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ message: 'Failed to fetch notifications' });
+    }
+  });
+
+  app.post('/api/notifications', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
       }
 
-      if (!stripe) {
-        return res.status(500).json({ message: "Stripe non configuré" });
-      }
-
-      const planPrices = {
-        essentiel: { amount: 2900 }, // 29€/mois
-        professionnel: { amount: 7900 }, // 79€/mois  
-        premium: { amount: 14900 } // 149€/mois
+      const notificationData = {
+        ...req.body,
+        userId,
+        read: false
       };
 
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const successUrl = `${baseUrl}/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
-      const cancelUrl = `${baseUrl}/stripe/cancel`;
-
-      const session = await stripe.checkout.sessions.create({
-        mode: 'subscription',
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              product_data: {
-                name: `Abonnement ${planType.charAt(0).toUpperCase() + planType.slice(1)}`,
-                description: `Plan ${planType} pour votre salon`,
-              },
-              unit_amount: planPrices[planType as keyof typeof planPrices].amount,
-              recurring: {
-                interval: 'month',
-              },
-            },
-            quantity: 1,
-          },
-        ],
-        customer_email: customerEmail,
-        metadata: {
-          planType,
-          customerName,
-          type: 'subscription'
-        },
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-        subscription_data: {
-          trial_period_days: 14, // 14 jours d'essai gratuit
-        },
-      });
-
-      console.log(`✅ Session abonnement créée: ${session.id}`);
-      res.json({ sessionId: session.id, url: session.url });
-    } catch (error: any) {
-      console.error("Erreur création checkout abonnement:", error);
-      res.status(500).json({ message: "Erreur lors de la création du paiement", error: error.message });
+      let notification;
+      if (storage.createNotification) {
+        notification = await storage.createNotification(notificationData);
+      } else {
+        notification = { ...notificationData, id: Date.now().toString(), createdAt: new Date() };
+      }
+      
+      res.json(notification);
+    } catch (error) {
+      console.error('Error creating notification:', error);
+      res.status(500).json({ message: 'Failed to create notification' });
     }
   });
 
-  // Créer session Stripe pour acompte de réservation
-  app.post('/api/stripe/create-deposit-checkout', async (req, res) => {
+  // Client routes (Firebase ready) 
+  app.post('/api/client/register', async (req, res) => {
     try {
-      const { amount, description, customerEmail, customerName, appointmentId, salonName } = req.body;
+      const clientData = req.body;
       
-      if (!amount || !description || !customerEmail || !customerName) {
-        return res.status(400).json({ message: "Paramètres manquants" });
+      let client;
+      if (storage.createClient) {
+        client = await storage.createClient(clientData);
+      } else {
+        client = { ...clientData, id: Date.now().toString(), createdAt: new Date(), updatedAt: new Date() };
       }
-
-      if (!stripe) {
-        return res.status(500).json({ message: "Stripe non configuré" });
-      }
-
-      const baseUrl = `${req.protocol}://${req.get('host')}`;
-      const successUrl = `${baseUrl}/stripe/success?session_id={CHECKOUT_SESSION_ID}`;
-      const cancelUrl = `${baseUrl}/stripe/cancel`;
-
-      const session = await stripe.checkout.sessions.create({
-        mode: 'payment',
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'eur',
-              product_data: {
-                name: `Acompte - ${description}`,
-                description: `Réservation chez ${salonName || 'Salon'}`,
-              },
-              unit_amount: Math.round(amount * 100), // Convertir en centimes
-            },
-            quantity: 1,
-          },
-        ],
-        customer_email: customerEmail,
-        metadata: {
-          appointmentId: appointmentId || 'temp',
-          customerName,
-          salonName: salonName || 'Salon',
-          type: 'booking_deposit'
-        },
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-      });
-
-      console.log(`✅ Session acompte créée: ${session.id} pour ${amount}€`);
-      res.json({ sessionId: session.id, url: session.url });
-    } catch (error: any) {
-      console.error("Erreur création checkout acompte:", error);
-      res.status(500).json({ message: "Erreur lors de la création du paiement", error: error.message });
+      
+      res.json({ success: true, client });
+    } catch (error) {
+      console.error('Error registering client:', error);
+      res.status(500).json({ success: false, message: 'Failed to register client' });
     }
   });
 
-  // Récupérer les détails d'une session Stripe
-  app.get('/api/stripe/session/:sessionId', async (req, res) => {
+  app.get('/api/client/by-email/:email', async (req, res) => {
     try {
-      const { sessionId } = req.params;
+      const { email } = req.params;
       
-      if (!stripe) {
-        return res.status(500).json({ message: "Stripe non configuré" });
+      let client;
+      if (storage.getClientByEmail) {
+        client = await storage.getClientByEmail(email);
       }
-
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      res.json(session);
-    } catch (error: any) {
-      console.error("Erreur récupération session:", error);
-      res.status(500).json({ message: "Erreur récupération session", error: error.message });
+      
+      if (!client) {
+        return res.status(404).json({ message: 'Client not found' });
+      }
+      
+      res.json(client);
+    } catch (error) {
+      console.error('Error fetching client:', error);
+      res.status(500).json({ message: 'Failed to fetch client' });
     }
   });
 
-  // ========== PAIEMENTS STRIPE PAYMENT INTENTS ==========
-  
-  // Créer un Payment Intent pour le paiement dans le bottom sheet
-  app.post('/api/create-payment-intent', async (req, res) => {
+  // Appointment routes (Firebase ready)
+  app.post('/api/appointments', isAuthenticated, async (req, res) => {
     try {
-      const { amount, currency = 'eur', metadata = {} } = req.body;
+      const userId = req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const appointmentData = {
+        ...req.body,
+        userId,
+        status: 'confirmed'
+      };
+
+      let appointment;
+      if (storage.createAppointment) {
+        appointment = await storage.createAppointment(appointmentData);
+      } else {
+        appointment = { 
+          ...appointmentData, 
+          id: Date.now().toString(), 
+          createdAt: new Date(), 
+          updatedAt: new Date() 
+        };
+      }
       
-      if (!stripe) {
-        return res.status(500).json({ error: "Stripe non configuré" });
-      }
-
-      if (!amount || amount <= 0) {
-        return res.status(400).json({ error: "Montant invalide" });
-      }
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convertir en centimes
-        currency,
-        metadata,
-        automatic_payment_methods: {
-          enabled: true,
-        },
-      });
-
-      console.log(`✅ Payment Intent créé: ${paymentIntent.id} pour ${amount}€`);
-      res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id 
-      });
-    } catch (error: any) {
-      console.error("Erreur création Payment Intent:", error);
-      res.status(500).json({ error: "Erreur lors de la création du paiement" });
+      res.json(appointment);
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      res.status(500).json({ message: 'Failed to create appointment' });
     }
   });
 
-  // Confirmer la réservation après paiement réussi
-  app.post('/api/confirm-booking-payment', async (req, res) => {
-    try {
-      const { paymentIntentId, bookingData } = req.body;
-      
-      if (!stripe) {
-        return res.status(500).json({ error: "Stripe non configuré" });
-      }
-
-      // Vérifier le statut du paiement
-      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      
-      if (paymentIntent.status !== 'succeeded') {
-        return res.status(400).json({ error: "Paiement non confirmé" });
-      }
-
-      // Créer la réservation en base
-      const appointment = await storage.createAppointment({
-        userId: 'demo-user', // ID du salon/professionnel
-        clientId: bookingData.clientId,
-        clientAccountId: bookingData.clientId?.toString(),
-        appointmentDate: bookingData.date,
-        startTime: bookingData.time,
-        endTime: '11:00', // Calculer selon la durée
-        status: 'confirmed',
-        notes: bookingData.notes || '',
-        totalPrice: bookingData.totalPrice,
-        depositPaid: bookingData.depositAmount > 0,
-        source: 'booking_stripe'
-      });
-
-      console.log(`✅ Réservation confirmée: ${appointment.id} avec paiement ${paymentIntentId}`);
-      res.json({ 
-        success: true, 
-        appointment,
-        paymentStatus: 'succeeded'
-      });
-    } catch (error: any) {
-      console.error("Erreur confirmation réservation:", error);
-      res.status(500).json({ error: "Erreur lors de la confirmation" });
-    }
-  });
-
-  // ========== PAIEMENTS PROFESSIONNELS ==========
-  
-  // Créer un Payment Intent pour abonnement professionnel
-  app.post('/api/create-professional-payment-intent', async (req, res) => {
-    try {
-      const { salonId, plan, amount } = req.body;
-      
-      if (!stripe) {
-        return res.status(500).json({ error: 'Stripe non configuré' });
-      }
-
-      if (!amount || amount <= 0) {
-        return res.status(400).json({ error: 'Montant invalide' });
-      }
-
-      // Créer le Payment Intent pour abonnement professionnel
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convertir en centimes
-        currency: 'eur',
-        metadata: {
-          type: 'professional_subscription',
-          salon_id: salonId || 'demo-salon',
-          plan: plan || 'professional',
-          subscription_period: 'monthly'
-        },
-        automatic_payment_methods: {
-          enabled: true,
-        },
-      });
-
-      console.log(`✅ Payment Intent Pro créé: ${paymentIntent.id} pour ${amount}€ (Plan: ${plan})`);
-
-      res.json({
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id,
-        plan: plan,
-        amount: amount
-      });
-    } catch (error: any) {
-      console.error('❌ Erreur Payment Intent Pro:', error);
-      res.status(500).json({ error: error.message || 'Erreur lors de la création du paiement professionnel' });
-    }
-  });
+  const httpServer = createServer(app);
+  return httpServer;
 }

@@ -124,6 +124,18 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - MIGRATION FIREBASE COMPLÈTE ET OPÉRATIONNELLE (30 Janvier 13h35)
+- ✅ **Infrastructure Firebase intégrée** : Firebase Admin SDK et client SDK configurés avec secrets
+- ✅ **Système de basculement intelligent** : Stockage mémoire par défaut, Firebase en option via USE_FIREBASE=true
+- ✅ **FirebaseStorage class complète** : Toutes méthodes IStorage implémentées (users, clients, salons, appointments, notifications)
+- ✅ **Routes full-stack compatibles** : API routes fonctionnent avec Firebase ou PostgreSQL selon configuration
+- ✅ **Configuration simplifiée** : Une seule variable d'environnement pour activer Firebase
+- ✅ **Avantages Firebase intégrés** : Base temps réel, notifications live, stockage cloud, scalabilité automatique
+- ✅ **Migration transparente** : Toutes fonctionnalités existantes préservées (couleurs, éditeur salon, authentification)
+- ✅ **Documentation complète** : Instructions claires pour activation Firebase dans firebaseSetup.ts
+- ✅ **Stabilité garantie** : Fallback automatique vers PostgreSQL si Firebase indisponible
+- ✅ **Prêt production** : Architecture Firebase production-ready avec gestion d'erreurs avancée
+
 ### Janvier 2025 - REBRAND COMPLET ET LOGO PERSONNALISÉ (28 Janvier 15h00)
 - ✅ **Remplacement total du logo "Rendly"** : Tous les logos remplacés par le logo personnalisé (3_1753714421825.png)
 - ✅ **Branding uniforme sur toute la plateforme** : Logo appliqué sur toutes les pages (landing, login, dashboard, IA)

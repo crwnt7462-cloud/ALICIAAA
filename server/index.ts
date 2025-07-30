@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { registerFullStackRoutes } from "./fullStackRoutes";
 import { seedDatabase } from "./seedData";
 import { setupVite, serveStatic, log } from "./vite";
 import { configureSession } from "./sessionMiddleware";
@@ -42,7 +43,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  // Utiliser les routes Firebase-compatible
+  const server = await registerFullStackRoutes(app);
   
   // Créer les données de test au démarrage
   await seedDatabase();
