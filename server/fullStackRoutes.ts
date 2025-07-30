@@ -19,8 +19,76 @@ if (!USE_FIREBASE && process.env.USE_FIREBASE === 'true') {
 }
 
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Routes d'authentification personnalisées (contournement Replit Auth à cause de Vite)
+  app.post('/api/auth/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      console.log('🔐 Tentative de connexion:', email);
+      
+      const user = await storage.authenticateUser(email, password);
+      if (user) {
+        console.log('✅ Connexion réussie pour:', email);
+        res.json({ success: true, user, token: 'demo-token-' + user.id });
+      } else {
+        console.log('❌ Échec de connexion pour:', email);
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la connexion:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+    }
+  });
+
+  app.post('/api/client/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      console.log('🔐 Tentative de connexion CLIENT:', email);
+      
+      const client = await storage.authenticateClientAccount(email, password);
+      if (client) {
+        console.log('✅ Connexion CLIENT réussie pour:', email);
+        res.json({ success: true, client, token: 'demo-client-token-' + client.id });
+      } else {
+        console.log('❌ Échec de connexion CLIENT pour:', email);
+        res.status(401).json({ success: false, message: 'Invalid credentials' });
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la connexion CLIENT:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+    }
+  });
+
+  // Routes d'inscription
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const userData = req.body;
+      console.log('📝 Tentative d\'inscription PRO:', userData.email);
+      
+      const user = await storage.createUser(userData);
+      console.log('✅ Inscription PRO réussie pour:', userData.email);
+      res.json({ success: true, user, token: 'demo-token-' + user.id });
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'inscription PRO:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+    }
+  });
+
+  app.post('/api/client/register', async (req, res) => {
+    try {
+      const userData = req.body;
+      console.log('📝 Tentative d\'inscription CLIENT:', userData.email);
+      
+      const client = await storage.createClientAccount(userData);
+      console.log('✅ Inscription CLIENT réussie pour:', userData.email);
+      res.json({ success: true, client, token: 'demo-client-token-' + client.id });
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'inscription CLIENT:', error);
+      res.status(500).json({ success: false, message: 'Server error' });
+    }
+  });
+
+  // Auth middleware (désactivé temporairement)
+  // await setupAuth(app);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {

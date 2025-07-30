@@ -265,6 +265,20 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async authenticateClientAccount(email: string, password: string): Promise<ClientAccount | null> {
+    const client = await this.getClientAccountByEmail(email);
+    if (!client || !client.password) {
+      return null;
+    }
+
+    const isValid = await bcrypt.compare(password, client.password);
+    if (!isValid) {
+      return null;
+    }
+
+    return client;
+  }
+
   async createClientAccount(userData: ClientRegisterRequest): Promise<ClientAccount> {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);

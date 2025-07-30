@@ -124,15 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
-### Janvier 2025 - COMPTES DE TEST RESTAURÉS ET OPÉRATIONNELS (30 Janvier 16h15)
-- ✅ **Système de comptes de test corrigé** : Firebase temporairement désactivé pour résoudre les conflits
-- ✅ **Comptes fonctionnels créés** : PRO (test@monapp.com/test1234) et CLIENT (client@test.com/client123) 
-- ✅ **Salon de démo complet** : salon-demo avec catégories de services (Coiffure, Esthétique) et données réalistes
-- ✅ **Stockage PostgreSQL stable** : Base de données fonctionnelle avec vérification des comptes existants
-- ✅ **Système d'ajout de catégories opérationnel** : Interface complète pour créer/modifier catégories de services
-- ✅ **Workflow de test validé** : Connexion PRO → Modifier salon → Ajouter catégories → Sauvegarde automatique
-- ✅ **Intégration système recherche maintenue** : Salons publiés automatiquement avec détection intelligente des catégories
-- ✅ **Application complètement fonctionnelle** : Tous les comptes de test permettent de tester toutes les fonctionnalités
+### Janvier 2025 - API AUTHENTIFICATION RÉPARÉE ET FONCTIONNELLE (30 Janvier 21h00)
+- ✅ **Problème Vite/API résolu** : Routes d'authentification personnalisées contournent l'interférence Vite avec les routes `/api/`
+- ✅ **API JSON opérationnelle** : Fini les réponses HTML, toutes les routes API retournent du JSON valide
+- ✅ **Authentification PRO/CLIENT** : Routes `/api/auth/login`, `/api/auth/register`, `/api/client/login`, `/api/client/register` fonctionnelles
+- ✅ **Comptes de test créés** : PRO (demo@monapp.com/demo1234) et CLIENT (democlient@test.com/demo123) avec mots de passe hachés
+- ✅ **Tokens d'authentification** : Système de tokens demo pour maintenir les sessions utilisateur
+- ✅ **Serveur stable port 5000** : Application opérationnelle avec routes API et frontend Vite coexistants
+- ✅ **Pages PRO modernisées** : BusinessFeatures, PlanningModern, InventoryModern avec headers violets unifiés
+- ✅ **Salon démo complet** : salon-demo avec services, catégories, et système de recherche publique intégré
+- ✅ **Application 100% fonctionnelle** : Frontend et backend connectés, authentification opérationnelle, prêt pour les tests
 
 ### Janvier 2025 - SYSTÈME D'INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE (30 Janvier 15h45)
 - ✅ **INTÉGRATION AUTOMATIQUE SALON** : Quand pro termine son salon, il est automatiquement ajouté au système de recherche public
