@@ -433,6 +433,110 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Client authentication routes
+  app.post('/api/client/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email et mot de passe requis' });
+      }
+
+      const client = await storage.authenticateClient(email, password);
+      
+      if (client) {
+        // Generate a simple token (in production, use JWT)
+        const token = `client-${client.id}-${Date.now()}`;
+        
+        res.json({
+          success: true,
+          client: {
+            id: client.id,
+            email: client.email,
+            firstName: client.firstName,
+            lastName: client.lastName,
+            loyaltyPoints: client.loyaltyPoints,
+            clientStatus: client.clientStatus,
+            token
+          }
+        });
+      } else {
+        res.status(401).json({ error: 'Identifiants incorrects' });
+      }
+    } catch (error) {
+      console.error('Client login error:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  app.post('/api/client/register', async (req, res) => {
+    try {
+      const { email, password, firstName, lastName, phone, dateOfBirth } = req.body;
+
+      // Check if client already exists
+      const existingClient = await storage.getClientAccountByEmail(email);
+      if (existingClient) {
+        return res.status(400).json({ error: 'Un compte avec cet email existe déjà' });
+      }
+
+      const newClient = await storage.createClientAccount({
+        email,
+        password,
+        firstName,
+        lastName,
+        phone,
+        dateOfBirth
+      });
+
+      const token = `client-${newClient.id}-${Date.now()}`;
+
+      res.json({
+        success: true,
+        client: {
+          id: newClient.id,
+          email: newClient.email,
+          firstName: newClient.firstName,
+          lastName: newClient.lastName,
+          loyaltyPoints: newClient.loyaltyPoints,
+          clientStatus: newClient.clientStatus,
+          token
+        }
+      });
+    } catch (error) {
+      console.error('Client registration error:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du compte' });
+    }
+  });
+
+  app.get('/api/client/auth/check', async (req, res) => {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    
+    if (!token || !token.startsWith('client-')) {
+      return res.status(401).json({ error: 'Non authentifié' });
+    }
+
+    try {
+      // Extract client ID from token (simplified approach)
+      const clientId = parseInt(token.split('-')[1]);
+      const client = await storage.getClientAccount(clientId);
+      
+      if (client) {
+        res.json({
+          id: client.id,
+          email: client.email,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          loyaltyPoints: client.loyaltyPoints,
+          clientStatus: client.clientStatus
+        });
+      } else {
+        res.status(401).json({ error: 'Token invalide' });
+      }
+    } catch (error) {
+      res.status(401).json({ error: 'Token invalide' });
+    }
+  });
+
   // Route de test simple
   app.get('/api/test', (req, res) => {
     res.json({ message: 'API fonctionne', timestamp: new Date().toISOString() });

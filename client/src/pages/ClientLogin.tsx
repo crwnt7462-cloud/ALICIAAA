@@ -39,55 +39,42 @@ export default function ClientLogin() {
         credentials: 'include'
       });
 
-      const responseText = await response.text();
-      console.log('Raw response:', responseText);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Login response:', data);
       
-      if (response.ok) {
-        try {
-          const data = JSON.parse(responseText);
-          console.log('Login response:', data);
-          
-          if (data.success && data.client) {
-            localStorage.setItem('clientToken', data.client.token);
-            localStorage.setItem('clientData', JSON.stringify(data.client));
-            
-            toast({
-              title: "Connexion réussie",
-              description: `Bienvenue ${data.client.firstName} !`,
-            });
-            
-            // Vérifier s'il y a une réservation en cours
-            const hasBookingInProgress = sessionStorage.getItem('currentBooking');
-            if (hasBookingInProgress) {
-              // Rediriger vers la page de réservation pour continuer
-              window.location.href = '/salon-booking';
-            } else {
-              // Redirection normale vers le dashboard
-              window.location.href = '/client-dashboard';
-            }
-          } else {
-            throw new Error('Format de réponse invalide');
-          }
-        } catch (parseError) {
-          console.error('Parse error:', parseError);
-          toast({
-            title: "Erreur de connexion",
-            description: "Réponse serveur invalide",
-            variant: "destructive"
-          });
+      if (data.success && data.client) {
+        localStorage.setItem('clientToken', data.client.token);
+        localStorage.setItem('clientData', JSON.stringify(data.client));
+        
+        toast({
+          title: "Connexion réussie",
+          description: `Bienvenue ${data.client.firstName} !`,
+        });
+        
+        // Vérifier s'il y a une réservation en cours
+        const hasBookingInProgress = sessionStorage.getItem('currentBooking');
+        if (hasBookingInProgress) {
+          window.location.href = '/salon-booking';
+        } else {
+          window.location.href = '/client-dashboard';
         }
       } else {
         toast({
           title: "Erreur de connexion",
-          description: `Erreur ${response.status}: Identifiants incorrects`,
+          description: data.error || "Identifiants incorrects",
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('Network error:', error);
+      console.error('❌ Erreur connexion:', error);
       toast({
         title: "Erreur de connexion",
-        description: "Impossible de se connecter au serveur",
+        description: error instanceof Error ? error.message : "Erreur serveur",
         variant: "destructive"
       });
     } finally {

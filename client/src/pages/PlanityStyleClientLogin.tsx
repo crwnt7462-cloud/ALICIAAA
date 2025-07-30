@@ -27,29 +27,33 @@ export default function PlanityStyleClientLogin() {
         body: JSON.stringify({ email, password }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Identifiants incorrects");
+      }
+
+      const data = await response.json();
+      console.log('✅ Planity Login response:', data);
+
+      if (data.success && data.client) {
         localStorage.setItem('clientToken', data.client.token);
+        localStorage.setItem('clientData', JSON.stringify(data.client));
         localStorage.setItem('clientEmail', data.client.email);
         
         toast({
           title: "Connexion réussie",
-          description: "Bienvenue sur votre espace client",
+          description: `Bienvenue ${data.client.firstName}!`,
         });
         
         setLocation('/client-dashboard');
       } else {
-        const error = await response.json();
-        toast({
-          title: "Erreur de connexion",
-          description: error.error || "Identifiants incorrects",
-          variant: "destructive"
-        });
+        throw new Error(data.error || "Erreur de connexion");
       }
     } catch (error) {
+      console.error('❌ Erreur connexion Planity:', error);
       toast({
         title: "Erreur de connexion",
-        description: "Impossible de se connecter au serveur",
+        description: error instanceof Error ? error.message : "Erreur serveur",
         variant: "destructive"
       });
     } finally {
