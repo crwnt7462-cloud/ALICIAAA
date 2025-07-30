@@ -243,14 +243,19 @@ export default function PublicLanding() {
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
     if (item.id === 'coiffeur') {
       setSearchQuery('coiffure');
+      setLocation(`/search?q=coiffure&location=${encodeURIComponent(searchLocation || 'paris')}`);
     } else if (item.id === 'barbier') {
       setSearchQuery('barbier');
+      setLocation(`/search?q=barbier&location=${encodeURIComponent(searchLocation || 'paris')}`);
     } else if (item.id === 'manucure') {
-      setSearchQuery('manucure');
+      setSearchQuery('ongle');
+      setLocation(`/search?q=ongle&location=${encodeURIComponent(searchLocation || 'paris')}`);
     } else if (item.id === 'institut') {
-      setSearchQuery('institut de beauté');
+      setSearchQuery('esthetique');
+      setLocation(`/search?q=esthetique&location=${encodeURIComponent(searchLocation || 'paris')}`);
+    } else {
+      item.action();
     }
-    item.action();
     closeMenu();
   };
 

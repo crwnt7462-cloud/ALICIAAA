@@ -124,6 +124,16 @@ Génération automatique :
 
 ## Changements Récents
 
+### Janvier 2025 - SYSTÈME D'INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE (30 Janvier 15h45)
+- ✅ **INTÉGRATION AUTOMATIQUE SALON** : Quand pro termine son salon, il est automatiquement ajouté au système de recherche public
+- ✅ **Détection catégorie intelligente** : Algorithme analyse les services pour déterminer automatiquement la catégorie (coiffure, barbier, ongles, esthétique, massage)
+- ✅ **Extraction ville automatique** : Parse l'adresse pour extraire la ville et permettre la recherche géographique
+- ✅ **Lien partageable immédiat** : Génération automatique du lien `/salon/[id]` accessible publiquement
+- ✅ **API recherche publique** : `/api/public/salons` permet recherche par catégorie et ville
+- ✅ **Workflow complet** : Pro sauvegarde → Intégration système → Lien partageable → Visible dans recherche publique
+- ✅ **Recherche temps réel** : Interface de recherche utilise l'API pour afficher les salons créés par les pros
+- ✅ **Catégories fonctionnelles** : Boutons Coiffeur/Barbier/Manucure/Institut sur landing page redirigent vers résultats filtrés
+
 ### Janvier 2025 - MIGRATION FIREBASE COMPLÈTE ET OPÉRATIONNELLE (30 Janvier 13h35)
 - ✅ **Infrastructure Firebase intégrée** : Firebase Admin SDK et client SDK configurés avec secrets
 - ✅ **Système de basculement intelligent** : Stockage mémoire par défaut, Firebase en option via USE_FIREBASE=true

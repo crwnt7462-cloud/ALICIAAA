@@ -172,15 +172,30 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
       const response = await apiRequest('PUT', `/api/salon/${salonData.id}`, updatedData);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Salon mis à jour",
-        description: "Votre page salon est maintenant en ligne ! Lien disponible dans Pro Tools.",
+        title: "Salon publié avec succès !",
+        description: "Votre salon est maintenant visible dans la recherche publique et accessible via votre lien partageable.",
       });
-      // Invalider les caches pour forcer le rechargement
+      
+      // Afficher l'URL partageable
+      if (data?.shareableUrl) {
+        console.log('🔗 Lien partageable:', data.shareableUrl);
+        
+        // Afficher une notification supplémentaire avec le lien
+        setTimeout(() => {
+          toast({
+            title: "Lien partageable créé",
+            description: `Votre salon est accessible via: ${data.shareableUrl}`,
+          });
+        }, 2000);
+      }
+      
+      // Invalider les caches
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
       queryClient.invalidateQueries({ queryKey: ['/api/booking-pages', 'salon-demo'] });
       queryClient.invalidateQueries({ queryKey: ['/api/booking-pages/salon-demo'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] });
     },
     onError: (error: any) => {
       console.error('Erreur sauvegarde:', error);

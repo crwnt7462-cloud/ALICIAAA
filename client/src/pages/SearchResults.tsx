@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { 
   Search, MapPin, Star, Clock, Filter, SlidersHorizontal, ArrowLeft, 
   CheckCircle, Heart, Share2, Navigation, TrendingUp, Award, Users,
@@ -29,7 +30,23 @@ export default function SearchResults() {
     setSearchLocation(location);
   }, []);
 
-  const searchResults = [
+  // 🔥 RECHERCHE SALONS TEMPS RÉEL depuis l'API
+  const { data: apiResults, isLoading } = useQuery({
+    queryKey: ['/api/public/salons', searchQuery, searchLocation],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('category', searchQuery.toLowerCase());
+      if (searchLocation) params.set('city', searchLocation.toLowerCase());
+      
+      const response = await fetch(`/api/public/salons?${params.toString()}`);
+      const data = await response.json();
+      return data.success ? data.salons : [];
+    },
+    refetchOnWindowFocus: false
+  });
+
+  // Combiner les résultats API avec des salons de démo
+  const searchResults = apiResults || [
     {
       id: "demo-user",
       name: "Studio Élégance Paris",
@@ -96,7 +113,7 @@ export default function SearchResults() {
     window.history.pushState({}, '', `/search?${params.toString()}`);
   };
 
-  const filteredAndSortedResults = searchResults
+  const filteredAndSortedResults = (searchResults || [])
     .filter(salon => {
       if (priceRange !== 'all' && salon.priceRange !== priceRange) return false;
       return true;
