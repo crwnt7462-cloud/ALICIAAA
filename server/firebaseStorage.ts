@@ -1,5 +1,7 @@
 import { adminDb } from './firebaseAdmin';
 import type { IStorage } from './storage';
+import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
 import type { 
   User, 
   UpsertUser,
@@ -46,16 +48,30 @@ export class FirebaseStorage implements IStorage {
 
   async createUser(userData: RegisterRequest): Promise<User> {
     try {
-      const userRef = adminDb.collection('users').doc();
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+      const userId = nanoid();
       const now = new Date();
       
       const newUser = {
-        id: userRef.id,
-        ...userData,
+        id: userId,
+        email: userData.email,
+        password: hashedPassword,
+        businessName: userData.businessName,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        phone: userData.phone,
+        address: userData.address,
+        city: userData.city,
+        isProfessional: true,
+        isVerified: false,
+        subscriptionStatus: "trial",
+        trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         createdAt: now,
         updatedAt: now
       };
       
+      const userRef = adminDb.collection('users').doc(userId);
       await userRef.set(newUser);
       return newUser as User;
     } catch (error) {
@@ -66,25 +82,49 @@ export class FirebaseStorage implements IStorage {
 
   async authenticateUser(email: string, password: string): Promise<User | null> {
     const user = await this.getUserByEmail(email);
-    if (user && user.password === password) {
-      return user;
+    if (!user || !user.password) {
+      return null;
     }
-    return null;
+
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return null;
+    }
+
+    return user;
   }
 
   // Client Account operations
   async createClientAccount(clientData: ClientRegisterRequest): Promise<ClientAccount> {
     try {
-      const clientRef = adminDb.collection('clients').doc();
+      const saltRounds = 12;
+      const hashedPassword = await bcrypt.hash(clientData.password, saltRounds);
+      const clientId = Math.floor(Math.random() * 100000);
       const now = new Date();
       
+      const firstName = clientData.firstName || 'user';
+      const lastName = clientData.lastName || 'client';
+      const randomNum = Math.floor(Math.random() * 1000);
+      const mentionHandle = `@${firstName.toLowerCase()}${lastName.toLowerCase()}${randomNum}`;
+      
       const newClient = {
-        id: parseInt(clientRef.id.substring(0, 8), 16), // Convert to number
-        ...clientData,
+        id: clientId,
+        email: clientData.email,
+        password: hashedPassword,
+        firstName: clientData.firstName,
+        lastName: clientData.lastName,
+        phone: clientData.phone || null,
+        dateOfBirth: clientData.dateOfBirth || null,
+        isVerified: false,
+        loyaltyPoints: 0,
+        clientStatus: 'regular' as const,
+        mentionHandle,
+        isActive: true,
         createdAt: now,
         updatedAt: now
       };
       
+      const clientRef = adminDb.collection('clients').doc(clientId.toString());
       await clientRef.set(newClient);
       return newClient as ClientAccount;
     } catch (error) {
@@ -106,12 +146,18 @@ export class FirebaseStorage implements IStorage {
     }
   }
 
-  async authenticateClient(email: string, password: string): Promise<ClientAccount | null> {
+  async authenticateClientAccount(email: string, password: string): Promise<ClientAccount | null> {
     const client = await this.getClientAccountByEmail(email);
-    if (client && client.password === password) {
-      return client;
+    if (!client || !client.password) {
+      return null;
     }
-    return null;
+
+    const isValid = await bcrypt.compare(password, client.password);
+    if (!isValid) {
+      return null;
+    }
+
+    return client;
   }
 
   // Salon Data operations

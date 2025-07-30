@@ -1,7 +1,7 @@
 // Configuration pour activer Firebase facilement
 export const FIREBASE_CONFIG = {
-  // Firebase désactivé temporairement - problème d'authentification sur Replit
-  USE_FIREBASE: false, // process.env.USE_FIREBASE === 'true' || false,
+  // ⚠️ Firebase temporairement désactivé - problème d'authentification Google Cloud sur Replit
+  USE_FIREBASE: false,
   
   // Vérifier si toutes les clés Firebase sont présentes
   hasFirebaseSecrets: () => {
