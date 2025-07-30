@@ -300,6 +300,59 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Services routes
+  app.get('/api/services', isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const services = await storage.getServices(userId);
+      res.json(services);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      res.status(500).json({ message: 'Failed to fetch services' });
+    }
+  });
+
+  app.get('/api/services/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const service = await storage.getServiceById?.(id);
+      
+      if (!service) {
+        return res.status(404).json({ message: 'Service not found' });
+      }
+      
+      res.json(service);
+    } catch (error) {
+      console.error('Error fetching service:', error);
+      res.status(500).json({ message: 'Failed to fetch service' });
+    }
+  });
+
+  // Clients routes  
+  app.get('/api/clients', isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      const clients = await storage.getClients(userId);
+      res.json(clients);
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+      res.status(500).json({ message: 'Failed to fetch clients' });
+    }
+  });
+
+  // Route de test simple
+  app.get('/api/test', (req, res) => {
+    res.json({ message: 'API fonctionne', timestamp: new Date().toISOString() });
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
