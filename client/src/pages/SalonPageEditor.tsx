@@ -238,11 +238,17 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           price.style.color = salonData.customColors?.priceColor || '#7c3aed';
         });
 
-        // Forcer les cartes de catégories avec effet néon
+        // Forcer les cartes de catégories avec effet néon (seulement si expanded)
         const categoryCards = document.querySelectorAll('.category-card-preview');
-        categoryCards.forEach((card: any) => {
-          card.style.border = `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
-          card.style.boxShadow = `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`;
+        categoryCards.forEach((card: any, index: number) => {
+          const category = salonData.serviceCategories[index];
+          if (category?.expanded) {
+            card.style.border = `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
+            card.style.boxShadow = `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`;
+          } else {
+            card.style.border = '1px solid #e5e7eb';
+            card.style.boxShadow = 'none';
+          }
         });
       };
 
@@ -558,9 +564,11 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 <Card 
                   key={category.id} 
                   className="bg-white shadow-sm category-card-preview"
-                  style={{
+                  style={category.expanded ? {
                     border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
                     boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
+                  } : {
+                    border: '1px solid #e5e7eb'
                   }}
                 >
                   <CardContent className="p-4">
@@ -882,7 +890,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                           </div>
                         </div>
 
-                        {/* Exemple de catégorie avec effet néon */}
+                        {/* Exemple de catégorie dépliée avec effet néon */}
                         <div 
                           className="bg-white p-4 rounded-lg space-y-2"
                           style={{
@@ -890,7 +898,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                             boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
                           }}
                         >
-                          <h4 className="font-semibold text-gray-900 mb-2">💇‍♀️ Cheveux (avec cadre néon)</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">💇‍♀️ Cheveux (dépliée = cadre néon)</h4>
                           <div className="flex justify-between items-start border-t border-gray-200 pt-2">
                             <div>
                               <h5 className="font-medium text-gray-900">Coloration complète</h5>
@@ -914,6 +922,16 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                               </button>
                             </div>
                           </div>
+                        </div>
+
+                        {/* Exemple de catégorie fermée */}
+                        <div 
+                          className="bg-white p-4 rounded-lg"
+                          style={{
+                            border: '1px solid #e5e7eb'
+                          }}
+                        >
+                          <h4 className="font-semibold text-gray-900">🧴 Soins Visage (fermée = pas de néon)</h4>
                         </div>
                       </div>
                     </div>
