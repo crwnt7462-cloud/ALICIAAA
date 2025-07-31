@@ -94,7 +94,7 @@ export default function ProLogin() {
       {/* Logo centré en haut */}
       <div className="pt-12 text-center">
         <div className="flex items-center justify-center gap-2">
-          <img src={rendlyLogo} alt="Rendly" className="h-24 w-auto" />
+          <img src={rendlyLogo} alt="Rendly" className="h-32 w-auto" />
         </div>
       </div>
 

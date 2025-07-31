@@ -141,7 +141,7 @@ export default function ClientLoginWhite() {
           <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm rounded-lg">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex flex-col items-center justify-center mb-6">
-                <img src={rendlyLogo} alt="Rendly" className="h-16 w-auto mb-4" />
+                <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mb-4" />
                 <h2 className="text-2xl font-light text-gray-900">Espace Client</h2>
               </div>
               <div className="flex justify-center">

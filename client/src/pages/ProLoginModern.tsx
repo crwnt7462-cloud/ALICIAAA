@@ -108,7 +108,7 @@ export default function ProLoginModern() {
             
             {/* Logo Rendly centré */}
             <div className="text-center mb-12">
-              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
+              <img src={rendlyLogo} alt="Rendly" className="h-24 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}
