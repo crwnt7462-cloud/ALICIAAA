@@ -42,21 +42,21 @@ export function BottomNavigation() {
 
   return (
     <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-      {/* Barre flottante violette plus longue */}
-      <div className="bg-violet-600 rounded-full shadow-lg px-8 py-2">
-        <div className="flex items-center gap-6">
+      {/* Barre flottante violette compacte */}
+      <div className="bg-violet-600 rounded-full shadow-lg px-4 py-1.5">
+        <div className="flex items-center gap-4">
           {navItems.map((item) => (
             <button
               key={item.path}
               onClick={() => setLocation(item.path)}
-              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-2 py-1 ${
+              className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1.5 py-0.5 ${
                 item.active
                   ? 'text-white transform scale-105'
                   : 'text-white/70 hover:text-white'
               }`}
             >
-              <item.icon className="h-4 w-4" />
-              <span className="text-[10px] font-medium">
+              <item.icon className="h-3.5 w-3.5" />
+              <span className="text-[9px] font-medium">
                 {item.label}
               </span>
             </button>
