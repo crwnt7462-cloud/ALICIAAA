@@ -4,6 +4,7 @@ import { firebaseStorage } from "./firebaseStorage";
 import { storage as memoryStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
+import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -12,10 +13,16 @@ const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
 // 🔥 STOCKAGE EN MÉMOIRE POUR LES SALONS PUBLICS
 const publicSalonsStorage = new Map<string, any>();
 
-// Logging de l'état
+// Logging de l'état des services temps réel
 FIREBASE_CONFIG.logStatus();
+SUPABASE_CONFIG.logStatus();
+
 if (!USE_FIREBASE && process.env.USE_FIREBASE === 'true') {
   console.log(FIREBASE_INSTRUCTIONS);
+}
+
+if (!SUPABASE_CONFIG.USE_SUPABASE && !SUPABASE_CONFIG.hasSupabaseSecrets()) {
+  console.log(SUPABASE_INSTRUCTIONS);
 }
 
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
