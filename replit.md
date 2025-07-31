@@ -145,17 +145,16 @@ Génération automatique :
 - ✅ **Recherche temps réel** : Interface de recherche utilise l'API pour afficher les salons créés par les pros
 - ✅ **Catégories fonctionnelles** : Boutons Coiffeur/Barbier/Manucure/Institut sur landing page redirigent vers résultats filtrés
 
-### Janvier 2025 - MIGRATION FIREBASE COMPLÈTE ET OPÉRATIONNELLE (30 Janvier 13h35)
-- ✅ **Infrastructure Firebase intégrée** : Firebase Admin SDK et client SDK configurés avec secrets
-- ✅ **Système de basculement intelligent** : Stockage mémoire par défaut, Firebase en option via USE_FIREBASE=true
-- ✅ **FirebaseStorage class complète** : Toutes méthodes IStorage implémentées (users, clients, salons, appointments, notifications)
-- ✅ **Routes full-stack compatibles** : API routes fonctionnent avec Firebase ou PostgreSQL selon configuration
-- ✅ **Configuration simplifiée** : Une seule variable d'environnement pour activer Firebase
-- ✅ **Avantages Firebase intégrés** : Base temps réel, notifications live, stockage cloud, scalabilité automatique
-- ✅ **Migration transparente** : Toutes fonctionnalités existantes préservées (couleurs, éditeur salon, authentification)
-- ✅ **Documentation complète** : Instructions claires pour activation Firebase dans firebaseSetup.ts
-- ✅ **Stabilité garantie** : Fallback automatique vers PostgreSQL si Firebase indisponible
-- ✅ **Prêt production** : Architecture Firebase production-ready avec gestion d'erreurs avancée
+### Janvier 2025 - LIMITATION FIREBASE SUR REPLIT CONFIRMÉE (31 Janvier 00h35)
+- ❌ **Firebase impossible sur Replit** : Erreur d'authentification Google Cloud (169.254.169.254 inaccessible)
+- ✅ **PostgreSQL optimal pour Replit** : Base de données native, rapide, sécurisée avec bcrypt
+- ✅ **Architecture de fallback robuste** : System bascule automatiquement vers PostgreSQL
+- ✅ **Toutes fonctionnalités disponibles** : Authentification, salons, clients, appointments opérationnels
+- ✅ **Avantages PostgreSQL sur Replit** : Pas de dépendance externe, authentification native, performance optimale
+- ✅ **Code Firebase préservé** : Infrastructure prête pour migration vers plateforme cloud compatible
+- ✅ **Tests de connexion réussis** : Inscription/connexion PRO et CLIENT fonctionnelles
+- ✅ **Limitation technique documentée** : Firebase nécessite Google Cloud, incompatible avec infrastructure Replit
+- ✅ **Solution recommandée** : PostgreSQL pour Replit, Firebase pour déploiement Google Cloud Platform
 
 ### Janvier 2025 - REBRAND COMPLET ET LOGO PERSONNALISÉ (28 Janvier 15h00)
 - ✅ **Remplacement total du logo "Rendly"** : Tous les logos remplacés par le logo personnalisé (3_1753714421825.png)

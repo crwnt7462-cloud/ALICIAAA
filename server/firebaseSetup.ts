@@ -1,6 +1,6 @@
 // Configuration pour activer Firebase facilement
 export const FIREBASE_CONFIG = {
-  // ⚠️ Firebase temporairement désactivé - problème d'authentification Google Cloud sur Replit
+  // Firebase impossible sur Replit (erreur Google Cloud auth) - PostgreSQL plus adapté
   USE_FIREBASE: false,
   
   // Vérifier si toutes les clés Firebase sont présentes

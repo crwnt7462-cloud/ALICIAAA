@@ -58,6 +58,47 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route de test Firebase spécifique
+  app.post('/api/test-firebase-force', async (req, res) => {
+    try {
+      console.log('🔥 TEST FIREBASE FORCÉ...');
+      console.log('Firebase secrets:', FIREBASE_CONFIG.hasFirebaseSecrets());
+      console.log('Firebase activé:', FIREBASE_CONFIG.USE_FIREBASE);
+      console.log('USE_FIREBASE final:', USE_FIREBASE);
+      
+      // Test direct avec FirebaseStorage
+      const { FirebaseStorage } = await import('./firebaseStorage');
+      const fbStorage = new FirebaseStorage();
+      
+      const testUser = {
+        email: 'test-firebase-direct@test.com',
+        password: 'test123',
+        firstName: 'Firebase',
+        lastName: 'Direct',
+        businessName: 'Test Firebase'
+      };
+      
+      console.log('🔄 Tentative d\'inscription Firebase directe...');
+      const result = await fbStorage.createUser(testUser);
+      console.log('✅ Firebase fonctionne !', result.id);
+      
+      res.json({ 
+        success: true, 
+        message: 'Firebase fonctionne !', 
+        userId: result.id,
+        firebaseStatus: 'WORKING'
+      });
+    } catch (error) {
+      console.error('❌ Firebase échec:', error.message);
+      res.json({ 
+        success: false, 
+        message: 'Firebase échec: ' + error.message,
+        firebaseStatus: 'FAILED',
+        errorDetails: error.toString()
+      });
+    }
+  });
+
   // Routes d'inscription
   app.post('/api/auth/register', async (req, res) => {
     try {
