@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import rendlyLogo from "@assets/3_1753714421825.png";
 
 export default function ProLoginModern() {
   const [, setLocation] = useLocation();
@@ -105,9 +106,9 @@ export default function ProLoginModern() {
         <div className="px-6 pt-16 pb-6">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo "Pro" violet - même style que "Design" */}
+            {/* Logo Rendly centré */}
             <div className="text-center mb-12">
-              <h1 className="text-3xl font-bold text-violet-600">Pro</h1>
+              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}
