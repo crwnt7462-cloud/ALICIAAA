@@ -1,245 +1,356 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Save, Building2, Phone, MapPin, Mail } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
+import { 
+  ArrowLeft, 
+  Settings, 
+  Store, 
+  Clock, 
+  Users, 
+  Bell,
+  MapPin,
+  Phone,
+  Mail,
+  Camera
+} from 'lucide-react';
 
 export default function SalonSettings() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  // Récupérer les données du salon
-  const { data: salonData, isLoading } = useQuery({
-    queryKey: ['/api/salon-settings']
-  });
-
-  // État du formulaire
-  const [formData, setFormData] = useState({
-    businessName: '',
-    address: '',
-    city: '',
-    phone: '',
-    email: '',
-    description: '',
-    coverImage: ''
-  });
-
-  // Mettre à jour le formulaire quand les données arrivent
-  useEffect(() => {
-    if (salonData) {
-      setFormData({
-        businessName: salonData.businessName || '',
-        address: salonData.address || '',
-        city: salonData.city || '',
-        phone: salonData.phone || '',
-        email: salonData.email || '',
-        description: salonData.description || '',
-        coverImage: salonData.coverImage || ''
-      });
-    }
-  }, [salonData]);
-
-  // Mutation pour sauvegarder
-  const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await apiRequest('PATCH', '/api/salon-settings', data);
-      if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
-      return response.json();
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const [salonData, setSalonData] = useState({
+    name: 'Salon Excellence',
+    address: '123 Rue de la Beauté, Paris',
+    phone: '01 23 45 67 89',
+    email: 'contact@salon-excellence.fr',
+    description: 'Salon de coiffure moderne et professionnel',
+    openingHours: {
+      monday: { open: '09:00', close: '19:00', closed: false },
+      tuesday: { open: '09:00', close: '19:00', closed: false },
+      wednesday: { open: '09:00', close: '19:00', closed: false },
+      thursday: { open: '09:00', close: '19:00', closed: false },
+      friday: { open: '09:00', close: '19:00', closed: false },
+      saturday: { open: '09:00', close: '18:00', closed: false },
+      sunday: { open: '', close: '', closed: true }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/salon-settings'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+    notifications: {
+      newBookings: true,
+      cancellations: true,
+      reminders: true,
+      reviews: true
+    },
+    bookingSettings: {
+      advanceBooking: 30,
+      cancellationDelay: 24,
+      autoConfirm: false
+    }
+  });
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      // Simulation de sauvegarde
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast({
         title: "Paramètres sauvegardés",
-        description: "Les informations de votre salon ont été mises à jour avec succès.",
+        description: "Les modifications ont été enregistrées avec succès",
       });
-    },
-    onError: (error) => {
+    } catch (error) {
       toast({
-        title: "Erreur de sauvegarde",
-        description: "Une erreur est survenue lors de la sauvegarde. Veuillez réessayer.",
+        title: "Erreur",
+        description: "Impossible de sauvegarder les paramètres",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+  const updateOpeningHours = (day: string, field: string, value: string | boolean) => {
+    setSalonData(prev => ({
       ...prev,
-      [field]: value
+      openingHours: {
+        ...prev.openingHours,
+        [day]: {
+          ...prev.openingHours[day as keyof typeof prev.openingHours],
+          [field]: value
+        }
+      }
     }));
   };
 
-  const handleSave = () => {
-    saveMutation.mutate(formData);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement des paramètres...</p>
-        </div>
-      </div>
-    );
-  }
+  const days = [
+    { key: 'monday', label: 'Lundi' },
+    { key: 'tuesday', label: 'Mardi' },
+    { key: 'wednesday', label: 'Mercredi' },
+    { key: 'thursday', label: 'Jeudi' },
+    { key: 'friday', label: 'Vendredi' },
+    { key: 'saturday', label: 'Samedi' },
+    { key: 'sunday', label: 'Dimanche' }
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                onClick={() => setLocation('/pro-tools')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Paramètres du Salon</h1>
-                <p className="text-gray-600">Modifiez les informations publiques de votre établissement</p>
-              </div>
-            </div>
-            <Button
-              onClick={handleSave}
-              disabled={saveMutation.isPending}
-              className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => window.history.back()}
+              className="p-2"
             >
-              <Save className="h-4 w-4 mr-2" />
-              {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <h1 className="text-base font-medium text-gray-900">Paramètres du salon</h1>
+            <Button 
+              size="sm"
+              onClick={handleSave}
+              disabled={isLoading}
+              className="bg-violet-600 hover:bg-violet-700"
+            >
+              {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
-        {/* Informations générales */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building2 className="h-5 w-5 text-violet-600" />
+      {/* Contenu */}
+      <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
+        
+        {/* Informations du salon */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Store className="w-4 h-4" />
               Informations générales
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="name" className="text-sm">Nom du salon</Label>
+              <Input
+                id="name"
+                value={salonData.name}
+                onChange={(e) => setSalonData(prev => ({ ...prev, name: e.target.value }))}
+                className="mt-1"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="address" className="text-sm">Adresse</Label>
+              <Input
+                id="address"
+                value={salonData.address}
+                onChange={(e) => setSalonData(prev => ({ ...prev, address: e.target.value }))}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label htmlFor="businessName">Nom du salon *</Label>
+                <Label htmlFor="phone" className="text-sm">Téléphone</Label>
                 <Input
-                  id="businessName"
-                  value={formData.businessName}
-                  onChange={(e) => handleInputChange('businessName', e.target.value)}
-                  placeholder="Nom de votre salon"
+                  id="phone"
+                  value={salonData.phone}
+                  onChange={(e) => setSalonData(prev => ({ ...prev, phone: e.target.value }))}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="contact@salon.com"
+                  value={salonData.email}
+                  onChange={(e) => setSalonData(prev => ({ ...prev, email: e.target.value }))}
                   className="mt-1"
                 />
               </div>
             </div>
-            
-            <div>
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Décrivez votre salon, vos spécialités, votre équipe..."
-                className="mt-1"
-                rows={4}
-              />
-            </div>
           </CardContent>
         </Card>
 
-        {/* Contact et localisation */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-blue-600" />
-              Contact et localisation
+        {/* Horaires d'ouverture */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Clock className="w-4 h-4" />
+              Horaires d'ouverture
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {days.map((day) => {
+              const hours = salonData.openingHours[day.key as keyof typeof salonData.openingHours];
+              return (
+                <div key={day.key} className="flex items-center gap-3">
+                  <div className="w-20 text-sm">{day.label}</div>
+                  
+                  <Switch
+                    checked={!hours.closed}
+                    onCheckedChange={(checked) => updateOpeningHours(day.key, 'closed', !checked)}
+                    className="scale-75"
+                  />
+                  
+                  {!hours.closed && (
+                    <div className="flex items-center gap-2 flex-1">
+                      <Input
+                        type="time"
+                        value={hours.open}
+                        onChange={(e) => updateOpeningHours(day.key, 'open', e.target.value)}
+                        className="text-sm"
+                      />
+                      <span className="text-gray-500 text-sm">-</span>
+                      <Input
+                        type="time"
+                        value={hours.close}
+                        onChange={(e) => updateOpeningHours(day.key, 'close', e.target.value)}
+                        className="text-sm"
+                      />
+                    </div>
+                  )}
+                  
+                  {hours.closed && (
+                    <div className="flex-1 text-sm text-gray-500">Fermé</div>
+                  )}
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Paramètres de réservation */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Users className="w-4 h-4" />
+              Réservations
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="01 23 45 67 89"
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">Ville</Label>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  placeholder="Paris"
-                  className="mt-1"
-                />
-              </div>
-            </div>
-            
             <div>
-              <Label htmlFor="address">Adresse complète</Label>
+              <Label htmlFor="advance" className="text-sm">Réservation à l'avance (jours)</Label>
               <Input
-                id="address"
-                value={formData.address}
-                onChange={(e) => handleInputChange('address', e.target.value)}
-                placeholder="123 Rue de la Beauté, 75001 Paris"
+                id="advance"
+                type="number"
+                value={salonData.bookingSettings.advanceBooking}
+                onChange={(e) => setSalonData(prev => ({
+                  ...prev,
+                  bookingSettings: {
+                    ...prev.bookingSettings,
+                    advanceBooking: parseInt(e.target.value)
+                  }
+                }))}
                 className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="cancellation" className="text-sm">Délai d'annulation (heures)</Label>
+              <Input
+                id="cancellation"
+                type="number"
+                value={salonData.bookingSettings.cancellationDelay}
+                onChange={(e) => setSalonData(prev => ({
+                  ...prev,
+                  bookingSettings: {
+                    ...prev.bookingSettings,
+                    cancellationDelay: parseInt(e.target.value)
+                  }
+                }))}
+                className="mt-1"
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Confirmation automatique</p>
+                <p className="text-xs text-gray-600">Confirmer automatiquement les nouvelles réservations</p>
+              </div>
+              <Switch
+                checked={salonData.bookingSettings.autoConfirm}
+                onCheckedChange={(checked) => setSalonData(prev => ({
+                  ...prev,
+                  bookingSettings: {
+                    ...prev.bookingSettings,
+                    autoConfirm: checked
+                  }
+                }))}
               />
             </div>
           </CardContent>
         </Card>
 
-        {/* Image de couverture */}
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="h-5 w-5 text-green-600" />
-              Image de couverture
+        {/* Notifications */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Bell className="w-4 h-4" />
+              Notifications
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div>
-              <Label htmlFor="coverImage">URL de l'image de couverture</Label>
-              <Input
-                id="coverImage"
-                value={formData.coverImage}
-                onChange={(e) => handleInputChange('coverImage', e.target.value)}
-                placeholder="https://exemple.com/image-salon.jpg"
-                className="mt-1"
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Nouvelles réservations</p>
+                <p className="text-xs text-gray-600">Être notifié des nouvelles réservations</p>
+              </div>
+              <Switch
+                checked={salonData.notifications.newBookings}
+                onCheckedChange={(checked) => setSalonData(prev => ({
+                  ...prev,
+                  notifications: {
+                    ...prev.notifications,
+                    newBookings: checked
+                  }
+                }))}
               />
-              <p className="text-sm text-gray-500 mt-1">
-                Image utilisée sur votre page de réservation publique
-              </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Annulations</p>
+                <p className="text-xs text-gray-600">Être notifié des annulations</p>
+              </div>
+              <Switch
+                checked={salonData.notifications.cancellations}
+                onCheckedChange={(checked) => setSalonData(prev => ({
+                  ...prev,
+                  notifications: {
+                    ...prev.notifications,
+                    cancellations: checked
+                  }
+                }))}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Rappels</p>
+                <p className="text-xs text-gray-600">Envoyer des rappels automatiques</p>
+              </div>
+              <Switch
+                checked={salonData.notifications.reminders}
+                onCheckedChange={(checked) => setSalonData(prev => ({
+                  ...prev,
+                  notifications: {
+                    ...prev.notifications,
+                    reminders: checked
+                  }
+                }))}
+              />
             </div>
           </CardContent>
         </Card>
+
       </div>
     </div>
   );

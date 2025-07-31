@@ -100,7 +100,6 @@ import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
 import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
-import SalonSettings from "@/pages/SalonSettings";
 import BookingCustomization from "@/pages/BookingCustomization";
 import ForgotPassword from "@/pages/ForgotPassword";
 import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
@@ -116,6 +115,7 @@ import StripeSuccess from "@/pages/StripeSuccess";
 import StripeCancel from "@/pages/StripeCancel";
 import ProMessagingSimple from "@/pages/ProMessagingSimple";
 import SalonSettingsComplete from "@/pages/SalonSettingsComplete";
+import SalonSettings from "@/pages/SalonSettings";
 import BookingPage from "@/pages/BookingPage";
 import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
@@ -256,7 +256,16 @@ function Router() {
   if (location === '/salon-settings') {
     return (
       <div className="h-full">
-        <SalonSettingsComplete />
+        <SalonSettings />
+      </div>
+    );
+  }
+
+  // Centre de notifications
+  if (location === '/notifications') {
+    return (
+      <div className="h-full">
+        <NotificationCenter />
       </div>
     );
   }
