@@ -156,7 +156,7 @@ Génération automatique :
 - ✅ **Limitation technique documentée** : Firebase nécessite Google Cloud, incompatible avec infrastructure Replit
 - ✅ **Solution recommandée** : PostgreSQL pour Replit, Firebase pour déploiement Google Cloud Platform
 
-### Janvier 2025 - REBRAND COMPLET ET LOGO PERSONNALISÉ (28 Janvier 15h00)
+### Janvier 2025 - REBRAND COMPLET ET LOGO PERSONNALISÉ + AUTHENTIFICATION CLIENTS CORRIGÉE (31 Janvier 10h25)
 - ✅ **Remplacement total du logo "Rendly"** : Tous les logos remplacés par le logo personnalisé (3_1753714421825.png)
 - ✅ **Branding uniforme sur toute la plateforme** : Logo appliqué sur toutes les pages (landing, login, dashboard, IA)
 - ✅ **Mise à jour des références textuelles** : "Rendly" remplacé par des termes génériques ou le nouveau branding
@@ -166,6 +166,10 @@ Génération automatique :
 - ✅ **Cohérence visuelle totale** : Logo respectant les proportions et tailles sur tous les écrans
 - ✅ **Documentation mise à jour** : Changements de branding documentés dans replit.md
 - ✅ **Application complètement rebrandée** : Identité visuelle personnalisée sur l'ensemble de la plateforme
+- ✅ **Authentification PRO corrigée** : Hash bcrypt régénéré pour test@monapp.com / test1234 - connexion fonctionnelle
+- ✅ **Authentification CLIENT corrigée** : Hash bcrypt régénéré pour client@test.com / client123 - connexion fonctionnelle
+- ✅ **Pages client rebranding complet** : ClientLogin, ClientLoginWhite, FuturisticClientLogin avec logo Rendly uniforme
+- ✅ **Suppression des icônes User** : Remplacement par logo Rendly dans tous les headers de connexion client
 
 ### Janvier 2025 - SYSTÈME FULL-STACK 100% OPÉRATIONNEL FINALISÉ (28 Janvier 03h00)
 - ✅ **Backend production-ready complet** : API routes full-stack avec authentification JWT PRO/CLIENT sécurisée

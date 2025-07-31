@@ -17,6 +17,7 @@ import {
   Shield,
   Star
 } from "lucide-react";
+import rendlyLogo from "@assets/3_1753714421825.png";
 
 export default function ClientLoginWhite() {
   const [, setLocation] = useLocation();
@@ -139,10 +140,8 @@ export default function ClientLoginWhite() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
           <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm rounded-lg">
             <CardHeader className="space-y-2 text-center pb-6">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <div className="p-3 bg-gray-50 rounded-full border border-gray-200">
-                  <User className="w-6 h-6 text-gray-600" />
-                </div>
+              <div className="flex flex-col items-center justify-center mb-6">
+                <img src={rendlyLogo} alt="Rendly" className="h-16 w-auto mb-4" />
                 <h2 className="text-2xl font-light text-gray-900">Espace Client</h2>
               </div>
               <div className="flex justify-center">
