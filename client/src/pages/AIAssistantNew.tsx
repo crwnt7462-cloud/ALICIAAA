@@ -13,7 +13,7 @@ import {
   Brain, TrendingUp, Calendar, Clock, Star, AlertTriangle,
   CheckCircle, Zap, Crown, Sparkles, Camera, FileText,
   PieChart, Activity, Lightbulb, ShoppingBag, MessageSquare,
-  Settings, Maximize2, Copy, RefreshCw, Palette, 
+  Mic, Settings, Maximize2, Copy, RefreshCw, Palette, 
   TrendingDown, DollarSign, Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -435,10 +435,9 @@ export default function AIAssistantNew() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setLocation('/ai-alerts')}
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 p-0 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-full shadow-sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 p-0"
                 >
-                  <User className="w-4 h-4 text-white" />
+                  <Mic className="w-4 h-4 text-gray-400" />
                 </Button>
               </div>
               <Button
