@@ -64,15 +64,22 @@ export default function ModernSalonDetail() {
     salonName: salonData?.name
   });
   
-  // Récupérer les vraies données du salon depuis l'API avec auto-refresh
-  const { data: salonData, isLoading } = useQuery<SalonData>({
+  // Récupérer les vraies données du salon depuis l'API avec auto-refresh FORCÉ
+  const { data: salonData, isLoading, refetch } = useQuery<SalonData>({
     queryKey: ['/api/salon', salonId],
     retry: 2,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    refetchInterval: 1000, // Auto-refresh toutes les 1 seconde
-    staleTime: 0 // Toujours considérer comme périmé
+    refetchInterval: 500, // Auto-refresh toutes les 0.5 secondes
+    staleTime: 0, // Toujours considérer comme périmé
+    cacheTime: 0 // Pas de cache du tout
   });
+
+  // Force un refetch immédiat au montage
+  useEffect(() => {
+    console.log('🔥 FORÇAGE REFETCH IMMÉDIAT');
+    refetch();
+  }, [refetch]);
   
   // Données de fallback si API échoue
   const [serviceCategories, setServiceCategories] = useState([
@@ -326,6 +333,11 @@ export default function ModernSalonDetail() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* DEBUG PANEL VISIBLE */}
+      <div className="fixed top-0 left-0 bg-red-500 text-white p-2 text-xs z-50">
+        DEBUG: {salonData?.name || 'PAS DE DONNÉES'} | API: {isLoading ? 'LOADING' : 'OK'} | ID: {salonId}
+      </div>
+      
       <div className="max-w-lg mx-auto">
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
@@ -365,7 +377,12 @@ export default function ModernSalonDetail() {
           
           {/* Informations principales sur la photo */}
           <div className="absolute bottom-4 left-4 right-4">
-            <h1 className="text-2xl font-bold text-white mb-2">{salon.name}</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">
+              {salonData?.name || salon.name} 
+              <span className="text-xs ml-2 bg-red-500 px-1 rounded">
+                {salonData?.name ? 'API' : 'FALLBACK'}
+              </span>
+            </h1>
             <div className="flex items-center gap-4 text-white/90 text-sm">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
