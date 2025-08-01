@@ -270,23 +270,58 @@ export default function ModernSalonDetail() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-lg mx-auto">
-        {/* Header */}
+        {/* Photo de couverture */}
+        <div className="relative h-64 overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=400&fit=crop&crop=center"
+            alt={`${salon.name} - Photo de couverture`}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          
+          {/* Bouton retour */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => window.history.back()}
+            className="absolute top-4 left-4 text-white hover:bg-white/10 backdrop-blur-sm"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          
+          {/* Badge vérifié */}
+          {salon.verified && (
+            <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+              <CheckCircle className="w-3 h-3" />
+              Vérifié
+            </div>
+          )}
+          
+          {/* Informations principales sur la photo */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <h1 className="text-2xl font-bold text-white mb-2">{salon.name}</h1>
+            <div className="flex items-center gap-4 text-white/90 text-sm">
+              <div className="flex items-center gap-1">
+                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                <span>{salon.rating}</span>
+                <span>({salon.reviews} avis)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                <span>Paris 8ème</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Header avec navigation */}
         <div className="sticky top-0 z-50 bg-black/95 backdrop-blur-sm border-b border-gray-800">
           <div className="flex items-center justify-between p-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => window.history.back()}
-              className="text-white hover:bg-white/10"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
             <div className="text-center">
-              <h1 className="font-semibold text-white">{salon.name}</h1>
               <div className="flex items-center justify-center gap-1 text-xs text-gray-400">
-                <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                <span>{salon.rating}</span>
-                <span>({salon.reviews})</span>
+                <span>Salon premium</span>
               </div>
             </div>
             <div className="w-10" />

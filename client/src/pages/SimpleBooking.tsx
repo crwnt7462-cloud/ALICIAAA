@@ -180,32 +180,64 @@ export default function SimpleBooking() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Photo de couverture du salon */}
+      <div className="relative h-72 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&h=500&fit=crop&crop=center"
+          alt={`${salon.name} - Photo de couverture`}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+        
+        {/* Bouton retour */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => window.history.back()}
+          className="absolute top-4 left-4 text-white hover:bg-white/20 backdrop-blur-sm"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        
+        {/* Badge certifié */}
+        {salon.verified && (
+          <div className="absolute top-4 right-4 bg-gradient-to-r from-gold-400 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <Award className="w-3 h-3" />
+            Certifié
+          </div>
+        )}
+        
+        {/* Informations principales */}
+        <div className="absolute bottom-4 left-4 right-4">
+          <h1 className="text-3xl font-bold text-white mb-2">{salon.name}</h1>
+          <p className="text-lg text-white/90 italic mb-3">{salon.subtitle}</p>
+          
+          <div className="flex items-center gap-4 text-white/90 text-sm">
+            <div className="flex items-center gap-1">
+              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <span>{salon.rating}</span>
+              <span>({salon.reviews} avis)</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <MapPin className="w-4 h-4" />
+              <span>Paris 1er</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              <span>Ouvert</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-2xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => window.history.back()}
-                className="p-2"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
               <div>
-                <div className="flex items-center space-x-2">
-                  <div>
-                    <h1 className="font-bold text-lg">{salon.name}</h1>
-                    <p className="text-sm text-violet-600 italic">{salon.subtitle}</p>
-                  </div>
-                  {salon.verified && (
-                    <Badge variant="secondary" className="bg-gradient-to-r from-gold-400 to-yellow-500 text-white text-xs">
-                      <Award className="w-3 h-3 mr-1" />
-                      Certifié
-                    </Badge>
-                  )}
-                </div>
                 <div className="flex items-center space-x-4 text-sm text-gray-600 mt-2">
                   <div className="flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />

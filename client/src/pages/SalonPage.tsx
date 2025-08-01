@@ -189,36 +189,45 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
       className="min-h-screen"
       style={{ background: styles.background }}
     >
-      {/* Header du salon */}
-      <div 
-        className="text-white py-12"
-        style={{ background: styles.headerBg }}
-      >
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <h1 className="text-3xl font-bold mb-3">{pageData?.salonName || 'Mon Salon'}</h1>
-          {pageData?.salonDescription && (
-            <p className="text-lg opacity-90 mb-4">{pageData.salonDescription}</p>
-          )}
-          
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            {pageData?.salonAddress && (
-              <div className="flex items-center">
-                <MapPin className="w-4 h-4 mr-2" />
-                {pageData.salonAddress}
-              </div>
+      {/* Photo de couverture avec header */}
+      <div className="relative h-80 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"
+          alt={`${pageData?.salonName || 'Mon Salon'} - Photo de couverture`}
+          className="w-full h-full object-cover"
+        />
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        
+        {/* Contenu centré sur la photo */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-4">
+            <h1 className="text-4xl font-bold mb-4 drop-shadow-lg">{pageData?.salonName || 'Mon Salon'}</h1>
+            {pageData?.salonDescription && (
+              <p className="text-xl opacity-90 mb-6 drop-shadow-lg max-w-2xl">{pageData.salonDescription}</p>
             )}
-            {pageData?.salonPhone && (
-              <div className="flex items-center">
-                <Phone className="w-4 h-4 mr-2" />
-                {pageData.salonPhone}
-              </div>
-            )}
-            {pageData?.salonEmail && (
-              <div className="flex items-center">
-                <Mail className="w-4 h-4 mr-2" />
-                {pageData.salonEmail}
-              </div>
-            )}
+            
+            <div className="flex flex-wrap justify-center gap-6 text-sm bg-black/20 backdrop-blur-sm rounded-lg p-4">
+              {pageData?.salonAddress && (
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  {pageData.salonAddress}
+                </div>
+              )}
+              {pageData?.salonPhone && (
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2" />
+                  {pageData.salonPhone}
+                </div>
+              )}
+              {pageData?.salonEmail && (
+                <div className="flex items-center">
+                  <Mail className="w-4 h-4 mr-2" />
+                  {pageData.salonEmail}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
