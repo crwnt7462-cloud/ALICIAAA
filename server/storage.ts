@@ -98,6 +98,7 @@ export interface IStorage {
   // Booking Pages Management
   getCurrentBookingPage(userId: string): Promise<any>;
   updateCurrentBookingPage(userId: string, data: any): Promise<any>;
+  updateBookingPage(salonId: string, data: any): Promise<any>;
   updateUserProfile(userId: string, data: any): Promise<User>;
 
   // Salon Registration
@@ -795,6 +796,30 @@ export class DatabaseStorage implements IStorage {
         .returning();
 
       return updatedPage;
+    } catch (error) {
+      console.error("Error updating booking page:", error);
+      throw error;
+    }
+  }
+
+  async updateBookingPage(salonId: string, data: any): Promise<any> {
+    try {
+      console.log('💾 Mise à jour page de réservation:', salonId, Object.keys(data));
+      
+      // Mettre à jour dans la Map des salons
+      if (this.salons.has(salonId)) {
+        const existingSalon = this.salons.get(salonId);
+        const updatedSalon = { ...existingSalon, ...data };
+        this.salons.set(salonId, updatedSalon);
+        console.log('✅ Page de réservation mise à jour dans le cache:', salonId);
+        return updatedSalon;
+      } else {
+        // Créer un nouveau salon si n'existe pas
+        const newSalon = { id: salonId, ...data };
+        this.salons.set(salonId, newSalon);
+        console.log('✅ Nouvelle page de réservation créée:', salonId);
+        return newSalon;
+      }
     } catch (error) {
       console.error("Error updating booking page:", error);
       throw error;
