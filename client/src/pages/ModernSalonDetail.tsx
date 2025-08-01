@@ -183,6 +183,13 @@ export default function ModernSalonDetail() {
     longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
   };
 
+  // DEBUG: Logs pour comprendre le problème d'images
+  console.log('🖼️ DEBUG PHOTOS:', {
+    coverImageUrl: salonData?.coverImageUrl,
+    photos: salonData?.photos,
+    firstPhoto: salonData?.photos?.[0]
+  });
+
   // Couleurs personnalisées depuis l'API
   const customColors = salonData?.customColors || {
     primary: '#7c3aed',
@@ -273,7 +280,7 @@ export default function ModernSalonDetail() {
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
           <img 
-            src={salonData?.coverImageUrl || salonData?.photos?.[0] || "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=400&fit=crop&crop=center"}
+            src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"
             alt={`${salon.name} - Photo de couverture`}
             className="w-full h-full object-cover"
           />

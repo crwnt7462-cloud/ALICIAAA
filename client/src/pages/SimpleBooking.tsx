@@ -195,7 +195,7 @@ export default function SimpleBooking() {
       {/* Photo de couverture du salon */}
       <div className="relative h-72 overflow-hidden">
         <img 
-          src={salonData?.coverImageUrl || salonData?.photos?.[0] || "https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&h=500&fit=crop&crop=center"}
+          src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"
           alt={`${salon.name} - Photo de couverture`}
           className="w-full h-full object-cover"
         />
