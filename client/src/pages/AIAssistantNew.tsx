@@ -55,15 +55,36 @@ export default function AIAssistantNew() {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const scrollToTop = () => {
+    chatContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+      setShowScrollTop(scrollTop > 200);
+    }
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -182,8 +203,8 @@ export default function AIAssistantNew() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-violet-50/30">
-      {/* Header Ultra-Moderne */}
-      <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-violet-100 shadow-lg">
+      {/* Header Ultra-Moderne - Fixé en haut */}
+      <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-violet-100 shadow-lg shrink-0">
         <div className="p-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Button 
@@ -222,8 +243,8 @@ export default function AIAssistantNew() {
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-        <div className="border-b border-gray-200 bg-white/70 backdrop-blur-sm">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+        <div className="border-b border-gray-200 bg-white/70 backdrop-blur-sm shrink-0">
           <TabsList className="grid w-full grid-cols-3 bg-transparent h-12">
             <TabsTrigger 
               value="chat" 
@@ -250,8 +271,12 @@ export default function AIAssistantNew() {
         </div>
 
         {/* Chat Interface */}
-        <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <TabsContent value="chat" className="flex-1 flex flex-col p-0 m-0 min-h-0 relative">
+          <div 
+            ref={chatContainerRef}
+            className="flex-1 overflow-y-auto p-4 space-y-4" 
+            style={{ maxHeight: 'calc(100vh - 240px)' }}
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -364,8 +389,20 @@ export default function AIAssistantNew() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Actions */}
-          <div className="p-4 bg-white/70 backdrop-blur-sm border-t border-gray-100">
+          {/* Bouton Remonter en haut */}
+          {showScrollTop && (
+            <Button
+              onClick={scrollToTop}
+              size="sm"
+              className="absolute bottom-20 right-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-gray-50"
+              variant="outline"
+            >
+              <ArrowLeft className="w-4 h-4 -rotate-90" />
+            </Button>
+          )}
+
+          {/* Quick Actions & Input - Fixé en bas */}
+          <div className="p-4 bg-white/95 backdrop-blur-sm border-t border-gray-100 shrink-0">
             <div className="grid grid-cols-2 gap-2 mb-4">
               {quickActions.map((action, index) => (
                 <Button
