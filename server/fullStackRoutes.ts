@@ -5,6 +5,7 @@ import { storage as memoryStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
+import { AIService } from "./aiService";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -25,7 +26,56 @@ if (!SUPABASE_CONFIG.USE_SUPABASE && !SUPABASE_CONFIG.hasSupabaseSecrets()) {
   console.log(SUPABASE_INSTRUCTIONS);
 }
 
+// Instance du service IA
+const aiService = new AIService();
+
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
+  // Test de connexion OpenAI
+  app.post('/api/ai/test-openai', async (req, res) => {
+    try {
+      console.log('🤖 Test de connexion OpenAI...');
+      const { message } = req.body;
+      
+      const response = await aiService.getChatResponse(message || "Bonjour, peux-tu confirmer que la connexion OpenAI fonctionne?");
+      
+      res.json({
+        success: true,
+        response,
+        message: "Connexion OpenAI fonctionnelle!",
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Erreur connexion OpenAI:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message,
+        message: "Échec de connexion OpenAI"
+      });
+    }
+  });
+
+  // Chat avec IA via OpenAI
+  app.post('/api/ai/chat', async (req, res) => {
+    try {
+      const { message } = req.body;
+      console.log('💬 Message IA reçu:', message);
+      
+      const response = await aiService.getChatResponse(message);
+      
+      res.json({
+        success: true,
+        response,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Erreur chat IA:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
   // Routes d'authentification personnalisées (contournement Replit Auth à cause de Vite)
   app.post('/api/auth/login', async (req, res) => {
     try {
