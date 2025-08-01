@@ -216,33 +216,61 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       const insights = await clientAnalyticsService.analyzeClientBatch(clientProfiles);
       const report = clientAnalyticsService.generateAnalyticsReport(insights);
       
-      // Sauvegarde automatique des messages IA spécifiques pour clients
+      // Sauvegarde automatique des messages IA dans l'historique de l'assistant IA
       let messagesSaved = 0;
       try {
         for (const insight of insights) {
           if (insight.message_personnalise && insight.niveau_risque !== "faible") {
-            // Sauvegarde uniquement pour les clients à risque moyen, élevé et critique
-            const messageData = {
-              clientName: insight.client.nom,
-              riskLevel: insight.niveau_risque,
-              message: insight.message_personnalise,
-              analysis: insight.strategie_retention,
-              actions: insight.actions_recommandees,
-              metrics: {
-                cancellationRate: insight.client.taux_annulation,
-                riskScore: insight.client.score_risque,
-                conversionProbability: insight.probabilite_conversion
+            // Créer une conversation dédiée dans l'historique de l'assistant IA
+            const conversationData = {
+              id: `client-analysis-${insight.client.nom.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`,
+              title: `📊 Analyse Client: ${insight.client.nom}`,
+              timestamp: new Date().toISOString(),
+              messages: [
+                {
+                  role: 'user',
+                  content: `Analyse le profil de ${insight.client.nom} - Client avec ${insight.client.taux_annulation}% d'annulations, niveau de risque ${insight.niveau_risque}`
+                },
+                {
+                  role: 'assistant',
+                  content: `## 💬 Message Personnel à Envoyer
+
+"${insight.message_personnalise}"
+
+## 🔍 Analyse Détaillée
+
+${insight.strategie_retention}
+
+## 📋 Actions Recommandées
+
+${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`).join('\n')}
+
+## 📊 Métriques Client
+
+• **Taux d'annulation**: ${insight.client.taux_annulation}%
+• **Score de risque**: ${Math.round(insight.client.score_risque * 100)}/100
+• **Probabilité de récupération**: ${Math.round(insight.probabilite_conversion * 100)}%
+
+---
+*Analyse générée automatiquement le ${new Date().toLocaleString('fr-FR')}*`
+                }
+              ],
+              metadata: {
+                type: 'client_analysis',
+                client_name: insight.client.nom,
+                risk_level: insight.niveau_risque,
+                auto_generated: true
               }
             };
             
-            // Sauvegarde dans le système dédié aux messages IA clients
-            await storage.saveClientAIMessage('demo-user', messageData);
+            // Sauvegarde dans l'historique de l'assistant IA
+            await storage.saveConversation('demo-user', conversationData.id, conversationData);
             messagesSaved++;
           }
         }
-        console.log(`💬 ${messagesSaved} messages IA sauvegardés pour les clients à risque`);
+        console.log(`💬 ${messagesSaved} analyses client sauvegardées dans l'assistant IA`);
       } catch (error) {
-        console.error('❌ Erreur sauvegarde messages IA:', error);
+        console.error('❌ Erreur sauvegarde analyses:', error);
       }
       
       res.json({
