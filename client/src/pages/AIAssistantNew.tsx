@@ -17,7 +17,7 @@ import {
   TrendingDown, DollarSign, Eye, UserCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
 interface Message {
@@ -37,27 +37,69 @@ interface Message {
 export default function AIAssistantNew() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("chat");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'assistant',
-      content: '👋 Bonjour ! Je suis votre assistant IA, spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et vous donner des conseils personnalisés pour développer votre activité.',
-      timestamp: new Date(),
-      category: 'greeting',
-      insights: [
-        { type: 'success', title: 'CA ce mois', value: '+15%', icon: TrendingUp },
-        { type: 'info', title: 'Taux occupation', value: '87%', icon: Activity },
-        { type: 'warning', title: 'Stock bas', value: '3 produits', icon: AlertTriangle }
-      ]
+
+  // Mutation pour nettoyer toutes les conversations
+  const clearConversationsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("DELETE", "/api/ai/conversations", {});
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversations'] });
+      toast({
+        title: "Historique effacé",
+        description: "Toutes les conversations ont été supprimées",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Erreur",
+        description: "Impossible de nettoyer l'historique",
+        variant: "destructive",
+      });
     }
-  ]);
+  });
+  const [activeTab, setActiveTab] = useState("chat");
+  // Pas d'historique factice - conversation vide au début
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+
+  // Charger les conversations depuis l'API
+  const { data: conversationsData } = useQuery({
+    queryKey: ['/api/ai/conversations'],
+    refetchInterval: 3000, // Actualisation toutes les 3 secondes
+  });
+
+  // Conversion des conversations en messages
+  useEffect(() => {
+    if (conversationsData?.conversations) {
+      const allMessages: Message[] = [];
+      
+      conversationsData.conversations
+        .filter((conv: any) => conv.metadata?.type === 'general_chat')
+        .forEach((conv: any) => {
+          conv.messages?.forEach((msg: any, index: number) => {
+            allMessages.push({
+              id: `${conv.id}-${index}`,
+              type: msg.role === 'user' ? 'user' : 'assistant',
+              content: msg.content,
+              timestamp: new Date(conv.timestamp),
+              category: 'chat'
+            });
+          });
+        });
+      
+      // Trier par timestamp
+      allMessages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      setMessages(allMessages);
+    }
+  }, [conversationsData]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -96,16 +138,16 @@ export default function AIAssistantNew() {
     },
     onSuccess: (data) => {
       setIsTyping(false);
-      const assistantMessage: Message = {
-        id: Date.now().toString(),
-        type: 'assistant',
-        content: data.response || "Je n'ai pas pu traiter votre demande. Pouvez-vous reformuler ?",
-        timestamp: new Date(),
-        category: data.category || 'general',
-        insights: data.insights || []
-      };
-      setMessages(prev => [...prev, assistantMessage]);
       setIsLoading(false);
+      setInputMessage("");
+      
+      // Actualiser les conversations depuis l'API au lieu de manipuler l'état local
+      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversations'] });
+      
+      toast({
+        title: "Message envoyé",
+        description: "L'IA a répondu à votre question",
+      });
     },
     onError: () => {
       setIsTyping(false);
@@ -121,18 +163,11 @@ export default function AIAssistantNew() {
   const handleSendMessage = () => {
     if (!inputMessage.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: inputMessage,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     setIsTyping(true);
+    
+    // Plus de manipulation de l'état local - l'API gère tout
     sendMessageMutation.mutate(inputMessage);
-    setInputMessage("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -236,6 +271,15 @@ export default function AIAssistantNew() {
               <Zap className="w-3 h-3 mr-1" />
               GPT-4o Active
             </Badge>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => clearConversationsMutation.mutate()}
+              className="w-8 h-8 p-0 hover:bg-red-50"
+              title="Effacer l'historique"
+            >
+              <RefreshCw className="w-4 h-4 text-red-500" />
+            </Button>
             <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
               <Settings className="w-4 h-4" />
             </Button>

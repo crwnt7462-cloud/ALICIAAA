@@ -139,6 +139,12 @@ export interface IStorage {
   deleteClientAIMessage(userId: string, messageId: string): Promise<void>;
   clearClientAIMessages(userId: string): Promise<void>;
 
+  // Conversations IA en temps réel
+  saveConversation(userId: string, conversationId: string, conversationData: any): Promise<void>;
+  getConversations(userId: string): Promise<any[]>;
+  deleteConversation(userId: string, conversationId: string): Promise<void>;
+  clearConversations(userId: string): Promise<void>;
+
   // Client Appointments linked to accounts (removed - using getAppointments instead)
 }
 
@@ -147,6 +153,8 @@ export class DatabaseStorage implements IStorage {
   private salons: Map<string, any> = new Map();
   // Stockage en mémoire pour les messages IA clients
   private clientAIMessages: Map<string, any[]> = new Map();
+  // Stockage en mémoire pour les conversations IA en temps réel
+  private conversations: Map<string, Map<string, any>> = new Map();
 
   // Implémentation des nouvelles fonctionnalités pour les photos de salon
   async getSalonPhotos(userId: string): Promise<SalonPhoto[]> {
@@ -1175,6 +1183,45 @@ export class DatabaseStorage implements IStorage {
 
   async clearClientAIMessages(userId: string): Promise<void> {
     this.clientAIMessages.set(userId, []);
+  }
+
+  // Conversations IA en temps réel
+  async saveConversation(userId: string, conversationId: string, conversationData: any): Promise<void> {
+    if (!this.conversations.has(userId)) {
+      this.conversations.set(userId, new Map());
+    }
+    
+    const userConversations = this.conversations.get(userId)!;
+    userConversations.set(conversationId, {
+      ...conversationData,
+      savedAt: new Date().toISOString()
+    });
+    
+    console.log('💾 Conversation sauvegardée:', conversationId);
+  }
+
+  async getConversations(userId: string): Promise<any[]> {
+    const userConversations = this.conversations.get(userId);
+    if (!userConversations) {
+      return [];
+    }
+    
+    // Retourner toutes les conversations triées par timestamp (plus récentes en premier)
+    const conversations = Array.from(userConversations.values());
+    return conversations.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }
+
+  async deleteConversation(userId: string, conversationId: string): Promise<void> {
+    const userConversations = this.conversations.get(userId);
+    if (userConversations) {
+      userConversations.delete(conversationId);
+      console.log('🗑️ Conversation supprimée:', conversationId);
+    }
+  }
+
+  async clearConversations(userId: string): Promise<void> {
+    this.conversations.set(userId, new Map());
+    console.log('🧹 Toutes les conversations supprimées pour:', userId);
   }
 
 }

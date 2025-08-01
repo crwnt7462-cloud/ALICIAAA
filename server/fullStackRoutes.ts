@@ -52,17 +52,43 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat avec IA via OpenAI
+  // Chat avec IA via OpenAI - Enregistrement automatique dans l'historique
   app.post('/api/ai/chat', async (req, res) => {
     try {
-      const { message } = req.body;
+      const { message, conversationHistory } = req.body;
       console.log('💬 Message IA reçu:', message);
       
       const response = await aiService.getChatResponse(message);
       
+      // Enregistrement automatique de la conversation
+      const conversationId = `chat-${Date.now()}`;
+      const conversation = {
+        id: conversationId,
+        title: message.substring(0, 50) + '...',
+        timestamp: new Date().toISOString(),
+        messages: [
+          {
+            role: 'user',
+            content: message
+          },
+          {
+            role: 'assistant',
+            content: response
+          }
+        ],
+        metadata: {
+          type: 'general_chat',
+          auto_generated: false
+        }
+      };
+      
+      await storage.saveConversation('demo-user', conversationId, conversation);
+      console.log('💾 Conversation enregistrée:', conversationId);
+      
       res.json({
         success: true,
         response,
+        conversationId,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -286,6 +312,56 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       res.status(500).json({
         success: false,
         error: error.message
+      });
+    }
+  });
+
+  // Routes pour la gestion des conversations IA
+  app.get('/api/ai/conversations', async (req, res) => {
+    try {
+      const conversations = await storage.getConversations('demo-user');
+      res.json({
+        success: true,
+        conversations
+      });
+    } catch (error) {
+      console.error('❌ Erreur récupération conversations:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors de la récupération des conversations'
+      });
+    }
+  });
+
+  app.delete('/api/ai/conversations/:conversationId', async (req, res) => {
+    try {
+      const { conversationId } = req.params;
+      await storage.deleteConversation('demo-user', conversationId);
+      res.json({
+        success: true,
+        message: 'Conversation supprimée avec succès'
+      });
+    } catch (error) {
+      console.error('❌ Erreur suppression conversation:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors de la suppression de la conversation'
+      });
+    }
+  });
+
+  app.delete('/api/ai/conversations', async (req, res) => {
+    try {
+      await storage.clearConversations('demo-user');
+      res.json({
+        success: true,
+        message: 'Toutes les conversations ont été supprimées'
+      });
+    } catch (error) {
+      console.error('❌ Erreur nettoyage conversations:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Erreur lors du nettoyage des conversations'
       });
     }
   });
