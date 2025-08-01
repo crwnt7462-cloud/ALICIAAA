@@ -38,7 +38,7 @@ export default function SalonBookingFlow() {
   const [step, setStep] = useState(1);
   
   const [bookingData, setBookingData] = useState<BookingData>({
-    salonId: 'salon-demo', // Utiliser le même ID que l'éditeur
+    salonId: 'mon-salon-beaute', // Utiliser le même ID que l'éditeur
     professional: null,
     selectedDate: '',
     selectedTime: '',
@@ -50,13 +50,13 @@ export default function SalonBookingFlow() {
 
   // Récupérer les données du salon depuis l'API (comme dans l'éditeur)
   const { data: salonData, isLoading: salonLoading } = useQuery({
-    queryKey: ['/api/booking-pages/salon-demo'],
+    queryKey: ['/api/booking-pages/mon-salon-beaute'],
     retry: 1,
     refetchOnWindowFocus: false
   });
 
   // Utiliser les professionnels de l'API ou des données par défaut
-  const professionals: Professional[] = salonData?.professionals || [
+  const professionals: Professional[] = (salonData as any)?.professionals || [
     {
       id: '1',
       name: 'Sarah Martinez',
