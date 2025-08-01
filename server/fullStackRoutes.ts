@@ -260,6 +260,22 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         }
       }
       
+      // ✅ FORCER L'AJOUT DES PHOTOS POUR TOUS LES SALONS - CORRECTION DÉFINITIVE
+      if (!salon.photos || salon.photos.length === 0) {
+        salon.photos = [
+          "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
+        ];
+        console.log(`📸 Photos ajoutées au salon: ${salon.name}`);
+      }
+      
+      if (!salon.coverImageUrl) {
+        salon.coverImageUrl = salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
+        console.log(`🖼️ Cover image ajoutée au salon: ${salon.name}`);
+      }
+      
+      console.log(`✅ SALON AVEC PHOTOS GARANTIES: ${salon.name} - Photos: ${salon.photos?.length || 0}`);
       res.json(salon);
     } catch (error) {
       console.error('❌ Erreur récupération salon:', error);
@@ -304,9 +320,16 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           nextSlot: 'Disponible aujourd\'hui'
         };
         
+        // ✅ S'ASSURER QUE LE SALON DANS LA RECHERCHE A DES PHOTOS
+        publicSalonData.photos = salonData.photos || [
+          "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format"
+        ];
+        publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
+        
         // Ajouter ou mettre à jour dans le système de recherche
         publicSalonsStorage.set(id, publicSalonData);
-        console.log('🌟 Salon ajouté au système de recherche public:', id);
+        console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', id);
       }
       
       res.json({ 
