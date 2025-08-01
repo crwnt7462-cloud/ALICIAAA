@@ -67,8 +67,8 @@ export default function FuturisticClientLogin() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
           <Card className="w-full max-w-md bg-white shadow-lg border border-gray-200">
             <CardHeader className="space-y-2 text-center pb-6">
-              <div className="flex flex-col items-center justify-center mb-4">
-                <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mb-4" />
+              <div className="flex flex-col items-center justify-center mb-2">
+                <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mb-2" />
                 <h2 className="text-2xl font-light text-gray-900">Espace Client</h2>
               </div>
               <div className="flex justify-center">

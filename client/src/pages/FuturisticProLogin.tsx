@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ArrowLeft, Building2, Mail, Lock, Zap, BarChart3, Shield } from 'lucide-react';
+import rendlyLogo from "@assets/3_1753714421825.png";
 
 export default function FuturisticProLogin() {
   const [, setLocation] = useLocation();
@@ -66,8 +67,8 @@ export default function FuturisticProLogin() {
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
           <Card className="w-full max-w-md bg-white shadow-lg border border-gray-200">
             <CardHeader className="space-y-2 text-center pb-6">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Building2 className="w-6 h-6 text-gray-700" />
+              <div className="flex flex-col items-center justify-center mb-2">
+                <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mb-2" />
                 <h2 className="text-2xl font-light text-gray-900">Espace Pro</h2>
               </div>
               <div className="flex justify-center">
