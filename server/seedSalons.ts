@@ -15,6 +15,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -61,6 +62,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1588609547484-3c23d3c45d4b?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -90,6 +92,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -120,6 +123,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -158,6 +162,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1619451334792-150bdea40af2?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1595475884928-0ba7b2d59b09?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -196,6 +201,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
@@ -234,6 +240,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&h=600&fit=crop&auto=format",
       "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
     ],
+    coverImageUrl: "https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,

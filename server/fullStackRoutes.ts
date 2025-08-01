@@ -170,9 +170,13 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           phone: '+33 1 42 25 76 89',
           rating: 4.8,
           reviews: 156,
-          coverImageUrl: '/api/placeholder/400/250',
-          logoUrl: '/api/placeholder/80/80',
-          photos: ['/api/placeholder/300/200', '/api/placeholder/300/200'],
+          coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center',
+          logoUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=150&h=150&fit=crop&crop=center',
+          photos: [
+            'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop&auto=format',
+            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=400&fit=crop&auto=format',
+            'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=400&fit=crop&auto=format'
+          ],
           verified: true,
           certifications: ['Bio Certifié', 'Produits Naturels', 'Expertise Reconnue'],
           awards: ['Meilleur Salon 2024', 'Prix Excellence'],
@@ -714,7 +718,8 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         verified: true,
         distance: "1.2km",
         category: determineCategory(salon.serviceCategories),
-        photo: salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
+        photo: salon.coverImageUrl || salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
+        coverImageUrl: salon.coverImageUrl,
         openNow: true,
         promotion: null,
         // Données complètes pour les détails

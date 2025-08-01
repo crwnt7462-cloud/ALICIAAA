@@ -292,7 +292,7 @@ export default function SalonSearchComplete() {
                 <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                   {salon.photo && (
                     <img 
-                      src={salon.photo} 
+                      src={salon.coverImageUrl || salon.photo} 
                       alt={salon.name}
                       className="absolute inset-0 w-full h-full object-cover"
                     />
