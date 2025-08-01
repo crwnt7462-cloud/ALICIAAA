@@ -689,7 +689,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/mon-salon-beaute')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+              <div className="relative h-48 bg-violet-500">
                 <img 
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
                   alt="Mon Salon de Beauté"
@@ -760,7 +760,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/salon-excellence-paris')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
+              <div className="relative h-48 bg-violet-500">
                 <img 
                   src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
                   alt="Salon Excellence Paris"
@@ -828,7 +828,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/beauty-institute-st-germain')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
+              <div className="relative h-48 bg-violet-500">
                 <img 
                   src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
                   alt="Beauty Institute Saint-Germain"
@@ -896,7 +896,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/gentleman-barbier-marais')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-900">
+              <div className="relative h-48 bg-violet-500">
                 <img 
                   src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
                   alt="Gentleman Barbier Marais"
