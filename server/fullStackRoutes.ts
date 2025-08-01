@@ -160,9 +160,20 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       
       if (!salon) {
         console.log('ℹ️ Salon non trouvé, retour données par défaut:', id);
-        // Données par défaut pour le salon de démo
-        salon = {
-          id: 'salon-demo',
+        
+        // Redirection vers un salon existant selon l'ID demandé
+        if (id === 'beauty-center') {
+          salon = await storage.getSalon?.('salon-excellence-paris');
+          if (salon) {
+            salon.id = 'beauty-center'; // Garder l'ID demandé pour la compatibilité URL
+            console.log('🔄 Redirection beauty-center vers salon-excellence-paris');
+          }
+        }
+        
+        // Si toujours pas de salon, données par défaut
+        if (!salon) {
+          salon = {
+            id: 'salon-demo',
           name: 'Excellence Paris',
           description: 'Salon de beauté premium au cœur de Paris',
           longDescription: 'Notre salon de beauté offre une expérience unique avec des services haut de gamme dans un cadre élégant et moderne.',
@@ -244,8 +255,9 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           userId: '1',
           updatedAt: new Date()
         };
-      } else {
-        console.log('📖 Salon trouvé en mémoire:', id);
+        } else {
+          console.log('📖 Salon trouvé en mémoire:', id);
+        }
       }
       
       res.json(salon);
