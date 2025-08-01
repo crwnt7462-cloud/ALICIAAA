@@ -147,35 +147,44 @@ export default function SalonRegistration() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/salon/register', {
+      // Inscription professionnelle avec création automatique de page salon
+      const professionalData = {
+        businessName: formData.name,
+        ownerName: formData.name, // Pour l'instant, utiliser le nom du salon
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        businessType: 'beauty_salon', // Type par défaut
+        services: ['Coiffure', 'Soins esthétiques'], // Services par défaut
+        description: formData.description,
+        password: 'tempPassword123' // En attente d'authentification complète
+      };
+
+      const response = await fetch('/api/professional/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          salonData: formData,
-          subscriptionPlan
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(professionalData)
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setSalonId(data.salon.id);
+        const result = await response.json();
+        setSalonId(result.salon.id);
         
         toast({
-          title: "Salon enregistré",
-          description: "Ouverture du paiement..."
+          title: "🎉 Inscription réussie !",
+          description: `Votre page salon "${result.salon.name}" a été créée automatiquement`
         });
-        
+
         // Créer le Payment Intent pour l'abonnement professionnel
         setTimeout(() => {
-          createProfessionalPaymentIntent(data.salon.id);
-        }, 800);
+          createProfessionalPaymentIntent(result.salon.id);
+        }, 1000);
+        
       } else {
         const error = await response.json();
         toast({
-          title: "Erreur",
-          description: error.error || "Une erreur est survenue",
+          title: "Erreur d'inscription",
+          description: error.error || "Une erreur est survenue lors de l'inscription",
           variant: "destructive"
         });
       }
@@ -222,14 +231,14 @@ export default function SalonRegistration() {
   const handlePaymentSuccess = () => {
     setShowPaymentSheet(false);
     toast({
-      title: "Paiement confirmé !",
-      description: "Votre abonnement est maintenant actif"
+      title: "🎉 Paiement confirmé !",
+      description: "Votre salon est maintenant actif. Redirection vers votre espace pro..."
     });
     
-    // Rediriger vers la personnalisation du salon
+    // Rediriger vers l'éditeur de salon pour personnaliser immédiatement
     setTimeout(() => {
-      setLocation(`/edit-salon?salonId=${salonId}&success=true`);
-    }, 1500);
+      setLocation('/salon-page-editor?success=true&new=true');
+    }, 2000);
   };
 
   // Rendu du Bottom Sheet de paiement professionnel
@@ -372,12 +381,13 @@ export default function SalonRegistration() {
                 />
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-medium text-blue-900 mb-2">Après inscription</h3>
-                <ul className="text-sm text-blue-800 space-y-1">
+              <div className="bg-emerald-50 p-4 rounded-lg">
+                <h3 className="font-medium text-emerald-900 mb-2">🚀 Votre salon en 3 étapes</h3>
+                <ul className="text-sm text-emerald-800 space-y-1">
+                  <li>✓ <strong>Page salon créée automatiquement</strong> après inscription</li>
                   <li>• Paiement sécurisé avec Stripe</li>
-                  <li>• Personnalisation de votre page salon</li>
-                  <li>• Activation immédiate de vos fonctionnalités</li>
+                  <li>• Redirection vers votre éditeur pour personnaliser</li>
+                  <li>• Salon visible immédiatement par vos clients</li>
                 </ul>
               </div>
 

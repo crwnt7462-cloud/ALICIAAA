@@ -1005,13 +1005,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         return res.status(401).json({ message: "Non connecté" });
       }
       
+      // Générer un ID unique basé sur l'utilisateur
+      const salonId = `salon-${userId}`;
+      
       // Chercher le salon associé à ce professionnel
-      let salon = storage.salons?.get('mon-salon-beaute');
+      let salon = storage.salons?.get(salonId);
       
       if (!salon) {
         // Créer automatiquement un salon pour ce professionnel
         salon = {
-          id: 'mon-salon-beaute',
+          id: salonId,
           name: 'Mon Salon de Beauté',
           description: 'Salon créé automatiquement pour le professionnel',
           address: '123 Rue de la Beauté, 75001 Paris',
@@ -1034,17 +1037,139 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
             }
           ],
           serviceCategories: [],
-          tags: ['salon', 'beauté']
+          tags: ['salon', 'beauté'],
+          ownerId: userId
         };
         
-        storage.salons?.set('mon-salon-beaute', salon);
-        console.log('🏛️ Salon auto-créé pour professionnel:', userId);
+        storage.salons?.set(salonId, salon);
+        console.log('🏛️ Salon auto-créé pour professionnel:', userId, 'ID:', salonId);
       }
       
       res.json(salon);
     } catch (error) {
       console.error("Erreur récupération salon:", error);
       res.status(500).json({ message: "Erreur lors de la récupération du salon" });
+    }
+  });
+
+  // API d'inscription professionnel avec création automatique de page salon
+  app.post('/api/professional/register', async (req, res) => {
+    try {
+      const { 
+        businessName, 
+        ownerName, 
+        email, 
+        phone, 
+        address, 
+        businessType, 
+        services, 
+        description,
+        password 
+      } = req.body;
+
+      // Vérifier si l'email existe déjà
+      const existingPro = await storage.getBusinessByEmail?.(email);
+      if (existingPro) {
+        return res.status(400).json({ error: 'Un compte professionnel avec cet email existe déjà' });
+      }
+
+      // Générer un ID unique pour le salon
+      const businessId = `business-${Date.now()}`;
+      const salonId = `salon-${businessId}`;
+
+      // Créer le compte professionnel
+      const professionalAccount = {
+        id: businessId,
+        businessName,
+        ownerName,
+        email,
+        phone,
+        address,
+        businessType,
+        description,
+        password, // En production, hasher le mot de passe
+        createdAt: new Date(),
+        salonId // Lier le salon au professionnel
+      };
+
+      // Créer la page salon automatiquement
+      const salonPage = {
+        id: salonId,
+        name: businessName,
+        description: description || `${businessName} - Votre salon de beauté professionnel`,
+        address,
+        phone,
+        email,
+        website: '',
+        photos: [
+          'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
+        ],
+        professionals: [
+          {
+            id: '1',
+            name: ownerName,
+            specialty: businessType === 'hair_salon' ? 'Coiffure' : 
+                     businessType === 'beauty_institute' ? 'Soins esthétiques' :
+                     businessType === 'nail_salon' ? 'Manucure & Pédicure' :
+                     businessType === 'spa' ? 'Massage & Bien-être' : 'Services de beauté',
+            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+            rating: 5.0,
+            price: 60,
+            bio: `Professionnel expérimenté chez ${businessName}`,
+            experience: 'Professionnel qualifié'
+          }
+        ],
+        serviceCategories: services ? [{
+          name: businessType === 'hair_salon' ? 'Coiffure' : 
+                businessType === 'beauty_institute' ? 'Soins esthétiques' :
+                businessType === 'nail_salon' ? 'Manucure' :
+                businessType === 'spa' ? 'Massage' : 'Services',
+          services: services.map((service: string, index: number) => ({
+            id: (index + 1).toString(),
+            name: service,
+            price: 50,
+            duration: 60,
+            description: `Service ${service} professionnel`
+          }))
+        }] : [],
+        tags: [businessType, 'professionnel', 'beauté'],
+        ownerId: businessId,
+        rating: 5.0,
+        reviewCount: 0,
+        verified: true
+      };
+
+      // Sauvegarder dans le storage
+      if (storage.createBusiness) {
+        await storage.createBusiness(professionalAccount);
+      }
+      
+      storage.salons?.set(salonId, salonPage);
+      
+      console.log(`🏢 Nouveau professionnel inscrit: ${businessName}`);
+      console.log(`📄 Page salon créée automatiquement: ${salonId}`);
+
+      res.json({
+        success: true,
+        message: 'Inscription réussie ! Votre page salon a été créée automatiquement.',
+        business: {
+          id: businessId,
+          businessName,
+          ownerName,
+          email
+        },
+        salon: {
+          id: salonId,
+          name: businessName,
+          url: `/salon/${salonId}`,
+          editUrl: `/salon-page-editor`
+        }
+      });
+
+    } catch (error) {
+      console.error('Erreur inscription professionnel:', error);
+      res.status(500).json({ error: 'Erreur lors de l\'inscription' });
     }
   });
 
