@@ -28,6 +28,10 @@ import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
+import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
+import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
+import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
+import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
 import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -327,7 +331,40 @@ function Router() {
     );
   }
 
-  // Page détail d'un salon
+  // Pages individuelles pour chaque salon avec leurs propres URLs
+  if (location === '/salon/salon-excellence-paris') {
+    return (
+      <div className="h-full">
+        <SalonExcellenceParis />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/barbier-gentleman-marais') {
+    return (
+      <div className="h-full">
+        <BarbierGentlemanMarais />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/salon-moderne-republique') {
+    return (
+      <div className="h-full">
+        <SalonModerneRepublique />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/institut-beaute-saint-germain') {
+    return (
+      <div className="h-full">
+        <InstitutBeauteSaintGermain />
+      </div>
+    );
+  }
+  
+  // Page détail générique pour autres salons
   if (location.startsWith('/salon/')) {
     return (
       <div className="h-full">
