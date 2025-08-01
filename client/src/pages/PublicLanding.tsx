@@ -682,66 +682,281 @@ export default function PublicLanding() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {topSalons.map((salon, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setLocation(`/salon/${salon.id}`)}>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900">
-                      {salon.name}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      {(salon as any).isNew && (
-                        <span className="text-xs text-gray-500">
-                          Nouveau
-                        </span>
-                      )}
-                      {salon.verified && (
-                        <span className="text-xs text-gray-500">
-                          ✓ Vérifié
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2 text-sm text-gray-600 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-4 h-4 text-gray-400" />
-                      <span>{salon.rating} ({salon.reviews} avis)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{salon.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-green-600" />
-                      <span>{salon.nextSlot}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {salon.services.map((service, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {service}
-                      </Badge>
-                    ))}
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <Button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setLocation(`/salon/${salon.id}`);
-                      }}
-                      className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-4 py-2 text-sm font-medium"
-                      size="sm"
-                    >
-                      Réserver
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="space-y-4">
+            {/* Mon Salon de Beauté */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/mon-salon-beaute')}
+            >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
+                  alt="Mon Salon de Beauté"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                    Nouveau
+                  </span>
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <h4 className="font-semibold text-gray-900 text-lg mb-2">Mon Salon de Beauté</h4>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.8</span>
+                  <span className="text-sm text-gray-500">(42 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris Centre</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Disponible maintenant
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coupe
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Brushing
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soin
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Salon Excellence Paris */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/salon-excellence-paris')}
+            >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
+                  alt="Salon Excellence Paris"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <h4 className="font-semibold text-gray-900 text-lg mb-2">Salon Excellence Paris</h4>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.9</span>
+                  <span className="text-sm text-gray-500">(324 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 16ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 15h30
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coiffure Premium
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coloration
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Beauty Institute Saint-Germain */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/beauty-institute-st-germain')}
+            >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
+                  alt="Beauty Institute Saint-Germain"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <h4 className="font-semibold text-gray-900 text-lg mb-2">Beauty Institute Saint-Germain</h4>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.7</span>
+                  <span className="text-sm text-gray-500">(156 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 6ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 16h
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins visage
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Épilation
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Massage
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Gentleman Barbier Marais */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/gentleman-barbier-marais')}
+            >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-900">
+                <img 
+                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
+                  alt="Gentleman Barbier Marais"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <h4 className="font-semibold text-gray-900 text-lg mb-2">Gentleman Barbier Marais</h4>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.8</span>
+                  <span className="text-sm text-gray-500">(198 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 4ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 14h30
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coupe homme
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Barbe
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Rasage
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
