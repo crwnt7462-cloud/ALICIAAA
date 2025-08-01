@@ -195,9 +195,11 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     if (currentSalon && typeof currentSalon === 'object') {
       const salon = currentSalon as any;
       console.log('📖 Données salon récupérées depuis l\'API:', salon.id || 'salon-demo');
+      console.log('🔄 Mise à jour complète des données salon avec ID:', salon.id);
       setSalonData(prev => ({
         ...prev,
         ...salon,
+        id: salon.id || 'salon-demo', // S'assurer que l'ID est bien défini
         customColors: salon.customColors || {
           primary: '#7c3aed',
           accent: '#a855f7',
