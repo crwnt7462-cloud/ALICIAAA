@@ -128,7 +128,7 @@ export default function SalonSearchComplete() {
         
         {/* Bouton retour en haut à gauche - position exacte */}
         <button
-          onClick={() => window.history.back()}
+          onClick={() => setLocation('/')}
           className="absolute left-4 top-4 z-10 p-2"
         >
           <ArrowLeft className="h-5 w-5 text-gray-700" />
@@ -245,6 +245,266 @@ export default function SalonSearchComplete() {
               </button>
             </div>
 
+          </div>
+        </div>
+      </div>
+
+      {/* Section Salons recommandés */}
+      <div className="bg-white pt-8 pb-6">
+        <div className="px-4">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Salons recommandés
+            </h2>
+            <p className="text-gray-600">
+              Découvrez nos partenaires les mieux notés
+            </p>
+          </div>
+
+          {/* 4 salons recommandés */}
+          <div className="space-y-4">
+            {/* Mon Salon de Beauté */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/mon-salon-beaute')}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                        Nouveau
+                      </span>
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.8</span>
+                  <span className="text-sm text-gray-500">(42 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris Centre</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Disponible maintenant
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coupe
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Brushing
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soin
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Salon Excellence Paris */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/salon-excellence-paris')}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence Paris</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.9</span>
+                  <span className="text-sm text-gray-500">(324 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 16ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 15h30
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coiffure Premium
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coloration
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Beauty Institute Saint-Germain */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/beauty-institute-st-germain')}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute Saint-Germain</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.7</span>
+                  <span className="text-sm text-gray-500">(156 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 6ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 16h
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins visage
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Épilation
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Massage
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
+
+            {/* Gentleman Barbier Marais */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/gentleman-barbier-marais')}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Gentleman Barbier Marais</h4>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-semibold">4.8</span>
+                  <span className="text-sm text-gray-500">(198 avis)</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <MapPin className="h-4 w-4 text-gray-400" />
+                  <span className="text-sm text-gray-600">Paris 4ème</span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <Clock className="h-4 w-4 text-green-500" />
+                  <span className="text-sm text-green-600 font-medium">
+                    Dispo 14h30
+                  </span>
+                </div>
+                
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coupe homme
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Barbe
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Rasage
+                  </span>
+                </div>
+                
+                <button 
+                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLocation('/salon-booking');
+                  }}
+                >
+                  Réserver
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
