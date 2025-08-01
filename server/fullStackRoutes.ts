@@ -602,23 +602,36 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('🚨 SAUVEGARDE FORCÉE IMMÉDIATE pour ID:', actualId);
       console.log('💾 ID corrigé pour sauvegarde:', actualId);
       
-      // Sauvegarder avec l'ID corrigé
+      // 🔥 SAUVEGARDE PERSISTANTE EN BASE DE DONNÉES POSTGRESQL
       let savedSalon;
-      if (storage.updateBookingPage) {
-        console.log('💾 Sauvegarde salon dans le stockage avec ID:', actualId);
-        savedSalon = await storage.updateBookingPage(actualId, salonData);
-        console.log('✅ Salon sauvegardé avec succès dans le stockage:', actualId);
-      } else {
-        // Sauvegarder directement dans storage.salons si pas de méthode updateBookingPage
-        if (storage.salons) {
-          const existingSalon = storage.salons.get(actualId) || {};
-          const updatedSalon = { ...existingSalon, ...salonData, id: actualId };
-          storage.salons.set(actualId, updatedSalon);
-          savedSalon = updatedSalon;
-          console.log('✅ Salon sauvegardé directement dans Map:', actualId);
-        } else {
-          savedSalon = { ...salonData, id: actualId };
+      
+      // Première étape: sauvegarder en mémoire (Map)
+      if (storage.salons) {
+        const existingSalon = storage.salons.get(actualId) || {};
+        const updatedSalon = { 
+          ...existingSalon, 
+          ...salonData, 
+          id: actualId,
+          updatedAt: new Date().toISOString()
+        };
+        storage.salons.set(actualId, updatedSalon);
+        savedSalon = updatedSalon;
+        console.log('✅ Salon sauvegardé en mémoire:', actualId);
+      }
+      
+      // Deuxième étape: sauvegarder en base PostgreSQL pour persistance
+      try {
+        if (storage.updateSalon) {
+          console.log('💾 Sauvegarde PostgreSQL du salon:', actualId);
+          await storage.updateSalon(actualId, salonData);
+          console.log('✅ Salon sauvegardé en PostgreSQL:', actualId);
+        } else if (storage.createSalon) {
+          console.log('💾 Création PostgreSQL du salon:', actualId);
+          await storage.createSalon({ ...salonData, id: actualId });
+          console.log('✅ Salon créé en PostgreSQL:', actualId);
         }
+      } catch (dbError) {
+        console.log('⚠️ Erreur PostgreSQL (continuons avec mémoire):', dbError.message);
       }
       
       // 🔥 INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE PUBLIC

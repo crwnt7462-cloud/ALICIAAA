@@ -1076,6 +1076,113 @@ export class DatabaseStorage implements IStorage {
   async getSalon(salonId: string): Promise<any> {
     return this.salons.get(salonId) || null;
   }
+  
+  // CHARGEMENT DES SALONS DEPUIS PostgreSQL AU DÉMARRAGE
+  async loadSalonsFromDatabase(): Promise<void> {
+    try {
+      const { salons } = await import("@shared/schema");
+      const allSalons = await db.select().from(salons);
+      
+      console.log(`📚 Chargement de ${allSalons.length} salons depuis PostgreSQL...`);
+      
+      for (const salon of allSalons) {
+        // Parse JSON fields
+        const salonData = {
+          ...salon,
+          customColors: salon.customColors ? JSON.parse(salon.customColors as string) : {},
+          serviceCategories: salon.serviceCategories ? JSON.parse(salon.serviceCategories as string) : [],
+          photos: salon.photos ? JSON.parse(salon.photos as string) : []
+        };
+        
+        this.salons.set(salon.id, salonData);
+        console.log(`✅ Salon chargé: ${salon.name} (${salon.id})`);
+      }
+      
+      console.log('🔄 Tous les salons PostgreSQL chargés en mémoire');
+    } catch (error) {
+      console.log('⚠️ Erreur chargement salons PostgreSQL:', error.message);
+    }
+  }
+
+  // MÉTHODE DE SAUVEGARDE PERSISTANTE PostgreSQL
+  async updateSalon(salonId: string, salonData: any): Promise<any> {
+    try {
+      // Import de la table salons
+      const { salons } = await import("@shared/schema");
+      
+      // Vérifier si le salon existe déjà en PostgreSQL
+      const existingSalons = await db.select().from(salons).where(eq(salons.id, salonId));
+      
+      let dbSalon;
+      if (existingSalons.length > 0) {
+        // Mettre à jour le salon existant
+        const [updated] = await db
+          .update(salons)
+          .set({
+            name: salonData.name || 'Salon sans nom',
+            description: salonData.description || '',
+            address: salonData.address || '',
+            phone: salonData.phone || '',
+            email: salonData.email || '',
+            customColors: salonData.customColors ? JSON.stringify(salonData.customColors) : null,
+            serviceCategories: salonData.serviceCategories ? JSON.stringify(salonData.serviceCategories) : null,
+            photos: salonData.photos ? JSON.stringify(salonData.photos) : null,
+            isPublished: salonData.isPublished !== false,
+            updatedAt: new Date()
+          })
+          .where(eq(salons.id, salonId))
+          .returning();
+        
+        console.log('✅ Salon mis à jour en PostgreSQL:', salonId);
+        dbSalon = updated;
+      } else {
+        // Créer un nouveau salon
+        const [created] = await db
+          .insert(salons)
+          .values({
+            id: salonId,
+            name: salonData.name || 'Salon sans nom',
+            description: salonData.description || '',
+            address: salonData.address || '',
+            phone: salonData.phone || '',
+            email: salonData.email || '',
+            customColors: salonData.customColors ? JSON.stringify(salonData.customColors) : null,
+            serviceCategories: salonData.serviceCategories ? JSON.stringify(salonData.serviceCategories) : null,
+            photos: salonData.photos ? JSON.stringify(salonData.photos) : null,
+            isPublished: salonData.isPublished !== false,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          })
+          .returning();
+        
+        console.log('✅ Salon créé en PostgreSQL:', salonId);
+        dbSalon = created;
+      }
+      
+      // Sauvegarder aussi en mémoire pour l'accès rapide
+      if (this.salons) {
+        const updatedSalon = { 
+          ...salonData, 
+          id: salonId,
+          updatedAt: new Date().toISOString()
+        };
+        this.salons.set(salonId, updatedSalon);
+        console.log('✅ Salon mis à jour en mémoire:', salonId);
+      }
+      
+      return dbSalon;
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde PostgreSQL salon:', error);
+      // En cas d'erreur, au moins sauvegarder en mémoire
+      if (this.salons) {
+        const updatedSalon = { ...salonData, id: salonId };
+        this.salons.set(salonId, updatedSalon);
+        console.log('⚠️ Salon sauvegardé en mémoire seulement:', salonId);
+        return updatedSalon;
+      }
+      throw error;
+    }
+  }
 
   async updateSalon(salonId: string, updateData: any): Promise<any> {
     const existingSalon = this.salons.get(salonId);

@@ -5,6 +5,10 @@ import { FIREBASE_CONFIG } from './firebaseSetup';
 export async function createTestAccounts() {
   console.log('🔧 Création/vérification des comptes de test...');
   
+  // 🔄 CHARGEMENT DES SALONS DEPUIS POSTGRESQL AU DÉMARRAGE
+  console.log('📚 Chargement des salons depuis PostgreSQL...');
+  await memoryStorage.loadSalonsFromDatabase();
+  
   try {
     // Forcer la création de nouveaux comptes avec mots de passe hachés valides
     console.log('🛠️ Création compte PRO de test...');
@@ -38,8 +42,8 @@ export async function createTestAccounts() {
     
 
     
-    // Créer des données de salon pour le test
-    await memoryStorage.saveSalonData('salon-demo', {
+    // Créer des données de salon pour le test avec sauvegarde PostgreSQL
+    const salonData = {
       id: 'salon-demo',
       name: 'Salon Excellence Paris',
       address: '15 Rue de la Paix, 75001 Paris',
@@ -103,7 +107,14 @@ export async function createTestAccounts() {
         neonFrame: '#a855f7'
       },
       isPublished: true
-    });
+    };
+    
+    // Sauvegarder en mémoire ET PostgreSQL
+    await memoryStorage.saveSalonData('salon-demo', salonData);
+    if (memoryStorage.updateSalon) {
+      await memoryStorage.updateSalon('salon-demo', salonData);
+      console.log('💾 Salon sauvegardé en PostgreSQL pour persistance');
+    }
     
     console.log('💎 SALON DEMO: salon-demo créé avec données complètes');
     
