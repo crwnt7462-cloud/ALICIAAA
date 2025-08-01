@@ -138,9 +138,9 @@ export default function SalonSearchComplete() {
         <div className="px-6 pt-16 pb-6">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo Rendly - moins d'espace */}
-            <div className="text-center mb-12">
-              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
+            {/* Logo Rendly - plus gros et plus proche */}
+            <div className="text-center mb-6">
+              <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mx-auto" />
             </div>
 
             {/* Titre - moins d'espace */}
