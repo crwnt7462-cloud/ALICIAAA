@@ -85,7 +85,7 @@ export default function SalonPageEditor() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('services');
 
-  // Fonction pour générer un ID unique basé sur le nom du salon
+  // Fonction pour générer un ID unique basé sur le nom du salon + horodatage
   const generateSalonId = (name: string) => {
     const cleanName = name
       .toLowerCase()
@@ -94,8 +94,10 @@ export default function SalonPageEditor() {
       .replace(/-+/g, '-') // Supprimer tirets multiples
       .replace(/^-|-$/g, ''); // Supprimer tirets de début/fin
     
-    const timestamp = Date.now().toString().slice(-6); // 6 derniers chiffres
-    return `salon-${cleanName}-${timestamp}`;
+    // Utiliser timestamp complet + random pour garantir l'unicité
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    return `salon-${cleanName}-${timestamp}-${random}`;
   };
 
   const [salonData, setSalonData] = useState<SalonData>({
@@ -201,7 +203,11 @@ Nous proposons une gamme complète de services pour sublimer votre beauté natur
   const { data: currentSalon, isLoading } = useQuery({
     queryKey: ['/api/salon/current'], // API qui retourne le salon du pro connecté
     retry: 1,
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    onError: (error: any) => {
+      console.log('⚠️ Aucun salon trouvé, utilisation du salon par défaut');
+      // Si aucun salon n'existe, on créera automatiquement un nouveau salon unique
+    }
   });
 
   useEffect(() => {

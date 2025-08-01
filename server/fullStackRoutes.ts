@@ -595,8 +595,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - ID reçu:', id);
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
-      // Corriger l'ID - utiliser "salon-demo" comme salon principal
-      // Pas de redirection automatique - utiliser l'ID exact fourni
+      // Utiliser l'ID exact fourni par le client - plus de redirection forcée
       const actualId = id;
       
       // 🔥 FORCER LA SYNCHRONISATION IMMÉDIATE
@@ -1070,14 +1069,53 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       const userId = req.user?.claims?.sub;
       
-      // Pour les tests et développement, utiliser le salon demo si pas connecté
+      // Pour les tests et développement, créer automatiquement un salon unique
       if (!userId) {
-        console.log('🧪 Mode test : utilisation du salon demo');
-        const demoSalon = storage.salons?.get('salon-demo');
-        if (demoSalon) {
-          return res.json(demoSalon);
+        console.log('🧪 Mode test : création automatique salon unique');
+        
+        // Chercher s'il y a déjà un salon en mémoire
+        if (storage.salons && storage.salons.size > 0) {
+          const firstSalon = Array.from(storage.salons.values())[0];
+          console.log('✅ Salon existant trouvé:', firstSalon.id);
+          return res.json(firstSalon);
         }
-        return res.status(401).json({ message: "Non connecté" });
+        
+        // Créer un nouveau salon avec ID unique
+        const uniqueId = `salon-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+        const newSalon = {
+          id: uniqueId,
+          name: 'Mon Salon',
+          description: 'Salon de beauté moderne et professionnel',
+          address: '123 Rue de la Beauté, 75001 Paris',
+          phone: '01 42 25 76 89',
+          rating: 4.8,
+          reviews: 0,
+          coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          photos: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'],
+          verified: true,
+          customColors: {
+            primary: '#7c3aed',
+            accent: '#a855f7',
+            buttonText: '#ffffff',
+            priceColor: '#7c3aed',
+            neonFrame: '#a855f7'
+          },
+          serviceCategories: [],
+          professionals: [],
+          certifications: [],
+          awards: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        // Sauvegarder en mémoire
+        if (!storage.salons) {
+          storage.salons = new Map();
+        }
+        storage.salons.set(uniqueId, newSalon);
+        
+        console.log('✅ Nouveau salon créé avec ID unique:', uniqueId);
+        return res.json(newSalon);
       }
       
       // Générer un ID unique basé sur l'utilisateur

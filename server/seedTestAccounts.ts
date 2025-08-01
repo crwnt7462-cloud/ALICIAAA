@@ -43,7 +43,7 @@ export async function createTestAccounts() {
 
     
     // ✅ PLUS DE SALON EXCELLENCE PAR DÉFAUT - SUPPRIMÉ
-    console.log('🚮 Salon Demo supprimé - Place nette pour vos salons personnalisés');
+    console.log('🆔 Système d\'ID uniques activé - Plus de salon fixe "demo"');
     
   } catch (error) {
     console.error('❌ Erreur lors de la création des comptes de test:', error);
