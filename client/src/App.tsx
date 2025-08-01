@@ -147,6 +147,8 @@ import SalonBooking from "@/pages/SalonBooking";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
+import AIAlerts from "@/pages/AIAlerts";
+import AIAssistantNew from "@/pages/AIAssistantNew";
 
 
 function Router() {
@@ -824,6 +826,8 @@ function Router() {
           <Route path="/contact" component={Contact} />
           <Route path="/ai-pro" component={AIProModern} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
+          <Route path="/ai-assistant-new" component={AIAssistantNew} />
+          <Route path="/ai-alerts" component={AIAlerts} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
           <Route path="/messaging-test" component={MessagingTest} />

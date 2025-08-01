@@ -435,9 +435,10 @@ export default function AIAssistantNew() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 p-0"
+                  onClick={() => setLocation('/ai-alerts')}
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 p-0 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-full shadow-sm"
                 >
-                  <Mic className="w-4 h-4 text-gray-400" />
+                  <User className="w-4 h-4 text-white" />
                 </Button>
               </div>
               <Button

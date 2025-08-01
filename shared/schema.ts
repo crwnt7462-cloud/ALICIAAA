@@ -655,6 +655,18 @@ export const staffTimeOff = pgTable("staff_time_off", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// AI Conversations for assistant history
+export const aiConversations = pgTable("ai_conversations", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull().references(() => users.id),
+  conversationId: text("conversation_id").notNull(),
+  title: text("title").notNull(),
+  messages: jsonb("messages").notNull(), // Array of {role, content}
+  metadata: jsonb("metadata"), // Additional data like type, client_name, etc.
+  timestamp: timestamp("timestamp").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Inventory Management (for beauty products)
 export const inventory = pgTable("inventory", {
   id: serial("id").primaryKey(),

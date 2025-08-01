@@ -122,7 +122,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   app.get('/api/clients/real-data', async (req, res) => {
     try {
       // On récupère tous les clients du premier salon pour l'analyse
-      const allClients = await storage.getClients('salon-demo');
+      const allClients = await storage.getClients('demo-user');
       
       // Transformation des données client en format d'analyse
       const clientsForAnalysis = allClients.map(client => {
@@ -166,7 +166,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   app.post('/api/clients/analyze-real-batch', async (req, res) => {
     try {
       // Récupération des clients réels
-      const allClients = await storage.getClients('salon-demo');
+      const allClients = await storage.getClients('demo-user');
       
       if (allClients.length === 0) {
         return res.status(404).json({

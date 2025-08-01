@@ -9,6 +9,7 @@ import {
   clientNotes,
   customTags,
   salonPhotos,
+  aiConversations,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -123,6 +124,10 @@ export interface IStorage {
   getSubscriptionsByUserId(userId: string): Promise<any[]>;
   getClientsByProfessional(professionalId: string): Promise<any[]>;
   createOrUpdateClientNote(noteData: any): Promise<any>;
+  
+  // AI Conversations
+  saveConversation(userId: string, conversationId: string, conversationData: any): Promise<void>;
+  getConversations(userId: string): Promise<any[]>;
   getCustomTagsByProfessional(professionalId: string): Promise<any[]>;
   createCustomTag(tagData: any): Promise<any>;
   deleteCustomTag(tagId: string): Promise<void>;
@@ -1175,6 +1180,45 @@ export class DatabaseStorage implements IStorage {
 
   async clearClientAIMessages(userId: string): Promise<void> {
     this.clientAIMessages.set(userId, []);
+  }
+
+  // AI Conversations Methods
+  async saveConversation(userId: string, conversationId: string, conversationData: any): Promise<void> {
+    try {
+      await db.insert(aiConversations).values({
+        userId,
+        conversationId,
+        title: conversationData.title,
+        messages: conversationData.messages,
+        metadata: conversationData.metadata,
+        timestamp: new Date(conversationData.timestamp)
+      });
+      console.log('💬 Conversation IA sauvegardée:', conversationId);
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde conversation IA:', error);
+      throw error;
+    }
+  }
+
+  async getConversations(userId: string): Promise<any[]> {
+    try {
+      const conversations = await db
+        .select()
+        .from(aiConversations)
+        .where(eq(aiConversations.userId, userId))
+        .orderBy(desc(aiConversations.timestamp));
+      
+      return conversations.map(conv => ({
+        id: conv.conversationId,
+        title: conv.title,
+        messages: conv.messages,
+        metadata: conv.metadata,
+        timestamp: conv.timestamp?.toISOString()
+      }));
+    } catch (error) {
+      console.error('❌ Erreur récupération conversations IA:', error);
+      return [];
+    }
   }
 
 }
