@@ -82,7 +82,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         }
       };
       
-      await storage.saveConversation('demo-user', conversationId, conversation);
+      await (storage as any).saveConversation('demo-user', conversationId, conversation);
       console.log('💾 Conversation enregistrée:', conversationId);
       
       res.json({
@@ -91,7 +91,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         conversationId,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur chat IA:', error);
       res.status(500).json({
         success: false,
@@ -135,7 +135,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         insight,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur analyse client:', error);
       res.status(500).json({
         success: false,
@@ -179,7 +179,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         total: clientsForAnalysis.length,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération clients:', error);
       res.status(500).json({
         success: false,
