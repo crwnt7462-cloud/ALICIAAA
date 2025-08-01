@@ -187,26 +187,26 @@ export default function ModernSalonDetail() {
     timestamp: new Date().toISOString()
   });
 
-  // Utiliser les vraies données de l'API ou fallback
+  // Utiliser les vraies données de l'API ou fallback personnalisé
   const salon = {
     id: salonData?.id || 1,
-    name: salonData?.name || "Excellence Paris",
+    name: salonData?.name || "Mon Salon",
     rating: salonData?.rating || 4.8,
     reviews: salonData?.reviews || 247,
-    address: salonData?.address || "15 Avenue des Champs-Élysées, 75008 Paris",
-    phone: salonData?.phone || "01 42 25 76 89",
+    address: salonData?.address || "Votre adresse",
+    phone: salonData?.phone || "Votre téléphone",
     verified: salonData?.verified || true,
     certifications: salonData?.certifications || [
-      "Salon labellisé L'Oréal Professionnel",
-      "Formation continue Kérastase",
-      "Certification bio Shu Uemura"
+      "Bio-certifié",
+      "Expert L'Oréal",
+      "Formation Kérastase"
     ],
     awards: salonData?.awards || [
-      "Élu Meilleur Salon Paris 8ème 2023",
-      "Prix de l'Innovation Beauté 2022",
-      "Certification Éco-responsable"
+      "Prix du Meilleur Salon 2024",
+      "Excellence Service Client 2023",
+      "Salon Éco-Responsable Certifié"
     ],
-    longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
+    longDescription: salonData?.longDescription || "L'art de la beauté réinventé"
   };
 
   // DEBUG: Logs pour comprendre le problème d'images et données
