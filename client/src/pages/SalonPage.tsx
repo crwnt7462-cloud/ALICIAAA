@@ -192,7 +192,7 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
       {/* Photo de couverture avec header */}
       <div className="relative h-80 overflow-hidden">
         <img 
-          src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"
+          src={pageData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"}
           alt={`${pageData?.salonName || 'Mon Salon'} - Photo de couverture`}
           className="w-full h-full object-cover"
         />

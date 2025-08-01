@@ -273,7 +273,7 @@ export default function ModernSalonDetail() {
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
           <img 
-            src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=400&fit=crop&crop=center"
+            src={salonData?.coverImageUrl || "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=400&fit=crop&crop=center"}
             alt={`${salon.name} - Photo de couverture`}
             className="w-full h-full object-cover"
           />

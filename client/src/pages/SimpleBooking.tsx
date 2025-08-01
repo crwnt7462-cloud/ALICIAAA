@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,7 +18,18 @@ import { useLocation } from "wouter";
 export default function SimpleBooking() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const [location] = useLocation();
   const [step, setStep] = useState(1);
+
+  // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
+  const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
+  
+  // Récupérer les vraies données du salon depuis l'API
+  const { data: salonData } = useQuery({
+    queryKey: ['/api/booking-pages', salonId],
+    retry: 2,
+    staleTime: 1000
+  });
   const [selectedService, setSelectedService] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -183,7 +195,7 @@ export default function SimpleBooking() {
       {/* Photo de couverture du salon */}
       <div className="relative h-72 overflow-hidden">
         <img 
-          src="https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&h=500&fit=crop&crop=center"
+          src={salonData?.coverImageUrl || "https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?w=800&h=500&fit=crop&crop=center"}
           alt={`${salon.name} - Photo de couverture`}
           className="w-full h-full object-cover"
         />
