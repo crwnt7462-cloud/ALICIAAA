@@ -32,6 +32,9 @@ import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
+import NailArtOpera from "@/pages/salons/NailArtOpera";
+import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
+import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -360,6 +363,30 @@ function Router() {
     return (
       <div className="h-full">
         <InstitutBeauteSaintGermain />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/nail-art-opera') {
+    return (
+      <div className="h-full">
+        <NailArtOpera />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/spa-wellness-bastille') {
+    return (
+      <div className="h-full">
+        <SpaWellnessBastille />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/beauty-lounge-montparnasse') {
+    return (
+      <div className="h-full">
+        <BeautyLoungeMontparnasse />
       </div>
     );
   }
