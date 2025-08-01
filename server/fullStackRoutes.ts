@@ -597,6 +597,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       // Corriger l'ID si c'est "auto-generated" en utilisant "salon-demo" pour les tests
       const actualId = (id === 'auto-generated' || id === 'undefined') ? 'salon-demo' : id;
+      
+      // 🔥 FORCER LA SYNCHRONISATION IMMÉDIATE
+      console.log('🚨 SAUVEGARDE FORCÉE IMMÉDIATE pour ID:', actualId);
       console.log('💾 ID corrigé pour sauvegarde:', actualId);
       
       // Sauvegarder avec l'ID corrigé
@@ -658,6 +661,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           
           console.log('🔄 SYNCHRONISATION AUTOMATIQUE COMPLÈTE:', actualId);
           console.log('✅ Données synchronisées dans tous les systèmes');
+          console.log('🚨 NOM FINAL SAUVEGARDÉ:', unifiedSalonData.name);
+          console.log('🎨 COULEURS FINALES:', unifiedSalonData.customColors);
         }
       }
       

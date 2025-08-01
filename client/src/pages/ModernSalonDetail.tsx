@@ -70,7 +70,7 @@ export default function ModernSalonDetail() {
     retry: 2,
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    refetchInterval: 2000, // Auto-refresh toutes les 2 secondes
+    refetchInterval: 1000, // Auto-refresh toutes les 1 seconde
     staleTime: 0 // Toujours considérer comme périmé
   });
   
@@ -171,6 +171,14 @@ export default function ModernSalonDetail() {
       setServiceCategories(salonData.serviceCategories);
     }
   }, [salonData]);
+
+  // DEBUG FORCÉ: Logs pour voir immédiatement les données API
+  console.log('🔥 DONNÉES SALON REÇUES:', {
+    salonData,
+    nom: salonData?.name,
+    couleurs: salonData?.customColors,
+    timestamp: new Date().toISOString()
+  });
 
   // Utiliser les vraies données de l'API ou fallback
   const salon = {
