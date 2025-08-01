@@ -159,106 +159,19 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       let salon = await storage.getSalon?.(id);
       
       if (!salon) {
-        console.log('ℹ️ Salon non trouvé, retour données par défaut:', id);
+        console.log('ℹ️ Salon non trouvé, vérification dans storage.salons:', id);
         
-        // Redirection vers un salon existant selon l'ID demandé
-        if (id === 'beauty-center') {
-          salon = await storage.getSalon?.('salon-excellence-paris');
-          if (salon) {
-            salon.id = 'beauty-center'; // Garder l'ID demandé pour la compatibilité URL
-            console.log('🔄 Redirection beauty-center vers salon-excellence-paris');
-          }
-        }
+        // Vérifier dans storage.salons (Map)
+        salon = storage.salons?.get(id);
         
-        // Si toujours pas de salon, données par défaut
         if (!salon) {
-          salon = {
-            id: 'salon-demo',
-          name: 'Excellence Paris',
-          description: 'Salon de beauté premium au cœur de Paris',
-          longDescription: 'Notre salon de beauté offre une expérience unique avec des services haut de gamme dans un cadre élégant et moderne.',
-          address: '15 Avenue des Champs-Élysées, 75008 Paris',
-          phone: '+33 1 42 25 76 89',
-          rating: 4.8,
-          reviews: 156,
-          coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center',
-          logoUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=150&h=150&fit=crop&crop=center',
-          photos: [
-            'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop&auto=format',
-            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&h=400&fit=crop&auto=format',
-            'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&h=400&fit=crop&auto=format'
-          ],
-          verified: true,
-          certifications: ['Bio Certifié', 'Produits Naturels', 'Expertise Reconnue'],
-          awards: ['Meilleur Salon 2024', 'Prix Excellence'],
-          customColors: {
-            primary: '#7c3aed',
-            accent: '#a855f7',
-            buttonText: '#ffffff',
-            priceColor: '#7c3aed',
-            neonFrame: '#a855f7'
-          },
-          serviceCategories: [
-            {
-              id: 'cheveux',
-              name: 'Cheveux',
-              icon: '💇‍♀️',
-              expanded: true,
-              services: [
-                {
-                  id: 'coupe-brushing',
-                  name: 'Coupe + Brushing',
-                  description: 'Coupe personnalisée avec brushing professionnel',
-                  price: 65,
-                  duration: 60
-                },
-                {
-                  id: 'coloration',
-                  name: 'Coloration complète',
-                  description: 'Coloration avec soin professionnel',
-                  price: 85,
-                  duration: 120
-                }
-              ]
-            },
-            {
-              id: 'soins-visage',
-              name: 'Soins Visage',
-              icon: '✨',
-              expanded: false,
-              services: [
-                {
-                  id: 'soin-hydratant',
-                  name: 'Soin Hydratant',
-                  description: 'Soin complet hydratation intensive',
-                  price: 75,
-                  duration: 75
-                }
-              ]
-            },
-            {
-              id: 'epilation',
-              name: 'Épilation',
-              icon: '🪒',
-              expanded: false,
-              services: [
-                {
-                  id: 'epilation-jambes',
-                  name: 'Épilation jambes complètes',
-                  description: 'Épilation cire chaude jambes entières',
-                  price: 45,
-                  duration: 45
-                }
-              ]
-            }
-          ],
-          userId: '1',
-          updatedAt: new Date()
-        };
-        } else {
-          console.log('📖 Salon trouvé en mémoire:', id);
+          console.log('❌ Salon vraiment introuvable:', id);
+          return res.status(404).json({ message: `Salon "${id}" not found` });
         }
       }
+        
+      
+      console.log('📖 Salon trouvé:', salon.name, 'ID:', salon.id);
       
       // ✅ FORCER L'AJOUT DES PHOTOS POUR TOUS LES SALONS - CORRECTION DÉFINITIVE
       if (!salon.photos || salon.photos.length === 0) {
