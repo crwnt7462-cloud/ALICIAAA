@@ -114,7 +114,10 @@ export default function SalonModerneRepublique() {
         
         {/* Bouton retour */}
         <button 
-          onClick={() => setLocation('/search')}
+          onClick={() => {
+            console.log('🔙 Bouton retour cliqué - Navigation vers /search');
+            setLocation('/search');
+          }}
           className="absolute top-4 left-4 p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition-all z-10"
         >
           <ArrowLeft className="h-5 w-5 text-white" />

@@ -318,7 +318,10 @@ export default function ModernSalonDetail() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => window.history.back()}
+            onClick={() => {
+              console.log('🔙 Bouton retour cliqué - Navigation vers /search depuis ModernSalonDetail');
+              setLocation('/search');
+            }}
             className="absolute top-4 left-4 text-white hover:bg-white/10 backdrop-blur-sm"
           >
             <ArrowLeft className="w-4 h-4" />
