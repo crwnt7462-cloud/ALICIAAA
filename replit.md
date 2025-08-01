@@ -70,6 +70,12 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Impact**: Interface visuellement distinctive avec animations personnalisées
 - **Détails**: Animation neon-pulse, box-shadow colorés, support couleur neonFrame, forçage CSS infaillible
 
+### ✅ Système de Sauvegarde Persistante PostgreSQL
+- **Date**: 01/08/2025 - 23:30
+- **Changement**: Implémentation complète du système de persistance en base de données
+- **Impact**: Plus de perte de données au redémarrage, salon persistent définitivement
+- **Fonctionnalités**: Table `salons` PostgreSQL, chargement automatique au démarrage, double sauvegarde (mémoire + BDD)
+
 ### ✅ Intégration OpenAI Complétée
 - **Date**: 01/08/2025
 - **Changement**: Connexion OpenAI GPT-4o entièrement fonctionnelle
