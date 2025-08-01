@@ -15,6 +15,7 @@ import {
   Navigation,
   Sparkles
 } from "lucide-react";
+import rendlyLogo from "@assets/3_1753714421825.png";
 
 export default function SalonSearch() {
   const [, setLocation] = useLocation();
@@ -130,9 +131,9 @@ export default function SalonSearch() {
         <div className="px-6 pt-20 pb-8">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo "Design" violet centré */}
+            {/* Logo Rendly centré */}
             <div className="text-center mb-20">
-              <h1 className="text-3xl font-bold text-violet-600">Design</h1>
+              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
             </div>
 
             {/* Titre en gris */}
