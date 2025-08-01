@@ -86,7 +86,7 @@ export default function SalonPageEditor() {
   const [activeTab, setActiveTab] = useState('services');
 
   const [salonData, setSalonData] = useState<SalonData>({
-    id: 'salon-demo', // ID par défaut, sera récupéré dynamiquement
+    id: 'auto-generated', // ID sera récupéré automatiquement de l'API
     name: 'Excellence Paris',
     description: 'Salon de beauté moderne et professionnel au cœur de Paris',
     longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
@@ -209,11 +209,17 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     }
   }, [currentSalon]);
 
-  // Mutation pour sauvegarder
+  // Mutation pour sauvegarder (système universel)
   const saveMutation = useMutation({
     mutationFn: async (updatedData: Partial<SalonData>) => {
-      // Sauvegarder les données du salon
-      const response = await apiRequest('PUT', `/api/salon/${salonData.id}`, updatedData);
+      // Utiliser l'ID du salon récupéré de l'API ou celui dans les données
+      const salonId = currentSalon?.id || salonData.id;
+      console.log('💾 Sauvegarde salon ID:', salonId);
+      
+      const response = await apiRequest('PUT', `/api/salon/${salonId}`, {
+        ...updatedData,
+        id: salonId // S'assurer que l'ID est correct
+      });
       return response.json();
     },
     onSuccess: (data) => {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -38,7 +38,7 @@ export default function SalonBookingFlow() {
   const [step, setStep] = useState(1);
   
   const [bookingData, setBookingData] = useState<BookingData>({
-    salonId: 'auto-detected', // ID détecté automatiquement
+    salonId: 'auto-detected', // ID sera mis à jour automatiquement avec les données de l'API
     professional: null,
     selectedDate: '',
     selectedTime: '',
@@ -48,12 +48,20 @@ export default function SalonBookingFlow() {
     totalPrice: 0
   });
 
-  // Récupérer automatiquement le salon du professionnel connecté
+  // Récupérer automatiquement le salon du professionnel connecté (MÊME API QUE L'ÉDITEUR)
   const { data: salonData, isLoading: salonLoading } = useQuery({
-    queryKey: ['/api/salon/current'], // API universelle qui détecte le salon automatiquement
+    queryKey: ['/api/salon/current'], // MÊME API que SalonPageEditor pour synchronisation parfaite
     retry: 1,
     refetchOnWindowFocus: false
   });
+
+  // Mettre à jour l'ID du salon quand les données arrivent
+  useEffect(() => {
+    if (salonData?.id) {
+      setBookingData(prev => ({ ...prev, salonId: salonData.id }));
+      console.log('🔄 Salon ID mis à jour dans booking:', salonData.id);
+    }
+  }, [salonData]);
 
   // Utiliser les professionnels de l'API ou des données par défaut
   const professionals: Professional[] = (salonData as any)?.professionals || [
