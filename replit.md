@@ -49,9 +49,23 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## External Dependencies
 
-- **AI**: OpenAI GPT-4o (pour l'intelligence artificielle, chatbot, prédictions, insights business)
+- **AI**: OpenAI GPT-4o (pour l'intelligence artificielle, chatbot, prédictions, insights business) - ✅ CONNECTÉ ET OPÉRATIONNEL
 - **Payment Gateway**: Stripe (pour la gestion des paiements, encaissement des acomptes, et abonnements)
 - **Database**: PostgreSQL (base de données relationnelle)
 - **Templating/Styling**: Tailwind CSS, shadcn/ui
 - **Calendars**: Intégration avec Google Calendar et Outlook (pour les rappels et la synchronisation des rendez-vous)
 - **Communication**: Services d'envoi d'emails et SMS (pour les confirmations et rappels automatiques)
+
+## Recent Changes (Janvier 2025)
+
+### ✅ Intégration OpenAI Complétée
+- **Date**: 01/08/2025
+- **Changement**: Connexion OpenAI GPT-4o entièrement fonctionnelle
+- **Impact**: L'IA peut maintenant fournir des conseils personnalisés pour l'optimisation des salons
+- **Fonctionnalités**: Chat intelligent, analyse prédictive, optimisation planning, conseils business
+
+### ✅ Interface IA Améliorée
+- **Date**: 01/08/2025
+- **Changement**: Header fixe, scroll optimisé, bouton retour en haut
+- **Impact**: Expérience utilisateur grandement améliorée pour les conversations longues
+- **Détails**: Header reste visible en permanence, navigation fluide dans l'historique des messages
