@@ -193,7 +193,7 @@ export default function SalonPayment() {
             <div className="flex gap-4 pt-4">
               <Button
                 variant="outline"
-                onClick={() => window.history.back()}
+                onClick={() => setLocation('/salon-registration')}
                 className="flex-1 h-12 rounded-xl border-gray-200 hover:bg-gray-50"
               >
                 Retour

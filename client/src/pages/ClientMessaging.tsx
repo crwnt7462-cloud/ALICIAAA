@@ -45,7 +45,7 @@ export default function ClientMessaging() {
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
-              onClick={() => window.history.back()}
+              onClick={() => setLocation('/client-dashboard')}
               className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
