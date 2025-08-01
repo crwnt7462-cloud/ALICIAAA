@@ -59,15 +59,18 @@ export default function ModernSalonDetail() {
   console.log('🔍 DEBUG SALON ROUTING:', {
     location,
     salonId,
-    apiUrl: `/api/booking-pages/${salonId}`
+    apiUrl: `/api/salon/${salonId}`,
+    salonDataReceived: !!salonData,
+    salonName: salonData?.name
   });
   
   // Récupérer les vraies données du salon depuis l'API
   const { data: salonData, isLoading } = useQuery<SalonData>({
-    queryKey: ['/api/booking-pages', salonId],
+    queryKey: ['/api/salon', salonId],
     retry: 2,
     refetchOnWindowFocus: false,
-    staleTime: 30000
+    staleTime: 0, // Pas de cache pour voir les changements immédiatement
+    refetchOnMount: true
   });
   
   // Données de fallback si API échoue

@@ -1013,6 +1013,27 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // API simple pour récupérer un salon par ID (utilisée par ModernSalonDetail)
+  app.get('/api/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log('📖 Récupération salon par ID:', id);
+      
+      const salon = storage.salons?.get(id);
+      
+      if (!salon) {
+        console.log('❌ Salon non trouvé:', id);
+        return res.status(404).json({ message: 'Salon non trouvé' });
+      }
+      
+      console.log('✅ Salon trouvé:', salon.name);
+      res.json(salon); // Renvoyer directement les données du salon
+    } catch (error) {
+      console.error('❌ Erreur récupération salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
   // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
   app.get('/api/salon/current', async (req, res) => {
     try {
