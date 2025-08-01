@@ -647,15 +647,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
         
         // Ajouter ou mettre à jour dans le système de recherche
-        publicSalonsStorage.set(id, publicSalonData);
-        console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', id);
+        if (storage.salons) {
+          storage.salons.set(actualId, { ...savedSalon, ...publicSalonData });
+        }
+        console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', actualId);
       }
       
       res.json({ 
         success: true, 
         message: 'Salon sauvegardé et publié avec succès', 
         salon: savedSalon,
-        shareableUrl: `${req.protocol}://${req.get('host')}/salon/${id}`,
+        shareableUrl: `${req.protocol}://${req.get('host')}/salon/${actualId}`,
         publicListing: true
       });
     } catch (error) {
