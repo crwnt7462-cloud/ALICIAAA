@@ -41,6 +41,17 @@ interface ServiceCategory {
   services: Service[];
 }
 
+interface Professional {
+  id: string;
+  name: string;
+  specialty: string;
+  avatar: string;
+  rating: number;
+  price: number;
+  bio: string;
+  experience: string;
+}
+
 interface SalonData {
   id: string;
   name: string;
@@ -54,6 +65,7 @@ interface SalonData {
   logoUrl?: string;
   photos: string[];
   serviceCategories: ServiceCategory[];
+  professionals: Professional[];
   verified: boolean;
   certifications: string[];
   awards: string[];
@@ -136,6 +148,38 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           { id: 9, name: 'Épilation maillot', price: 30, duration: '30min', description: 'Épilation zone sensible' },
           { id: 10, name: 'Épilation aisselles', price: 15, duration: '15min', description: 'Épilation rapide et efficace' }
         ]
+      }
+    ],
+    professionals: [
+      {
+        id: '1',
+        name: 'Sarah Martinez',
+        specialty: 'Coiffure & Coloration',
+        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+        rating: 4.9,
+        price: 65,
+        bio: 'Expert en coiffure moderne et coloration naturelle',
+        experience: '8 ans d\'expérience'
+      },
+      {
+        id: '2', 
+        name: 'Marie Dubois',
+        specialty: 'Soins Esthétiques',
+        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+        rating: 4.8,
+        price: 80,
+        bio: 'Spécialiste en soins anti-âge et bien-être',
+        experience: '10 ans d\'expérience'
+      },
+      {
+        id: '3',
+        name: 'Emma Laurent',
+        specialty: 'Massage & Bien-être',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+        rating: 4.9,
+        price: 75,
+        bio: 'Thérapeute certifiée en massage relaxant',
+        experience: '6 ans d\'expérience'
       }
     ]
   });
@@ -600,18 +644,19 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
 
         {/* Navigation par onglets */}
         <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-          <div className="flex">
-            {['services', 'couleurs', 'infos', 'avis'].map((tab) => (
+          <div className="flex overflow-x-auto">
+            {['services', 'personnel', 'couleurs', 'infos', 'avis'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+                className={`flex-1 py-3 px-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   activeTab === tab
                     ? 'text-violet-600 border-b-2 border-violet-600'
                     : 'text-gray-500 hover:text-gray-700'
                 }`}
               >
                 {tab === 'services' && 'Services'}
+                {tab === 'personnel' && 'Personnel'}
                 {tab === 'couleurs' && 'Couleurs'}
                 {tab === 'infos' && 'Infos'}
                 {tab === 'avis' && 'Avis'}
@@ -791,6 +836,261 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          )}
+
+          {activeTab === 'personnel' && (
+            <div className="space-y-4">
+              <Card className="bg-white border-gray-200 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900">👩‍💼 Votre équipe</h3>
+                    {isEditing && (
+                      <Button
+                        onClick={() => {
+                          const newPro = {
+                            id: Date.now().toString(),
+                            name: 'Nouveau professionnel',
+                            specialty: 'Spécialité',
+                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+                            rating: 5.0,
+                            price: 50,
+                            bio: 'Description du professionnel',
+                            experience: '1 an d\'expérience'
+                          };
+                          setSalonData(prev => ({
+                            ...prev,
+                            professionals: [...(prev.professionals || []), newPro]
+                          }));
+                        }}
+                        className="bg-violet-100 text-violet-700 hover:bg-violet-200 border border-violet-300"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Ajouter un professionnel
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <p className="text-gray-600 text-sm mb-6">
+                    Présentez votre équipe aux clients. Ils pourront choisir avec qui prendre rendez-vous.
+                  </p>
+
+                  <div className="space-y-4">
+                    {(salonData.professionals || []).map((professional, index) => (
+                      <div key={professional.id} className="border border-gray-200 rounded-lg p-4 space-y-4">
+                        <div className="flex items-start gap-4">
+                          {/* Photo de profil */}
+                          <div className="flex-shrink-0">
+                            <img
+                              src={professional.avatar}
+                              alt={professional.name}
+                              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
+                            />
+                            {isEditing && (
+                              <div className="mt-2">
+                                <label className="cursor-pointer">
+                                  <div className="text-xs text-violet-600 hover:text-violet-800 flex items-center gap-1">
+                                    <Upload className="w-3 h-3" />
+                                    Changer
+                                  </div>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const url = URL.createObjectURL(file);
+                                        setSalonData(prev => ({
+                                          ...prev,
+                                          professionals: prev.professionals?.map(p => 
+                                            p.id === professional.id ? { ...p, avatar: url } : p
+                                          ) || []
+                                        }));
+                                      }
+                                    }}
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1 space-y-3">
+                            {/* Nom */}
+                            <div>
+                              {isEditing ? (
+                                <Input
+                                  value={professional.name}
+                                  onChange={(e) => {
+                                    setSalonData(prev => ({
+                                      ...prev,
+                                      professionals: prev.professionals?.map(p => 
+                                        p.id === professional.id ? { ...p, name: e.target.value } : p
+                                      ) || []
+                                    }));
+                                  }}
+                                  className="font-semibold text-gray-900"
+                                  placeholder="Nom du professionnel"
+                                />
+                              ) : (
+                                <h4 className="font-semibold text-gray-900">{professional.name}</h4>
+                              )}
+                            </div>
+
+                            {/* Spécialité */}
+                            <div>
+                              {isEditing ? (
+                                <Input
+                                  value={professional.specialty}
+                                  onChange={(e) => {
+                                    setSalonData(prev => ({
+                                      ...prev,
+                                      professionals: prev.professionals?.map(p => 
+                                        p.id === professional.id ? { ...p, specialty: e.target.value } : p
+                                      ) || []
+                                    }));
+                                  }}
+                                  className="text-sm text-gray-600"
+                                  placeholder="Spécialité (ex: Coiffure & Coloration)"
+                                />
+                              ) : (
+                                <p className="text-sm text-gray-600">{professional.specialty}</p>
+                              )}
+                            </div>
+
+                            {/* Prix et note */}
+                            <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                                {isEditing ? (
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    max="5"
+                                    step="0.1"
+                                    value={professional.rating}
+                                    onChange={(e) => {
+                                      setSalonData(prev => ({
+                                        ...prev,
+                                        professionals: prev.professionals?.map(p => 
+                                          p.id === professional.id ? { ...p, rating: parseFloat(e.target.value) } : p
+                                        ) || []
+                                      }));
+                                    }}
+                                    className="w-16 text-sm"
+                                  />
+                                ) : (
+                                  <span className="text-sm font-medium">{professional.rating}</span>
+                                )}
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm text-gray-600">À partir de</span>
+                                {isEditing ? (
+                                  <div className="flex items-center gap-1">
+                                    <Input
+                                      type="number"
+                                      min="0"
+                                      value={professional.price}
+                                      onChange={(e) => {
+                                        setSalonData(prev => ({
+                                          ...prev,
+                                          professionals: prev.professionals?.map(p => 
+                                            p.id === professional.id ? { ...p, price: parseInt(e.target.value) } : p
+                                          ) || []
+                                        }));
+                                      }}
+                                      className="w-20 text-sm"
+                                    />
+                                    <span className="text-sm">€</span>
+                                  </div>
+                                ) : (
+                                  <span className="font-semibold" style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}>
+                                    {professional.price}€
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Bio */}
+                            <div>
+                              {isEditing ? (
+                                <Textarea
+                                  value={professional.bio}
+                                  onChange={(e) => {
+                                    setSalonData(prev => ({
+                                      ...prev,
+                                      professionals: prev.professionals?.map(p => 
+                                        p.id === professional.id ? { ...p, bio: e.target.value } : p
+                                      ) || []
+                                    }));
+                                  }}
+                                  className="text-sm"
+                                  placeholder="Description courte du professionnel"
+                                  rows={2}
+                                />
+                              ) : (
+                                <p className="text-sm text-gray-700">{professional.bio}</p>
+                              )}
+                            </div>
+
+                            {/* Expérience */}
+                            <div>
+                              {isEditing ? (
+                                <Input
+                                  value={professional.experience}
+                                  onChange={(e) => {
+                                    setSalonData(prev => ({
+                                      ...prev,
+                                      professionals: prev.professionals?.map(p => 
+                                        p.id === professional.id ? { ...p, experience: e.target.value } : p
+                                      ) || []
+                                    }));
+                                  }}
+                                  className="text-xs text-gray-500"
+                                  placeholder="Expérience (ex: 5 ans d'expérience)"
+                                />
+                              ) : (
+                                <p className="text-xs text-gray-500">{professional.experience}</p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Bouton supprimer */}
+                          {isEditing && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setSalonData(prev => ({
+                                  ...prev,
+                                  professionals: prev.professionals?.filter(p => p.id !== professional.id) || []
+                                }));
+                                toast({
+                                  title: "Professionnel supprimé",
+                                  description: `${professional.name} a été retiré de votre équipe.`,
+                                });
+                              }}
+                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {(salonData.professionals || []).length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        <p className="mb-4">Aucun professionnel ajouté</p>
+                        {isEditing && (
+                          <p className="text-sm">Cliquez sur "Ajouter un professionnel" pour commencer</p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
