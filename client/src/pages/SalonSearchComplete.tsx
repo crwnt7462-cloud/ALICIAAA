@@ -268,19 +268,31 @@ export default function SalonSearchComplete() {
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setLocation('/salon/mon-salon-beaute')}
             >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
+                  alt="Mon Salon de Beauté"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                    Nouveau
+                  </span>
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                        Nouveau
-                      </span>
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                        Vérifié
-                      </span>
-                    </div>
                   </div>
                 </div>
                 
@@ -331,16 +343,28 @@ export default function SalonSearchComplete() {
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setLocation('/salon/salon-excellence-paris')}
             >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
+                  alt="Salon Excellence Paris"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence Paris</h4>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                        Vérifié
-                      </span>
-                    </div>
                   </div>
                 </div>
                 
@@ -391,16 +415,28 @@ export default function SalonSearchComplete() {
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setLocation('/salon/beauty-institute-st-germain')}
             >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
+                  alt="Beauty Institute Saint-Germain"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute Saint-Germain</h4>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                        Vérifié
-                      </span>
-                    </div>
                   </div>
                 </div>
                 
@@ -451,16 +487,28 @@ export default function SalonSearchComplete() {
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setLocation('/salon/gentleman-barbier-marais')}
             >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-gray-700 to-gray-900">
+                <img 
+                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
+                  alt="Gentleman Barbier Marais"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 text-lg mb-1">Gentleman Barbier Marais</h4>
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                        Vérifié
-                      </span>
-                    </div>
                   </div>
                 </div>
                 
