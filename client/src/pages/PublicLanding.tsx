@@ -689,7 +689,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/mon-salon-beaute')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-violet-500">
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
                   alt="Mon Salon de Beauté"
@@ -699,38 +699,35 @@ export default function PublicLanding() {
                 
                 {/* Badges sur la photo */}
                 <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                    Nouveau
-                  </span>
                   <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
                     <CheckCircle2 className="h-3 w-3 inline mr-1" />
                     Vérifié
+                  </span>
+                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                    Nouveau
                   </span>
                 </div>
               </div>
               
               <div className="p-4">
-                <h4 className="font-semibold text-gray-900 text-lg mb-2">Mon Salon de Beauté</h4>
-                
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-semibold">4.8</span>
-                  <span className="text-sm text-gray-500">(42 avis)</span>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris Centre</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 35€</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Paris Centre</span>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.8</span>
+                    <span className="text-sm text-gray-500">(42 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 0.5 km</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <Clock className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">
-                    Disponible maintenant
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     Coupe
                   </span>
@@ -742,15 +739,23 @@ export default function PublicLanding() {
                   </span>
                 </div>
                 
-                <button 
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation('/salon-booking');
-                  }}
-                >
-                  Réserver
-                </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo maintenant
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -760,7 +765,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/salon-excellence-paris')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-violet-500">
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
                   alt="Salon Excellence Paris"
@@ -778,27 +783,24 @@ export default function PublicLanding() {
               </div>
               
               <div className="p-4">
-                <h4 className="font-semibold text-gray-900 text-lg mb-2">Salon Excellence Paris</h4>
-                
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-semibold">4.9</span>
-                  <span className="text-sm text-gray-500">(324 avis)</span>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence Paris</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris 16ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 55€</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Paris 16ème</span>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.9</span>
+                    <span className="text-sm text-gray-500">(324 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 1.2 km</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <Clock className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">
-                    Dispo 15h30
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     Coiffure Premium
                   </span>
@@ -810,15 +812,23 @@ export default function PublicLanding() {
                   </span>
                 </div>
                 
-                <button 
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation('/salon-booking');
-                  }}
-                >
-                  Réserver
-                </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 15h30
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -828,7 +838,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/beauty-institute-st-germain')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-violet-500">
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
                   alt="Beauty Institute Saint-Germain"
@@ -846,27 +856,24 @@ export default function PublicLanding() {
               </div>
               
               <div className="p-4">
-                <h4 className="font-semibold text-gray-900 text-lg mb-2">Beauty Institute Saint-Germain</h4>
-                
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-semibold">4.7</span>
-                  <span className="text-sm text-gray-500">(156 avis)</span>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute Saint-Germain</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris 6ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 45€</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Paris 6ème</span>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.7</span>
+                    <span className="text-sm text-gray-500">(156 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 0.8 km</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <Clock className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">
-                    Dispo 16h
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     Soins visage
                   </span>
@@ -878,15 +885,23 @@ export default function PublicLanding() {
                   </span>
                 </div>
                 
-                <button 
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation('/salon-booking');
-                  }}
-                >
-                  Réserver
-                </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 16h
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -896,7 +911,7 @@ export default function PublicLanding() {
               onClick={() => setLocation('/salon/gentleman-barbier-marais')}
             >
               {/* Photo du salon */}
-              <div className="relative h-48 bg-violet-500">
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
                   alt="Gentleman Barbier Marais"
@@ -914,27 +929,24 @@ export default function PublicLanding() {
               </div>
               
               <div className="p-4">
-                <h4 className="font-semibold text-gray-900 text-lg mb-2">Gentleman Barbier Marais</h4>
-                
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-semibold">4.8</span>
-                  <span className="text-sm text-gray-500">(198 avis)</span>
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Gentleman Barbier Marais</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris 4ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 25€</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">Paris 4ème</span>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.8</span>
+                    <span className="text-sm text-gray-500">(198 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 0.3 km</span>
                 </div>
                 
-                <div className="flex items-center gap-1 mb-3">
-                  <Clock className="h-4 w-4 text-green-500" />
-                  <span className="text-sm text-green-600 font-medium">
-                    Dispo 14h30
-                  </span>
-                </div>
-                
-                <div className="flex flex-wrap gap-2 mb-3">
+                <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     Coupe homme
                   </span>
@@ -946,15 +958,23 @@ export default function PublicLanding() {
                   </span>
                 </div>
                 
-                <button 
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl text-sm font-medium transition-colors"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation('/salon-booking');
-                  }}
-                >
-                  Réserver
-                </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 14h30
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
               </div>
             </div>
           </div>
