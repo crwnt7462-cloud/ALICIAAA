@@ -1364,7 +1364,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         // Ajouter des infos supplémentaires pour la page détail
         verified: true,
         certifications: ["Certifié qualité service", "Produits professionnels"],
-        awards: ["Top salon 2024", "Excellence client"]
+        awards: ["Top salon 2024", "Demo client"]
       };
       
       res.json(formattedSalon);

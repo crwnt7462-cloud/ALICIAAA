@@ -28,7 +28,7 @@ import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
-import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
+// SalonExcellenceParis supprimé définitivement
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";

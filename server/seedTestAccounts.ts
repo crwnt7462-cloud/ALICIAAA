@@ -16,9 +16,9 @@ export async function createTestAccounts() {
       await memoryStorage.createUser({
         email: 'test@monapp.com',
         password: 'test1234',
-        firstName: 'Excellence',
+        firstName: 'Demo',
         lastName: 'Paris',
-        businessName: 'Salon Excellence Paris',
+        businessName: 'Salon Demo Paris',
         phone: '01 42 86 75 90',
         address: '15 Rue de la Paix, 75001 Paris'
       });
@@ -43,7 +43,7 @@ export async function createTestAccounts() {
 
     
     // ✅ PLUS DE SALON EXCELLENCE PAR DÉFAUT - SUPPRIMÉ
-    console.log('🚮 Salon Excellence supprimé - Place nette pour vos salons personnalisés');
+    console.log('🚮 Salon Demo supprimé - Place nette pour vos salons personnalisés');
     
   } catch (error) {
     console.error('❌ Erreur lors de la création des comptes de test:', error);

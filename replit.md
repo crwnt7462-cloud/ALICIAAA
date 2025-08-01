@@ -87,3 +87,10 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Changement**: Header fixe, scroll optimisé, bouton retour en haut
 - **Impact**: Expérience utilisateur grandement améliorée pour les conversations longues
 - **Détails**: Header reste visible en permanence, navigation fluide dans l'historique des messages
+
+### ✅ Suppression Complète "Salon Excellence Paris"
+- **Date**: 01/08/2025 - 23:47
+- **Changement**: Éradication totale de tous les salons "Excellence" du système
+- **Impact**: Plus aucune interférence, seuls les salons personnalisés s'affichent
+- **Actions**: Fichier SalonExcellenceParis.tsx supprimé, toutes références serveur nettoyées, route /salon/* corrigée
+- **Résultat**: 0 occurrence "Excellence" confirmée, plateforme 100% propre pour salons personnalisés
