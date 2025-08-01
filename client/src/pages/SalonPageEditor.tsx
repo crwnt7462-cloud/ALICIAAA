@@ -86,7 +86,7 @@ export default function SalonPageEditor() {
   const [activeTab, setActiveTab] = useState('services');
 
   const [salonData, setSalonData] = useState<SalonData>({
-    id: 'mon-salon-beaute', // Utiliser le même ID que la page Mon salon
+    id: 'salon-demo', // ID par défaut, sera récupéré dynamiquement
     name: 'Excellence Paris',
     description: 'Salon de beauté moderne et professionnel au cœur de Paris',
     longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
@@ -184,9 +184,9 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     ]
   });
 
-  // Récupérer les données du salon depuis l'API
+  // Récupérer les données du salon connecté (auto-détection)
   const { data: currentSalon, isLoading } = useQuery({
-    queryKey: ['/api/booking-pages/mon-salon-beaute'],
+    queryKey: ['/api/salon/current'], // API qui retourne le salon du pro connecté
     retry: 1,
     refetchOnWindowFocus: false
   });
@@ -235,10 +235,9 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         }, 2000);
       }
       
-      // Invalider les caches
+      // Invalider les caches (système universel)
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages', 'mon-salon-beaute'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages/mon-salon-beaute'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages'] }); // Invalider tous les salons
       queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] });
     },
     onError: (error: any) => {

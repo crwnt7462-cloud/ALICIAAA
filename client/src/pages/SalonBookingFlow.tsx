@@ -38,7 +38,7 @@ export default function SalonBookingFlow() {
   const [step, setStep] = useState(1);
   
   const [bookingData, setBookingData] = useState<BookingData>({
-    salonId: 'mon-salon-beaute', // Utiliser le même ID que l'éditeur
+    salonId: 'auto-detected', // ID détecté automatiquement
     professional: null,
     selectedDate: '',
     selectedTime: '',
@@ -48,9 +48,9 @@ export default function SalonBookingFlow() {
     totalPrice: 0
   });
 
-  // Récupérer les données du salon depuis l'API (comme dans l'éditeur)
+  // Récupérer automatiquement le salon du professionnel connecté
   const { data: salonData, isLoading: salonLoading } = useQuery({
-    queryKey: ['/api/booking-pages/mon-salon-beaute'],
+    queryKey: ['/api/salon/current'], // API universelle qui détecte le salon automatiquement
     retry: 1,
     refetchOnWindowFocus: false
   });

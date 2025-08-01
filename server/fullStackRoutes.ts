@@ -996,6 +996,58 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
+  app.get('/api/salon/current', async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Non connecté" });
+      }
+      
+      // Chercher le salon associé à ce professionnel
+      let salon = storage.salons?.get('mon-salon-beaute');
+      
+      if (!salon) {
+        // Créer automatiquement un salon pour ce professionnel
+        salon = {
+          id: 'mon-salon-beaute',
+          name: 'Mon Salon de Beauté',
+          description: 'Salon créé automatiquement pour le professionnel',
+          address: '123 Rue de la Beauté, 75001 Paris',
+          phone: '01 23 45 67 89',
+          email: 'contact@monsalon.fr',
+          website: '',
+          photos: [
+            'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'
+          ],
+          professionals: [
+            {
+              id: '1',
+              name: 'Professionnel',
+              specialty: 'Services de beauté',
+              avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+              rating: 4.8,
+              price: 60,
+              bio: 'Professionnel expérimenté',
+              experience: '5 ans d\'expérience'
+            }
+          ],
+          serviceCategories: [],
+          tags: ['salon', 'beauté']
+        };
+        
+        storage.salons?.set('mon-salon-beaute', salon);
+        console.log('🏛️ Salon auto-créé pour professionnel:', userId);
+      }
+      
+      res.json(salon);
+    } catch (error) {
+      console.error("Erreur récupération salon:", error);
+      res.status(500).json({ message: "Erreur lors de la récupération du salon" });
+    }
+  });
+
   // API publique pour la recherche de salons avec photos
   app.get('/api/search/salons', async (req, res) => {
     try {
