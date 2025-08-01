@@ -192,10 +192,10 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
       {/* Photo de couverture avec header */}
       <div className="relative h-80 overflow-hidden">
         <img 
-          src={pageData?.photos?.[0] || pageData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"}
+          src={(pageData as any)?.photos?.[0] || (pageData as any)?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"}
           alt={`${pageData?.salonName || 'Mon Salon'} - Photo de couverture`}
           className="w-full h-full object-cover"
-          onError={(e) => {
+          onError={(e: any) => {
             console.log('❌ Erreur chargement image:', e.target.src);
             e.target.src = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center";
           }}

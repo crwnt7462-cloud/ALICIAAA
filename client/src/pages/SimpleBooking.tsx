@@ -195,10 +195,10 @@ export default function SimpleBooking() {
       {/* Photo de couverture du salon */}
       <div className="relative h-72 overflow-hidden">
         <img 
-          src={salonData?.photos?.[0] || salonData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"}
+          src={(salonData as any)?.photos?.[0] || (salonData as any)?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"}
           alt={`${salon.name} - Photo de couverture`}
           className="w-full h-full object-cover"
-          onError={(e) => {
+          onError={(e: any) => {
             console.log('❌ Erreur chargement image:', e.target.src);
             e.target.src = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
           }}

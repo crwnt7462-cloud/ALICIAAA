@@ -185,9 +185,9 @@ export default function ModernSalonDetail() {
 
   // DEBUG: Logs pour comprendre le problème d'images
   console.log('🖼️ DEBUG PHOTOS:', {
-    coverImageUrl: salonData?.coverImageUrl,
-    photos: salonData?.photos,
-    firstPhoto: salonData?.photos?.[0]
+    coverImageUrl: (salonData as any)?.coverImageUrl,
+    photos: (salonData as any)?.photos,
+    firstPhoto: (salonData as any)?.photos?.[0]
   });
 
   // Couleurs personnalisées depuis l'API
@@ -199,12 +199,12 @@ export default function ModernSalonDetail() {
 
   // SYSTÈME INFAILLIBLE - Variables CSS + Forçage Direct
   useEffect(() => {
-    if (salonData?.customColors?.primary) {
-      console.log('🎨 FORÇAGE VARIABLES CSS:', salonData.customColors);
+    if ((salonData as any)?.customColors?.primary) {
+      console.log('🎨 FORÇAGE VARIABLES CSS:', (salonData as any).customColors);
       
       // 1. Définir les variables CSS sur le root
-      document.documentElement.style.setProperty('--salon-primary', salonData.customColors.primary);
-      document.documentElement.style.setProperty('--salon-text', salonData.customColors.buttonText);
+      document.documentElement.style.setProperty('--salon-primary', (salonData as any).customColors.primary);
+      document.documentElement.style.setProperty('--salon-text', (salonData as any).customColors.buttonText);
       
       // 2. Injection CSS infaillible
       let globalStyle = document.getElementById('salon-colors-global');
@@ -218,15 +218,15 @@ export default function ModernSalonDetail() {
         .reservation-btn,
         .service-button,
         .reservation-button {
-          background-color: ${salonData.customColors.primary} !important;
-          color: ${salonData.customColors.buttonText} !important;
+          background-color: ${(salonData as any).customColors.primary} !important;
+          color: ${(salonData as any).customColors.buttonText} !important;
           border: none !important;
         }
         
         .reservation-btn:hover,
         .service-button:hover,
         .reservation-button:hover {
-          background-color: ${salonData.customColors.primary} !important;
+          background-color: ${(salonData as any).customColors.primary} !important;
           opacity: 0.9 !important;
         }
       `;
@@ -234,8 +234,8 @@ export default function ModernSalonDetail() {
       // 3. Forçage direct des éléments existants
       setTimeout(() => {
         document.querySelectorAll('.reservation-btn, .service-button, .reservation-button').forEach((btn: any) => {
-          btn.style.setProperty('background-color', salonData.customColors.primary, 'important');
-          btn.style.setProperty('color', salonData.customColors.buttonText, 'important');
+          btn.style.setProperty('background-color', (salonData as any).customColors.primary, 'important');
+          btn.style.setProperty('color', (salonData as any).customColors.buttonText, 'important');
           console.log('✅ Bouton forcé:', btn.textContent?.trim());
         });
       }, 100);
@@ -280,10 +280,10 @@ export default function ModernSalonDetail() {
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
           <img 
-            src={salonData?.photos?.[0] || salonData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"}
+            src={(salonData as any)?.photos?.[0] || (salonData as any)?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"}
             alt={`${salon.name} - Photo de couverture`}
             className="w-full h-full object-cover"
-            onError={(e) => {
+            onError={(e: any) => {
               console.log('❌ Erreur chargement image:', e.target.src);
               e.target.src = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
             }}
