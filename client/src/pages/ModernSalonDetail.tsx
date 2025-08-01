@@ -280,9 +280,13 @@ export default function ModernSalonDetail() {
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
           <img 
-            src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"
+            src={salonData?.photos?.[0] || salonData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"}
             alt={`${salon.name} - Photo de couverture`}
             className="w-full h-full object-cover"
+            onError={(e) => {
+              console.log('❌ Erreur chargement image:', e.target.src);
+              e.target.src = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
+            }}
           />
           
           {/* Overlay gradient */}
