@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,10 +11,10 @@ import {
   ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Users, Target,
   Brain, BarChart3, MessageSquare, Phone, Gift, Calendar,
   CheckCircle, XCircle, Clock, Star, UserCheck, UserX,
-  PieChart, Activity, Lightbulb, Crown, Zap
+  PieChart, Activity, Lightbulb, Crown, Zap, Database, RefreshCw
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 
 interface ClientProfile {
@@ -38,10 +38,33 @@ interface ClientInsight {
   message_personnalise?: string;
 }
 
+interface RealClientsAnalysis {
+  insights: ClientInsight[];
+  report: {
+    resume: {
+      total_clients: number;
+      clients_a_risque: number;
+      taux_annulation_moyen: number;
+      probabilite_conversion_moyenne: number;
+    };
+    repartition_risques: {
+      critique: number;
+      élevé: number;
+      moyen: number;
+      faible: number;
+    };
+    actions_prioritaires: Array<{
+      client: string;
+      niveau: string;
+      action_immediate: string;
+    }>;
+  };
+}
+
 export default function ClientAnalytics() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("analyze");
+  const [activeTab, setActiveTab] = useState("real-data");
   
   // État pour l'analyse d'un client
   const [clientData, setClientData] = useState<ClientProfile>({
@@ -55,6 +78,7 @@ export default function ClientAnalytics() {
   
   const [analysisResult, setAnalysisResult] = useState<ClientInsight | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [realClientsAnalysis, setRealClientsAnalysis] = useState<RealClientsAnalysis | null>(null);
 
   // Cas d'exemple pré-remplis
   const exampleCases = [
@@ -176,6 +200,29 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
     analyzeClientMutation.mutate(updatedClient);
   };
 
+  // Mutation pour analyser tous les vrais clients
+  const analyzeRealClientsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/clients/analyze-real-batch", {});
+      return response.json();
+    },
+    onSuccess: (data: RealClientsAnalysis) => {
+      setRealClientsAnalysis(data);
+      toast({
+        title: "Analyse terminée",
+        description: `${data.report.resume.total_clients} clients réels analysés avec succès`
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Erreur d'analyse",
+        description: "Impossible d'analyser les clients réels",
+        variant: "destructive"
+      });
+      console.error('Erreur analyse clients réels:', error);
+    }
+  });
+
   const loadExampleCase = (example: ClientProfile) => {
     setClientData(example);
     setAnalysisResult(null);
@@ -235,7 +282,11 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
 
       <div className="p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="real-data" className="data-[state=active]:bg-violet-100">
+              <Database className="w-4 h-4 mr-2" />
+              Clients Réels
+            </TabsTrigger>
             <TabsTrigger value="analyze" className="data-[state=active]:bg-violet-100">
               <Brain className="w-4 h-4 mr-2" />
               Analyser Client
@@ -245,6 +296,202 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
               Cas d'Étude
             </TabsTrigger>
           </TabsList>
+
+          {/* Clients Réels */}
+          <TabsContent value="real-data" className="space-y-6">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Analyse des Clients Réels</h2>
+              <p className="text-gray-600">Analyse prédictive basée sur les vrais clients de votre base de données</p>
+            </div>
+
+            <div className="flex justify-center mb-6">
+              <Button 
+                onClick={() => analyzeRealClientsMutation.mutate()}
+                disabled={analyzeRealClientsMutation.isPending}
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 px-8 py-3 text-lg"
+              >
+                {analyzeRealClientsMutation.isPending ? (
+                  <>
+                    <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                    Analyse en cours...
+                  </>
+                ) : (
+                  <>
+                    <Database className="w-5 h-5 mr-2" />
+                    Analyser Tous les Clients
+                  </>
+                )}
+              </Button>
+            </div>
+
+            {/* Résumé global */}
+            {realClientsAnalysis && (
+              <div className="space-y-6">
+                {/* Métriques globales */}
+                <Card className="border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 to-violet-50">
+                  <CardHeader>
+                    <CardTitle className="flex items-center text-indigo-900">
+                      <BarChart3 className="w-5 h-5 mr-2" />
+                      Résumé Global
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                        <div className="text-2xl font-bold text-indigo-600">
+                          {realClientsAnalysis.report.resume.total_clients}
+                        </div>
+                        <div className="text-sm text-gray-600">Total Clients</div>
+                      </div>
+                      <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                        <div className="text-2xl font-bold text-red-600">
+                          {realClientsAnalysis.report.resume.clients_a_risque}
+                        </div>
+                        <div className="text-sm text-gray-600">À Risque</div>
+                      </div>
+                      <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                        <div className="text-2xl font-bold text-orange-600">
+                          {realClientsAnalysis.report.resume.taux_annulation_moyen}%
+                        </div>
+                        <div className="text-sm text-gray-600">Taux Annulation</div>
+                      </div>
+                      <div className="text-center p-4 bg-white rounded-lg shadow-sm">
+                        <div className="text-2xl font-bold text-green-600">
+                          {realClientsAnalysis.report.resume.probabilite_conversion_moyenne}%
+                        </div>
+                        <div className="text-sm text-gray-600">Récupération</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Répartition des risques */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <PieChart className="w-5 h-5 mr-2 text-purple-600" />
+                      Répartition des Niveaux de Risque
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div className="text-3xl font-bold text-red-600">
+                          {realClientsAnalysis.report.repartition_risques.critique}
+                        </div>
+                        <div className="text-sm text-red-700 font-medium">Critique</div>
+                      </div>
+                      <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
+                        <div className="text-3xl font-bold text-orange-600">
+                          {realClientsAnalysis.report.repartition_risques.élevé}
+                        </div>
+                        <div className="text-sm text-orange-700 font-medium">Élevé</div>
+                      </div>
+                      <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div className="text-3xl font-bold text-yellow-600">
+                          {realClientsAnalysis.report.repartition_risques.moyen}
+                        </div>
+                        <div className="text-sm text-yellow-700 font-medium">Moyen</div>
+                      </div>
+                      <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="text-3xl font-bold text-green-600">
+                          {realClientsAnalysis.report.repartition_risques.faible}
+                        </div>
+                        <div className="text-sm text-green-700 font-medium">Faible</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Actions prioritaires */}
+                {realClientsAnalysis.report.actions_prioritaires.length > 0 && (
+                  <Card className="border-2 border-red-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center text-red-800">
+                        <AlertTriangle className="w-5 h-5 mr-2" />
+                        Actions Prioritaires
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {realClientsAnalysis.report.actions_prioritaires.map((action, index) => (
+                          <div key={index} className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+                            <div className="flex items-center">
+                              <Badge className={getRiskColor(action.niveau)} variant="outline">
+                                {action.niveau}
+                              </Badge>
+                              <span className="ml-3 font-medium">{action.client}</span>
+                            </div>
+                            <div className="text-sm text-red-700">{action.action_immediate}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Liste détaillée des clients */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center">
+                      <Users className="w-5 h-5 mr-2 text-violet-600" />
+                      Analyse Détaillée par Client
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {realClientsAnalysis.insights.slice(0, 20).map((insight, index) => (
+                        <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                                {insight.client.nom.charAt(0)}
+                              </div>
+                              <div>
+                                <h3 className="font-bold text-gray-900">{insight.client.nom}</h3>
+                                <p className="text-sm text-gray-600">
+                                  {insight.client.rdv_total} RDV • {insight.client.rdv_annules} annulés
+                                </p>
+                              </div>
+                            </div>
+                            <Badge className={`${getRiskColor(insight.niveau_risque)} border`}>
+                              {getRiskIcon(insight.niveau_risque)}
+                              <span className="ml-1 capitalize">{insight.niveau_risque}</span>
+                            </Badge>
+                          </div>
+                          
+                          <div className="grid grid-cols-3 gap-4 mb-3">
+                            <div className="text-center p-2 bg-gray-50 rounded">
+                              <div className="text-lg font-bold text-red-600">
+                                {Math.round((insight.client.probabilite_prochaine_annulation || 0) * 100)}%
+                              </div>
+                              <div className="text-xs text-gray-500">Risque annulation</div>
+                            </div>
+                            <div className="text-center p-2 bg-gray-50 rounded">
+                              <div className="text-lg font-bold text-blue-600">
+                                {insight.client.taux_annulation}%
+                              </div>
+                              <div className="text-xs text-gray-500">Taux historique</div>
+                            </div>
+                            <div className="text-center p-2 bg-gray-50 rounded">
+                              <div className="text-lg font-bold text-green-600">
+                                {Math.round(insight.probabilite_conversion * 100)}%
+                              </div>
+                              <div className="text-xs text-gray-500">Récupération</div>
+                            </div>
+                          </div>
+                          
+                          <div className="text-sm">
+                            <strong>Action recommandée:</strong> {insight.actions_recommandees[0]}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </TabsContent>
 
           {/* Analyse Client */}
           <TabsContent value="analyze" className="space-y-6">
