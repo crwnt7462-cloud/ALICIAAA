@@ -208,7 +208,7 @@ export default function BarbierGentlemanMarais() {
                             <Button 
                               size="sm" 
                               className="mt-2 bg-amber-600 hover:bg-amber-700"
-                              onClick={() => setLocation('/booking')}
+                              onClick={() => setLocation('/quick-booking')}
                             >
                               Réserver
                             </Button>
@@ -316,7 +316,7 @@ export default function BarbierGentlemanMarais() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3"
-          onClick={() => setLocation('/booking')}
+          onClick={() => setLocation('/quick-booking')}
         >
           Réserver maintenant
         </Button>

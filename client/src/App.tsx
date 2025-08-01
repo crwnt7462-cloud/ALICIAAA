@@ -684,7 +684,7 @@ function Router() {
   if (location === '/booking' || location === '/quick-booking') {
     return (
       <div className="h-full">
-        <BookingPageSimple />
+        <QuickBooking />
       </div>
     );
   }
