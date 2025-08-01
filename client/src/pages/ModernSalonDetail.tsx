@@ -55,6 +55,13 @@ export default function ModernSalonDetail() {
   // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
   const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
   
+  // DEBUG: Vérifier quelle URL et quel ID sont utilisés
+  console.log('🔍 DEBUG SALON ROUTING:', {
+    location,
+    salonId,
+    apiUrl: `/api/booking-pages/${salonId}`
+  });
+  
   // Récupérer les vraies données du salon depuis l'API
   const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/booking-pages', salonId],
@@ -183,11 +190,14 @@ export default function ModernSalonDetail() {
     longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
   };
 
-  // DEBUG: Logs pour comprendre le problème d'images
-  console.log('🖼️ DEBUG PHOTOS:', {
+  // DEBUG: Logs pour comprendre le problème d'images et données
+  console.log('🖼️ DEBUG SALON DATA:', {
+    salonId,
+    salonName: salonData?.name,
     coverImageUrl: (salonData as any)?.coverImageUrl,
     photos: (salonData as any)?.photos,
-    firstPhoto: (salonData as any)?.photos?.[0]
+    firstPhoto: (salonData as any)?.photos?.[0],
+    isLoading
   });
 
   // Couleurs personnalisées depuis l'API
