@@ -13,8 +13,8 @@ import {
   Brain, TrendingUp, Calendar, Clock, Star, AlertTriangle,
   CheckCircle, Zap, Crown, Sparkles, Camera, FileText,
   PieChart, Activity, Lightbulb, ShoppingBag, MessageSquare,
-  Mic, Settings, Maximize2, Copy, RefreshCw, Palette, 
-  TrendingDown, DollarSign, Eye
+  Settings, Maximize2, Copy, RefreshCw, Palette, 
+  TrendingDown, DollarSign, Eye, UserCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
@@ -42,13 +42,13 @@ export default function AIAssistantNew() {
     {
       id: '1',
       type: 'assistant',
-      content: '👋 Bonjour ! Je suis votre assistant IA, spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et vous donner des conseils personnalisés pour développer votre activité.',
+      content: '🎯 Centre d\'Alertes IA Activé\n\nVoici votre tableau de bord intelligent pour recevoir toutes les analyses automatiques générées par l\'IA :\n\n• Analyses clients automatiques\n• Alertes de risque de désabonnement\n• Messages personnalisés générés\n• Recommandations d\'actions\n\nTous les messages créés automatiquement lors de vos analyses apparaîtront ici.',
       timestamp: new Date(),
       category: 'greeting',
       insights: [
-        { type: 'success', title: 'CA ce mois', value: '+15%', icon: TrendingUp },
-        { type: 'info', title: 'Taux occupation', value: '87%', icon: Activity },
-        { type: 'warning', title: 'Stock bas', value: '3 produits', icon: AlertTriangle }
+        { type: 'success', title: 'IA Active', value: 'GPT-4o', icon: UserCheck },
+        { type: 'info', title: 'Analyses Auto', value: 'ON', icon: Activity },
+        { type: 'warning', title: 'Alertes', value: 'Prêtes', icon: AlertTriangle }
       ]
     }
   ]);
@@ -218,15 +218,15 @@ export default function AIAssistantNew() {
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <div className="w-10 h-10 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Brain className="w-6 h-6 text-white" />
+                  <UserCheck className="w-6 h-6 text-white" />
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow-sm">
                   <div className="w-2 h-2 bg-emerald-400 rounded-full m-0.5 animate-pulse"></div>
                 </div>
               </div>
               <div>
-                <h1 className="font-bold text-gray-900 text-lg">Rendly AI Pro</h1>
-                <p className="text-xs text-violet-600 font-medium">Assistant IA Spécialisé Beauté</p>
+                <h1 className="font-bold text-gray-900 text-lg">Centre d'Alertes IA</h1>
+                <p className="text-xs text-violet-600 font-medium">Messages & Analyses Automatiques</p>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function AIAssistantNew() {
               className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 font-medium"
             >
               <MessageSquare className="w-4 h-4 mr-2" />
-              Chat IA
+              Alertes IA
             </TabsTrigger>
             <TabsTrigger 
               value="features"
@@ -285,24 +285,42 @@ export default function AIAssistantNew() {
                 }`}
               >
                 {message.type === 'assistant' && (
-                  <Avatar className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600">
+                  <Avatar className="w-10 h-10 bg-gradient-to-r from-violet-600 to-purple-600 shadow-lg">
                     <AvatarFallback className="bg-transparent text-white text-xs">
-                      <Bot className="w-4 h-4" />
+                      <UserCheck className="w-5 h-5" />
                     </AvatarFallback>
                   </Avatar>
                 )}
                 
-                <div className={`max-w-[80%] ${message.type === 'user' ? 'order-first' : ''}`}>
+                <div className={`max-w-[75%] ${message.type === 'user' ? 'order-first' : ''}`}>
                   <div
-                    className={`p-4 rounded-2xl shadow-sm ${
+                    className={`relative ${
                       message.type === 'user'
-                        ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white ml-auto'
-                        : 'bg-white border border-gray-100'
+                        ? 'bg-gradient-to-br from-violet-500 via-purple-500 to-indigo-500 text-white ml-auto shadow-lg'
+                        : 'bg-gradient-to-br from-white via-gray-50 to-blue-50 border border-violet-100 shadow-md'
+                    } ${
+                      message.type === 'user' 
+                        ? 'rounded-3xl rounded-br-md p-4' 
+                        : 'rounded-3xl rounded-bl-md p-4'
                     }`}
+                    style={{
+                      clipPath: message.type === 'user' 
+                        ? 'polygon(0% 0%, 85% 0%, 100% 20%, 100% 100%, 0% 100%)' 
+                        : 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 20%)'
+                    }}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    <p className={`text-sm leading-relaxed whitespace-pre-wrap ${
+                      message.type === 'user' ? 'text-white' : 'text-gray-800'
+                    }`}>
                       {message.content}
                     </p>
+                    
+                    {/* Effet bulle/goutte */}
+                    <div className={`absolute ${
+                      message.type === 'user' 
+                        ? '-bottom-1 -right-1 w-3 h-3 bg-gradient-to-br from-violet-500 to-indigo-500 rounded-full'
+                        : '-bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-white to-blue-50 border border-violet-100 rounded-full'
+                    }`}></div>
                   </div>
                   
                   {/* Insights Cards */}
@@ -371,17 +389,19 @@ export default function AIAssistantNew() {
             {/* Typing Indicator */}
             {isTyping && (
               <div className="flex items-start space-x-3">
-                <Avatar className="w-8 h-8 bg-gradient-to-r from-violet-600 to-purple-600">
+                <Avatar className="w-10 h-10 bg-gradient-to-r from-violet-600 to-purple-600 shadow-lg">
                   <AvatarFallback className="bg-transparent text-white text-xs">
-                    <Bot className="w-4 h-4" />
+                    <UserCheck className="w-5 h-5" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+                <div className="relative bg-gradient-to-br from-white via-gray-50 to-blue-50 border border-violet-100 shadow-md rounded-3xl rounded-bl-md p-4"
+                     style={{ clipPath: 'polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 20%)' }}>
                   <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                   </div>
+                  <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-gradient-to-br from-white to-blue-50 border border-violet-100 rounded-full"></div>
                 </div>
               </div>
             )}
@@ -421,24 +441,17 @@ export default function AIAssistantNew() {
               ))}
             </div>
 
-            {/* Input Area */}
+            {/* Input Area - Sans microphone */}
             <div className="flex items-center space-x-2">
-              <div className="flex-1 relative">
+              <div className="flex-1">
                 <Input
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Posez votre question à l'IA..."
-                  className="pr-12 border-gray-200 focus:border-violet-400 focus:ring-violet-400 rounded-xl"
+                  className="border-gray-200 focus:border-violet-400 focus:ring-violet-400 rounded-xl"
                   disabled={isLoading}
                 />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 w-8 h-8 p-0"
-                >
-                  <Mic className="w-4 h-4 text-gray-400" />
-                </Button>
               </div>
               <Button
                 onClick={handleSendMessage}
