@@ -119,7 +119,7 @@ export default function SalonSearchComplete() {
 
   const filteredSalons = activeFilter === "all" 
     ? salons 
-    : salons.filter(salon => salon.category === activeFilter);
+    : salons.filter((salon: any) => salon.category === activeFilter);
 
   return (
     <div className="min-h-screen bg-white">
@@ -284,7 +284,7 @@ export default function SalonSearchComplete() {
               </div>
             )}
             
-            {!isLoading && salons.map((salon) => (
+            {!isLoading && salons.map((salon: any) => (
               <div 
                 key={salon.id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
@@ -353,7 +353,7 @@ export default function SalonSearchComplete() {
                   
                   {/* Services */}
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {salon.services.slice(0, 3).map((service, index) => (
+                    {salon.services.slice(0, 3).map((service: any, index: number) => (
                       <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                         {service}
                       </span>
