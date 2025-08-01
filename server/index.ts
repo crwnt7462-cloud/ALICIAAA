@@ -50,8 +50,8 @@ app.use((req, res, next) => {
   // Créer les comptes de test au démarrage
   await createTestAccounts();
   
-  // Créer les salons de test avec photos
-  await seedSalons();
+  // Créer les salons de test avec photos (Excellence supprimé)
+  // await seedSalons(); // DÉSACTIVÉ - Plus de salon Excellence auto-créé
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
