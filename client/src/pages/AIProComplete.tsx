@@ -22,14 +22,7 @@ interface AIService {
 }
 
 export default function AIProComplete() {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: "Bonjour ! Je suis votre assistant IA. Je peux vous aider à optimiser votre salon, créer des descriptions attractives, générer des promotions personnalisées et bien plus. Comment puis-je vous aider aujourd'hui ?",
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const [currentMessage, setCurrentMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);

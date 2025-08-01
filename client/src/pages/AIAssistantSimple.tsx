@@ -18,14 +18,7 @@ interface Message {
 export default function AIAssistantSimple() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      content: "Bonjour ! Je suis votre assistant beauté IA. Je peux vous aider à trouver le salon parfait, vous conseiller sur les soins, ou répondre à vos questions. Comment puis-je vous aider aujourd'hui ?",
-      isFromUser: false,
-      timestamp: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

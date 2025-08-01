@@ -35,20 +35,7 @@ export default function AIAssistant() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("chat");
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'assistant',
-      content: 'Bienvenue dans votre assistant IA Pro ! Je suis votre assistant intelligent spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et bien plus encore.',
-      timestamp: new Date(),
-      category: 'greeting',
-      insights: [
-        { type: 'success', title: 'CA ce mois', value: '+15%' },
-        { type: 'info', title: 'Taux occupation', value: '87%' },
-        { type: 'warning', title: 'Stock bas', value: '3 produits' }
-      ]
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

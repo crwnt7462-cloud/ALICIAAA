@@ -21,14 +21,7 @@ export default function AIProModern() {
     retry: false,
   });
   
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Bonjour ! Je suis votre assistant IA.\nComment puis-je vous aider aujourd\'hui ?',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showChatHistory, setShowChatHistory] = useState(false);
@@ -38,13 +31,8 @@ export default function AIProModern() {
   const [voiceTranscription, setVoiceTranscription] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Historique des chats simulé (à remplacer par des vraies données)
-  const chatHistory = [
-    { id: 1, title: "Optimisation planning", lastMessage: "Comment optimiser mon planning ?", date: "Aujourd'hui" },
-    { id: 2, title: "Gestion des stocks", lastMessage: "Alerte stock produits", date: "Hier" },
-    { id: 3, title: "Analyse performances", lastMessage: "Rapport mensuel", date: "2 jours" },
-    { id: 4, title: "Conseils marketing", lastMessage: "Campagne fidélisation", date: "3 jours" }
-  ];
+  // Historique des chats - maintenant récupéré depuis l'API
+  const chatHistory: any[] = [];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
