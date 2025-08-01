@@ -108,7 +108,7 @@ export default function AIProModern() {
           {/* Texte de salutation */}
           <div className="text-center mb-12">
             <h1 className="text-3xl font-light text-gray-800 mb-3">
-              Bonjour, {user?.email?.split('@')[0] || 'Demo'}
+              Bonjour, {(user as any)?.email?.split('@')[0] || 'Demo'}
             </h1>
             <p className="text-gray-600 text-lg">
               Votre assistant IA est prêt à vous aider
