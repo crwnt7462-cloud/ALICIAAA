@@ -16,6 +16,7 @@ import {
   Filter,
   Heart
 } from "lucide-react";
+import rendlyLogo from "@assets/3_1753714421825.png";
 
 export default function SalonSearchComplete() {
   const [, setLocation] = useLocation();
@@ -137,9 +138,9 @@ export default function SalonSearchComplete() {
         <div className="px-6 pt-16 pb-6">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo "Design" violet - moins d'espace */}
+            {/* Logo Rendly - moins d'espace */}
             <div className="text-center mb-12">
-              <h1 className="text-3xl font-bold text-violet-600">Design</h1>
+              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
             </div>
 
             {/* Titre - moins d'espace */}
