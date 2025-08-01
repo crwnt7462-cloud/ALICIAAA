@@ -85,14 +85,27 @@ export default function SalonPageEditor() {
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('services');
 
-  const [salonData, setSalonData] = useState<SalonData>({
-    id: 'auto-generated', // ID sera récupéré automatiquement de l'API
-    name: 'Excellence Paris',
-    description: 'Salon de beauté moderne et professionnel au cœur de Paris',
-    longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
+  // Fonction pour générer un ID unique basé sur le nom du salon
+  const generateSalonId = (name: string) => {
+    const cleanName = name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '') // Supprimer caractères spéciaux
+      .replace(/\s+/g, '-') // Remplacer espaces par tirets
+      .replace(/-+/g, '-') // Supprimer tirets multiples
+      .replace(/^-|-$/g, ''); // Supprimer tirets de début/fin
+    
+    const timestamp = Date.now().toString().slice(-6); // 6 derniers chiffres
+    return `salon-${cleanName}-${timestamp}`;
+  };
 
-Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de services pour sublimer votre beauté naturelle. De la coupe classique aux colorations les plus audacieuses, en passant par nos soins anti-âge révolutionnaires, chaque prestation est réalisée avec la plus grande attention.`,
-    address: '15 Avenue des Champs-Élysées, 75008 Paris',
+  const [salonData, setSalonData] = useState<SalonData>({
+    id: generateSalonId('Mon Salon'),
+    name: 'Mon Salon',
+    description: 'Salon de beauté moderne et professionnel',
+    longDescription: `Notre salon vous accueille dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
+
+Nous proposons une gamme complète de services pour sublimer votre beauté naturelle. De la coupe classique aux colorations les plus audacieuses, en passant par nos soins révolutionnaires, chaque prestation est réalisée avec la plus grande attention.`,
+    address: '123 Rue de la Beauté, 75001 Paris',
     phone: '01 42 25 76 89',
     rating: 4.8,
     reviews: 247,
@@ -102,13 +115,13 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     verified: true,
     certifications: [
       'Salon labellisé L\'Oréal Professionnel',
-      'Formation continue Kérastase',
-      'Certification bio Shu Uemura'
+      'Formation continue en beauté',
+      'Certification qualité service'
     ],
     awards: [
-      'Élu Meilleur Salon Paris 8ème 2023',
-      'Prix de l\'Innovation Beauté 2022',
-      'Certification Éco-responsable'
+      'Salon de qualité certifié',
+      'Excellence service client',
+      'Certification professionnelle'
     ],
     customColors: {
       primary: '#7c3aed', // violet-600 par défaut
@@ -265,10 +278,23 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   };
 
   const updateField = (field: keyof SalonData, value: any) => {
-    setSalonData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setSalonData(prev => {
+      // Si le nom change, générer un nouvel ID unique
+      if (field === 'name' && value !== prev.name) {
+        const newId = generateSalonId(value);
+        console.log('🆔 Nouveau salon ID généré:', newId, 'pour nom:', value);
+        return {
+          ...prev,
+          id: newId,
+          [field]: value
+        };
+      }
+      
+      return {
+        ...prev,
+        [field]: value
+      };
+    });
   };
 
   // Gestion des couleurs personnalisées avec forçage temps réel

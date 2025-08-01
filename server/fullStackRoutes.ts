@@ -596,7 +596,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
       // Corriger l'ID - utiliser "salon-demo" comme salon principal
-      const actualId = (id === 'auto-generated' || id === 'undefined' || id === 'current') ? 'salon-demo' : id;
+      // Pas de redirection automatique - utiliser l'ID exact fourni
+      const actualId = id;
       
       // 🔥 FORCER LA SYNCHRONISATION IMMÉDIATE
       console.log('🚨 SAUVEGARDE FORCÉE IMMÉDIATE pour ID:', actualId);
@@ -1045,8 +1046,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { id } = req.params;
       console.log('📖 Récupération salon par ID:', id);
       
-      // Rediriger auto-generated vers salon-demo
-      const actualId = (id === 'auto-generated' || id === 'current') ? 'salon-demo' : id;
+      // Pas de redirection automatique - utiliser l'ID exact fourni
+      const actualId = id;
       console.log('🔧 ID redirigé vers:', actualId);
       
       const salon = storage.salons?.get(actualId);
