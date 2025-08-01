@@ -366,10 +366,10 @@ function Router() {
   }
 
   // Pages individuelles pour chaque salon avec leurs propres URLs
-  if (location === '/salon/salon-excellence-paris') {
+  if (location.startsWith('/salon/')) {
     return (
       <div className="h-full">
-        <SalonExcellenceParis />
+        <ModernSalonDetail />
       </div>
     );
   }

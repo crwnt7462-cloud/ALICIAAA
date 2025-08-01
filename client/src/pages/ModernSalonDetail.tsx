@@ -52,8 +52,12 @@ export default function ModernSalonDetail() {
   const [activeTab, setActiveTab] = useState('services');
   const [location] = useLocation();
   
-  // FORCER salon-demo pour tous les IDs 
-  const salonId = 'salon-demo';
+  // Récupérer l'ID du salon depuis l'URL
+  const urlParts = location.split('/');
+  const salonIdFromUrl = urlParts[urlParts.length - 1] || 'salon-demo';
+  
+  // Mapper les IDs pour la compatibilité
+  const salonId = salonIdFromUrl === 'auto-generated' ? 'salon-demo' : salonIdFromUrl;
   
   // DEBUG: Vérifier quelle URL et quel ID sont utilisés
   console.log('🔍 DEBUG SALON ROUTING:', {
@@ -203,7 +207,7 @@ export default function ModernSalonDetail() {
     ],
     awards: salonData?.awards || [
       "Prix du Meilleur Salon 2024",
-      "Excellence Service Client 2023",
+      "Service Client Excellence 2023",
       "Salon Éco-Responsable Certifié"
     ],
     longDescription: salonData?.longDescription || "L'art de la beauté réinventé"
