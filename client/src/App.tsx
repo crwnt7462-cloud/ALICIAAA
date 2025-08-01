@@ -53,6 +53,7 @@ import ModernBooking from "@/pages/ModernBooking";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
+import ClientAnalytics from "@/pages/ClientAnalytics";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
@@ -275,6 +276,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientManagement />
+      </div>
+    );
+  }
+
+  // Analytics client avec IA
+  if (location === '/client-analytics') {
+    return (
+      <div className="h-full">
+        <ClientAnalytics />
       </div>
     );
   }

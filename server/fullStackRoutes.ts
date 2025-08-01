@@ -6,6 +6,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
 import { aiService } from "./aiService";
+import { clientAnalyticsService, type ClientProfile } from "./clientAnalyticsService";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -66,6 +67,81 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error('❌ Erreur chat IA:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // ================== ROUTES D'ANALYSE CLIENT ==================
+  
+  // Analyse d'un client individuel
+  app.post('/api/client/analyze', async (req, res) => {
+    try {
+      const clientData: ClientProfile = req.body;
+      
+      if (!clientData.nom || typeof clientData.rdv_total !== 'number' || typeof clientData.rdv_annules !== 'number') {
+        return res.status(400).json({
+          success: false,
+          error: "Données client invalides. Nom, rdv_total et rdv_annules sont requis."
+        });
+      }
+      
+      // Calcul automatique du taux d'annulation si non fourni
+      if (!clientData.taux_annulation) {
+        clientData.taux_annulation = clientData.rdv_total > 0 
+          ? Math.round((clientData.rdv_annules / clientData.rdv_total) * 100)
+          : 0;
+      }
+      
+      // Détermination automatique du profil si non fourni
+      if (!clientData.profil) {
+        clientData.profil = clientData.rdv_total >= 3 ? "habitué" : "nouveau";
+      }
+      
+      console.log('🔍 Analyse client:', clientData.nom, `(${clientData.taux_annulation}% annulation)`);
+      
+      const insight = await clientAnalyticsService.analyzeClient(clientData);
+      
+      res.json({
+        success: true,
+        insight,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Erreur analyse client:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // Route de test avec le cas Sarah Dupont
+  app.get('/api/client/test-sarah', async (req, res) => {
+    try {
+      const sarahProfile: ClientProfile = {
+        nom: "Sarah Dupont",
+        rdv_total: 6,
+        rdv_annules: 4,
+        dernier_comportement: "annulé",
+        profil: "habituée",
+        taux_annulation: 66
+      };
+      
+      console.log('🧪 Test analyse Sarah Dupont');
+      
+      const insight = await clientAnalyticsService.analyzeClient(sarahProfile);
+      
+      res.json({
+        success: true,
+        message: "Analyse du cas critique Sarah Dupont",
+        insight,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('❌ Erreur test Sarah:', error);
       res.status(500).json({
         success: false,
         error: error.message
