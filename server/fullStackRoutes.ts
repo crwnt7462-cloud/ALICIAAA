@@ -595,8 +595,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - ID reçu:', id);
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
-      // Corriger l'ID si c'est "auto-generated" en utilisant "salon-demo" pour les tests
-      const actualId = (id === 'auto-generated' || id === 'undefined') ? 'salon-demo' : id;
+      // Corriger l'ID - utiliser "salon-demo" comme salon principal
+      const actualId = (id === 'auto-generated' || id === 'undefined' || id === 'current') ? 'salon-demo' : id;
       
       // 🔥 FORCER LA SYNCHRONISATION IMMÉDIATE
       console.log('🚨 SAUVEGARDE FORCÉE IMMÉDIATE pour ID:', actualId);
@@ -1032,10 +1032,14 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { id } = req.params;
       console.log('📖 Récupération salon par ID:', id);
       
-      const salon = storage.salons?.get(id);
+      // Rediriger auto-generated vers salon-demo
+      const actualId = (id === 'auto-generated' || id === 'current') ? 'salon-demo' : id;
+      console.log('🔧 ID redirigé vers:', actualId);
+      
+      const salon = storage.salons?.get(actualId);
       
       if (!salon) {
-        console.log('❌ Salon non trouvé:', id);
+        console.log('❌ Salon non trouvé:', actualId);
         return res.status(404).json({ message: 'Salon non trouvé' });
       }
       

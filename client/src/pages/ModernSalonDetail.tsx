@@ -52,8 +52,8 @@ export default function ModernSalonDetail() {
   const [activeTab, setActiveTab] = useState('services');
   const [location] = useLocation();
   
-  // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
-  const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
+  // FORCER salon-demo pour tous les IDs 
+  const salonId = 'salon-demo';
   
   // DEBUG: Vérifier quelle URL et quel ID sont utilisés
   console.log('🔍 DEBUG SALON ROUTING:', {
