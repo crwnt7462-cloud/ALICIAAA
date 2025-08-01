@@ -107,6 +107,7 @@ import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
 import PageCreator from "@/pages/PageCreator";
 import ProPagesManager from "@/pages/ProPagesManager";
+import SalonBookingEditor from "@/pages/SalonBookingEditor";
 import BookingCustomization from "@/pages/BookingCustomization";
 import ForgotPassword from "@/pages/ForgotPassword";
 import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
@@ -785,6 +786,7 @@ function Router() {
           <Route path="/pro-pages" component={ProPagesManager} />
           <Route path="/salon-settings" component={SalonSettingsModern} />
           <Route path="/booking-customization" component={BookingCustomization} />
+          <Route path="/salon-booking-editor" component={SalonBookingEditor} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
           <Route path="/edit-salon" component={EditSalon} />
