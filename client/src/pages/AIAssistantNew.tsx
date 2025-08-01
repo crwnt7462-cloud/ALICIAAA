@@ -42,13 +42,13 @@ export default function AIAssistantNew() {
     {
       id: '1',
       type: 'assistant',
-      content: '🎯 Centre d\'Alertes IA Activé\n\nVoici votre tableau de bord intelligent pour recevoir toutes les analyses automatiques générées par l\'IA :\n\n• Analyses clients automatiques\n• Alertes de risque de désabonnement\n• Messages personnalisés générés\n• Recommandations d\'actions\n\nTous les messages créés automatiquement lors de vos analyses apparaîtront ici.',
+      content: '👋 Bonjour ! Je suis votre assistant IA, spécialisé dans l\'optimisation de salons de beauté. Je peux analyser vos performances, prédire les tendances, optimiser vos plannings et vous donner des conseils personnalisés pour développer votre activité.',
       timestamp: new Date(),
       category: 'greeting',
       insights: [
-        { type: 'success', title: 'IA Active', value: 'GPT-4o', icon: UserCheck },
-        { type: 'info', title: 'Analyses Auto', value: 'ON', icon: Activity },
-        { type: 'warning', title: 'Alertes', value: 'Prêtes', icon: AlertTriangle }
+        { type: 'success', title: 'CA ce mois', value: '+15%', icon: TrendingUp },
+        { type: 'info', title: 'Taux occupation', value: '87%', icon: Activity },
+        { type: 'warning', title: 'Stock bas', value: '3 produits', icon: AlertTriangle }
       ]
     }
   ]);
@@ -225,8 +225,8 @@ export default function AIAssistantNew() {
                 </div>
               </div>
               <div>
-                <h1 className="font-bold text-gray-900 text-lg">Centre d'Alertes IA</h1>
-                <p className="text-xs text-violet-600 font-medium">Messages & Analyses Automatiques</p>
+                <h1 className="font-bold text-gray-900 text-lg">Rendly AI Pro</h1>
+                <p className="text-xs text-violet-600 font-medium">Assistant IA Spécialisé Beauté</p>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@ export default function AIAssistantNew() {
               className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 font-medium"
             >
               <MessageSquare className="w-4 h-4 mr-2" />
-              Alertes IA
+              Chat IA
             </TabsTrigger>
             <TabsTrigger 
               value="features"

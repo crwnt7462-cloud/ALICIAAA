@@ -105,6 +105,7 @@ import MonthlyCalendar from "@/pages/MonthlyCalendar";
 import AIProComplete from "@/pages/AIProComplete";
 import EditSalon from "@/pages/EditSalon";
 import ClientAIMessages from "@/pages/ClientAIMessages";
+import AIAlertsDrops from "@/pages/AIAlertsDrops";
 import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
 import PageCreator from "@/pages/PageCreator";
@@ -295,6 +296,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientAIMessages />
+      </div>
+    );
+  }
+
+  // Centre d'alertes IA avec style gouttes d'eau
+  if (location === '/ai-alerts-drops') {
+    return (
+      <div className="h-full">
+        <AIAlertsDrops />
       </div>
     );
   }
