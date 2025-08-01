@@ -599,52 +599,7 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Créneaux disponibles aujourd'hui */}
-      <section className="py-6 md:py-8 bg-gradient-to-r from-violet-50 to-pink-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-4">
-            <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">
-              Créneaux disponibles aujourd'hui
-            </h2>
-            <p className="text-xs md:text-sm text-gray-600">Réservation immédiate possible</p>
-          </div>
-          
-          <div className="space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
-            {[
-              { time: "14:30", salon: "Salon Élégance", service: "Coiffure", price: "45€", location: "Paris 11e", id: "salon-elegance" },
-              { time: "16:00", salon: "Beauty Center", service: "Massage", price: "60€", location: "Paris 15e", id: "beauty-center" },
-              { time: "17:15", salon: "Nail Art Studio", service: "Manucure", price: "35€", location: "Paris 3e", id: "nail-art-studio" }
-            ].map((slot, index) => (
-              <div 
-                key={index} 
-                className="bg-white rounded-lg p-3 border border-violet-100 active:border-violet-200 transition-colors touch-manipulation cursor-pointer hover:shadow-md"
-                onClick={() => handleSalonClick(slot.id)}
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <div className="bg-violet-100 text-violet-700 px-2 py-1 rounded-full text-xs font-medium">
-                    {slot.time}
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold text-gray-900 text-sm">{slot.price}</div>
-                  </div>
-                </div>
-                <h3 className="font-medium text-gray-900 mb-1 text-sm">{slot.salon}</h3>
-                <p className="text-xs text-gray-600 mb-1">{slot.service}</p>
-                <p className="text-xs text-gray-500 mb-2">{slot.location}</p>
-                <Button 
-                  className="w-full h-9 gradient-bg text-white rounded-lg touch-manipulation text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setLocation(`/salon/${slot.id}`);
-                  }}
-                >
-                  Réserver
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Statistiques et garanties */}
       <section className="py-6 md:py-8 bg-white border-y border-gray-100">
