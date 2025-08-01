@@ -58,6 +58,18 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
+### ✅ Système de Synchronisation Automatique Complet
+- **Date**: 01/08/2025 - 22:50
+- **Changement**: Synchronisation automatique universelle entre éditeur et pages publiques
+- **Impact**: Plus aucun problème de désynchronisation, toutes les modifications sont visibles en 2-4 secondes
+- **Fonctionnalités**: Auto-refresh, synchronisation multi-systèmes, variables CSS automatiques, effets néon intégrés
+
+### ✅ Effets Néon et Couleurs Personnalisées
+- **Date**: 01/08/2025 - 22:50
+- **Changement**: Système d'effets néon automatiques basé sur les couleurs de l'éditeur
+- **Impact**: Interface visuellement distinctive avec animations personnalisées
+- **Détails**: Animation neon-pulse, box-shadow colorés, support couleur neonFrame, forçage CSS infaillible
+
 ### ✅ Intégration OpenAI Complétée
 - **Date**: 01/08/2025
 - **Changement**: Connexion OpenAI GPT-4o entièrement fonctionnelle

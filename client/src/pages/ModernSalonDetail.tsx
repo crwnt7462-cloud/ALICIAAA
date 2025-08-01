@@ -64,13 +64,14 @@ export default function ModernSalonDetail() {
     salonName: salonData?.name
   });
   
-  // Récupérer les vraies données du salon depuis l'API
+  // Récupérer les vraies données du salon depuis l'API avec auto-refresh
   const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/salon', salonId],
     retry: 2,
-    refetchOnWindowFocus: false,
-    staleTime: 0, // Pas de cache pour voir les changements immédiatement
-    refetchOnMount: true
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: 2000, // Auto-refresh toutes les 2 secondes
+    staleTime: 0 // Toujours considérer comme périmé
   });
   
   // Données de fallback si API échoue
@@ -246,13 +247,29 @@ export default function ModernSalonDetail() {
           background-color: ${(salonData as any).customColors.primary} !important;
           color: ${(salonData as any).customColors.buttonText} !important;
           border: none !important;
+          box-shadow: 0 0 20px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}80 !important;
+          animation: neon-pulse 2s ease-in-out infinite alternate !important;
+        }
+        
+        @keyframes neon-pulse {
+          from {
+            box-shadow: 0 0 20px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}80,
+                        0 0 30px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}60,
+                        0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}40 !important;
+          }
+          to {
+            box-shadow: 0 0 30px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}90,
+                        0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}70,
+                        0 0 50px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}50 !important;
+          }
         }
         
         .reservation-btn:hover,
         .service-button:hover,
         .reservation-button:hover {
           background-color: ${(salonData as any).customColors.primary} !important;
-          opacity: 0.9 !important;
+          transform: scale(1.05) !important;
+          box-shadow: 0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}90 !important;
         }
       `;
       

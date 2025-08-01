@@ -646,11 +646,19 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         ];
         publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
         
-        // Ajouter ou mettre à jour dans le système de recherche
+        // 🔄 SYNCHRONISATION AUTOMATIQUE UNIVERSELLE
         if (storage.salons) {
-          storage.salons.set(actualId, { ...savedSalon, ...publicSalonData });
+          const unifiedSalonData = { ...savedSalon, ...publicSalonData };
+          storage.salons.set(actualId, unifiedSalonData);
+          
+          // Auto-sync dans tous les systèmes
+          storage.salons.set(`public-${actualId}`, unifiedSalonData);
+          storage.salons.set(`search-${actualId}`, unifiedSalonData);
+          storage.salons.set(`booking-${actualId}`, unifiedSalonData);
+          
+          console.log('🔄 SYNCHRONISATION AUTOMATIQUE COMPLÈTE:', actualId);
+          console.log('✅ Données synchronisées dans tous les systèmes');
         }
-        console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', actualId);
       }
       
       res.json({ 
