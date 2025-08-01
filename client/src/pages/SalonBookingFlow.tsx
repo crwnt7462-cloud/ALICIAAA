@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Clock, Euro } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 
 interface Professional {
   id: string;
@@ -37,7 +38,7 @@ export default function SalonBookingFlow() {
   const [step, setStep] = useState(1);
   
   const [bookingData, setBookingData] = useState<BookingData>({
-    salonId: 'salon-excellence-paris',
+    salonId: 'salon-demo', // Utiliser le même ID que l'éditeur
     professional: null,
     selectedDate: '',
     selectedTime: '',
@@ -47,7 +48,15 @@ export default function SalonBookingFlow() {
     totalPrice: 0
   });
 
-  const professionals: Professional[] = [
+  // Récupérer les données du salon depuis l'API (comme dans l'éditeur)
+  const { data: salonData, isLoading: salonLoading } = useQuery({
+    queryKey: ['/api/booking-pages/salon-demo'],
+    retry: 1,
+    refetchOnWindowFocus: false
+  });
+
+  // Utiliser les professionnels de l'API ou des données par défaut
+  const professionals: Professional[] = salonData?.professionals || [
     {
       id: '1',
       name: 'Sarah Martinez',
@@ -71,16 +80,10 @@ export default function SalonBookingFlow() {
       avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
       rating: 4.9,
       price: 75
-    },
-    {
-      id: '4',
-      name: 'Julie Chen',
-      specialty: 'Onglerie & Manucure',
-      avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150&h=150&fit=crop&crop=face',
-      rating: 4.7,
-      price: 45
     }
   ];
+
+  console.log('🔍 Professionnels dans SalonBookingFlow:', professionals);
 
   const availableSlots: TimeSlot[] = [
     { time: '09:00', available: true },
@@ -187,6 +190,9 @@ export default function SalonBookingFlow() {
                 Choisir un professionnel
               </h2>
               <p className="text-gray-600">Sélectionnez votre coiffeur ou esthéticienne</p>
+              {salonLoading && (
+                <p className="text-sm text-violet-600 mt-2">Chargement des professionnels...</p>
+              )}
             </div>
             
             {professionals.map((pro) => (
