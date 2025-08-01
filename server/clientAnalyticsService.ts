@@ -141,31 +141,58 @@ export class ClientAnalyticsService {
     // Calcul de la probabilité de conversion avec une intervention
     const conversionProbability = Math.max(0.1, 1 - (riskScore * 0.8));
     
-    // Génération d'un message personnalisé via IA
+    // Génération d'un message personnalisé via IA avec plus de contexte
     let personalizedMessage = "";
+    let aiAnalysisDetailed = "";
+    
     try {
       const aiPrompt = `
-Crée un message personnel et bienveillant pour ce client de salon de beauté :
+Tu es un expert en relation client pour salons de beauté. Analyse ce profil client et génère :
 
-Client: ${client.nom}
-- ${client.rdv_total} rendez-vous pris, ${client.rdv_annules} annulés (${client.taux_annulation}%)
+1. UN MESSAGE PERSONNALISÉ à envoyer au client (chaleureux, professionnel, 1-2 phrases max)
+2. UNE ANALYSE DÉTAILLÉE pour l'équipe du salon (stratégie, recommandations)
+
+PROFIL CLIENT:
+- Nom: ${client.nom}
+- Historique: ${client.rdv_total} RDV, ${client.rdv_annules} annulés (${client.taux_annulation}%)
 - Dernier comportement: ${client.dernier_comportement}
-- Profil: ${client.profil}
+- Type: ${client.profil}
 - Niveau de risque: ${riskLevel}
 
-Le message doit être :
-- Chaleureux et professionnel
-- Reconnaître la relation existante
-- Subtil sur les annulations sans les mentionner directement
-- Proposer une valeur ajoutée
-- Maximum 2 phrases courtes
+CONSIGNES MESSAGE CLIENT:
+- Ton chaleureux mais professionnel
+- Ne pas mentionner directement les annulations
+- Proposer une valeur (nouveau service, promotion, etc.)
+- Créer l'envie de revenir
 
-Exemple de ton : "Bonjour Sarah, nous pensons à vous et aimerions vous retrouver bientôt. Nous avons de nouveaux soins qui pourraient vous intéresser !"`;
+CONSIGNES ANALYSE ÉQUIPE:
+- Identifier les causes probables des annulations
+- Proposer 3-5 actions concrètes spécifiques à ce profil
+- Suggérer le meilleur moment/approche pour le contact
+- Évaluer le potentiel de récupération
 
-      personalizedMessage = await aiService.getChatResponse(aiPrompt);
+Format de réponse:
+MESSAGE: [Votre message personnalisé ici]
+ANALYSE: [Votre analyse détaillée ici]`;
+
+      const aiResponse = await aiService.getChatResponse(aiPrompt);
+      
+      // Extraction du message et de l'analyse
+      const messagMatch = aiResponse.match(/MESSAGE:\s*(.+?)(?=ANALYSE:|$)/s);
+      const analysisMatch = aiResponse.match(/ANALYSE:\s*(.+)/s);
+      
+      personalizedMessage = messagMatch 
+        ? messagMatch[1].trim().replace(/^["']|["']$/g, '') 
+        : `Bonjour ${client.nom}, nous serions ravis de vous retrouver bientôt dans notre salon !`;
+        
+      aiAnalysisDetailed = analysisMatch 
+        ? analysisMatch[1].trim() 
+        : strategy;
+        
     } catch (error) {
       console.error("Erreur génération message IA:", error);
       personalizedMessage = `Bonjour ${client.nom}, nous serions ravis de vous retrouver bientôt dans notre salon !`;
+      aiAnalysisDetailed = strategy;
     }
 
     return {
@@ -176,7 +203,7 @@ Exemple de ton : "Bonjour Sarah, nous pensons à vous et aimerions vous retrouve
       },
       niveau_risque: riskLevel,
       actions_recommandees: actions,
-      strategie_retention: strategy,
+      strategie_retention: aiAnalysisDetailed || strategy,
       probabilite_conversion: conversionProbability,
       message_personnalise: personalizedMessage
     };

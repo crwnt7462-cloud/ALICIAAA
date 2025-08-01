@@ -11,7 +11,8 @@ import {
   ArrowLeft, AlertTriangle, TrendingUp, TrendingDown, Users, Target,
   Brain, BarChart3, MessageSquare, Phone, Gift, Calendar,
   CheckCircle, XCircle, Clock, Star, UserCheck, UserX,
-  PieChart, Activity, Lightbulb, Crown, Zap, Database, RefreshCw
+  PieChart, Activity, Lightbulb, Crown, Zap, Database, RefreshCw,
+  History, Send
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -206,11 +207,11 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
       const response = await apiRequest("POST", "/api/clients/analyze-real-batch", {});
       return response.json();
     },
-    onSuccess: (data: RealClientsAnalysis) => {
+    onSuccess: (data: RealClientsAnalysis & { messages_saved?: number }) => {
       setRealClientsAnalysis(data);
       toast({
         title: "Analyse terminée",
-        description: `${data.report.resume.total_clients} clients réels analysés avec succès`
+        description: `${data.report.resume.total_clients} clients analysés • ${data.messages_saved || 0} messages IA sauvegardés`
       });
     },
     onError: (error) => {
@@ -302,9 +303,14 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Analyse des Clients Réels</h2>
               <p className="text-gray-600">Analyse prédictive basée sur les vrais clients de votre base de données</p>
+              
+              <div className="mt-4 inline-flex items-center bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm border border-blue-200">
+                <MessageSquare className="w-4 h-4 mr-2" />
+                L'IA génère automatiquement des messages personnalisés pour chaque client à risque et les sauvegarde dans l'historique
+              </div>
             </div>
 
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center gap-4 mb-6">
               <Button 
                 onClick={() => analyzeRealClientsMutation.mutate()}
                 disabled={analyzeRealClientsMutation.isPending}
@@ -322,7 +328,25 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
                   </>
                 )}
               </Button>
+              
+              <Button 
+                onClick={() => window.location.href = '/ai-assistant-new'}
+                variant="outline"
+                className="border-2 border-violet-300 text-violet-700 hover:bg-violet-50 px-6 py-3"
+              >
+                <History className="w-5 h-5 mr-2" />
+                Messages IA Générés
+              </Button>
             </div>
+
+            {realClientsAnalysis && (
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm border border-green-200">
+                  <Send className="w-4 h-4 mr-2" />
+                  {realClientsAnalysis.messages_saved || 0} messages personnalisés automatiquement sauvegardés
+                </div>
+              </div>
+            )}
 
             {/* Résumé global */}
             {realClientsAnalysis && (

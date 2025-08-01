@@ -216,11 +216,48 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       const insights = await clientAnalyticsService.analyzeClientBatch(clientProfiles);
       const report = clientAnalyticsService.generateAnalyticsReport(insights);
       
+      // Sauvegarde automatique des messages IA dans l'historique
+      try {
+        for (const insight of insights) {
+          if (insight.message_personnalise && insight.niveau_risque !== "faible") {
+            // Sauvegarde uniquement pour les clients à risque moyen, élevé et critique
+            const conversationData = {
+              id: `client-${insight.client.nom.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`,
+              title: `Message pour ${insight.client.nom}`,
+              timestamp: new Date().toISOString(),
+              messages: [
+                {
+                  role: 'user',
+                  content: `Analyse du profil client ${insight.client.nom} (${insight.client.taux_annulation}% annulation, niveau ${insight.niveau_risque})`
+                },
+                {
+                  role: 'assistant', 
+                  content: `${insight.message_personnalise}\n\nAnalyse: ${insight.strategie_retention}\n\nActions recommandées:\n${insight.actions_recommandees.map(a => `• ${a}`).join('\n')}`
+                }
+              ],
+              metadata: {
+                client_name: insight.client.nom,
+                risk_level: insight.niveau_risque,
+                cancellation_rate: insight.client.taux_annulation,
+                recommended_actions: insight.actions_recommandees.length
+              }
+            };
+            
+            // Sauvegarde dans l'historique (utilise le système existant)
+            await storage.saveConversation('demo-user', conversationData.id, conversationData);
+          }
+        }
+        console.log('💬 Messages IA sauvegardés dans l\'historique pour les clients à risque');
+      } catch (error) {
+        console.error('❌ Erreur sauvegarde messages:', error);
+      }
+      
       res.json({
         success: true,
         insights,
         report,
         total_clients: clientProfiles.length,
+        messages_saved: insights.filter(i => i.message_personnalise && i.niveau_risque !== "faible").length,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
