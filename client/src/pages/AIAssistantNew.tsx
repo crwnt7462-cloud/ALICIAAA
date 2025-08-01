@@ -71,14 +71,14 @@ export default function AIAssistantNew() {
   const queryClient = useQueryClient();
 
   // Charger les conversations depuis l'API
-  const { data: conversationsData } = useQuery({
+  const { data: conversationsData } = useQuery<{success: boolean, conversations: any[]}>({
     queryKey: ['/api/ai/conversations'],
     refetchInterval: 1000, // Actualisation toutes les 1 seconde pour voir les nouvelles conversations rapidement
   });
 
   // Conversion des conversations en messages
   useEffect(() => {
-    if (conversationsData?.conversations) {
+    if (conversationsData && conversationsData.conversations && Array.isArray(conversationsData.conversations)) {
       const allMessages: Message[] = [];
       
       conversationsData.conversations
