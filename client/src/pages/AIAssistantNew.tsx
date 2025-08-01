@@ -73,7 +73,7 @@ export default function AIAssistantNew() {
   // Charger les conversations depuis l'API
   const { data: conversationsData } = useQuery({
     queryKey: ['/api/ai/conversations'],
-    refetchInterval: 3000, // Actualisation toutes les 3 secondes
+    refetchInterval: 1000, // Actualisation toutes les 1 seconde pour voir les nouvelles conversations rapidement
   });
 
   // Conversion des conversations en messages
@@ -141,8 +141,10 @@ export default function AIAssistantNew() {
       setIsLoading(false);
       setInputMessage("");
       
-      // Actualiser les conversations depuis l'API au lieu de manipuler l'état local
-      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversations'] });
+      // Actualiser les conversations immédiatement pour que l'historique apparaisse
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['/api/ai/conversations'] });
+      }, 100);
       
       toast({
         title: "Message envoyé",
