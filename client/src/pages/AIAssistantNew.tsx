@@ -13,7 +13,7 @@ import {
   Brain, TrendingUp, Calendar, Clock, Star, AlertTriangle,
   CheckCircle, Zap, Crown, Sparkles, Camera, FileText,
   PieChart, Activity, Lightbulb, ShoppingBag, MessageSquare,
-  Mic, Settings, Maximize2, Copy, RefreshCw, Palette, 
+  Settings, Maximize2, Copy, RefreshCw, Palette, 
   TrendingDown, DollarSign, Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";

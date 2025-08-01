@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send, Mic, MicOff } from 'lucide-react';
+import { ArrowLeft, Send, User } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -32,10 +32,6 @@ export default function AIProModern() {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showChatHistory, setShowChatHistory] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [showVoiceInterface, setShowVoiceInterface] = useState(false);
-  const [voiceTranscription, setVoiceTranscription] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Historique des chats simulé (à remplacer par des vraies données)
@@ -66,68 +62,6 @@ export default function AIProModern() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showChatHistory]);
 
-  // Fonctions pour l'enregistrement vocal
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      const audioChunks: BlobPart[] = [];
-
-      recorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
-
-      recorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        // Simulation de transcription vocale
-        const simulatedTranscriptions = [
-          "Comment optimiser mon planning de demain ?",
-          "Quels sont mes clients VIP cette semaine ?",
-          "Génère-moi un rapport de mes ventes",
-          "Aide-moi à créer une campagne marketing",
-          "Quels produits sont en rupture de stock ?"
-        ];
-        const randomTranscription = simulatedTranscriptions[Math.floor(Math.random() * simulatedTranscriptions.length)];
-        
-        // Arrêter l'enregistrement et envoyer le message
-        setIsRecording(false);
-        setInputValue(randomTranscription);
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      recorder.start();
-      setMediaRecorder(recorder);
-      setIsRecording(true);
-    } catch (error) {
-      console.error('Erreur accès microphone:', error);
-      alert('Erreur: Impossible d\'accéder au microphone. Vérifiez les permissions.');
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorder && isRecording) {
-      mediaRecorder.stop();
-      setIsRecording(false);
-      setMediaRecorder(null);
-    }
-  };
-
-  const cancelVoiceInterface = () => {
-    if (isRecording) {
-      stopRecording();
-    }
-    setShowVoiceInterface(false);
-    setVoiceTranscription('');
-  };
-
-  const toggleRecording = () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
-  };
-
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
       const response = await apiRequest("POST", "/api/ai/chat", {
@@ -137,16 +71,19 @@ export default function AIProModern() {
       return response.json();
     },
     onSuccess: (data) => {
-      const assistantMessage: Message = {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: data.response || "Je n'ai pas pu traiter votre demande. Pouvez-vous reformuler ?",
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, assistantMessage]);
+      if (data.success) {
+        const assistantMessage: Message = {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: data.response,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      }
       setIsLoading(false);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Erreur envoi message:', error);
       setIsLoading(false);
     }
   });
@@ -164,7 +101,7 @@ export default function AIProModern() {
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
     sendMessageMutation.mutate(inputValue);
-    setInputValue("");
+    setInputValue('');
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -174,170 +111,147 @@ export default function AIProModern() {
     }
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('fr-FR', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+  const selectChatFromHistory = (chat: any) => {
+    setShowChatHistory(false);
+    // Charger le chat sélectionné (simulé)
+    setMessages([
+      {
+        id: '1',
+        role: 'assistant',
+        content: `Conversation reprise : ${chat.title}`,
+        timestamp: new Date()
+      }
+    ]);
   };
 
   return (
-    <div className="h-full flex flex-col bg-white max-w-md mx-auto relative overflow-hidden">
-      {/* Header violet */}
-      <div className="px-6 py-4 flex items-center justify-between relative">
-        <div 
-          className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform"
-          onClick={() => setShowChatHistory(!showChatHistory)}
-        >
-          <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-white rounded-full"></div>
+    <div className="h-screen bg-gradient-to-br from-purple-50/50 to-violet-50/50 flex flex-col relative overflow-hidden">
+      {/* Background effet */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-100/20 to-violet-100/20"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-purple-200/10 to-transparent rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-violet-200/10 to-transparent rounded-full blur-3xl"></div>
+      
+      {/* Header avec menu historique */}
+      <div className="relative z-10 p-4 bg-white/80 backdrop-blur-md border-b border-purple-100/50 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/dashboard')}
+            className="w-10 h-10 rounded-full bg-white/50 hover:bg-white/80 shadow-sm border border-purple-100"
+          >
+            <ArrowLeft className="w-5 h-5 text-purple-700" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-bold bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">
+              Assistant IA Pro
+            </h1>
+            <p className="text-xs text-purple-600">{user?.email || 'demo@beautyapp.com'}</p>
           </div>
         </div>
         
-        <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-            <ArrowLeft 
-              className="w-4 h-4 text-white cursor-pointer" 
-              onClick={() => setLocation('/dashboard')}
-            />
-          </div>
+        {/* Menu historique */}
+        <div className="relative">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowChatHistory(!showChatHistory)}
+            className="w-10 h-10 rounded-full bg-white/50 hover:bg-white/80 shadow-sm border border-purple-100"
+          >
+            <svg className="w-5 h-5 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </Button>
+          
+          {showChatHistory && (
+            <div className="chat-history-menu absolute right-0 top-12 w-72 bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-purple-100 p-4 z-50">
+              <h3 className="font-semibold text-purple-900 mb-3">Historique des conversations</h3>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {chatHistory.map((chat) => (
+                  <button
+                    key={chat.id}
+                    onClick={() => selectChatFromHistory(chat)}
+                    className="w-full p-3 text-left rounded-xl hover:bg-purple-50 transition-all group"
+                  >
+                    <div className="font-medium text-purple-900 text-sm group-hover:text-purple-700">
+                      {chat.title}
+                    </div>
+                    <div className="text-xs text-purple-600 mt-1 truncate">
+                      {chat.lastMessage}
+                    </div>
+                    <div className="text-xs text-purple-400 mt-1">
+                      {chat.date}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Menu historique des chats dépliable */}
-        {showChatHistory && (
-          <div className="absolute top-16 left-6 w-80 bg-white rounded-2xl shadow-2xl border border-purple-100 z-50 overflow-hidden chat-history-menu">
-            <div className="p-4 bg-gradient-to-r from-purple-500 to-violet-600">
-              <h3 className="text-white font-semibold text-lg">Historique des conversations</h3>
-            </div>
-            
-            <div className="max-h-96 overflow-y-auto">
-              {chatHistory.map((chat) => (
-                <div 
-                  key={chat.id}
-                  className="p-4 border-b border-gray-100 hover:bg-purple-50 cursor-pointer transition-colors"
-                  onClick={() => {
-                    // Charger la conversation
-                    setShowChatHistory(false);
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-violet-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 text-sm truncate">{chat.title}</h4>
-                      <p className="text-xs text-gray-500 truncate mt-1">{chat.lastMessage}</p>
-                      <p className="text-xs text-purple-500 mt-1">{chat.date}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="p-4 bg-gray-50 border-t border-gray-100">
-              <button 
-                className="w-full text-sm text-purple-600 hover:text-purple-700 font-medium"
-                onClick={() => {
-                  // Nouveau chat
-                  setMessages([{
-                    id: '1',
-                    role: 'assistant',
-                    content: 'Bonjour ! Je suis votre assistant IA.\nComment puis-je vous aider aujourd\'hui ?',
-                    timestamp: new Date()
-                  }]);
-                  setShowChatHistory(false);
-                }}
+      {/* Zone des messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 relative z-10">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                message.role === 'user'
+                  ? 'bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-lg'
+                  : 'bg-white/80 backdrop-blur-sm text-purple-900 shadow-md border border-purple-100'
+              }`}
+            >
+              <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                {message.content}
+              </div>
+              <div
+                className={`text-xs mt-2 ${
+                  message.role === 'user' ? 'text-purple-100' : 'text-purple-500'
+                }`}
               >
-                + Nouvelle conversation
-              </button>
+                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl px-4 py-3 shadow-md border border-purple-100">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
             </div>
           </div>
         )}
+        
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Message de salutation centré */}
       <div className="flex-1 flex items-center justify-center relative">
-        {/* Bulle vocale flottante au centre */}
-        {isRecording && (
-          <div className="absolute inset-0 flex items-center justify-center z-40">
-            {/* Cercles d'animation */}
-            <div className="absolute w-64 h-64 rounded-full bg-gradient-to-br from-purple-200/20 to-violet-200/20 animate-ping"></div>
-            <div className="absolute w-48 h-48 rounded-full bg-gradient-to-br from-purple-300/30 to-violet-300/30 animate-ping" style={{ animationDelay: '0.3s' }}></div>
-            <div className="absolute w-32 h-32 rounded-full bg-gradient-to-br from-purple-400/40 to-violet-400/40 animate-ping" style={{ animationDelay: '0.6s' }}></div>
-            
-            {/* Bulle principale qui pulse */}
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-2xl animate-pulse">
-              <Mic className="w-8 h-8 text-white" />
-            </div>
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-2xl">
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
           </div>
-        )}
-
-        {messages.length === 1 ? (
-          <div className="text-center px-8">
-            <h1 className="text-4xl font-light text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-purple-600 bg-clip-text mb-4">
-              Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Agash'}
-            </h1>
-            <p className="text-gray-600 text-sm">
-              Votre assistant IA est prêt à vous aider
-            </p>
-          </div>
-        ) : (
-          <div className="w-full px-4 py-4 space-y-4 overflow-y-auto">
-            {messages.slice(1).map((message) => (
-              <div key={message.id} className="flex flex-col">
-                {message.role === 'assistant' ? (
-                  <div className="self-start max-w-[85%]">
-                    <div className="bg-purple-50 border border-purple-200 rounded-2xl px-4 py-3 shadow-sm">
-                      <p className="text-purple-900 text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 ml-2">
-                      {formatTime(message.timestamp)}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="self-end max-w-[85%]">
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 rounded-2xl px-4 py-3 shadow-lg">
-                      <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">
-                        {message.content}
-                      </p>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 mr-2 text-right">
-                      {formatTime(message.timestamp)}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="self-start max-w-[85%]">
-                <div className="bg-purple-50 border border-purple-200 rounded-2xl px-4 py-3 shadow-sm">
-                  <div className="flex space-x-1">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-        )}
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent mb-2">
+            Assistant IA Pro
+          </h2>
+          <p className="text-purple-600 text-sm leading-relaxed">
+            Votre conseiller intelligent pour optimiser votre salon de beauté
+          </p>
+        </div>
       </div>
 
       {/* Input violet sur fond blanc */}
       <div className="p-6 border-t border-gray-100">
-        {/* Indicateur d'enregistrement */}
-        {isRecording && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            <span className="text-red-700 text-sm font-medium">Enregistrement en cours... Cliquez sur le micro pour arrêter</span>
-          </div>
-        )}
-        
         <div className="flex items-center gap-3">
           <div className="flex-1 relative">
             <input
@@ -345,13 +259,9 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all font-medium ${
-                isRecording 
-                  ? 'bg-red-50 border-red-200 placeholder-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
-                  : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-300 placeholder-purple-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-300 shadow-sm'
-              }`}
-              disabled={isLoading || isRecording}
+              placeholder="✨ Ask Rendly"
+              className="w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all font-medium bg-gradient-to-r from-purple-50 to-violet-50 border-purple-300 placeholder-purple-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-300 shadow-sm"
+              disabled={isLoading}
             />
           </div>
           
@@ -365,19 +275,11 @@ export default function AIProModern() {
           </Button>
           
           <Button
-            onClick={isRecording ? stopRecording : startRecording}
+            onClick={() => setLocation('/ai-alerts')}
             size="sm"
-            className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
-              isRecording 
-                ? 'bg-red-500 hover:bg-red-400' 
-                : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500'
-            }`}
+            className="w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500"
           >
-            {isRecording ? (
-              <MicOff className="w-5 h-5 text-white" />
-            ) : (
-              <Mic className="w-5 h-5 text-white" />
-            )}
+            <User className="w-5 h-5 text-white" />
           </Button>
         </div>
       </div>
