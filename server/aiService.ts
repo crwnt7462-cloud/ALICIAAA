@@ -378,6 +378,29 @@ Répondez en JSON:
     }
   }
 
+  // Chat généraliste OpenAI
+  async getChatResponse(message: string): Promise<string> {
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "system",
+            content: "Tu es un assistant spécialisé dans la gestion de salons de beauté. Tu aides les professionnels à optimiser leur business, gérer leurs plannings, analyser leurs performances et améliorer l'expérience client. Réponds toujours en français de manière professionnelle et utile."
+          },
+          { role: "user", content: message }
+        ],
+        max_tokens: 1000,
+        temperature: 0.7
+      });
+
+      return response.choices[0].message.content || "Désolé, je n'ai pas pu traiter votre demande.";
+    } catch (error) {
+      console.error("Erreur chat OpenAI:", error);
+      return "Erreur de connexion au service IA. Veuillez réessayer.";
+    }
+  }
+
   // Pricing dynamique selon demande et saison
   async generateDynamicPricing(services: any[], seasonalData: any, demandData: any) {
     try {

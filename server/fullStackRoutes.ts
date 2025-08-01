@@ -5,7 +5,7 @@ import { storage as memoryStorage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
-import { AIService } from "./aiService";
+import { aiService } from "./aiService";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -25,9 +25,6 @@ if (!USE_FIREBASE && process.env.USE_FIREBASE === 'true') {
 if (!SUPABASE_CONFIG.USE_SUPABASE && !SUPABASE_CONFIG.hasSupabaseSecrets()) {
   console.log(SUPABASE_INSTRUCTIONS);
 }
-
-// Instance du service IA
-const aiService = new AIService();
 
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
   // Test de connexion OpenAI
