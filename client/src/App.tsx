@@ -106,7 +106,6 @@ import PaymentMethodsManager from "@/pages/PaymentMethodsManager";
 import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
 import SalonPayment from "@/pages/SalonPayment";
 import ClientProDashboard from "@/pages/ClientProDashboard";
-import DemoLogin from "@/pages/DemoLogin";
 import MessagingSearch from "@/pages/MessagingSearch";
 import ProDashboard from "@/pages/ProDashboard";
 import ProMessaging from "@/pages/ProMessaging";
@@ -198,14 +197,7 @@ function Router() {
     );
   }
 
-  // Page de connexion démo
-  if (location === '/demo-login') {
-    return (
-      <div className="h-full">
-        <DemoLogin />
-      </div>
-    );
-  }
+
 
   // Page de connexion professionnelle
   if (location === '/pro-login') {

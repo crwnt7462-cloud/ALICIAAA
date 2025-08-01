@@ -81,13 +81,7 @@ export default function ProLoginModern() {
     }
   };
 
-  const handleDemoLogin = () => {
-    setFormData({ email: 'test@monapp.com', password: 'test1234' });
-    setTimeout(() => {
-      const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
-      handleSubmit(fakeEvent);
-    }, 100);
-  };
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -157,25 +151,7 @@ export default function ProLoginModern() {
               </button>
             </form>
 
-            {/* Texte séparateur */}
-            <div className="text-center mb-6">
-              <p className="text-gray-400 text-sm">or access demo</p>
-            </div>
 
-            {/* Bouton démo - même style que catégories */}
-            <div className="grid grid-cols-1 gap-3">
-              <button
-                onClick={handleDemoLogin}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Compte démo salon
-              </button>
-            </div>
-
-            {/* Info compte démo */}
-            <div className="mt-6 text-center">
-              <p className="text-xs text-gray-400">test@monapp.com / test1234</p>
-            </div>
 
           </div>
         </div>
