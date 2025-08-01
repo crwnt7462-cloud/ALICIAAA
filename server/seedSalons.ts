@@ -16,6 +16,7 @@ export const salonsData = [
       "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
     ],
     coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center",
+    coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center",
     serviceCategories: [
       {
         id: 1,
