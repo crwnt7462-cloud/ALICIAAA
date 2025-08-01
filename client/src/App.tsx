@@ -422,7 +422,7 @@ function Router() {
   if (location === '/salon-booking') {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <SalonBookingFlow />
       </div>
     );
   }

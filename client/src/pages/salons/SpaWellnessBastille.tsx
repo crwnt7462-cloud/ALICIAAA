@@ -229,7 +229,7 @@ export default function SpaWellnessBastille() {
                             <Button 
                               size="sm" 
                               className="mt-2 bg-green-600 hover:bg-green-700"
-                              onClick={() => setLocation('/quick-booking')}
+                              onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver
                             </Button>
@@ -337,7 +337,7 @@ export default function SpaWellnessBastille() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
-          onClick={() => setLocation('/quick-booking')}
+          onClick={() => setLocation('/salon-booking')}
         >
           Réserver maintenant
         </Button>
