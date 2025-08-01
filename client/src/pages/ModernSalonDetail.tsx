@@ -52,12 +52,16 @@ export default function ModernSalonDetail() {
   const [activeTab, setActiveTab] = useState('services');
   const [location] = useLocation();
   
-  // Récupérer l'ID du salon depuis l'URL
+  // Récupérer l'ID exact du salon depuis l'URL - PLUS DE REDIRECTION
   const urlParts = location.split('/');
-  const salonIdFromUrl = urlParts[urlParts.length - 1] || 'salon-demo';
+  const salonId = urlParts[urlParts.length - 1];
   
-  // Mapper les IDs pour la compatibilité
-  const salonId = salonIdFromUrl === 'auto-generated' ? 'salon-demo' : salonIdFromUrl;
+  // Vérification que l'ID existe
+  if (!salonId || salonId === 'salon') {
+    console.error('❌ ID salon manquant dans l\'URL:', location);
+    setLocation('/search'); // Rediriger vers la recherche si ID manquant
+    return <div>Redirection...</div>;
+  }
   
   // DEBUG: Vérifier quelle URL et quel ID sont utilisés
   console.log('🔍 DEBUG SALON ROUTING:', {
@@ -191,27 +195,19 @@ export default function ModernSalonDetail() {
     timestamp: new Date().toISOString()
   });
 
-  // Utiliser les vraies données de l'API ou fallback personnalisé
-  const salon = {
-    id: salonData?.id || 1,
-    name: salonData?.name || "Mon Salon",
-    rating: salonData?.rating || 4.8,
-    reviews: salonData?.reviews || 247,
-    address: salonData?.address || "Votre adresse",
-    phone: salonData?.phone || "Votre téléphone",
-    verified: salonData?.verified || true,
-    certifications: salonData?.certifications || [
-      "Bio-certifié",
-      "Expert L'Oréal",
-      "Formation Kérastase"
-    ],
-    awards: salonData?.awards || [
-      "Prix du Meilleur Salon 2024",
-      "Service Client Excellence 2023",
-      "Salon Éco-Responsable Certifié"
-    ],
-    longDescription: salonData?.longDescription || "L'art de la beauté réinventé"
-  };
+  // Utiliser UNIQUEMENT les vraies données de l'API - PLUS DE FALLBACK
+  const salon = salonData ? {
+    id: salonData.id,
+    name: salonData.name,
+    rating: salonData.rating,
+    reviews: salonData.reviews,
+    address: salonData.address,
+    phone: salonData.phone,
+    verified: salonData.verified,
+    certifications: salonData.certifications || [],
+    awards: salonData.awards || [],
+    longDescription: salonData.longDescription || salonData.description || ""
+  } : null;
 
   // DEBUG: Logs pour comprendre le problème d'images et données
   console.log('🖼️ DEBUG SALON DATA:', {
@@ -226,14 +222,8 @@ export default function ModernSalonDetail() {
     isLoading
   });
 
-  // Utiliser les vraies données de l'API si disponibles
-  const displayData = salonData ? {
-    ...salonData,
-    longDescription: salonData.longDescription || fallbackData.longDescription,
-    address: (salonData as any).address || fallbackData.address,
-    phone: (salonData as any).phone || fallbackData.phone,
-    coverImageUrl: (salonData as any).coverImageUrl || (salonData as any).photos?.[0] || fallbackData.coverImageUrl
-  } : fallbackData;
+  // Utiliser UNIQUEMENT les vraies données de l'API - PLUS DE FALLBACK
+  const displayData = salonData || null;
 
   // Couleurs personnalisées depuis l'API
   const customColors = salonData?.customColors || {
@@ -372,7 +362,7 @@ export default function ModernSalonDetail() {
           </Button>
           
           {/* Badge vérifié */}
-          {salon.verified && (
+          {displayData?.verified && (
             <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               <CheckCircle className="w-3 h-3" />
               Vérifié
@@ -382,16 +372,14 @@ export default function ModernSalonDetail() {
           {/* Informations principales sur la photo */}
           <div className="absolute bottom-4 left-4 right-4">
             <h1 className="text-2xl font-bold text-white mb-2">
-              {salonData?.name || salon.name} 
-              <span className="text-xs ml-2 bg-red-500 px-1 rounded">
-                {salonData?.name ? 'API' : 'FALLBACK'}
-              </span>
+              {displayData?.name || 'Salon'} 
+
             </h1>
             <div className="flex items-center gap-4 text-white/90 text-sm">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span>{salon.rating}</span>
-                <span>({salon.reviews} avis)</span>
+                <span>{displayData?.rating || 4.5}</span>
+                <span>({displayData?.reviews || 0} avis)</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -488,9 +476,9 @@ export default function ModernSalonDetail() {
                 <div className="flex items-center gap-4 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-gray-400" />
-                    <span className="text-white font-medium">{salon.rating}/5</span>
+                    <span className="text-white font-medium">{displayData?.rating || 4.5}/5</span>
                   </div>
-                  <span>{salon.reviews} avis vérifiés</span>
+                  <span>{displayData?.reviews || 0} avis vérifiés</span>
                 </div>
               </div>
 
@@ -544,14 +532,14 @@ export default function ModernSalonDetail() {
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
                 <h3 className="text-lg font-medium text-white mb-4">À propos du salon</h3>
                 <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                  {salon.longDescription}
+                  {displayData?.longDescription || displayData?.description || 'Description du salon'}
                 </p>
               </div>
                 
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
                 <h3 className="font-medium text-white mb-3">Nos certifications</h3>
                 <div className="space-y-2">
-                  {salon.certifications.map((cert: string, idx: number) => (
+                  {(displayData?.certifications || []).map((cert: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
                       <span className="text-gray-300">{cert}</span>
@@ -563,11 +551,11 @@ export default function ModernSalonDetail() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-sm">
                   <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-300">{salon.address}</span>
+                  <span className="text-gray-300">{displayData?.address || 'Adresse'}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Phone className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-300">{salon.phone}</span>
+                  <span className="text-gray-300">{displayData?.phone || 'Téléphone'}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Clock className="w-4 h-4 text-gray-400" />
