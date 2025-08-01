@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,8 +37,16 @@ export default function SalonExcellenceParis() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   
-  // DONNÉES UNIQUES POUR EXCELLENCE HAIR PARIS
-  const salonData = {
+  // RÉCUPÉRER LES VRAIES DONNÉES UNIQUES DEPUIS L'API
+  const { data: salonData, isLoading } = useQuery({
+    queryKey: ['/api/booking-pages', 'salon-excellence-paris'],
+    retry: 2,
+    refetchOnWindowFocus: false,
+    staleTime: 30000
+  });
+
+  // Données de fallback pendant le chargement
+  const fallbackData = {
     id: 'salon-excellence-paris',
     name: 'Excellence Hair Paris',
     rating: 4.8,
@@ -56,41 +65,45 @@ export default function SalonExcellenceParis() {
     ]
   };
 
-  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
-    {
-      id: 1,
-      name: 'Coiffure Femme',
-      expanded: true,
-      services: [
-        { id: 1, name: 'Coupe + Brushing', price: 85, duration: '1h15', description: 'Coupe personnalisée selon votre morphologie + brushing' },
-        { id: 2, name: 'Coupe + Couleur', price: 150, duration: '2h30', description: 'Coupe + coloration complète avec produits L\'Oréal' },
-        { id: 3, name: 'Coupe + Mèches', price: 180, duration: '3h', description: 'Coupe + mèches techniques (balayage, ombré)' },
-        { id: 4, name: 'Brushing Seul', price: 45, duration: '45min', description: 'Brushing professionnel avec finition laque' },
-        { id: 5, name: 'Chignon/Coiffure Mariée', price: 120, duration: '1h30', description: 'Coiffure événementielle sur-mesure' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Coloration',
-      expanded: false,
-      services: [
-        { id: 6, name: 'Coloration Racines', price: 75, duration: '1h30', description: 'Retouche racines couleur existante' },
-        { id: 7, name: 'Coloration Complète', price: 95, duration: '2h', description: 'Coloration intégrale avec shampooing soin' },
-        { id: 8, name: 'Balayage Californien', price: 160, duration: '3h', description: 'Technique balayage pour effet naturel' },
-        { id: 9, name: 'Ombré Hair', price: 140, duration: '2h30', description: 'Dégradé de couleur tendance' }
-      ]
-    },
-    {
-      id: 3,
-      name: 'Soins Capillaires',
-      expanded: false,
-      services: [
-        { id: 10, name: 'Soin Reconstructeur', price: 65, duration: '45min', description: 'Masque réparateur cheveux abîmés' },
-        { id: 11, name: 'Soin Hydratant', price: 55, duration: '30min', description: 'Masque nutrition intense' },
-        { id: 12, name: 'Botox Capillaire', price: 120, duration: '1h30', description: 'Soin lissant sans formol' }
-      ]
+  // Utiliser les vraies données de l'API ou le fallback
+  const displayData = salonData || fallbackData;
+
+  // Utiliser les services depuis l'API ou les services de fallback
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>(() => {
+    if (salonData?.serviceCategories && salonData.serviceCategories.length > 0) {
+      return salonData.serviceCategories.map((cat, index) => ({
+        ...cat,
+        expanded: index === 0, // Premier onglet ouvert par défaut
+      }));
     }
-  ]);
+    
+    // Services de fallback si pas de données API
+    return [
+      {
+        id: 1,
+        name: 'Coiffure Femme',
+        expanded: true,
+        services: [
+          { id: 1, name: 'Coupe + Brushing', price: 85, duration: '1h15', description: 'Coupe personnalisée selon votre morphologie + brushing' },
+          { id: 2, name: 'Coupe + Couleur', price: 150, duration: '2h30', description: 'Coupe + coloration complète avec produits L\'Oréal' },
+          { id: 3, name: 'Coupe + Mèches', price: 180, duration: '3h', description: 'Coupe + mèches techniques (balayage, ombré)' },
+          { id: 4, name: 'Brushing Seul', price: 45, duration: '45min', description: 'Brushing professionnel avec finition laque' },
+          { id: 5, name: 'Chignon/Coiffure Mariée', price: 120, duration: '1h30', description: 'Coiffure événementielle sur-mesure' }
+        ]
+      },
+      {
+        id: 2,
+        name: 'Coloration',
+        expanded: false,
+        services: [
+          { id: 6, name: 'Coloration Racines', price: 75, duration: '1h30', description: 'Retouche racines couleur existante' },
+          { id: 7, name: 'Coloration Complète', price: 95, duration: '2h', description: 'Coloration intégrale avec shampooing soin' },
+          { id: 8, name: 'Balayage Californien', price: 160, duration: '3h', description: 'Technique balayage pour effet naturel' },
+          { id: 9, name: 'Ombré Hair', price: 140, duration: '2h30', description: 'Dégradé de couleur tendance' }
+        ]
+      }
+    ];
+  });
 
   const toggleCategory = (categoryId: number) => {
     setServiceCategories(prev => 
@@ -107,8 +120,8 @@ export default function SalonExcellenceParis() {
       {/* Header avec photo de couverture */}
       <div className="relative h-64 bg-gradient-to-br from-violet-400 to-purple-500">
         <img 
-          src={salonData.coverImageUrl} 
-          alt={salonData.name}
+          src={displayData.coverImageUrl || displayData.photos?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
+          alt={displayData.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -124,16 +137,16 @@ export default function SalonExcellenceParis() {
         {/* Informations salon en overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-2xl font-bold">{salonData.name}</h1>
-            {salonData.verified && (
+            <h1 className="text-2xl font-bold">{displayData.name}</h1>
+            {displayData.verified && (
               <CheckCircle className="h-5 w-5 text-blue-400" />
             )}
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold">{salonData.rating}</span>
-              <span className="opacity-80">({salonData.reviews} avis)</span>
+              <span className="font-semibold">{displayData.rating || 4.8}</span>
+              <span className="opacity-80">({displayData.reviewCount || displayData.reviews || 347} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
@@ -226,16 +239,16 @@ export default function SalonExcellenceParis() {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">À propos</h3>
-                <p className="text-gray-700 mb-6">{salonData.longDescription}</p>
+                <p className="text-gray-700 mb-6">{displayData.description || displayData.longDescription}</p>
                 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-gray-400" />
-                    <span>{salonData.address}</span>
+                    <span>{displayData.address}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-gray-400" />
-                    <span>{salonData.phone}</span>
+                    <span>{displayData.phone}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-gray-400" />
@@ -249,7 +262,7 @@ export default function SalonExcellenceParis() {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">Certifications & Récompenses</h3>
                 <div className="space-y-3">
-                  {salonData.certifications.map((cert, index) => (
+                  {(displayData.certifications || fallbackData.certifications).map((cert, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <Award className="h-4 w-4 text-amber-500" />
                       <span className="text-sm">{cert}</span>
@@ -260,7 +273,7 @@ export default function SalonExcellenceParis() {
                 <div className="mt-6">
                   <h4 className="font-medium mb-3">Récompenses</h4>
                   <div className="flex flex-wrap gap-2">
-                    {salonData.awards.map((award, index) => (
+                    {(displayData.awards || fallbackData.awards).map((award, index) => (
                       <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
                         {award}
                       </Badge>
@@ -277,10 +290,10 @@ export default function SalonExcellenceParis() {
             <div className="text-center py-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">
-                {salonData.rating}/5 étoiles
+                {displayData.rating || 4.8}/5 étoiles
               </h3>
               <p className="text-gray-600">
-                Basé sur {salonData.reviews} avis clients
+                Basé sur {displayData.reviewCount || displayData.reviews || 347} avis clients
               </p>
             </div>
             

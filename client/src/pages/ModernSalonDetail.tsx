@@ -66,8 +66,8 @@ export default function ModernSalonDetail() {
   const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/booking-pages', salonId],
     retry: 2,
-    refetchOnWindowFocus: true, // Recharger quand on revient sur l'onglet
-    staleTime: 1000 // Cache très court pour voir les changements immédiatement
+    refetchOnWindowFocus: false,
+    staleTime: 30000
   });
   
   // Données de fallback si API échoue
@@ -194,11 +194,23 @@ export default function ModernSalonDetail() {
   console.log('🖼️ DEBUG SALON DATA:', {
     salonId,
     salonName: salonData?.name,
+    description: salonData?.longDescription,
+    address: salonData?.address,
+    phone: (salonData as any)?.phone,
     coverImageUrl: (salonData as any)?.coverImageUrl,
     photos: (salonData as any)?.photos,
     firstPhoto: (salonData as any)?.photos?.[0],
     isLoading
   });
+
+  // Utiliser les vraies données de l'API si disponibles
+  const displayData = salonData ? {
+    ...salonData,
+    longDescription: salonData.longDescription || fallbackData.longDescription,
+    address: (salonData as any).address || fallbackData.address,
+    phone: (salonData as any).phone || fallbackData.phone,
+    coverImageUrl: (salonData as any).coverImageUrl || (salonData as any).photos?.[0] || fallbackData.coverImageUrl
+  } : fallbackData;
 
   // Couleurs personnalisées depuis l'API
   const customColors = salonData?.customColors || {
