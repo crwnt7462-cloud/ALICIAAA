@@ -1159,15 +1159,22 @@ export class DatabaseStorage implements IStorage {
         dbSalon = created;
       }
       
-      // Sauvegarder aussi en mémoire pour l'accès rapide
+      // FORCER LA SYNCHRONISATION IMMÉDIATE EN MÉMOIRE 
       if (this.salons) {
         const updatedSalon = { 
           ...salonData, 
           id: salonId,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
+          // Forcer la copie des couleurs personnalisées
+          customColors: salonData.customColors || {},
+          name: salonData.name || 'Salon'
         };
         this.salons.set(salonId, updatedSalon);
-        console.log('✅ Salon mis à jour en mémoire:', salonId);
+        console.log('🔄 SYNCHRONISATION FORCÉE EN MÉMOIRE:', salonId);
+        console.log('✅ Données synchronisées:', {
+          name: updatedSalon.name,
+          colors: updatedSalon.customColors
+        });
       }
       
       return dbSalon;
@@ -1184,21 +1191,7 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async updateSalon(salonId: string, updateData: any): Promise<any> {
-    const existingSalon = this.salons.get(salonId);
-    if (!existingSalon) {
-      return null;
-    }
 
-    const updatedSalon = {
-      ...existingSalon,
-      ...updateData,
-      updatedAt: new Date()
-    };
-
-    this.salons.set(salonId, updatedSalon);
-    return updatedSalon;
-  }
 
   // Client Notes Management for Professionals
   async getClientNote(clientId: string, professionalId: string): Promise<ClientNote | undefined> {
