@@ -590,9 +590,7 @@ export default function SalonBooking() {
             <button className="text-black font-medium border-b-2 border-black pb-2">
               Prendre RDV
             </button>
-            <button className="text-gray-500 pb-2">Avis</button>  
-            <button className="text-gray-500 pb-2">À-propos</button>
-            <button className="text-gray-500 pb-2">Offrir</button>
+
           </div>
         </div>
       </div>
