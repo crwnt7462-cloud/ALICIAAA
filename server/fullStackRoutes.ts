@@ -216,40 +216,33 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       const insights = await clientAnalyticsService.analyzeClientBatch(clientProfiles);
       const report = clientAnalyticsService.generateAnalyticsReport(insights);
       
-      // Sauvegarde automatique des messages IA dans l'historique
+      // Sauvegarde automatique des messages IA spécifiques pour clients
+      let messagesSaved = 0;
       try {
         for (const insight of insights) {
           if (insight.message_personnalise && insight.niveau_risque !== "faible") {
             // Sauvegarde uniquement pour les clients à risque moyen, élevé et critique
-            const conversationData = {
-              id: `client-${insight.client.nom.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}`,
-              title: `Message pour ${insight.client.nom}`,
-              timestamp: new Date().toISOString(),
-              messages: [
-                {
-                  role: 'user',
-                  content: `Analyse du profil client ${insight.client.nom} (${insight.client.taux_annulation}% annulation, niveau ${insight.niveau_risque})`
-                },
-                {
-                  role: 'assistant', 
-                  content: `${insight.message_personnalise}\n\nAnalyse: ${insight.strategie_retention}\n\nActions recommandées:\n${insight.actions_recommandees.map(a => `• ${a}`).join('\n')}`
-                }
-              ],
-              metadata: {
-                client_name: insight.client.nom,
-                risk_level: insight.niveau_risque,
-                cancellation_rate: insight.client.taux_annulation,
-                recommended_actions: insight.actions_recommandees.length
+            const messageData = {
+              clientName: insight.client.nom,
+              riskLevel: insight.niveau_risque,
+              message: insight.message_personnalise,
+              analysis: insight.strategie_retention,
+              actions: insight.actions_recommandees,
+              metrics: {
+                cancellationRate: insight.client.taux_annulation,
+                riskScore: insight.client.score_risque,
+                conversionProbability: insight.probabilite_conversion
               }
             };
             
-            // Sauvegarde dans l'historique (utilise le système existant)
-            await storage.saveConversation('demo-user', conversationData.id, conversationData);
+            // Sauvegarde dans le système dédié aux messages IA clients
+            await storage.saveClientAIMessage('demo-user', messageData);
+            messagesSaved++;
           }
         }
-        console.log('💬 Messages IA sauvegardés dans l\'historique pour les clients à risque');
+        console.log(`💬 ${messagesSaved} messages IA sauvegardés pour les clients à risque`);
       } catch (error) {
-        console.error('❌ Erreur sauvegarde messages:', error);
+        console.error('❌ Erreur sauvegarde messages IA:', error);
       }
       
       res.json({
@@ -257,7 +250,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         insights,
         report,
         total_clients: clientProfiles.length,
-        messages_saved: insights.filter(i => i.message_personnalise && i.niveau_risque !== "faible").length,
+        messages_saved: messagesSaved,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -265,6 +258,57 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         success: false,
         error: error.message
+      });
+    }
+  });
+
+  // Routes pour les messages IA clients
+  app.get('/api/clients/ai-messages', async (req, res) => {
+    try {
+      const messages = await storage.getClientAIMessages('demo-user');
+      res.json({
+        success: true,
+        messages,
+        total: messages.length
+      });
+    } catch (error) {
+      console.error('❌ Erreur récupération messages IA:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors de la récupération des messages IA' 
+      });
+    }
+  });
+
+  app.delete('/api/clients/ai-messages/:messageId', async (req, res) => {
+    try {
+      const { messageId } = req.params;
+      await storage.deleteClientAIMessage('demo-user', messageId);
+      res.json({
+        success: true,
+        message: 'Message IA supprimé avec succès'
+      });
+    } catch (error) {
+      console.error('❌ Erreur suppression message IA:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors de la suppression du message IA' 
+      });
+    }
+  });
+
+  app.delete('/api/clients/ai-messages', async (req, res) => {
+    try {
+      await storage.clearClientAIMessages('demo-user');
+      res.json({
+        success: true,
+        message: 'Tous les messages IA ont été supprimés'
+      });
+    } catch (error) {
+      console.error('❌ Erreur nettoyage messages IA:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors du nettoyage des messages IA' 
       });
     }
   });

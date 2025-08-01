@@ -330,7 +330,7 @@ Réponds de manière structurée et professionnelle pour un salon de beauté.
               </Button>
               
               <Button 
-                onClick={() => window.location.href = '/ai-assistant-new'}
+                onClick={() => window.location.href = '/client-ai-messages'}
                 variant="outline"
                 className="border-2 border-violet-300 text-violet-700 hover:bg-violet-50 px-6 py-3"
               >

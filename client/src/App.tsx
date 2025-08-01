@@ -104,6 +104,7 @@ import SalonPhotosManager from "@/pages/SalonPhotosManager";
 import MonthlyCalendar from "@/pages/MonthlyCalendar";
 import AIProComplete from "@/pages/AIProComplete";
 import EditSalon from "@/pages/EditSalon";
+import ClientAIMessages from "@/pages/ClientAIMessages";
 import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
 import PageCreator from "@/pages/PageCreator";
@@ -285,6 +286,15 @@ function Router() {
     return (
       <div className="h-full">
         <ClientAnalytics />
+      </div>
+    );
+  }
+
+  // Messages IA pour clients
+  if (location === '/client-ai-messages') {
+    return (
+      <div className="h-full">
+        <ClientAIMessages />
       </div>
     );
   }

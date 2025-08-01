@@ -133,12 +133,20 @@ export interface IStorage {
   updateSalonPhoto(id: number, photo: Partial<InsertSalonPhoto>): Promise<SalonPhoto>;
   deleteSalonPhoto(id: number): Promise<void>;
 
+  // Messages IA automatiques pour analyse clients
+  saveClientAIMessage(userId: string, messageData: any): Promise<void>;
+  getClientAIMessages(userId: string): Promise<any[]>;
+  deleteClientAIMessage(userId: string, messageId: string): Promise<void>;
+  clearClientAIMessages(userId: string): Promise<void>;
+
   // Client Appointments linked to accounts (removed - using getAppointments instead)
 }
 
 export class DatabaseStorage implements IStorage {
   // Stockage en mémoire pour les salons (développement)
   private salons: Map<string, any> = new Map();
+  // Stockage en mémoire pour les messages IA clients
+  private clientAIMessages: Map<string, any[]> = new Map();
 
   // Implémentation des nouvelles fonctionnalités pour les photos de salon
   async getSalonPhotos(userId: string): Promise<SalonPhoto[]> {
@@ -1133,6 +1141,40 @@ export class DatabaseStorage implements IStorage {
     this.salons.set(salonId, updatedSalon);
     
     console.log('✅ Salon sauvegardé avec succès:', salonId);
+  }
+
+  // Messages IA automatiques pour analyse clients
+  async saveClientAIMessage(userId: string, messageData: any): Promise<void> {
+    const userMessages = this.clientAIMessages.get(userId) || [];
+    const message = {
+      id: messageData.id || `ai-msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      clientName: messageData.clientName,
+      riskLevel: messageData.riskLevel,
+      message: messageData.message,
+      analysis: messageData.analysis,
+      actions: messageData.actions,
+      timestamp: new Date().toISOString(),
+      ...messageData
+    };
+    
+    userMessages.unshift(message); // Ajouter au début pour avoir les plus récents en premier
+    this.clientAIMessages.set(userId, userMessages);
+    
+    console.log('💬 Message IA sauvegardé pour', messageData.clientName);
+  }
+
+  async getClientAIMessages(userId: string): Promise<any[]> {
+    return this.clientAIMessages.get(userId) || [];
+  }
+
+  async deleteClientAIMessage(userId: string, messageId: string): Promise<void> {
+    const userMessages = this.clientAIMessages.get(userId) || [];
+    const filteredMessages = userMessages.filter(msg => msg.id !== messageId);
+    this.clientAIMessages.set(userId, filteredMessages);
+  }
+
+  async clearClientAIMessages(userId: string): Promise<void> {
+    this.clientAIMessages.set(userId, []);
   }
 
 }
