@@ -149,7 +149,7 @@ export default function SalonSearch() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="barbier"
-                  className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                 />
               </div>
               
@@ -159,15 +159,15 @@ export default function SalonSearch() {
                   value={locationQuery}
                   onChange={(e) => setLocationQuery(e.target.value)}
                   placeholder="Paris"
-                  className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                 />
               </div>
             </div>
 
-            {/* Bouton Search violet */}
+            {/* Bouton Search glassmorphism */}
             <button
               onClick={handleSearch}
-              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors"
+              className="w-full h-12 glass-button-neutral rounded-2xl text-base font-medium transition-colors"
             >
               Search
             </button>
@@ -184,7 +184,7 @@ export default function SalonSearch() {
                   setActiveFilter("coiffure");
                   handleSearch();
                 }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+                className="h-12 glass-button-neutral rounded-2xl text-sm font-medium transition-colors"
               >
                 Coiffure
               </button>
@@ -193,7 +193,7 @@ export default function SalonSearch() {
                   setActiveFilter("esthetique");
                   handleSearch();
                 }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
+                className="h-12 glass-button-neutral rounded-2xl text-sm font-medium transition-colors"
               >
                 Esthétique
               </button>
