@@ -55,7 +55,7 @@ import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import ClientAnalytics from "@/pages/ClientAnalytics";
-import SalonSearchComplete from "@/pages/SalonSearchComplete";
+
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
@@ -361,7 +361,7 @@ function Router() {
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SalonSearchComplete />
+        <SearchResults />
       </div>
     );
   }

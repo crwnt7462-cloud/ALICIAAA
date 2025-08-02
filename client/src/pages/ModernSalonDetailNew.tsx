@@ -165,7 +165,7 @@ export default function ModernSalonDetail() {
       <div className="h-screen flex flex-col items-center justify-center">
         <h2 className="text-xl font-semibold mb-4">Salon non trouvé</h2>
         <p className="text-gray-600 mb-6">Ce salon n'existe pas ou a été supprimé.</p>
-        <Button onClick={() => setLocation('/salon-search-complete')}>
+        <Button onClick={() => setLocation('/search')}>
           Retour à la recherche
         </Button>
       </div>
@@ -314,7 +314,7 @@ export default function ModernSalonDetail() {
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/salon-search-complete')}
+              onClick={() => setLocation('/search')}
               className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
