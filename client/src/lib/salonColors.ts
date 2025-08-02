@@ -36,9 +36,11 @@ export const getRandomSalonColor = (): SalonColorVariant => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-// Fonction pour les pages sans salon spécifique - Style glassmorphism uniforme
+// Fonction pour les pages sans salon spécifique
 export const getGenericGlassButton = (index: number = 0): string => {
-  return 'bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300';
+  const colors: SalonColorVariant[] = ['pink', 'indigo', 'amber', 'rose', 'emerald'];
+  const colorIndex = index % colors.length;
+  return getSalonButtonClass(undefined, colors[colorIndex]);
 };
 
 // Fonction pour cartes glassmorphism des salons

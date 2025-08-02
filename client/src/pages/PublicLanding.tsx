@@ -745,7 +745,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon-booking');
@@ -818,7 +818,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon-booking');
@@ -891,7 +891,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon-booking');
@@ -964,7 +964,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon-booking');
