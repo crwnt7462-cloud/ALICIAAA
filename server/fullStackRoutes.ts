@@ -505,8 +505,37 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('📝 Tentative d\'inscription PRO:', userData.email);
       
       const user = await storage.createUser(userData);
+      
+      // 🚀 CRÉATION AUTOMATIQUE DU SALON PERSONNEL pour ce professionnel
+      const { createAutomaticSalonPage } = await import('./autoSalonCreation');
+      const automaticSalon = await createAutomaticSalonPage({
+        ownerName: `${userData.firstName} ${userData.lastName}`,
+        businessName: userData.businessName || `Salon ${userData.firstName}`,
+        email: userData.email,
+        phone: userData.phone || '01 23 45 67 89',
+        address: userData.address || 'Adresse non spécifiée',
+        subscriptionPlan: 'basic',
+        services: ['Coiffure', 'Soins'],
+        description: `Salon professionnel de ${userData.firstName} ${userData.lastName}`
+      });
+
+      console.log(`✅ Salon personnel créé pour ${userData.email}: /salon/${automaticSalon.id}`);
       console.log('✅ Inscription PRO réussie pour:', userData.email);
-      res.json({ success: true, user, token: 'demo-token-' + user.id });
+      
+      res.json({ 
+        success: true, 
+        user: {
+          ...user,
+          salonId: automaticSalon.id,
+          salonUrl: `/salon/${automaticSalon.id}`
+        }, 
+        salon: {
+          id: automaticSalon.id,
+          name: automaticSalon.name,
+          url: automaticSalon.shareableUrl
+        },
+        token: 'demo-token-' + user.id 
+      });
     } catch (error) {
       console.error('❌ Erreur lors de l\'inscription PRO:', error);
       res.status(500).json({ success: false, message: 'Server error' });
@@ -1115,9 +1144,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
   app.get('/api/salon/current', async (req, res) => {
     try {
-      // 🔧 CORRECTION DÉFINITIVE : TOUJOURS retourner le salon demo pour les tests
-      console.log('🧪 Mode test : récupération du salon demo obligatoire');
-      let demoSalon = storage.salons?.get('salon-demo');
+      const userId = req.headers['x-user-id'] as string;
+      console.log('🧪 Récupération salon pour utilisateur:', userId);
+      
+      // Si pas d'utilisateur spécifique, retourner le salon demo pour les tests
+      if (!userId) {
+        console.log('🧪 Mode test : récupération du salon demo obligatoire');
+        let demoSalon = storage.salons?.get('salon-demo');
       
       if (!demoSalon) {
         console.log('❌ Salon demo introuvable - création automatique');
@@ -1182,6 +1215,24 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       console.log('✅ Salon demo trouvé:', demoSalon.name);
       return res.json(demoSalon);
+      } else {
+        // Chercher le salon personnel du professionnel connecté
+        console.log('🔍 Recherche salon personnel pour utilisateur:', userId);
+        // TODO: Implémenter la recherche du salon personnel
+        return res.status(404).json({ message: 'Salon personnel non trouvé' });
+      }
+      
+    } catch (error) {
+      console.error('❌ Erreur récupération salon current:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  // API pour récupérer un salon spécifique par ID  
+  app.get('/api/salon/:salonId', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      console.log('📖 Récupération salon par ID:', salonId);
       
       // Chercher le salon associé à ce professionnel
       let salon = storage.salons?.get(salonId);

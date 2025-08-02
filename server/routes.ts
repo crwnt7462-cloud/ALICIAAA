@@ -130,6 +130,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city
       });
 
+      // 🚀 CRÉATION AUTOMATIQUE DU SALON PERSONNEL pour ce professionnel
+      const { createAutomaticSalonPage } = await import('./autoSalonCreation');
+      const automaticSalon = await createAutomaticSalonPage({
+        ownerName: `${firstName} ${lastName}`,
+        businessName: businessName || `Salon ${firstName}`,
+        email,
+        phone: phone || '01 23 45 67 89',
+        address: address || 'Adresse non spécifiée',
+        subscriptionPlan: 'basic',
+        services: ['Coiffure', 'Soins'],
+        description: `Salon professionnel de ${firstName} ${lastName}`
+      });
+
+      console.log(`✅ Salon personnel créé pour ${email}: /salon/${automaticSalon.id}`);
+
       res.json({
         success: true,
         user: {
@@ -137,9 +152,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           email: newUser.email,
           firstName: newUser.firstName,
           lastName: newUser.lastName,
-          businessName: newUser.businessName
+          businessName: newUser.businessName,
+          salonId: automaticSalon.id,  // ← Salon unique pour ce professionnel
+          salonUrl: `/salon/${automaticSalon.id}`
         },
-        message: 'Compte PRO créé avec succès'
+        salon: {
+          id: automaticSalon.id,
+          name: automaticSalon.name,
+          url: automaticSalon.shareableUrl
+        },
+        message: `Compte PRO créé avec succès ! Votre salon est accessible sur /salon/${automaticSalon.id}`
       });
     } catch (error) {
       console.error("Erreur inscription PRO:", error);

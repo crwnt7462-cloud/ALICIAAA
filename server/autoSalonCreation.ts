@@ -56,11 +56,12 @@ export async function createAutomaticSalonPage(
   professionalData: ProfessionalRegistrationData
 ): Promise<AutoCreatedSalon> {
   
-  // Générer un ID unique pour le salon (URL-friendly)
-  const salonId = `salon-${nanoid(8).toLowerCase()}`;
+  // Générer un ID unique pour le salon (URL-friendly) - JAMAIS "salon-demo"
+  const uniqueId = nanoid(8).toLowerCase().replace(/[^a-z0-9]/g, '');
+  const salonId = `salon-${uniqueId}`;
   
   console.log('🏗️ Création automatique page salon pour:', professionalData.businessName);
-  console.log('🆔 ID généré:', salonId);
+  console.log('🆔 ID unique généré:', salonId, '(différent de salon-demo)');
   
   // Configuration des couleurs par défaut selon l'abonnement
   const defaultColors = {
