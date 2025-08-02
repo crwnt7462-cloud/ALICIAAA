@@ -98,7 +98,7 @@ export default function ProLoginModern() {
 
         {/* Container principal - même style que page recherche */}
         <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto">
+          <div className="max-w-sm mx-auto glass-card p-8 rounded-2xl">
             
             {/* Logo Rendly centré */}
             <div className="text-center mb-3">

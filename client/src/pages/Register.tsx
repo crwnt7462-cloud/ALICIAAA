@@ -84,7 +84,7 @@ export default function Register() {
         </div>
 
         {/* Formulaire d'inscription */}
-        <Card className="shadow-lg border-0">
+        <Card className="shadow-lg border-0 glass-card">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl text-center">Inscription Pro</CardTitle>
           </CardHeader>

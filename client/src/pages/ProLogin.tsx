@@ -100,7 +100,7 @@ export default function ProLogin() {
 
       {/* Formulaire centré */}
       <div className="flex-1 flex items-start justify-center px-6 pt-2">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm glass-card p-8 rounded-2xl">
           <h1 className="text-xl font-medium text-gray-700 mb-8 text-center">
             Login to your account
           </h1>
