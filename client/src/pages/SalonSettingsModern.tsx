@@ -126,15 +126,15 @@ export default function SalonSettingsModern() {
               <h2 className="text-xl text-gray-500 font-normal">Configure your salon</h2>
             </div>
 
-            {/* Navigation par onglets - style épuré */}
-            <div className="flex bg-gray-50 rounded-2xl p-1 mb-8">
+            {/* Navigation par onglets - style glassmorphism */}
+            <div className="flex glass-button rounded-2xl p-1 mb-8">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-sm font-medium transition-colors ${
                     activeTab === tab.id 
-                      ? 'bg-white text-violet-600 shadow-sm' 
+                      ? 'glass-button text-black shadow-sm' 
                       : 'text-gray-500 hover:text-gray-700'
                   }`}
                 >
@@ -156,7 +156,7 @@ export default function SalonSettingsModern() {
                       value={formData.name}
                       onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Nom du salon"
-                      className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                      className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                   
@@ -166,7 +166,7 @@ export default function SalonSettingsModern() {
                       value={formData.address}
                       onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                       placeholder="Adresse complète"
-                      className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                      className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                   
@@ -176,7 +176,7 @@ export default function SalonSettingsModern() {
                       onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                       placeholder="Description du salon"
                       rows={4}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300 resize-none"
+                      className="w-full px-4 py-3 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500 resize-none"
                     />
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function SalonSettingsModern() {
                       value={formData.phone}
                       onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                       placeholder="Numéro de téléphone"
-                      className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                      className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                   
@@ -201,22 +201,22 @@ export default function SalonSettingsModern() {
                       value={formData.email}
                       onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="Email professionnel"
-                      className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                      className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
 
-                  <div className="bg-gray-50 rounded-2xl p-4">
+                  <div className="glass-button rounded-2xl p-4">
                     <h3 className="font-medium text-gray-900 mb-2">Réseaux sociaux</h3>
                     <div className="space-y-3">
                       <input
                         type="url"
                         placeholder="Instagram"
-                        className="w-full h-10 px-3 bg-white border border-gray-200 rounded-xl text-sm"
+                        className="w-full h-10 px-3 glass-input rounded-xl text-sm"
                       />
                       <input
                         type="url"
                         placeholder="Facebook"
-                        className="w-full h-10 px-3 bg-white border border-gray-200 rounded-xl text-sm"
+                        className="w-full h-10 px-3 glass-input rounded-xl text-sm"
                       />
                     </div>
                   </div>
@@ -227,7 +227,7 @@ export default function SalonSettingsModern() {
               {activeTab === 'hours' && (
                 <div className="space-y-4">
                   {Object.entries(formData.openingHours).map(([day, hours]) => (
-                    <div key={day} className="bg-gray-50 rounded-2xl p-4">
+                    <div key={day} className="glass-button rounded-2xl p-4">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-gray-900 capitalize">{day}</span>
                         <label className="flex items-center">
@@ -259,7 +259,7 @@ export default function SalonSettingsModern() {
                                 [day]: { ...hours, open: e.target.value }
                               }
                             }))}
-                            className="flex-1 h-10 px-3 bg-white border border-gray-200 rounded-xl text-sm"
+                            className="flex-1 h-10 px-3 glass-input rounded-xl text-sm"
                           />
                           <input
                             type="time"
@@ -271,7 +271,7 @@ export default function SalonSettingsModern() {
                                 [day]: { ...hours, close: e.target.value }
                               }
                             }))}
-                            className="flex-1 h-10 px-3 bg-white border border-gray-200 rounded-xl text-sm"
+                            className="flex-1 h-10 px-3 glass-input rounded-xl text-sm"
                           />
                         </div>
                       )}
@@ -284,7 +284,7 @@ export default function SalonSettingsModern() {
               <button
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 glass-button text-black rounded-2xl text-base font-medium disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <Save className="h-4 w-4" />
                 {saveMutation.isPending ? "Sauvegarde..." : "Sauvegarder"}

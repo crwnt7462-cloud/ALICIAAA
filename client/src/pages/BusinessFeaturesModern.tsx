@@ -140,7 +140,7 @@ export default function BusinessFeaturesModern() {
                 <button
                   key={index}
                   onClick={feature.action}
-                  className="bg-gray-50 hover:bg-gray-100 rounded-2xl p-4 transition-colors text-left"
+                  className="glass-button rounded-2xl p-4 text-left"
                 >
                   <div className={`w-10 h-10 ${feature.color} rounded-xl flex items-center justify-center mb-3`}>
                     <feature.icon className="h-5 w-5 text-white" />
@@ -152,7 +152,7 @@ export default function BusinessFeaturesModern() {
             </div>
 
             {/* Stats rapides */}
-            <div className="bg-gray-50 rounded-2xl p-4 mb-6">
+            <div className="glass-button rounded-2xl p-4 mb-6">
               <h3 className="font-medium text-gray-900 mb-3">Aujourd'hui</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
