@@ -305,7 +305,8 @@ export default function SalonPageEditor() {
                 size="sm"
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className="glass-button text-black rounded-xl disabled:opacity-50"
+                className={`text-black rounded-xl disabled:opacity-50 ${!salonData.customColors?.primary ? 'glass-button' : ''}`}
+                style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
               >
                 <Save className="w-4 h-4 mr-1" />
                 {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
@@ -319,7 +320,10 @@ export default function SalonPageEditor() {
           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
             <div className="flex gap-2">
               <label htmlFor="cover-upload" className="cursor-pointer">
-                <div className="glass-button text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                <div 
+                  className={`text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2 ${!salonData.customColors?.primary ? 'glass-button' : ''}`}
+                  style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                >
                   <Upload className="w-4 h-4" />
                   Changer la photo
                 </div>
@@ -601,10 +605,23 @@ export default function SalonPageEditor() {
                     <span>Mar-Sam: 9h-19h • Lun: Fermé • Dim: 10h-17h</span>
                   </div>
                 </div>
+                
+                {/* Bouton de réservation dans la section Info */}
+                {!isEditing && (
+                  <div className="mt-6 text-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-8 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      onClick={() => setLocation('/salon-booking')}
+                    >
+                      Réserver un rendez-vous
+                    </motion.button>
+                  </div>
+                )}
               </CardContent>
             </Card>
-
-
 
             <Card>
               <CardContent className="p-6">
@@ -640,6 +657,21 @@ export default function SalonPageEditor() {
                     ))}
                   </div>
                 </div>
+                
+                {/* Bouton de réservation dans la section Expertise */}
+                {!isEditing && (
+                  <div className="mt-6 text-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-6 py-2 rounded-xl text-sm font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      onClick={() => setLocation('/salon-booking')}
+                    >
+                      Prendre rendez-vous
+                    </motion.button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -869,6 +901,21 @@ export default function SalonPageEditor() {
                 </div>
               </CardContent>
             </Card>
+            
+            {/* Bouton de réservation dans la section Avis */}
+            {!isEditing && (
+              <div className="mt-6 text-center">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`px-8 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                  style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                  onClick={() => setLocation('/salon-booking')}
+                >
+                  Réserver après lecture des avis
+                </motion.button>
+              </div>
+            )}
           </div>
         )}
       </div>
