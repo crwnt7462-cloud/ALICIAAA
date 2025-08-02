@@ -10,7 +10,7 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
-import SearchResults from "@/pages/SearchResults";
+import SalonSearch from "@/pages/SalonSearch";
 import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
@@ -363,11 +363,11 @@ function Router() {
     return null;
   }
 
-  // Page de résultats de recherche
+  // Page de recherche de salons
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SearchResults />
+        <SalonSearch />
       </div>
     );
   }

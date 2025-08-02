@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -38,63 +39,54 @@ export default function SalonSearch() {
     if (q || location) setShowResults(true);
   }, []);
 
-  const salons = [
-    // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
-    {
-      id: "salon-2", 
-      name: "Institut Beauté Marais",
-      location: "Le Marais, Paris 4ème",
-      rating: 4.8,
-      reviews: 198,
-      nextSlot: "16:00", 
-      price: "€€",
-      services: ["Soins visage", "Épilation"],
-      verified: true,
-      distance: "1.2km",
-      category: "esthetique",
-      image: "✨"
+  // Récupérer les salons depuis l'API PostgreSQL
+  const { data: apiSalons, isLoading } = useQuery({
+    queryKey: ['/api/search/salons', searchQuery, locationQuery, activeFilter],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('category', searchQuery.toLowerCase());
+      if (locationQuery) params.set('city', locationQuery.toLowerCase());
+      
+      const response = await fetch(`/api/search/salons?${params.toString()}`);
+      const data = await response.json();
+      
+      // Adapter les données de l'API pour correspondre à l'interface SalonSearch
+      const adaptedSalons = (data.salons || []).map(salon => ({
+        id: salon.id,
+        name: salon.name,
+        location: salon.location || salon.address || 'Paris',
+        rating: salon.rating || 4.5,
+        reviews: salon.reviews || 150,
+        nextSlot: salon.nextSlot || "16:00",
+        price: salon.priceRange || "€€",
+        services: salon.services || ["Service beauté"],
+        verified: salon.verified || true,
+        distance: salon.distance || "1.5km",
+        category: salon.specialties?.[0]?.toLowerCase() || 'beaute',
+        image: salon.specialties?.[0] === 'Coiffure' ? '✂️' : 
+               salon.specialties?.[0] === 'Barbier' ? '🧔' : 
+               salon.specialties?.[0] === 'Soins' ? '✨' : '💅'
+      }));
+      
+      return adaptedSalons;
     },
-    {
-      id: "salon-3",
-      name: "Spa Wellness",
-      location: "Saint-Germain, Paris 6ème",
-      rating: 4.7,
-      reviews: 156,
-      nextSlot: "17:00",
-      price: "€€€€",
-      services: ["Massage", "Hammam"],
-      verified: true,
-      distance: "2.1km",
-      category: "massage",
-      image: "🧘‍♀️"
-    },
-    {
-      id: "salon-4",
-      name: "Nail Art Studio",
-      location: "Opéra, Paris 9ème",
-      rating: 4.6,
-      reviews: 89,
-      nextSlot: "14:45",
-      price: "€€",
-      services: ["Manucure", "Pose gel"],
-      verified: true,
-      distance: "1.8km", 
-      category: "onglerie",
-      image: "💅"
-    }
-  ];
+    refetchOnWindowFocus: false
+  });
+
+  const salons = apiSalons || [];
 
   const categories = [
     { id: "all", name: "Tout", count: salons.length },
-    { id: "coiffure", name: "Coiffure", count: 1 },
-    { id: "esthetique", name: "Esthétique", count: 1 },
-    { id: "massage", name: "Massage", count: 1 },
-    { id: "onglerie", name: "Onglerie", count: 1 }
+    { id: "coiffure", name: "Coiffure", count: salons.filter(s => s.category === 'coiffure').length },
+    { id: "esthetique", name: "Esthétique", count: salons.filter(s => s.category === 'esthetique').length },
+    { id: "massage", name: "Massage", count: salons.filter(s => s.category === 'massage').length },
+    { id: "onglerie", name: "Onglerie", count: salons.filter(s => s.category === 'onglerie').length }
   ];
 
   const handleSearch = () => {
     console.log("Recherche:", searchQuery, locationQuery);
     setShowResults(true);
+    // La recherche se fait automatiquement via useQuery quand les paramètres changent
   };
 
   const filteredSalons = activeFilter === "all" 
