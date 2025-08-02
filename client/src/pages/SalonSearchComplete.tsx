@@ -19,6 +19,20 @@ import {
 } from "lucide-react";
 import rendlyLogo from "@assets/3_1753714421825.png";
 
+// Fonction pour obtenir la classe de couleur spécifique à chaque salon
+const getSalonButtonClass = (salonId: string) => {
+  const salonColors = {
+    'salon-1': 'glass-button-amber',        // Barbier Moderne
+    'salon-2': 'glass-button-pink',         // Salon Excellence  
+    'salon-3': 'glass-button-emerald',      // Institut Beauté
+    'salon-4': 'glass-button-rose',         // Nail Art Studio
+    'salon-5': 'glass-button-indigo',       // Spa Zen
+    'salon-6': 'glass-button-amber',        // Barbier Chic
+    'salon-7': 'glass-button-rose'          // Beauty Lounge
+  };
+  return salonColors[salonId] || 'glass-button-neutral';
+};
+
 export default function SalonSearchComplete() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("barbier");
@@ -405,7 +419,7 @@ export default function SalonSearchComplete() {
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-button px-4 py-2 rounded-xl text-sm font-medium"
+                      className={`${getSalonButtonClass(salon.id)} px-4 py-2 rounded-xl text-sm font-medium`}
                       onClick={(e) => {
                         e.stopPropagation();
                         setLocation('/salon-booking');

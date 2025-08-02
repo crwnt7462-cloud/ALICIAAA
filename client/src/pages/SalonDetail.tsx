@@ -252,7 +252,7 @@ export default function SalonDetail() {
 
         <Button 
           onClick={() => setLocation('/booking')}
-          className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium h-12"
+          className="w-full glass-button-neutral font-medium h-12"
         >
           <Calendar className="w-5 h-5 mr-2" />
           Réserver maintenant
@@ -350,7 +350,7 @@ export default function SalonDetail() {
                       <div className="text-xl font-bold text-gray-900 mb-2">{service.price}€</div>
                       <Button 
                         size="sm" 
-                        className="bg-violet-600 hover:bg-violet-700 text-white"
+                        className="glass-button-neutral"
                         onClick={() => setLocation('/booking')}
                       >
                         Choisir
