@@ -94,7 +94,8 @@ export default function SalonPageEditor() {
       primary: '#f59e0b', // amber-500 par défaut pour Barbier Gentleman
       accent: '#d97706',   // amber-600
       buttonText: '#000000', // noir
-      buttonClass: 'glass-button-amber'
+      buttonClass: 'glass-button-amber',
+      intensity: 35 // Intensité par défaut
     }
   });
 
@@ -179,18 +180,17 @@ export default function SalonPageEditor() {
 
   // Génère le style personnalisé des boutons avec intensité
   const getCustomButtonStyle = () => {
-    if (!salonData.customColors?.primary) {
-      return {};
-    }
+    // Utilise toujours les couleurs personnalisées (même par défaut)
+    const primaryColor = salonData.customColors?.primary || '#a855f7';
+    const intensity = salonData.customColors?.intensity || 35;
     
-    const intensity = salonData.customColors.intensity || 35;
-    const rgb = parseInt(salonData.customColors.primary.slice(1), 16);
+    const rgb = parseInt(primaryColor.slice(1), 16);
     const r = (rgb >> 16) & 255;
     const g = (rgb >> 8) & 255;
     const b = rgb & 255;
     
     const primaryOpacity = intensity / 100;
-    const secondaryOpacity = (intensity - 10) / 100;
+    const secondaryOpacity = Math.max(0.1, (intensity - 10) / 100);
     
     return {
       background: `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, ${primaryOpacity}) 0%, rgba(${r}, ${g}, ${b}, ${secondaryOpacity}) 100%)`,
@@ -305,8 +305,8 @@ export default function SalonPageEditor() {
                 size="sm"
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className={`text-black rounded-xl disabled:opacity-50 ${!salonData.customColors?.primary ? 'glass-button' : ''}`}
-                style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                className="text-black rounded-xl disabled:opacity-50"
+                style={getCustomButtonStyle()}
               >
                 <Save className="w-4 h-4 mr-1" />
                 {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
@@ -321,8 +321,8 @@ export default function SalonPageEditor() {
             <div className="flex gap-2">
               <label htmlFor="cover-upload" className="cursor-pointer">
                 <div 
-                  className={`text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2 ${!salonData.customColors?.primary ? 'glass-button' : ''}`}
-                  style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                  className="text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+                  style={getCustomButtonStyle()}
                 >
                   <Upload className="w-4 h-4" />
                   Changer la photo
@@ -531,8 +531,8 @@ export default function SalonPageEditor() {
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className={`mt-2 px-4 py-2 text-sm font-semibold rounded-xl ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                                style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                                className="mt-2 px-4 py-2 text-sm font-semibold rounded-xl"
+                                style={getCustomButtonStyle()}
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -612,8 +612,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-8 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      className="px-8 py-3 rounded-xl font-semibold"
+                      style={getCustomButtonStyle()}
                       onClick={() => setLocation('/salon-booking')}
                     >
                       Réserver un rendez-vous
@@ -664,8 +664,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-2 rounded-xl text-sm font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      className="px-6 py-2 rounded-xl text-sm font-semibold"
+                      style={getCustomButtonStyle()}
                       onClick={() => setLocation('/salon-booking')}
                     >
                       Prendre rendez-vous
@@ -832,8 +832,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-6 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      className="px-6 py-3 rounded-xl font-semibold"
+                      style={getCustomButtonStyle()}
                     >
                       Réserver maintenant
                     </motion.button>
@@ -852,8 +852,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`px-4 py-2 rounded-xl text-sm font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                      className="px-4 py-2 rounded-xl text-sm font-semibold"
+                      style={getCustomButtonStyle()}
                     >
                       Réserver
                     </motion.button>
@@ -908,8 +908,8 @@ export default function SalonPageEditor() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={`px-8 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-                  style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+                  className="px-8 py-3 rounded-xl font-semibold"
+                  style={getCustomButtonStyle()}
                   onClick={() => setLocation('/salon-booking')}
                 >
                   Réserver après lecture des avis
@@ -931,8 +931,8 @@ export default function SalonPageEditor() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`w-full h-16 rounded-xl font-semibold text-lg ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
-            style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
+            className="w-full h-16 rounded-xl font-semibold text-lg"
+            style={getCustomButtonStyle()}
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
