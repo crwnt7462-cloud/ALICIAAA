@@ -423,18 +423,10 @@ function Router() {
   }
   
   // Routes spécifiques pour les salons de la page d'accueil
-  if (location === '/salon/mon-salon-beaute') {
+  if (location === '/salon/salon-tendance-marais') {
     return (
       <div className="h-full">
         <ModernSalonDetail />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/salon-excellence-paris') {
-    return (
-      <div className="h-full">
-        {/* SUPPRIMÉ : Plus aucune route SalonExcellenceParis */}
       </div>
     );
   }

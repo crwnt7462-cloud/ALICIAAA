@@ -119,7 +119,7 @@ export default function ModernSalonDetail() {
 
   // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
   const salon = {
-    name: "Mon Salon de Beauté",
+    name: "Atelier Coiffure Saint-Germain",
     subtitle: "L'art capillaire depuis 1995",
     address: "42 rue de Rivoli, Paris 1er",
     phone: "01 42 96 17 83",

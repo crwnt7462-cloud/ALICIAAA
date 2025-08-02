@@ -101,8 +101,8 @@ export default function SalonPageEditor() {
   };
 
   const [salonData, setSalonData] = useState<SalonData>({
-    id: generateSalonId('Mon Salon'),
-    name: 'Mon Salon',
+    id: generateSalonId('Nouveau Salon'),
+    name: 'Nouveau Salon',
     description: 'Salon de beauté moderne et professionnel',
     longDescription: `Notre salon vous accueille dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
 
@@ -204,10 +204,7 @@ Nous proposons une gamme complète de services pour sublimer votre beauté natur
     queryKey: ['/api/salon/current'], // API qui retourne le salon du pro connecté
     retry: 1,
     refetchOnWindowFocus: false,
-    onError: (error: any) => {
-      console.log('⚠️ Aucun salon trouvé, utilisation du salon par défaut');
-      // Si aucun salon n'existe, on créera automatiquement un nouveau salon unique
-    }
+
   });
 
   useEffect(() => {
@@ -234,7 +231,7 @@ Nous proposons une gamme complète de services pour sublimer votre beauté natur
   const saveMutation = useMutation({
     mutationFn: async (updatedData: Partial<SalonData>) => {
       // Utiliser l'ID du salon récupéré de l'API ou celui dans les données
-      const salonId = currentSalon?.id || salonData.id;
+      const salonId = (currentSalon as any)?.id || salonData.id;
       console.log('💾 Sauvegarde salon ID:', salonId);
       
       const response = await apiRequest('PUT', `/api/salon/${salonId}`, {

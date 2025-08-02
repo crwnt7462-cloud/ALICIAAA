@@ -40,8 +40,8 @@ export default function PublicLanding() {
   // Salons ajoutés automatiquement lors de l'inscription pro
   const [topSalons, setTopSalons] = useState([
     {
-      id: "salon-excellence",
-      name: "Mon Salon de Beauté",
+      id: "salon-moderne-republique",
+      name: "Salon Moderne République",
       location: "Paris 16ème",
       rating: 4.9,
       reviews: 324,
@@ -76,8 +76,8 @@ export default function PublicLanding() {
     const addNewProSalons = () => {
       const newSalons = [
         {
-          id: "mon-salon-beaute",
-          name: "Mon Salon de Beauté",
+          id: "beaute-champs-elysees",
+          name: "Beauté Champs-Élysées",
           location: "Paris Centre",
           rating: 4.8,
           reviews: 42,
@@ -683,16 +683,16 @@ export default function PublicLanding() {
           </div>
 
           <div className="space-y-4">
-            {/* Mon Salon de Beauté */}
+            {/* Salon Tendance Marais */}
             <div 
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/mon-salon-beaute')}
+              onClick={() => setLocation('/salon/salon-tendance-marais')}
             >
               {/* Photo du salon */}
               <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
-                  alt="Mon Salon de Beauté"
+                  alt="Salon Tendance Marais"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-10"></div>
@@ -712,7 +712,7 @@ export default function PublicLanding() {
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Tendance Marais</h4>
                     <p className="text-sm text-gray-500 mb-2">Paris Centre</p>
                   </div>
                   <span className="text-sm text-gray-600 font-medium">À partir de 35€</span>
