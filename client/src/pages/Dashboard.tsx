@@ -7,6 +7,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -68,7 +69,7 @@ export default function Dashboard() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
+            className={`${getGenericGlassButton(0)} text-black rounded-lg text-xs px-3 py-1.5`}
             onClick={() => setLocation('/ai')}
           >
             <TrendingUp className="w-3 h-3 mr-1" />
@@ -76,7 +77,7 @@ export default function Dashboard() {
           </Button>
           <Button 
             size="sm" 
-            className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5"
+            className={`${getGenericGlassButton(1)} text-black shadow-md hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5`}
             onClick={() => setLocation('/booking')}
           >
             <Plus className="w-3 h-3 mr-1" />
@@ -90,7 +91,7 @@ export default function Dashboard() {
 
         <Button 
           variant="outline"
-          className="h-14 border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl"
+          className={`h-14 ${getGenericGlassButton(2)} text-black rounded-xl`}
           onClick={() => setLocation("/booking")}
         >
           <Plus className="w-5 h-5 mr-2" />
@@ -101,7 +102,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-4 gap-2">
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-4 border-orange-500 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl text-xs font-bold"
+          className={`h-16 flex-col ${getGenericGlassButton(3)} text-black rounded-xl text-xs font-bold`}
           onClick={() => {
             console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
             setLocation("/salon-page-editor");
@@ -112,7 +113,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-blue-200 text-blue-700 hover:bg-blue-50 rounded-xl text-xs"
+          className={`h-16 flex-col ${getGenericGlassButton(4)} text-black rounded-xl text-xs`}
           onClick={() => setLocation("/staff")}
         >
           <UserCheck className="w-5 h-5 mb-1" />
@@ -120,7 +121,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl text-xs"
+          className={`h-16 flex-col ${getGenericGlassButton(0)} text-black rounded-xl text-xs`}
           onClick={() => setLocation("/clients")}
         >
           <Users className="w-5 h-5 mb-1" />
@@ -128,7 +129,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-orange-200 text-orange-700 hover:bg-orange-50 rounded-xl text-xs"
+          className={`h-16 flex-col ${getGenericGlassButton(1)} text-black rounded-xl text-xs`}
           onClick={() => setLocation("/planning")}
         >
           <Calendar className="w-5 h-5 mb-1" />
@@ -136,7 +137,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className="h-16 flex-col border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-xs"
+          className={`h-16 flex-col ${getGenericGlassButton(2)} text-black rounded-xl text-xs`}
           onClick={() => setLocation("/settings")}
         >
           <Settings className="w-5 h-5 mb-1" />
