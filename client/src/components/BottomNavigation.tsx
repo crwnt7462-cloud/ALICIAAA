@@ -52,8 +52,8 @@ export function BottomNavigation() {
               onClick={() => setLocation(item.path)}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1.5 py-0.5 ${
                 item.active
-                  ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  ? 'text-gray-900 transform scale-105'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <item.icon className="h-3.5 w-3.5" />
