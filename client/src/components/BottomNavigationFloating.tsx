@@ -44,7 +44,7 @@ export function BottomNavigationFloating() {
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
       {/* Barre flottante avec ombre et effet glassmorphism */}
-      <div className={`${getGenericGlassButton(2)} rounded-3xl shadow-2xl shadow-black/10 px-6 py-3`}>
+      <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl shadow-black/10 px-6 py-3">
         <div className="flex items-center gap-8">
           {navItems.map((item) => (
             <button
@@ -58,15 +58,15 @@ export function BottomNavigationFloating() {
             >
               <div className={`p-2 rounded-2xl transition-all duration-200 ${
                 item.active 
-                  ? 'bg-violet-100 shadow-lg shadow-violet-200/50' 
-                  : 'hover:bg-violet-50'
+                  ? 'bg-white/20 shadow-lg shadow-white/10' 
+                  : 'hover:bg-white/10'
               }`}>
                 <item.icon className={`h-5 w-5 ${
-                  item.active ? 'text-violet-600' : 'text-current'
+                  item.active ? 'text-gray-900' : 'text-current'
                 }`} />
               </div>
               <span className={`text-xs font-medium ${
-                item.active ? 'text-violet-600' : 'text-current'
+                item.active ? 'text-gray-900' : 'text-current'
               }`}>
                 {item.label}
               </span>
