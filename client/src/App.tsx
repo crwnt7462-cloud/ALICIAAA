@@ -422,38 +422,7 @@ function Router() {
     );
   }
   
-  // Routes spécifiques pour les salons de la page d'accueil
-  if (location === '/salon/mon-salon-beaute') {
-    return (
-      <div className="h-full">
-        <ModernSalonDetail />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/salon-excellence-paris') {
-    return (
-      <div className="h-full">
-        <SalonExcellenceParis />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/beauty-institute-st-germain') {
-    return (
-      <div className="h-full">
-        <InstitutBeauteSaintGermain />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/gentleman-barbier-marais') {
-    return (
-      <div className="h-full">
-        <BarbierGentlemanMarais />
-      </div>
-    );
-  }
+  // SUPPRIMÉ : Routes prédéfinies remplacées par le système dynamique
   
   // Page détail générique pour autres salons
   if (location.startsWith('/salon/')) {
