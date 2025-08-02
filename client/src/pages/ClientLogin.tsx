@@ -106,7 +106,7 @@ export default function ClientLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                className="h-14 glass-input rounded-2xl text-base placeholder:text-gray-400"
                 required
               />
             </div>
@@ -118,7 +118,7 @@ export default function ClientLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
-                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                className="h-14 glass-input rounded-2xl text-base placeholder:text-gray-400"
                 required
               />
             </div>
@@ -127,7 +127,7 @@ export default function ClientLogin() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white text-base font-semibold rounded-2xl shadow-lg"
+              className="w-full h-14 glass-button text-base font-semibold rounded-2xl"
             >
               {isLoading ? "Connexion..." : "Sign up"}
             </Button>

@@ -113,7 +113,7 @@ export default function ProLogin() {
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                 placeholder="Email"
-                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                className="h-14 glass-input rounded-2xl text-base placeholder:text-gray-400"
                 required
               />
             </div>
@@ -125,7 +125,7 @@ export default function ProLogin() {
                 value={formData.password}
                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                 placeholder="Password"
-                className="h-14 bg-gray-50 border-0 rounded-2xl text-base placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-violet-500"
+                className="h-14 glass-input rounded-2xl text-base placeholder:text-gray-400"
                 required
               />
             </div>
@@ -134,7 +134,7 @@ export default function ProLogin() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white text-base font-semibold rounded-2xl shadow-lg"
+              className="w-full h-14 glass-button text-base font-semibold rounded-2xl"
             >
               {isLoading ? "Connexion..." : "Sign up"}
             </Button>

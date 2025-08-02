@@ -118,7 +118,7 @@ export default function ProLoginModern() {
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Email professionnel"
-                  className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                   required
                 />
               </div>
@@ -129,7 +129,7 @@ export default function ProLoginModern() {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Mot de passe"
-                  className="w-full h-12 px-4 pr-12 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                  className="w-full h-12 px-4 pr-12 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
                   required
                 />
                 <button
@@ -145,7 +145,7 @@ export default function ProLoginModern() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 text-white rounded-2xl text-base font-medium transition-colors"
+                className="w-full h-12 glass-button rounded-2xl text-base font-medium"
               >
                 {isLoading ? "Connexion..." : "Sign in"}
               </button>

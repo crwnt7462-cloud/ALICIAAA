@@ -128,7 +128,7 @@ export default function Register() {
                     placeholder="Salon Beautiful"
                     value={formData.businessName}
                     onChange={(e) => updateField("businessName", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                   />
                 </div>
@@ -145,7 +145,7 @@ export default function Register() {
                     placeholder="contact@salonbeautiful.fr"
                     value={formData.email}
                     onChange={(e) => updateField("email", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                   />
                 </div>
@@ -160,7 +160,7 @@ export default function Register() {
                     placeholder="01 23 45 67 89"
                     value={formData.phone}
                     onChange={(e) => updateField("phone", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                   />
                 </div>
@@ -176,7 +176,7 @@ export default function Register() {
                     placeholder="123 Rue de la Beauté"
                     value={formData.address}
                     onChange={(e) => updateField("address", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                   />
                 </div>
@@ -189,6 +189,7 @@ export default function Register() {
                   placeholder="Paris"
                   value={formData.city}
                   onChange={(e) => updateField("city", e.target.value)}
+                  className="glass-input"
                   required
                 />
               </div>
@@ -204,7 +205,7 @@ export default function Register() {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={(e) => updateField("password", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                     minLength={6}
                   />
@@ -221,7 +222,7 @@ export default function Register() {
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={(e) => updateField("confirmPassword", e.target.value)}
-                    className="pl-10"
+                    className="pl-10 glass-input"
                     required
                     minLength={6}
                   />
@@ -230,7 +231,7 @@ export default function Register() {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700"
+                className="w-full glass-button"
                 disabled={isLoading}
               >
                 {isLoading ? "Création..." : "Créer mon salon"}

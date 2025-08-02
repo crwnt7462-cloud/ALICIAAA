@@ -197,7 +197,7 @@ export default function BeautyLoungeMontparnasse() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'glass-button-pink border-b-2 border-violet-400'
+                  ? 'glass-button-pink border-b-2 border-indigo-600'
                   : 'glass-button-secondary'
               }`}
             >
