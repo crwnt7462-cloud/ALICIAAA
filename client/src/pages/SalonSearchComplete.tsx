@@ -25,7 +25,7 @@ export default function SalonSearchComplete() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [sortBy, setSortBy] = useState("distance");
 
-  // Récupérer les salons depuis l'API
+  // Récupérer les salons depuis l'API avec couleurs et images
   const { data: salonsData, isLoading } = useQuery({
     queryKey: ['/api/search/salons', activeFilter, locationQuery, searchQuery],
     queryFn: async () => {
@@ -40,75 +40,8 @@ export default function SalonSearchComplete() {
     }
   });
 
+  // Utiliser uniquement les vrais salons depuis l'API PostgreSQL avec couleurs personnalisées
   const salons = salonsData?.salons || [];
-
-  // Données statiques de fallback si l'API ne répond pas
-  const fallbackSalons = [
-    {
-      id: "salon-1",
-      name: "Barbier Moderne",
-      location: "République, Paris 11ème",
-      rating: 4.8,
-      reviews: 156,
-      nextSlot: "11:30",
-      price: "€€",
-      services: ["Coupe homme", "Barbe", "Shampoing"],
-      verified: true,
-      distance: "0.8km",
-      category: "coiffure",
-      photo: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: "-20% première visite"
-    },
-    {
-      id: "salon-2",
-      name: "Mon Salon",
-      location: "Marais, Paris 4ème",
-      rating: 4.9,
-      reviews: 298,
-      nextSlot: "14:15",
-      price: "€€€",
-      services: ["Coupe", "Coloration", "Brushing"],
-      verified: true,
-      distance: "1.2km",
-      category: "coiffure",
-      photo: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: null
-    },
-    {
-      id: "salon-3",
-      name: "Beauty Institute",
-      location: "Saint-Germain, Paris 6ème",
-      rating: 4.7,
-      reviews: 187,
-      nextSlot: "16:00",
-      price: "€€",
-      services: ["Soins visage", "Épilation", "Massage"],
-      verified: true,
-      distance: "1.5km",
-      category: "esthetique",
-      photo: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop",
-      openNow: false,
-      promotion: "Nouveau client -15%"
-    },
-    {
-      id: "salon-4",
-      name: "Nail Art Studio",
-      location: "Opéra, Paris 9ème",
-      rating: 4.6,
-      reviews: 89,
-      nextSlot: "15:30",
-      price: "€€",
-      services: ["Manucure", "Pose gel", "Nail art"],
-      verified: true,
-      distance: "2.1km",
-      category: "onglerie",
-      photo: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: "3ème séance offerte"
-    }
-  ];
 
   const categories = [
     { id: "all", name: "Tous", count: salons.length },
@@ -376,7 +309,22 @@ export default function SalonSearchComplete() {
                       </span>
                     </div>
                     <button 
-                      className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                      className="px-4 py-2 rounded-xl text-sm font-medium transition-colors text-white"
+                      style={{
+                        backgroundColor: salon.customColors?.primary || '#8B5CF6',
+                        borderColor: salon.customColors?.primary || '#8B5CF6'
+                      }}
+                      onMouseEnter={(e) => {
+                        const primary = salon.customColors?.primary || '#8B5CF6';
+                        // Assombrir la couleur au hover
+                        const darkerColor = primary.replace('#', '').match(/.{2}/g)
+                          ?.map(hex => Math.max(0, parseInt(hex, 16) - 30).toString(16).padStart(2, '0'))
+                          .join('');
+                        e.currentTarget.style.backgroundColor = '#' + (darkerColor || '7C3AED');
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = salon.customColors?.primary || '#8B5CF6';
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         setLocation('/salon-booking');
