@@ -58,6 +58,17 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
+### ✅ Conversion Glassmorphism Complète
+- **Date**: 02/08/2025
+- **Changement**: Conversion complète de tous les boutons violets vers le style glassmorphism unifié
+- **Impact**: Design cohérent et moderne sur toute la plateforme
+- **Détails**: 
+  - Nouvelle page ClientLoginModern avec design épuré
+  - Tous les boutons de la page d'accueil convertis au glassmorphism
+  - MessagingHub et ClientManagement mis à jour
+  - Landing.tsx et PublicLanding.tsx harmonisés
+  - Redirection correcte vers /client-login-modern
+
 ### ✅ Intégration OpenAI Complétée
 - **Date**: 01/08/2025
 - **Changement**: Connexion OpenAI GPT-4o entièrement fonctionnelle
