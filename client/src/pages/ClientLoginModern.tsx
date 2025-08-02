@@ -129,11 +129,14 @@ export default function ClientLoginModern() {
                 </button>
               </div>
 
-              {/* Bouton connexion - même style que "Search" */}
+              {/* Bouton connexion - style glassmorphism Apple */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full h-12 ${getGenericGlassButton(0)} rounded-2xl text-base font-medium`}
+                className={`w-full h-12 backdrop-blur-md bg-white/20 border border-white/30 rounded-2xl text-base font-medium text-black 
+                  hover:bg-white/30 hover:border-white/40 hover:shadow-lg 
+                  active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed
+                  transition-all duration-200 ease-out shadow-sm`}
               >
                 {isLoading ? "Connexion..." : "Se connecter"}
               </button>
