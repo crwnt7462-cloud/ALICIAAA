@@ -49,7 +49,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-amber-500" />
+            <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-600" />
             <h3 className="text-lg font-medium mb-2">Accès restreint</h3>
             <p className="text-gray-600">
               Cette page est réservée aux comptes professionnels
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-600">
             Tableau de bord - {user?.businessName}
           </h1>
           <p className="text-gray-600 mt-2">
@@ -80,11 +80,11 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">RDV Aujourd'hui</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-600">
                     {todayAppointments.length}
                   </p>
                 </div>
-                <Calendar className="w-8 h-8 text-purple-600" />
+                <Calendar className="w-8 h-8 text-gray-600" />
               </div>
               <div className="mt-4">
                 <Badge variant="secondary">
@@ -99,11 +99,11 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Messages non lus</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-600">
                     {unreadMessages.length}
                   </p>
                 </div>
-                <MessageSquare className="w-8 h-8 text-blue-600" />
+                <MessageSquare className="w-8 h-8 text-gray-600" />
               </div>
               <div className="mt-4">
                 <Button variant="outline" size="sm">
@@ -118,14 +118,14 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Revenus ce mois</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-600">
                     {monthlyRevenue?.total || 0}€
                   </p>
                 </div>
-                <DollarSign className="w-8 h-8 text-green-600" />
+                <DollarSign className="w-8 h-8 text-gray-600" />
               </div>
               <div className="mt-4">
-                <Badge className="bg-green-100 text-green-800">
+                <Badge className="bg-green-100 text-gray-600">
                   +{monthlyRevenue?.growth || 0}% vs mois dernier
                 </Badge>
               </div>
@@ -137,11 +137,11 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Note moyenne</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-bold text-gray-600">
                     {stats?.averageRating || '5.0'}
                   </p>
                 </div>
-                <Star className="w-8 h-8 text-yellow-500" />
+                <Star className="w-8 h-8 text-gray-600" />
               </div>
               <div className="mt-4">
                 <Badge variant="outline">
@@ -174,7 +174,7 @@ export default function AdminDashboard() {
                 <CardContent>
                   {todayAppointments.length === 0 ? (
                     <div className="text-center py-8">
-                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                       <p className="text-gray-600">Aucun rendez-vous aujourd'hui</p>
                     </div>
                   ) : (
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
                           <div className="text-right">
                             <p className="font-medium">{appointment.time}</p>
                             <Badge 
-                              className={appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                              className={appointment.status === 'confirmed' ? 'bg-green-100 text-gray-600' : 'bg-yellow-100 text-gray-600'}
                             >
                               {appointment.status}
                             </Badge>
@@ -235,7 +235,7 @@ export default function AdminDashboard() {
               <CardContent>
                 {unreadMessages.length === 0 ? (
                   <div className="text-center py-8">
-                    <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                     <p className="text-gray-600">Aucun nouveau message</p>
                   </div>
                 ) : (
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-center py-8">
-                    <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                    <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-600" />
                     <p className="text-gray-600">Graphique à venir</p>
                   </div>
                 </CardContent>

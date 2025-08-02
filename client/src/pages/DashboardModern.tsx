@@ -110,13 +110,13 @@ export default function DashboardModern() {
             
             {/* Logo */}
             <div className="text-center mb-12">
-              <h1 className="text-3xl font-bold text-violet-600">Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-600">Dashboard</h1>
             </div>
 
             {/* Titre et date */}
             <div className="text-center mb-8">
-              <h2 className="text-xl text-gray-500 font-normal">Today's overview</h2>
-              <p className="text-sm text-gray-400 mt-1">{new Date().toLocaleDateString('fr-FR', { 
+              <h2 className="text-xl text-gray-600 font-normal">Today's overview</h2>
+              <p className="text-sm text-gray-600 mt-1">{new Date().toLocaleDateString('fr-FR', { 
                 weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
@@ -127,26 +127,26 @@ export default function DashboardModern() {
             {/* Stats du jour */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-violet-600 mb-1">{stats?.todayAppointments || 0}</div>
-                <div className="text-xs text-gray-500">RDV aujourd'hui</div>
+                <div className="text-2xl font-bold text-gray-600 mb-1">{stats?.todayAppointments || 0}</div>
+                <div className="text-xs text-gray-600">RDV aujourd'hui</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-green-600 mb-1">€{stats?.todayRevenue || 0}</div>
-                <div className="text-xs text-gray-500">CA aujourd'hui</div>
+                <div className="text-2xl font-bold text-gray-600 mb-1">€{stats?.todayRevenue || 0}</div>
+                <div className="text-xs text-gray-600">CA aujourd'hui</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-blue-600 mb-1">{stats?.weekAppointments || 0}</div>
-                <div className="text-xs text-gray-500">Cette semaine</div>
+                <div className="text-2xl font-bold text-gray-600 mb-1">{stats?.weekAppointments || 0}</div>
+                <div className="text-xs text-gray-600">Cette semaine</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-orange-600 mb-1">{stats?.pendingAppointments || 0}</div>
-                <div className="text-xs text-gray-500">En attente</div>
+                <div className="text-2xl font-bold text-gray-600 mb-1">{stats?.pendingAppointments || 0}</div>
+                <div className="text-xs text-gray-600">En attente</div>
               </div>
             </div>
 
             {/* Actions rapides */}
             <div className="mb-6">
-              <h3 className="font-medium text-gray-900 mb-3">Actions rapides</h3>
+              <h3 className="font-medium text-gray-600 mb-3">Actions rapides</h3>
               <div className="grid grid-cols-2 gap-3">
                 {quickActions.map((action, index) => (
                   <button
@@ -164,10 +164,10 @@ export default function DashboardModern() {
             {/* Prochains rendez-vous */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-gray-900">Prochains RDV</h3>
+                <h3 className="font-medium text-gray-600">Prochains RDV</h3>
                 <button 
                   onClick={() => setLocation('/planning')}
-                  className="text-sm text-violet-600 hover:text-violet-700"
+                  className="text-sm text-gray-600 hover:text-gray-600"
                 >
                   Voir tout
                 </button>
@@ -181,20 +181,20 @@ export default function DashboardModern() {
                         <span className="font-medium text-sm">{appointment.time}</span>
                         <span className={`px-2 py-0.5 rounded-full text-xs ${
                           appointment.status === 'confirmed' 
-                            ? 'bg-green-100 text-green-600 border border-green-200' 
-                            : 'bg-yellow-100 text-yellow-600 border border-yellow-200'
+                            ? 'bg-green-100 text-gray-600 border border-green-200' 
+                            : 'bg-yellow-100 text-gray-600 border border-yellow-200'
                         }`}>
                           {appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
                         </span>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">€{appointment.price}</span>
+                      <span className="text-sm font-medium text-gray-600">€{appointment.price}</span>
                     </div>
                     
-                    <h4 className="font-medium text-gray-900 mb-1">{appointment.clientName}</h4>
+                    <h4 className="font-medium text-gray-600 mb-1">{appointment.clientName}</h4>
                     <p className="text-sm text-gray-600 mb-2">{appointment.service}</p>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1 text-xs text-gray-600">
                         <Clock className="h-3 w-3" />
                         <span>{appointment.duration}min</span>
                       </div>
@@ -213,20 +213,20 @@ export default function DashboardModern() {
             </div>
 
             {/* Résumé mensuel */}
-            <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl p-4 border border-violet-100">
+            <div className="bg-white/30 backdrop-blur-md border border-gray-200/50">
               <div className="flex items-center gap-2 mb-3">
-                <TrendingUp className="h-5 w-5 text-violet-600" />
-                <h3 className="font-medium text-violet-900">Performance du mois</h3>
+                <TrendingUp className="h-5 w-5 text-gray-600" />
+                <h3 className="font-medium text-gray-600">Performance du mois</h3>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-lg font-bold text-violet-900">€{stats?.monthRevenue || 0}</div>
-                  <div className="text-xs text-violet-600">Chiffre d'affaires</div>
+                  <div className="text-lg font-bold text-gray-600">€{stats?.monthRevenue || 0}</div>
+                  <div className="text-xs text-gray-600">Chiffre d'affaires</div>
                 </div>
                 <div>
-                  <div className="text-lg font-bold text-violet-900">4.8</div>
-                  <div className="text-xs text-violet-600 flex items-center gap-1">
+                  <div className="text-lg font-bold text-gray-600">4.8</div>
+                  <div className="text-xs text-gray-600 flex items-center gap-1">
                     <Star className="h-3 w-3 fill-current" />
                     Note moyenne
                   </div>

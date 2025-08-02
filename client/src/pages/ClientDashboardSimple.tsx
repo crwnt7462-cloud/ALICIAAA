@@ -83,10 +83,10 @@ export default function ClientDashboardSimple() {
 
  const getStatusColor = (status: string) => {
   switch (status) {
-   case 'confirmed': return 'bg-green-100 text-green-800';
-   case 'pending': return 'bg-yellow-100 text-yellow-800';
-   case 'cancelled': return 'bg-red-100 text-red-800';
-   default: return 'bg-gray-100 text-gray-800';
+   case 'confirmed': return 'bg-green-100 text-gray-600';
+   case 'pending': return 'bg-yellow-100 text-gray-600';
+   case 'cancelled': return 'bg-red-100 text-gray-600';
+   default: return 'bg-gray-100 text-gray-600';
   }
  };
 
@@ -121,7 +121,7 @@ export default function ClientDashboardSimple() {
     <div className="max-w-4xl mx-auto px-4 py-4">
      <div className="flex items-center justify-between">
       <div>
-       <h1 className="text-xl font-semibold text-gray-900">
+       <h1 className="text-xl font-semibold text-gray-600">
         Bonjour {clientData.firstName}
        </h1>
        <p className="text-sm text-gray-600">
@@ -161,8 +161,8 @@ export default function ClientDashboardSimple() {
         onClick={() => setActiveTab(tab.id)}
         className={`pb-2 px-1 text-sm font-medium border-b-2 transition-colors ${
          activeTab === tab.id
-          ? 'border-gray-900 text-gray-900'
-          : 'border-transparent text-gray-500 hover:text-gray-700'
+          ? 'border-gray-900 text-gray-600'
+          : 'border-transparent text-gray-600 hover:text-gray-600'
         }`}
        >
         {tab.label}
@@ -184,13 +184,13 @@ export default function ClientDashboardSimple() {
           <h3 className="text-lg font-semibold mb-2">
            Nouveau rendez-vous
           </h3>
-          <p className="text-violet-100 text-sm">
+          <p className="text-gray-600 text-sm">
            Trouvez et réservez votre prochain RDV beauté
           </p>
          </div>
          <Button
           onClick={() => setLocation('/search')}
-          className="bg-white text-violet-600 hover:bg-gray-50"
+          className="bg-white text-gray-600 hover:bg-gray-50"
          >
           <Plus className="h-4 w-4 mr-2" />
           Réserver
@@ -202,14 +202,14 @@ export default function ClientDashboardSimple() {
       {/* Prochains rendez-vous */}
       <div>
        <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">
+        <h2 className="text-lg font-semibold text-gray-600">
          Vos prochains rendez-vous
         </h2>
         <Button
          variant="ghost"
          size="sm"
          onClick={() => setActiveTab('appointments')}
-         className="text-violet-600"
+         className="text-gray-600"
         >
          Voir tout
          <ArrowRight className="h-3 w-3 ml-1" />
@@ -232,7 +232,7 @@ export default function ClientDashboardSimple() {
             <div className="flex items-center justify-between">
              <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-               <h3 className="font-medium text-gray-900">
+               <h3 className="font-medium text-gray-600">
                 {appointment.serviceName}
                </h3>
                <Badge className={`text-xs ${getStatusColor(appointment.status)}`}>
@@ -264,7 +264,7 @@ export default function ClientDashboardSimple() {
               </div>
              </div>
              <div className="text-right">
-              <div className="text-lg font-semibold text-gray-900">
+              <div className="text-lg font-semibold text-gray-600">
                {appointment.price}€
               </div>
              </div>
@@ -276,8 +276,8 @@ export default function ClientDashboardSimple() {
        ) : (
         <Card className="border border-gray-200">
          <CardContent className="p-8 text-center">
-          <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-600 mb-2">
            Aucun rendez-vous à venir
           </h3>
           <p className="text-gray-600 mb-4">
@@ -296,7 +296,7 @@ export default function ClientDashboardSimple() {
 
       {/* Actions rapides */}
       <div>
-       <h2 className="text-lg font-semibold text-gray-900 mb-4">
+       <h2 className="text-lg font-semibold text-gray-600 mb-4">
         Actions rapides
        </h2>
        <div className="grid grid-cols-2 gap-4">
@@ -305,8 +305,8 @@ export default function ClientDashboardSimple() {
          onClick={() => setActiveTab('messages')}
         >
          <CardContent className="p-4 text-center">
-          <MessageSquare className="h-8 w-8 text-violet-600 mx-auto mb-2" />
-          <p className="text-sm font-medium text-gray-900">Messages</p>
+          <MessageSquare className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+          <p className="text-sm font-medium text-gray-600">Messages</p>
           <p className="text-xs text-gray-600">Contacter un salon</p>
          </CardContent>
         </Card>
@@ -315,8 +315,8 @@ export default function ClientDashboardSimple() {
          onClick={() => setActiveTab('profile')}
         >
          <CardContent className="p-4 text-center">
-          <User className="h-8 w-8 text-violet-600 mx-auto mb-2" />
-          <p className="text-sm font-medium text-gray-900">Mon profil</p>
+          <User className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+          <p className="text-sm font-medium text-gray-600">Mon profil</p>
           <p className="text-xs text-gray-600">Gérer mes infos</p>
          </CardContent>
         </Card>
@@ -329,7 +329,7 @@ export default function ClientDashboardSimple() {
     {activeTab === 'appointments' && (
      <div className="space-y-4">
       <div className="flex items-center justify-between">
-       <h2 className="text-lg font-semibold text-gray-900">
+       <h2 className="text-lg font-semibold text-gray-600">
         Mes rendez-vous
        </h2>
        <Button
@@ -357,7 +357,7 @@ export default function ClientDashboardSimple() {
            <div className="flex items-center justify-between">
             <div className="flex-1">
              <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-medium text-gray-900">
+              <h3 className="font-medium text-gray-600">
                {appointment.serviceName}
               </h3>
               <Badge className={`text-xs ${getStatusColor(appointment.status)}`}>
@@ -387,7 +387,7 @@ export default function ClientDashboardSimple() {
              </div>
             </div>
             <div className="text-right">
-             <div className="text-lg font-semibold text-gray-900 mb-2">
+             <div className="text-lg font-semibold text-gray-600 mb-2">
               {appointment.price}€
              </div>
              {appointment.status === 'confirmed' && (
@@ -395,7 +395,7 @@ export default function ClientDashboardSimple() {
                <Button size="sm" variant="outline" className="w-full text-xs">
                 Déplacer
                </Button>
-               <Button size="sm" variant="ghost" className="w-full text-xs text-red-600">
+               <Button size="sm" variant="ghost" className="w-full text-xs text-gray-600">
                 Annuler
                </Button>
               </div>
@@ -409,8 +409,8 @@ export default function ClientDashboardSimple() {
       ) : (
        <Card className="border border-gray-200">
         <CardContent className="p-8 text-center">
-         <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-         <h3 className="text-lg font-medium text-gray-900 mb-2">
+         <Calendar className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+         <h3 className="text-lg font-medium text-gray-600 mb-2">
           Aucun rendez-vous
          </h3>
          <p className="text-gray-600 mb-4">
@@ -431,13 +431,13 @@ export default function ClientDashboardSimple() {
     {/* Onglet Messages */}
     {activeTab === 'messages' && (
      <div className="space-y-4">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-600">
        Messages
       </h2>
       <Card className="border border-gray-200">
        <CardContent className="p-8 text-center">
-        <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <MessageSquare className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-600 mb-2">
          Aucun message
         </h3>
         <p className="text-gray-600">
@@ -451,7 +451,7 @@ export default function ClientDashboardSimple() {
     {/* Onglet Profil */}
     {activeTab === 'profile' && (
      <div className="space-y-6">
-      <h2 className="text-lg font-semibold text-gray-900">
+      <h2 className="text-lg font-semibold text-gray-600">
        Mon profil
       </h2>
       
@@ -459,12 +459,12 @@ export default function ClientDashboardSimple() {
        <CardContent className="p-6">
         <div className="flex items-center gap-4 mb-6">
          <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center">
-          <span className="text-2xl font-semibold text-violet-600">
+          <span className="text-2xl font-semibold text-gray-600">
            {clientData.firstName[0]}{clientData.lastName[0]}
           </span>
          </div>
          <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-gray-600">
            {clientData.firstName} {clientData.lastName}
           </h3>
           <p className="text-gray-600">{clientData.email}</p>
@@ -473,18 +473,18 @@ export default function ClientDashboardSimple() {
 
         <div className="space-y-4">
          <div className="flex items-center justify-between py-3 border-b border-gray-200">
-          <span className="text-gray-700">Email</span>
-          <span className="text-gray-900">{clientData.email}</span>
+          <span className="text-gray-600">Email</span>
+          <span className="text-gray-600">{clientData.email}</span>
          </div>
          {clientData.phone && (
           <div className="flex items-center justify-between py-3 border-b border-gray-200">
-           <span className="text-gray-700">Téléphone</span>
-           <span className="text-gray-900">{clientData.phone}</span>
+           <span className="text-gray-600">Téléphone</span>
+           <span className="text-gray-600">{clientData.phone}</span>
           </div>
          )}
          <div className="flex items-center justify-between py-3">
-          <span className="text-gray-700">Rendez-vous pris</span>
-          <span className="text-gray-900">{appointments.length}</span>
+          <span className="text-gray-600">Rendez-vous pris</span>
+          <span className="text-gray-600">{appointments.length}</span>
          </div>
         </div>
 
@@ -498,7 +498,7 @@ export default function ClientDashboardSimple() {
          </Button>
          <Button
           variant="ghost"
-          className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+          className="w-full text-gray-600 hover:text-gray-600 hover:bg-red-50"
           onClick={handleLogout}
          >
           Se déconnecter

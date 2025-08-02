@@ -96,20 +96,20 @@ export default function ClientDashboardNew() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'completed': return 'bg-blue-100 text-blue-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'confirmed': return 'bg-green-100 text-gray-600';
+      case 'pending': return 'bg-yellow-100 text-gray-600';
+      case 'completed': return 'bg-blue-100 text-gray-600';
+      case 'cancelled': return 'bg-red-100 text-gray-600';
+      default: return 'bg-gray-100 text-gray-600';
     }
   };
 
   const getLoyaltyLevelColor = (level: string) => {
     switch (level) {
-      case 'VIP': return 'bg-purple-100 text-purple-800';
-      case 'Premium': return 'bg-amber-100 text-amber-800';
-      case 'Bronze': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'VIP': return 'bg-purple-100 text-gray-600';
+      case 'Premium': return 'bg-amber-100 text-gray-600';
+      case 'Bronze': return 'bg-orange-100 text-gray-600';
+      default: return 'bg-gray-100 text-gray-600';
     }
   };
 
@@ -181,10 +181,10 @@ export default function ClientDashboardNew() {
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">
+              <h1 className="text-lg font-semibold text-gray-600">
                 {client.firstName} {client.lastName}
               </h1>
-              <p className="text-sm text-gray-500">{client.email}</p>
+              <p className="text-sm text-gray-600">{client.email}</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -210,19 +210,19 @@ export default function ClientDashboardNew() {
             <TabsList className="grid w-full grid-cols-3 bg-transparent">
               <TabsTrigger 
                 value="accueil" 
-                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-gray-600 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
               >
                 Accueil
               </TabsTrigger>
               <TabsTrigger 
                 value="rdv"
-                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-gray-600 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
               >
                 Mes RDV
               </TabsTrigger>
               <TabsTrigger 
                 value="profil"
-                className="data-[state=active]:bg-violet-100 data-[state=active]:text-violet-700 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
+                className="data-[state=active]:bg-violet-100 data-[state=active]:text-gray-600 data-[state=active]:border-b-2 data-[state=active]:border-violet-600"
               >
                 Profil
               </TabsTrigger>
@@ -240,7 +240,7 @@ export default function ClientDashboardNew() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg flex items-center space-x-2">
-                    <Gift className="w-5 h-5 text-violet-600" />
+                    <Gift className="w-5 h-5 text-gray-600" />
                     <span>Programme Fidélité</span>
                   </CardTitle>
                   <Badge className={getLoyaltyLevelColor(client.clientStatus)}>
@@ -251,7 +251,7 @@ export default function ClientDashboardNew() {
               <CardContent className="space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-600">Points actuels</span>
-                  <span className="text-lg font-bold text-violet-600">{client.loyaltyPoints}</span>
+                  <span className="text-lg font-bold text-gray-600">{client.loyaltyPoints}</span>
                 </div>
                 {loyaltyInfo && loyaltyInfo.pointsToNext > 0 && (
                   <div className="space-y-2">
@@ -276,7 +276,7 @@ export default function ClientDashboardNew() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center space-x-2">
-                  <Calendar className="w-5 h-5 text-violet-600" />
+                  <Calendar className="w-5 h-5 text-gray-600" />
                   <span>Prochain rendez-vous</span>
                 </CardTitle>
               </CardHeader>
@@ -287,7 +287,7 @@ export default function ClientDashboardNew() {
                       <div key={appointment.id} className="border border-gray-200 rounded-xl p-4">
                         <div className="flex justify-between items-start mb-2">
                           <div>
-                            <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
+                            <h4 className="font-semibold text-gray-600">{appointment.serviceName}</h4>
                             <p className="text-sm text-gray-600">{appointment.salonName}</p>
                           </div>
                           <Badge className={getStatusColor(appointment.status)}>
@@ -322,8 +322,8 @@ export default function ClientDashboardNew() {
                   </div>
                 ) : (
                   <div className="text-center py-6">
-                    <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500 mb-4">Aucun rendez-vous prévu</p>
+                    <Calendar className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                    <p className="text-gray-600 mb-4">Aucun rendez-vous prévu</p>
                     <Button className="w-full bg-violet-600 hover:bg-violet-700">
                       Prendre rendez-vous
                     </Button>
@@ -336,7 +336,7 @@ export default function ClientDashboardNew() {
             <div className="grid grid-cols-2 gap-4">
               <Card>
                 <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-violet-600">
+                  <div className="text-2xl font-bold text-gray-600">
                     {appointments.filter(a => a.status === 'completed').length}
                   </div>
                   <div className="text-sm text-gray-600">RDV terminés</div>
@@ -344,7 +344,7 @@ export default function ClientDashboardNew() {
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-violet-600">
+                  <div className="text-2xl font-bold text-gray-600">
                     {client.totalSpent?.toFixed(0) || '0'}€
                   </div>
                   <div className="text-sm text-gray-600">Total dépensé</div>
@@ -369,7 +369,7 @@ export default function ClientDashboardNew() {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h4 className="font-semibold text-gray-900">{appointment.serviceName}</h4>
+                          <h4 className="font-semibold text-gray-600">{appointment.serviceName}</h4>
                           <p className="text-sm text-gray-600">{appointment.salonName}</p>
                         </div>
                         <Badge className={getStatusColor(appointment.status)}>
@@ -425,9 +425,9 @@ export default function ClientDashboardNew() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Aucun rendez-vous</h3>
-                <p className="text-gray-500 mb-4">Commencez par prendre votre premier rendez-vous</p>
+                <Calendar className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-600 mb-2">Aucun rendez-vous</h3>
+                <p className="text-gray-600 mb-4">Commencez par prendre votre premier rendez-vous</p>
                 <Button className="bg-violet-600 hover:bg-violet-700">
                   Trouver un salon
                 </Button>
@@ -440,24 +440,24 @@ export default function ClientDashboardNew() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <User className="w-5 h-5 text-violet-600" />
+                  <User className="w-5 h-5 text-gray-600" />
                   <span>Informations personnelles</span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Prénom</label>
-                    <div className="mt-1 text-sm text-gray-900">{client.firstName}</div>
+                    <label className="text-sm font-medium text-gray-600">Prénom</label>
+                    <div className="mt-1 text-sm text-gray-600">{client.firstName}</div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-700">Nom</label>
-                    <div className="mt-1 text-sm text-gray-900">{client.lastName}</div>
+                    <label className="text-sm font-medium text-gray-600">Nom</label>
+                    <div className="mt-1 text-sm text-gray-600">{client.lastName}</div>
                   </div>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700">Email</label>
-                  <div className="mt-1 text-sm text-gray-900">{client.email}</div>
+                  <label className="text-sm font-medium text-gray-600">Email</label>
+                  <div className="mt-1 text-sm text-gray-600">{client.email}</div>
                 </div>
                 <Button variant="outline" className="w-full">
                   Modifier mes informations
@@ -489,7 +489,7 @@ export default function ClientDashboardNew() {
               <Button variant="outline" className="w-full">
                 Aide et support
               </Button>
-              <Button variant="outline" className="w-full text-red-600" onClick={handleLogout}>
+              <Button variant="outline" className="w-full text-gray-600" onClick={handleLogout}>
                 Se déconnecter
               </Button>
             </div>

@@ -48,7 +48,7 @@ export default function ClientDashboard() {
        <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
         <span className="text-white font-bold text-lg">C</span>
        </div>
-       <h1 className="text-lg font-semibold text-gray-900">Mon Compte</h1>
+       <h1 className="text-lg font-semibold text-gray-600">Mon Compte</h1>
       </div>
       <div className="flex items-center gap-3">
        <div className="relative">
@@ -83,7 +83,7 @@ export default function ClientDashboard() {
        </div>
        <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-         <h2 className="text-lg font-semibold text-gray-900">Prochain RDV</h2>
+         <h2 className="text-lg font-semibold text-gray-600">Prochain RDV</h2>
          <Badge className="bg-green-600 text-white px-2 py-1 text-xs font-medium rounded-full">
           Confirmé
          </Badge>
@@ -94,15 +94,15 @@ export default function ClientDashboard() {
         
         <div className="grid grid-cols-3 gap-4 mb-4">
          <div className="text-center">
-          <div className="text-xl font-bold text-green-600 mb-1">14h30</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">14h30</div>
           <div className="text-xs text-gray-600">Demain</div>
          </div>
          <div className="text-center">
-          <div className="text-xl font-bold text-green-600 mb-1">45€</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">45€</div>
           <div className="text-xs text-gray-600">Prix</div>
          </div>
          <div className="text-center">
-          <div className="text-xl font-bold text-green-600 mb-1">1h</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">1h</div>
           <div className="text-xs text-gray-600">Durée</div>
          </div>
         </div>
@@ -127,7 +127,7 @@ export default function ClientDashboard() {
        </div>
        <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-         <h2 className="text-lg font-semibold text-gray-900">Mes Favoris</h2>
+         <h2 className="text-lg font-semibold text-gray-600">Mes Favoris</h2>
          <Badge className="bg-pink-600 text-white px-2 py-1 text-xs font-medium rounded-full">
           3 salons
          </Badge>
@@ -173,7 +173,7 @@ export default function ClientDashboard() {
        </div>
        <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-         <h2 className="text-lg font-semibold text-gray-900">Fidélité</h2>
+         <h2 className="text-lg font-semibold text-gray-600">Fidélité</h2>
          <Badge className="bg-amber-600 text-white px-2 py-1 text-xs font-medium rounded-full">
           Client VIP
          </Badge>
@@ -184,15 +184,15 @@ export default function ClientDashboard() {
         
         <div className="grid grid-cols-3 gap-4 mb-4">
          <div className="text-center">
-          <div className="text-xl font-bold text-amber-600 mb-1">12</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">12</div>
           <div className="text-xs text-gray-600">RDV ce mois</div>
          </div>
          <div className="text-center">
-          <div className="text-xl font-bold text-amber-600 mb-1">4.8</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">4.8</div>
           <div className="text-xs text-gray-600">Note moyenne</div>
          </div>
          <div className="text-center">
-          <div className="text-xl font-bold text-amber-600 mb-1">15%</div>
+          <div className="text-xl font-bold text-gray-600 mb-1">15%</div>
           <div className="text-xs text-gray-600">Réduction</div>
          </div>
         </div>
@@ -217,7 +217,7 @@ export default function ClientDashboard() {
        </div>
        <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-         <h2 className="text-lg font-semibold text-gray-900">Messages</h2>
+         <h2 className="text-lg font-semibold text-gray-600">Messages</h2>
          <Badge className="bg-purple-600 text-white px-2 py-1 text-xs font-medium rounded-full">
           2 nouveaux
          </Badge>
@@ -246,7 +246,7 @@ export default function ClientDashboard() {
        </div>
        <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
-         <h2 className="text-lg font-semibold text-gray-900">Mes Avis</h2>
+         <h2 className="text-lg font-semibold text-gray-600">Mes Avis</h2>
          <Badge className="bg-orange-600 text-white px-2 py-1 text-xs font-medium rounded-full">
           8 avis
          </Badge>
@@ -274,7 +274,7 @@ export default function ClientDashboard() {
         <Settings className="h-6 w-6 text-white" />
        </div>
        <div className="flex-1">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">Paramètres</h2>
+        <h2 className="text-lg font-semibold text-gray-600 mb-2">Paramètres</h2>
         <p className="text-gray-600 text-sm mb-4">
          Gérez votre profil et préférences
         </p>
@@ -307,7 +307,7 @@ export default function ClientDashboard() {
           <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
            <span className="text-white font-bold text-lg">C</span>
           </div>
-          <h1 className="text-lg font-semibold text-gray-900">Mes Rendez-vous</h1>
+          <h1 className="text-lg font-semibold text-gray-600">Mes Rendez-vous</h1>
          </div>
         </div>
        </div>
@@ -315,16 +315,16 @@ export default function ClientDashboard() {
       <div className="max-w-lg mx-auto p-4">
        <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-         <h2 className="text-lg font-semibold text-gray-900 mb-4">Prochain RDV</h2>
+         <h2 className="text-lg font-semibold text-gray-600 mb-4">Prochain RDV</h2>
          <div className="space-y-3">
           <div className="p-4 bg-green-50 rounded-lg border border-green-200">
            <div className="flex justify-between items-start mb-2">
-            <h3 className="font-medium text-gray-900">Coupe + Brushing</h3>
+            <h3 className="font-medium text-gray-600">Coupe + Brushing</h3>
             <Badge className="bg-green-600 text-white">Confirmé</Badge>
            </div>
            <p className="text-sm text-gray-600 mb-1">Salon Excellence</p>
-           <p className="text-sm text-gray-500">Demain, 30 janvier - 14h30</p>
-           <p className="text-sm font-medium text-gray-900 mt-2">45€</p>
+           <p className="text-sm text-gray-600">Demain, 30 janvier - 14h30</p>
+           <p className="text-sm font-medium text-gray-600 mt-2">45€</p>
           </div>
          </div>
         </CardContent>
@@ -342,7 +342,7 @@ export default function ClientDashboard() {
           <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
            <span className="text-white font-bold text-lg">C</span>
           </div>
-          <h1 className="text-lg font-semibold text-gray-900">Messages</h1>
+          <h1 className="text-lg font-semibold text-gray-600">Messages</h1>
          </div>
         </div>
        </div>
@@ -350,13 +350,13 @@ export default function ClientDashboard() {
       <div className="max-w-lg mx-auto p-4">
        <Card className="border-0 shadow-sm">
         <CardContent className="p-6">
-         <h2 className="text-lg font-semibold text-gray-900 mb-4">Conversations</h2>
+         <h2 className="text-lg font-semibold text-gray-600 mb-4">Conversations</h2>
          <div className="space-y-3">
           <div className="p-4 bg-white rounded-lg border border-gray-200">
            <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
             <div className="flex-1">
-             <h3 className="font-medium text-gray-900">Salon Excellence</h3>
+             <h3 className="font-medium text-gray-600">Salon Excellence</h3>
              <p className="text-sm text-gray-600">Votre rendez-vous est confirmé</p>
             </div>
             <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
@@ -378,7 +378,7 @@ export default function ClientDashboard() {
           <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
            <span className="text-white font-bold text-lg">C</span>
           </div>
-          <h1 className="text-lg font-semibold text-gray-900">Mon Profil</h1>
+          <h1 className="text-lg font-semibold text-gray-600">Mon Profil</h1>
          </div>
         </div>
        </div>
@@ -388,7 +388,7 @@ export default function ClientDashboard() {
         <CardContent className="p-6">
          <div className="text-center mb-6">
           <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
-          <h2 className="text-lg font-semibold text-gray-900">{clientData?.firstName || 'Client'}</h2>
+          <h2 className="text-lg font-semibold text-gray-600">{clientData?.firstName || 'Client'}</h2>
           <p className="text-gray-600">{clientData?.email}</p>
          </div>
          <div className="space-y-3">

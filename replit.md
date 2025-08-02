@@ -73,6 +73,8 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
   - **PAGES PROFESSIONNELLES**: 17+ pages Pro*/Business*/Professional* converties
   - **PAGES SALONS**: TOUS les dégradés éliminés de toutes les pages de salons individuels
   - **HEADERS/BACKGROUNDS**: Tous les dégradés orange/vert/bleu/rouge remplacés par glassmorphism violet
+  - **DASHBOARDS ULTRA-SOBRES**: 9+ dashboards convertis au glassmorphism minimal avec couleurs grises uniquement
+  - **GRAPHIQUES**: Couleurs bleues/vives → nuances grises élégantes  
   - Plus aucun élément dégradé dans l'interface utilisateur - 100% glassmorphism sobre
 
 ### ✅ Intégration OpenAI Complétée
