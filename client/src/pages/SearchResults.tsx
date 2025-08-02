@@ -13,6 +13,20 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+// Fonction pour obtenir la classe de couleur spécifique à chaque salon
+const getSalonButtonClass = (salonId: string) => {
+  const salonColors = {
+    'salon-excellence-paris': 'glass-button-pink',
+    'salon-moderne-republique': 'glass-button-indigo', 
+    'barbier-gentleman-marais': 'glass-button-amber',
+    'institut-beaute-saint-germain': 'glass-button-rose',
+    'nail-art-opera': 'glass-button-rose',
+    'spa-wellness-bastille': 'glass-button-emerald',
+    'beauty-lounge-montparnasse': 'glass-button-indigo'
+  };
+  return salonColors[salonId] || 'glass-button-neutral';
+};
+
 export default function SearchResults() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -304,7 +318,7 @@ export default function SearchResults() {
                     </div>
                     <Button 
                       size="sm" 
-                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                      className={getSalonButtonClass(salon.id)}
                       onClick={(e) => {
                         e.stopPropagation();
                         setLocation('/salon-booking');
@@ -333,7 +347,7 @@ export default function SearchResults() {
             </p>
             <Button 
               onClick={() => window.history.back()}
-              className="bg-purple-600 hover:bg-purple-700 text-white"
+              className="glass-button-neutral"
             >
               Retour
             </Button>

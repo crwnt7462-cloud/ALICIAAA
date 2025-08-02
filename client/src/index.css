@@ -74,13 +74,13 @@
   transition: all 0.3s ease;
 }
 
-/* Classes spécifiques pour chaque salon */
+/* Classes spécifiques pour chaque salon - couleurs subtiles */
 .glass-button-amber {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.35) 0%, rgba(217, 119, 6, 0.25) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(245, 158, 11, 0.15) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: none !important;
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5);
   color: #000000 !important;
   font-weight: 600;
   border-radius: 0.75rem;
@@ -88,11 +88,11 @@
 }
 
 .glass-button-rose {
-  background: linear-gradient(135deg, rgba(244, 114, 182, 0.35) 0%, rgba(236, 72, 153, 0.25) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(244, 114, 182, 0.15) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: none !important;
-  box-shadow: 0 6px 20px rgba(244, 114, 182, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(244, 114, 182, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5);
   color: #000000 !important;
   font-weight: 600;
   border-radius: 0.75rem;
@@ -100,11 +100,11 @@
 }
 
 .glass-button-indigo {
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.35) 0%, rgba(99, 102, 241, 0.25) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(129, 140, 248, 0.15) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: none !important;
-  box-shadow: 0 6px 20px rgba(129, 140, 248, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(129, 140, 248, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5);
   color: #000000 !important;
   font-weight: 600;
   border-radius: 0.75rem;
@@ -112,11 +112,23 @@
 }
 
 .glass-button-emerald {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.35) 0%, rgba(16, 185, 129, 0.25) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(52, 211, 153, 0.15) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: none !important;
-  box-shadow: 0 6px 20px rgba(52, 211, 153, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  box-shadow: 0 6px 20px rgba(52, 211, 153, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  color: #000000 !important;
+  font-weight: 600;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.glass-button-pink {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(236, 72, 153, 0.15) 100%);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: none !important;
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.15), inset 0 2px 0 rgba(255, 255, 255, 0.5);
   color: #000000 !important;
   font-weight: 600;
   border-radius: 0.75rem;
