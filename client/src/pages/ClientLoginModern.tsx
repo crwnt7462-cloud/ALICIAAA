@@ -20,15 +20,12 @@ export default function ClientLoginModern() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/client/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          userType: 'client'
-        }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
@@ -36,18 +33,16 @@ export default function ClientLoginModern() {
           const data = await response.json();
           console.log('✅ CLIENT LOGIN SUCCESS:', data);
           
-          if (data.success && data.redirect) {
+          if (data.success) {
+            // Stocker les données client pour le dashboard
+            localStorage.setItem('clientData', JSON.stringify(data.client));
+            localStorage.setItem('clientToken', data.token);
+            
             toast({
               title: "Connexion réussie",
-              description: "Bienvenue !",
+              description: `Bienvenue ${data.client.firstName} !`,
             });
-            window.location.href = data.redirect;
-          } else if (data.success) {
-            toast({
-              title: "Connexion réussie",
-              description: "Bienvenue !",
-            });
-            window.location.href = '/search';
+            setLocation('/client-dashboard');
           } else {
             throw new Error('Format de réponse invalide');
           }
