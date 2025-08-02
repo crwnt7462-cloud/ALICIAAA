@@ -184,8 +184,7 @@ export default function SalonPageEditor() {
     const primaryColor = salonData.customColors?.primary || '#f59e0b';
     const intensity = salonData.customColors?.intensity || 35;
     
-    // Debug pour voir les valeurs actuelles
-    console.log('🎨 Style bouton:', { primaryColor, intensity });
+
     
     const rgb = parseInt(primaryColor.slice(1), 16);
     const r = (rgb >> 16) & 255;
@@ -361,7 +360,10 @@ export default function SalonPageEditor() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <Star className="h-4 w-4" style={{ 
+                color: salonData.customColors?.primary || '#f59e0b',
+                fill: salonData.customColors?.primary || '#f59e0b' 
+              }} />
               <span className="font-semibold">{salonData.rating}</span>
               <span className="opacity-80">({salonData.reviews} avis)</span>
             </div>
@@ -387,9 +389,13 @@ export default function SalonPageEditor() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'glass-button-amber border-b-2 border-amber-600'
+                  ? 'border-b-2'
                   : 'glass-button-secondary'
               }`}
+              style={activeTab === tab.id ? {
+                ...getCustomButtonStyle(),
+                borderBottomColor: salonData.customColors?.primary || '#f59e0b'
+              } : {}}
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -414,7 +420,12 @@ export default function SalonPageEditor() {
                   };
                   setServiceCategories(prev => [...prev, newCategory]);
                 }}
-                className="w-full glass-button border-2 border-dashed border-amber-300 py-6"
+                className="w-full border-2 border-dashed py-6"
+                style={{
+                  ...getCustomButtonStyle(),
+                  borderColor: salonData.customColors?.primary || '#f59e0b',
+                  borderStyle: 'dashed'
+                }}
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Ajouter une catégorie de services
@@ -458,7 +469,20 @@ export default function SalonPageEditor() {
                         size="sm"
                         variant="ghost"
                         onClick={() => addService(category.id)}
-                        className="text-amber-600 hover:bg-amber-50"
+                        style={{ 
+                          color: salonData.customColors?.primary || '#f59e0b',
+                          backgroundColor: 'transparent'
+                        }}
+                        onMouseEnter={(e) => {
+                          const rgb = parseInt((salonData.customColors?.primary || '#f59e0b').slice(1), 16);
+                          const r = (rgb >> 16) & 255;
+                          const g = (rgb >> 8) & 255;
+                          const b = rgb & 255;
+                          (e.target as HTMLElement).style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.1)`;
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.target as HTMLElement).style.backgroundColor = 'transparent';
+                        }}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
@@ -580,7 +604,7 @@ export default function SalonPageEditor() {
                 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <MapPin className="h-5 w-5 text-gray-400" />
+                    <MapPin className="h-5 w-5" style={{ color: salonData.customColors?.primary || '#f59e0b' }} />
                     {isEditing ? (
                       <Input
                         value={salonData.address}
@@ -592,7 +616,7 @@ export default function SalonPageEditor() {
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-gray-400" />
+                    <Phone className="h-5 w-5" style={{ color: salonData.customColors?.primary || '#f59e0b' }} />
                     {isEditing ? (
                       <Input
                         value={salonData.phone}
@@ -604,7 +628,7 @@ export default function SalonPageEditor() {
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <Clock className="h-5 w-5 text-gray-400" />
+                    <Clock className="h-5 w-5" style={{ color: salonData.customColors?.primary || '#f59e0b' }} />
                     <span>Mar-Sam: 9h-19h • Lun: Fermé • Dim: 10h-17h</span>
                   </div>
                 </div>
@@ -632,7 +656,7 @@ export default function SalonPageEditor() {
                 <div className="space-y-3">
                   {salonData.certifications.map((cert, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <Award className="h-4 w-4 text-amber-500" />
+                      <Award className="h-4 w-4" style={{ color: salonData.customColors?.primary || '#f59e0b' }} />
                       {isEditing ? (
                         <Input
                           value={cert}
@@ -654,7 +678,15 @@ export default function SalonPageEditor() {
                   <h4 className="font-medium mb-3">Distinctions</h4>
                   <div className="flex flex-wrap gap-2">
                     {salonData.awards.map((award, index) => (
-                      <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
+                      <Badge 
+                        key={index} 
+                        variant="secondary" 
+                        style={{
+                          backgroundColor: `${salonData.customColors?.primary || '#f59e0b'}20`,
+                          color: salonData.customColors?.primary || '#f59e0b',
+                          borderColor: salonData.customColors?.primary || '#f59e0b'
+                        }}
+                      >
                         {award}
                       </Badge>
                     ))}
