@@ -225,6 +225,32 @@ export default function ModernSalonDetail() {
   // Utiliser UNIQUEMENT les vraies données de l'API - PLUS DE FALLBACK
   const displayData = salonData || null;
 
+  // Si aucune donnée du salon, afficher un message d'erreur simple
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-white">Chargement du salon...</div>
+      </div>
+    );
+  }
+
+  if (!displayData) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="text-center text-white">
+          <h1 className="text-xl mb-4">Salon non trouvé</h1>
+          <p className="text-gray-400 mb-4">Ce salon n'existe pas ou n'a pas encore été créé.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="bg-purple-600 px-4 py-2 rounded text-white hover:bg-purple-700"
+          >
+            Retour à la recherche
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Couleurs personnalisées depuis l'API
   const customColors = salonData?.customColors || {
     primary: '#7c3aed',

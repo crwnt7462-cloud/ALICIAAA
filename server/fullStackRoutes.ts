@@ -1039,45 +1039,45 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // API simple pour récupérer un salon par ID (utilisée par ModernSalonDetail)
-  app.get('/api/salon/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      console.log('📖 Récupération salon par ID:', id);
-      
-      // Pas de redirection automatique - utiliser l'ID exact fourni
-      const actualId = id;
-      console.log('🔧 ID redirigé vers:', actualId);
-      
-      const salon = storage.salons?.get(actualId);
-      
-      if (!salon) {
-        console.log('❌ Salon non trouvé:', actualId);
-        return res.status(404).json({ message: 'Salon non trouvé' });
-      }
-      
-      console.log('✅ Salon trouvé:', salon.name);
-      res.json(salon); // Renvoyer directement les données du salon
-    } catch (error) {
-      console.error('❌ Erreur récupération salon:', error);
-      res.status(500).json({ message: 'Erreur serveur' });
-    }
-  });
-
-  // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
+  // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté (DOIT ÊTRE AVANT /:id)
   app.get('/api/salon/current', async (req, res) => {
     try {
       const userId = req.user?.claims?.sub;
       
-      // Pour les tests et développement, créer automatiquement un salon unique
+      // CORRIGÉ : Récupération fiable du salon créé depuis l'éditeur
       if (!userId) {
-        console.log('🧪 Mode test : création automatique salon unique');
+        console.log('🧪 Mode test : récupération salon depuis éditeur');
         
-        // Chercher s'il y a déjà un salon en mémoire
+        // 1. Forcer un refresh des données PostgreSQL
+        try {
+          const savedSalons = await storage.getAllSalons();
+          if (savedSalons.length > 0) {
+            const latestSalon = savedSalons.sort((a, b) => 
+              new Date(b.updatedAt || b.createdAt || '').getTime() - 
+              new Date(a.updatedAt || a.createdAt || '').getTime()
+            )[0];
+            
+            console.log('✅ Salon trouvé en PostgreSQL:', latestSalon.id, latestSalon.name);
+            
+            // Charger en mémoire pour accès rapide
+            if (!storage.salons) storage.salons = new Map();
+            storage.salons.set(latestSalon.id, latestSalon);
+            
+            return res.json(latestSalon);
+          }
+        } catch (error) {
+          console.log('⚠️ Erreur lecture PostgreSQL:', error);
+        }
+        
+        // 2. Chercher en mémoire si PostgreSQL a échoué
         if (storage.salons && storage.salons.size > 0) {
-          const firstSalon = Array.from(storage.salons.values())[0];
-          console.log('✅ Salon existant trouvé:', firstSalon.id);
-          return res.json(firstSalon);
+          const allSalons = Array.from(storage.salons.values());
+          const latestSalon = allSalons.sort((a, b) => 
+            new Date(b.updatedAt || b.createdAt || '').getTime() - 
+            new Date(a.updatedAt || a.createdAt || '').getTime()
+          )[0];
+          console.log('✅ Salon trouvé en mémoire:', latestSalon.id, latestSalon.name);
+          return res.json(latestSalon);
         }
         
         // Créer un nouveau salon avec ID unique

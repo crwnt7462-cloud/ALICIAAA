@@ -62,6 +62,7 @@ export interface IStorage {
   // Salon Data Management
   getSalonData(salonId: string): Promise<any | undefined>;
   saveSalonData(salonId: string, salonData: any): Promise<void>;
+  getAllSalons(): Promise<any[]>;
 
   // Services
   getServices(userId: string): Promise<Service[]>;
@@ -1273,7 +1274,63 @@ export class DatabaseStorage implements IStorage {
     // Sauvegarder en mémoire
     this.salons.set(salonId, updatedSalon);
     
+    // NOUVEAU : Sauvegarder aussi en PostgreSQL pour persistance
+    try {
+      const { salons } = await import("@shared/schema");
+      await db.insert(salons).values({
+        id: salonId,
+        data: JSON.stringify(updatedSalon),
+        updatedAt: new Date()
+      }).onConflictDoUpdate({
+        target: salons.id,
+        set: {
+          data: JSON.stringify(updatedSalon),
+          updatedAt: new Date()
+        }
+      });
+      console.log('💾 Salon aussi sauvegardé en PostgreSQL:', salonId);
+    } catch (dbError) {
+      console.error('⚠️ Erreur sauvegarde PostgreSQL (mais salon en mémoire OK):', dbError);
+    }
+    
     console.log('✅ Salon sauvegardé avec succès:', salonId);
+  }
+
+  async getAllSalons(): Promise<any[]> {
+    console.log('📚 Récupération de tous les salons...');
+    
+    // 1. Récupérer tous les salons en mémoire
+    const inMemorySalons = Array.from(this.salons.values());
+    if (inMemorySalons.length > 0) {
+      console.log(`📚 ${inMemorySalons.length} salons trouvés en mémoire`);
+      return inMemorySalons;
+    }
+    
+    // 2. Si aucun salon en mémoire, essayer PostgreSQL
+    try {
+      const { salons } = await import("@shared/schema");
+      const salonRecords = await db.select().from(salons).orderBy(desc(salons.updatedAt));
+      
+      const parsedSalons = salonRecords.map(record => {
+        try {
+          return JSON.parse(record.data);
+        } catch (parseError) {
+          console.error('❌ Erreur parsing salon:', record.id, parseError);
+          return null;
+        }
+      }).filter(salon => salon !== null);
+      
+      // Charger en mémoire pour accès rapide
+      parsedSalons.forEach(salon => {
+        this.salons.set(salon.id, salon);
+      });
+      
+      console.log(`📚 ${parsedSalons.length} salons récupérés depuis PostgreSQL`);
+      return parsedSalons;
+    } catch (error) {
+      console.error('❌ Erreur récupération salons PostgreSQL:', error);
+      return [];
+    }
   }
 
   // Messages IA automatiques pour analyse clients
