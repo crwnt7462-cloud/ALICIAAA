@@ -498,8 +498,8 @@ export default function SalonPageEditor() {
                                 size="sm" 
                                 className="mt-2"
                                 style={{
-                                  backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 10%, #f3f4f6)` : '#f3f4f6',
-                                  color: salonData.customColors?.primary || '#374151',
+                                  backgroundColor: salonData.customColors?.primary || '#f3f4f6',
+                                  color: salonData.customColors?.buttonText || '#ffffff',
                                   border: 'none',
                                   borderRadius: '8px',
                                   fontWeight: '500',
@@ -749,8 +749,8 @@ export default function SalonPageEditor() {
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
-                        backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 12%, #f3f4f6)` : '#f3f4f6',
-                        color: salonData.customColors?.primary || '#374151',
+                        backgroundColor: salonData.customColors?.primary || '#f3f4f6',
+                        color: salonData.customColors?.buttonText || '#ffffff',
                         border: 'none',
                         borderRadius: '8px',
                         fontWeight: '500'
@@ -773,8 +773,8 @@ export default function SalonPageEditor() {
                     <button
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
                       style={{
-                        backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 10%, #f3f4f6)` : '#f3f4f6',
-                        color: salonData.customColors?.primary || '#374151',
+                        backgroundColor: salonData.customColors?.primary || '#f3f4f6',
+                        color: salonData.customColors?.buttonText || '#ffffff',
                         border: 'none',
                         borderRadius: '8px',
                         fontWeight: '500',
@@ -842,8 +842,8 @@ export default function SalonPageEditor() {
           <Button 
             className="w-full py-3 text-lg font-semibold rounded-xl"
             style={{
-              backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 15%, #f3f4f6)` : '#f3f4f6',
-              color: salonData.customColors?.primary || '#374151',
+              backgroundColor: salonData.customColors?.primary || '#f3f4f6',
+              color: salonData.customColors?.buttonText || '#ffffff',
               border: 'none',
               borderRadius: '12px',
               fontWeight: '600',
