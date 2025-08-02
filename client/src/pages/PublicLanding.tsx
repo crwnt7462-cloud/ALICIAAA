@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714984824.png";
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 
 export default function PublicLanding() {
@@ -444,23 +445,20 @@ export default function PublicLanding() {
             
             <div className="flex items-center gap-2 md:gap-4">
               <Button 
-                variant="ghost" 
-                className="text-gray-600 hover:text-gray-900 text-sm md:text-base px-2 md:px-4 hidden lg:flex"
+                className={`${getGenericGlassButton(0)} text-white text-sm md:text-base px-2 md:px-4 hidden lg:flex`}
                 onClick={() => setLocation("/client-login-modern")}
               >
                 <span className="hidden md:inline">Se connecter</span>
                 <span className="md:hidden">Connexion</span>
               </Button>
               <Button 
-                className="gradient-bg text-white hover:opacity-90 text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
+                className={`${getGenericGlassButton(1)} text-white text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex`}
                 onClick={() => setLocation("/salon/salon-elegance")}
               >
                 Réserver
               </Button>
               <Button 
-                variant="ghost" 
-                size="sm"
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className={`${getGenericGlassButton(2)} p-2 rounded-lg`}
                 onClick={() => setLocation("/pro-login")}
               >
                 <LogIn className="w-5 h-5 text-gray-600" />
