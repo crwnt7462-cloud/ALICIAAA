@@ -27,6 +27,27 @@ import {
   Palette
 } from 'lucide-react';
 
+// Fonction pour obtenir la classe glassmorphism selon la couleur
+const getGlassButtonClass = (primaryColor?: string) => {
+  if (!primaryColor) return 'glass-button-pink';
+  
+  // Couleurs prédéfinies avec leurs classes correspondantes
+  const colorClasses: { [key: string]: string } = {
+    '#f59e0b': 'glass-button-amber',
+    '#d97706': 'glass-button-amber',
+    '#f43f5e': 'glass-button-rose',
+    '#e11d48': 'glass-button-rose',
+    '#10b981': 'glass-button-emerald',
+    '#059669': 'glass-button-emerald',
+    '#6366f1': 'glass-button-indigo',
+    '#4f46e5': 'glass-button-indigo',
+    '#a855f7': 'glass-button-pink',
+    '#8b5cf6': 'glass-button-pink',
+  };
+  
+  return colorClasses[primaryColor] || 'glass-button-pink';
+};
+
 interface Service {
   id: number;
   name: string;
@@ -496,7 +517,7 @@ export default function SalonPageEditor() {
                             {!isEditing ? (
                               <Button 
                                 size="sm" 
-                                className="mt-2 glass-button-pink"
+                                className={`mt-2 ${getGlassButtonClass(salonData.customColors?.primary)}`}
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -738,7 +759,7 @@ export default function SalonPageEditor() {
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
                     <button
-                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-pink"
+                      className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${getGlassButtonClass(salonData.customColors?.primary)}`}
                     >
                       Réserver maintenant
                     </button>
@@ -755,7 +776,7 @@ export default function SalonPageEditor() {
                       Voir les avis
                     </button>
                     <button
-                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-pink"
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${getGlassButtonClass(salonData.customColors?.primary)}`}
                     >
                       Réserver
                     </button>
@@ -816,7 +837,7 @@ export default function SalonPageEditor() {
           borderTop: '1px solid rgba(255, 255, 255, 0.2)'
         }}>
           <Button 
-            className="w-full py-3 text-lg font-semibold rounded-xl glass-button-pink px-6"
+            className={`w-full py-3 text-lg font-semibold rounded-xl ${getGlassButtonClass(salonData.customColors?.primary)} px-6`}
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
