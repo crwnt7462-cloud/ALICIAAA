@@ -1040,6 +1040,78 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // 🔧 ENDPOINT EMERGENCY : Forcer la création du salon demo
+  app.post('/api/force-create-salon-demo', async (req, res) => {
+    try {
+      const demoSalon = {
+        id: 'salon-demo',
+        name: 'Agashou',
+        description: 'Salon de beauté moderne et professionnel',
+        longDescription: 'Notre salon vous accueille dans un cadre chaleureux pour tous vos soins de beauté.',
+        address: '15 Avenue des Champs-Élysées, 75008 Paris',
+        phone: '01 42 25 76 89',
+        email: 'contact@salon.fr',
+        website: '',
+        photos: [
+          'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
+        ],
+        serviceCategories: [
+          {
+            id: 1,
+            name: 'Coiffure',
+            expanded: false,
+            services: [
+              { id: 1, name: 'Cheveux', price: 45, duration: '1h', description: 'Service cheveux' },
+              { id: 2, name: 'Barbe', price: 30, duration: '45min', description: 'Service barbe' },
+              { id: 3, name: 'Rasage', price: 25, duration: '30min', description: 'Service rasage' }
+            ]
+          }
+        ],
+        professionals: [
+          {
+            id: '1',
+            name: 'Sarah Martinez',
+            specialty: 'Coiffure & Coloration',
+            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+            rating: 4.9,
+            price: 65,
+            bio: 'Expert en coiffure moderne',
+            experience: '8 ans d\'expérience'
+          }
+        ],
+        rating: 4.9,
+        reviewCount: 324,
+        verified: true,
+        certifications: ['Bio-certifié', 'Expert L\'Oréal', 'Formation Kérastase', 'Technique Aveda'],
+        awards: [],
+        customColors: {
+          primary: '#06b6d4',
+          accent: '#06b6d4', 
+          buttonText: '#ffffff',
+          priceColor: '#ec4899',
+          neonFrame: '#ef4444'
+        }
+      };
+      
+      // Forcer la sauvegarde dans toutes les structures de données
+      if (storage.salons) {
+        storage.salons.set('salon-demo', demoSalon);
+      }
+      
+      console.log('🚨 SALON DEMO FORCÉ - Nom:', demoSalon.name, 'Couleurs:', demoSalon.customColors?.primary);
+      
+      res.json({ 
+        success: true, 
+        message: 'Salon demo créé avec force',
+        salon: demoSalon 
+      });
+    } catch (error) {
+      console.error('❌ Erreur création forcée salon demo:', error);
+      res.status(500).json({ error: 'Erreur création salon demo' });
+    }
+  });
+
   // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
   app.get('/api/salon/current', async (req, res) => {
     try {
@@ -1101,6 +1173,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         };
         storage.salons?.set('salon-demo', demoSalon);
         console.log('✅ Salon demo créé automatiquement');
+        
+        // 🔧 AJOUT CRITIQUE : Synchroniser aussi dans le système de recherche publique
+        if (storage.salons) {
+          storage.salons.set('salon-demo', demoSalon);
+        }
       }
       
       console.log('✅ Salon demo trouvé:', demoSalon.name);

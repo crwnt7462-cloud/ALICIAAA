@@ -52,6 +52,53 @@ app.use((req, res, next) => {
   
   // Créer les salons de test avec photos
   await seedSalons();
+  
+  // 🔧 FORCER LA CRÉATION DU SALON DEMO pour corriger la synchronisation
+  const { storage } = await import('./storage');
+  const demoSalon = {
+    id: 'salon-demo',
+    name: 'Agashou',
+    description: 'Salon de beauté moderne et professionnel',
+    longDescription: 'Notre salon vous accueille dans un cadre chaleureux pour tous vos soins de beauté.',
+    address: '15 Avenue des Champs-Élysées, 75008 Paris',
+    phone: '01 42 25 76 89',
+    email: 'contact@salon.fr',
+    website: '',
+    photos: [
+      'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
+    ],
+    serviceCategories: [
+      {
+        id: 1,
+        name: 'Coiffure',
+        expanded: false,
+        services: [
+          { id: 1, name: 'Cheveux', price: 45, duration: '1h' },
+          { id: 2, name: 'Barbe', price: 30, duration: '45min' },
+          { id: 3, name: 'Rasage', price: 25, duration: '30min' }
+        ]
+      }
+    ],
+    professionals: [],
+    rating: 4.9,
+    reviewCount: 324,  
+    verified: true,
+    certifications: ['Bio-certifié', 'Expert L\'Oréal', 'Formation Kérastase', 'Technique Aveda'],
+    awards: [],
+    customColors: {
+      primary: '#06b6d4',
+      accent: '#06b6d4',
+      buttonText: '#ffffff', 
+      priceColor: '#ec4899',
+      neonFrame: '#ef4444'
+    }
+  };
+  
+  if (storage.salons) {
+    storage.salons.set('salon-demo', demoSalon);
+    console.log('🚨 SALON DEMO FORCÉ AU DÉMARRAGE:', demoSalon.name);
+  }
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
