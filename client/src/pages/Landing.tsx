@@ -170,7 +170,7 @@ export default function Landing() {
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-            onClick={() => setLocation('/client-login')}
+            onClick={() => setLocation('/client-login-modern')}
           >
             Espace client
           </motion.button>

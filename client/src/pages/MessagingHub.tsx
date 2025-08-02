@@ -13,6 +13,7 @@ import {
   Archive,
   MoreVertical
 } from 'lucide-react';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -255,7 +256,7 @@ export default function MessagingHub() {
                               </h3>
                               <div className="flex items-center space-x-2">
                                 {conversation.unreadCount && conversation.unreadCount > 0 && (
-                                  <Badge className="bg-violet-600">
+                                  <Badge className={getGenericGlassButton(0)}>
                                     {conversation.unreadCount}
                                   </Badge>
                                 )}
@@ -279,7 +280,7 @@ export default function MessagingHub() {
                     <p className="text-gray-500 mb-4">Commencez à discuter avec un salon</p>
                     <Button
                       onClick={() => setActiveTab('new')}
-                      className="bg-violet-600 hover:bg-violet-700"
+                      className={getGenericGlassButton(0)}
                     >
                       Démarrer une conversation
                     </Button>
@@ -298,7 +299,7 @@ export default function MessagingHub() {
                   </p>
                   <Button
                     onClick={() => setLocation('/')}
-                    className="bg-violet-600 hover:bg-violet-700"
+                    className={getGenericGlassButton(1)}
                   >
                     Découvrir les salons
                   </Button>

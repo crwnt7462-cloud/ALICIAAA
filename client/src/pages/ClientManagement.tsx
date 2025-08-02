@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Search, User, Star, Calendar, MessageCircle, Phone, Mail, Plus, Edit } from 'lucide-react';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import {
   Dialog,
   DialogContent,
@@ -186,7 +187,7 @@ export default function ClientManagement() {
                     <div
                       key={client.id}
                       className={`p-4 border-b hover:bg-gray-50 cursor-pointer transition-colors ${
-                        selectedClient?.id === client.id ? 'bg-violet-50 border-violet-200' : ''
+                        selectedClient?.id === client.id ? 'glass-card border-2' : ''
                       }`}
                       onClick={() => setSelectedClient(client)}
                     >
@@ -224,7 +225,7 @@ export default function ClientManagement() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center">
+                        <div className={`w-12 h-12 ${getGenericGlassButton(0)} rounded-full flex items-center justify-center`}>
                           <User className="h-6 w-6 text-white" />
                         </div>
                         <div>
@@ -281,7 +282,7 @@ export default function ClientManagement() {
                       <CardTitle className="text-lg">Notes Client</CardTitle>
                       <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
                         <DialogTrigger asChild>
-                          <Button className="bg-violet-600 hover:bg-violet-700 text-white">
+                          <Button className={`${getGenericGlassButton(1)} text-white`}>
                             <Plus className="h-4 w-4 mr-2" />
                             Ajouter une note
                           </Button>

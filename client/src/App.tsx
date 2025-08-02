@@ -92,6 +92,7 @@ import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
+import ClientLoginModern from "@/pages/ClientLoginModern";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
 import PlanityStyleClientLogin from "@/pages/PlanityStyleClientLogin";
@@ -321,6 +322,10 @@ function Router() {
   // Pages client spécifiques
   if (location === '/client-login') {
     return <div className="h-full"><ClientLogin /></div>;
+  }
+  
+  if (location === '/client-login-modern') {
+    return <div className="h-full"><ClientLoginModern /></div>;
   }
   
   if (location === '/client-register') {
