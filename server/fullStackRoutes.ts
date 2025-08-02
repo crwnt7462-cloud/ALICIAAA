@@ -1048,7 +1048,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // API simple pour récupérer un salon par ID (utilisée par ModernSalonDetail)
-  app.get('/api/salon/:id', async (req, res) => {
+  app.get('/api/salon/public/:id', async (req, res) => {
     try {
       const { id } = req.params;
       console.log('📖 Récupération salon par ID:', id);
@@ -1144,105 +1144,41 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
   app.get('/api/salon/current', async (req, res) => {
     try {
-      const userId = req.headers['x-user-id'] as string;
-      console.log('🧪 Récupération salon pour utilisateur:', userId);
-      
-      // Si pas d'utilisateur spécifique, retourner le salon demo pour les tests
-      if (!userId) {
-        console.log('🧪 Mode test : récupération du salon demo obligatoire');
-        let demoSalon = storage.salons?.get('salon-demo');
-      
-      if (!demoSalon) {
-        console.log('❌ Salon demo introuvable - création automatique');
-        // Créer automatiquement un salon demo si absent
-        demoSalon = {
-          id: 'salon-demo',
-          name: 'Agashou',
-          description: 'Salon de beauté moderne et professionnel',
-          longDescription: 'Notre salon vous accueille dans un cadre chaleureux pour tous vos soins de beauté.',
-          address: '15 Avenue des Champs-Élysées, 75008 Paris',
-          phone: '01 42 25 76 89',
-          email: 'contact@salon.fr',
-          website: '',
-          photos: [
-            'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
-            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
-          ],
-          serviceCategories: [
-            {
-              id: 1,
-              name: 'Coiffure',
-              expanded: false,
-              services: [
-                { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée et brushing professionnel' },
-                { id: 2, name: 'Coloration', price: 80, duration: '2h', description: 'Coloration complète avec soins' }
-              ]
-            }
-          ],
-          professionals: [
-            {
-              id: '1',
-              name: 'Sarah Martinez',
-              specialty: 'Coiffure & Coloration',
-              avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-              rating: 4.9,
-              price: 65,
-              bio: 'Expert en coiffure moderne',
-              experience: '8 ans d\'expérience'
-            }
-          ],
-          rating: 4.8,
-          reviewCount: 247,
-          verified: true,
-          certifications: ['Salon labellisé L\'Oréal Professionnel'],
-          awards: [],
-          customColors: {
-            primary: '#ec4899',
-            accent: '#06b6d4', 
-            buttonText: '#ffffff',
-            priceColor: '#f59e0b',
-            neonFrame: '#3b82f6'
-          }
-        };
-        storage.salons?.set('salon-demo', demoSalon);
-        console.log('✅ Salon demo créé automatiquement');
-        
-        // 🔧 AJOUT CRITIQUE : Synchroniser aussi dans le système de recherche publique
-        if (storage.salons) {
-          storage.salons.set('salon-demo', demoSalon);
+      const authHeader = req.headers.authorization;
+      let userId = null;
+
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        if (token.startsWith('demo-token-')) {
+          userId = token.replace('demo-token-', '');
         }
       }
       
-      console.log('✅ Salon demo trouvé:', demoSalon.name);
-      return res.json(demoSalon);
-      } else {
-        // Chercher le salon personnel du professionnel connecté
-        console.log('🔍 Recherche salon personnel pour utilisateur:', userId);
-        // TODO: Implémenter la recherche du salon personnel
-        return res.status(404).json({ message: 'Salon personnel non trouvé' });
+      console.log('🔍 Récupération salon pour utilisateur:', userId);
+      
+      if (!userId) {
+        return res.status(401).json({ message: 'Non authentifié' });
       }
       
-    } catch (error) {
-      console.error('❌ Erreur récupération salon current:', error);
-      res.status(500).json({ message: 'Erreur serveur' });
-    }
-  });
-
-  // API pour récupérer un salon spécifique par ID  
-  app.get('/api/salon/:salonId', async (req, res) => {
-    try {
-      const { salonId } = req.params;
-      console.log('📖 Récupération salon par ID:', salonId);
+      // 🚀 NOUVEAU : Chercher le salon personnel de l'utilisateur
+      const userSalons = Array.from(storage.salons?.values() || []).filter(salon => 
+        salon.ownerId === userId || salon.ownerEmail?.includes(userId)
+      );
       
-      // Chercher le salon associé à ce professionnel
-      let salon = storage.salons?.get(salonId);
+      let userSalon = userSalons[0];
       
-      if (!salon) {
-        // Créer automatiquement un salon pour ce professionnel
-        salon = {
-          id: salonId,
-          name: 'Mon Salon de Beauté',
-          description: 'Salon créé automatiquement pour le professionnel',
+      if (!userSalon) {
+        // 🎯 CRÉATION AUTOMATIQUE D'UN SALON UNIQUE POUR CET UTILISATEUR
+        const uniqueId = `salon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        console.log('🏗️ Création salon unique pour utilisateur:', userId);
+        console.log('🆔 ID généré:', uniqueId);
+        
+        userSalon = {
+          id: uniqueId,
+          name: 'Mon Salon',
+          description: 'Mon salon personnalisé',
+          longDescription: 'Bienvenue dans mon salon de beauté. Personnalisez cette description selon vos services.',
           address: '123 Rue de la Beauté, 75001 Paris',
           phone: '01 23 45 67 89',
           email: 'contact@monsalon.fr',
@@ -1262,19 +1198,162 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
               experience: '5 ans d\'expérience'
             }
           ],
+          rating: 5.0,
+          reviewCount: 0,
+          verified: true,
+          certifications: ['Professionnel Certifié'],
+          awards: [],
+          customColors: {
+            primary: '#7c3aed',
+            accent: '#a855f7',
+            buttonText: '#ffffff',
+            priceColor: '#7c3aed',
+            neonFrame: '#a855f7'
+          },
           serviceCategories: [],
-          tags: ['salon', 'beauté'],
-          ownerId: userId
+          ownerId: userId,
+          ownerEmail: userId,
+          shareableUrl: `/salon/${uniqueId}`,
+          isPublished: true,
+          createdAt: new Date(),
+          updatedAt: new Date()
         };
         
-        storage.salons?.set(salonId, salon);
-        console.log('🏛️ Salon auto-créé pour professionnel:', userId, 'ID:', salonId);
+        storage.salons?.set(uniqueId, userSalon);
+        console.log('✅ Salon unique créé pour utilisateur:', userId, 'URL:', `/salon/${uniqueId}`);
+      }
+      
+      console.log('✅ Salon personnel trouvé:', userSalon.name, 'ID:', userSalon.id);
+      return res.json(userSalon);
+      
+    } catch (error) {
+      console.error('❌ Erreur récupération salon current:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  // API pour récupérer un salon spécifique par ID  
+  app.get('/api/salon/:salonId', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      console.log('📖 Récupération salon par ID:', salonId);
+      
+      // IMPORTANT: Ne pas traiter "current" comme un ID, redirection vers l'endpoint dédié
+      if (salonId === 'current') {
+        console.log('🔄 Redirection vers endpoint salon current');
+        const authHeader = req.headers.authorization;
+        let userId = null;
+
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          const token = authHeader.substring(7);
+          if (token.startsWith('demo-token-')) {
+            userId = token.replace('demo-token-', '');
+          }
+        }
+        
+        if (!userId) {
+          return res.status(401).json({ message: 'Non authentifié' });
+        }
+        
+        // Chercher le salon personnel de l'utilisateur
+        const userSalons = Array.from(storage.salons?.values() || []).filter(salon => 
+          salon.ownerId === userId || salon.ownerEmail?.includes(userId)
+        );
+        
+        let userSalon = userSalons[0];
+        
+        if (!userSalon) {
+          // Création automatique d'un salon unique pour cet utilisateur
+          const uniqueId = `salon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          
+          console.log('🏗️ Création salon unique pour utilisateur:', userId, 'ID:', uniqueId);
+          
+          userSalon = {
+            id: uniqueId,
+            name: 'Mon Salon',
+            description: 'Mon salon personnalisé',
+            longDescription: 'Bienvenue dans mon salon de beauté. Personnalisez cette description selon vos services.',
+            address: '123 Rue de la Beauté, 75001 Paris',
+            phone: '01 23 45 67 89',
+            email: 'contact@monsalon.fr',
+            website: '',
+            photos: [
+              'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'
+            ],
+            professionals: [
+              {
+                id: '1',
+                name: 'Professionnel',
+                specialty: 'Services de beauté',
+                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+                rating: 4.8,
+                price: 60,
+                bio: 'Professionnel expérimenté',
+                experience: '5 ans d\'expérience'
+              }
+            ],
+            rating: 5.0,
+            reviewCount: 0,
+            verified: true,
+            certifications: ['Professionnel Certifié'],
+            awards: [],
+            customColors: {
+              primary: '#7c3aed',
+              accent: '#a855f7',
+              buttonText: '#ffffff',
+              priceColor: '#7c3aed',
+              neonFrame: '#a855f7'
+            },
+            serviceCategories: [],
+            ownerId: userId,
+            ownerEmail: userId,
+            shareableUrl: `/salon/${uniqueId}`,
+            isPublished: true,
+            createdAt: new Date(),
+            updatedAt: new Date()
+          };
+          
+          storage.salons?.set(uniqueId, userSalon);
+          console.log('✅ Salon unique créé pour utilisateur:', userId, 'URL:', `/salon/${uniqueId}`);
+        }
+        
+        console.log('✅ Salon personnel trouvé:', userSalon.name, 'ID:', userSalon.id);
+        return res.json(userSalon);
+      }
+      
+      // Chercher le salon associé à ce professionnel
+      let salon = storage.salons?.get(salonId);
+      
+      if (!salon) {
+        return res.status(404).json({ message: 'Salon non trouvé' });
       }
       
       res.json(salon);
     } catch (error) {
-      console.error("Erreur récupération salon:", error);
-      res.status(500).json({ message: "Erreur lors de la récupération du salon" });
+      console.error('❌ Erreur récupération salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  // API pour mettre à jour les données d'un salon
+  app.put('/api/salon/:salonId', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const updateData = req.body;
+      
+      let salon = storage.salons?.get(salonId);
+      if (!salon) {
+        return res.status(404).json({ message: 'Salon non trouvé' });
+      }
+      
+      // Mettre à jour les données
+      const updatedSalon = { ...salon, ...updateData, updatedAt: new Date() };
+      storage.salons?.set(salonId, updatedSalon);
+      
+      res.json(updatedSalon);
+    } catch (error) {
+      console.error('❌ Erreur mise à jour salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
     }
   });
 
