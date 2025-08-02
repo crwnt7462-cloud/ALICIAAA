@@ -1,10 +1,10 @@
 
+/* Import glassmorphism authentique */
+@import './styles/glassmorphism.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import glassmorphism authentique */
-@import './styles/glassmorphism.css';
 
 /* Glassmorphism Styles - Avec teinte violet subtile et forme visible */
 .glass-button {

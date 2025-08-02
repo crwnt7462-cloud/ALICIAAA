@@ -26,25 +26,25 @@ export default function BusinessFeatures() {
       {/* Barre de notifications temps réel */}
       <RealtimeNotificationBar />
       
-      {/* Header violet moderne - Style iPhone identique client */}
-      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
+      {/* Header glassmorphism unifié - Style identique client */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                <span className="text-white font-bold text-lg">P</span>
+              <div className="w-10 h-10 glass-button rounded-xl flex items-center justify-center">
+                <span className="text-black font-bold text-lg">P</span>
               </div>
-              <h1 className="text-lg font-semibold text-white">Pro Dashboard</h1>
+              <h1 className="text-lg font-semibold text-black">Pro Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Bell className="h-5 w-5 text-white/80" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full"></div>
+                <Bell className="h-5 w-5 text-gray-600" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/10" 
+                className="h-8 w-8 glass-button text-black hover:text-black" 
                 onClick={() => setLocation('/salon-settings')}
               >
                 <Settings className="h-4 w-4" />
@@ -56,9 +56,9 @@ export default function BusinessFeatures() {
 
       <div className="max-w-lg mx-auto p-4 space-y-4">
         {/* Bannière Plans d'abonnement */}
-        <div className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg p-4">
+        <div className="glass-button rounded-lg p-4">
           <Button 
-            className="w-full bg-transparent hover:bg-white/10 text-white font-medium py-2 rounded-lg"
+            className="w-full glass-button text-black font-medium py-2 rounded-lg"
             onClick={() => toast({ title: "Plans", description: "Voir les plans d'abonnement" })}
           >
             Voir les plans d'abonnement
@@ -66,12 +66,12 @@ export default function BusinessFeatures() {
         </div>
 
         {/* BOUTON MA PAGE - ULTRA VISIBLE */}
-        <Card className="border-4 border-red-500 shadow-lg bg-gradient-to-br from-orange-100 to-orange-200">
+        <Card className="border-2 border-blue-300 shadow-lg glass-button">
           <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Globe className="h-8 w-8 text-white" />
+            <div className="w-16 h-16 glass-button rounded-full flex items-center justify-center mx-auto mb-4">
+              <Globe className="h-8 w-8 text-black" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">MA PAGE SALON</h2>
+            <h2 className="text-2xl font-bold text-black mb-2">MA PAGE SALON</h2>
             <p className="text-gray-600 text-lg mb-4">
               Modifiez votre page publique
             </p>
@@ -113,7 +113,7 @@ export default function BusinessFeatures() {
                 console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
                 setLocation('/salon-page-editor');
               }}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-lg text-xl"
+              className="w-full glass-button text-black font-bold py-4 rounded-lg text-xl"
             >
               🔥 MODIFIER MA PAGE 🔥
             </Button>
@@ -121,63 +121,63 @@ export default function BusinessFeatures() {
         </Card>
 
         {/* Grille des outils professionnels */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
+        <div className="glass-button rounded-2xl p-4 shadow-sm">
           <div className="grid grid-cols-3 gap-3">
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl"
               onClick={() => setLocation('/salon-settings')}
             >
-              <Settings className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Config</span>
+              <Settings className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">Config</span>
             </Button>
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl"
               onClick={() => setActiveSection('paiements')}
             >
-              <CreditCard className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Paiements</span>
+              <CreditCard className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">Paiements</span>
             </Button>
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl border-2 border-orange-500"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl border-2 border-blue-300"
               onClick={() => {
                 console.log('🔗 LIEN SALON - Vers page publique salon-demo');
                 window.open('/salon/salon-demo', '_blank');
               }}
             >
-              <Globe className="h-5 w-5 text-orange-600" />
-              <span className="text-xs font-medium text-orange-700">MA PAGE</span>
+              <Globe className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">MA PAGE</span>
             </Button>
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl"
               onClick={() => setActiveSection('stock')}
             >
-              <Package className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Stock</span>
+              <Package className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">Stock</span>
             </Button>
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl"
               onClick={() => setActiveSection('marketing')}
             >
-              <TrendingUp className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Marketing</span>
+              <TrendingUp className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">Marketing</span>
             </Button>
 
             <Button
               variant="ghost"
-              className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl"
+              className="h-16 flex flex-col items-center justify-center gap-1 glass-button rounded-xl"
               onClick={() => setActiveSection('analytics')}
             >
-              <BarChart3 className="h-5 w-5 text-gray-600" />
-              <span className="text-xs font-medium text-gray-700">Analytics</span>
+              <BarChart3 className="h-5 w-5 text-black" />
+              <span className="text-xs font-medium text-black">Analytics</span>
             </Button>
           </div>
         </div>
@@ -186,40 +186,40 @@ export default function BusinessFeatures() {
         {activeSection === 'paiements' && (
           <div className="space-y-4">
             {/* Méthodes de Paiement */}
-            <Card className="border-0 shadow-sm rounded-2xl">
+            <Card className="border-0 shadow-sm rounded-2xl glass-button">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <CreditCard className="h-5 w-5 text-gray-900" />
-                  <h2 className="text-lg font-semibold text-gray-900">Méthodes de Paiement</h2>
+                  <CreditCard className="h-5 w-5 text-black" />
+                  <h2 className="text-lg font-semibold text-black">Méthodes de Paiement</h2>
                 </div>
                 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                  <div className="flex items-center justify-between p-4 glass-button rounded-xl">
                     <div className="flex items-center gap-3">
-                      <CreditCard className="h-5 w-5 text-gray-700" />
-                      <span className="font-medium text-gray-900">Carte bancaire</span>
+                      <CreditCard className="h-5 w-5 text-black" />
+                      <span className="font-medium text-black">Carte bancaire</span>
                     </div>
-                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
+                    <Badge className="glass-button text-black px-3 py-1 rounded-full">Actif</Badge>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                  <div className="flex items-center justify-between p-4 glass-button rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Euro className="h-5 w-5 text-gray-700" />
-                      <span className="font-medium text-gray-900">Espèces</span>
+                      <Euro className="h-5 w-5 text-black" />
+                      <span className="font-medium text-black">Espèces</span>
                     </div>
-                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
+                    <Badge className="glass-button text-black px-3 py-1 rounded-full">Actif</Badge>
                   </div>
                   
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                  <div className="flex items-center justify-between p-4 glass-button rounded-xl">
                     <div className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-gray-700" />
-                      <span className="font-medium text-gray-900">Chèques</span>
+                      <Check className="h-5 w-5 text-black" />
+                      <span className="font-medium text-black">Chèques</span>
                     </div>
-                    <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full">Inactif</Badge>
+                    <Badge className="glass-button text-black px-3 py-1 rounded-full">Inactif</Badge>
                   </div>
                 </div>
                 
-                <Button className="w-full mt-4 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl">
+                <Button className="w-full mt-4 glass-button text-black rounded-xl">
                   Gérer paiements
                 </Button>
               </CardContent>
