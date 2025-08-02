@@ -120,7 +120,7 @@ export default function InstitutBeauteSaintGermain() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-violet-600 hover:bg-violet-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -160,8 +160,8 @@ export default function InstitutBeauteSaintGermain() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
         activeTab === tab.id
-         ? 'glass-button-rose border-b-2 border-rose-600'
-         : 'glass-button-secondary'
+         ? 'bg-violet-600 hover:bg-violet-700 text-white-rose border-b-2 border-rose-600'
+         : 'bg-violet-600 hover:bg-violet-700 text-white-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -209,7 +209,7 @@ export default function InstitutBeauteSaintGermain() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 glass-button-rose"
+               className="mt-2 bg-violet-600 hover:bg-violet-700 text-white-rose"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -317,7 +317,7 @@ export default function InstitutBeauteSaintGermain() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full glass-button-rose py-3"
+     className="w-full bg-violet-600 hover:bg-violet-700 text-white-rose py-3"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant

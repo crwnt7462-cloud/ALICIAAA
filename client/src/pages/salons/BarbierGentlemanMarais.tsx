@@ -105,7 +105,7 @@ export default function BarbierGentlemanMarais() {
  return (
   <div className="min-h-screen bg-gray-50">
    {/* Header avec photo de couverture */}
-   <div className="relative h-64 bg-violet-500/20 backdrop-blur-sm">
+   <div className="relative h-64 bg-amber-600/20 backdrop-blur-sm">
     <img 
      src={salonData.coverImageUrl} 
      alt={salonData.name}
@@ -119,7 +119,7 @@ export default function BarbierGentlemanMarais() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-amber-600 hover:bg-amber-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -159,8 +159,8 @@ export default function BarbierGentlemanMarais() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
         activeTab === tab.id
-         ? 'glass-button-amber border-b-2 border-amber-600'
-         : 'glass-button-secondary'
+         ? 'bg-amber-600 hover:bg-amber-700 text-white-amber border-b-2 border-amber-600'
+         : 'bg-amber-600 hover:bg-amber-700 text-white-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -208,7 +208,7 @@ export default function BarbierGentlemanMarais() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 glass-button-amber"
+               className="mt-2 bg-amber-600 hover:bg-amber-700 text-white"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -316,7 +316,7 @@ export default function BarbierGentlemanMarais() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full glass-button py-3 text-lg font-semibold"
+     className="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 text-lg font-semibold"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant

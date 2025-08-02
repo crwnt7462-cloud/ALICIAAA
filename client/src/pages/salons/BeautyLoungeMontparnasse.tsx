@@ -144,7 +144,7 @@ export default function BeautyLoungeMontparnasse() {
  return (
   <div className="min-h-screen bg-gray-50">
    {/* Header avec photo de couverture */}
-   <div className="relative h-64 bg-violet-500/20 backdrop-blur-sm">
+   <div className="relative h-64 bg-pink-600/20 backdrop-blur-sm">
     <img 
      src={displayData.coverImageUrl || displayData.photos?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
      alt={displayData.name}
@@ -158,7 +158,7 @@ export default function BeautyLoungeMontparnasse() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-pink-600 hover:bg-pink-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -198,8 +198,8 @@ export default function BeautyLoungeMontparnasse() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
         activeTab === tab.id
-         ? 'glass-button-indigo border-b-2 border-indigo-600'
-         : 'glass-button-secondary'
+         ? 'bg-pink-600 hover:bg-pink-700 text-white-indigo border-b-2 border-indigo-600'
+         : 'bg-pink-600 hover:bg-pink-700 text-white-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -247,7 +247,7 @@ export default function BeautyLoungeMontparnasse() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 glass-button-indigo"
+               className="mt-2 bg-pink-600 hover:bg-pink-700 text-white-indigo"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -355,7 +355,7 @@ export default function BeautyLoungeMontparnasse() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full glass-button py-3 text-lg font-semibold"
+     className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3 text-lg font-semibold"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant

@@ -579,18 +579,7 @@ export default function PublicLanding() {
        </div>
       </div>
 
-      {/* Bouton connexion salon */}
-      <div className="max-w-md mx-auto text-center">
-       <div className="text-xs text-gray-500 mb-2">Vous êtes un professionnel ?</div>
-       <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setLocation("/pro-login")}
-        className="px-4 py-2 border border-violet-300 text-violet-600 hover:bg-violet-50 text-sm"
-       >
-        Connexion Salon
-       </Button>
-      </div>
+
 
 
      </div>

@@ -126,7 +126,7 @@ export default function NailArtOpera() {
  return (
   <div className="min-h-screen bg-gray-50">
    {/* Header avec photo de couverture */}
-   <div className="relative h-64 bg-violet-500/20 backdrop-blur-sm">
+   <div className="relative h-64 bg-cyan-600/20 backdrop-blur-sm">
     <img 
      src={displayData.coverImageUrl || displayData.photos?.[0] || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
      alt={displayData.name}
@@ -140,7 +140,7 @@ export default function NailArtOpera() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-cyan-600 hover:bg-cyan-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -180,8 +180,8 @@ export default function NailArtOpera() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
         activeTab === tab.id
-         ? 'glass-button-rose border-b-2 border-pink-600'
-         : 'glass-button-secondary'
+         ? 'bg-cyan-600 hover:bg-cyan-700 text-white-rose border-b-2 border-pink-600'
+         : 'bg-cyan-600 hover:bg-cyan-700 text-white-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -229,7 +229,7 @@ export default function NailArtOpera() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 glass-button-rose"
+               className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white-rose"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -337,7 +337,7 @@ export default function NailArtOpera() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full glass-button py-3"
+     className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-3"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant
