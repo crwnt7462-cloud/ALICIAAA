@@ -21,7 +21,7 @@ import rendlyLogo from "@assets/3_1753714421825.png";
 
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
 const getSalonButtonClass = (salonId: string) => {
-  const salonColors = {
+  const salonColors: Record<string, string> = {
     'salon-excellence-paris': 'glass-button-pink',
     'salon-moderne-republique': 'glass-button-indigo', 
     'barbier-gentleman-marais': 'glass-button-amber',
@@ -35,7 +35,7 @@ const getSalonButtonClass = (salonId: string) => {
 
 // Fonction pour obtenir la classe de carte glassmorphism spécifique à chaque salon
 const getSalonGlassCard = (salonId: string) => {
-  const salonCardColors = {
+  const salonCardColors: Record<string, string> = {
     'salon-excellence-paris': 'glass-card-pink',
     'salon-moderne-republique': 'glass-card-indigo', 
     'barbier-gentleman-marais': 'glass-card-amber',
