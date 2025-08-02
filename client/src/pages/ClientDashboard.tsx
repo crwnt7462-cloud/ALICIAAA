@@ -434,8 +434,8 @@ export default function ClientDashboard() {
               onClick={() => setActiveTab('accueil')}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'accueil'
-                  ? 'text-white transform scale-105'
-                  : 'text-white/80 hover:text-white'
+                  ? 'text-gray-900 transform scale-105'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <Home className="h-4 w-4" />
@@ -446,8 +446,8 @@ export default function ClientDashboard() {
               onClick={() => setActiveTab('rdv')}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'rdv'
-                  ? 'text-white transform scale-105'
-                  : 'text-white/80 hover:text-white'
+                  ? 'text-gray-900 transform scale-105'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <Calendar className="h-4 w-4" />
@@ -458,8 +458,8 @@ export default function ClientDashboard() {
               onClick={() => setActiveTab('messages')}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'messages'
-                  ? 'text-white transform scale-105'
-                  : 'text-white/80 hover:text-white'
+                  ? 'text-gray-900 transform scale-105'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <MessageCircle className="h-4 w-4" />
@@ -470,8 +470,8 @@ export default function ClientDashboard() {
               onClick={() => setActiveTab('profil')}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'profil'
-                  ? 'text-white transform scale-105'
-                  : 'text-white/80 hover:text-white'
+                  ? 'text-gray-900 transform scale-105'
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               <User className="h-4 w-4" />
@@ -480,7 +480,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setLocation('/search')}
-              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 text-white/80 hover:text-white"
+              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 text-gray-700 hover:text-gray-900"
             >
               <Sparkles className="h-4 w-4" />
               <span className="text-[10px] font-medium">Découvrir</span>

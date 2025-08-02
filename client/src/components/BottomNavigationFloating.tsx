@@ -51,21 +51,21 @@ export function BottomNavigationFloating() {
               onClick={() => setLocation(item.path)}
               className={`flex flex-col items-center gap-1 transition-all duration-200 ${
                 item.active
-                  ? 'text-white transform scale-110'
-                  : 'text-white/80 hover:text-white hover:scale-105'
+                  ? 'text-gray-900 transform scale-110'
+                  : 'text-gray-700 hover:text-gray-900 hover:scale-105'
               }`}
             >
               <div className={`p-2 rounded-2xl transition-all duration-200 ${
                 item.active 
-                  ? 'bg-white/30 shadow-lg shadow-white/20' 
-                  : 'hover:bg-white/20'
+                  ? 'bg-gray-100/80 shadow-lg shadow-gray-200/50' 
+                  : 'hover:bg-gray-100/50'
               }`}>
                 <item.icon className={`h-5 w-5 ${
-                  item.active ? 'text-white' : 'text-current'
+                  item.active ? 'text-gray-900' : 'text-current'
                 }`} />
               </div>
               <span className={`text-xs font-medium ${
-                item.active ? 'text-white' : 'text-current'
+                item.active ? 'text-gray-900' : 'text-current'
               }`}>
                 {item.label}
               </span>
