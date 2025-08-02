@@ -357,6 +357,12 @@ function Router() {
     );
   }
 
+  // Redirection explicite de l'ancienne URL vers la nouvelle
+  if (location === '/salon-search-complete') {
+    window.location.replace('/search');
+    return null;
+  }
+
   // Page de résultats de recherche
   if (location.startsWith('/search')) {
     return (

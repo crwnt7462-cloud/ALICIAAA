@@ -80,7 +80,7 @@ export default function BusinessFeatures() {
             <div className="bg-white rounded-lg p-3 mb-4 border">
               <div className="text-xs text-gray-500 mb-1">Lien de partage :</div>
               <div className="text-sm font-mono text-blue-600 break-all">
-                {window.location.origin}/salon/salon-demo
+                {window.location.origin}/salon/elite-coiffure-marais
               </div>
               <div className="flex gap-2 mt-2">
                 <Button 
@@ -88,7 +88,7 @@ export default function BusinessFeatures() {
                   variant="ghost" 
                   className="text-xs"
                   onClick={() => {
-                    navigator.clipboard.writeText(`${window.location.origin}/salon/salon-demo`);
+                    navigator.clipboard.writeText(`${window.location.origin}/salon/elite-coiffure-marais`);
                     toast({ title: "Lien copié !" });
                   }}
                 >
@@ -100,7 +100,7 @@ export default function BusinessFeatures() {
                   className="text-xs"
                   onClick={() => {
                     console.log('🔗 OUVERTURE SALON PUBLIC depuis lien partage');
-                    window.open('/salon/salon-demo', '_blank');
+                    window.open('/salon/elite-coiffure-marais', '_blank');
                   }}
                 >
                   Voir la page
@@ -145,8 +145,8 @@ export default function BusinessFeatures() {
               variant="ghost"
               className="h-16 flex flex-col items-center justify-center gap-1 hover:bg-gray-50 rounded-xl border-2 border-orange-500"
               onClick={() => {
-                console.log('🔗 LIEN SALON - Vers page publique salon-demo');
-                window.open('/salon/salon-demo', '_blank');
+                console.log('🔗 LIEN SALON - Vers page publique elite-coiffure-marais');
+                window.open('/salon/elite-coiffure-marais', '_blank');
               }}
             >
               <Globe className="h-5 w-5 text-orange-600" />
