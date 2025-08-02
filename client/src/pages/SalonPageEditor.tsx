@@ -498,8 +498,8 @@ export default function SalonPageEditor() {
                                 size="sm" 
                                 className="mt-2"
                                 style={{
-                                  backgroundColor: salonData.customColors?.primary || '#f59e0b',
-                                  color: salonData.customColors?.buttonText || '#ffffff',
+                                  backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 10%, #f3f4f6)` : '#f3f4f6',
+                                  color: salonData.customColors?.primary || '#374151',
                                   border: 'none',
                                   borderRadius: '8px',
                                   fontWeight: '500',
@@ -749,8 +749,8 @@ export default function SalonPageEditor() {
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
-                        backgroundColor: salonData.customColors?.primary || '#f59e0b',
-                        color: salonData.customColors?.buttonText || '#ffffff',
+                        backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 12%, #f3f4f6)` : '#f3f4f6',
+                        color: salonData.customColors?.primary || '#374151',
                         border: 'none',
                         borderRadius: '8px',
                         fontWeight: '500'
@@ -761,9 +761,9 @@ export default function SalonPageEditor() {
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                        color: salonData.customColors?.primary || '#f59e0b',
-                        border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}`,
+                        backgroundColor: '#f9fafb',
+                        color: '#6b7280',
+                        border: '1px solid #e5e7eb',
                         borderRadius: '8px',
                         fontWeight: '500'
                       }}
@@ -773,8 +773,8 @@ export default function SalonPageEditor() {
                     <button
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
                       style={{
-                        backgroundColor: salonData.customColors?.primary || '#f59e0b',
-                        color: salonData.customColors?.buttonText || '#ffffff',
+                        backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 10%, #f3f4f6)` : '#f3f4f6',
+                        color: salonData.customColors?.primary || '#374151',
                         border: 'none',
                         borderRadius: '8px',
                         fontWeight: '500',
@@ -785,7 +785,7 @@ export default function SalonPageEditor() {
                     </button>
                   </div>
                   <p className="text-center text-sm text-gray-600 mt-4">
-                    ✨ Aperçu de vos boutons avec effet glassmorphism et couleurs personnalisées
+                    ✨ Aperçu de vos boutons avec style moderne et couleurs personnalisées
                   </p>
                 </div>
               </CardContent>
@@ -842,8 +842,8 @@ export default function SalonPageEditor() {
           <Button 
             className="w-full py-3 text-lg font-semibold rounded-xl"
             style={{
-              backgroundColor: salonData.customColors?.primary || '#f59e0b',
-              color: salonData.customColors?.buttonText || '#ffffff',
+              backgroundColor: salonData.customColors?.primary ? `color-mix(in srgb, ${salonData.customColors.primary} 15%, #f3f4f6)` : '#f3f4f6',
+              color: salonData.customColors?.primary || '#374151',
               border: 'none',
               borderRadius: '12px',
               fontWeight: '600',
