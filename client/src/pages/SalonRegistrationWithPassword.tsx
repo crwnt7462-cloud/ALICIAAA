@@ -169,7 +169,7 @@ export default function SalonRegistrationWithPassword() {
           </div>
           <div className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full h-2">
             <div 
-              className="bg-gradient-to-r from-violet-600 to-purple-700 h-2 rounded-full transition-all duration-300"
+              className="bg-violet-500/20 backdrop-blur-sm"
               style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>

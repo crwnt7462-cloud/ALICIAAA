@@ -145,7 +145,7 @@ export default function SalonPayment() {
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full border-0 shadow-2xl">
           <CardContent className="p-8 text-center space-y-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="w-20 h-20 bg-violet-500/20 backdrop-blur-sm">
               <CheckCircle className="h-10 w-10 text-white" />
             </div>
             
@@ -158,7 +158,7 @@ export default function SalonPayment() {
               </p>
             </div>
 
-            <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl space-y-3">
+            <div className="bg-violet-500/20 backdrop-blur-sm">
               <h3 className="font-bold text-lg">Votre abonnement {selectedPlanInfo.name}</h3>
               <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
@@ -200,7 +200,7 @@ export default function SalonPayment() {
               </Button>
               <Button
                 onClick={() => setLocation('/business-features')}
-                className="flex-1 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg hover:shadow-xl transition-all"
+                className="flex-1 h-12 rounded-xl bg-violet-500/20 backdrop-blur-sm"
               >
                 Accéder à mon espace
               </Button>
@@ -225,7 +225,7 @@ export default function SalonPayment() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl font-bold bg-violet-500/20 backdrop-blur-sm">
                 Finaliser votre inscription
               </h1>
               <p className="text-gray-600">Paiement sécurisé pour votre abonnement {selectedPlanInfo.name}</p>
@@ -419,7 +419,7 @@ export default function SalonPayment() {
                   <Button
                     onClick={handlePayment}
                     disabled={isProcessing}
-                    className="w-full h-14 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium shadow-lg hover:shadow-xl transition-all text-lg"
+                    className="w-full h-14 rounded-xl bg-violet-500/20 backdrop-blur-sm"
                   >
                     {isProcessing ? (
                       <div className="flex items-center gap-3">

@@ -318,7 +318,7 @@ export default function ModernSalonDetail() {
      />
      
      {/* Overlay gradient */}
-     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+     <div className="absolute inset-0 bg-violet-500/20 backdrop-blur-sm" />
      
      {/* Bouton retour */}
      <Button
