@@ -181,8 +181,11 @@ export default function SalonPageEditor() {
   // Génère le style personnalisé des boutons avec intensité
   const getCustomButtonStyle = () => {
     // Utilise toujours les couleurs personnalisées (même par défaut)
-    const primaryColor = salonData.customColors?.primary || '#a855f7';
+    const primaryColor = salonData.customColors?.primary || '#f59e0b';
     const intensity = salonData.customColors?.intensity || 35;
+    
+    // Debug pour voir les valeurs actuelles
+    console.log('🎨 Style bouton:', { primaryColor, intensity });
     
     const rgb = parseInt(primaryColor.slice(1), 16);
     const r = (rgb >> 16) & 255;
