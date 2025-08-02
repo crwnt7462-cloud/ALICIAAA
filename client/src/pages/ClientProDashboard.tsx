@@ -89,7 +89,7 @@ export default function ClientProDashboard() {
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-lg font-semibold text-gray-600">Mon Espace</h1>
+          <h1 className="text-lg font-semibold text-gray-900">Mon Espace</h1>
           <Button
             variant="ghost"
             onClick={() => setLocation('/settings')}
@@ -102,18 +102,18 @@ export default function ClientProDashboard() {
 
       <div className="max-w-md mx-auto p-4">
         {/* Welcome Card */}
-        <Card className="mb-6 bg-white/30 backdrop-blur-md border border-gray-200/50">
+        <Card className="mb-6 bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-white/30 backdrop-blur-md border border-gray-200/50">
+              <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
                 <User className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-600">Excellence Beauty Salon</h2>
+                <h2 className="text-xl font-bold text-gray-900">Excellence Beauty Salon</h2>
                 <p className="text-gray-600">Tableau de bord professionnel</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge className="bg-violet-100 text-gray-600">Plan Pro</Badge>
-                  <Badge variant="outline" className="text-gray-600 border-green-300">En ligne</Badge>
+                  <Badge className="bg-violet-100 text-violet-700">Plan Pro</Badge>
+                  <Badge variant="outline" className="text-green-600 border-green-300">En ligne</Badge>
                 </div>
               </div>
             </div>
@@ -154,13 +154,13 @@ export default function ClientProDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">RDV Aujourd'hui</p>
-                      <p className="text-2xl font-bold text-gray-600">8</p>
+                      <p className="text-2xl font-bold text-gray-900">8</p>
                     </div>
-                    <Calendar className="h-8 w-8 text-gray-600" />
+                    <Calendar className="h-8 w-8 text-violet-500" />
                   </div>
                   <div className="flex items-center mt-2">
-                    <TrendingUp className="h-3 w-3 text-gray-600 mr-1" />
-                    <span className="text-xs text-gray-600">+12% vs hier</span>
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+12% vs hier</span>
                   </div>
                 </CardContent>
               </Card>
@@ -170,13 +170,13 @@ export default function ClientProDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">CA du Jour</p>
-                      <p className="text-2xl font-bold text-gray-600">640€</p>
+                      <p className="text-2xl font-bold text-gray-900">640€</p>
                     </div>
-                    <DollarSign className="h-8 w-8 text-gray-600" />
+                    <DollarSign className="h-8 w-8 text-green-500" />
                   </div>
                   <div className="flex items-center mt-2">
-                    <TrendingUp className="h-3 w-3 text-gray-600 mr-1" />
-                    <span className="text-xs text-gray-600">+8% vs hier</span>
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+8% vs hier</span>
                   </div>
                 </CardContent>
               </Card>
@@ -186,13 +186,13 @@ export default function ClientProDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Nouveaux Clients</p>
-                      <p className="text-2xl font-bold text-gray-600">3</p>
+                      <p className="text-2xl font-bold text-gray-900">3</p>
                     </div>
-                    <Users className="h-8 w-8 text-gray-600" />
+                    <Users className="h-8 w-8 text-blue-500" />
                   </div>
                   <div className="flex items-center mt-2">
-                    <TrendingUp className="h-3 w-3 text-gray-600 mr-1" />
-                    <span className="text-xs text-gray-600">+2 cette semaine</span>
+                    <TrendingUp className="h-3 w-3 text-green-500 mr-1" />
+                    <span className="text-xs text-green-600">+2 cette semaine</span>
                   </div>
                 </CardContent>
               </Card>
@@ -202,12 +202,12 @@ export default function ClientProDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Note Moyenne</p>
-                      <p className="text-2xl font-bold text-gray-600">4.9</p>
+                      <p className="text-2xl font-bold text-gray-900">4.9</p>
                     </div>
-                    <Star className="h-8 w-8 text-gray-600" />
+                    <Star className="h-8 w-8 text-orange-500" />
                   </div>
                   <div className="flex items-center mt-2">
-                    <Star className="h-3 w-3 text-gray-600 mr-1" />
+                    <Star className="h-3 w-3 text-yellow-500 mr-1" />
                     <span className="text-xs text-gray-600">156 avis</span>
                   </div>
                 </CardContent>
@@ -226,11 +226,11 @@ export default function ClientProDashboard() {
                 {upcomingAppointments.slice(0, 3).map((appointment) => (
                   <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                     <div className="flex-1">
-                      <div className="font-medium text-gray-600">{appointment.service}</div>
+                      <div className="font-medium text-gray-900">{appointment.service}</div>
                       <div className="text-sm text-gray-600">{appointment.time} - {appointment.specialist}</div>
                     </div>
                     <div className="text-right">
-                      <div className="font-semibold text-gray-600">{appointment.price}</div>
+                      <div className="font-semibold text-violet-600">{appointment.price}</div>
                       <Badge variant="secondary" className="text-xs">
                         {appointment.status}
                       </Badge>
@@ -294,7 +294,7 @@ export default function ClientProDashboard() {
           {/* Planning Tab */}
           <TabsContent value="planning" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-600">Mes rendez-vous</h3>
+              <h3 className="font-semibold text-gray-900">Mes rendez-vous</h3>
               <Button 
                 size="sm" 
                 className="bg-violet-600 hover:bg-violet-700"
@@ -306,13 +306,13 @@ export default function ClientProDashboard() {
 
             {/* Upcoming Appointments */}
             <div className="space-y-3">
-              <h4 className="text-sm font-medium text-gray-600">À venir</h4>
+              <h4 className="text-sm font-medium text-gray-700">À venir</h4>
               {upcomingAppointments.map((appointment) => (
                 <Card key={appointment.id} className="border border-gray-200">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h5 className="font-medium text-gray-600">{appointment.salon}</h5>
+                        <h5 className="font-medium text-gray-900">{appointment.salon}</h5>
                         <p className="text-sm text-gray-600">{appointment.service}</p>
                       </div>
                       <Badge variant="secondary" className="text-xs">
@@ -331,7 +331,7 @@ export default function ClientProDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">avec {appointment.specialist}</span>
-                      <span className="font-semibold text-gray-600">{appointment.price}</span>
+                      <span className="font-semibold text-violet-600">{appointment.price}</span>
                     </div>
                     <div className="flex gap-2 mt-3">
                       <Button variant="outline" size="sm" className="flex-1">
@@ -348,13 +348,13 @@ export default function ClientProDashboard() {
 
             {/* Past Appointments */}
             <div className="space-y-3">
-              <h4 className="text-sm font-medium text-gray-600">Historique</h4>
+              <h4 className="text-sm font-medium text-gray-700">Historique</h4>
               {pastAppointments.map((appointment) => (
                 <Card key={appointment.id} className="border border-gray-200">
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h5 className="font-medium text-gray-600">{appointment.salon}</h5>
+                        <h5 className="font-medium text-gray-900">{appointment.salon}</h5>
                         <p className="text-sm text-gray-600">{appointment.service}</p>
                       </div>
                       <Badge variant="outline" className="text-xs">
@@ -363,7 +363,7 @@ export default function ClientProDashboard() {
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">{appointment.date}</span>
-                      <span className="font-semibold text-gray-600">{appointment.price}</span>
+                      <span className="font-semibold text-gray-700">{appointment.price}</span>
                     </div>
                     {appointment.canReview && (
                       <Button 
@@ -385,7 +385,7 @@ export default function ClientProDashboard() {
           {/* Messages Tab */}
           <TabsContent value="messages" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-600">Messages</h3>
+              <h3 className="font-semibold text-gray-900">Messages</h3>
               <Button variant="outline" size="sm">
                 <Search className="h-3 w-3" />
               </Button>
@@ -404,8 +404,8 @@ export default function ClientProDashboard() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-1">
-                      <h5 className="font-medium text-gray-600">{message.salon}</h5>
-                      <span className="text-xs text-gray-600">{message.time}</span>
+                      <h5 className="font-medium text-gray-900">{message.salon}</h5>
+                      <span className="text-xs text-gray-500">{message.time}</span>
                     </div>
                     <p className="text-sm text-gray-600">{message.message}</p>
                     {message.unread && (
@@ -419,15 +419,15 @@ export default function ClientProDashboard() {
 
           {/* Pro Tools Tab */}
           <TabsContent value="tools" className="space-y-4">
-            <h3 className="font-semibold text-gray-600">Outils Professionnels</h3>
+            <h3 className="font-semibold text-gray-900">Outils Professionnels</h3>
             
             <div className="grid grid-cols-2 gap-4">
               <Card className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => setLocation('/page-creator')}>
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <Edit3 className="h-5 w-5 text-gray-600" />
+                    <Edit3 className="h-5 w-5 text-violet-600" />
                   </div>
-                  <div className="font-medium text-gray-600">Pages</div>
+                  <div className="font-medium text-gray-900">Pages</div>
                   <div className="text-xs text-gray-600">Créer/modifier</div>
                 </CardContent>
               </Card>
@@ -435,9 +435,9 @@ export default function ClientProDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <CreditCard className="h-5 w-5 text-gray-600" />
+                    <CreditCard className="h-5 w-5 text-green-600" />
                   </div>
-                  <div className="font-medium text-gray-600">Paiements</div>
+                  <div className="font-medium text-gray-900">Paiements</div>
                   <div className="text-xs text-gray-600">Encaissements</div>
                 </CardContent>
               </Card>
@@ -445,9 +445,9 @@ export default function ClientProDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <Bell className="h-5 w-5 text-gray-600" />
+                    <Bell className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div className="font-medium text-gray-600">Marketing</div>
+                  <div className="font-medium text-gray-900">Marketing</div>
                   <div className="text-xs text-gray-600">Campagnes</div>
                 </CardContent>
               </Card>
@@ -455,9 +455,9 @@ export default function ClientProDashboard() {
               <Card className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardContent className="p-4 text-center">
                   <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <Gift className="h-5 w-5 text-gray-600" />
+                    <Gift className="h-5 w-5 text-orange-600" />
                   </div>
-                  <div className="font-medium text-gray-600">Fidélité</div>
+                  <div className="font-medium text-gray-900">Fidélité</div>
                   <div className="text-xs text-gray-600">Programmes</div>
                 </CardContent>
               </Card>
@@ -486,14 +486,14 @@ export default function ClientProDashboard() {
 
           {/* AI Tab */}
           <TabsContent value="ai" className="space-y-4">
-            <h3 className="font-semibold text-gray-600">Intelligence Artificielle</h3>
+            <h3 className="font-semibold text-gray-900">Intelligence Artificielle</h3>
             
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-white/30 backdrop-blur-md border border-gray-200/50">
+                <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Star className="h-8 w-8 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-600 mb-2">Assistant IA Professionnel</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">Assistant IA Professionnel</h4>
                 <p className="text-sm text-gray-600 mb-4">
                   Optimisez votre planning, analysez vos performances et obtenez des conseils personnalisés
                 </p>
@@ -511,10 +511,10 @@ export default function ClientProDashboard() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Calendar className="h-4 w-4 text-gray-600" />
+                      <Calendar className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-600">Optimisation Planning</div>
+                      <div className="font-medium text-gray-900">Optimisation Planning</div>
                       <div className="text-xs text-gray-600">Suggestions automatiques</div>
                     </div>
                   </div>
@@ -525,10 +525,10 @@ export default function ClientProDashboard() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Star className="h-4 w-4 text-gray-600" />
+                      <Star className="h-4 w-4 text-green-600" />
                     </div>
                     <div>
-                      <div className="font-medium text-gray-600">Analyse Clients</div>
+                      <div className="font-medium text-gray-900">Analyse Clients</div>
                       <div className="text-xs text-gray-600">Comportements et tendances</div>
                     </div>
                   </div>

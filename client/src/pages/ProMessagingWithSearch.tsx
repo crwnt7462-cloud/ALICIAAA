@@ -215,7 +215,7 @@ export default function ProMessagingWithSearch() {
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/business-features')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -227,7 +227,7 @@ export default function ProMessagingWithSearch() {
             
             <Dialog open={isNewMessageOpen} onOpenChange={setIsNewMessageOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700">
+                <Button className="bg-violet-600 hover:bg-violet-700 text-white">
                   <Plus className="h-4 w-4 mr-2" />
                   Nouveau message
                 </Button>
@@ -259,7 +259,7 @@ export default function ProMessagingWithSearch() {
                         {searchResults.map((user) => (
                           <div
                             key={user.id}
-                            className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 cursor-pointer border-b last:border-b-0"
+                            className="p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
                             onClick={() => {
                               setSelectedUser(user);
                               setUserSearch(user.handle);
@@ -291,7 +291,7 @@ export default function ProMessagingWithSearch() {
                   <Button
                     onClick={sendMessage}
                     disabled={!selectedUser || !messageContent.trim()}
-                    className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700"
+                    className="bg-violet-600 hover:bg-violet-700 text-white"
                   >
                     <Send className="h-4 w-4 mr-2" />
                     Envoyer
@@ -316,7 +316,7 @@ export default function ProMessagingWithSearch() {
                 </div>
                 
                 {/* Onglets */}
-                <div className="flex space-x-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg p-1">
+                <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
                   {[
                     { key: 'conversations', label: 'Actives' },
                     { key: 'clients', label: 'Clients' },
@@ -365,7 +365,7 @@ export default function ProMessagingWithSearch() {
                         <h4 className="font-medium text-sm">{conversation.clientName}</h4>
                         <div className="flex items-center gap-2">
                           {conversation.unreadCount > 0 && (
-                            <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 text-xs h-5 w-5 p-0 flex items-center justify-center rounded-full">
+                            <Badge className="bg-red-500 text-white text-xs h-5 w-5 p-0 flex items-center justify-center rounded-full">
                               {conversation.unreadCount}
                             </Badge>
                           )}
@@ -422,8 +422,8 @@ export default function ProMessagingWithSearch() {
                         <div
                           className={`max-w-xs lg:max-w-md px-4 py-3 ${
                             message.senderId === 'pro_1'
-                              ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-2xl rounded-br-sm'
-                              : 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-900 rounded-2xl rounded-bl-sm'
+                              ? 'bg-blue-500 text-white rounded-2xl rounded-br-sm'
+                              : 'bg-gray-200 text-gray-900 rounded-2xl rounded-bl-sm'
                           }`}
                         >
                           <p className="text-sm leading-relaxed">{message.content}</p>
@@ -457,7 +457,7 @@ export default function ProMessagingWithSearch() {
                     <Button
                       onClick={sendMessage}
                       disabled={!messageContent.trim()}
-                      className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full w-8 h-8 p-0 shrink-0"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-8 h-8 p-0 shrink-0"
                     >
                       <Send className="h-4 w-4" />
                     </Button>

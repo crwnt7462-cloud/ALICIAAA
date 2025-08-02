@@ -7,7 +7,6 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
-import { getGenericGlassButton } from '@/lib/salonColors';
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -44,20 +43,20 @@ export default function Dashboard() {
     }
   }, [webSocketData?.notifications]);
 
-  const COLORS = ["#FF6B35", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+  const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
   if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading || retentionLoading) {
     return <LoadingDashboard />;
   }
 
   return (
-    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50 to-purple-50 min-h-full">
+    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50/50 to-purple-50/30 min-h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Tableau de bord</h1>
-          <p className="text-white mt-1 flex items-center text-xs">
-            <Calendar className="w-3 h-3 mr-1.5 text-white" />
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Tableau de bord</h1>
+          <p className="text-gray-600 mt-1 flex items-center text-xs">
+            <Calendar className="w-3 h-3 mr-1.5 text-purple-500" />
             {new Date().toLocaleDateString('fr-FR', { 
               weekday: 'short', 
               month: 'short', 
@@ -69,7 +68,7 @@ export default function Dashboard() {
           <Button 
             variant="outline" 
             size="sm" 
-            className={`${getGenericGlassButton(0)} text-black rounded-lg text-xs px-3 py-1.5`}
+            className="border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-xs px-3 py-1.5"
             onClick={() => setLocation('/ai')}
           >
             <TrendingUp className="w-3 h-3 mr-1" />
@@ -77,7 +76,7 @@ export default function Dashboard() {
           </Button>
           <Button 
             size="sm" 
-            className={`${getGenericGlassButton(1)} text-black shadow-lg hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5`}
+            className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg text-xs px-3 py-1.5"
             onClick={() => setLocation('/booking')}
           >
             <Plus className="w-3 h-3 mr-1" />
@@ -91,7 +90,7 @@ export default function Dashboard() {
 
         <Button 
           variant="outline"
-          className={`h-14 ${getGenericGlassButton(2)} text-black rounded-2xl`}
+          className="h-14 border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl"
           onClick={() => setLocation("/booking")}
         >
           <Plus className="w-5 h-5 mr-2" />
@@ -102,7 +101,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-4 gap-2">
         <Button 
           variant="outline" 
-          className={`h-16 flex-col ${getGenericGlassButton(3)} text-black rounded-2xl text-xs font-bold`}
+          className="h-16 flex-col border-4 border-orange-500 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl text-xs font-bold"
           onClick={() => {
             console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
             setLocation("/salon-page-editor");
@@ -113,7 +112,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className={`h-16 flex-col ${getGenericGlassButton(4)} text-black rounded-2xl text-xs`}
+          className="h-16 flex-col border-blue-200 text-blue-700 hover:bg-blue-50 rounded-xl text-xs"
           onClick={() => setLocation("/staff")}
         >
           <UserCheck className="w-5 h-5 mb-1" />
@@ -121,7 +120,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className={`h-16 flex-col ${getGenericGlassButton(0)} text-black rounded-2xl text-xs`}
+          className="h-16 flex-col border-emerald-200 text-emerald-700 hover:bg-emerald-50 rounded-xl text-xs"
           onClick={() => setLocation("/clients")}
         >
           <Users className="w-5 h-5 mb-1" />
@@ -129,7 +128,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className={`h-16 flex-col ${getGenericGlassButton(1)} text-black rounded-2xl text-xs`}
+          className="h-16 flex-col border-orange-200 text-orange-700 hover:bg-orange-50 rounded-xl text-xs"
           onClick={() => setLocation("/planning")}
         >
           <Calendar className="w-5 h-5 mb-1" />
@@ -137,7 +136,7 @@ export default function Dashboard() {
         </Button>
         <Button 
           variant="outline" 
-          className={`h-16 flex-col ${getGenericGlassButton(2)} text-black rounded-2xl text-xs`}
+          className="h-16 flex-col border-gray-200 text-gray-700 hover:bg-gray-50 rounded-xl text-xs"
           onClick={() => setLocation("/settings")}
         >
           <Settings className="w-5 h-5 mb-1" />
@@ -147,97 +146,97 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-white">Aujourd'hui</p>
-                <p className="text-2xl font-bold text-white mt-1">
+                <p className="text-xs font-medium text-gray-500">Aujourd'hui</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">
                   {(stats as any)?.todayAppointments || 0}
                 </p>
-                <p className="text-xs text-white">RDV</p>
+                <p className="text-xs text-gray-500">RDV</p>
               </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <CalendarCheck className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
+                <CalendarCheck className="w-4 h-4 text-blue-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-white">CA Semaine</p>
-                <p className="text-2xl font-bold text-white mt-1">
-                  2340€
+                <p className="text-xs font-medium text-gray-500">CA Semaine</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">
+                  {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '0€'}
                 </p>
-                <p className="text-xs text-white font-medium">+12%</p>
+                <p className="text-xs text-emerald-600 font-medium">+12%</p>
               </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-white">Récurrence 30j</p>
-                <p className="text-2xl font-bold text-white mt-1">75%</p>
-                <p className="text-xs text-white font-medium">12 clients</p>
-              </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <UserCheck className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-100 to-green-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-emerald-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-white">Clients Fidèles</p>
-                <p className="text-2xl font-bold text-white mt-1">65%</p>
-                <p className="text-xs text-white font-medium">8 clients 3+ visites</p>
+                <p className="text-xs font-medium text-gray-500">Récurrence 30j</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">75%</p>
+                <p className="text-xs text-violet-600 font-medium">12 clients</p>
               </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <Award className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-100 to-purple-100 rounded-lg flex items-center justify-center">
+                <UserCheck className="w-4 h-4 text-violet-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-white">Clients</p>
-                <p className="text-2xl font-bold text-white mt-1">
-                  147
+                <p className="text-xs font-medium text-gray-500">Clients Fidèles</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">65%</p>
+                <p className="text-xs text-orange-600 font-medium">8 clients 3+ visites</p>
+              </div>
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-100 to-amber-100 rounded-lg flex items-center justify-center">
+                <Award className="w-4 h-4 text-orange-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-gray-500">Clients</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">
+                  {(stats as any)?.totalClients || 0}
                 </p>
-                <p className="text-xs text-white">Total</p>
+                <p className="text-xs text-gray-500">Total</p>
               </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <Users className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center">
+                <Users className="w-4 h-4 text-purple-600" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-lg bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-white">Taux</p>
-                <p className="text-2xl font-bold text-white mt-1">82%</p>
-                <p className="text-xs text-white font-medium">Semaine</p>
+                <p className="text-xs font-medium text-gray-500">Taux</p>
+                <p className="text-xl font-bold text-gray-900 mt-1">82%</p>
+                <p className="text-xs text-amber-600 font-medium">Semaine</p>
               </div>
-              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                <Clock className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-100 to-orange-100 rounded-lg flex items-center justify-center">
+                <Clock className="w-4 h-4 text-amber-600" />
               </div>
             </div>
           </CardContent>
@@ -245,10 +244,10 @@ export default function Dashboard() {
       </div>
 
       {/* Revenue Chart */}
-      <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
+      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-4">
-          <CardTitle className="text-2xl font-bold text-white tracking-tight">Évolution du chiffre d'affaires</CardTitle>
-          <p className="text-sm text-white">30 derniers jours</p>
+          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Évolution du chiffre d'affaires</CardTitle>
+          <p className="text-sm text-gray-500">30 derniers jours</p>
         </CardHeader>
         <CardContent>
           <div className="h-80">
@@ -283,8 +282,8 @@ export default function Dashboard() {
         {/* Top Services */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-white">Prestations les plus vendues</CardTitle>
-            <p className="text-sm text-white">30 derniers jours</p>
+            <CardTitle className="text-lg font-semibold text-gray-900">Prestations les plus vendues</CardTitle>
+            <p className="text-sm text-gray-500">30 derniers jours</p>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -300,7 +299,7 @@ export default function Dashboard() {
                     width={80}
                   />
                   <Tooltip formatter={(value, name) => [value, name === 'count' ? 'Nombre de ventes' : 'Chiffre d\'affaires']} />
-                  <Bar dataKey="count" fill="#10B981" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" fill="#3B82F6" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -310,29 +309,31 @@ export default function Dashboard() {
         {/* Staff Performance */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-white">Classement équipe</CardTitle>
-            <p className="text-sm text-white">Chiffre d'affaires par personne</p>
+            <CardTitle className="text-lg font-semibold text-gray-900">Classement équipe</CardTitle>
+            <p className="text-sm text-gray-500">Chiffre d'affaires par personne</p>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {Array.isArray(staffPerformance) && staffPerformance.map((staff: any, index: number) => (
-                <div key={staff.staffName} className="flex items-center justify-between p-3 bg-white/30 backdrop-blur-sm border border-gray-200/30 rounded-lg">
+                <div key={staff.staffName} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-black font-semibold bg-white/20 rounded-lg flex items-center justify-center">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold ${
+                      index === 0 ? 'bg-yellow-500' : index === 1 ? 'bg-gray-400' : 'bg-orange-600'
+                    }`}>
                       {index + 1}
                     </div>
                     <div>
-                      <p className="font-medium text-white">{staff.staffName}</p>
-                      <p className="text-sm text-white">{staff.appointmentCount} RDV</p>
+                      <p className="font-medium text-gray-900">{staff.staffName}</p>
+                      <p className="text-sm text-gray-500">{staff.appointmentCount} RDV</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-white">{staff.revenue}€</p>
-                    {index === 0 && <Award className="w-5 h-5 text-white ml-auto" />}
+                    <p className="font-semibold text-gray-900">{staff.revenue}€</p>
+                    {index === 0 && <Award className="w-4 h-4 text-yellow-500 ml-auto" />}
                   </div>
                 </div>
               )) || (
-                <div className="text-center py-8 text-white">
+                <div className="text-center py-8 text-gray-500">
                   <p>Aucune donnée de performance disponible</p>
                 </div>
               )}
@@ -342,44 +343,44 @@ export default function Dashboard() {
       </div>
 
       {/* Client Retention Analysis */}
-      <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
+      <Card className="border-0 shadow-luxury bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-4">
-          <CardTitle className="text-2xl font-bold text-white tracking-tight">Analyse de Fidélisation Client</CardTitle>
-          <p className="text-sm text-white">Indicateurs de récurrence et fidélité</p>
+          <CardTitle className="text-xl font-bold text-gray-900 tracking-tight">Analyse de Fidélisation Client</CardTitle>
+          <p className="text-sm text-gray-500">Indicateurs de récurrence et fidélité</p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white/30 backdrop-blur-md border border-gray-200/50/50">
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 p-4 rounded-xl">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-white">Récurrence 30 jours</h4>
-                <UserCheck className="w-5 h-5 text-white" />
+                <h4 className="text-sm font-semibold text-violet-800">Récurrence 30 jours</h4>
+                <UserCheck className="w-5 h-5 text-violet-600" />
               </div>
-              <p className="text-2xl font-bold text-white">75%</p>
-              <p className="text-xs text-white mt-1">12 / 16 clients</p>
+              <p className="text-2xl font-bold text-violet-900">75%</p>
+              <p className="text-xs text-violet-600 mt-1">12 / 16 clients</p>
             </div>
             
-            <div className="bg-white/30 backdrop-blur-md border border-gray-200/50/50">
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 p-4 rounded-xl">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-white">Clients VIP</h4>
-                <Award className="w-5 h-5 text-white" />
+                <h4 className="text-sm font-semibold text-orange-800">Clients VIP</h4>
+                <Award className="w-5 h-5 text-orange-600" />
               </div>
-              <p className="text-2xl font-bold text-white">40%</p>
-              <p className="text-xs text-white mt-1">6 clients (5+ visites)</p>
+              <p className="text-2xl font-bold text-orange-900">40%</p>
+              <p className="text-xs text-orange-600 mt-1">6 clients (5+ visites)</p>
             </div>
           </div>
           
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <p className="text-lg font-bold text-white">65%</p>
-              <p className="text-xs text-white">Récurrence 90j</p>
+              <p className="text-lg font-bold text-blue-900">65%</p>
+              <p className="text-xs text-blue-600">Récurrence 90j</p>
             </div>
             <div className="text-center p-3 bg-emerald-50 rounded-lg">
-              <p className="text-lg font-bold text-white">2.4</p>
-              <p className="text-xs text-white">Visites/client</p>
+              <p className="text-lg font-bold text-emerald-900">2.4</p>
+              <p className="text-xs text-emerald-600">Visites/client</p>
             </div>
             <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <p className="text-lg font-bold text-white">58%</p>
-              <p className="text-xs text-white">Clients fidèles</p>
+              <p className="text-lg font-bold text-purple-900">58%</p>
+              <p className="text-xs text-purple-600">Clients fidèles</p>
             </div>
           </div>
         </CardContent>
@@ -388,34 +389,34 @@ export default function Dashboard() {
       {/* Upcoming Appointments */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-white">Prochains rendez-vous</CardTitle>
-          <p className="text-sm text-white">7 prochains jours</p>
+          <CardTitle className="text-lg font-semibold text-gray-900">Prochains rendez-vous</CardTitle>
+          <p className="text-sm text-gray-500">7 prochains jours</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {Array.isArray(upcomingAppointments) && upcomingAppointments.length > 0 ? (
               upcomingAppointments.map((appointment: any, index: number) => (
-                <div key={index} className="flex items-center justify-between p-3 border border-gray-200/50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                      <CalendarCheck className="w-5 h-5 text-white" />
+                      <CalendarCheck className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-white">{appointment.clientName}</p>
-                      <p className="text-sm text-white">{appointment.serviceName}</p>
+                      <p className="font-medium text-gray-900">{appointment.clientName}</p>
+                      <p className="text-sm text-gray-500">{appointment.serviceName}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-gray-900">
                       {new Date(appointment.date).toLocaleDateString('fr-FR')}
                     </p>
-                    <p className="text-sm text-white">{appointment.time}</p>
+                    <p className="text-sm text-gray-500">{appointment.time}</p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-8 text-white">
-                <CalendarCheck className="w-12 h-12 text-white mx-auto mb-3" />
+              <div className="text-center py-8 text-gray-500">
+                <CalendarCheck className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                 <p>Aucun rendez-vous prévu</p>
               </div>
             )}

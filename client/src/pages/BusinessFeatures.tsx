@@ -27,24 +27,24 @@ export default function BusinessFeatures() {
       <RealtimeNotificationBar />
       
       {/* Header violet moderne - Style iPhone identique client */}
-      <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                <span className="text-violet-700 font-bold text-lg">P</span>
+                <span className="text-white font-bold text-lg">P</span>
               </div>
-              <h1 className="text-lg font-semibold text-violet-700">Pro Dashboard</h1>
+              <h1 className="text-lg font-semibold text-white">Pro Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <Bell className="h-5 w-5 text-violet-700/80" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></div>
+                <Bell className="h-5 w-5 text-white/80" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full"></div>
               </div>
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 text-violet-700/80 hover:text-violet-700 hover:bg-white/10" 
+                className="h-8 w-8 text-white/80 hover:text-white hover:bg-white/10" 
                 onClick={() => setLocation('/salon-settings')}
               >
                 <Settings className="h-4 w-4" />
@@ -56,9 +56,9 @@ export default function BusinessFeatures() {
 
       <div className="max-w-lg mx-auto p-4 space-y-4">
         {/* Bannière Plans d'abonnement */}
-        <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+        <div className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg p-4">
           <Button 
-            className="w-full bg-transparent hover:bg-white/10 text-violet-700 font-medium py-2 rounded-lg"
+            className="w-full bg-transparent hover:bg-white/10 text-white font-medium py-2 rounded-lg"
             onClick={() => toast({ title: "Plans", description: "Voir les plans d'abonnement" })}
           >
             Voir les plans d'abonnement
@@ -68,8 +68,8 @@ export default function BusinessFeatures() {
         {/* BOUTON MA PAGE - ULTRA VISIBLE */}
         <Card className="border-4 border-red-500 shadow-lg bg-gradient-to-br from-orange-100 to-orange-200">
           <CardContent className="p-8 text-center">
-            <div className="w-16 h-16 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Globe className="h-8 w-8 text-violet-700" />
+            <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Globe className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">MA PAGE SALON</h2>
             <p className="text-gray-600 text-lg mb-4">
@@ -113,7 +113,7 @@ export default function BusinessFeatures() {
                 console.log('🔥 CLIC MA PAGE depuis Dashboard - Vers SalonPageEditor');
                 setLocation('/salon-page-editor');
               }}
-              className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 font-bold py-4 rounded-lg text-xl"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-lg text-xl"
             >
               🔥 MODIFIER MA PAGE 🔥
             </Button>
@@ -199,7 +199,7 @@ export default function BusinessFeatures() {
                       <CreditCard className="h-5 w-5 text-gray-700" />
                       <span className="font-medium text-gray-900">Carte bancaire</span>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full">Actif</Badge>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -207,7 +207,7 @@ export default function BusinessFeatures() {
                       <Euro className="h-5 w-5 text-gray-700" />
                       <span className="font-medium text-gray-900">Espèces</span>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full">Actif</Badge>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full">Actif</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -215,11 +215,11 @@ export default function BusinessFeatures() {
                       <Check className="h-5 w-5 text-gray-700" />
                       <span className="font-medium text-gray-900">Chèques</span>
                     </div>
-                    <Badge variant="secondary" className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-700 px-3 py-1 rounded-full">Inactif</Badge>
+                    <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full">Inactif</Badge>
                   </div>
                 </div>
                 
-                <Button className="w-full mt-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl">
+                <Button className="w-full mt-4 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-xl">
                   Gérer paiements
                 </Button>
               </CardContent>
@@ -241,7 +241,7 @@ export default function BusinessFeatures() {
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-gray-900">65€</div>
-                      <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full text-xs">Payé</Badge>
+                      <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Payé</Badge>
                     </div>
                   </div>
                   
@@ -252,7 +252,7 @@ export default function BusinessFeatures() {
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-gray-900">45€</div>
-                      <Badge variant="secondary" className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-700 px-3 py-1 rounded-full text-xs">En attente</Badge>
+                      <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">En attente</Badge>
                     </div>
                   </div>
                   
@@ -263,7 +263,7 @@ export default function BusinessFeatures() {
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-gray-900">80€</div>
-                      <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full text-xs">Payé</Badge>
+                      <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Payé</Badge>
                     </div>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ export default function BusinessFeatures() {
                       <div className="font-medium text-gray-900">Shampoing Pro</div>
                       <div className="text-sm text-gray-500">Stock: 12</div>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
+                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -299,7 +299,7 @@ export default function BusinessFeatures() {
                         <div className="text-sm text-gray-500">Stock: 3</div>
                       </div>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full text-xs">Stock bas</Badge>
+                    <Badge className="bg-red-500 text-white px-3 py-1 rounded-full text-xs">Stock bas</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -307,12 +307,12 @@ export default function BusinessFeatures() {
                       <div className="font-medium text-gray-900">Sérum Anti-Âge</div>
                       <div className="text-sm text-gray-500">Stock: 8</div>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
+                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
                   </div>
                 </div>
                 
                 <div className="flex gap-3 mt-4">
-                  <Button className="flex-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl">
+                  <Button className="flex-1 bg-green-600 text-white hover:bg-green-700 rounded-xl">
                     <Package className="h-4 w-4 mr-2" />
                     Gérer Stock
                   </Button>
@@ -341,7 +341,7 @@ export default function BusinessFeatures() {
                       <div className="font-medium text-gray-900">Promo Nouvel An</div>
                       <div className="text-sm text-gray-500">156 clients</div>
                     </div>
-                    <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full text-xs">Active</Badge>
+                    <Badge className="bg-violet-600 text-white px-3 py-1 rounded-full text-xs">Active</Badge>
                   </div>
                   
                   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
@@ -349,7 +349,7 @@ export default function BusinessFeatures() {
                       <div className="font-medium text-gray-900">Fidélité VIP</div>
                       <div className="text-sm text-gray-500">89 clients</div>
                     </div>
-                    <Badge variant="secondary" className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-700 px-3 py-1 rounded-full text-xs">Programmée</Badge>
+                    <Badge variant="secondary" className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs">Programmée</Badge>
                   </div>
                 </div>
                 
@@ -381,7 +381,7 @@ export default function BusinessFeatures() {
                   </div>
                 </div>
                 
-                <Button className="w-full mt-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl">
+                <Button className="w-full mt-4 bg-violet-600 text-white hover:bg-violet-700 rounded-xl">
                   Configurer programme
                 </Button>
               </CardContent>
@@ -448,7 +448,7 @@ export default function BusinessFeatures() {
                   </div>
                 </div>
                 
-                <Button className="w-full mt-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl">
+                <Button className="w-full mt-4 bg-violet-600 text-white hover:bg-violet-700 rounded-xl">
                   Voir rapport complet
                 </Button>
               </CardContent>
@@ -484,7 +484,7 @@ export default function BusinessFeatures() {
                 <div className="font-medium text-gray-900">Shampooing Pro</div>
                 <div className="text-sm text-gray-600">Stock: 12</div>
               </div>
-              <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
+              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -495,7 +495,7 @@ export default function BusinessFeatures() {
                 </div>
                 <AlertTriangle className="h-4 w-4 text-orange-500" />
               </div>
-              <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-red-800 rounded-full px-3 py-1 text-xs font-medium">Stock bas</Badge>
+              <Badge className="bg-red-100 text-red-800 rounded-full px-3 py-1 text-xs font-medium">Stock bas</Badge>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -503,12 +503,12 @@ export default function BusinessFeatures() {
                 <div className="font-medium text-gray-900">Sérum Anti-Age</div>
                 <div className="text-sm text-gray-600">Stock: 8</div>
               </div>
-              <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
+              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
             </div>
           </div>
 
           <div className="flex gap-3 mt-4">
-            <Button className="flex-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 py-3 rounded-xl">
+            <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl">
               <Package className="h-4 w-4 mr-2" />
               Gérer Stock
             </Button>
@@ -537,7 +537,7 @@ export default function BusinessFeatures() {
                 <div className="font-medium text-gray-900">Promo Nouvel An</div>
                 <div className="text-sm text-gray-600">156 clients</div>
               </div>
-              <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full px-3 py-1 text-xs">Active</Badge>
+              <Badge className="bg-violet-600 text-white rounded-full px-3 py-1 text-xs">Active</Badge>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -577,7 +577,7 @@ export default function BusinessFeatures() {
             </div>
           </div>
 
-          <Button className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 py-3 rounded-xl mt-4">
+          <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl mt-4">
             Configurer programme
           </Button>
         </CardContent>
@@ -641,7 +641,7 @@ export default function BusinessFeatures() {
             </div>
           </div>
 
-          <Button className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 py-3 rounded-xl mt-4">
+          <Button className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl mt-4">
             Voir rapport complet
           </Button>
         </CardContent>

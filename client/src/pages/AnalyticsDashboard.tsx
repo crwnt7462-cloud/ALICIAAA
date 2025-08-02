@@ -48,7 +48,7 @@ export default function AnalyticsDashboard() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="p-6 text-center">
-            <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+            <BarChart3 className="w-12 h-12 mx-auto mb-4 text-purple-600" />
             <h3 className="text-lg font-medium mb-2">Analyses avancées</h3>
             <p className="text-gray-600">
               Connectez-vous avec un compte professionnel pour accéder aux analyses
@@ -65,7 +65,7 @@ export default function AnalyticsDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-600">
+            <h1 className="text-3xl font-bold text-gray-900">
               Analyses & Performances
             </h1>
             <p className="text-gray-600 mt-2">
@@ -91,14 +91,14 @@ export default function AnalyticsDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">CA ce mois</p>
-                  <p className="text-2xl font-bold text-gray-600">
+                  <p className="text-2xl font-bold text-gray-900">
                     {revenueData?.currentMonth || '€0'}
                   </p>
                 </div>
-                <DollarSign className="w-8 h-8 text-gray-600" />
+                <DollarSign className="w-8 h-8 text-green-600" />
               </div>
               <div className="mt-4">
-                <Badge className="bg-green-100 text-gray-600">
+                <Badge className="bg-green-100 text-green-800">
                   +{revenueData?.growth || 0}% vs mois dernier
                 </Badge>
               </div>
@@ -110,11 +110,11 @@ export default function AnalyticsDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Nouveaux clients</p>
-                  <p className="text-2xl font-bold text-gray-600">
+                  <p className="text-2xl font-bold text-gray-900">
                     {clientData?.newClients || 0}
                   </p>
                 </div>
-                <Users className="w-8 h-8 text-gray-600" />
+                <Users className="w-8 h-8 text-blue-600" />
               </div>
               <div className="mt-4">
                 <Badge variant="secondary">
@@ -129,14 +129,14 @@ export default function AnalyticsDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">RDV réalisés</p>
-                  <p className="text-2xl font-bold text-gray-600">
+                  <p className="text-2xl font-bold text-gray-900">
                     {analytics?.completedAppointments || 0}
                   </p>
                 </div>
-                <Calendar className="w-8 h-8 text-gray-600" />
+                <Calendar className="w-8 h-8 text-purple-600" />
               </div>
               <div className="mt-4">
-                <Badge className="bg-purple-100 text-gray-600">
+                <Badge className="bg-purple-100 text-purple-800">
                   {analytics?.appointmentRate || 95}% taux de réalisation
                 </Badge>
               </div>
@@ -148,14 +148,14 @@ export default function AnalyticsDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Satisfaction</p>
-                  <p className="text-2xl font-bold text-gray-600">
+                  <p className="text-2xl font-bold text-gray-900">
                     {analytics?.averageRating || '4.8'}/5
                   </p>
                 </div>
-                <Star className="w-8 h-8 text-gray-600" />
+                <Star className="w-8 h-8 text-yellow-500" />
               </div>
               <div className="mt-4">
-                <Badge className="bg-yellow-100 text-gray-600">
+                <Badge className="bg-yellow-100 text-yellow-800">
                   {analytics?.totalReviews || 0} avis
                 </Badge>
               </div>
@@ -184,9 +184,9 @@ export default function AnalyticsDashboard() {
                 <CardContent>
                   <div className="h-80 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
                     <div className="text-center">
-                      <LineChart className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                      <LineChart className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                       <p className="text-gray-600">Graphique de revenus</p>
-                      <p className="text-sm text-gray-600">Intégration en cours</p>
+                      <p className="text-sm text-gray-500">Intégration en cours</p>
                     </div>
                   </div>
                 </CardContent>
@@ -242,24 +242,24 @@ export default function AnalyticsDashboard() {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <Target className="w-8 h-8 mx-auto mb-2 text-gray-600" />
+                    <Target className="w-8 h-8 mx-auto mb-2 text-green-600" />
                     <p className="text-sm font-medium text-gray-600">Objectif CA</p>
-                    <p className="text-xl font-bold text-gray-600">8,000€</p>
-                    <Badge className="mt-2 bg-green-100 text-gray-600">68% atteint</Badge>
+                    <p className="text-xl font-bold text-green-600">8,000€</p>
+                    <Badge className="mt-2 bg-green-100 text-green-800">68% atteint</Badge>
                   </div>
                   
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <Users className="w-8 h-8 mx-auto mb-2 text-gray-600" />
+                    <Users className="w-8 h-8 mx-auto mb-2 text-blue-600" />
                     <p className="text-sm font-medium text-gray-600">Nouveaux clients</p>
-                    <p className="text-xl font-bold text-gray-600">25</p>
-                    <Badge className="mt-2 bg-blue-100 text-gray-600">80% atteint</Badge>
+                    <p className="text-xl font-bold text-blue-600">25</p>
+                    <Badge className="mt-2 bg-blue-100 text-blue-800">80% atteint</Badge>
                   </div>
                   
                   <div className="text-center p-4 bg-purple-50 rounded-lg">
-                    <Calendar className="w-8 h-8 mx-auto mb-2 text-gray-600" />
+                    <Calendar className="w-8 h-8 mx-auto mb-2 text-purple-600" />
                     <p className="text-sm font-medium text-gray-600">RDV réalisés</p>
-                    <p className="text-xl font-bold text-gray-600">120</p>
-                    <Badge className="mt-2 bg-purple-100 text-gray-600">92% atteint</Badge>
+                    <p className="text-xl font-bold text-purple-600">120</p>
+                    <Badge className="mt-2 bg-purple-100 text-purple-800">92% atteint</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -275,7 +275,7 @@ export default function AnalyticsDashboard() {
                 <CardContent>
                   <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
                     <div className="text-center">
-                      <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-600" />
+                      <BarChart3 className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                       <p className="text-gray-600">Graphique d'acquisition</p>
                     </div>
                   </div>
@@ -290,15 +290,15 @@ export default function AnalyticsDashboard() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span>Clients réguliers (3+ RDV)</span>
-                      <Badge className="bg-green-100 text-gray-600">75%</Badge>
+                      <Badge className="bg-green-100 text-green-800">75%</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Clients occasionnels (1-2 RDV)</span>
-                      <Badge className="bg-yellow-100 text-gray-600">20%</Badge>
+                      <Badge className="bg-yellow-100 text-yellow-800">20%</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Nouveaux clients</span>
-                      <Badge className="bg-blue-100 text-gray-600">5%</Badge>
+                      <Badge className="bg-blue-100 text-blue-800">5%</Badge>
                     </div>
                   </div>
                 </CardContent>
@@ -354,7 +354,7 @@ export default function AnalyticsDashboard() {
                         </div>
                         <div className="text-right">
                           <p className="font-medium">{service.revenue}</p>
-                          <Badge className="bg-green-100 text-gray-600">{service.trend}</Badge>
+                          <Badge className="bg-green-100 text-green-800">{service.trend}</Badge>
                         </div>
                       </div>
                     ))}
@@ -413,9 +413,9 @@ export default function AnalyticsDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-3xl font-bold text-gray-600">92%</p>
+                  <p className="text-3xl font-bold text-green-600">92%</p>
                   <p className="text-sm text-gray-600 mt-2">RDV à l'heure</p>
-                  <Badge className="mt-3 bg-green-100 text-gray-600">Excellent</Badge>
+                  <Badge className="mt-3 bg-green-100 text-green-800">Excellent</Badge>
                 </CardContent>
               </Card>
 
@@ -427,9 +427,9 @@ export default function AnalyticsDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-3xl font-bold text-gray-600">8%</p>
+                  <p className="text-3xl font-bold text-orange-600">8%</p>
                   <p className="text-sm text-gray-600 mt-2">RDV annulés</p>
-                  <Badge className="mt-3 bg-orange-100 text-gray-600">Bon</Badge>
+                  <Badge className="mt-3 bg-orange-100 text-orange-800">Bon</Badge>
                 </CardContent>
               </Card>
 
@@ -441,9 +441,9 @@ export default function AnalyticsDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-3xl font-bold text-gray-600">4.8</p>
+                  <p className="text-3xl font-bold text-yellow-600">4.8</p>
                   <p className="text-sm text-gray-600 mt-2">Note moyenne</p>
-                  <Badge className="mt-3 bg-yellow-100 text-gray-600">Excellent</Badge>
+                  <Badge className="mt-3 bg-yellow-100 text-yellow-800">Excellent</Badge>
                 </CardContent>
               </Card>
             </div>
@@ -455,22 +455,22 @@ export default function AnalyticsDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
-                    <h4 className="font-medium text-gray-600">Optimiser les créneaux matinaux</h4>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h4 className="font-medium text-blue-900">Optimiser les créneaux matinaux</h4>
+                    <p className="text-sm text-blue-700 mt-1">
                       Vos créneaux 9h-12h sont moins remplis. Proposez des promotions matinales.
                     </p>
                   </div>
                   
                   <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
-                    <h4 className="font-medium text-gray-600">Fidéliser les nouveaux clients</h4>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h4 className="font-medium text-green-900">Fidéliser les nouveaux clients</h4>
+                    <p className="text-sm text-green-700 mt-1">
                       Créez un programme de fidélité pour convertir 20% de clients occasionnels.
                     </p>
                   </div>
                   
                   <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
-                    <h4 className="font-medium text-gray-600">Développer les soins premium</h4>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <h4 className="font-medium text-purple-900">Développer les soins premium</h4>
+                    <p className="text-sm text-purple-700 mt-1">
                       Les soins visage ont un bon potentiel. Proposez des forfaits bien-être.
                     </p>
                   </div>

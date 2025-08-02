@@ -250,11 +250,11 @@ export default function ProMessagingPerfect() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'VIP': return 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-purple-800 border-purple-200';
-      case 'Fidèle': return 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-blue-800 border-blue-200';
-      case 'Régulier': return 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-800 border-green-200';
-      case 'Nouveau': return 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-orange-800 border-orange-200';
-      default: return 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-800 border-gray-200';
+      case 'VIP': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'Fidèle': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Régulier': return 'bg-green-100 text-green-800 border-green-200';
+      case 'Nouveau': return 'bg-orange-100 text-orange-800 border-orange-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -286,7 +286,7 @@ export default function ProMessagingPerfect() {
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/business-features')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -297,10 +297,10 @@ export default function ProMessagingPerfect() {
             </div>
             
             <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-blue-800">
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
                 {unreadCount} non lus
               </Badge>
-              <Badge variant="secondary" className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-purple-800">
+              <Badge variant="secondary" className="bg-purple-100 text-purple-800">
                 {vipCount} VIP
               </Badge>
             </div>
@@ -365,11 +365,11 @@ export default function ProMessagingPerfect() {
                     >
                       <div className="flex items-start gap-3">
                         <div className="relative">
-                          <div className="w-12 h-12 rounded-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+                          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-medium">
                             {conv.avatar}
                           </div>
                           {conv.isOnline && (
-                            <div className="absolute -bottom-0 -right-0 w-4 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 border-2 border-white rounded-full"></div>
+                            <div className="absolute -bottom-0 -right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
                           )}
                         </div>
                         
@@ -380,7 +380,7 @@ export default function ProMessagingPerfect() {
                             </h4>
                             <div className="flex items-center gap-1">
                               {conv.unread > 0 && (
-                                <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 text-xs min-w-[20px] h-5 flex items-center justify-center">
+                                <Badge className="bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center">
                                   {conv.unread}
                                 </Badge>
                               )}
@@ -446,11 +446,11 @@ export default function ProMessagingPerfect() {
                       <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-medium">
                         {selectedConv.avatar}
                       </div>
                       {selectedConv.isOnline && (
-                        <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 border-2 border-white rounded-full"></div>
+                        <div className="absolute -bottom-0 -right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                       )}
                     </div>
                     <div>
@@ -488,7 +488,7 @@ export default function ProMessagingPerfect() {
                         <div
                           className={`max-w-[80%] px-4 py-2 ${
                             message.senderId === 'pro_1'
-                              ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-2xl rounded-br-md ml-auto'
+                              ? 'bg-blue-500 text-white rounded-2xl rounded-br-md ml-auto'
                               : 'bg-white text-gray-900 rounded-2xl rounded-bl-md border shadow-sm'
                           }`}
                         >
@@ -532,7 +532,7 @@ export default function ProMessagingPerfect() {
                 {/* Zone de saisie iMessage style */}
                 <div className="bg-white border-t p-3 lg:p-4">
                   <div className="flex gap-3 items-end">
-                    <div className="flex-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-3xl px-4 py-3 min-h-[44px] flex items-center">
+                    <div className="flex-1 bg-gray-100 rounded-3xl px-4 py-3 min-h-[44px] flex items-center">
                       <Textarea
                         placeholder="iMessage"
                         value={messageContent}
@@ -551,7 +551,7 @@ export default function ProMessagingPerfect() {
                     <Button
                       onClick={sendMessage}
                       disabled={!messageContent.trim()}
-                      className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full w-11 h-11 p-0 shrink-0"
+                      className="bg-blue-500 hover:bg-blue-600 text-white rounded-full w-11 h-11 p-0 shrink-0"
                     >
                       <Send className="h-5 w-5" />
                     </Button>
@@ -595,7 +595,7 @@ export default function ProMessagingPerfect() {
                 <CardContent className="space-y-6">
                   {/* Info de base */}
                   <div className="text-center">
-                    <div className="w-16 h-16 rounded-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-400 to-blue-500 flex items-center justify-center text-white font-medium text-xl mx-auto mb-3">
                       {selectedConv.avatar}
                     </div>
                     <h3 className="font-medium text-lg">{selectedConv.clientName}</h3>
@@ -658,7 +658,7 @@ export default function ProMessagingPerfect() {
                   
                   {/* Actions */}
                   <div className="space-y-2">
-                    <Button className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700">
+                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white">
                       <Calendar className="h-4 w-4 mr-2" />
                       Prendre RDV
                     </Button>

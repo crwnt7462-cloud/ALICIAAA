@@ -151,28 +151,28 @@ export default function ProMessaging() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header violet moderne - Style iPhone identique client */}
-      <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20">
+      <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button 
                 onClick={() => setLocation('/business-features')}
-                className="p-2 hover:bg-white/10 rounded-full text-violet-700/80 hover:text-violet-700"
+                className="p-2 hover:bg-white/10 rounded-full text-white/80 hover:text-white"
               >
                 <ArrowLeft className="h-5 w-5" />
               </button>
               <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                <MessageCircle className="h-5 w-5 text-violet-700" />
+                <MessageCircle className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-lg font-semibold text-violet-700">Messagerie Pro</h1>
+              <h1 className="text-lg font-semibold text-white">Messagerie Pro</h1>
             </div>
             <div className="flex items-center gap-2">
-              <div className="text-xs text-violet-700/80 bg-white/10 px-2 py-1 rounded-full">
+              <div className="text-xs text-white/80 bg-white/10 px-2 py-1 rounded-full">
                 {messages.filter((m: Message) => !m.isRead).length} non lus
               </div>
               <Button
                 onClick={() => setIsNewMessageOpen(true)}
-                className="bg-white/20 hover:bg-white/30 text-violet-700 border-0 h-8 text-xs"
+                className="bg-white/20 hover:bg-white/30 text-white border-0 h-8 text-xs"
               >
                 <Plus className="w-3 h-3 mr-1" />
                 Nouveau
@@ -189,7 +189,7 @@ export default function ProMessaging() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
+                  <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center">
                     <User className="h-5 w-5 text-violet-600" />
                   </div>
                   <div>
@@ -231,7 +231,7 @@ export default function ProMessaging() {
                     <Button
                       onClick={handleReply}
                       disabled={!replyText.trim() || replyMutation.isPending}
-                      className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                      className="bg-violet-600 hover:bg-violet-700"
                     >
                       <Send className="h-4 w-4 mr-2" />
                       {replyMutation.isPending ? 'Envoi...' : 'Envoyer la réponse'}
@@ -261,7 +261,7 @@ export default function ProMessaging() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
                         <User className="h-6 w-6 text-violet-600" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -271,7 +271,7 @@ export default function ProMessaging() {
                               {message.clientName}
                             </h3>
                             {!message.isRead && (
-                              <span className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></span>
+                              <span className="w-2 h-2 bg-violet-600 rounded-full"></span>
                             )}
                           </div>
                           <div className="flex items-center gap-1 text-sm text-gray-500">

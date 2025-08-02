@@ -111,7 +111,7 @@ export default function ProfessionalPlans() {
           </p>
 
           {/* Toggle facturation responsive */}
-          <div className="inline-flex items-center bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg p-1">
+          <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
@@ -131,7 +131,7 @@ export default function ProfessionalPlans() {
               }`}
             >
               Annuel
-              <span className="ml-1 px-1.5 py-0.5 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-700 text-xs rounded-full md:ml-2 md:px-2 md:py-1">
+              <span className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full md:ml-2 md:px-2 md:py-1">
                 -25%
               </span>
             </button>
@@ -156,7 +156,7 @@ export default function ProfessionalPlans() {
               >
                 {plan.popular && (
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 md:-top-4">
-                    <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-3 py-1 rounded-full text-xs font-semibold md:px-4 md:py-2 md:text-sm">
+                    <div className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold md:px-4 md:py-2 md:text-sm">
                       Recommandé
                     </div>
                   </div>
@@ -216,8 +216,8 @@ export default function ProfessionalPlans() {
                 <Button 
                   className={`w-full h-10 text-sm font-medium rounded-lg md:h-14 md:text-lg md:font-semibold md:rounded-xl ${
                     plan.popular 
-                      ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 shadow-lg' 
-                      : 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700'
+                      ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg' 
+                      : 'bg-gray-900 hover:bg-gray-800 text-white'
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();

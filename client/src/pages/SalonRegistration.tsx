@@ -93,7 +93,7 @@ function ProfessionalStripePaymentForm({ onSuccess, clientSecret, planName, plan
       <Button 
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
       >
         {isProcessing ? (
           <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ export default function SalonRegistration() {
             <Button
               variant="ghost"
               onClick={() => setLocation('/subscription-plans')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
+              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               ←
             </Button>
@@ -394,7 +394,7 @@ export default function SalonRegistration() {
               <Button
                 type="submit"
                 disabled={isLoading || !formData.name || !formData.address}
-                className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
+                className="w-full bg-violet-600 hover:bg-violet-700"
               >
                 {isLoading ? "Inscription en cours..." : "Continuer vers le paiement"}
               </Button>

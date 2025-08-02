@@ -43,8 +43,8 @@ export function BottomNavigationFloating() {
 
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-      {/* Barre flottante avec ombre et effet glassmorphism ultra-transparent */}
-      <div className="bg-white/15 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/10 rounded-3xl px-6 py-3">
+      {/* Barre flottante avec ombre et effet glassmorphism */}
+      <div className={`${getGenericGlassButton(2)} rounded-3xl shadow-2xl shadow-black/10 px-6 py-3`}>
         <div className="flex items-center gap-8">
           {navItems.map((item) => (
             <button

@@ -153,14 +153,14 @@ export default function SalonBookingFlow() {
   };
 
   return (
-    <div className="min-h-screen bg-white/50 backdrop-blur-sm">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50">
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
               onClick={() => step > 1 ? setStep(step - 1) : setLocation('/salon-detail')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
+              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -183,9 +183,9 @@ export default function SalonBookingFlow() {
                'Informations'}
             </span>
           </div>
-          <div className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full h-2">
+          <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20/20 backdrop-blur-sm"
+              className="bg-gradient-to-r from-violet-600 to-purple-700 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
@@ -237,7 +237,7 @@ export default function SalonBookingFlow() {
                       <Button 
                         size="sm" 
                         onClick={() => handleProfessionalSelect(pro)}
-                        className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
+                        className="bg-violet-600 hover:bg-violet-700"
                       >
                         Choisir
                       </Button>
@@ -372,7 +372,7 @@ export default function SalonBookingFlow() {
             <Button
               onClick={handleBookingSubmit}
               disabled={!bookingData.clientName || !bookingData.clientPhone}
-              className="w-full h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-black text-base font-semibold"
+              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white text-base font-semibold"
             >
               Payer {bookingData.totalPrice}€ avec Stripe
             </Button>

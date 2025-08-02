@@ -68,7 +68,7 @@ export default function ProPagesManager() {
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/pro-dashboard')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -102,7 +102,7 @@ export default function ProPagesManager() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg">
+                <div className="p-2 bg-violet-100 rounded-lg">
                   <Building2 className="h-6 w-6 text-violet-600" />
                 </div>
                 <div>
@@ -113,7 +113,7 @@ export default function ProPagesManager() {
               <Button
                 onClick={handleModifySalonPage}
                 disabled={userLoading}
-                className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
+                className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
               >
                 <Edit3 className="h-4 w-4 mr-2" />
                 Modifier
@@ -157,7 +157,7 @@ export default function ProPagesManager() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg">
+                <div className="p-2 bg-blue-100 rounded-lg">
                   <Calendar className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
@@ -178,7 +178,7 @@ export default function ProPagesManager() {
                 <Button
                   onClick={handleModifyBookingPage}
                   disabled={bookingLoading}
-                  className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105 disabled:opacity-50"
                 >
                   <Edit3 className="h-4 w-4 mr-2" />
                   Modifier
@@ -200,7 +200,7 @@ export default function ProPagesManager() {
                       variant="ghost"
                       size="sm"
                       onClick={() => window.open(bookingUrl, '_blank')}
-                      className="ml-4 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                      className="ml-4 rounded-full hover:bg-gray-100"
                     >
                       <ExternalLink className="h-4 w-4" />
                     </Button>
@@ -244,7 +244,7 @@ export default function ProPagesManager() {
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg">
+                <div className="p-2 bg-green-100 rounded-lg">
                   <Calendar className="h-6 w-6 text-green-600" />
                 </div>
                 <div>
@@ -263,7 +263,7 @@ export default function ProPagesManager() {
                 </Button>
                 <Button
                   onClick={handleModifySalonBookingPage}
-                  className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
+                  className="bg-green-600 hover:bg-green-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
                 >
                   <Edit3 className="h-4 w-4 mr-2" />
                   Modifier
@@ -284,7 +284,7 @@ export default function ProPagesManager() {
                     variant="ghost"
                     size="sm"
                     onClick={() => window.open('/salon-booking', '_blank')}
-                    className="ml-4 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                    className="ml-4 rounded-full hover:bg-gray-100"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </Button>

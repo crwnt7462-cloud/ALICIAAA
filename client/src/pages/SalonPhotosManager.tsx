@@ -145,7 +145,7 @@ export default function SalonPhotosManager({ userId }: Props) {
       <div className="mb-6">
         <Button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white"
+          className="bg-purple-600 hover:bg-purple-700 text-white"
         >
           {showAddForm ? "Annuler" : "Ajouter une Photo"}
         </Button>
@@ -207,7 +207,7 @@ export default function SalonPhotosManager({ userId }: Props) {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={handleAddPhoto} className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20">
+              <Button onClick={handleAddPhoto} className="bg-green-600 hover:bg-green-700">
                 Ajouter
               </Button>
               <Button onClick={() => setShowAddForm(false)} variant="outline">
@@ -222,7 +222,7 @@ export default function SalonPhotosManager({ userId }: Props) {
         {photos.map((photo) => (
           <Card key={photo.id} className="border border-gray-200 rounded-xl shadow-sm">
             <CardContent className="p-4">
-              <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-violet-500/30 backdrop-blur-md border border-violet-300/20">
+              <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-gray-100">
                 <img
                   src={photo.photoUrl}
                   alt={photo.caption || "Photo du salon"}
@@ -280,7 +280,7 @@ export default function SalonPhotosManager({ userId }: Props) {
           </p>
           <Button
             onClick={() => setShowAddForm(true)}
-            className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white"
+            className="bg-purple-600 hover:bg-purple-700 text-white"
           >
             Ajouter votre première photo
           </Button>

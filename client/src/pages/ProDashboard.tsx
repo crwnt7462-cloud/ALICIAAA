@@ -126,11 +126,11 @@ export default function ProDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                <Building2 className="h-6 w-6 text-gray-600" />
+              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
+                <Building2 className="h-6 w-6 text-violet-600" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-600">{user?.businessName}</h1>
+                <h1 className="text-xl font-bold text-gray-900">{user?.businessName}</h1>
                 <p className="text-gray-600">{user?.mentionHandle}</p>
               </div>
             </div>
@@ -162,12 +162,12 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                  <Calendar className="h-5 w-5 text-gray-600" />
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Calendar className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">RDV aujourd'hui</p>
-                  <p className="text-2xl font-bold text-gray-600">12</p>
+                  <p className="text-2xl font-bold text-gray-900">12</p>
                 </div>
               </div>
             </CardContent>
@@ -176,12 +176,12 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                  <Users className="h-5 w-5 text-gray-600" />
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <Users className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Clients total</p>
-                  <p className="text-2xl font-bold text-gray-600">247</p>
+                  <p className="text-2xl font-bold text-gray-900">247</p>
                 </div>
               </div>
             </CardContent>
@@ -190,12 +190,12 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                  <MessageCircle className="h-5 w-5 text-gray-600" />
+                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Messages</p>
-                  <p className="text-2xl font-bold text-gray-600">{messages.length}</p>
+                  <p className="text-2xl font-bold text-gray-900">{messages.length}</p>
                 </div>
               </div>
             </CardContent>
@@ -204,12 +204,12 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                  <Eye className="h-5 w-5 text-gray-600" />
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <Eye className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-600">Vues page</p>
-                  <p className="text-2xl font-bold text-gray-600">{bookingPage?.views || 0}</p>
+                  <p className="text-2xl font-bold text-gray-900">{bookingPage?.views || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -221,7 +221,7 @@ export default function ProDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building2 className="h-5 w-5 text-gray-600" />
+                <Building2 className="h-5 w-5 text-violet-600" />
                 Informations du salon
               </CardTitle>
             </CardHeader>
@@ -258,7 +258,7 @@ export default function ProDashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-gray-600" />
+                <Calendar className="h-5 w-5 text-violet-600" />
                 Page de réservation
               </CardTitle>
             </CardHeader>
@@ -271,14 +271,14 @@ export default function ProDashboard() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Description</p>
-                    <p className="text-sm text-gray-600">{bookingPage.description}</p>
+                    <p className="text-sm text-gray-800">{bookingPage.description}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Statut</p>
                     <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
                       bookingPage.isPublished 
-                        ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-600' 
-                        : 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-600'
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
                     }`}>
                       {bookingPage.isPublished ? 'Publiée' : 'Brouillon'}
                     </span>
@@ -306,10 +306,10 @@ export default function ProDashboard() {
                 </>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-600 mb-4">Aucune page de réservation créée</p>
+                  <p className="text-gray-500 mb-4">Aucune page de réservation créée</p>
                   <Button 
                     onClick={() => setLocation('/booking-customization')}
-                    className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
+                    className="bg-violet-600 hover:bg-violet-700"
                   >
                     Créer ma page
                   </Button>
@@ -322,7 +322,7 @@ export default function ProDashboard() {
           <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5 text-gray-600" />
+                <MessageCircle className="h-5 w-5 text-violet-600" />
                 Messages récents ({messages.length})
               </CardTitle>
             </CardHeader>
@@ -331,20 +331,20 @@ export default function ProDashboard() {
                 <div className="space-y-4">
                   {messages.slice(0, 5).map((message) => (
                     <div key={message.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-8 h-8 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
-                        <Users className="h-4 w-4 text-gray-600" />
+                      <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
+                        <Users className="h-4 w-4 text-violet-600" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <p className="font-medium text-sm">{message.clientName}</p>
-                          <span className="text-xs text-gray-600">
+                          <span className="text-xs text-gray-500">
                             {new Date(message.createdAt).toLocaleDateString()}
                           </span>
                           {!message.isRead && (
-                            <span className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></span>
+                            <span className="w-2 h-2 bg-violet-600 rounded-full"></span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">{message.message}</p>
+                        <p className="text-sm text-gray-700 mt-1">{message.message}</p>
                       </div>
                     </div>
                   ))}
@@ -359,9 +359,9 @@ export default function ProDashboard() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <MessageCircle className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-600">Aucun message reçu</p>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">Aucun message reçu</p>
+                  <p className="text-sm text-gray-400 mt-2">
                     Les clients peuvent vous contacter via votre handle {user?.mentionHandle}
                   </p>
                 </div>
