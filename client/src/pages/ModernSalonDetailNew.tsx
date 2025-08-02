@@ -125,7 +125,12 @@ export default function ModernSalonDetail() {
     phone: "01 42 96 17 83",
     rating: 4.9,
     reviews: 324,
-    categories: ["Coiffure", "Coloration", "Soins"]
+    categories: ["Coiffure", "Coloration", "Soins"],
+    certifications: ["Certification professionnelle", "Qualité service"],
+    awards: ["Salon de qualité", "Service client premium"],
+    verified: true,
+    longDescription: "Découvrez notre expertise en coiffure et soins capillaires dans un cadre moderne et professionnel.",
+    story: "Fondé en 1995, notre salon s'est imposé comme une référence en matière de coiffure et de soins capillaires. Notre équipe d'experts passionnés met tout en œuvre pour sublimer votre beauté naturelle."
   };
 
   const services = [
