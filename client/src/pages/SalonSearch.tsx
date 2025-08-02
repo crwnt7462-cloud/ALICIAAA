@@ -51,7 +51,7 @@ export default function SalonSearch() {
       const data = await response.json();
       
       // Adapter les données de l'API pour correspondre à l'interface SalonSearch
-      const adaptedSalons = (data.salons || []).map(salon => ({
+      const adaptedSalons = (data.salons || []).map((salon: any) => ({
         id: salon.id,
         name: salon.name,
         location: salon.location || salon.address || 'Paris',
@@ -62,10 +62,16 @@ export default function SalonSearch() {
         services: salon.services || ["Service beauté"],
         verified: salon.verified || true,
         distance: salon.distance || "1.5km",
-        category: salon.specialties?.[0]?.toLowerCase() || 'beaute',
-        image: salon.specialties?.[0] === 'Coiffure' ? '✂️' : 
-               salon.specialties?.[0] === 'Barbier' ? '🧔' : 
-               salon.specialties?.[0] === 'Soins' ? '✨' : '💅'
+        category: salon.name?.includes('Coiffure') ? 'coiffure' : 
+                 salon.name?.includes('Barbier') ? 'barbier' :
+                 salon.name?.includes('Institut') || salon.name?.includes('Beauté') ? 'esthetique' :
+                 salon.name?.includes('Spa') || salon.name?.includes('Wellness') ? 'massage' :
+                 salon.name?.includes('Nail') ? 'onglerie' : 'beaute',
+        image: salon.name?.includes('Coiffure') ? '✂️' : 
+               salon.name?.includes('Barbier') ? '🧔' : 
+               salon.name?.includes('Institut') || salon.name?.includes('Beauté') ? '✨' : 
+               salon.name?.includes('Spa') || salon.name?.includes('Wellness') ? '🧘‍♀️' :
+               salon.name?.includes('Nail') ? '💅' : '💄'
       }));
       
       return adaptedSalons;
@@ -77,10 +83,11 @@ export default function SalonSearch() {
 
   const categories = [
     { id: "all", name: "Tout", count: salons.length },
-    { id: "coiffure", name: "Coiffure", count: salons.filter(s => s.category === 'coiffure').length },
-    { id: "esthetique", name: "Esthétique", count: salons.filter(s => s.category === 'esthetique').length },
-    { id: "massage", name: "Massage", count: salons.filter(s => s.category === 'massage').length },
-    { id: "onglerie", name: "Onglerie", count: salons.filter(s => s.category === 'onglerie').length }
+    { id: "coiffure", name: "Coiffure", count: salons.filter((s: any) => s.category === 'coiffure' || s.name?.includes('Coiffure')).length },
+    { id: "barbier", name: "Barbier", count: salons.filter((s: any) => s.category === 'barbier' || s.name?.includes('Barbier')).length },
+    { id: "esthetique", name: "Esthétique", count: salons.filter((s: any) => s.category === 'esthetique' || s.name?.includes('Beauté') || s.name?.includes('Institut')).length },
+    { id: "massage", name: "Massage", count: salons.filter((s: any) => s.category === 'massage' || s.name?.includes('Spa') || s.name?.includes('Wellness')).length },
+    { id: "onglerie", name: "Onglerie", count: salons.filter((s: any) => s.category === 'onglerie' || s.name?.includes('Nail')).length }
   ];
 
   const handleSearch = () => {
@@ -91,7 +98,14 @@ export default function SalonSearch() {
 
   const filteredSalons = activeFilter === "all" 
     ? salons 
-    : salons.filter(salon => salon.category === activeFilter);
+    : salons.filter((salon: any) => {
+        if (activeFilter === 'coiffure') return salon.category === 'coiffure' || salon.name?.includes('Coiffure');
+        if (activeFilter === 'barbier') return salon.category === 'barbier' || salon.name?.includes('Barbier');
+        if (activeFilter === 'esthetique') return salon.category === 'esthetique' || salon.name?.includes('Beauté') || salon.name?.includes('Institut');
+        if (activeFilter === 'massage') return salon.category === 'massage' || salon.name?.includes('Spa') || salon.name?.includes('Wellness');
+        if (activeFilter === 'onglerie') return salon.category === 'onglerie' || salon.name?.includes('Nail');
+        return salon.category === activeFilter;
+      });
 
   return (
     <div className="min-h-screen bg-white">
@@ -191,7 +205,7 @@ export default function SalonSearch() {
             </h2>
 
             <div className="space-y-3 pb-20">
-              {filteredSalons.map((salon) => (
+              {filteredSalons.map((salon: any) => (
                 <Card 
                   key={salon.id} 
                   className="border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all"
