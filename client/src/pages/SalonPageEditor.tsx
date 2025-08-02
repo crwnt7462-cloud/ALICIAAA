@@ -61,6 +61,7 @@ interface SalonData {
     accent: string;
     buttonText: string;
     buttonClass: string;
+    intensity: number; // Pourcentage d'intensité de couleur (0-100)
   };
 }
 
@@ -174,6 +175,34 @@ export default function SalonPageEditor() {
       ...prev,
       [field]: value
     }));
+  };
+
+  // Génère le style personnalisé des boutons avec intensité
+  const getCustomButtonStyle = () => {
+    if (!salonData.customColors?.primary) {
+      return {};
+    }
+    
+    const intensity = salonData.customColors.intensity || 35;
+    const rgb = parseInt(salonData.customColors.primary.slice(1), 16);
+    const r = (rgb >> 16) & 255;
+    const g = (rgb >> 8) & 255;
+    const b = rgb & 255;
+    
+    const primaryOpacity = intensity / 100;
+    const secondaryOpacity = (intensity - 10) / 100;
+    
+    return {
+      background: `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, ${primaryOpacity}) 0%, rgba(${r}, ${g}, ${b}, ${secondaryOpacity}) 100%)`,
+      backdropFilter: 'blur(12px)',
+      WebkitBackdropFilter: 'blur(12px)',
+      border: 'none',
+      boxShadow: `0 6px 20px rgba(${r}, ${g}, ${b}, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.4)`,
+      color: '#000000',
+      fontWeight: '600',
+      borderRadius: '0.75rem',
+      transition: 'all 0.3s ease'
+    };
   };
 
   const updateService = (categoryId: number, serviceId: number, updates: Partial<Service>) => {
@@ -498,7 +527,8 @@ export default function SalonPageEditor() {
                               <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="glass-button-pink mt-2 px-4 py-2 text-sm font-semibold rounded-xl"
+                                className={`mt-2 px-4 py-2 text-sm font-semibold rounded-xl ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                                style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -685,6 +715,34 @@ export default function SalonPageEditor() {
                     <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
                   </div>
                 </div>
+                
+                {/* Contrôle d'intensité */}
+                <div className="mt-6">
+                  <label className="block text-sm font-medium mb-3">
+                    Intensité de couleur : {salonData.customColors?.intensity || 35}%
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs text-gray-500 w-16">Subtile</span>
+                    <input
+                      type="range"
+                      min="10"
+                      max="80"
+                      value={salonData.customColors?.intensity || 35}
+                      onChange={(e) => updateField('customColors', {
+                        ...salonData.customColors,
+                        intensity: parseInt(e.target.value)
+                      })}
+                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      style={{
+                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#f59e0b'}40 0%, ${salonData.customColors?.primary || '#f59e0b'}80 100%)`
+                      }}
+                    />
+                    <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Ajuste la visibilité de votre couleur dans les boutons (10% = très subtil, 80% = très visible)
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
@@ -742,7 +800,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-button-pink px-6 py-3 rounded-xl font-semibold"
+                      className={`px-6 py-3 rounded-xl font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
                     >
                       Réserver maintenant
                     </motion.button>
@@ -761,7 +820,8 @@ export default function SalonPageEditor() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-button-pink px-4 py-2 rounded-xl text-sm font-semibold"
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+                      style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
                     >
                       Réserver
                     </motion.button>
@@ -824,7 +884,8 @@ export default function SalonPageEditor() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="glass-button-pink w-full h-16 rounded-xl font-semibold text-lg"
+            className={`w-full h-16 rounded-xl font-semibold text-lg ${!salonData.customColors?.primary ? 'glass-button-pink' : ''}`}
+            style={salonData.customColors?.primary ? getCustomButtonStyle() : {}}
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
