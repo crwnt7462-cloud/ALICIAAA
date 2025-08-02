@@ -23,7 +23,8 @@ import {
   Save,
   Upload,
   Trash2,
-  Plus
+  Plus,
+  Palette
 } from 'lucide-react';
 
 interface Service {
@@ -54,6 +55,12 @@ interface SalonData {
   longDescription: string;
   coverImageUrl: string;
   photos: string[];
+  customColors?: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+    buttonClass: string;
+  };
 }
 
 export default function SalonPageEditor() {
@@ -80,7 +87,13 @@ export default function SalonPageEditor() {
       'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    ]
+    ],
+    customColors: {
+      primary: '#f59e0b', // amber-500 par défaut pour Barbier Gentleman
+      accent: '#d97706',   // amber-600
+      buttonText: '#000000', // noir
+      buttonClass: 'glass-button-amber'
+    }
   });
 
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
@@ -482,7 +495,11 @@ export default function SalonPageEditor() {
                             {!isEditing ? (
                               <Button 
                                 size="sm" 
-                                className="mt-2 glass-button-amber"
+                                className="mt-2 text-sm font-medium rounded-lg transition-colors"
+                                style={{
+                                  backgroundColor: salonData.customColors?.primary || '#f59e0b',
+                                  color: salonData.customColors?.buttonText || '#000000'
+                                }}
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -557,6 +574,120 @@ export default function SalonPageEditor() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Personnalisation des couleurs (mode édition uniquement) */}
+            {isEditing && (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                    <Palette className="h-5 w-5" />
+                    Personnalisation des boutons
+                  </h3>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Couleur principale</label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            primary: e.target.value
+                          })}
+                          className="w-12 h-10 rounded border border-gray-300"
+                        />
+                        <Input
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            primary: e.target.value
+                          })}
+                          className="flex-1 text-sm"
+                          placeholder="#f59e0b"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Couleur accent</label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.accent || '#d97706'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            accent: e.target.value
+                          })}
+                          className="w-12 h-10 rounded border border-gray-300"
+                        />
+                        <Input
+                          value={salonData.customColors?.accent || '#d97706'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            accent: e.target.value
+                          })}
+                          className="flex-1 text-sm"
+                          placeholder="#d97706"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium mb-2">Couleurs prédéfinies</label>
+                    <div className="grid grid-cols-6 gap-2">
+                      {[
+                        { name: 'Ambre', primary: '#f59e0b', accent: '#d97706' },
+                        { name: 'Bleu', primary: '#3b82f6', accent: '#2563eb' },
+                        { name: 'Rose', primary: '#ec4899', accent: '#db2777' },
+                        { name: 'Vert', primary: '#10b981', accent: '#059669' },
+                        { name: 'Violet', primary: '#8b5cf6', accent: '#7c3aed' },
+                        { name: 'Rouge', primary: '#ef4444', accent: '#dc2626' }
+                      ].map((color) => (
+                        <button
+                          key={color.name}
+                          onClick={() => updateField('customColors', {
+                            ...salonData.customColors,
+                            primary: color.primary,
+                            accent: color.accent
+                          })}
+                          className="w-12 h-10 rounded border border-gray-300 hover:scale-105 transition-transform"
+                          style={{ backgroundColor: color.primary }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Aperçu des boutons */}
+                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-medium mb-3">Aperçu des boutons</h4>
+                    <div className="flex gap-3">
+                      <button
+                        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        style={{
+                          backgroundColor: salonData.customColors?.primary || '#f59e0b',
+                          color: salonData.customColors?.buttonText || '#000000'
+                        }}
+                      >
+                        Réserver
+                      </button>
+                      <button
+                        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border-2"
+                        style={{
+                          borderColor: salonData.customColors?.primary || '#f59e0b',
+                          color: salonData.customColors?.primary || '#f59e0b',
+                          backgroundColor: 'transparent'
+                        }}
+                      >
+                        Voir plus
+                      </button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             <Card>
               <CardContent className="p-6">
@@ -639,7 +770,11 @@ export default function SalonPageEditor() {
       {!isEditing && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
           <Button 
-            className="w-full glass-button py-3 text-lg font-semibold"
+            className="w-full py-3 text-lg font-semibold rounded-xl transition-colors"
+            style={{
+              backgroundColor: salonData.customColors?.primary || '#f59e0b',
+              color: salonData.customColors?.buttonText || '#000000'
+            }}
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
