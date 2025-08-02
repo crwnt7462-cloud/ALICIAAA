@@ -681,28 +681,23 @@ export default function PublicLanding() {
           </div>
 
           <div className="space-y-4">
-            {/* Mon Salon de Beauté */}
+            {/* Barbier Moderne */}
             <div 
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/mon-salon-beaute')}
+              onClick={() => setLocation('/salon/barbier-gentleman-marais')}
             >
-              {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+              <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
                 <img 
-                  src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
-                  alt="Mon Salon de Beauté"
+                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
+                  alt="Barbier Moderne"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-10"></div>
                 
-                {/* Badges sur la photo */}
                 <div className="absolute top-3 left-3 flex gap-2">
                   <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
                     <CheckCircle2 className="h-3 w-3 inline mr-1" />
                     Vérifié
-                  </span>
-                  <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-                    Nouveau
                   </span>
                 </div>
               </div>
@@ -710,30 +705,30 @@ export default function PublicLanding() {
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
-                    <p className="text-sm text-gray-500 mb-2">Paris Centre</p>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Barbier Moderne</h4>
+                    <p className="text-sm text-gray-500 mb-2">République, Paris 11ème</p>
                   </div>
-                  <span className="text-sm text-gray-600 font-medium">À partir de 35€</span>
+                  <span className="text-sm text-gray-600 font-medium">€€</span>
                 </div>
                 
                 <div className="flex items-center gap-3 mb-3">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span className="text-sm font-semibold">4.8</span>
-                    <span className="text-sm text-gray-500">(42 avis)</span>
+                    <span className="text-sm text-gray-500">(156 avis)</span>
                   </div>
-                  <span className="text-sm text-gray-500">• 0.5 km</span>
+                  <span className="text-sm text-gray-500">• 0.8 km</span>
                 </div>
                 
                 <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Coupe
+                    Coupe homme
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Brushing
+                    Barbe
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Soin
+                    Shampoing
                   </span>
                 </div>
                 
@@ -741,7 +736,7 @@ export default function PublicLanding() {
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4 text-gray-400" />
                     <span className="text-sm text-green-600 font-medium">
-                      Dispo maintenant
+                      Dispo 11:30
                     </span>
                   </div>
                   <button 
@@ -757,21 +752,19 @@ export default function PublicLanding() {
               </div>
             </div>
 
-            {/* Salon Excellence Paris */}
+            {/* Salon Excellence */}
             <div 
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               onClick={() => setLocation('/salon/salon-excellence-paris')}
             >
-              {/* Photo du salon */}
-              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+              <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
                 <img 
-                  src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
-                  alt="Salon Excellence Paris"
+                  src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
+                  alt="Salon Excellence"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-10"></div>
                 
-                {/* Badges sur la photo */}
                 <div className="absolute top-3 left-3 flex gap-2">
                   <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
                     <CheckCircle2 className="h-3 w-3 inline mr-1" />
@@ -783,30 +776,30 @@ export default function PublicLanding() {
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence Paris</h4>
-                    <p className="text-sm text-gray-500 mb-2">Paris 16ème</p>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence</h4>
+                    <p className="text-sm text-gray-500 mb-2">Marais, Paris 4ème</p>
                   </div>
-                  <span className="text-sm text-gray-600 font-medium">À partir de 55€</span>
+                  <span className="text-sm text-gray-600 font-medium">€€€</span>
                 </div>
                 
                 <div className="flex items-center gap-3 mb-3">
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span className="text-sm font-semibold">4.9</span>
-                    <span className="text-sm text-gray-500">(324 avis)</span>
+                    <span className="text-sm text-gray-500">(298 avis)</span>
                   </div>
                   <span className="text-sm text-gray-500">• 1.2 km</span>
                 </div>
                 
                 <div className="flex flex-wrap gap-1 mb-3">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Coiffure Premium
+                    Coupe
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                     Coloration
                   </span>
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Soins
+                    Brushing
                   </span>
                 </div>
                 
@@ -814,14 +807,156 @@ export default function PublicLanding() {
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4 text-gray-400" />
                     <span className="text-sm text-green-600 font-medium">
-                      Dispo 15h30
+                      Dispo 14:15
                     </span>
                   </div>
                   <button 
-                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    className={`${getGenericGlassButton(1)} text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      setLocation('/salon-booking');
+                      setLocation('/salon/salon-excellence-paris');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Beauty Institute */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/institut-beaute-saint-germain')}
+            >
+              <div className="relative h-48 bg-gradient-to-br from-purple-400 to-indigo-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
+                  alt="Beauty Institute"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute</h4>
+                    <p className="text-sm text-gray-500 mb-2">Saint-Germain, Paris 6ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">€€</span>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.7</span>
+                    <span className="text-sm text-gray-500">(187 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 1.5 km</span>
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins visage
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Épilation
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Massage
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-500 font-medium">
+                      Fermé
+                    </span>
+                  </div>
+                  <button 
+                    className={`${getGenericGlassButton(1)} text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon/institut-beaute-saint-germain');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Nail Art Studio */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/nail-art-opera')}
+            >
+              <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-teal-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop"
+                  alt="Nail Art Studio"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Nail Art Studio</h4>
+                    <p className="text-sm text-gray-500 mb-2">Opéra, Paris 9ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">€€</span>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.6</span>
+                    <span className="text-sm text-gray-500">(89 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 2.1 km</span>
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Manucure
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Pose gel
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Nail art
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 15:30
+                    </span>
+                  </div>
+                  <button 
+                    className={`${getGenericGlassButton(1)} text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon/nail-art-opera');
                     }}
                   >
                     Réserver

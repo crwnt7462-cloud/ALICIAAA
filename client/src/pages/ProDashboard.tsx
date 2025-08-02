@@ -114,7 +114,7 @@ export default function ProDashboard() {
   if (userLoading || salonLoading || bookingLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
+        <div className="animate-spin w-8 h-8 border-4 border-emerald-500/30 border-t-transparent rounded-full"></div>
       </div>
     );
   }

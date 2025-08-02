@@ -30,7 +30,7 @@ export default function ClientDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500/30 mx-auto mb-4"></div>
           <p className="text-gray-600">Chargement de votre compte...</p>
         </div>
       </div>
@@ -45,8 +45,8 @@ export default function ClientDashboard() {
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">C</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400/20 to-teal-400/20 backdrop-blur-md border border-white/30 rounded-xl flex items-center justify-center">
+                <span className="text-emerald-700 font-bold text-lg">C</span>
               </div>
               <h1 className="text-lg font-semibold text-gray-900">Mon Compte</h1>
             </div>
