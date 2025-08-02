@@ -141,7 +141,7 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
       </Button>
       <Button 
        size="sm" 
-       className="gradient-bg text-white text-xs"
+       className="gradient-bg text-black text-xs"
       >
        <Settings className="w-3 h-3 mr-1" />
        Paramètres
@@ -348,7 +348,7 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
          </div>
          
          <Button 
-          className="w-full mt-4 gradient-bg text-white"
+          className="w-full mt-4 gradient-bg text-black"
           onClick={() => {
            toast({
             title: "Fonctionnalité en développement",

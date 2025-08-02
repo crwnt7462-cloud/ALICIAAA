@@ -303,7 +303,7 @@ export default function ModernSalonDetail() {
  ];
 
  return (
-  <div className="min-h-screen bg-black text-white">
+  <div className="min-h-screen bg-black text-black">
    <div className="max-w-lg mx-auto">
     {/* Photo de couverture */}
     <div className="relative h-64 overflow-hidden">
@@ -328,14 +328,14 @@ export default function ModernSalonDetail() {
        console.log('🔙 Bouton retour cliqué - Navigation vers /search depuis ModernSalonDetail');
        setLocation('/search');
       }}
-      className="absolute top-4 left-4 text-white hover:bg-white/10 backdrop-blur-sm"
+      className="absolute top-4 left-4 text-black hover:bg-white/10 backdrop-blur-sm"
      >
       <ArrowLeft className="w-4 h-4" />
      </Button>
      
      {/* Badge vérifié */}
      {salon.verified && (
-      <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+      <div className="absolute top-4 right-4 bg-green-500 text-black px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
        <CheckCircle className="w-3 h-3" />
        Vérifié
       </div>
@@ -343,8 +343,8 @@ export default function ModernSalonDetail() {
      
      {/* Informations principales sur la photo */}
      <div className="absolute bottom-4 left-4 right-4">
-      <h1 className="text-2xl font-bold text-white mb-2">{salon.name}</h1>
-      <div className="flex items-center gap-4 text-white/90 text-sm">
+      <h1 className="text-2xl font-bold text-black mb-2">{salon.name}</h1>
+      <div className="flex items-center gap-4 text-black/90 text-sm">
        <div className="flex items-center gap-1">
         <Star className="w-4 h-4 text-yellow-400 fill-current" />
         <span>{salon.rating}</span>
@@ -382,7 +382,7 @@ export default function ModernSalonDetail() {
         onClick={() => setActiveTab(tab.id)}
         className={`flex-1 py-3 text-sm font-medium transition-colors ${
          activeTab === tab.id
-          ? 'text-white border-b-2'
+          ? 'text-black border-b-2'
           : 'text-gray-400 hover:text-gray-300'
         }`}
         style={activeTab === tab.id ? { borderBottomColor: customColors.primary } : {}}
@@ -408,7 +408,7 @@ export default function ModernSalonDetail() {
            setServiceCategories(newCategories);
           }}
          >
-          <h3 className="font-medium text-white">{category.name}</h3>
+          <h3 className="font-medium text-black">{category.name}</h3>
           <div className="text-gray-400">
            {category.expanded ? '−' : '+'}
           </div>
@@ -419,7 +419,7 @@ export default function ModernSalonDetail() {
            {category.services.map((service, serviceIndex) => (
             <div key={service.id} className={`p-4 flex items-center justify-between ${serviceIndex !== category.services.length - 1 ? 'border-b border-gray-800' : ''}`}>
              <div className="flex-1">
-              <h4 className="font-medium text-white mb-1">{service.name}</h4>
+              <h4 className="font-medium text-black mb-1">{service.name}</h4>
               <p className="text-sm text-gray-400">{service.price}€ • {service.duration}</p>
              </div>
              <button 
@@ -441,11 +441,11 @@ export default function ModernSalonDetail() {
      {activeTab === 'avis' && (
       <div className="space-y-4">
        <div className="mb-6">
-        <h2 className="text-xl font-light text-white mb-2">Avis clients</h2>
+        <h2 className="text-xl font-light text-black mb-2">Avis clients</h2>
         <div className="flex items-center gap-4 text-sm text-gray-400">
          <div className="flex items-center gap-2">
           <Star className="w-4 h-4 text-gray-400" />
-          <span className="text-white font-medium">{salon.rating}/5</span>
+          <span className="text-black font-medium">{salon.rating}/5</span>
          </div>
          <span>{salon.reviews} avis vérifiés</span>
         </div>
@@ -461,7 +461,7 @@ export default function ModernSalonDetail() {
             </div>
             <div>
              <div className="flex items-center gap-2">
-              <h4 className="text-white font-medium">{review.clientName}</h4>
+              <h4 className="text-black font-medium">{review.clientName}</h4>
               {review.verified && (
                <div className="flex items-center gap-1 text-xs text-gray-400">
                 <div className="w-1 h-1 bg-green-400 rounded-full"></div>
@@ -499,14 +499,14 @@ export default function ModernSalonDetail() {
      {activeTab === 'infos' && (
       <div className="space-y-6">
        <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-        <h3 className="text-lg font-medium text-white mb-4">À propos du salon</h3>
+        <h3 className="text-lg font-medium text-black mb-4">À propos du salon</h3>
         <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
          {salon.longDescription}
         </p>
        </div>
         
        <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-        <h3 className="font-medium text-white mb-3">Nos certifications</h3>
+        <h3 className="font-medium text-black mb-3">Nos certifications</h3>
         <div className="space-y-2">
          {salon.certifications.map((cert: string, idx: number) => (
           <div key={idx} className="flex items-center gap-2 text-sm">
@@ -537,7 +537,7 @@ export default function ModernSalonDetail() {
      {activeTab === 'offrir' && (
       <div className="space-y-6">
        <div>
-        <h2 className="text-xl font-light text-white mb-4">Offrir une prestation</h2>
+        <h2 className="text-xl font-light text-black mb-4">Offrir une prestation</h2>
         <div className="text-center py-8">
          <p className="text-gray-400">Fonctionnalité bientôt disponible</p>
         </div>

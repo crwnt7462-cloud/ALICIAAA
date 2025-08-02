@@ -619,7 +619,7 @@ export default function SalonBooking() {
 
         <Button 
           onClick={() => toast({ title: "Fonctionnalité", description: "Ajouter une prestation supplémentaire" })}
-          className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+          className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
         >
           Ajouter une prestation à la suite
         </Button>
@@ -875,7 +875,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={handleAccountCreation}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName}
             >
               Créer mon compte et continuer
@@ -916,7 +916,7 @@ export default function SalonBooking() {
       >
         {/* Handle barre de glissement */}
         <div className="flex justify-center pt-3 pb-2">
-          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+          <div className="w-12 h-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full"></div>
         </div>
 
         <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
@@ -955,11 +955,11 @@ export default function SalonBooking() {
             <h3 className="font-semibold text-gray-900 mb-3">Méthode de paiement</h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 border-2 border-violet-600 rounded-lg bg-violet-50">
-                <div className="w-5 h-5 rounded-full border-2 border-violet-600 bg-violet-600 flex items-center justify-center">
+                <div className="w-5 h-5 rounded-full border-2 border-violet-600 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 flex items-center justify-center">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
+                  <div className="w-8 h-6 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
                   <span className="font-medium">Carte bancaire</span>
                 </div>
               </div>
@@ -992,7 +992,7 @@ export default function SalonBooking() {
 
           {/* Sécurité */}
           <div className="flex items-center justify-center space-x-2 mt-4 mb-2 text-sm text-gray-500">
-            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+            <div className="w-4 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full flex items-center justify-center">
               <div className="w-2 h-2 bg-white rounded-full"></div>
             </div>
             <span>Paiement sécurisé par Stripe</span>
@@ -1063,7 +1063,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={handleAccountCreation}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
               disabled={!formData.firstName || !formData.lastName}
             >
               Continuer vers le paiement
@@ -1238,9 +1238,9 @@ export default function SalonBooking() {
                 className="w-full pr-16"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex space-x-1">
-                <div className="w-6 h-4 bg-blue-600 rounded text-xs text-white flex items-center justify-center font-bold">VISA</div>
-                <div className="w-6 h-4 bg-red-500 rounded"></div>
-                <div className="w-6 h-4 bg-blue-500 rounded"></div>
+                <div className="w-6 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded text-xs text-white flex items-center justify-center font-bold">VISA</div>
+                <div className="w-6 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded"></div>
+                <div className="w-6 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded"></div>
               </div>
             </div>
           </div>
@@ -1307,7 +1307,7 @@ export default function SalonBooking() {
               });
               setLocation('/');
             }}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+            className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
           >
             Confirmer la réservation
           </Button>
@@ -1482,7 +1482,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={handleCreateAccountAndPay}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all"
+              className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all"
               disabled={!formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName || !formData.acceptCGU}
             >
               Créer mon compte et continuer
@@ -1746,7 +1746,7 @@ export default function SalonBooking() {
 
             <Button
               onClick={handleModalLogin}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium"
+              className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white py-3 rounded-full font-medium"
             >
               Se connecter
             </Button>

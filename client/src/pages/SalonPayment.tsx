@@ -176,15 +176,15 @@ export default function SalonPayment() {
               <h4 className="font-semibold text-gray-900">Prochaines étapes :</h4>
               <div className="space-y-3 text-left">
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full"></div>
                   <span className="text-sm">Vérifiez votre email pour les détails de connexion</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full"></div>
                   <span className="text-sm">Configurez votre profil et vos services</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 rounded-full"></div>
                   <span className="text-sm">Créez votre page de réservation personnalisée</span>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default function SalonPayment() {
             <Button
               variant="ghost"
               onClick={() => setLocation('/salon-registration')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+              className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>

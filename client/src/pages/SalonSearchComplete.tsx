@@ -227,12 +227,12 @@ export default function SalonSearchComplete() {
         boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
        }}
       >
-       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-       <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+       <div className="absolute inset-0 bg-violet-500/30 backdrop-blur-md border border-violet-300/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20" />
+       <div className="relative flex items-center justify-center h-full text-black font-semibold text-lg">
         <Search className="w-5 h-5 mr-3" />
         Rechercher un salon
        </div>
-       <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+       <div className="absolute bottom-0 left-0 right-0 h-px bg-violet-500/30 backdrop-blur-md border border-violet-300/20/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20" />
       </motion.button>
 
       {/* Texte séparateur */}
@@ -369,7 +369,7 @@ export default function SalonSearchComplete() {
            </span>
           )}
           {salon.openNow && (
-           <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+           <span className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-black text-xs px-2 py-1 rounded-full font-medium">
             Ouvert
            </span>
           )}
@@ -417,7 +417,7 @@ export default function SalonSearchComplete() {
          {/* Services */}
          <div className="flex flex-wrap gap-1 mb-3">
           {salon.services.slice(0, 3).map((service: any, index: number) => (
-           <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+           <span key={index} className="text-xs bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-gray-600 px-2 py-1 rounded-full">
             {service}
            </span>
           ))}

@@ -503,7 +503,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
        variant="ghost"
        size="sm"
        onClick={() => window.history.back()}
-       className="text-gray-700 hover:bg-gray-100"
+       className="text-gray-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
       >
        <ArrowLeft className="w-4 h-4" />
       </Button>
@@ -512,7 +512,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         variant="ghost"
         size="sm"
         onClick={() => setIsEditing(!isEditing)}
-        className={`text-gray-700 ${isEditing ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'}`}
+        className={`text-gray-700 ${isEditing ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-pink-700' : 'hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20'}`}
        >
         <Edit3 className="w-4 h-4 mr-1" />
         {isEditing ? 'Mode Aperçu' : 'Modifier'}
@@ -569,7 +569,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         {salonData.coverImageUrl && (
          <button
           onClick={removeCoverImage}
-          className="bg-red-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-red-600 transition-colors"
+          className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20/90 backdrop-blur-sm text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 transition-colors"
          >
           <Trash2 className="w-4 h-4" />
           Supprimer
@@ -682,7 +682,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         <div className="text-center">
          <Button
           onClick={addCategory}
-          className="bg-violet-100 text-violet-700 hover:bg-violet-200 border-2 border-dashed border-violet-300 w-full py-6"
+          className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-violet-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 border-2 border-dashed border-violet-300 w-full py-6"
          >
           <Plus className="w-5 h-5 mr-2" />
           Ajouter une catégorie (ex: Cheveux, Visage, Ongles...)
@@ -826,7 +826,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   {service.price}€
                  </div>
                  <button 
-                  className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn"
+                  className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-black transition-colors reservation-preview-btn"
                   style={{
                    backgroundColor: salonData.customColors?.primary || '#7c3aed',
                    color: salonData.customColors?.buttonText || '#ffffff'
@@ -871,7 +871,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               professionals: [...(prev.professionals || []), newPro]
              }));
             }}
-            className="bg-violet-100 text-violet-700 hover:bg-violet-200 border border-violet-300"
+            className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-violet-700 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 border border-violet-300"
            >
             <Plus className="w-4 h-4 mr-2" />
             Ajouter un professionnel

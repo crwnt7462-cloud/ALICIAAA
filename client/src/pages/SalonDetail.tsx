@@ -228,7 +228,7 @@ export default function SalonDetail() {
      </div>
      <span className="font-semibold text-lg">{business.rating}</span>
      <span className="text-gray-500">({business.reviewCount} avis)</span>
-     <Badge className="ml-2 bg-gray-100 text-gray-700">{business.priceRange}</Badge>
+     <Badge className="ml-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-gray-700">{business.priceRange}</Badge>
     </div>
 
     <div className="space-y-2 mb-4 text-gray-600">
@@ -388,7 +388,7 @@ export default function SalonDetail() {
         <CardContent className="p-4">
          <div className="flex items-start gap-3 mb-3">
           <Avatar className="w-10 h-10">
-           <AvatarFallback className="bg-violet-100 text-violet-600 font-semibold">
+           <AvatarFallback className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-violet-600 font-semibold">
             {review.clientName.charAt(0)}
            </AvatarFallback>
           </Avatar>

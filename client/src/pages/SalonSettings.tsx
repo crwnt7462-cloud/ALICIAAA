@@ -115,7 +115,7 @@ export default function SalonSettings() {
               size="sm"
               onClick={handleSave}
               disabled={isLoading}
-              className="bg-violet-600 hover:bg-violet-700"
+              className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
             >
               {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>

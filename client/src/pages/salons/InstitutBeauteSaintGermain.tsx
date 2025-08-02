@@ -106,7 +106,7 @@ export default function InstitutBeauteSaintGermain() {
  return (
   <div className="min-h-screen bg-gray-50">
    {/* Header avec photo de couverture */}
-   <div className="relative h-64 bg-gradient-to-br from-rose-400 to-pink-500">
+   <div className="relative h-64 bg-violet-500/20 backdrop-blur-sm">
     <img 
      src={salonData.coverImageUrl} 
      alt={salonData.name}
@@ -122,11 +122,11 @@ export default function InstitutBeauteSaintGermain() {
      }}
      className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
-     <ArrowLeft className="h-5 w-5 text-white" />
+     <ArrowLeft className="h-5 w-5 text-black" />
     </button>
     
     {/* Informations salon en overlay */}
-    <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+    <div className="absolute bottom-0 left-0 right-0 p-6 text-black">
      <div className="flex items-center gap-2 mb-2">
       <h1 className="text-2xl font-bold">{salonData.name}</h1>
       {salonData.verified && (

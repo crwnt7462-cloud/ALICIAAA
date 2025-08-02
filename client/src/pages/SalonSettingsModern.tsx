@@ -284,7 +284,7 @@ export default function SalonSettingsModern() {
               <button
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 disabled:bg-violet-400 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 disabled:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2"
               >
                 <Save className="h-4 w-4" />
                 {saveMutation.isPending ? "Sauvegarde..." : "Sauvegarder"}

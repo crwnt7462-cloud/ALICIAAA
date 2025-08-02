@@ -112,7 +112,7 @@ export default function SalonSelection() {
       <Button
        variant="ghost"
        onClick={() => setLocation('/category-selection')}
-       className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+       className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
       >
        ←
       </Button>
@@ -207,7 +207,7 @@ export default function SalonSelection() {
             <div className="flex items-center gap-3 mb-2">
              <h3 className="text-lg font-semibold text-gray-900">{salon.name}</h3>
              {salon.openNow ? (
-              <Badge className="bg-green-100 text-green-800">Ouvert</Badge>
+              <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-green-800">Ouvert</Badge>
              ) : (
               <Badge variant="secondary">Fermé</Badge>
              )}

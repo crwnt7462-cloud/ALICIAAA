@@ -114,7 +114,7 @@ export default function SalonSettingsComplete() {
             <Button
               variant="ghost"
               onClick={() => setLocation('/pro-dashboard')}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+              className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>

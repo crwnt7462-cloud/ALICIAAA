@@ -202,11 +202,11 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
     />
     
     {/* Overlay gradient */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+    <div className="absolute inset-0 bg-violet-500/30 backdrop-blur-md border border-violet-300/20/20 backdrop-blur-sm" />
     
     {/* Contenu centré sur la photo */}
     <div className="absolute inset-0 flex items-center justify-center">
-     <div className="text-center text-white px-4">
+     <div className="text-center text-black px-4">
       <h1 className="text-4xl font-bold mb-4 drop-shadow-lg">{pageData?.salonName || 'Mon Salon'}</h1>
       {pageData?.salonDescription && (
        <p className="text-xl opacity-90 mb-6 drop-shadow-lg max-w-2xl">{pageData.salonDescription}</p>
@@ -409,7 +409,7 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
 
         <Button 
          type="submit" 
-         className="w-full h-12 text-white font-medium rounded-lg"
+         className="w-full h-12 text-black font-medium rounded-lg"
          style={{ background: styles.buttonBg }}
          disabled={createBookingMutation.isPending}
         >

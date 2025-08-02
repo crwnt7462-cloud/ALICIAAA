@@ -173,7 +173,7 @@ export default function SalonBookingEditor() {
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/pro-pages')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+                className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -194,7 +194,7 @@ export default function SalonBookingEditor() {
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium"
+                className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 text-white rounded-full px-6 py-2 font-medium"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
@@ -206,7 +206,7 @@ export default function SalonBookingEditor() {
 
       <div className="max-w-6xl mx-auto p-6">
         {/* Navigation par onglets */}
-        <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+        <div className="flex space-x-1 mb-6 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('general')}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -339,7 +339,7 @@ export default function SalonBookingEditor() {
                   <Users className="h-5 w-5 text-violet-600" />
                   Professionnels
                 </CardTitle>
-                <Button onClick={addProfessional} className="bg-violet-600 hover:bg-violet-700">
+                <Button onClick={addProfessional} className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20">
                   Ajouter un professionnel
                 </Button>
               </div>
@@ -408,7 +408,7 @@ export default function SalonBookingEditor() {
                   <Clock className="h-5 w-5 text-violet-600" />
                   Créneaux Horaires
                 </CardTitle>
-                <Button onClick={addTimeSlot} className="bg-violet-600 hover:bg-violet-700">
+                <Button onClick={addTimeSlot} className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20">
                   Ajouter un créneau
                 </Button>
               </div>
