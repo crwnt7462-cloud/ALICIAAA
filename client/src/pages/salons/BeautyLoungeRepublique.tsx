@@ -12,42 +12,42 @@ import {
   Heart,
   Share2,
   ChevronLeft,
-  Sparkles
+  Zap
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-export default function NailArtOpera() {
+export default function BeautyLoungeRepublique() {
   const [, setLocation] = useLocation();
   const [isLiked, setIsLiked] = useState(false);
 
-  // Couleurs spécifiques pour Nail Art Opéra (Rose vif)
+  // Couleurs spécifiques pour Beauty Lounge République (Orange moderne)
   const salonColors = {
-    primary: "#EC4899", // Rose vif
-    accent: "#F472B6",
-    background: "#FDF2F8",
-    text: "#831843"
+    primary: "#EA580C", // Orange dynamique
+    accent: "#FB923C",
+    background: "#FFF7ED",
+    text: "#9A3412"
   };
 
   const salonData = {
-    id: "nail-art-opera",
-    name: "Nail Art Opéra",
-    category: "Studio Nail Art",
-    description: "Studio spécialisé dans le nail art et les extensions d'ongles avec des créations uniques. Techniques artistiques et produits premium pour des ongles parfaits.",
-    address: "15 rue Auber, 75009 Paris",
-    phone: "01 47 42 85 63",
-    rating: 4.6,
-    reviews: 142,
+    id: "beauty-lounge-republique",
+    name: "Beauty Lounge République",
+    category: "Salon Moderne",
+    description: "Salon moderne et tendance proposant coiffure, esthétique et bien-être. Équipe jeune et dynamique, techniques innovantes et ambiance décontractée.",
+    address: "67 avenue de la République, 75011 Paris",
+    phone: "01 43 57 28 91",
+    rating: 4.5,
+    reviews: 134,
     images: [
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1519415943484-9fa1873496d4?w=800&h=600&fit=crop"
     ],
     services: [
-      { name: "Manucure Classique", price: "35€", duration: "45min", icon: "💅" },
-      { name: "Pose Gel Couleur", price: "50€", duration: "1h", icon: "✨" },
-      { name: "Nail Art Créatif", price: "70€", duration: "1h30", icon: "🎨" },
-      { name: "Extensions Gel", price: "85€", duration: "2h", icon: "💎" },
-      { name: "French Manucure", price: "45€", duration: "1h", icon: "🤍" },
-      { name: "Dépose + Soin", price: "25€", duration: "30min", icon: "🧴" }
+      { name: "Coupe Tendance", price: "55€", duration: "45min", icon: "✂️" },
+      { name: "Coloration Moderne", price: "85€", duration: "2h", icon: "🎨" },
+      { name: "Soin Visage Express", price: "60€", duration: "45min", icon: "✨" },
+      { name: "Manucure Stylée", price: "40€", duration: "1h", icon: "💅" },
+      { name: "Maquillage Professionnel", price: "50€", duration: "45min", icon: "💄" },
+      { name: "Épilation Sourcils Design", price: "30€", duration: "25min", icon: "👁️" }
     ],
     openingHours: {
       "Lundi": "10h00 - 19h00",
@@ -56,12 +56,12 @@ export default function NailArtOpera() {
       "Jeudi": "10h00 - 20h00",
       "Vendredi": "10h00 - 19h00",
       "Samedi": "9h00 - 18h00",
-      "Dimanche": "11h00 - 17h00"
+      "Dimanche": "Fermé"
     },
     team: [
-      { name: "Marina Silva", role: "Nail artist experte", experience: "8 ans" },
-      { name: "Léa Dubois", role: "Spécialiste extensions", experience: "5 ans" },
-      { name: "Anna Kim", role: "Créatrice nail art", experience: "6 ans" }
+      { name: "Clara Moreau", role: "Styliste créative", experience: "6 ans" },
+      { name: "Alex Rodriguez", role: "Coloriste expert", experience: "4 ans" },
+      { name: "Léa Martinez", role: "Esthéticienne", experience: "3 ans" }
     ]
   };
 
@@ -125,7 +125,7 @@ export default function NailArtOpera() {
               <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
               <div>
                 <p className="font-medium">{salonData.address}</p>
-                <p className="text-sm text-gray-600">Opéra - 1 min à pied du métro Opéra</p>
+                <p className="text-sm text-gray-600">République - 2 min à pied du métro République</p>
               </div>
             </div>
             
@@ -147,9 +147,9 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-2">À propos</h2>
             <p className="text-gray-600 leading-relaxed">{salonData.description}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Nail Art</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Extensions</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Créations uniques</Badge>
+              <Badge variant="outline" className="text-orange-700 border-orange-300">Moderne</Badge>
+              <Badge variant="outline" className="text-orange-700 border-orange-300">Tendance</Badge>
+              <Badge variant="outline" className="text-orange-700 border-orange-300">Innovant</Badge>
             </div>
           </CardContent>
         </Card>
@@ -160,7 +160,7 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-4">Nos prestations</h2>
             <div className="space-y-3">
               {salonData.services.map((service, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-pink-100 bg-pink-50/30">
+                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-orange-100 bg-orange-50/30">
                   <div className="flex items-center gap-3">
                     <span className="text-lg">{service.icon}</span>
                     <div>
@@ -186,7 +186,7 @@ export default function NailArtOpera() {
             <div className="space-y-3">
               {salonData.team.map((member, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white font-semibold">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white font-semibold">
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
@@ -226,7 +226,7 @@ export default function NailArtOpera() {
               color: 'white'
             }}
           >
-            <Sparkles className="h-5 w-5 mr-2" />
+            <Zap className="h-5 w-5 mr-2" />
             Réserver maintenant
           </Button>
         </div>

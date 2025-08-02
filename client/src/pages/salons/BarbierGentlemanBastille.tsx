@@ -12,56 +12,56 @@ import {
   Heart,
   Share2,
   ChevronLeft,
-  Sparkles
+  User
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-export default function NailArtOpera() {
+export default function BarbierGentlemanBastille() {
   const [, setLocation] = useLocation();
   const [isLiked, setIsLiked] = useState(false);
 
-  // Couleurs spécifiques pour Nail Art Opéra (Rose vif)
+  // Couleurs spécifiques pour Barbier Gentleman (Bleu masculin)
   const salonColors = {
-    primary: "#EC4899", // Rose vif
-    accent: "#F472B6",
-    background: "#FDF2F8",
-    text: "#831843"
+    primary: "#1E40AF", // Bleu royal
+    accent: "#3B82F6",
+    background: "#F8FAFC",
+    text: "#1E293B"
   };
 
   const salonData = {
-    id: "nail-art-opera",
-    name: "Nail Art Opéra",
-    category: "Studio Nail Art",
-    description: "Studio spécialisé dans le nail art et les extensions d'ongles avec des créations uniques. Techniques artistiques et produits premium pour des ongles parfaits.",
-    address: "15 rue Auber, 75009 Paris",
-    phone: "01 47 42 85 63",
-    rating: 4.6,
-    reviews: 142,
+    id: "barbier-gentleman-bastille",
+    name: "Gentleman Barbier Bastille",
+    category: "Barbier Traditionnel",
+    description: "Barbier traditionnel pour hommes, spécialisé dans les coupes classiques et soins de barbe. Ambiance authentique et savoir-faire artisanal depuis 1920.",
+    address: "45 rue de la Roquette, 75011 Paris",
+    phone: "01 48 05 92 34",
+    rating: 4.7,
+    reviews: 89,
     images: [
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&h=600&fit=crop"
     ],
     services: [
-      { name: "Manucure Classique", price: "35€", duration: "45min", icon: "💅" },
-      { name: "Pose Gel Couleur", price: "50€", duration: "1h", icon: "✨" },
-      { name: "Nail Art Créatif", price: "70€", duration: "1h30", icon: "🎨" },
-      { name: "Extensions Gel", price: "85€", duration: "2h", icon: "💎" },
-      { name: "French Manucure", price: "45€", duration: "1h", icon: "🤍" },
-      { name: "Dépose + Soin", price: "25€", duration: "30min", icon: "🧴" }
+      { name: "Coupe Classique", price: "35€", duration: "30min", icon: "✂️" },
+      { name: "Coupe + Barbe", price: "50€", duration: "45min", icon: "🧔" },
+      { name: "Taille de Barbe", price: "25€", duration: "20min", icon: "✨" },
+      { name: "Rasage Traditionnel", price: "40€", duration: "30min", icon: "🪒" },
+      { name: "Soin Barbe Premium", price: "45€", duration: "35min", icon: "💼" },
+      { name: "Shampoing + Coupe", price: "40€", duration: "40min", icon: "🧴" }
     ],
     openingHours: {
-      "Lundi": "10h00 - 19h00",
-      "Mardi": "10h00 - 19h00", 
-      "Mercredi": "10h00 - 19h00",
-      "Jeudi": "10h00 - 20h00",
-      "Vendredi": "10h00 - 19h00",
+      "Lundi": "Fermé",
+      "Mardi": "9h00 - 19h00", 
+      "Mercredi": "9h00 - 19h00",
+      "Jeudi": "9h00 - 19h00",
+      "Vendredi": "9h00 - 19h00",
       "Samedi": "9h00 - 18h00",
-      "Dimanche": "11h00 - 17h00"
+      "Dimanche": "10h00 - 16h00"
     },
     team: [
-      { name: "Marina Silva", role: "Nail artist experte", experience: "8 ans" },
-      { name: "Léa Dubois", role: "Spécialiste extensions", experience: "5 ans" },
-      { name: "Anna Kim", role: "Créatrice nail art", experience: "6 ans" }
+      { name: "Antoine Dubois", role: "Maître barbier", experience: "20 ans" },
+      { name: "Pierre Martin", role: "Barbier expert", experience: "12 ans" },
+      { name: "Jean-Luc Bernard", role: "Spécialiste rasage", experience: "15 ans" }
     ]
   };
 
@@ -125,7 +125,7 @@ export default function NailArtOpera() {
               <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
               <div>
                 <p className="font-medium">{salonData.address}</p>
-                <p className="text-sm text-gray-600">Opéra - 1 min à pied du métro Opéra</p>
+                <p className="text-sm text-gray-600">Bastille - 2 min à pied du métro Bastille</p>
               </div>
             </div>
             
@@ -136,7 +136,7 @@ export default function NailArtOpera() {
             
             <div className="flex items-center gap-3">
               <Clock className="h-5 w-5 text-gray-500" />
-              <p className="font-medium text-green-600">Ouvert aujourd'hui 10h00 - 19h00</p>
+              <p className="font-medium text-green-600">Ouvert aujourd'hui 9h00 - 19h00</p>
             </div>
           </CardContent>
         </Card>
@@ -147,9 +147,9 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-2">À propos</h2>
             <p className="text-gray-600 leading-relaxed">{salonData.description}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Nail Art</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Extensions</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Créations uniques</Badge>
+              <Badge variant="outline" className="text-blue-700 border-blue-300">Traditionnel</Badge>
+              <Badge variant="outline" className="text-blue-700 border-blue-300">Depuis 1920</Badge>
+              <Badge variant="outline" className="text-blue-700 border-blue-300">Hommes uniquement</Badge>
             </div>
           </CardContent>
         </Card>
@@ -160,7 +160,7 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-4">Nos prestations</h2>
             <div className="space-y-3">
               {salonData.services.map((service, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-pink-100 bg-pink-50/30">
+                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-blue-100 bg-blue-50/30">
                   <div className="flex items-center gap-3">
                     <span className="text-lg">{service.icon}</span>
                     <div>
@@ -186,7 +186,7 @@ export default function NailArtOpera() {
             <div className="space-y-3">
               {salonData.team.map((member, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white font-semibold">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-semibold">
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
@@ -226,7 +226,7 @@ export default function NailArtOpera() {
               color: 'white'
             }}
           >
-            <Sparkles className="h-5 w-5 mr-2" />
+            <User className="h-5 w-5 mr-2" />
             Réserver maintenant
           </Button>
         </div>

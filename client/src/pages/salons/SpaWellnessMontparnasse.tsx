@@ -12,56 +12,56 @@ import {
   Heart,
   Share2,
   ChevronLeft,
-  Sparkles
+  Waves
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-export default function NailArtOpera() {
+export default function SpaWellnessMontparnasse() {
   const [, setLocation] = useLocation();
   const [isLiked, setIsLiked] = useState(false);
 
-  // Couleurs spécifiques pour Nail Art Opéra (Rose vif)
+  // Couleurs spécifiques pour Spa Wellness (Vert zen)
   const salonColors = {
-    primary: "#EC4899", // Rose vif
-    accent: "#F472B6",
-    background: "#FDF2F8",
-    text: "#831843"
+    primary: "#059669", // Vert émeraude
+    accent: "#10B981",
+    background: "#F0FDF4",
+    text: "#064E3B"
   };
 
   const salonData = {
-    id: "nail-art-opera",
-    name: "Nail Art Opéra",
-    category: "Studio Nail Art",
-    description: "Studio spécialisé dans le nail art et les extensions d'ongles avec des créations uniques. Techniques artistiques et produits premium pour des ongles parfaits.",
-    address: "15 rue Auber, 75009 Paris",
-    phone: "01 47 42 85 63",
-    rating: 4.6,
-    reviews: 142,
+    id: "spa-wellness-montparnasse",
+    name: "Spa Wellness Montparnasse",
+    category: "Centre de Bien-être",
+    description: "Centre de bien-être proposant massages, soins corporels et relaxation dans un environnement zen. Évasion totale au cœur de Paris pour votre bien-être.",
+    address: "89 boulevard du Montparnasse, 75006 Paris",
+    phone: "01 45 44 27 18",
+    rating: 4.8,
+    reviews: 178,
     images: [
-      "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=800&h=600&fit=crop",
-      "https://images.unsplash.com/photo-1632345031435-8727f6897d53?w=800&h=600&fit=crop"
+      "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop"
     ],
     services: [
-      { name: "Manucure Classique", price: "35€", duration: "45min", icon: "💅" },
-      { name: "Pose Gel Couleur", price: "50€", duration: "1h", icon: "✨" },
-      { name: "Nail Art Créatif", price: "70€", duration: "1h30", icon: "🎨" },
-      { name: "Extensions Gel", price: "85€", duration: "2h", icon: "💎" },
-      { name: "French Manucure", price: "45€", duration: "1h", icon: "🤍" },
-      { name: "Dépose + Soin", price: "25€", duration: "30min", icon: "🧴" }
+      { name: "Massage Relaxant", price: "95€", duration: "1h", icon: "🧘" },
+      { name: "Massage Deep Tissue", price: "110€", duration: "1h15", icon: "💆" },
+      { name: "Soin Corps Hydratant", price: "75€", duration: "45min", icon: "🌿" },
+      { name: "Hammam + Gommage", price: "85€", duration: "1h", icon: "🛁" },
+      { name: "Massage Pierres Chaudes", price: "125€", duration: "1h30", icon: "🔥" },
+      { name: "Séance Aromathérapie", price: "70€", duration: "45min", icon: "🌸" }
     ],
     openingHours: {
-      "Lundi": "10h00 - 19h00",
-      "Mardi": "10h00 - 19h00", 
-      "Mercredi": "10h00 - 19h00",
-      "Jeudi": "10h00 - 20h00",
-      "Vendredi": "10h00 - 19h00",
-      "Samedi": "9h00 - 18h00",
-      "Dimanche": "11h00 - 17h00"
+      "Lundi": "10h00 - 20h00",
+      "Mardi": "10h00 - 20h00", 
+      "Mercredi": "10h00 - 20h00",
+      "Jeudi": "10h00 - 21h00",
+      "Vendredi": "10h00 - 20h00",
+      "Samedi": "9h00 - 19h00",
+      "Dimanche": "11h00 - 18h00"
     },
     team: [
-      { name: "Marina Silva", role: "Nail artist experte", experience: "8 ans" },
-      { name: "Léa Dubois", role: "Spécialiste extensions", experience: "5 ans" },
-      { name: "Anna Kim", role: "Créatrice nail art", experience: "6 ans" }
+      { name: "Sophia Chen", role: "Masseuse certifiée", experience: "10 ans" },
+      { name: "Thomas Dubois", role: "Thérapeute holistique", experience: "8 ans" },
+      { name: "Amélie Martin", role: "Spécialiste aromathérapie", experience: "7 ans" }
     ]
   };
 
@@ -125,7 +125,7 @@ export default function NailArtOpera() {
               <MapPin className="h-5 w-5 text-gray-500 mt-0.5" />
               <div>
                 <p className="font-medium">{salonData.address}</p>
-                <p className="text-sm text-gray-600">Opéra - 1 min à pied du métro Opéra</p>
+                <p className="text-sm text-gray-600">Montparnasse - 3 min à pied du métro Montparnasse</p>
               </div>
             </div>
             
@@ -136,7 +136,7 @@ export default function NailArtOpera() {
             
             <div className="flex items-center gap-3">
               <Clock className="h-5 w-5 text-gray-500" />
-              <p className="font-medium text-green-600">Ouvert aujourd'hui 10h00 - 19h00</p>
+              <p className="font-medium text-green-600">Ouvert aujourd'hui 10h00 - 20h00</p>
             </div>
           </CardContent>
         </Card>
@@ -147,9 +147,9 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-2">À propos</h2>
             <p className="text-gray-600 leading-relaxed">{salonData.description}</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Nail Art</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Extensions</Badge>
-              <Badge variant="outline" className="text-pink-700 border-pink-300">Créations uniques</Badge>
+              <Badge variant="outline" className="text-green-700 border-green-300">Zen</Badge>
+              <Badge variant="outline" className="text-green-700 border-green-300">Relaxation</Badge>
+              <Badge variant="outline" className="text-green-700 border-green-300">Bien-être</Badge>
             </div>
           </CardContent>
         </Card>
@@ -160,7 +160,7 @@ export default function NailArtOpera() {
             <h2 className="font-semibold mb-4">Nos prestations</h2>
             <div className="space-y-3">
               {salonData.services.map((service, index) => (
-                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-pink-100 bg-pink-50/30">
+                <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-green-100 bg-green-50/30">
                   <div className="flex items-center gap-3">
                     <span className="text-lg">{service.icon}</span>
                     <div>
@@ -186,7 +186,7 @@ export default function NailArtOpera() {
             <div className="space-y-3">
               {salonData.team.map((member, index) => (
                 <div key={index} className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white font-semibold">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-semibold">
                     {member.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
@@ -226,7 +226,7 @@ export default function NailArtOpera() {
               color: 'white'
             }}
           >
-            <Sparkles className="h-5 w-5 mr-2" />
+            <Waves className="h-5 w-5 mr-2" />
             Réserver maintenant
           </Button>
         </div>
