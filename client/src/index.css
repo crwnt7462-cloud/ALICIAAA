@@ -3,14 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Glassmorphism Styles - Comme l'image de référence */
+/* Glassmorphism Styles - Avec teinte violet subtile */
 .glass-button {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(168, 85, 247, 0.1) 100%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #1f2937;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
@@ -21,12 +22,13 @@
 }
 
 .glass-button-secondary {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  color: #6b7280;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  color: #374151;
+  font-weight: 500;
   transition: all 0.3s ease;
 }
 
@@ -46,14 +48,15 @@
   transition: all 0.3s ease;
 }
 
-/* Style bouton ovale rose comme dans l'image */
+/* Style bouton violet actif comme dans l'image */
 .glass-button-pink {
-  background: linear-gradient(135deg, rgba(255, 192, 203, 0.3) 0%, rgba(255, 182, 193, 0.2) 100%);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 3px 12px rgba(255, 192, 203, 0.2);
-  color: white;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 0 3px 12px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  color: #1f2937;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
