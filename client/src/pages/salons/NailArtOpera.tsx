@@ -139,7 +139,7 @@ export default function NailArtOpera() {
             console.log('🔙 Bouton retour cliqué - Navigation vers /search');
             setLocation('/search');
           }}
-          className="absolute top-4 left-4 p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 transition-all z-10"
+          className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
         >
           <ArrowLeft className="h-5 w-5 text-white" />
         </button>
@@ -179,8 +179,8 @@ export default function NailArtOpera() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'text-pink-600 border-b-2 border-pink-600'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'glass-button-pink border-b-2 border-violet-400'
+                  : 'glass-button-secondary'
               }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -228,7 +228,7 @@ export default function NailArtOpera() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 bg-pink-600 hover:bg-pink-700"
+                              className="mt-2 glass-button"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver
@@ -336,7 +336,7 @@ export default function NailArtOpera() {
       {/* Bouton réservation fixe en bas */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
-          className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3"
+          className="w-full glass-button py-3"
           onClick={() => setLocation('/salon-booking')}
         >
           Réserver maintenant

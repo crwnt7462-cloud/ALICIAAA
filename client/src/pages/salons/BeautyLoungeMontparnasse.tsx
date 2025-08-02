@@ -174,7 +174,7 @@ export default function BeautyLoungeMontparnasse() {
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">{displayData.rating || 4.5}</span>
-              <span className="opacity-80">({displayData.reviewCount || displayData.reviews || 89} avis)</span>
+              <span className="opacity-80">({displayData.reviews || 89} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
@@ -267,7 +267,7 @@ export default function BeautyLoungeMontparnasse() {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">À propos</h3>
-                <p className="text-gray-700 mb-6">{displayData.description || displayData.longDescription}</p>
+                <p className="text-gray-700 mb-6">{displayData.longDescription}</p>
                 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -321,7 +321,7 @@ export default function BeautyLoungeMontparnasse() {
                 {displayData.rating || 4.5}/5 étoiles
               </h3>
               <p className="text-gray-600">
-                Basé sur {displayData.reviewCount || displayData.reviews || 89} avis clients
+                Basé sur {displayData.reviews || 89} avis clients
               </p>
             </div>
             
