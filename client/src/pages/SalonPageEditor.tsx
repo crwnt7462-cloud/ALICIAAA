@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
   Star, 
@@ -494,8 +495,14 @@ export default function SalonPageEditor() {
                           <div className="text-right ml-4">
                             <p className="font-bold text-lg">{service.price}€</p>
                             {!isEditing ? (
-                              <button
-                                className="mt-2 px-4 py-2 text-sm font-semibold text-white rounded-3xl relative overflow-hidden group"
+                              <motion.button
+                                whileHover={{ 
+                                  scale: 1.02,
+                                  y: -2,
+                                  transition: { duration: 0.2 }
+                                }}
+                                whileTap={{ scale: 0.98 }}
+                                className="relative mt-2 px-4 py-2 text-sm font-semibold text-white rounded-3xl overflow-hidden group"
                                 style={{
                                   background: salonData.customColors?.primary 
                                     ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
@@ -510,8 +517,11 @@ export default function SalonPageEditor() {
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                <span className="relative">Réserver</span>
-                              </button>
+                                <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+                                  Réserver
+                                </div>
+                                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                              </motion.button>
                             ) : (
                               <Button
                                 size="sm"
@@ -748,8 +758,14 @@ export default function SalonPageEditor() {
                   }}
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
-                    <button
-                      className="px-6 py-3 rounded-3xl font-semibold text-white relative overflow-hidden group"
+                    <motion.button
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -2,
+                        transition: { duration: 0.2 }
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative px-6 py-3 rounded-3xl font-semibold text-white overflow-hidden group"
                       style={{
                         background: salonData.customColors?.primary 
                           ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
@@ -763,8 +779,11 @@ export default function SalonPageEditor() {
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <span className="relative">Réserver maintenant</span>
-                    </button>
+                      <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+                        Réserver maintenant
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                    </motion.button>
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
@@ -777,8 +796,14 @@ export default function SalonPageEditor() {
                     >
                       Voir les avis
                     </button>
-                    <button
-                      className="px-4 py-2 rounded-3xl text-sm font-semibold text-white relative overflow-hidden group"
+                    <motion.button
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -2,
+                        transition: { duration: 0.2 }
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      className="relative px-4 py-2 rounded-3xl text-sm font-semibold text-white overflow-hidden group"
                       style={{
                         background: salonData.customColors?.primary 
                           ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
@@ -792,8 +817,11 @@ export default function SalonPageEditor() {
                       }}
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <span className="relative">Réserver</span>
-                    </button>
+                      <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+                        Réserver
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                    </motion.button>
                   </div>
                   <p className="text-center text-sm text-gray-600 mt-4">
                     ✨ Aperçu de vos boutons avec style moderne et couleurs personnalisées
@@ -850,8 +878,14 @@ export default function SalonPageEditor() {
           WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           borderTop: '1px solid rgba(255, 255, 255, 0.2)'
         }}>
-          <button
-            className="w-full h-16 rounded-3xl overflow-hidden group relative"
+          <motion.button
+            whileHover={{ 
+              scale: 1.02,
+              y: -2,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.98 }}
+            className="relative w-full h-16 rounded-3xl overflow-hidden group mb-6"
             style={{
               background: salonData.customColors?.primary 
                 ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
@@ -870,7 +904,7 @@ export default function SalonPageEditor() {
               Réserver maintenant
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-          </button>
+          </motion.button>
         </div>
       )}
     </div>
