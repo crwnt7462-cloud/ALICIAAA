@@ -498,17 +498,11 @@ export default function SalonPageEditor() {
                                 size="sm" 
                                 className="mt-2"
                                 style={{
-                                  background: salonData.customColors?.primary 
-                                    ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15)`
-                                    : 'rgba(245, 158, 11, 0.15)',
+                                  background: 'rgba(255, 255, 255, 0.2)',
                                   backdropFilter: 'blur(15px) saturate(180%)',
                                   WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                                  border: salonData.customColors?.primary 
-                                    ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3)`
-                                    : '1px solid rgba(245, 158, 11, 0.3)',
-                                  boxShadow: salonData.customColors?.primary 
-                                    ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15)`
-                                    : '0 8px 32px rgba(245, 158, 11, 0.15)',
+                                  border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}40`,
+                                  boxShadow: `0 8px 32px ${salonData.customColors?.primary || '#f59e0b'}20`,
                                   color: '#374151',
                                   borderRadius: '8px',
                                   fontWeight: '500',
@@ -758,17 +752,11 @@ export default function SalonPageEditor() {
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
-                        background: salonData.customColors?.primary 
-                          ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.18)`
-                          : 'rgba(245, 158, 11, 0.18)',
+                        background: 'rgba(255, 255, 255, 0.22)',
                         backdropFilter: 'blur(15px) saturate(180%)',
                         WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                        border: salonData.customColors?.primary 
-                          ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.35)`
-                          : '1px solid rgba(245, 158, 11, 0.35)',
-                        boxShadow: salonData.customColors?.primary 
-                          ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15)`
-                          : '0 8px 32px rgba(245, 158, 11, 0.15)',
+                        border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}45`,
+                        boxShadow: `0 8px 32px ${salonData.customColors?.primary || '#f59e0b'}20`,
                         color: '#374151',
                         borderRadius: '8px',
                         fontWeight: '500'
@@ -791,17 +779,11 @@ export default function SalonPageEditor() {
                     <button
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
                       style={{
-                        background: salonData.customColors?.primary 
-                          ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15)`
-                          : 'rgba(245, 158, 11, 0.15)',
+                        background: 'rgba(255, 255, 255, 0.18)',
                         backdropFilter: 'blur(12px) saturate(180%)',
                         WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-                        border: salonData.customColors?.primary 
-                          ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3)`
-                          : '1px solid rgba(245, 158, 11, 0.3)',
-                        boxShadow: salonData.customColors?.primary 
-                          ? `0 4px 16px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.12)`
-                          : '0 4px 16px rgba(245, 158, 11, 0.12)',
+                        border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}40`,
+                        boxShadow: `0 4px 16px ${salonData.customColors?.primary || '#f59e0b'}15`,
                         color: '#374151',
                         borderRadius: '8px',
                         fontWeight: '500',
@@ -869,17 +851,11 @@ export default function SalonPageEditor() {
           <Button 
             className="w-full py-3 text-lg font-semibold rounded-xl"
             style={{
-              background: salonData.customColors?.primary 
-                ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2)`
-                : 'rgba(245, 158, 11, 0.2)',
+              background: 'rgba(255, 255, 255, 0.25)',
               backdropFilter: 'blur(20px) saturate(180%)',
               WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              border: salonData.customColors?.primary 
-                ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4)`
-                : '1px solid rgba(245, 158, 11, 0.4)',
-              boxShadow: salonData.customColors?.primary 
-                ? `0 12px 40px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2)`
-                : '0 12px 40px rgba(245, 158, 11, 0.2)',
+              border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}50`,
+              boxShadow: `0 12px 40px ${salonData.customColors?.primary || '#f59e0b'}25`,
               color: '#374151',
               borderRadius: '12px',
               fontWeight: '600',
