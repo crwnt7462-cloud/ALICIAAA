@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,9 +26,63 @@ import {
 } from "lucide-react";
 
 export default function ModernSalonDetail() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
+  
+  // Extraire l'ID du salon depuis l'URL
+  const salonId = location.split('/salon/')[1];
+  
+  // Récupérer les données dynamiques du salon depuis l'API
+  const { data: salonData, isLoading, error } = useQuery({
+    queryKey: ['/api/salon-detail', salonId],
+    queryFn: async () => {
+      if (!salonId) throw new Error('Salon ID manquant');
+      
+      // D'abord essayer l'API publique 
+      try {
+        const response = await fetch(`/api/public/salon/${salonId}`);
+        if (response.ok) {
+          return response.json();
+        }
+      } catch (err) {
+        console.log('📍 API publique indisponible, essai API booking-pages...');
+      }
+      
+      // Fallback sur l'API booking-pages
+      const response = await fetch(`/api/booking-pages/${salonId}`);
+      if (!response.ok) {
+        throw new Error('Salon non trouvé');
+      }
+      return response.json();
+    },
+    enabled: !!salonId,
+    retry: 2
+  });
+  
+  // Si en cours de chargement
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+  
+  // Si erreur ou salon non trouvé
+  if (error || !salonData) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <h2 className="text-xl font-semibold mb-4">Salon non trouvé</h2>
+        <p className="text-gray-600 mb-6">Ce salon n'existe pas ou a été supprimé.</p>
+        <Button onClick={() => setLocation('/salon-search-complete')}>
+          Retour à la recherche
+        </Button>
+      </div>
+    );
+  }
+  
+  console.log('🏪 Données salon récupérées:', salonData.name, 'ID:', salonId);
   const [serviceCategories, setServiceCategories] = useState([
     {
       id: 1,
@@ -259,7 +314,7 @@ export default function ModernSalonDetail() {
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
-              onClick={() => window.history.back()}
+              onClick={() => setLocation('/salon-search-complete')}
               className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -284,8 +339,8 @@ export default function ModernSalonDetail() {
 
           <div className="px-4 pt-14 pb-6 relative z-10">
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-lg font-medium text-gray-900">{salon.name}</h1>
-              {salon.verified && (
+              <h1 className="text-lg font-medium text-gray-900">{salonData.name}</h1>
+              {salonData.verified && (
                 <div className="flex items-center gap-1 text-xs text-violet-700 bg-violet-50 px-2 py-1 rounded-full border border-violet-200">
                   <div className="w-1 h-1 bg-green-500 rounded-full"></div>
                   <span>Certifié</span>
@@ -293,24 +348,29 @@ export default function ModernSalonDetail() {
               )}
             </div>
             
-            <p className="text-gray-600 text-sm mb-3">{salon.subtitle}</p>
+            <p className="text-gray-600 text-sm mb-3">{salonData.description || 'Salon de beauté professionnel'}</p>
             
             <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
               <div className="flex items-center gap-1">
                 <Star className="w-3 h-3 text-amber-400" />
-                <span className="text-gray-900 font-medium text-sm">{salon.rating}</span>
-                <span className="text-gray-500 text-xs">({salon.reviews})</span>
+                <span className="text-gray-900 font-medium text-sm">{salonData.rating || 4.5}</span>
+                <span className="text-gray-500 text-xs">({salonData.reviewCount || salonData.reviews || 0})</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-gray-400" />
-                <span className="text-gray-600 text-xs">Paris 16ème</span>
+                <span className="text-gray-600 text-xs">{salonData.city || salonData.location || 'Paris'}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-1">
-              {salon.certifications.map((cert, idx) => (
-                <div key={idx} className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200">
-                  {cert}
+              {salonData.verified && (
+                <div className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200">
+                  Salon vérifié
+                </div>
+              )}
+              {salonData.serviceCategories && salonData.serviceCategories.slice(0, 2).map((category: any, idx: number) => (
+                <div key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded border border-blue-200">
+                  {category.name || category}
                 </div>
               ))}
             </div>

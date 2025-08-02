@@ -222,12 +222,9 @@ export default function SalonSearchComplete() {
                 key={salon.id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                 onClick={() => {
-                  // Rediriger tous les salons vers la nouvelle page ModernSalonDetail
-                  if (salon.id === 'salon-demo' || salon.name === 'Alicia') {
-                    setLocation('/salon/auto-generated');
-                  } else {
-                    setLocation(`/salon/${salon.id}`);
-                  }
+                  // Rediriger vers la page dynamique du salon avec son ID
+                  console.log('🔗 Redirection vers salon:', salon.id, salon.name);
+                  setLocation(`/salon/${salon.id}`);
                 }}
               >
                 {/* Photo du salon en haut */}
@@ -318,7 +315,7 @@ export default function SalonSearchComplete() {
                         const primary = salon.customColors?.primary || '#8B5CF6';
                         // Assombrir la couleur au hover
                         const darkerColor = primary.replace('#', '').match(/.{2}/g)
-                          ?.map(hex => Math.max(0, parseInt(hex, 16) - 30).toString(16).padStart(2, '0'))
+                          ?.map((hex: string) => Math.max(0, parseInt(hex, 16) - 30).toString(16).padStart(2, '0'))
                           .join('');
                         e.currentTarget.style.backgroundColor = '#' + (darkerColor || '7C3AED');
                       }}
