@@ -496,19 +496,19 @@ export default function SalonPageEditor() {
                             {!isEditing ? (
                               <Button 
                                 size="sm" 
-                                className="mt-2 glass-button-custom relative overflow-hidden"
+                                className="mt-2 glass-button-custom"
                                 style={{
                                   background: `linear-gradient(135deg, 
-                                    color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 25%, rgba(255, 255, 255, 0.25)) 0%, 
-                                    color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.1)) 100%)`,
-                                  backdropFilter: 'blur(15px) saturate(180%)',
-                                  WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                                  border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, rgba(255, 255, 255, 0.2))`,
+                                    color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 8%, rgba(255, 255, 255, 0.25)) 0%, 
+                                    color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 4%, rgba(255, 255, 255, 0.05)) 100%)`,
+                                  backdropFilter: 'blur(20px) saturate(180%)',
+                                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                                  border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.15))`,
                                   boxShadow: `
-                                    0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(0, 0, 0, 0.1)),
-                                    inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                                    0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, rgba(0, 0, 0, 0.1)),
+                                    inset 0 1px 0 rgba(255, 255, 255, 0.3)
                                   `,
-                                  color: salonData.customColors?.buttonText || '#000000',
+                                  color: '#000000',
                                   fontWeight: '500'
                                 } as React.CSSProperties}
                                 onClick={() => setLocation('/salon-booking')}
@@ -752,33 +752,33 @@ export default function SalonPageEditor() {
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
                     <button
-                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom relative overflow-hidden"
+                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom"
                       style={{
                         background: `linear-gradient(135deg, 
-                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 25%, rgba(255, 255, 255, 0.25)) 0%, 
-                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.1)) 100%)`,
-                        backdropFilter: 'blur(15px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, rgba(255, 255, 255, 0.2))`,
+                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 8%, rgba(255, 255, 255, 0.25)) 0%, 
+                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 4%, rgba(255, 255, 255, 0.08)) 100%)`,
+                        backdropFilter: 'blur(20px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.15))`,
                         boxShadow: `
-                          0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(0, 0, 0, 0.1)),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                          0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, rgba(0, 0, 0, 0.1)),
+                          inset 0 1px 0 rgba(255, 255, 255, 0.3)
                         `,
-                        color: salonData.customColors?.buttonText || '#000000'
+                        color: '#000000'
                       }}
                     >
                       Réserver maintenant
                     </button>
                     <button
-                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom relative overflow-hidden"
+                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%)',
-                        backdropFilter: 'blur(15px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, rgba(255, 255, 255, 0.2))`,
+                        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 100%)',
+                        backdropFilter: 'blur(20px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.15))`,
                         boxShadow: `
                           0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, rgba(0, 0, 0, 0.1)),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                          inset 0 1px 0 rgba(255, 255, 255, 0.3)
                         `,
                         color: salonData.customColors?.primary || '#f59e0b'
                       }}
@@ -786,19 +786,19 @@ export default function SalonPageEditor() {
                       Voir les avis
                     </button>
                     <button
-                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom relative overflow-hidden"
+                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
                       style={{
                         background: `linear-gradient(135deg, 
-                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 25%, rgba(255, 255, 255, 0.25)) 0%, 
-                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.1)) 100%)`,
-                        backdropFilter: 'blur(15px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, rgba(255, 255, 255, 0.2))`,
+                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 8%, rgba(255, 255, 255, 0.25)) 0%, 
+                          color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 4%, rgba(255, 255, 255, 0.08)) 100%)`,
+                        backdropFilter: 'blur(20px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.15))`,
                         boxShadow: `
-                          0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(0, 0, 0, 0.1)),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.4)
+                          0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, rgba(0, 0, 0, 0.1)),
+                          inset 0 1px 0 rgba(255, 255, 255, 0.3)
                         `,
-                        color: salonData.customColors?.buttonText || '#000000'
+                        color: '#000000'
                       }}
                     >
                       Réserver
@@ -860,19 +860,19 @@ export default function SalonPageEditor() {
           borderTop: '1px solid rgba(255, 255, 255, 0.2)'
         }}>
           <Button 
-            className="w-full py-3 text-lg font-semibold rounded-xl glass-button-custom relative overflow-hidden"
+            className="w-full py-3 text-lg font-semibold rounded-xl glass-button-custom"
             style={{
               background: `linear-gradient(135deg, 
-                color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, rgba(255, 255, 255, 0.25)) 0%, 
-                color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 20%, rgba(255, 255, 255, 0.1)) 100%)`,
-              backdropFilter: 'blur(15px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-              border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, rgba(255, 255, 255, 0.2))`,
+                color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, rgba(255, 255, 255, 0.25)) 0%, 
+                color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 5%, rgba(255, 255, 255, 0.08)) 100%)`,
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 20%, rgba(255, 255, 255, 0.15))`,
               boxShadow: `
-                0 12px 40px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 20%, rgba(0, 0, 0, 0.15)),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5)
+                0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(0, 0, 0, 0.1)),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3)
               `,
-              color: salonData.customColors?.buttonText || '#000000'
+              color: '#000000'
             } as React.CSSProperties}
             onClick={() => setLocation('/salon-booking')}
           >
