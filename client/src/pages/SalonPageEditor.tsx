@@ -22,7 +22,9 @@ import {
   Upload,
   X,
   Plus,
-  Trash2
+  Trash2,
+  Heart,
+  Share2
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { getGenericGlassButton } from '@/lib/salonColors';
@@ -496,7 +498,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50/30 to-purple-100/20 backdrop-blur-sm">
       <div className="max-w-lg mx-auto glass-card shadow-lg">
-        {/* Header avec boutons d'action */}
+        {/* Header identique à la recherche publique */}
         <div className="sticky top-0 z-50 glass-button border-b border-white/20">
           <div className="flex items-center justify-between p-4">
             <Button
@@ -507,7 +509,25 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
+            
             <div className="flex items-center gap-2">
+              {/* Boutons publics : favoris et partage */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="glass-button text-black rounded-xl"
+              >
+                <Heart className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="glass-button text-black rounded-xl"
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+              
+              {/* Boutons d'édition (seulement pour le propriétaire) */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -515,7 +535,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 className={`glass-button text-black rounded-xl ${isEditing ? 'bg-pink-100/50' : ''}`}
               >
                 <Edit3 className="w-4 h-4 mr-1" />
-                {isEditing ? 'Mode Aperçu' : 'Modifier'}
+                {isEditing ? 'Aperçu' : 'Modifier'}
               </Button>
               {isEditing && (
                 <Button
@@ -532,24 +552,37 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           </div>
         </div>
 
-        {/* Photo de couverture éditable */}
-        <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
+        {/* Photo de couverture - identique à la recherche publique */}
+        <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
           {salonData.coverImageUrl ? (
             <img 
               src={salonData.coverImageUrl} 
               alt="Photo de couverture" 
-              className="w-full h-full object-cover" 
+              className="absolute inset-0 w-full h-full object-cover" 
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center border-2 border-dashed border-gray-300">
-              <div className="text-center text-gray-500">
-                <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                <p className="text-sm">Photo de couverture</p>
-                <p className="text-xs">Cliquez pour ajouter</p>
+            <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-pink-400 flex items-center justify-center">
+              <div className="text-center text-white">
+                <h1 className="text-xl font-bold">{salonData.name}</h1>
               </div>
             </div>
           )}
+          <div className="absolute inset-0 bg-black bg-opacity-10"></div>
           
+          {/* Badges sur la photo - comme dans la recherche */}
+          <div className="absolute top-3 left-3 flex gap-2">
+            {salonData.verified && (
+              <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                <CheckCircle className="h-3 w-3 inline mr-1" />
+                Vérifié
+              </span>
+            )}
+            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+              Ouvert
+            </span>
+          </div>
+          
+          {/* Boutons d'édition photo (overlay en mode édition) */}
           {isEditing && (
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
               <div className="flex gap-2">
@@ -580,73 +613,87 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
           )}
         </div>
 
-        {/* Informations du salon */}
-        <div className="p-4 space-y-4">
-          {/* Nom du salon */}
-          <div>
-            {isEditing ? (
-              <Input
-                value={salonData.name}
-                onChange={(e) => updateField('name', e.target.value)}
-                className="text-xl font-bold glass-input text-gray-900"
-                placeholder="Nom du salon"
-              />
-            ) : (
-              <h1 className="text-xl font-bold text-gray-900">{salonData.name}</h1>
-            )}
-            <div className="flex items-center gap-1 mt-1">
-              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-              <span className="text-yellow-600 font-medium">{salonData.rating}</span>
-              <span className="text-gray-500">({salonData.reviews} avis)</span>
-              {salonData.verified && (
-                <CheckCircle className="w-4 h-4 text-blue-500 ml-2" />
+        {/* Informations du salon - comme dans la recherche publique */}
+        <div className="p-4">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex-1">
+              {isEditing ? (
+                <Input
+                  value={salonData.name}
+                  onChange={(e) => updateField('name', e.target.value)}
+                  className="text-lg font-semibold glass-input text-gray-900 mb-1"
+                  placeholder="Nom du salon"
+                />
+              ) : (
+                <h4 className="font-semibold text-gray-900 text-lg mb-1">{salonData.name}</h4>
               )}
-            </div>
-          </div>
-
-          {/* Description courte */}
-          <div>
-            {isEditing ? (
-              <Textarea
-                value={salonData.description}
-                onChange={(e) => updateField('description', e.target.value)}
-                className="glass-input text-gray-900 text-sm"
-                placeholder="Description courte du salon"
-                rows={2}
-              />
-            ) : (
-              <p className="text-gray-600 text-sm">{salonData.description}</p>
-            )}
-          </div>
-
-          {/* Adresse et téléphone */}
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2 text-gray-600">
-              <MapPin className="w-4 h-4" />
+              
               {isEditing ? (
                 <Input
                   value={salonData.address}
                   onChange={(e) => updateField('address', e.target.value)}
-                  className="glass-input text-gray-900 text-sm"
-                  placeholder="Adresse"
+                  className="glass-input text-gray-500 text-sm"
+                  placeholder="Localisation"
                 />
               ) : (
-                <span>{salonData.address}</span>
+                <p className="text-sm text-gray-500 mb-2">{salonData.address}</p>
               )}
             </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <Phone className="w-4 h-4" />
-              {isEditing ? (
-                <Input
-                  value={salonData.phone}
-                  onChange={(e) => updateField('phone', e.target.value)}
-                  className="glass-input text-gray-900 text-sm"
-                  placeholder="Téléphone"
-                />
-              ) : (
-                <span>{salonData.phone}</span>
-              )}
+            <span className="text-sm text-gray-600 font-medium">dès 25€</span>
+          </div>
+          
+          {/* Note et distance - comme dans la recherche */}
+          <div className="flex items-center gap-3 mb-3">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-sm font-semibold">{salonData.rating}</span>
+              <span className="text-sm text-gray-500">({salonData.reviews} avis)</span>
             </div>
+            <span className="text-sm text-gray-500">• 500m</span>
+          </div>
+          
+          {/* Services - comme dans la recherche */}
+          <div className="flex flex-wrap gap-1 mb-3">
+            {salonData.serviceCategories.slice(0, 3).map((category) => (
+              <span key={category.id} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                {category.name}
+              </span>
+            ))}
+          </div>
+          
+          {/* Description */}
+          {isEditing ? (
+            <Textarea
+              value={salonData.description}
+              onChange={(e) => updateField('description', e.target.value)}
+              className="glass-input text-gray-900 text-sm mb-3"
+              placeholder="Description courte du salon"
+              rows={2}
+            />
+          ) : (
+            <p className="text-gray-600 text-sm mb-3">{salonData.description}</p>
+          )}
+          
+          {/* Disponibilité et bouton réserver - comme dans la recherche */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-green-600 font-medium">
+                Dispo maintenant
+              </span>
+            </div>
+            <Button
+              className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+              style={{ backgroundColor: salonData.customColors?.primary }}
+              onClick={() => {
+                if (!isEditing) {
+                  // Redirection vers réservation en mode public
+                  console.log('Redirection vers réservation');
+                }
+              }}
+            >
+              Réserver
+            </Button>
           </div>
         </div>
 
