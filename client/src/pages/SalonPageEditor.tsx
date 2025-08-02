@@ -499,15 +499,15 @@ export default function SalonPageEditor() {
                                 className="mt-2"
                                 style={{
                                   background: salonData.customColors?.primary 
-                                    ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.1) 100%)`
-                                    : 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%)',
-                                  backdropFilter: 'blur(12px)',
-                                  WebkitBackdropFilter: 'blur(12px)',
-                                  border: 'none',
+                                    ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
+                                    : 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                                  backdropFilter: 'blur(20px)',
+                                  WebkitBackdropFilter: 'blur(20px)',
+                                  border: '1px solid rgba(255, 255, 255, 0.3)',
                                   boxShadow: salonData.customColors?.primary 
-                                    ? `0 6px 20px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.4)`
-                                    : '0 6px 20px rgba(168, 85, 247, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.4)',
-                                  color: '#000000',
+                                    ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)`
+                                    : '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                                  color: '#ffffff',
                                   fontWeight: '600',
                                   borderRadius: '0.75rem'
                                 }}
@@ -755,15 +755,15 @@ export default function SalonPageEditor() {
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
                         background: salonData.customColors?.primary 
-                          ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.16) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.1) 100%)`
-                          : 'linear-gradient(135deg, rgba(168, 85, 247, 0.16) 0%, rgba(139, 92, 246, 0.1) 100%)',
-                        backdropFilter: 'blur(15px)',
-                        WebkitBackdropFilter: 'blur(15px)',
-                        border: 'none',
+                          ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
+                          : 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
                         boxShadow: salonData.customColors?.primary 
-                          ? `0 6px 20px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.4)`
-                          : '0 6px 20px rgba(168, 85, 247, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.4)',
-                        color: '#000000',
+                          ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)`
+                          : '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                        color: '#ffffff',
                         fontWeight: '600'
                       }}
                     >
@@ -785,16 +785,16 @@ export default function SalonPageEditor() {
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
                       style={{
                         background: salonData.customColors?.primary 
-                          ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.14) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.08) 100%)`
-                          : 'linear-gradient(135deg, rgba(168, 85, 247, 0.14) 0%, rgba(139, 92, 246, 0.08) 100%)',
-                        backdropFilter: 'blur(12px)',
-                        WebkitBackdropFilter: 'blur(12px)',
-                        border: 'none',
+                          ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
+                          : 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
                         boxShadow: salonData.customColors?.primary 
-                          ? `0 4px 15px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3)`
-                          : '0 4px 15px rgba(168, 85, 247, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                        color: '#000000',
-                        fontWeight: '500'
+                          ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)`
+                          : '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                        color: '#ffffff',
+                        fontWeight: '600'
                       }}
                     >
                       Réserver
@@ -859,15 +859,15 @@ export default function SalonPageEditor() {
             className="w-full py-3 text-lg font-semibold rounded-xl px-6"
             style={{
               background: salonData.customColors?.primary 
-                ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.18) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.12) 100%)`
-                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(139, 92, 246, 0.12) 100%)',
+                ? `linear-gradient(135deg, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 0%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.3) 50%, rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4) 100%)`
+                : 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              border: 'none',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
               boxShadow: salonData.customColors?.primary 
-                ? `0 8px 30px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.12), inset 0 2px 0 rgba(255, 255, 255, 0.4)`
-                : '0 8px 30px rgba(168, 85, 247, 0.12), inset 0 2px 0 rgba(255, 255, 255, 0.4)',
-              color: '#000000',
+                ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)`
+                : '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+              color: '#ffffff',
               fontWeight: '600'
             }}
             onClick={() => setLocation('/salon-booking')}
