@@ -33,13 +33,13 @@ interface ServiceCategory {
   services: Service[];
 }
 
-export default function NailArtOpera() {
+export default function SalonExcellenceParis() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   
   // RÉCUPÉRER LES VRAIES DONNÉES UNIQUES DEPUIS L'API
   const { data: salonData, isLoading } = useQuery({
-    queryKey: ['/api/booking-pages', 'nail-art-opera'],
+    queryKey: ['/api/booking-pages', 'salon-excellence-paris'],
     retry: 2,
     refetchOnWindowFocus: false,
     staleTime: 30000
@@ -47,21 +47,21 @@ export default function NailArtOpera() {
 
   // Données de fallback pendant le chargement
   const fallbackData = {
-    id: 'nail-art-opera',
-    name: 'Nail Art Opéra',
-    rating: 4.6,
-    reviews: 198,
-    address: '12 Avenue de l\'Opéra, 75009 Paris',
-    phone: '01 42 96 15 78',
+    id: 'salon-excellence-paris',
+    name: 'Excellence Hair Paris',
+    rating: 4.8,
+    reviews: 347,
+    address: '45 Avenue des Champs-Élysées, 75008 Paris',
+    phone: '01 42 65 78 90',
     verified: true,
-    certifications: ['Ongles français certifiés', 'Nail art professionnel', 'Produits OPI premium'],
-    awards: ['Meilleur nail art 2024', 'Prix créativité ongles', 'Institut de référence Opéra'],
-    longDescription: 'Nail Art Opéra vous propose des prestations d\'onglerie haut de gamme près de l\'Opéra. Nos techniciennes expertes créent des nail arts uniques et proposent tous les soins d\'ongles avec les meilleures marques professionnelles.',
-    coverImageUrl: 'https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    certifications: ['Certifié L\'Oréal Professionnel', 'Salon de coiffure agréé', 'Formation continue équipe'],
+    awards: ['Meilleur salon Champs-Élysées 2024', 'Excellence service client', 'Prix innovation coiffure'],
+    longDescription: 'Excellence Hair Paris vous accueille dans un cadre luxueux au cœur des Champs-Élysées. Notre équipe de coiffeurs experts vous propose des services haut de gamme avec les dernières tendances et techniques de coiffure. Spécialisés dans la coiffure femme, nous offrons également des soins capillaires personnalisés.',
+    coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
     photos: [
-      'https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1632345031435-8727f6897d53?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1610992015463-b6dd7f65e445?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+      'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ]
   };
 
@@ -73,40 +73,33 @@ export default function NailArtOpera() {
     if (salonData?.serviceCategories && salonData.serviceCategories.length > 0) {
       return salonData.serviceCategories.map((cat, index) => ({
         ...cat,
-        expanded: index === 0,
+        expanded: index === 0, // Premier onglet ouvert par défaut
       }));
     }
     
+    // Services de fallback si pas de données API
     return [
       {
         id: 1,
-        name: 'Manucure',
+        name: 'Coiffure Femme',
         expanded: true,
         services: [
-          { id: 1, name: 'Manucure Simple', price: 25, duration: '30min', description: 'Soin des ongles et pose vernis' },
-          { id: 2, name: 'Manucure French', price: 35, duration: '45min', description: 'Manucure française classique' },
-          { id: 3, name: 'Manucure Gel', price: 45, duration: '1h', description: 'Pose vernis gel longue tenue' },
-          { id: 4, name: 'Manucure + Nail Art', price: 55, duration: '1h15', description: 'Manucure avec décoration personnalisée' }
+          { id: 1, name: 'Coupe + Brushing', price: 85, duration: '1h15', description: 'Coupe personnalisée selon votre morphologie + brushing' },
+          { id: 2, name: 'Coupe + Couleur', price: 150, duration: '2h30', description: 'Coupe + coloration complète avec produits L\'Oréal' },
+          { id: 3, name: 'Coupe + Mèches', price: 180, duration: '3h', description: 'Coupe + mèches techniques (balayage, ombré)' },
+          { id: 4, name: 'Brushing Seul', price: 45, duration: '45min', description: 'Brushing professionnel avec finition laque' },
+          { id: 5, name: 'Chignon/Coiffure Mariée', price: 120, duration: '1h30', description: 'Coiffure événementielle sur-mesure' }
         ]
       },
       {
         id: 2,
-        name: 'Pédicure',
+        name: 'Coloration',
         expanded: false,
         services: [
-          { id: 5, name: 'Pédicure Classique', price: 35, duration: '45min', description: 'Soin complet des pieds' },
-          { id: 6, name: 'Pédicure Spa', price: 50, duration: '1h', description: 'Pédicure avec bain relaxant' },
-          { id: 7, name: 'Pédicure Gel', price: 55, duration: '1h15', description: 'Pédicure avec vernis gel' }
-        ]
-      },
-      {
-        id: 3,
-        name: 'Extensions & Nail Art',
-        expanded: false,
-        services: [
-          { id: 8, name: 'Pose Capsules', price: 65, duration: '1h30', description: 'Extensions ongles avec capsules' },
-          { id: 9, name: 'Nail Art Premium', price: 75, duration: '1h45', description: 'Création artistique sur ongles' },
-          { id: 10, name: 'Déco Strass', price: 15, duration: '15min', description: 'Décoration avec strass (en supplément)' }
+          { id: 6, name: 'Coloration Racines', price: 75, duration: '1h30', description: 'Retouche racines couleur existante' },
+          { id: 7, name: 'Coloration Complète', price: 95, duration: '2h', description: 'Coloration intégrale avec shampooing soin' },
+          { id: 8, name: 'Balayage Californien', price: 160, duration: '3h', description: 'Technique balayage pour effet naturel' },
+          { id: 9, name: 'Ombré Hair', price: 140, duration: '2h30', description: 'Dégradé de couleur tendance' }
         ]
       }
     ];
@@ -125,13 +118,13 @@ export default function NailArtOpera() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header avec photo de couverture */}
-      <div className="relative h-64 bg-gradient-to-br from-pink-400 to-rose-500">
+      <div className="relative h-64 bg-gradient-to-br from-violet-400 to-purple-500">
         <img 
-          src={displayData.coverImageUrl || displayData.photos?.[0] || 'https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
+          src={displayData.coverImageUrl || displayData.photos?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'} 
           alt={displayData.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-25"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         
         {/* Bouton retour */}
         <button 
@@ -155,12 +148,12 @@ export default function NailArtOpera() {
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold">{displayData.rating || 4.6}</span>
-              <span className="opacity-80">({displayData.reviewCount || displayData.reviews || 198} avis)</span>
+              <span className="font-semibold">{displayData.rating || 4.8}</span>
+              <span className="opacity-80">({displayData.reviewCount || displayData.reviews || 347} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
-              <span className="opacity-80">Opéra</span>
+              <span className="opacity-80">Champs-Élysées</span>
             </div>
           </div>
         </div>
@@ -179,7 +172,7 @@ export default function NailArtOpera() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'text-pink-600 border-b-2 border-pink-600'
+                  ? 'text-violet-600 border-b-2 border-violet-600'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -228,7 +221,7 @@ export default function NailArtOpera() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 bg-pink-600 hover:bg-pink-700"
+                              className="mt-2 bg-violet-600 hover:bg-violet-700"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver
@@ -262,7 +255,7 @@ export default function NailArtOpera() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-gray-400" />
-                    <span>Lun-Sam: 10h-19h • Dim: 11h-18h</span>
+                    <span>Lun-Sam: 9h-19h • Dim: 10h-18h</span>
                   </div>
                 </div>
               </CardContent>
@@ -270,11 +263,11 @@ export default function NailArtOpera() {
 
             <Card>
               <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-4">Expertise Nail Art</h3>
+                <h3 className="font-semibold text-lg mb-4">Certifications & Récompenses</h3>
                 <div className="space-y-3">
                   {(displayData.certifications || fallbackData.certifications).map((cert, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <Award className="h-4 w-4 text-pink-500" />
+                      <Award className="h-4 w-4 text-amber-500" />
                       <span className="text-sm">{cert}</span>
                     </div>
                   ))}
@@ -284,7 +277,7 @@ export default function NailArtOpera() {
                   <h4 className="font-medium mb-3">Récompenses</h4>
                   <div className="flex flex-wrap gap-2">
                     {(displayData.awards || fallbackData.awards).map((award, index) => (
-                      <Badge key={index} variant="secondary" className="bg-pink-100 text-pink-800">
+                      <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
                         {award}
                       </Badge>
                     ))}
@@ -300,10 +293,10 @@ export default function NailArtOpera() {
             <div className="text-center py-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">
-                {displayData.rating || 4.6}/5 étoiles
+                {displayData.rating || 4.8}/5 étoiles
               </h3>
               <p className="text-gray-600">
-                Basé sur {displayData.reviewCount || displayData.reviews || 198} avis clients
+                Basé sur {displayData.reviewCount || displayData.reviews || 347} avis clients
               </p>
             </div>
             
@@ -311,20 +304,20 @@ export default function NailArtOpera() {
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
-                    <User className="h-5 w-5 text-pink-600" />
+                  <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-violet-600" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium">Emma K.</span>
+                      <span className="font-medium">Marie L.</span>
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
                           <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                         ))}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">Il y a 4 jours</p>
-                    <p className="text-sm">"Un travail exceptionnel ! Le nail art réalisé était exactement ce que je voulais. L'équipe est très créative et professionnelle. Je recommande vivement !"</p>
+                    <p className="text-sm text-gray-600 mb-2">Il y a 2 jours</p>
+                    <p className="text-sm">"Excellent service ! Ma coiffeuse a parfaitement compris ce que je voulais. Le salon est magnifique et très propre. Je recommande vivement !"</p>
                   </div>
                 </div>
               </CardContent>
@@ -336,7 +329,7 @@ export default function NailArtOpera() {
       {/* Bouton réservation fixe en bas */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
-          className="w-full bg-pink-600 hover:bg-pink-700 text-white py-3"
+          className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3"
           onClick={() => setLocation('/salon-booking')}
         >
           Réserver maintenant

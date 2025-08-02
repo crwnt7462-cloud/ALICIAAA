@@ -161,8 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: 'test-pro-user',
           email: 'test@monapp.com',
           firstName: 'Salon',
-          lastName: 'Demo',
-          businessName: 'Salon Demo',
+          lastName: 'Excellence',
+          businessName: 'Salon Excellence Paris',
           handle: '@usemyrr',
           role: 'professional',
           userType: 'professional'
@@ -384,7 +384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Simuler récupération de la page salon actuelle
       const currentPage = {
         id: 'salon-test-pro-user',
-        salonName: 'Salon Demo',
+        salonName: 'Salon Excellence Paris',
         salonDescription: 'Salon de beauté professionnel situé au cœur de Paris. Spécialisé en coiffure, soins esthétiques et bien-être.',
         salonAddress: '123 Avenue des Champs-Élysées, 75008 Paris',
         salonPhone: '01 42 25 76 88',
@@ -579,7 +579,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allSalons = [
         {
           id: 'salon-1',
-          name: 'Salon Demo Paris',
+          name: 'Salon Excellence Paris',
           category: 'coiffure',
           address: '15 Avenue des Champs-Élysées, 75008 Paris',
           rating: 4.8,
@@ -878,7 +878,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const testUsers = [
         {
           id: 'test-pro-user',
-          name: 'Salon Demo Paris',
+          name: 'Salon Excellence Paris',
           handle: '@usemyrr',
           userType: 'pro',
           isOnline: true,

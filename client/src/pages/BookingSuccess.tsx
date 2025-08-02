@@ -19,7 +19,7 @@ export default function BookingSuccess() {
   const bookingDetails = {
     professional: 'Sarah Martinez',
     service: 'Coiffure & Coloration',
-    salon: 'Mon Salon de Beauté',
+    salon: 'Salon Excellence Paris',
     date: '25 Janvier 2025',
     time: '14:00',
     duration: '90 min',

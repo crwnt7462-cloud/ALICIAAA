@@ -165,7 +165,7 @@ export default function SalonBookingFlow() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div className="text-center">
-              <h1 className="text-lg font-bold text-gray-900">Réservation</h1>
+              <h1 className="text-lg font-bold text-gray-900">Salon Excellence Paris</h1>
               <p className="text-sm text-gray-600">Réservation</p>
             </div>
             <div className="w-10" />

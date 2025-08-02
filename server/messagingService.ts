@@ -170,7 +170,7 @@ class MessagingService {
       'Marie Dupont',
       'pro_1',
       'professional',
-      'Salon Demo',
+      'Salon Excellence',
       'Bonjour, je souhaiterais prendre rendez-vous pour une coupe et couleur. Avez-vous des créneaux disponibles cette semaine ?'
     );
 
@@ -178,7 +178,7 @@ class MessagingService {
     this.sendMessage(
       'pro_1',
       'professional',
-      'Salon Demo',
+      'Salon Excellence',
       'client_1',
       'client',
       'Marie Dupont',
@@ -192,7 +192,7 @@ class MessagingService {
       'Marie Dupont',
       'pro_1',
       'professional',
-      'Salon Demo',
+      'Salon Excellence',
       'Parfait ! Je préfère mardi à 14h. Combien de temps faut-il prévoir pour la prestation complète ?'
     );
 

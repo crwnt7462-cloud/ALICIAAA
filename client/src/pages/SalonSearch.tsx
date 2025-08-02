@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -39,73 +38,81 @@ export default function SalonSearch() {
     if (q || location) setShowResults(true);
   }, []);
 
-  // Récupérer les salons depuis l'API PostgreSQL
-  const { data: apiSalons, isLoading } = useQuery({
-    queryKey: ['/api/search/salons', searchQuery, locationQuery, activeFilter],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      if (searchQuery) params.set('category', searchQuery.toLowerCase());
-      if (locationQuery) params.set('city', locationQuery.toLowerCase());
-      
-      const response = await fetch(`/api/search/salons?${params.toString()}`);
-      const data = await response.json();
-      
-      // Adapter les données de l'API pour correspondre à l'interface SalonSearch
-      const adaptedSalons = (data.salons || []).map((salon: any) => ({
-        id: salon.id,
-        name: salon.name,
-        location: salon.location || salon.address || 'Paris',
-        rating: salon.rating || 4.5,
-        reviews: salon.reviews || 150,
-        nextSlot: salon.nextSlot || "16:00",
-        price: salon.priceRange || "€€",
-        services: salon.services || ["Service beauté"],
-        verified: salon.verified || true,
-        distance: salon.distance || "1.5km",
-        category: salon.name?.includes('Coiffure') ? 'coiffure' : 
-                 salon.name?.includes('Barbier') ? 'barbier' :
-                 salon.name?.includes('Institut') || salon.name?.includes('Beauté') ? 'esthetique' :
-                 salon.name?.includes('Spa') || salon.name?.includes('Wellness') ? 'massage' :
-                 salon.name?.includes('Nail') ? 'onglerie' : 'beaute',
-        image: salon.name?.includes('Coiffure') ? '✂️' : 
-               salon.name?.includes('Barbier') ? '🧔' : 
-               salon.name?.includes('Institut') || salon.name?.includes('Beauté') ? '✨' : 
-               salon.name?.includes('Spa') || salon.name?.includes('Wellness') ? '🧘‍♀️' :
-               salon.name?.includes('Nail') ? '💅' : '💄'
-      }));
-      
-      return adaptedSalons;
+  const salons = [
+    {
+      id: "salon-1",
+      name: "Salon Excellence Paris",
+      location: "Champs-Élysées, Paris 8ème",
+      rating: 4.9,
+      reviews: 324,
+      nextSlot: "15:30",
+      price: "€€€",
+      services: ["Coupe", "Coloration"],
+      verified: true,
+      distance: "800m",
+      category: "coiffure",
+      image: "💇‍♀️"
     },
-    refetchOnWindowFocus: false
-  });
-
-  const salons = apiSalons || [];
+    {
+      id: "salon-2", 
+      name: "Institut Beauté Marais",
+      location: "Le Marais, Paris 4ème",
+      rating: 4.8,
+      reviews: 198,
+      nextSlot: "16:00", 
+      price: "€€",
+      services: ["Soins visage", "Épilation"],
+      verified: true,
+      distance: "1.2km",
+      category: "esthetique",
+      image: "✨"
+    },
+    {
+      id: "salon-3",
+      name: "Spa Wellness",
+      location: "Saint-Germain, Paris 6ème",
+      rating: 4.7,
+      reviews: 156,
+      nextSlot: "17:00",
+      price: "€€€€",
+      services: ["Massage", "Hammam"],
+      verified: true,
+      distance: "2.1km",
+      category: "massage",
+      image: "🧘‍♀️"
+    },
+    {
+      id: "salon-4",
+      name: "Nail Art Studio",
+      location: "Opéra, Paris 9ème",
+      rating: 4.6,
+      reviews: 89,
+      nextSlot: "14:45",
+      price: "€€",
+      services: ["Manucure", "Pose gel"],
+      verified: true,
+      distance: "1.8km", 
+      category: "onglerie",
+      image: "💅"
+    }
+  ];
 
   const categories = [
     { id: "all", name: "Tout", count: salons.length },
-    { id: "coiffure", name: "Coiffure", count: salons.filter((s: any) => s.category === 'coiffure' || s.name?.includes('Coiffure')).length },
-    { id: "barbier", name: "Barbier", count: salons.filter((s: any) => s.category === 'barbier' || s.name?.includes('Barbier')).length },
-    { id: "esthetique", name: "Esthétique", count: salons.filter((s: any) => s.category === 'esthetique' || s.name?.includes('Beauté') || s.name?.includes('Institut')).length },
-    { id: "massage", name: "Massage", count: salons.filter((s: any) => s.category === 'massage' || s.name?.includes('Spa') || s.name?.includes('Wellness')).length },
-    { id: "onglerie", name: "Onglerie", count: salons.filter((s: any) => s.category === 'onglerie' || s.name?.includes('Nail')).length }
+    { id: "coiffure", name: "Coiffure", count: 1 },
+    { id: "esthetique", name: "Esthétique", count: 1 },
+    { id: "massage", name: "Massage", count: 1 },
+    { id: "onglerie", name: "Onglerie", count: 1 }
   ];
 
   const handleSearch = () => {
     console.log("Recherche:", searchQuery, locationQuery);
     setShowResults(true);
-    // La recherche se fait automatiquement via useQuery quand les paramètres changent
   };
 
   const filteredSalons = activeFilter === "all" 
     ? salons 
-    : salons.filter((salon: any) => {
-        if (activeFilter === 'coiffure') return salon.category === 'coiffure' || salon.name?.includes('Coiffure');
-        if (activeFilter === 'barbier') return salon.category === 'barbier' || salon.name?.includes('Barbier');
-        if (activeFilter === 'esthetique') return salon.category === 'esthetique' || salon.name?.includes('Beauté') || salon.name?.includes('Institut');
-        if (activeFilter === 'massage') return salon.category === 'massage' || salon.name?.includes('Spa') || salon.name?.includes('Wellness');
-        if (activeFilter === 'onglerie') return salon.category === 'onglerie' || salon.name?.includes('Nail');
-        return salon.category === activeFilter;
-      });
+    : salons.filter(salon => salon.category === activeFilter);
 
   return (
     <div className="min-h-screen bg-white">
@@ -205,7 +212,7 @@ export default function SalonSearch() {
             </h2>
 
             <div className="space-y-3 pb-20">
-              {filteredSalons.map((salon: any) => (
+              {filteredSalons.map((salon) => (
                 <Card 
                   key={salon.id} 
                   className="border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all"

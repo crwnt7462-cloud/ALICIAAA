@@ -32,21 +32,79 @@ export default function SearchResults() {
 
   // 🔥 RECHERCHE SALONS TEMPS RÉEL depuis l'API
   const { data: apiResults, isLoading } = useQuery({
-    queryKey: ['/api/search/salons', searchQuery, searchLocation],
+    queryKey: ['/api/public/salons', searchQuery, searchLocation],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.set('category', searchQuery.toLowerCase());
       if (searchLocation) params.set('city', searchLocation.toLowerCase());
       
-      const response = await fetch(`/api/search/salons?${params.toString()}`);
+      const response = await fetch(`/api/public/salons?${params.toString()}`);
       const data = await response.json();
-      return data.salons || [];
+      return data.success ? data.salons : [];
     },
     refetchOnWindowFocus: false
   });
 
-  // Utiliser directement les résultats de l'API PostgreSQL (salons réels uniquement)
-  const searchResults = apiResults || [];
+  // Combiner les résultats API avec des salons de démo
+  const searchResults = apiResults || [
+    {
+      id: "demo-user",
+      name: "Studio Élégance Paris",
+      rating: 4.8,
+      reviews: 247,
+      image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
+      location: "Paris 1er",
+      distance: "1.2 km",
+      nextSlot: "Aujourd'hui 14h30",
+      services: ["Coupe & Styling", "Coloration", "Soins Capillaires"],
+      priceRange: "€€€",
+      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Soins du visage'],
+      verified: true,
+      popular: true,
+      newClient: false,
+      responseTime: "2h",
+      awards: ["Prix Excellence 2024"]
+    },
+    {
+      id: "salon-2",
+      name: "Beauty Studio Emma",
+      rating: 4.9,
+      reviews: 189,
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
+      location: "Paris 12ème",
+      distance: "2.1 km",
+      nextSlot: "Demain 10h00",
+      services: ["Ongles", "Extensions", "Maquillage"],
+      priceRange: "€€€",
+      specialties: searchQuery.toLowerCase().includes('ongle') ? ['Ongles'] : ['Maquillage']
+    },
+    {
+      id: "salon-3",
+      name: "Wellness Center Spa",
+      rating: 4.7,
+      reviews: 156,
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
+      location: "Paris 8ème",
+      distance: "3.5 km",
+      nextSlot: "Aujourd'hui 16h00",
+      services: ["Massage", "Spa", "Relaxation"],
+      priceRange: "€€€€",
+      specialties: searchQuery.toLowerCase().includes('massage') ? ['Massage'] : ['Spa']
+    },
+    {
+      id: "salon-4",
+      name: "Coiffure Moderne",
+      rating: 4.6,
+      reviews: 203,
+      image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=200&fit=crop",
+      location: "Paris 11ème",
+      distance: "1.8 km",
+      nextSlot: "Demain 15h30",
+      services: ["Coiffure", "Barbier", "Coloration"],
+      priceRange: "€€",
+      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Barbier']
+    }
+  ];
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -56,11 +114,11 @@ export default function SearchResults() {
   };
 
   const filteredAndSortedResults = (searchResults || [])
-    .filter((salon: any) => {
+    .filter(salon => {
       if (priceRange !== 'all' && salon.priceRange !== priceRange) return false;
       return true;
     })
-    .sort((a: any, b: any) => {
+    .sort((a, b) => {
       switch (sortBy) {
         case 'rating':
           return b.rating - a.rating;
@@ -183,7 +241,7 @@ export default function SearchResults() {
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredAndSortedResults.map((salon: any) => (
+          {filteredAndSortedResults.map((salon) => (
             <Card 
               key={salon.id}
               className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
@@ -221,7 +279,7 @@ export default function SearchResults() {
                   </div>
 
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {salon.specialties?.map((specialty: string) => (
+                    {salon.specialties.map((specialty) => (
                       <span 
                         key={specialty}
                         className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium"
@@ -229,7 +287,7 @@ export default function SearchResults() {
                         {specialty}
                       </span>
                     ))}
-                    {salon.services?.slice(0, 2).map((service: string) => (
+                    {salon.services.slice(0, 2).map((service) => (
                       <span 
                         key={service}
                         className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"

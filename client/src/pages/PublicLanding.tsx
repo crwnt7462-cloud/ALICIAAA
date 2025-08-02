@@ -40,8 +40,8 @@ export default function PublicLanding() {
   // Salons ajoutés automatiquement lors de l'inscription pro
   const [topSalons, setTopSalons] = useState([
     {
-      id: "salon-moderne-republique",
-      name: "Salon Moderne République",
+      id: "salon-excellence",
+      name: "Salon Excellence Paris",
       location: "Paris 16ème",
       rating: 4.9,
       reviews: 324,
@@ -76,8 +76,8 @@ export default function PublicLanding() {
     const addNewProSalons = () => {
       const newSalons = [
         {
-          id: "beaute-champs-elysees",
-          name: "Beauté Champs-Élysées",
+          id: "mon-salon-beaute",
+          name: "Mon Salon de Beauté",
           location: "Paris Centre",
           rating: 4.8,
           reviews: 42,
@@ -683,16 +683,16 @@ export default function PublicLanding() {
           </div>
 
           <div className="space-y-4">
-            {/* Salon Tendance Marais */}
+            {/* Mon Salon de Beauté */}
             <div 
               className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/salon-tendance-marais')}
+              onClick={() => setLocation('/salon/mon-salon-beaute')}
             >
               {/* Photo du salon */}
               <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
                 <img 
                   src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
-                  alt="Salon Tendance Marais"
+                  alt="Mon Salon de Beauté"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-10"></div>
@@ -712,7 +712,7 @@ export default function PublicLanding() {
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Tendance Marais</h4>
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Mon Salon de Beauté</h4>
                     <p className="text-sm text-gray-500 mb-2">Paris Centre</p>
                   </div>
                   <span className="text-sm text-gray-600 font-medium">À partir de 35€</span>
@@ -759,7 +759,78 @@ export default function PublicLanding() {
               </div>
             </div>
 
-            {/* SUPPRIMÉ : Plus aucune référence à Excellence Paris */}
+            {/* Salon Excellence Paris */}
+            <div 
+              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              onClick={() => setLocation('/salon/salon-excellence-paris')}
+            >
+              {/* Photo du salon */}
+              <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
+                <img 
+                  src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=300&fit=crop"
+                  alt="Salon Excellence Paris"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence Paris</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris 16ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 55€</span>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.9</span>
+                    <span className="text-sm text-gray-500">(324 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 1.2 km</span>
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coiffure Premium
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coloration
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Soins
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 15h30
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* Beauty Institute Saint-Germain */}
             <div 

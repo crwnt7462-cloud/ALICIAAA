@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -26,41 +25,9 @@ import {
 } from "lucide-react";
 
 export default function ModernSalonDetail() {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
-  
-  // Extraire l'ID du salon depuis l'URL
-  const salonId = location.split('/salon/')[1];
-  
-  // Récupérer les données dynamiques du salon depuis l'API
-  const { data: salonData, isLoading, error } = useQuery({
-    queryKey: ['/api/salon-detail', salonId],
-    queryFn: async () => {
-      if (!salonId) throw new Error('Salon ID manquant');
-      
-      // D'abord essayer l'API publique 
-      try {
-        const response = await fetch(`/api/public/salon/${salonId}`);
-        if (response.ok) {
-          return response.json();
-        }
-      } catch (err) {
-        console.log('📍 API publique indisponible, essai API booking-pages...');
-      }
-      
-      // Fallback sur l'API booking-pages
-      const response = await fetch(`/api/booking-pages/${salonId}`);
-      if (!response.ok) {
-        throw new Error('Salon non trouvé');
-      }
-      return response.json();
-    },
-    enabled: !!salonId,
-    retry: 2
-  });
-  
-  console.log('🏪 Données salon récupérées:', salonData?.name, 'ID:', salonId);
   const [serviceCategories, setServiceCategories] = useState([
     {
       id: 1,
@@ -150,42 +117,23 @@ export default function ModernSalonDetail() {
     }
   ]);
 
-  // Si en cours de chargement
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-  
-  // Si erreur ou salon non trouvé
-  if (error || !salonData) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center">
-        <h2 className="text-xl font-semibold mb-4">Salon non trouvé</h2>
-        <p className="text-gray-600 mb-6">Ce salon n'existe pas ou a été supprimé.</p>
-        <Button onClick={() => setLocation('/search')}>
-          Retour à la recherche
-        </Button>
-      </div>
-    );
-  }
-
-  // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
   const salon = {
-    name: "Atelier Coiffure Saint-Germain",
-    subtitle: "L'art capillaire depuis 1995",
-    address: "42 rue de Rivoli, Paris 1er",
-    phone: "01 42 96 17 83",
+    id: "salon-excellence",
+    name: "Salon Excellence Paris",
+    subtitle: "L'art de la beauté réinventé",
     rating: 4.9,
     reviews: 324,
-    categories: ["Coiffure", "Coloration", "Soins"],
-    certifications: ["Certification professionnelle", "Qualité service"],
-    awards: ["Salon de qualité", "Service client premium"],
     verified: true,
-    longDescription: "Découvrez notre expertise en coiffure et soins capillaires dans un cadre moderne et professionnel.",
-    story: "Fondé en 1995, notre salon s'est imposé comme une référence en matière de coiffure et de soins capillaires. Notre équipe d'experts passionnés met tout en œuvre pour sublimer votre beauté naturelle."
+    address: "123 Avenue des Champs-Élysées, Paris 8ème",
+    phone: "01 42 86 67 89",
+    story: "Depuis 15 ans, le Salon Excellence Paris révolutionne l'industrie de la beauté en combinant savoir-faire traditionnel français et innovations technologiques de pointe. Notre équipe de 12 experts passionnés vous accueille dans un écrin de 200m² entièrement rénové, où chaque détail a été pensé pour votre bien-être.",
+    awards: [
+      "Prix d'Excellence Beauté 2024",
+      "Meilleur Salon Parisien 2023",
+      "Innovation Award 2022",
+      "Certification Bio-Éthique"
+    ],
+    certifications: ["Bio-certifié", "Expert L'Oréal", "Formation Kérastase", "Technique Aveda"]
   };
 
   const services = [
@@ -272,7 +220,7 @@ export default function ModernSalonDetail() {
       clientName: "Julie M.",
       rating: 5,
       date: "Il y a 1 semaine",
-      comment: "Première visite dans ce salon et je suis conquise ! Marie a su comprendre exactement ce que je voulais. Le résultat dépasse mes attentes.",
+      comment: "Première visite chez Excellence Paris et je suis conquise ! Marie a su comprendre exactement ce que je voulais. Le résultat dépasse mes attentes.",
       service: "Coupe & Styling Expert",
       verified: true
     },
@@ -314,7 +262,7 @@ export default function ModernSalonDetail() {
           <div className="absolute top-4 left-4 z-10">
             <Button
               variant="ghost"
-              onClick={() => setLocation('/search')}
+              onClick={() => window.history.back()}
               className="h-9 w-9 p-0 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200 transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -339,8 +287,8 @@ export default function ModernSalonDetail() {
 
           <div className="px-4 pt-14 pb-6 relative z-10">
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-lg font-medium text-gray-900">{salonData.name}</h1>
-              {salonData.verified && (
+              <h1 className="text-lg font-medium text-gray-900">{salon.name}</h1>
+              {salon.verified && (
                 <div className="flex items-center gap-1 text-xs text-violet-700 bg-violet-50 px-2 py-1 rounded-full border border-violet-200">
                   <div className="w-1 h-1 bg-green-500 rounded-full"></div>
                   <span>Certifié</span>
@@ -348,29 +296,24 @@ export default function ModernSalonDetail() {
               )}
             </div>
             
-            <p className="text-gray-600 text-sm mb-3">{salonData.description || 'Salon de beauté professionnel'}</p>
+            <p className="text-gray-600 text-sm mb-3">{salon.subtitle}</p>
             
             <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
               <div className="flex items-center gap-1">
                 <Star className="w-3 h-3 text-amber-400" />
-                <span className="text-gray-900 font-medium text-sm">{salonData.rating || 4.5}</span>
-                <span className="text-gray-500 text-xs">({salonData.reviewCount || salonData.reviews || 0})</span>
+                <span className="text-gray-900 font-medium text-sm">{salon.rating}</span>
+                <span className="text-gray-500 text-xs">({salon.reviews})</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-3 h-3 text-gray-400" />
-                <span className="text-gray-600 text-xs">{salonData.city || salonData.location || 'Paris'}</span>
+                <span className="text-gray-600 text-xs">Paris 16ème</span>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-1">
-              {salonData.verified && (
-                <div className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200">
-                  Salon vérifié
-                </div>
-              )}
-              {salonData.serviceCategories && salonData.serviceCategories.slice(0, 2).map((category: any, idx: number) => (
-                <div key={idx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded border border-blue-200">
-                  {category.name || category}
+              {salon.certifications.map((cert, idx) => (
+                <div key={idx} className="text-xs bg-violet-50 text-violet-700 px-2 py-1 rounded border border-violet-200">
+                  {cert}
                 </div>
               ))}
             </div>
@@ -493,7 +436,7 @@ export default function ModernSalonDetail() {
                     <div className="flex items-start gap-2 p-2 bg-gray-50 rounded">
                       <div className="w-1 h-1 bg-gray-500 rounded-full mt-1.5 flex-shrink-0"></div>
                       <div>
-                        <h4 className="text-xs text-gray-900 font-medium">Service client</h4>
+                        <h4 className="text-xs text-gray-900 font-medium">Excellence client</h4>
                         <p className="text-xs text-gray-600">Service personnalisé et attentionné</p>
                       </div>
                     </div>

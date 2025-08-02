@@ -52,16 +52,8 @@ export default function ModernSalonDetail() {
   const [activeTab, setActiveTab] = useState('services');
   const [location] = useLocation();
   
-  // Récupérer l'ID exact du salon depuis l'URL - PLUS DE REDIRECTION
-  const urlParts = location.split('/');
-  const salonId = urlParts[urlParts.length - 1];
-  
-  // Vérification que l'ID existe
-  if (!salonId || salonId === 'salon') {
-    console.error('❌ ID salon manquant dans l\'URL:', location);
-    setLocation('/search'); // Rediriger vers la recherche si ID manquant
-    return <div>Redirection...</div>;
-  }
+  // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
+  const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
   
   // DEBUG: Vérifier quelle URL et quel ID sont utilisés
   console.log('🔍 DEBUG SALON ROUTING:', {
@@ -72,22 +64,14 @@ export default function ModernSalonDetail() {
     salonName: salonData?.name
   });
   
-  // Récupérer les vraies données du salon depuis l'API avec auto-refresh FORCÉ
-  const { data: salonData, isLoading, refetch } = useQuery<SalonData>({
+  // Récupérer les vraies données du salon depuis l'API
+  const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/salon', salonId],
     retry: 2,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    refetchInterval: 500, // Auto-refresh toutes les 0.5 secondes
-    staleTime: 0, // Toujours considérer comme périmé
-    cacheTime: 0 // Pas de cache du tout
+    refetchOnWindowFocus: false,
+    staleTime: 0, // Pas de cache pour voir les changements immédiatement
+    refetchOnMount: true
   });
-
-  // Force un refetch immédiat au montage
-  useEffect(() => {
-    console.log('🔥 FORÇAGE REFETCH IMMÉDIAT');
-    refetch();
-  }, [refetch]);
   
   // Données de fallback si API échoue
   const [serviceCategories, setServiceCategories] = useState([
@@ -187,27 +171,27 @@ export default function ModernSalonDetail() {
     }
   }, [salonData]);
 
-  // DEBUG FORCÉ: Logs pour voir immédiatement les données API
-  console.log('🔥 DONNÉES SALON REÇUES:', {
-    salonData,
-    nom: salonData?.name,
-    couleurs: salonData?.customColors,
-    timestamp: new Date().toISOString()
-  });
-
-  // Utiliser UNIQUEMENT les vraies données de l'API - PLUS DE FALLBACK
-  const salon = salonData ? {
-    id: salonData.id,
-    name: salonData.name,
-    rating: salonData.rating,
-    reviews: salonData.reviews,
-    address: salonData.address,
-    phone: salonData.phone,
-    verified: salonData.verified,
-    certifications: salonData.certifications || [],
-    awards: salonData.awards || [],
-    longDescription: salonData.longDescription || salonData.description || ""
-  } : null;
+  // Utiliser les vraies données de l'API ou fallback
+  const salon = {
+    id: salonData?.id || 1,
+    name: salonData?.name || "Excellence Paris",
+    rating: salonData?.rating || 4.8,
+    reviews: salonData?.reviews || 247,
+    address: salonData?.address || "15 Avenue des Champs-Élysées, 75008 Paris",
+    phone: salonData?.phone || "01 42 25 76 89",
+    verified: salonData?.verified || true,
+    certifications: salonData?.certifications || [
+      "Salon labellisé L'Oréal Professionnel",
+      "Formation continue Kérastase",
+      "Certification bio Shu Uemura"
+    ],
+    awards: salonData?.awards || [
+      "Élu Meilleur Salon Paris 8ème 2023",
+      "Prix de l'Innovation Beauté 2022",
+      "Certification Éco-responsable"
+    ],
+    longDescription: salonData?.longDescription || "Notre salon vous accueille dans un cadre moderne et chaleureux."
+  };
 
   // DEBUG: Logs pour comprendre le problème d'images et données
   console.log('🖼️ DEBUG SALON DATA:', {
@@ -222,34 +206,14 @@ export default function ModernSalonDetail() {
     isLoading
   });
 
-  // Utiliser UNIQUEMENT les vraies données de l'API - PLUS DE FALLBACK
-  const displayData = salonData || null;
-
-  // Si aucune donnée du salon, afficher un message d'erreur simple
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white">Chargement du salon...</div>
-      </div>
-    );
-  }
-
-  if (!displayData) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center text-white">
-          <h1 className="text-xl mb-4">Salon non trouvé</h1>
-          <p className="text-gray-400 mb-4">Ce salon n'existe pas ou n'a pas encore été créé.</p>
-          <button 
-            onClick={() => setLocation('/search')}
-            className="bg-purple-600 px-4 py-2 rounded text-white hover:bg-purple-700"
-          >
-            Retour à la recherche
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // Utiliser les vraies données de l'API si disponibles
+  const displayData = salonData ? {
+    ...salonData,
+    longDescription: salonData.longDescription || fallbackData.longDescription,
+    address: (salonData as any).address || fallbackData.address,
+    phone: (salonData as any).phone || fallbackData.phone,
+    coverImageUrl: (salonData as any).coverImageUrl || (salonData as any).photos?.[0] || fallbackData.coverImageUrl
+  } : fallbackData;
 
   // Couleurs personnalisées depuis l'API
   const customColors = salonData?.customColors || {
@@ -282,29 +246,13 @@ export default function ModernSalonDetail() {
           background-color: ${(salonData as any).customColors.primary} !important;
           color: ${(salonData as any).customColors.buttonText} !important;
           border: none !important;
-          box-shadow: 0 0 20px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}80 !important;
-          animation: neon-pulse 2s ease-in-out infinite alternate !important;
-        }
-        
-        @keyframes neon-pulse {
-          from {
-            box-shadow: 0 0 20px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}80,
-                        0 0 30px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}60,
-                        0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}40 !important;
-          }
-          to {
-            box-shadow: 0 0 30px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}90,
-                        0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}70,
-                        0 0 50px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}50 !important;
-          }
         }
         
         .reservation-btn:hover,
         .service-button:hover,
         .reservation-button:hover {
           background-color: ${(salonData as any).customColors.primary} !important;
-          transform: scale(1.05) !important;
-          box-shadow: 0 0 40px ${(salonData as any).customColors.neonFrame || (salonData as any).customColors.primary}90 !important;
+          opacity: 0.9 !important;
         }
       `;
       
@@ -353,11 +301,6 @@ export default function ModernSalonDetail() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* DEBUG PANEL VISIBLE */}
-      <div className="fixed top-0 left-0 bg-red-500 text-white p-2 text-xs z-50">
-        DEBUG: {salonData?.name || 'PAS DE DONNÉES'} | API: {isLoading ? 'LOADING' : 'OK'} | ID: {salonId}
-      </div>
-      
       <div className="max-w-lg mx-auto">
         {/* Photo de couverture */}
         <div className="relative h-64 overflow-hidden">
@@ -388,7 +331,7 @@ export default function ModernSalonDetail() {
           </Button>
           
           {/* Badge vérifié */}
-          {displayData?.verified && (
+          {salon.verified && (
             <div className="absolute top-4 right-4 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               <CheckCircle className="w-3 h-3" />
               Vérifié
@@ -397,15 +340,12 @@ export default function ModernSalonDetail() {
           
           {/* Informations principales sur la photo */}
           <div className="absolute bottom-4 left-4 right-4">
-            <h1 className="text-2xl font-bold text-white mb-2">
-              {displayData?.name || 'Salon'} 
-
-            </h1>
+            <h1 className="text-2xl font-bold text-white mb-2">{salon.name}</h1>
             <div className="flex items-center gap-4 text-white/90 text-sm">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span>{displayData?.rating || 4.5}</span>
-                <span>({displayData?.reviews || 0} avis)</span>
+                <span>{salon.rating}</span>
+                <span>({salon.reviews} avis)</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -502,9 +442,9 @@ export default function ModernSalonDetail() {
                 <div className="flex items-center gap-4 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-gray-400" />
-                    <span className="text-white font-medium">{displayData?.rating || 4.5}/5</span>
+                    <span className="text-white font-medium">{salon.rating}/5</span>
                   </div>
-                  <span>{displayData?.reviews || 0} avis vérifiés</span>
+                  <span>{salon.reviews} avis vérifiés</span>
                 </div>
               </div>
 
@@ -558,14 +498,14 @@ export default function ModernSalonDetail() {
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
                 <h3 className="text-lg font-medium text-white mb-4">À propos du salon</h3>
                 <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">
-                  {displayData?.longDescription || displayData?.description || 'Description du salon'}
+                  {salon.longDescription}
                 </p>
               </div>
                 
               <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
                 <h3 className="font-medium text-white mb-3">Nos certifications</h3>
                 <div className="space-y-2">
-                  {(displayData?.certifications || []).map((cert: string, idx: number) => (
+                  {salon.certifications.map((cert: string, idx: number) => (
                     <div key={idx} className="flex items-center gap-2 text-sm">
                       <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
                       <span className="text-gray-300">{cert}</span>
@@ -577,11 +517,11 @@ export default function ModernSalonDetail() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-sm">
                   <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-300">{displayData?.address || 'Adresse'}</span>
+                  <span className="text-gray-300">{salon.address}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Phone className="w-4 h-4 text-gray-400" />
-                  <span className="text-gray-300">{displayData?.phone || 'Téléphone'}</span>
+                  <span className="text-gray-300">{salon.phone}</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Clock className="w-4 h-4 text-gray-400" />

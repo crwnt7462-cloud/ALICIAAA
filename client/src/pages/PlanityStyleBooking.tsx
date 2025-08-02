@@ -19,7 +19,7 @@ export default function PlanityStyleBooking() {
   const [currentStep, setCurrentStep] = useState<'service' | 'time' | 'details'>('service');
 
   const salon = {
-    name: "Mon Salon de Beauté",
+    name: "Salon Excellence Paris",
     address: "45 Avenue Victor Hugo, 75116 Paris",
     rating: 4.9,
     reviewCount: 343,

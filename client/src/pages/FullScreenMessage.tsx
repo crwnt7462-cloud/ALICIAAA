@@ -74,7 +74,7 @@ export default function FullScreenMessage() {
 
   const conversation: Conversation = {
     id: "salon-excellence",
-    name: "Mon Salon",
+    name: "Salon Excellence Paris",
     avatar: "",
     status: 'online'
   };

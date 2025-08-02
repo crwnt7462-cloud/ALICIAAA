@@ -188,7 +188,7 @@ export default function SalonRegistrationWithPassword() {
                   id="salonName"
                   value={formData.salonName}
                   onChange={(e) => updateFormData('salonName', e.target.value)}
-                  placeholder="Ex: Mon Salon de Beauté"
+                  placeholder="Ex: Salon Excellence Paris"
                 />
               </div>
 

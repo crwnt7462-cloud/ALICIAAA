@@ -321,7 +321,7 @@ export default function SalonRegistration() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleChange('name', e.target.value)}
-                  placeholder="Mon Salon de Beauté"
+                  placeholder="Salon Excellence"
                   required
                 />
               </div>

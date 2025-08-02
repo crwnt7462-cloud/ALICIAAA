@@ -352,7 +352,7 @@ export default function BusinessRegistration() {
                       <FormItem>
                         <FormLabel className="text-sm font-medium text-gray-700">Nom de l'entreprise *</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Mon Salon de Beauté" className="h-10" />
+                          <Input {...field} placeholder="Salon Excellence" className="h-10" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

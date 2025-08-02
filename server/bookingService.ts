@@ -87,7 +87,7 @@ export class BookingService {
         time: bookingData.startTime,
         totalPrice: totalPrice,
         depositPaid: depositAmount,
-        businessName: "Salon Demo",
+        businessName: "Salon Excellence",
         businessAddress: "15 rue de la Paix, 75001 Paris"
       });
 

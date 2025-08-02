@@ -24,7 +24,7 @@ export default function UltraModernLanding() {
   const featuredSalons = [
     {
       id: "1",
-      name: "Mon Salon de Beauté",
+      name: "Salon Excellence Paris",
       rating: 4.9,
       reviews: 1247,
       image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400",
@@ -66,7 +66,7 @@ export default function UltraModernLanding() {
       service: "Coloration + Coupe",
       rating: 5,
       comment: "Résultat absolument parfait ! Sarah a compris exactement ce que je voulais.",
-      salon: "Mon Salon",
+      salon: "Salon Excellence",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60"
     },
     {

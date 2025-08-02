@@ -35,7 +35,7 @@ export default function PlanityStyleProfessionalList() {
   const professionals: Professional[] = [
     {
       id: '1',
-      name: 'Mon Salon de Beauté',
+      name: 'Salon Excellence Paris',
       type: 'Salon de coiffure',
       address: '45 Avenue Victor Hugo, 75116 Paris',
       rating: 4.9,

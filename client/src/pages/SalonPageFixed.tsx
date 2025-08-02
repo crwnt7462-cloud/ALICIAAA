@@ -39,7 +39,7 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
   // Salon par défaut si pas de données
   const defaultSalonData: SalonData = {
     id: "salon-demo",
-    salonName: "Mon Salon de Beauté",
+    salonName: "Excellence Beauty Salon",
     salonDescription: "Votre salon de beauté premium avec les meilleures prestations",
     salonAddress: "123 Avenue des Champs-Élysées, 75008 Paris",
     salonPhone: "+33 1 23 45 67 89",

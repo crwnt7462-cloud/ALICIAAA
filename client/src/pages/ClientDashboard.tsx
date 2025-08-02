@@ -89,7 +89,7 @@ export default function ClientDashboard() {
                   </Badge>
                 </div>
                 <p className="text-gray-600 text-sm mb-4">
-                  Coupe + Brushing - Mon Salon
+                  Coupe + Brushing - Salon Excellence
                 </p>
                 
                 <div className="grid grid-cols-3 gap-4 mb-4">
@@ -140,7 +140,7 @@ export default function ClientDashboard() {
                   <div className="flex items-center justify-between p-2 bg-white rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
-                      <span className="text-sm font-medium">Mon Salon</span>
+                      <span className="text-sm font-medium">Salon Excellence</span>
                     </div>
                     <Button size="sm" variant="outline">Réserver</Button>
                   </div>
@@ -322,7 +322,7 @@ export default function ClientDashboard() {
                         <h3 className="font-medium text-gray-900">Coupe + Brushing</h3>
                         <Badge className="bg-green-600 text-white">Confirmé</Badge>
                       </div>
-                      <p className="text-sm text-gray-600 mb-1">Mon Salon</p>
+                      <p className="text-sm text-gray-600 mb-1">Salon Excellence</p>
                       <p className="text-sm text-gray-500">Demain, 30 janvier - 14h30</p>
                       <p className="text-sm font-medium text-gray-900 mt-2">45€</p>
                     </div>
@@ -356,7 +356,7 @@ export default function ClientDashboard() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
                         <div className="flex-1">
-                          <h3 className="font-medium text-gray-900">Mon Salon</h3>
+                          <h3 className="font-medium text-gray-900">Salon Excellence</h3>
                           <p className="text-sm text-gray-600">Votre rendez-vous est confirmé</p>
                         </div>
                         <div className="w-2 h-2 bg-purple-600 rounded-full"></div>

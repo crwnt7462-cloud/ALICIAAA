@@ -449,22 +449,6 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Table salons pour sauvegarde persistante
-export const salons = pgTable("salons", {
-  id: varchar("id").primaryKey(),
-  name: varchar("name").notNull(),
-  description: text("description"),
-  address: text("address"),
-  phone: varchar("phone"),
-  email: varchar("email"),
-  customColors: jsonb("custom_colors"),
-  serviceCategories: jsonb("service_categories"),
-  photos: jsonb("photos"),
-  isPublished: boolean("is_published").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
 // Suppression des tables de messagerie selon les spécifications
 
 // SMS and notification logs

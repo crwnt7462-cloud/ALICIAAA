@@ -58,24 +58,6 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
-### ✅ Système de Synchronisation Automatique Complet
-- **Date**: 01/08/2025 - 22:50
-- **Changement**: Synchronisation automatique universelle entre éditeur et pages publiques
-- **Impact**: Plus aucun problème de désynchronisation, toutes les modifications sont visibles en 2-4 secondes
-- **Fonctionnalités**: Auto-refresh, synchronisation multi-systèmes, variables CSS automatiques, effets néon intégrés
-
-### ✅ Effets Néon et Couleurs Personnalisées
-- **Date**: 01/08/2025 - 22:50
-- **Changement**: Système d'effets néon automatiques basé sur les couleurs de l'éditeur
-- **Impact**: Interface visuellement distinctive avec animations personnalisées
-- **Détails**: Animation neon-pulse, box-shadow colorés, support couleur neonFrame, forçage CSS infaillible
-
-### ✅ Système de Sauvegarde Persistante PostgreSQL
-- **Date**: 01/08/2025 - 23:30
-- **Changement**: Implémentation complète du système de persistance en base de données
-- **Impact**: Plus de perte de données au redémarrage, salon persistent définitivement
-- **Fonctionnalités**: Table `salons` PostgreSQL, chargement automatique au démarrage, double sauvegarde (mémoire + BDD)
-
 ### ✅ Intégration OpenAI Complétée
 - **Date**: 01/08/2025
 - **Changement**: Connexion OpenAI GPT-4o entièrement fonctionnelle
@@ -87,14 +69,3 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Changement**: Header fixe, scroll optimisé, bouton retour en haut
 - **Impact**: Expérience utilisateur grandement améliorée pour les conversations longues
 - **Détails**: Header reste visible en permanence, navigation fluide dans l'historique des messages
-
-### ✅ Suppression Complète "Salon Excellence Paris" - PHASE FINALE
-- **Date**: 02/08/2025 - 00:10  
-- **Changement**: Éradication totale et définitive de TOUTES les références "Excellence" sans exception
-- **Impact**: Plus aucune interférence, système 100% dédié aux salons personnalisés
-- **Actions Complétées**: 
-  * 40+ fichiers nettoyés systématiquement
-  * Base PostgreSQL purgée
-  * Routes et API corrigées
-  * Tous placeholders remplacés par "Mon Salon de Beauté"
-- **Résultat Final**: 0 occurrence "Excellence" dans tout le système, plateforme entièrement purifiée

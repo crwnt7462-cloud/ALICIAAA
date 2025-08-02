@@ -7,9 +7,6 @@ import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
 import { aiService } from "./aiService";
 import { clientAnalyticsService, type ClientProfile } from "./clientAnalyticsService";
-import { db } from "./db";
-import { salons as salonsTable } from "@shared/schema";
-import { eq } from "drizzle-orm";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -598,43 +595,27 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - ID reçu:', id);
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
-      // Utiliser l'ID exact fourni par le client - plus de redirection forcée
-      const actualId = id;
-      
-      // 🔥 FORCER LA SYNCHRONISATION IMMÉDIATE
-      console.log('🚨 SAUVEGARDE FORCÉE IMMÉDIATE pour ID:', actualId);
+      // Corriger l'ID si c'est "auto-generated" en utilisant "salon-demo" pour les tests
+      const actualId = (id === 'auto-generated' || id === 'undefined') ? 'salon-demo' : id;
       console.log('💾 ID corrigé pour sauvegarde:', actualId);
       
-      // 🔥 SAUVEGARDE PERSISTANTE EN BASE DE DONNÉES POSTGRESQL
+      // Sauvegarder avec l'ID corrigé
       let savedSalon;
-      
-      // Première étape: sauvegarder en mémoire (Map)
-      if (storage.salons) {
-        const existingSalon = storage.salons.get(actualId) || {};
-        const updatedSalon = { 
-          ...existingSalon, 
-          ...salonData, 
-          id: actualId,
-          updatedAt: new Date().toISOString()
-        };
-        storage.salons.set(actualId, updatedSalon);
-        savedSalon = updatedSalon;
-        console.log('✅ Salon sauvegardé en mémoire:', actualId);
-      }
-      
-      // Deuxième étape: sauvegarder en base PostgreSQL pour persistance
-      try {
-        if (storage.updateSalon) {
-          console.log('💾 Sauvegarde PostgreSQL du salon:', actualId);
-          await storage.updateSalon(actualId, salonData);
-          console.log('✅ Salon sauvegardé en PostgreSQL:', actualId);
-        } else if (storage.createSalon) {
-          console.log('💾 Création PostgreSQL du salon:', actualId);
-          await storage.createSalon({ ...salonData, id: actualId });
-          console.log('✅ Salon créé en PostgreSQL:', actualId);
+      if (storage.updateBookingPage) {
+        console.log('💾 Sauvegarde salon dans le stockage avec ID:', actualId);
+        savedSalon = await storage.updateBookingPage(actualId, salonData);
+        console.log('✅ Salon sauvegardé avec succès dans le stockage:', actualId);
+      } else {
+        // Sauvegarder directement dans storage.salons si pas de méthode updateBookingPage
+        if (storage.salons) {
+          const existingSalon = storage.salons.get(actualId) || {};
+          const updatedSalon = { ...existingSalon, ...salonData, id: actualId };
+          storage.salons.set(actualId, updatedSalon);
+          savedSalon = updatedSalon;
+          console.log('✅ Salon sauvegardé directement dans Map:', actualId);
+        } else {
+          savedSalon = { ...salonData, id: actualId };
         }
-      } catch (dbError) {
-        console.log('⚠️ Erreur PostgreSQL (continuons avec mémoire):', dbError.message);
       }
       
       // 🔥 INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE PUBLIC
@@ -665,21 +646,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         ];
         publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
         
-        // 🔄 SYNCHRONISATION AUTOMATIQUE UNIVERSELLE
+        // Ajouter ou mettre à jour dans le système de recherche
         if (storage.salons) {
-          const unifiedSalonData = { ...savedSalon, ...publicSalonData };
-          storage.salons.set(actualId, unifiedSalonData);
-          
-          // Auto-sync dans tous les systèmes
-          storage.salons.set(`public-${actualId}`, unifiedSalonData);
-          storage.salons.set(`search-${actualId}`, unifiedSalonData);
-          storage.salons.set(`booking-${actualId}`, unifiedSalonData);
-          
-          console.log('🔄 SYNCHRONISATION AUTOMATIQUE COMPLÈTE:', actualId);
-          console.log('✅ Données synchronisées dans tous les systèmes');
-          console.log('🚨 NOM FINAL SAUVEGARDÉ:', unifiedSalonData.name);
-          console.log('🎨 COULEURS FINALES:', unifiedSalonData.customColors);
+          storage.salons.set(actualId, { ...savedSalon, ...publicSalonData });
         }
+        console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', actualId);
       }
       
       res.json({ 
@@ -1042,83 +1013,40 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté (DOIT ÊTRE AVANT /:id)
+  // API simple pour récupérer un salon par ID (utilisée par ModernSalonDetail)
+  app.get('/api/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log('📖 Récupération salon par ID:', id);
+      
+      const salon = storage.salons?.get(id);
+      
+      if (!salon) {
+        console.log('❌ Salon non trouvé:', id);
+        return res.status(404).json({ message: 'Salon non trouvé' });
+      }
+      
+      console.log('✅ Salon trouvé:', salon.name);
+      res.json(salon); // Renvoyer directement les données du salon
+    } catch (error) {
+      console.error('❌ Erreur récupération salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
+  // API UNIVERSELLE : Récupération automatique du salon du professionnel connecté
   app.get('/api/salon/current', async (req, res) => {
     try {
       const userId = req.user?.claims?.sub;
       
-      // CORRIGÉ : Récupération fiable du salon créé depuis l'éditeur
+      // Pour les tests et développement, utiliser le salon demo si pas connecté
       if (!userId) {
-        console.log('🧪 Mode test : récupération salon depuis éditeur');
-        
-        // 1. Forcer un refresh des données PostgreSQL
-        try {
-          const savedSalons = await storage.getAllSalons();
-          if (savedSalons.length > 0) {
-            const latestSalon = savedSalons.sort((a, b) => 
-              new Date(b.updatedAt || b.createdAt || '').getTime() - 
-              new Date(a.updatedAt || a.createdAt || '').getTime()
-            )[0];
-            
-            console.log('✅ Salon trouvé en PostgreSQL:', latestSalon.id, latestSalon.name);
-            
-            // Charger en mémoire pour accès rapide
-            if (!storage.salons) storage.salons = new Map();
-            storage.salons.set(latestSalon.id, latestSalon);
-            
-            return res.json(latestSalon);
-          }
-        } catch (error) {
-          console.log('⚠️ Erreur lecture PostgreSQL:', error);
+        console.log('🧪 Mode test : utilisation du salon demo');
+        const demoSalon = storage.salons?.get('salon-demo');
+        if (demoSalon) {
+          return res.json(demoSalon);
         }
-        
-        // 2. Chercher en mémoire si PostgreSQL a échoué
-        if (storage.salons && storage.salons.size > 0) {
-          const allSalons = Array.from(storage.salons.values());
-          const latestSalon = allSalons.sort((a, b) => 
-            new Date(b.updatedAt || b.createdAt || '').getTime() - 
-            new Date(a.updatedAt || a.createdAt || '').getTime()
-          )[0];
-          console.log('✅ Salon trouvé en mémoire:', latestSalon.id, latestSalon.name);
-          return res.json(latestSalon);
-        }
-        
-        // Créer un nouveau salon avec ID unique
-        const uniqueId = `salon-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-        const newSalon = {
-          id: uniqueId,
-          name: 'Mon Salon',
-          description: 'Salon de beauté moderne et professionnel',
-          address: '123 Rue de la Beauté, 75001 Paris',
-          phone: '01 42 25 76 89',
-          rating: 4.8,
-          reviews: 0,
-          coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
-          photos: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'],
-          verified: true,
-          customColors: {
-            primary: '#7c3aed',
-            accent: '#a855f7',
-            buttonText: '#ffffff',
-            priceColor: '#7c3aed',
-            neonFrame: '#a855f7'
-          },
-          serviceCategories: [],
-          professionals: [],
-          certifications: [],
-          awards: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-        
-        // Sauvegarder en mémoire
-        if (!storage.salons) {
-          storage.salons = new Map();
-        }
-        storage.salons.set(uniqueId, newSalon);
-        
-        console.log('✅ Nouveau salon créé avec ID unique:', uniqueId);
-        return res.json(newSalon);
+        return res.status(401).json({ message: "Non connecté" });
       }
       
       // Générer un ID unique basé sur l'utilisateur
@@ -1294,45 +1222,36 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       const { category, city, search } = req.query;
       
-      // Récupérer tous les salons depuis PostgreSQL
-      let salons = await storage.getAllSalons();
+      // Récupérer tous les salons
+      let salons = Array.from(storage.salons.values());
       console.log(`🔍 Recherche salons: ${salons.length} salons trouvés`);
       
-      // Filtrer par catégorie si spécifiée - logique plus souple basée sur le nom
+      // Filtrer par catégorie si spécifiée
       if (category && category !== 'all') {
-        const initialCount = salons.length;
-        const categoryLower = (category as string).toLowerCase();
-        
         salons = salons.filter(salon => {
-          const salonName = salon.name?.toLowerCase() || '';
-          const salonDesc = salon.description?.toLowerCase() || '';
+          if (!salon.serviceCategories) return false;
           
-          // Correspondances plus larges basées sur les vrais noms des salons
-          if (categoryLower === 'coiffure') return salonName.includes('coiffure') || salonDesc.includes('coiffure');
-          if (categoryLower === 'barbier') return salonName.includes('barbier') || salonDesc.includes('barbier');
-          if (categoryLower === 'esthetique') return salonName.includes('institut') || salonName.includes('beauté') || salonDesc.includes('institut') || salonDesc.includes('beauté');
-          if (categoryLower === 'massage') return salonName.includes('spa') || salonName.includes('wellness') || salonDesc.includes('massage') || salonDesc.includes('spa');
-          if (categoryLower === 'onglerie' || categoryLower === 'ongles') return salonName.includes('nail') || salonDesc.includes('ongles') || salonDesc.includes('manucure');
-          
-          return false;
+          const categoryLower = (category as string).toLowerCase();
+          return salon.serviceCategories.some((cat: any) => {
+            const catName = cat.name?.toLowerCase() || '';
+            return (catName.includes('coiffure') && categoryLower === 'coiffure') ||
+                   (catName.includes('barbier') && categoryLower === 'barbier') ||
+                   (catName.includes('manucure') && categoryLower === 'ongles') ||
+                   (catName.includes('massage') && categoryLower === 'massage') ||
+                   (catName.includes('soin') && categoryLower === 'esthetique') ||
+                   (catName.includes('esthétique') && categoryLower === 'esthetique');
+          });
         });
-        console.log(`🏷️ Filtre catégorie "${category}": ${initialCount} → ${salons.length} salons`);
+        console.log(`🏷️ Filtre catégorie "${category}": ${salons.length} salons`);
       }
       
-      // Filtrer par ville si spécifiée - plus souple
-      if (city && city !== 'all') {
-        const initialCount = salons.length;
+      // Filtrer par ville si spécifiée
+      if (city) {
         const cityLower = (city as string).toLowerCase();
-        
-        // Si c'est "paris", on garde tous les salons (ils sont tous à Paris)
-        if (cityLower === 'paris') {
-          // Pas de filtrage car tous nos salons sont à Paris
-        } else {
-          salons = salons.filter(salon => 
-            salon.address?.toLowerCase().includes(cityLower)
-          );
-        }
-        console.log(`📍 Filtre ville "${city}": ${initialCount} → ${salons.length} salons`);
+        salons = salons.filter(salon => 
+          salon.address?.toLowerCase().includes(cityLower)
+        );
+        console.log(`📍 Filtre ville "${city}": ${salons.length} salons`);
       }
       
       // Filtrer par recherche textuelle si spécifiée
@@ -1346,55 +1265,32 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         console.log(`🔍 Filtre recherche "${search}": ${salons.length} salons`);
       }
       
-      // Formater les résultats pour l'affichage dans SalonSearchComplete avec couleurs uniques
-      const formattedSalons = salons.map(salon => {
-        // Extraction des photos depuis JSON
-        const photos = Array.isArray(salon.photos) ? salon.photos : 
-                      (typeof salon.photos === 'string' ? JSON.parse(salon.photos || '[]') : []);
-        
-        // Extraction des couleurs personnalisées depuis JSON
-        const customColors = salon.custom_colors || salon.customColors || {};
-        const parsedColors = typeof customColors === 'string' ? JSON.parse(customColors) : customColors;
-        
-        // Extraction des catégories de services depuis JSON  
-        const serviceCategories = Array.isArray(salon.service_categories) ? salon.service_categories :
-                                 (typeof salon.service_categories === 'string' ? JSON.parse(salon.service_categories || '[]') : []);
-        
-        return {
-          id: salon.id,
-          name: salon.name,
-          location: extractCity(salon.address),
-          rating: 4.5 + Math.random() * 0.4, // Rating dynamique entre 4.5 et 4.9
-          reviews: Math.floor(50 + Math.random() * 200), // Entre 50 et 250 avis
-          nextSlot: "14:30",
-          price: "€€",
-          services: serviceCategories.length > 0 ? serviceCategories : ["Coiffure", "Soins"],
-          verified: true,
-          distance: "1.2km",
-          category: determineCategory(serviceCategories),
-          photo: photos.length > 0 ? photos[0] : "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
-          coverImageUrl: photos.length > 0 ? photos[0] : null,
-          openNow: true,
-          promotion: null,
-          customColors: parsedColors, // 🎨 COULEURS UNIQUES POUR CHAQUE SALON
-          // Données complètes pour les détails
-          description: salon.description,
-          address: salon.address,
-          phone: salon.phone,
-          photos: photos,
-          serviceCategories: serviceCategories,
-          tags: salon.tags || [],
-          openingHours: salon.openingHours || {
-            monday: "9:00-19:00",
-            tuesday: "9:00-19:00", 
-            wednesday: "9:00-19:00",
-            thursday: "9:00-19:00",
-            friday: "9:00-19:00",
-            saturday: "9:00-18:00",
-            sunday: "Fermé"
-          }
-        };
-      });
+      // Formater les résultats pour l'affichage dans SalonSearchComplete
+      const formattedSalons = salons.map(salon => ({
+        id: salon.id,
+        name: salon.name,
+        location: extractCity(salon.address),
+        rating: salon.rating || 4.5,
+        reviews: salon.reviewCount || 0,
+        nextSlot: "14:30",
+        price: "€€",
+        services: extractServices(salon.serviceCategories),
+        verified: true,
+        distance: "1.2km",
+        category: determineCategory(salon.serviceCategories),
+        photo: salon.coverImageUrl || salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
+        coverImageUrl: salon.coverImageUrl,
+        openNow: true,
+        promotion: null,
+        // Données complètes pour les détails
+        description: salon.description,
+        address: salon.address,
+        phone: salon.phone,
+        photos: salon.photos || [],
+        serviceCategories: salon.serviceCategories || [],
+        tags: salon.tags || [],
+        openingHours: salon.openingHours
+      }));
       
       res.json({
         salons: formattedSalons,
@@ -1407,34 +1303,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // API pour récupérer un salon spécifique depuis PostgreSQL
+  // API pour récupérer un salon spécifique
   app.get('/api/public/salon/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      console.log('🔍 Recherche salon avec ID:', id);
-      
-      // Rechercher le salon dans PostgreSQL
-      const salons = await db.select().from(salonsTable).where(eq(salonsTable.id, id));
-      const salon = salons[0];
+      const salon = storage.salons.get(id);
       
       if (!salon) {
-        console.log('❌ Salon non trouvé avec ID:', id);
         return res.status(404).json({ message: 'Salon not found' });
       }
       
-      console.log('✅ Salon trouvé:', salon.name);
-      
-      // Extraction et formatage des données JSON
-      const photos = Array.isArray(salon.photos) ? salon.photos : 
-                    (typeof salon.photos === 'string' ? JSON.parse(salon.photos || '[]') : []);
-      
-      const customColors = salon.custom_colors || salon.customColors || {};
-      const parsedColors = typeof customColors === 'string' ? JSON.parse(customColors) : customColors;
-      
-      const serviceCategories = Array.isArray(salon.service_categories) ? salon.service_categories :
-                               (typeof salon.service_categories === 'string' ? JSON.parse(salon.service_categories || '[]') : []);
-      
-      // Formater les données pour l'affichage détaillé avec vraies données PostgreSQL
+      // Formater les données pour l'affichage détaillé
       const formattedSalon = {
         id: salon.id,
         name: salon.name,
@@ -1443,36 +1322,24 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         phone: salon.phone,
         email: salon.email,
         website: salon.website,
-        photos: photos,
-        coverImageUrl: photos.length > 0 ? photos[0] : null,
-        rating: 4.5 + Math.random() * 0.4, // Rating dynamique
-        reviewCount: Math.floor(50 + Math.random() * 200), // Reviews dynamiques
-        reviews: Math.floor(50 + Math.random() * 200),
-        serviceCategories: serviceCategories,
-        customColors: parsedColors,
+        photos: salon.photos || [],
+        rating: salon.rating || 4.5,
+        reviewCount: salon.reviewCount || 0,
+        serviceCategories: salon.serviceCategories || [],
         tags: salon.tags || [],
-        openingHours: salon.openingHours || {
-          monday: "9:00-19:00",
-          tuesday: "9:00-19:00", 
-          wednesday: "9:00-19:00",
-          thursday: "9:00-19:00",
-          friday: "9:00-19:00",
-          saturday: "9:00-18:00",
-          sunday: "Fermé"
-        },
-        category: determineCategory(serviceCategories),
+        openingHours: salon.openingHours,
+        category: determineCategory(salon.serviceCategories),
         city: extractCity(salon.address),
-        location: extractCity(salon.address),
-        services: serviceCategories.length > 0 ? serviceCategories : ["Coiffure", "Soins"],
-        // Infos supplémentaires
+        services: extractServices(salon.serviceCategories),
+        // Ajouter des infos supplémentaires pour la page détail
         verified: true,
-        certifications: ["Salon vérifié", "Professionnels qualifiés"],
-        awards: ["Qualité service", "Satisfaction client"]
+        certifications: ["Certifié qualité service", "Produits professionnels"],
+        awards: ["Top salon 2024", "Excellence client"]
       };
       
       res.json(formattedSalon);
     } catch (error) {
-      console.error('❌ Error fetching salon details:', error);
+      console.error('Error fetching salon details:', error);
       res.status(500).json({ message: 'Failed to fetch salon details' });
     }
   });

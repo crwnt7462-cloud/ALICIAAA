@@ -27,7 +27,7 @@ export default function PlanityStyleAccount() {
   const upcomingAppointments = [
     {
       id: 1,
-      salonName: "Mon Salon de Beauté",
+      salonName: "Salon Excellence Paris",
       service: "Coupe + Brushing",
       date: "Demain",
       time: "14:30",
@@ -48,7 +48,7 @@ export default function PlanityStyleAccount() {
   const appointmentHistory = [
     {
       id: 1,
-      salonName: "Mon Salon de Beauté",
+      salonName: "Salon Excellence Paris",
       service: "Coupe Signature",
       date: "12 janvier 2025",
       price: "39€",
@@ -69,7 +69,7 @@ export default function PlanityStyleAccount() {
   const favoritesSalons = [
     {
       id: 1,
-      name: "Mon Salon de Beauté",
+      name: "Salon Excellence Paris",
       address: "45 Avenue Victor Hugo, 75116 Paris",
       rating: 4.9,
       category: "Coiffure"

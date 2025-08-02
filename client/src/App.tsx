@@ -10,7 +10,7 @@ import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
-import SalonSearch from "@/pages/SalonSearch";
+import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
@@ -27,15 +27,14 @@ import NotFound from "@/pages/not-found";
 import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
-import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
-// Pages individuelles des salons PostgreSQL avec couleurs uniques
-import EliteCoiffureMarais from "@/pages/salons/EliteCoiffureMarais";
-import InstitutBeauteStGermain from "@/pages/salons/InstitutBeauteStGermain";
-import BarbierGentlemanBastille from "@/pages/salons/BarbierGentlemanBastille";
+import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
+import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
+import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
+import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
 import NailArtOpera from "@/pages/salons/NailArtOpera";
-import SpaWellnessMontparnasse from "@/pages/salons/SpaWellnessMontparnasse";
-import BeautyLoungeRepublique from "@/pages/salons/BeautyLoungeRepublique";
+import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
+import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -55,7 +54,7 @@ import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import ClientAnalytics from "@/pages/ClientAnalytics";
-
+import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
@@ -357,35 +356,36 @@ function Router() {
     );
   }
 
-  // Redirection explicite de l'ancienne URL vers la nouvelle
-  if (location === '/salon-search-complete') {
-    window.location.replace('/search');
-    return null;
-  }
-
-  // Page de recherche de salons
+  // Page de résultats de recherche
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SalonSearch />
+        <SalonSearchComplete />
       </div>
     );
   }
 
   // Pages individuelles pour chaque salon avec leurs propres URLs
-  if (location.startsWith('/salon/')) {
+  if (location === '/salon/salon-excellence-paris') {
     return (
       <div className="h-full">
-        <ModernSalonDetail />
+        <SalonExcellenceParis />
       </div>
     );
   }
   
-  // Pages individuelles des salons avec couleurs uniques
-  if (location === '/salon/salon-elite-marais') {
+  if (location === '/salon/barbier-gentleman-marais') {
     return (
       <div className="h-full">
-        <EliteCoiffureMarais />
+        <BarbierGentlemanMarais />
+      </div>
+    );
+  }
+  
+  if (location === '/salon/salon-moderne-republique') {
+    return (
+      <div className="h-full">
+        <SalonModerneRepublique />
       </div>
     );
   }
@@ -393,15 +393,7 @@ function Router() {
   if (location === '/salon/institut-beaute-saint-germain') {
     return (
       <div className="h-full">
-        <InstitutBeauteStGermain />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/barbier-gentleman-bastille') {
-    return (
-      <div className="h-full">
-        <BarbierGentlemanBastille />
+        <InstitutBeauteSaintGermain />
       </div>
     );
   }
@@ -414,26 +406,24 @@ function Router() {
     );
   }
   
-  if (location === '/salon/spa-wellness-montparnasse') {
+  if (location === '/salon/spa-wellness-bastille') {
     return (
       <div className="h-full">
-        <SpaWellnessMontparnasse />
+        <SpaWellnessBastille />
       </div>
     );
   }
   
-  if (location === '/salon/beauty-lounge-republique') {
+  if (location === '/salon/beauty-lounge-montparnasse') {
     return (
       <div className="h-full">
-        <BeautyLoungeRepublique />
+        <BeautyLoungeMontparnasse />
       </div>
     );
   }
-  
-
   
   // Routes spécifiques pour les salons de la page d'accueil
-  if (location === '/salon/salon-tendance-marais') {
+  if (location === '/salon/mon-salon-beaute') {
     return (
       <div className="h-full">
         <ModernSalonDetail />
@@ -441,10 +431,18 @@ function Router() {
     );
   }
   
+  if (location === '/salon/salon-excellence-paris') {
+    return (
+      <div className="h-full">
+        <SalonExcellenceParis />
+      </div>
+    );
+  }
+  
   if (location === '/salon/beauty-institute-st-germain') {
     return (
       <div className="h-full">
-        <InstitutBeauteStGermain />
+        <InstitutBeauteSaintGermain />
       </div>
     );
   }
@@ -457,11 +455,11 @@ function Router() {
     );
   }
   
-  // Page détail générique pour autres salons avec données dynamiques
+  // Page détail générique pour autres salons
   if (location.startsWith('/salon/')) {
     return (
       <div className="h-full">
-        <ModernSalonDetailNew />
+        <ModernSalonDetail />
       </div>
     );
   }

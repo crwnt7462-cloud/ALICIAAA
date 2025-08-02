@@ -65,7 +65,7 @@ export default function PageCreator() {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Nom du salon</label>
                         <input 
                           type="text" 
-                          placeholder="Mon Salon de Beauté"
+                          placeholder="Excellence Beauty Paris"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
                         />
                       </div>
@@ -176,7 +176,7 @@ export default function PageCreator() {
                           <span className="text-gray-500">Photo de couverture</span>
                         </div>
                         <div>
-                          <h2 className="text-xl font-semibold text-gray-900">Mon Salon de Beauté</h2>
+                          <h2 className="text-xl font-semibold text-gray-900">Excellence Beauty Paris</h2>
                           <p className="text-gray-600 text-sm">Votre salon de beauté au cœur de Paris...</p>
                         </div>
                         <div className="grid grid-cols-2 gap-2">

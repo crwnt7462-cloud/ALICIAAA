@@ -1,7 +1,55 @@
 import { storage } from './storage';
 
 export const salonsData = [
-  // COIFFURE - Salons de coiffure (salon Excellence supprimé)
+  // COIFFURE - Salons de coiffure
+  {
+    id: "salon-excellence-paris",
+    name: "Excellence Hair Paris",
+    description: "Salon de coiffure haut de gamme au cœur de Paris. Notre équipe d'experts vous propose des coupes tendances et des colorations sur-mesure avec les meilleurs produits L'Oréal Professionnel.",
+    address: "25 Avenue des Champs-Élysées, 75008 Paris",
+    phone: "01 42 65 78 90",
+    email: "contact@excellencehair.paris",
+    website: "www.excellencehair.paris",
+    photos: [
+      "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
+      "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
+    ],
+    coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center",
+    coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop&crop=center",
+    serviceCategories: [
+      {
+        id: 1,
+        name: "Coiffure Femme",
+        services: [
+          { id: 1, name: "Coupe + Brushing", price: 65, duration: 60, description: "Coupe personnalisée et brushing professionnel" },
+          { id: 2, name: "Coloration complète", price: 120, duration: 150, description: "Coloration avec soins L'Oréal Professionnel" },
+          { id: 3, name: "Mèches + Balayage", price: 140, duration: 180, description: "Technique avancée pour un effet naturel" },
+          { id: 4, name: "Soin réparateur", price: 45, duration: 30, description: "Soin intense pour cheveux abîmés" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Coiffure Homme",
+        services: [
+          { id: 5, name: "Coupe homme", price: 35, duration: 30, description: "Coupe moderne et tendance" },
+          { id: 6, name: "Coupe + Barbe", price: 45, duration: 45, description: "Coupe complète avec taille de barbe" }
+        ]
+      }
+    ],
+    tags: ["premium", "champs-élysées", "l'oréal", "expert-coloriste"],
+    rating: 4.9,
+    reviewCount: 324,
+    openingHours: {
+      lundi: "9h00-19h00",
+      mardi: "9h00-19h00",
+      mercredi: "9h00-19h00",
+      jeudi: "9h00-20h00",
+      vendredi: "9h00-20h00",
+      samedi: "9h00-19h00",
+      dimanche: "10h00-18h00"
+    }
+  },
 
   {
     id: "salon-moderne-republique",

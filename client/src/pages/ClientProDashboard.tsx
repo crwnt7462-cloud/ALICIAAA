@@ -38,7 +38,7 @@ export default function ClientProDashboard() {
   const upcomingAppointments = [
     {
       id: 1,
-      salon: "Mon Salon de Beauté",
+      salon: "Excellence Beauty Paris",
       service: "Coupe & Brushing",
       date: "25 Jan 2025",
       time: "14:30",
@@ -72,7 +72,7 @@ export default function ClientProDashboard() {
   ];
 
   const favoriteServices = [
-    { name: "Coupe & Brushing", salon: "Mon Salon", price: "45€" },
+    { name: "Coupe & Brushing", salon: "Excellence Beauty", price: "45€" },
     { name: "Soin du visage", salon: "Spa Wellness", price: "80€" },
     { name: "Manucure", salon: "Beauty Studio", price: "35€" }
   ];
@@ -109,7 +109,7 @@ export default function ClientProDashboard() {
                 <User className="w-8 h-8 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-xl font-bold text-gray-900">Mon Salon de Beauté</h2>
+                <h2 className="text-xl font-bold text-gray-900">Excellence Beauty Salon</h2>
                 <p className="text-gray-600">Tableau de bord professionnel</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge className="bg-violet-100 text-violet-700">Plan Pro</Badge>
@@ -393,7 +393,7 @@ export default function ClientProDashboard() {
 
             <div className="space-y-3">
               {[
-                { salon: "Mon Salon de Beauté", message: "Votre RDV est confirmé pour demain", time: "14:30", unread: true },
+                { salon: "Excellence Beauty Paris", message: "Votre RDV est confirmé pour demain", time: "14:30", unread: true },
                 { salon: "Spa Wellness Center", message: "Promotion -20% sur tous les soins", time: "10:15", unread: false },
                 { salon: "Beauty Studio", message: "Merci pour votre visite !", time: "Hier", unread: false }
               ].map((message, index) => (

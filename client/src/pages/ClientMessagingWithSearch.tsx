@@ -64,7 +64,7 @@ export default function ClientMessagingWithSearch() {
     {
       clientId: 'client_1',
       professionalId: 'pro_1',
-      professionalName: 'Mon Salon de Beauté',
+      professionalName: 'Salon Excellence Paris',
       lastMessage: 'Parfait ! À bientôt pour votre rendez-vous.',
       lastMessageTime: '2024-01-25 14:30',
       unreadCount: 0,
@@ -111,7 +111,7 @@ export default function ClientMessagingWithSearch() {
       console.error('Erreur recherche utilisateurs:', error);
       // Données de test en cas d'erreur - salons et professionnels
       const testUsers: User[] = [
-        { id: 'pro_1', name: 'Mon Salon de Beauté', handle: '@monsalon_paris', email: 'contact@monsalon.fr', type: 'professional' },
+        { id: 'pro_1', name: 'Salon Excellence Paris', handle: '@excellence_paris', email: 'contact@excellence.fr', type: 'professional' },
         { id: 'pro_2', name: 'Coiffure Moderne', handle: '@coiffure_moderne', email: 'info@moderne.fr', type: 'professional' },
         { id: 'pro_3', name: 'Institut Belle Vie', handle: '@bellevie_institut', email: 'accueil@bellevie.fr', type: 'professional' },
         { id: 'pro_4', name: 'Spa Wellness Center', handle: '@spa_wellness', email: 'spa@wellness.fr', type: 'professional' }

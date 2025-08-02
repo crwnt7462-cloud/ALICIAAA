@@ -62,7 +62,6 @@ export interface IStorage {
   // Salon Data Management
   getSalonData(salonId: string): Promise<any | undefined>;
   saveSalonData(salonId: string, salonData: any): Promise<void>;
-  getAllSalons(): Promise<any[]>;
 
   // Services
   getServices(userId: string): Promise<Service[]>;
@@ -1077,122 +1076,22 @@ export class DatabaseStorage implements IStorage {
   async getSalon(salonId: string): Promise<any> {
     return this.salons.get(salonId) || null;
   }
-  
-  // CHARGEMENT DES SALONS DEPUIS PostgreSQL AU DÉMARRAGE
-  async loadSalonsFromDatabase(): Promise<void> {
-    try {
-      const { salons } = await import("@shared/schema");
-      const allSalons = await db.select().from(salons);
-      
-      console.log(`📚 Chargement de ${allSalons.length} salons depuis PostgreSQL...`);
-      
-      for (const salon of allSalons) {
-        // Parse JSON fields
-        const salonData = {
-          ...salon,
-          customColors: salon.customColors ? JSON.parse(salon.customColors as string) : {},
-          serviceCategories: salon.serviceCategories ? JSON.parse(salon.serviceCategories as string) : [],
-          photos: salon.photos ? JSON.parse(salon.photos as string) : []
-        };
-        
-        this.salons.set(salon.id, salonData);
-        console.log(`✅ Salon chargé: ${salon.name} (${salon.id})`);
-      }
-      
-      console.log('🔄 Tous les salons PostgreSQL chargés en mémoire');
-    } catch (error) {
-      console.log('⚠️ Erreur chargement salons PostgreSQL:', error.message);
+
+  async updateSalon(salonId: string, updateData: any): Promise<any> {
+    const existingSalon = this.salons.get(salonId);
+    if (!existingSalon) {
+      return null;
     }
+
+    const updatedSalon = {
+      ...existingSalon,
+      ...updateData,
+      updatedAt: new Date()
+    };
+
+    this.salons.set(salonId, updatedSalon);
+    return updatedSalon;
   }
-
-  // MÉTHODE DE SAUVEGARDE PERSISTANTE PostgreSQL
-  async updateSalon(salonId: string, salonData: any): Promise<any> {
-    try {
-      // Import de la table salons
-      const { salons } = await import("@shared/schema");
-      
-      // Vérifier si le salon existe déjà en PostgreSQL
-      const existingSalons = await db.select().from(salons).where(eq(salons.id, salonId));
-      
-      let dbSalon;
-      if (existingSalons.length > 0) {
-        // Mettre à jour le salon existant
-        const [updated] = await db
-          .update(salons)
-          .set({
-            name: salonData.name || 'Salon sans nom',
-            description: salonData.description || '',
-            address: salonData.address || '',
-            phone: salonData.phone || '',
-            email: salonData.email || '',
-            customColors: salonData.customColors ? JSON.stringify(salonData.customColors) : null,
-            serviceCategories: salonData.serviceCategories ? JSON.stringify(salonData.serviceCategories) : null,
-            photos: salonData.photos ? JSON.stringify(salonData.photos) : null,
-            isPublished: salonData.isPublished !== false,
-            updatedAt: new Date()
-          })
-          .where(eq(salons.id, salonId))
-          .returning();
-        
-        console.log('✅ Salon mis à jour en PostgreSQL:', salonId);
-        dbSalon = updated;
-      } else {
-        // Créer un nouveau salon
-        const [created] = await db
-          .insert(salons)
-          .values({
-            id: salonId,
-            name: salonData.name || 'Salon sans nom',
-            description: salonData.description || '',
-            address: salonData.address || '',
-            phone: salonData.phone || '',
-            email: salonData.email || '',
-            customColors: salonData.customColors ? JSON.stringify(salonData.customColors) : null,
-            serviceCategories: salonData.serviceCategories ? JSON.stringify(salonData.serviceCategories) : null,
-            photos: salonData.photos ? JSON.stringify(salonData.photos) : null,
-            isPublished: salonData.isPublished !== false,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          })
-          .returning();
-        
-        console.log('✅ Salon créé en PostgreSQL:', salonId);
-        dbSalon = created;
-      }
-      
-      // FORCER LA SYNCHRONISATION IMMÉDIATE EN MÉMOIRE 
-      if (this.salons) {
-        const updatedSalon = { 
-          ...salonData, 
-          id: salonId,
-          updatedAt: new Date().toISOString(),
-          // Forcer la copie des couleurs personnalisées
-          customColors: salonData.customColors || {},
-          name: salonData.name || 'Salon'
-        };
-        this.salons.set(salonId, updatedSalon);
-        console.log('🔄 SYNCHRONISATION FORCÉE EN MÉMOIRE:', salonId);
-        console.log('✅ Données synchronisées:', {
-          name: updatedSalon.name,
-          colors: updatedSalon.customColors
-        });
-      }
-      
-      return dbSalon;
-    } catch (error) {
-      console.error('❌ Erreur sauvegarde PostgreSQL salon:', error);
-      // En cas d'erreur, au moins sauvegarder en mémoire
-      if (this.salons) {
-        const updatedSalon = { ...salonData, id: salonId };
-        this.salons.set(salonId, updatedSalon);
-        console.log('⚠️ Salon sauvegardé en mémoire seulement:', salonId);
-        return updatedSalon;
-      }
-      throw error;
-    }
-  }
-
-
 
   // Client Notes Management for Professionals
   async getClientNote(clientId: string, professionalId: string): Promise<ClientNote | undefined> {
@@ -1274,108 +1173,7 @@ export class DatabaseStorage implements IStorage {
     // Sauvegarder en mémoire
     this.salons.set(salonId, updatedSalon);
     
-    // NOUVEAU : Sauvegarder aussi en PostgreSQL avec vraie structure
-    try {
-      const { salons } = await import("@shared/schema");
-      await db.insert(salons).values({
-        id: salonId,
-        name: updatedSalon.name || 'Mon Salon',
-        description: updatedSalon.description || 'Salon de beauté',
-        address: updatedSalon.address || '',
-        phone: updatedSalon.phone || '',
-        email: updatedSalon.email || '',
-        customColors: updatedSalon.customColors || {
-          primary: '#7c3aed',
-          accent: '#a855f7',
-          buttonText: '#ffffff'
-        },
-        serviceCategories: updatedSalon.serviceCategories || [],
-        photos: updatedSalon.photos || [],
-        isPublished: true,
-        updatedAt: new Date()
-      }).onConflictDoUpdate({
-        target: salons.id,
-        set: {
-          name: updatedSalon.name || 'Mon Salon',
-          description: updatedSalon.description || 'Salon de beauté',
-          address: updatedSalon.address || '',
-          phone: updatedSalon.phone || '',
-          email: updatedSalon.email || '',
-          customColors: updatedSalon.customColors || {
-            primary: '#7c3aed',
-            accent: '#a855f7',
-            buttonText: '#ffffff'
-          },
-          serviceCategories: updatedSalon.serviceCategories || [],
-          photos: updatedSalon.photos || [],
-          updatedAt: new Date()
-        }
-      });
-      console.log('💾 Salon sauvegardé en PostgreSQL avec vraie structure:', salonId);
-    } catch (dbError) {
-      console.error('⚠️ Erreur sauvegarde PostgreSQL (mais salon en mémoire OK):', dbError);
-    }
-    
     console.log('✅ Salon sauvegardé avec succès:', salonId);
-  }
-
-  async getAllSalons(): Promise<any[]> {
-    console.log('📚 Récupération de tous les salons...');
-    
-    // 1. Récupérer tous les salons en mémoire
-    const inMemorySalons = Array.from(this.salons.values());
-    if (inMemorySalons.length > 0) {
-      console.log(`📚 ${inMemorySalons.length} salons trouvés en mémoire`);
-      return inMemorySalons;
-    }
-    
-    // 2. Si aucun salon en mémoire, essayer PostgreSQL avec vraie structure
-    try {
-      const { salons } = await import("@shared/schema");
-      const salonRecords = await db.select().from(salons).orderBy(desc(salons.updatedAt));
-      
-      const parsedSalons = salonRecords.map(record => {
-        // Convertir la structure PostgreSQL vers le format attendu
-        return {
-          id: record.id,
-          name: record.name,
-          description: record.description,
-          address: record.address,
-          phone: record.phone,
-          email: record.email,
-          customColors: record.customColors || {
-            primary: '#7c3aed',
-            accent: '#a855f7',
-            buttonText: '#ffffff',
-            priceColor: '#7c3aed',
-            neonFrame: '#a855f7'
-          },
-          serviceCategories: record.serviceCategories || [],
-          photos: record.photos || ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'],
-          isPublished: record.isPublished,
-          rating: 4.8,
-          reviews: 0,
-          verified: true,
-          coverImageUrl: (record.photos as any)?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
-          professionals: [],
-          certifications: [],
-          awards: [],
-          createdAt: record.createdAt?.toISOString() || new Date().toISOString(),
-          updatedAt: record.updatedAt?.toISOString() || new Date().toISOString()
-        };
-      });
-      
-      // Charger en mémoire pour accès rapide
-      parsedSalons.forEach(salon => {
-        this.salons.set(salon.id, salon);
-      });
-      
-      console.log(`📚 ${parsedSalons.length} salons récupérés depuis PostgreSQL`);
-      return parsedSalons;
-    } catch (error) {
-      console.error('❌ Erreur récupération salons PostgreSQL:', error);
-      return [];
-    }
   }
 
   // Messages IA automatiques pour analyse clients

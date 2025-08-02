@@ -18,9 +18,9 @@ export async function seedDatabase() {
         id: testUserId,
         email: 'test@monapp.com',
         passwordHash: hashedPassword,
-        firstName: 'Demo',
+        firstName: 'Excellence',
         lastName: 'Paris',
-        businessName: 'Salon Demo Paris',
+        businessName: 'Salon Excellence Paris',
         phone: '01 42 86 75 90',
         address: '15 Rue de la Paix, 75001 Paris',
         mentionHandle: '@usemyrr',
@@ -178,9 +178,9 @@ export async function seedDatabase() {
         storage.saveSalonData('salon-demo', {
           id: 'salon-demo',
           userId: testUserId,
-          name: 'Demo Paris - Salon Demo',
+          name: 'Excellence Paris - Salon Demo',
           description: 'Salon de beauté moderne lié au compte test@monapp.com',
-          longDescription: `Notre salon Demo Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. 
+          longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. 
           
 Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
 
