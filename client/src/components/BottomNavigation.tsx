@@ -42,8 +42,8 @@ export function BottomNavigation() {
 
   return (
     <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-      {/* Barre flottante violette compacte */}
-      <div className="bg-violet-600 rounded-full shadow-lg px-4 py-1.5">
+      {/* Barre flottante glassmorphism compacte */}
+      <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-full px-4 py-1.5">
         <div className="flex items-center gap-4">
           {navItems.map((item) => (
             <button
@@ -52,7 +52,7 @@ export function BottomNavigation() {
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1.5 py-0.5 ${
                 item.active
                   ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/80 hover:text-white'
               }`}
             >
               <item.icon className="h-3.5 w-3.5" />

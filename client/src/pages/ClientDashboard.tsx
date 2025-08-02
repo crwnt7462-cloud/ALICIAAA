@@ -425,17 +425,17 @@ export default function ClientDashboard() {
     <div className="min-h-screen bg-gray-50">
       {renderContent()}
       
-      {/* Navigation flottante violette - EXACTEMENT comme BottomNavigation.tsx des pros */}
+      {/* Navigation flottante glassmorphism */}
       <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-        {/* Barre flottante violette compacte */}
-        <div className="bg-violet-600 rounded-full shadow-lg px-4 py-2">
+        {/* Barre flottante glassmorphism compacte */}
+        <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-full px-4 py-2">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setActiveTab('accueil')}
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'accueil'
                   ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/80 hover:text-white'
               }`}
             >
               <Home className="h-4 w-4" />
@@ -447,7 +447,7 @@ export default function ClientDashboard() {
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'rdv'
                   ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/80 hover:text-white'
               }`}
             >
               <Calendar className="h-4 w-4" />
@@ -459,7 +459,7 @@ export default function ClientDashboard() {
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'messages'
                   ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/80 hover:text-white'
               }`}
             >
               <MessageCircle className="h-4 w-4" />
@@ -471,7 +471,7 @@ export default function ClientDashboard() {
               className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 ${
                 activeTab === 'profil'
                   ? 'text-white transform scale-105'
-                  : 'text-white/70 hover:text-white'
+                  : 'text-white/80 hover:text-white'
               }`}
             >
               <User className="h-4 w-4" />
@@ -480,7 +480,7 @@ export default function ClientDashboard() {
             
             <button
               onClick={() => setLocation('/search')}
-              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 text-white/70 hover:text-white"
+              className="flex flex-col items-center gap-0.5 transition-all duration-200 px-1 py-1 text-white/80 hover:text-white"
             >
               <Sparkles className="h-4 w-4" />
               <span className="text-[10px] font-medium">Découvrir</span>
