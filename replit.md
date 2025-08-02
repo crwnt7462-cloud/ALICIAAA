@@ -58,6 +58,19 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
+### ✅ Système Contrôle Intensité Couleurs Personnalisées
+- **Date**: 02/08/2025
+- **Changement**: Ajout contrôle précis d'intensité des couleurs dans l'éditeur salon
+- **Impact**: Personnalisation avancée des boutons "Réserver" avec contrôle granulaire
+- **Détails**: 
+  - ✅ Slider d'intensité 10%-80% pour ajuster opacité couleur
+  - ✅ Conversion automatique hex → RGB avec opacité dynamique
+  - ✅ Fonction getCustomButtonStyle() pour génération style temps réel
+  - ✅ Fallback intelligent vers glass-button-pink si pas de couleur personnalisée
+  - ✅ Aperçu immédiat dans onglet "Couleurs" avec mise à jour temps réel
+  - ✅ Application automatique sur tous les boutons de réservation
+  - ✅ Interface utilisateur intuitive avec labels "Subtile" → "Intense"
+
 ### ✅ Conversion Glassmorphism Complète + Interfaces IA
 - **Date**: 02/08/2025
 - **Changement**: Conversion complète vers glassmorphism unifié pour TOUTES les interfaces
