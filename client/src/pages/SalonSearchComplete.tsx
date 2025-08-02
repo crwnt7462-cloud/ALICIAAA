@@ -172,16 +172,37 @@ export default function SalonSearchComplete() {
               </div>
             </div>
 
-            {/* Bouton Search - plus compact */}
-            <button
+            {/* Bouton Glassmorphism - Rechercher un salon */}
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              whileHover={{ 
+                scale: 1.02,
+                y: -2,
+                transition: { duration: 0.2 }
+              }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => {
                 // Déclencher la recherche avec les paramètres actuels
                 setSearchQuery(searchQuery || "salon");
               }}
-              className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors mb-6"
+              className="relative w-full h-16 rounded-3xl overflow-hidden group mb-6"
+              style={{
+                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+              }}
             >
-              Search
-            </button>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+                <Search className="w-5 h-5 mr-3" />
+                Rechercher un salon
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+            </motion.button>
 
             {/* Texte séparateur */}
             <div className="text-center mb-6">
