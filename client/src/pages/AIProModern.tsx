@@ -178,15 +178,15 @@ export default function AIProModern() {
           className={`w-12 h-12 ${getGenericGlassButton(0)} rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform`}
           onClick={() => setShowChatHistory(!showChatHistory)}
         >
-          <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-white rounded-full"></div>
+          <div className="w-6 h-6 bg-black/40 rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-black rounded-full"></div>
           </div>
         </div>
         
         <div className={`w-12 h-12 ${getGenericGlassButton(1)} rounded-full flex items-center justify-center shadow-lg`}>
-          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+          <div className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center">
             <ArrowLeft 
-              className="w-4 h-4 text-white cursor-pointer" 
+              className="w-4 h-4 text-black cursor-pointer" 
               onClick={() => setLocation('/dashboard')}
             />
           </div>
@@ -196,7 +196,7 @@ export default function AIProModern() {
         {showChatHistory && (
           <div className="absolute top-16 left-6 w-80 backdrop-blur-md bg-white/20 border border-white/30 rounded-2xl shadow-2xl z-50 overflow-hidden chat-history-menu">
             <div className="p-4 backdrop-blur-md bg-white/30 border-b border-white/20">
-              <h3 className="text-gray-900 font-semibold text-lg">Historique des conversations</h3>
+              <h3 className="text-black font-semibold text-lg">Historique des conversations</h3>
             </div>
             
             <div className="max-h-96 overflow-y-auto">
@@ -210,13 +210,13 @@ export default function AIProModern() {
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 backdrop-blur-md bg-white/40 border border-white/30 rounded-full flex items-center justify-center flex-shrink-0">
-                      <div className="w-2 h-2 bg-gray-900 rounded-full"></div>
+                    <div className="w-8 h-8 backdrop-blur-md bg-black/40 border border-black/30 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-2 h-2 bg-black rounded-full"></div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-gray-900 text-sm truncate">{chat.title}</h4>
-                      <p className="text-xs text-gray-700 truncate mt-1">{chat.lastMessage}</p>
-                      <p className="text-xs text-gray-900 mt-1">{chat.date}</p>
+                      <h4 className="font-medium text-black text-sm truncate">{chat.title}</h4>
+                      <p className="text-xs text-gray-800 truncate mt-1">{chat.lastMessage}</p>
+                      <p className="text-xs text-black mt-1">{chat.date}</p>
                     </div>
                   </div>
                 </div>
@@ -225,7 +225,7 @@ export default function AIProModern() {
             
             <div className="p-4 backdrop-blur-md bg-white/20 border-t border-white/20">
               <button 
-                className="w-full text-sm text-gray-900 hover:text-gray-700 font-medium"
+                className="w-full text-sm text-black hover:text-gray-800 font-medium"
                 onClick={() => {
                   // Nouveau chat
                   setMessages([{
@@ -335,10 +335,10 @@ export default function AIProModern() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-gray-900 border outline-none transition-all font-medium ${
+              className={`w-full rounded-full px-6 py-4 text-black border outline-none transition-all font-medium ${
                 isRecording 
                   ? 'bg-red-50 border-red-200 placeholder-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
-                  : 'backdrop-blur-md bg-white/20 border-white/30 placeholder-gray-700 focus:border-white/50 focus:ring-2 focus:ring-white/30 shadow-sm'
+                  : 'backdrop-blur-md bg-white/30 border-black/30 placeholder-gray-800 focus:border-black/50 focus:ring-2 focus:ring-black/30 shadow-sm'
               }`}
               disabled={isLoading || isRecording}
             />

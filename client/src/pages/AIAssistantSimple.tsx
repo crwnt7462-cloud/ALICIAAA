@@ -84,20 +84,20 @@ export default function AIAssistantSimple() {
             <Button
               variant="ghost"
               onClick={() => setLocation('/')}
-              className="h-9 w-9 p-0 rounded-full backdrop-blur-md bg-white/30 border border-white/30 hover:bg-white/40 text-gray-900"
+              className="h-9 w-9 p-0 rounded-full backdrop-blur-md bg-white/40 border border-black/30 hover:bg-white/50 text-black"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 backdrop-blur-md bg-white/40 border border-white/30 rounded-full flex items-center justify-center">
-                <Sparkles className="h-4 w-4 text-gray-900" />
+              <div className="h-8 w-8 backdrop-blur-md bg-white/50 border border-black/30 rounded-full flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-black" />
               </div>
               <div>
-                <h1 className="text-base font-medium text-gray-900">
+                <h1 className="text-base font-medium text-black">
                   Rendly AI
                 </h1>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-800">
                   Assistant beauté
                 </p>
               </div>
@@ -128,13 +128,13 @@ export default function AIAssistantSimple() {
                 <div className={`p-4 rounded-2xl ${
                   message.isFromUser
                     ? 'backdrop-blur-md bg-purple-600/80 border border-purple-500/30 text-white ml-12'
-                    : 'backdrop-blur-md bg-white/40 border border-white/30 text-gray-900'
+                    : 'backdrop-blur-md bg-white/50 border border-black/30 text-black'
                 }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {message.content}
                   </p>
                 </div>
-                <p className={`text-xs text-gray-700 mt-2 ${
+                <p className={`text-xs text-gray-800 mt-2 ${
                   message.isFromUser ? 'text-right mr-12' : 'ml-0'
                 }`}>
                   {message.timestamp}
@@ -159,11 +159,11 @@ export default function AIAssistantSimple() {
                   AI
                 </AvatarFallback>
               </Avatar>
-              <div className="backdrop-blur-md bg-white/40 border border-white/30 p-4 rounded-2xl">
+              <div className="backdrop-blur-md bg-white/50 border border-black/30 p-4 rounded-2xl">
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                 </div>
               </div>
             </div>
@@ -182,7 +182,7 @@ export default function AIAssistantSimple() {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Posez votre question sur la beauté..."
-                className="pr-12 py-3 rounded-2xl backdrop-blur-md bg-white/30 border-white/30 text-gray-900 placeholder-gray-700 focus:border-white/50 focus:ring-white/30 resize-none"
+                className="pr-12 py-3 rounded-2xl backdrop-blur-md bg-white/40 border-black/30 text-black placeholder-gray-800 focus:border-black/50 focus:ring-black/30 resize-none"
                 disabled={aiMutation.isPending}
               />
             </div>
@@ -196,7 +196,7 @@ export default function AIAssistantSimple() {
             </Button>
           </form>
           
-          <p className="text-xs text-gray-700 text-center mt-2">
+          <p className="text-xs text-black text-center mt-2">
             Rendly AI peut faire des erreurs. Vérifiez les informations importantes.
           </p>
         </div>
