@@ -27,6 +27,7 @@ import NotFound from "@/pages/not-found";
 import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
+import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
 // SUPPRIMÉ : Plus aucune référence à SalonExcellenceParis
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
@@ -447,11 +448,11 @@ function Router() {
     );
   }
   
-  // Page détail générique pour autres salons
+  // Page détail générique pour autres salons avec données dynamiques
   if (location.startsWith('/salon/')) {
     return (
       <div className="h-full">
-        <ModernSalonDetail />
+        <ModernSalonDetailNew />
       </div>
     );
   }
