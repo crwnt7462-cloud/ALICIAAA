@@ -21,9 +21,9 @@ export default function BusinessSuccess() {
       <div className="max-w-md mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           {/* Icône de succès */}
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">✓</span>
+          <div className="w-16 h-16 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-8 h-8 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
+              <span className="text-violet-700 font-bold text-lg">✓</span>
             </div>
           </div>
 
@@ -62,7 +62,7 @@ export default function BusinessSuccess() {
           <div className="mt-6 space-y-3">
             <Button
               onClick={() => setLocation("/pro-login")}
-              className="w-full h-10 bg-violet-600 hover:bg-violet-700 text-white font-medium"
+              className="w-full h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 font-medium"
             >
               Accéder à mon espace pro
             </Button>

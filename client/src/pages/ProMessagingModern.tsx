@@ -148,7 +148,7 @@ export default function ProMessagingModern() {
                     <button
                       key={conversation.id}
                       onClick={() => setSelectedConversation(conversation.id)}
-                      className="w-full bg-gray-50 hover:bg-gray-100 rounded-2xl p-4 transition-colors text-left"
+                      className="w-full bg-gray-50 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-2xl p-4 transition-colors text-left"
                     >
                       <div className="flex items-center gap-3">
                         <div className="relative">
@@ -158,7 +158,7 @@ export default function ProMessagingModern() {
                             className="w-12 h-12 rounded-full object-cover"
                           />
                           {conversation.unread > 0 && (
-                            <div className="absolute -top-1 -right-1 bg-violet-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                            <div className="absolute -top-1 -right-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 text-xs rounded-full w-5 h-5 flex items-center justify-center">
                               {conversation.unread}
                             </div>
                           )}
@@ -168,9 +168,9 @@ export default function ProMessagingModern() {
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="font-medium text-gray-900 text-sm">{conversation.client.name}</h3>
                             <span className={`text-xs px-2 py-0.5 rounded-full ${
-                              conversation.client.status === 'VIP' ? 'bg-purple-100 text-purple-600' :
-                              conversation.client.status === 'Fidèle' ? 'bg-green-100 text-green-600' :
-                              'bg-gray-100 text-gray-600'
+                              conversation.client.status === 'VIP' ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-purple-600' :
+                              conversation.client.status === 'Fidèle' ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-600' :
+                              'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-600'
                             }`}>
                               {conversation.client.status}
                             </span>
@@ -219,13 +219,13 @@ export default function ProMessagingModern() {
               </div>
               
               <div className="flex items-center gap-2">
-                <button className="p-2 hover:bg-gray-100 rounded-full">
+                <button className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full">
                   <Phone className="h-5 w-5 text-gray-600" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full">
+                <button className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full">
                   <Video className="h-5 w-5 text-gray-600" />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full">
+                <button className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full">
                   <MoreHorizontal className="h-5 w-5 text-gray-600" />
                 </button>
               </div>
@@ -242,8 +242,8 @@ export default function ProMessagingModern() {
                 <div
                   className={`max-w-xs px-4 py-2 rounded-2xl ${
                     message.sender === 'pro'
-                      ? 'bg-violet-600 text-white'
-                      : 'bg-gray-100 text-gray-900'
+                      ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700'
+                      : 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-gray-900'
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
@@ -260,7 +260,7 @@ export default function ProMessagingModern() {
           {/* Zone de saisie */}
           <div className="bg-white border-t border-gray-200 p-4">
             <div className="flex items-center gap-3">
-              <button className="p-2 hover:bg-gray-100 rounded-full">
+              <button className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full">
                 <Paperclip className="h-5 w-5 text-gray-600" />
               </button>
               
@@ -281,9 +281,9 @@ export default function ProMessagingModern() {
               <button
                 onClick={handleSendMessage}
                 disabled={!messageText.trim()}
-                className="p-2 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 rounded-full transition-colors"
+                className="p-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 disabled:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full transition-colors"
               >
-                <Send className="h-4 w-4 text-white" />
+                <Send className="h-4 w-4 text-violet-700" />
               </button>
             </div>
           </div>

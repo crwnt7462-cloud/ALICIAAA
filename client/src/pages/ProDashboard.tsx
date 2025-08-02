@@ -126,7 +126,7 @@ export default function ProDashboard() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                 <Building2 className="h-6 w-6 text-violet-600" />
               </div>
               <div>
@@ -162,7 +162,7 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <Calendar className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
@@ -176,7 +176,7 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <Users className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
@@ -190,7 +190,7 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <MessageCircle className="h-5 w-5 text-purple-600" />
                 </div>
                 <div>
@@ -204,7 +204,7 @@ export default function ProDashboard() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <Eye className="h-5 w-5 text-orange-600" />
                 </div>
                 <div>
@@ -277,8 +277,8 @@ export default function ProDashboard() {
                     <p className="text-sm text-gray-600">Statut</p>
                     <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
                       bookingPage.isPublished 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-800' 
+                        : 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-yellow-800'
                     }`}>
                       {bookingPage.isPublished ? 'Publiée' : 'Brouillon'}
                     </span>
@@ -309,7 +309,7 @@ export default function ProDashboard() {
                   <p className="text-gray-500 mb-4">Aucune page de réservation créée</p>
                   <Button 
                     onClick={() => setLocation('/booking-customization')}
-                    className="bg-violet-600 hover:bg-violet-700"
+                    className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
                   >
                     Créer ma page
                   </Button>
@@ -331,7 +331,7 @@ export default function ProDashboard() {
                 <div className="space-y-4">
                   {messages.slice(0, 5).map((message) => (
                     <div key={message.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                         <Users className="h-4 w-4 text-violet-600" />
                       </div>
                       <div className="flex-1">
@@ -341,7 +341,7 @@ export default function ProDashboard() {
                             {new Date(message.createdAt).toLocaleDateString()}
                           </span>
                           {!message.isRead && (
-                            <span className="w-2 h-2 bg-violet-600 rounded-full"></span>
+                            <span className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></span>
                           )}
                         </div>
                         <p className="text-sm text-gray-700 mt-1">{message.message}</p>

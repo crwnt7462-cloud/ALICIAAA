@@ -94,7 +94,7 @@ function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPric
       <Button 
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+        className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
       >
         {isProcessing ? (
           <div className="flex items-center gap-2">
@@ -581,7 +581,7 @@ export default function BusinessRegistration() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full h-10 bg-violet-600 hover:bg-violet-700 text-white font-medium"
+                    className="w-full h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 font-medium"
                   >
                     {isLoading ? "Traitement..." : "Finaliser l'inscription"}
                   </Button>
@@ -593,7 +593,7 @@ export default function BusinessRegistration() {
           {/* Plan sélectionné */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
             <h3 className="text-base font-medium text-gray-900 mb-3">Plan sélectionné</h3>
-            <div className={`p-3 rounded-lg bg-gradient-to-r ${currentPlan.color} text-white text-center`}>
+            <div className={`p-3 rounded-lg bg-gradient-to-r ${currentPlan.color} text-violet-700 text-center`}>
               <div className="font-semibold">{currentPlan.name}</div>
               <div className="text-2xl font-bold">{currentPlan.price}€</div>
               <div className="text-sm opacity-90">par mois</div>

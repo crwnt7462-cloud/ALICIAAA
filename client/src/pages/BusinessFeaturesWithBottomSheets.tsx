@@ -37,7 +37,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Partage Salon',
       icon: Share,
       description: 'Lien et QR Code',
-      color: 'bg-blue-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setActiveSheet('share')
     },
     {
@@ -45,7 +45,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Planning',
       icon: Calendar,
       description: `${stats?.todayAppointments} RDV aujourd'hui`,
-      color: 'bg-green-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setLocation('/planning')
     },
     {
@@ -53,7 +53,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Clients',
       icon: Users,
       description: `${stats?.totalClients} clientes`,
-      color: 'bg-purple-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setLocation('/clients')
     },
     {
@@ -61,7 +61,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Stock',
       icon: Package,
       description: `${stats?.stockAlerts} alertes`,
-      color: 'bg-orange-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setActiveSheet('inventory')
     },
     {
@@ -69,7 +69,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Messages',
       icon: MessageCircle,
       description: 'Chat clients',
-      color: 'bg-pink-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setLocation('/pro-messaging')
     },
     {
@@ -77,7 +77,7 @@ export default function BusinessFeaturesWithBottomSheets() {
       title: 'Paramètres',
       icon: Settings,
       description: 'Configuration',
-      color: 'bg-gray-500',
+      color: 'bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20',
       action: () => setActiveSheet('settings')
     }
   ];
@@ -103,7 +103,7 @@ export default function BusinessFeaturesWithBottomSheets() {
               <span className="flex-1 text-sm text-gray-600 truncate">salon-beaute.com/mon-salon</span>
               <button 
                 onClick={handleCopyLink}
-                className="p-2 hover:bg-gray-100 rounded-lg"
+                className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg"
               >
                 <Copy className="h-4 w-4 text-gray-500" />
               </button>
@@ -113,7 +113,7 @@ export default function BusinessFeaturesWithBottomSheets() {
           <div className="bg-gray-50 rounded-2xl p-4">
             <h3 className="font-medium text-gray-900 mb-3">QR Code</h3>
             <div className="bg-white rounded-xl p-4 text-center">
-              <div className="w-32 h-32 bg-gray-200 rounded-xl mx-auto mb-3 flex items-center justify-center">
+              <div className="w-32 h-32 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl mx-auto mb-3 flex items-center justify-center">
                 <QrCode className="h-16 w-16 text-gray-400" />
               </div>
               <p className="text-sm text-gray-600">Scannez pour réserver</p>
@@ -121,11 +121,11 @@ export default function BusinessFeaturesWithBottomSheets() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <button className="h-12 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+            <button className="h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
               <Smartphone className="h-4 w-4" />
               WhatsApp
             </button>
-            <button className="h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium flex items-center justify-center gap-2">
+            <button className="h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-xl text-sm font-medium flex items-center justify-center gap-2">
               <Mail className="h-4 w-4" />
               Email
             </button>
@@ -165,7 +165,7 @@ export default function BusinessFeaturesWithBottomSheets() {
               setActiveSheet(null);
               setLocation('/inventory');
             }}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium"
+            className="w-full h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-2xl text-base font-medium"
           >
             Gérer l'inventaire complet
           </button>
@@ -208,7 +208,7 @@ export default function BusinessFeaturesWithBottomSheets() {
               setActiveSheet(null);
               setLocation('/salon-settings');
             }}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium"
+            className="w-full h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-2xl text-base font-medium"
           >
             Modifier les paramètres
           </button>
@@ -266,10 +266,10 @@ export default function BusinessFeaturesWithBottomSheets() {
                 <button
                   key={tool.id}
                   onClick={tool.action}
-                  className="bg-gray-50 hover:bg-gray-100 rounded-2xl p-6 transition-colors text-left"
+                  className="bg-gray-50 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-2xl p-6 transition-colors text-left"
                 >
                   <div className={`w-12 h-12 ${tool.color} rounded-2xl flex items-center justify-center mb-4`}>
-                    <tool.icon className="h-6 w-6 text-white" />
+                    <tool.icon className="h-6 w-6 text-violet-700" />
                   </div>
                   <h3 className="font-medium text-gray-900 mb-1 text-sm">{tool.title}</h3>
                   <p className="text-xs text-gray-500">{tool.description}</p>
@@ -288,7 +288,7 @@ export default function BusinessFeaturesWithBottomSheets() {
             
             {/* Handle bar */}
             <div className="flex justify-center pt-2 pb-4">
-              <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+              <div className="w-12 h-1 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></div>
             </div>
             
             {/* Header */}
@@ -298,7 +298,7 @@ export default function BusinessFeaturesWithBottomSheets() {
               </h3>
               <button
                 onClick={() => setActiveSheet(null)}
-                className="p-2 hover:bg-gray-100 rounded-full"
+                className="p-2 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"
               >
                 <X className="h-5 w-5 text-gray-500" />
               </button>

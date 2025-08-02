@@ -82,7 +82,7 @@ export default function ProMessagingSimple() {
               <Button
                 variant="ghost"
                 onClick={() => setLocation('/business-features')}
-                className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+                className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
@@ -93,13 +93,13 @@ export default function ProMessagingSimple() {
             </div>
             
             <div className="flex items-center gap-4 text-sm">
-              <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
+              <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-green-800 px-3 py-1 rounded-full">
                 ✓ Messages illimités
               </div>
-              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
+              <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-blue-800 px-3 py-1 rounded-full">
                 ⚡ Temps de réponse 24h
               </div>
-              <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">
+              <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-purple-800 px-3 py-1 rounded-full">
                 🔒 Sécurisé 100%
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function ProMessagingSimple() {
 
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Navigation tabs */}
-        <div className="flex gap-1 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
+        <div className="flex gap-1 mb-6 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 p-1 rounded-lg w-fit">
           <Button
             variant={activeTab === 'conversations' ? 'default' : 'ghost'}
             onClick={() => setActiveTab('conversations')}
@@ -118,7 +118,7 @@ export default function ProMessagingSimple() {
             <MessageCircle className="w-4 h-4 mr-2" />
             Conversations
             {unreadCount > 0 && (
-              <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-0.5">
+              <span className="ml-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 text-xs rounded-full px-2 py-0.5">
                 {unreadCount}
               </span>
             )}
@@ -163,7 +163,7 @@ export default function ProMessagingSimple() {
               >
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center text-violet-700 font-semibold text-sm">
                       {message.clientName.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -172,7 +172,7 @@ export default function ProMessagingSimple() {
                           {message.clientName}
                         </h3>
                         {!message.isRead && (
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <div className="w-2 h-2 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full"></div>
                         )}
                       </div>
                       <p className="text-sm text-gray-600 line-clamp-2 mb-2">
@@ -199,7 +199,7 @@ export default function ProMessagingSimple() {
                 <CardHeader className="border-b">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center text-violet-700 font-semibold">
                         {selectedConversation.clientName.charAt(0)}
                       </div>
                       <div>
@@ -228,7 +228,7 @@ export default function ProMessagingSimple() {
                 <CardContent className="flex-1 p-6 overflow-y-auto">
                   <div className="space-y-4">
                     <div className="flex">
-                      <div className="bg-gray-100 rounded-lg p-3 max-w-xs">
+                      <div className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-lg p-3 max-w-xs">
                         <p className="text-sm">{selectedConversation.message}</p>
                         <span className="text-xs text-gray-500 mt-1 block">
                           {selectedConversation.timestamp}

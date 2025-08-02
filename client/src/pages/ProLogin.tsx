@@ -152,7 +152,7 @@ export default function ProLogin() {
               className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
               onClick={() => console.log('Google login')}
             >
-              <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-6 h-6 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center text-violet-700 text-xs font-bold">
                 G
               </div>
             </Button>
@@ -161,7 +161,7 @@ export default function ProLogin() {
               className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
               onClick={() => console.log('Facebook login')}
             >
-              <div className="w-6 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">
+              <div className="w-6 h-6 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded text-violet-700 text-xs font-bold flex items-center justify-center">
                 f
               </div>
             </Button>
@@ -170,7 +170,7 @@ export default function ProLogin() {
               className="w-16 h-16 rounded-2xl border-gray-200 hover:bg-gray-50"
               onClick={() => console.log('Twitter login')}
             >
-              <div className="w-6 h-6 bg-black rounded text-white text-xs font-bold flex items-center justify-center">
+              <div className="w-6 h-6 bg-black rounded text-violet-700 text-xs font-bold flex items-center justify-center">
                 X
               </div>
             </Button>

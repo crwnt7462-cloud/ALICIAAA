@@ -46,7 +46,7 @@ export default function ProMessagingReal() {
             <Button
               variant="ghost"
               onClick={() => window.history.back()}
-              className="h-10 w-10 p-0 rounded-full hover:bg-gray-100"
+              className="h-10 w-10 p-0 rounded-full hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -78,7 +78,7 @@ export default function ProMessagingReal() {
               </p>
               <Button
                 onClick={() => setShowMessaging(true)}
-                className="bg-violet-600 hover:bg-violet-700 text-white"
+                className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700"
               >
                 Ouvrir la messagerie
               </Button>
@@ -91,7 +91,7 @@ export default function ProMessagingReal() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <MessageCircle className="h-5 w-5 text-violet-600" />
                 </div>
                 <div>
@@ -108,7 +108,7 @@ export default function ProMessagingReal() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <User className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
@@ -125,7 +125,7 @@ export default function ProMessagingReal() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-full flex items-center justify-center">
                   <MessageCircle className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>

@@ -55,8 +55,8 @@ export default function BusinessFeaturesOriginal() {
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
+              <div className="w-10 h-10 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-xl flex items-center justify-center">
+                <span className="text-violet-700 font-bold text-lg">S</span>
               </div>
               <h1 className="text-lg font-semibold text-gray-900">Salon Manager</h1>
             </div>
@@ -77,16 +77,16 @@ export default function BusinessFeaturesOriginal() {
         <Card className="border-0 shadow-lg bg-gradient-to-br from-gray-50 to-violet-50/30">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-violet-600 rounded-2xl flex items-center justify-center">
-                <MessageCircle className="h-6 w-6 text-white" />
+              <div className="w-12 h-12 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-2xl flex items-center justify-center">
+                <MessageCircle className="h-6 w-6 text-violet-700" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <h2 className="text-xl font-semibold text-gray-900">Messagerie Pro</h2>
-                  <div className="w-4 h-4 bg-violet-600 rounded-sm flex items-center justify-center">
-                    <Crown className="h-2 w-2 text-white" />
+                  <div className="w-4 h-4 bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 rounded-sm flex items-center justify-center">
+                    <Crown className="h-2 w-2 text-violet-700" />
                   </div>
-                  <Badge className="bg-violet-600 text-white px-2 py-1 text-xs font-medium rounded-full">
+                  <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 px-2 py-1 text-xs font-medium rounded-full">
                     Premium
                   </Badge>
                 </div>
@@ -111,7 +111,7 @@ export default function BusinessFeaturesOriginal() {
 
                 <Button 
                   onClick={handleMessagingClick}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg"
+                  className="w-full bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 hover:bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 font-medium py-3 rounded-lg"
                 >
                   Messages
                 </Button>
@@ -191,7 +191,7 @@ export default function BusinessFeaturesOriginal() {
                   <CreditCard className="h-5 w-5 text-gray-600" />
                   <span className="font-medium text-gray-900">Carte bancaire</span>
                 </div>
-                <Badge className="bg-violet-600 text-white rounded-full">Actif</Badge>
+                <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full">Actif</Badge>
               </div>
               
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
@@ -199,7 +199,7 @@ export default function BusinessFeaturesOriginal() {
                   <Banknote className="h-5 w-5 text-gray-600" />
                   <span className="font-medium text-gray-900">Espèces</span>
                 </div>
-                <Badge className="bg-violet-600 text-white rounded-full">Actif</Badge>
+                <Badge className="bg-violet-500/30 backdrop-blur-md border border-violet-300/20 shadow-lg shadow-violet-500/20 text-violet-700 rounded-full">Actif</Badge>
               </div>
             </div>
           </div>
