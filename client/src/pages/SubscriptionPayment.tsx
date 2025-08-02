@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 interface SubscriptionPaymentProps {
   subscriptionId: string;
@@ -239,7 +240,7 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
                   onClick={() => setSelectedPaymentMethod(method.id)}
                   className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                     selectedPaymentMethod === method.id
-                      ? "border-violet-500 bg-violet-50"
+                      ? "border-pink-500 bg-pink-50"
                       : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -260,7 +261,7 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
                     </div>
                     <div className={`w-5 h-5 rounded-full border-2 ${
                       selectedPaymentMethod === method.id
-                        ? "border-violet-500 bg-violet-500"
+                        ? "border-pink-500 bg-pink-500"
                         : "border-gray-300"
                     }`}>
                       {selectedPaymentMethod === method.id && (
@@ -288,7 +289,7 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
         <Button
           onClick={handlePayment}
           disabled={!selectedPaymentMethod || isProcessing}
-          className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 text-lg"
+          className={`w-full ${getGenericGlassButton(0)} py-3 text-lg font-semibold`}
         >
           {isProcessing ? (
             <>

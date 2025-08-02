@@ -16,6 +16,7 @@ import {
   Camera
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface SalonData {
@@ -291,7 +292,7 @@ export default function SalonSettingsComplete() {
             <Button
               type="submit"
               disabled={saveMutation.isPending}
-              className="bg-violet-600 hover:bg-violet-700"
+              className={getGenericGlassButton(0)}
             >
               <Save className="h-4 w-4 mr-2" />
               {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}

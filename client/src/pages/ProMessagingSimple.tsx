@@ -16,6 +16,7 @@ import {
   Video,
   Star
 } from 'lucide-react';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Message {
   id: number;
@@ -249,7 +250,7 @@ export default function ProMessagingSimple() {
                     <Button 
                       onClick={handleSendReply}
                       disabled={!replyText.trim()}
-                      className="bg-violet-600 hover:bg-violet-700 px-6"
+                      className={`${getGenericGlassButton(0)} px-6`}
                     >
                       <Send className="w-4 h-4" />
                     </Button>

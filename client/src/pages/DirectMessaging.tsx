@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 interface Message {
   id: string;
@@ -283,7 +284,7 @@ export default function DirectMessaging() {
                 <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">Messages</span>
                 <span className="sm:hidden">Chat</span>
-                <Badge className="bg-violet-500 text-white text-xs">3</Badge>
+                <Badge className="bg-pink-500 text-white text-xs">3</Badge>
               </button>
               <button
                 onClick={() => setActiveTab('clients')}
@@ -357,7 +358,7 @@ export default function DirectMessaging() {
                               {formatTime(conversation.lastMessageTime)}
                             </span>
                             {conversation.unreadCount > 0 && (
-                              <Badge className="bg-violet-500 text-white min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 text-xs rounded-full">
+                              <Badge className="bg-indigo-500 text-white min-w-[18px] h-4 sm:min-w-[20px] sm:h-5 text-xs rounded-full">
                                 {conversation.unreadCount}
                               </Badge>
                             )}

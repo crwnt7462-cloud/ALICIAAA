@@ -25,6 +25,7 @@ import {
   Sparkles,
   CreditCard
 } from "lucide-react";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 const businessInfoSchema = z.object({
   planType: z.enum(["basic", "premium"]),
@@ -324,7 +325,7 @@ export default function SubscriptionSignup({ selectedPlan = "basic" }: Subscript
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3"
+                  className={`w-full ${getGenericGlassButton(1)} py-3 font-semibold`}
                 >
                   {isSubmitting ? (
                     "Enregistrement..."

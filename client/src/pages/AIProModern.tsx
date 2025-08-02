@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Message {
   id: string;
@@ -174,7 +175,7 @@ export default function AIProModern() {
       {/* Header violet */}
       <div className="px-6 py-4 flex items-center justify-between relative">
         <div 
-          className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform"
+          className={`w-12 h-12 ${getGenericGlassButton(0)} rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform`}
           onClick={() => setShowChatHistory(!showChatHistory)}
         >
           <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
@@ -182,7 +183,7 @@ export default function AIProModern() {
           </div>
         </div>
         
-        <div className="w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+        <div className={`w-12 h-12 ${getGenericGlassButton(1)} rounded-full flex items-center justify-center shadow-lg`}>
           <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
             <ArrowLeft 
               className="w-4 h-4 text-white cursor-pointer" 
@@ -347,7 +348,7 @@ export default function AIProModern() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             size="sm"
-            className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+            className={`w-12 h-12 rounded-full ${getGenericGlassButton(2)} border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105`}
           >
             <Send className="w-5 h-5 text-white" />
           </Button>
@@ -358,7 +359,7 @@ export default function AIProModern() {
             className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
               isRecording 
                 ? 'bg-red-500 hover:bg-red-400' 
-                : 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500'
+                : getGenericGlassButton(3)
             }`}
           >
             {isRecording ? (

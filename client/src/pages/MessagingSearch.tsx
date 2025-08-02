@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Search, MessageCircle, ArrowLeft, User, Building2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface Professional {
@@ -125,7 +126,7 @@ export default function MessagingSearch() {
               <Button 
                 onClick={handleSearch}
                 disabled={isLoading}
-                className="bg-violet-600 hover:bg-violet-700"
+                className={getGenericGlassButton(0)}
               >
                 {isLoading ? 'Recherche...' : 'Rechercher'}
               </Button>
@@ -212,7 +213,7 @@ export default function MessagingSearch() {
               <Button
                 onClick={handleSendMessage}
                 disabled={sendMessageMutation.isPending || !message.trim()}
-                className="w-full bg-violet-600 hover:bg-violet-700"
+                className={`w-full ${getGenericGlassButton(1)} font-semibold`}
               >
                 {sendMessageMutation.isPending ? 'Envoi...' : 'Envoyer le message'}
               </Button>

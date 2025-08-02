@@ -17,6 +17,7 @@ import {
   ArrowLeftRight
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface PaymentMethod {
@@ -178,7 +179,7 @@ export default function PaymentMethodsSimple() {
               </div>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-violet-600 hover:bg-violet-700">
+                  <Button className={getGenericGlassButton(0)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Ajouter une méthode
                   </Button>
@@ -241,7 +242,7 @@ export default function PaymentMethodsSimple() {
                       <Button
                         onClick={handleAddMethod}
                         disabled={addMethodMutation.isPending}
-                        className="flex-1 bg-violet-600 hover:bg-violet-700"
+                        className={`flex-1 ${getGenericGlassButton(1)} font-semibold`}
                       >
                         {addMethodMutation.isPending ? 'Ajout...' : 'Ajouter'}
                       </Button>

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -158,7 +159,7 @@ export default function Landing() {
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full glass-button neon-violet rounded-xl py-3 text-white font-medium"
+            className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium`}
             onClick={() => setLocation('/dashboard')}
           >
             Accéder au tableau de bord
@@ -168,7 +169,7 @@ export default function Landing() {
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full glass-button-secondary rounded-xl py-3 font-medium"
+            className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
             onClick={() => setLocation('/client-login')}
           >
             Espace client

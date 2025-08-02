@@ -11,6 +11,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { useMutation } from '@tanstack/react-query';
 
 export default function ForgotPassword() {
@@ -122,7 +123,7 @@ export default function ForgotPassword() {
                 <Button
                   type="submit"
                   disabled={resetMutation.isPending}
-                  className="w-full bg-violet-600 hover:bg-violet-700"
+                  className={`w-full ${getGenericGlassButton(0)} font-semibold`}
                 >
                   {resetMutation.isPending ? 'Envoi en cours...' : 'Envoyer le lien'}
                 </Button>
@@ -162,7 +163,7 @@ export default function ForgotPassword() {
                 </div>
                 <Button
                   onClick={() => setStep('form')}
-                  className="w-full bg-violet-600 hover:bg-violet-700"
+                  className={`w-full ${getGenericGlassButton(1)} font-semibold`}
                 >
                   Réessayer
                 </Button>

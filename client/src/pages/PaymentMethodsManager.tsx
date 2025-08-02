@@ -14,6 +14,7 @@ import {
   Check
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface PaymentMethod {
@@ -151,7 +152,7 @@ export default function PaymentMethodsManager() {
               </div>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-violet-600 hover:bg-violet-700">
+                  <Button className={getGenericGlassButton(0)}>
                     <Plus className="h-4 w-4 mr-2" />
                     Ajouter une méthode
                   </Button>
@@ -221,7 +222,7 @@ export default function PaymentMethodsManager() {
                     <Button
                       onClick={handleAddMethod}
                       disabled={addMethodMutation.isPending}
-                      className="w-full bg-violet-600 hover:bg-violet-700"
+                      className={`w-full ${getGenericGlassButton(1)} font-semibold`}
                     >
                       {addMethodMutation.isPending ? 'Ajout...' : 'Ajouter la méthode'}
                     </Button>
@@ -299,7 +300,7 @@ export default function PaymentMethodsManager() {
                 <p className="text-gray-600 mb-4">Ajoutez vos méthodes de paiement pour que les clients puissent réserver</p>
                 <Button 
                   onClick={() => setIsAddDialogOpen(true)}
-                  className="bg-violet-600 hover:bg-violet-700"
+                  className={getGenericGlassButton(2)}
                 >
                   Ajouter ma première méthode
                 </Button>

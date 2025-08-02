@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ServiceOnglerie() {
   const [, setLocation] = useLocation();
@@ -138,7 +139,7 @@ export default function ServiceOnglerie() {
                   <span className="text-green-600 text-sm font-medium">
                     Disponible: {nailbar.nextSlot}
                   </span>
-                  <Button size="sm" className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white">
+                  <Button size="sm" className={getGenericGlassButton(0)}>
                     Réserver
                   </Button>
                 </div>
@@ -148,7 +149,7 @@ export default function ServiceOnglerie() {
         </Card>
 
         <Button 
-          className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white"
+          className={`w-full ${getGenericGlassButton(1)} font-semibold`}
           onClick={() => setLocation('/search-results?service=onglerie')}
         >
           Voir tous les nail bars

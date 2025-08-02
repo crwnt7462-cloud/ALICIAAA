@@ -25,6 +25,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Service {
   id: number;
@@ -511,7 +512,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditing(!isEditing)}
-                className={`text-gray-700 ${isEditing ? 'bg-violet-100 text-violet-700' : 'hover:bg-gray-100'}`}
+                className={`text-gray-700 ${isEditing ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'}`}
               >
                 <Edit3 className="w-4 h-4 mr-1" />
                 {isEditing ? 'Mode Aperçu' : 'Modifier'}
@@ -521,7 +522,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   size="sm"
                   onClick={handleSave}
                   disabled={saveMutation.isPending}
-                  className="bg-violet-600 hover:bg-violet-700 text-white"
+                  className={getGenericGlassButton(0)}
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
