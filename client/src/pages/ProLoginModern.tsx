@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import rendlyLogo from "@assets/3_1753714421825.png";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ProLoginModern() {
   const [, setLocation] = useLocation();
@@ -145,7 +146,7 @@ export default function ProLoginModern() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 glass-button rounded-2xl text-base font-medium"
+                className={`w-full h-12 ${getGenericGlassButton(0)} rounded-2xl text-base font-medium`}
               >
                 {isLoading ? "Connexion..." : "Sign in"}
               </button>

@@ -18,6 +18,7 @@ import {
   Star
 } from "lucide-react";
 import rendlyLogo from "@assets/3_1753714421825.png";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ClientLoginWhite() {
   const [, setLocation] = useLocation();
@@ -122,7 +123,7 @@ export default function ClientLoginWhite() {
 
             <div className="space-y-6">
               {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all duration-300">
+                <div key={index} className={`flex items-start gap-4 p-4 ${getGenericGlassButton(index)} rounded-lg transition-all duration-300`}>
                   <div className="text-gray-600 mt-1">
                     {benefit.icon}
                   </div>
@@ -149,14 +150,14 @@ export default function ClientLoginWhite() {
                   <Button
                     variant={isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(true)}
-                    className={`px-6 py-2 text-sm rounded-md font-medium ${isLogin ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
+                    className={`px-6 py-2 text-sm rounded-md font-medium ${isLogin ? `${getGenericGlassButton(0)} text-white` : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
                   >
                     Connexion
                   </Button>
                   <Button
                     variant={!isLogin ? "default" : "ghost"}
                     onClick={() => setIsLogin(false)}
-                    className={`px-6 py-2 text-sm rounded-md font-medium ${!isLogin ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
+                    className={`px-6 py-2 text-sm rounded-md font-medium ${!isLogin ? `${getGenericGlassButton(1)} text-white` : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}
                   >
                     Inscription
                   </Button>
@@ -176,7 +177,7 @@ export default function ClientLoginWhite() {
                         required
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="border-gray-200 focus:border-violet-400 h-10"
+                        className="glass-input h-10"
                         placeholder="Votre prénom"
                       />
                     </div>
@@ -188,7 +189,7 @@ export default function ClientLoginWhite() {
                         required
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="border-gray-200 focus:border-violet-400 h-10"
+                        className="glass-input h-10"
                         placeholder="Votre nom"
                       />
                     </div>
@@ -204,7 +205,7 @@ export default function ClientLoginWhite() {
                       required
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="border-gray-200 focus:border-violet-400 pl-10 h-10"
+                      className="glass-input pl-10 h-10"
                       placeholder="votre@email.com"
                     />
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -220,7 +221,7 @@ export default function ClientLoginWhite() {
                       required
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="border-gray-200 focus:border-violet-400 pl-10 pr-10 h-10"
+                      className="glass-input pl-10 pr-10 h-10"
                       placeholder="••••••••"
                     />
                     <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -246,7 +247,7 @@ export default function ClientLoginWhite() {
                           required
                           value={formData.confirmPassword}
                           onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                          className="border-gray-200 focus:border-violet-400 pl-10 h-10"
+                          className="glass-input pl-10 h-10"
                           placeholder="••••••••"
                         />
                         <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -261,7 +262,7 @@ export default function ClientLoginWhite() {
                         required
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="border-gray-200 focus:border-violet-400 h-10"
+                        className="glass-input h-10"
                         placeholder="06 12 34 56 78"
                       />
                     </div>
@@ -270,7 +271,7 @@ export default function ClientLoginWhite() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white font-medium py-2 h-10 rounded-md"
+                  className={`w-full ${getGenericGlassButton(2)} text-white font-medium py-2 h-10 rounded-md`}
                 >
                   {isLogin ? "Se connecter" : "Créer mon compte"}
                 </Button>

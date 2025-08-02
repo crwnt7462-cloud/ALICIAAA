@@ -7,6 +7,7 @@ import {
   ArrowLeft, Settings, Bell, Calendar, Users, CreditCard, 
   MessageCircle, BarChart3, Package, Globe, Crown, Star
 } from "lucide-react";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function BusinessFeaturesModern() {
   const { toast } = useToast();
@@ -175,7 +176,7 @@ export default function BusinessFeaturesModern() {
             <div className="space-y-3">
               <button
                 onClick={() => setLocation('/booking')}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors"
+                className={`w-full h-12 ${getGenericGlassButton(0)} text-white rounded-2xl text-base font-medium transition-colors`}
               >
                 Nouveau rendez-vous
               </button>

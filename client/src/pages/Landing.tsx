@@ -159,7 +159,7 @@ export default function Landing() {
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
-            className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium`}
+            className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
             onClick={() => setLocation('/dashboard')}
           >
             Accéder au tableau de bord

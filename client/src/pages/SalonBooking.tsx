@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { getGenericGlassButton } from "@/lib/salonColors";
 import { apiRequest } from "@/lib/queryClient";
 import {
   ArrowLeft, ChevronDown, ChevronUp, Eye, EyeOff, X
@@ -88,7 +89,7 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
       <Button 
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+        className={`w-full ${getGenericGlassButton(0)} text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all`}
       >
         {isProcessing ? (
           <div className="flex items-center gap-2">
