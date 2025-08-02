@@ -496,19 +496,7 @@ export default function SalonPageEditor() {
                             {!isEditing ? (
                               <Button 
                                 size="sm" 
-                                className="mt-2"
-                                style={{
-                                  background: 'rgba(255, 255, 255, 0.2)',
-                                  backdropFilter: 'blur(15px) saturate(180%)',
-                                  WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                                  border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}40`,
-                                  boxShadow: `0 8px 32px ${salonData.customColors?.primary || '#f59e0b'}20`,
-                                  color: '#374151',
-                                  borderRadius: '8px',
-                                  fontWeight: '500',
-                                  fontSize: '14px',
-                                  padding: '8px 16px'
-                                } as React.CSSProperties}
+                                className="mt-2 glass-button-pink"
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -750,17 +738,7 @@ export default function SalonPageEditor() {
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
                     <button
-                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.22)',
-                        backdropFilter: 'blur(15px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-                        border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}45`,
-                        boxShadow: `0 8px 32px ${salonData.customColors?.primary || '#f59e0b'}20`,
-                        color: '#374151',
-                        borderRadius: '8px',
-                        fontWeight: '500'
-                      }}
+                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-pink"
                     >
                       Réserver maintenant
                     </button>
@@ -777,18 +755,7 @@ export default function SalonPageEditor() {
                       Voir les avis
                     </button>
                     <button
-                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
-                      style={{
-                        background: 'rgba(255, 255, 255, 0.18)',
-                        backdropFilter: 'blur(12px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-                        border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}40`,
-                        boxShadow: `0 4px 16px ${salonData.customColors?.primary || '#f59e0b'}15`,
-                        color: '#374151',
-                        borderRadius: '8px',
-                        fontWeight: '500',
-                        fontSize: '14px'
-                      }}
+                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-pink"
                     >
                       Réserver
                     </button>
@@ -849,18 +816,7 @@ export default function SalonPageEditor() {
           borderTop: '1px solid rgba(255, 255, 255, 0.2)'
         }}>
           <Button 
-            className="w-full py-3 text-lg font-semibold rounded-xl"
-            style={{
-              background: 'rgba(255, 255, 255, 0.25)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              border: `1px solid ${salonData.customColors?.primary || '#f59e0b'}50`,
-              boxShadow: `0 12px 40px ${salonData.customColors?.primary || '#f59e0b'}25`,
-              color: '#374151',
-              borderRadius: '12px',
-              fontWeight: '600',
-              fontSize: '16px'
-            } as React.CSSProperties}
+            className="w-full py-3 text-lg font-semibold rounded-xl glass-button-pink px-6"
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
