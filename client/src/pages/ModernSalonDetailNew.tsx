@@ -60,29 +60,7 @@ export default function ModernSalonDetail() {
     retry: 2
   });
   
-  // Si en cours de chargement
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-  
-  // Si erreur ou salon non trouvé
-  if (error || !salonData) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center">
-        <h2 className="text-xl font-semibold mb-4">Salon non trouvé</h2>
-        <p className="text-gray-600 mb-6">Ce salon n'existe pas ou a été supprimé.</p>
-        <Button onClick={() => setLocation('/salon-search-complete')}>
-          Retour à la recherche
-        </Button>
-      </div>
-    );
-  }
-  
-  console.log('🏪 Données salon récupérées:', salonData.name, 'ID:', salonId);
+  console.log('🏪 Données salon récupérées:', salonData?.name, 'ID:', salonId);
   const [serviceCategories, setServiceCategories] = useState([
     {
       id: 1,
@@ -171,6 +149,28 @@ export default function ModernSalonDetail() {
       ]
     }
   ]);
+
+  // Si en cours de chargement
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+  
+  // Si erreur ou salon non trouvé
+  if (error || !salonData) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <h2 className="text-xl font-semibold mb-4">Salon non trouvé</h2>
+        <p className="text-gray-600 mb-6">Ce salon n'existe pas ou a été supprimé.</p>
+        <Button onClick={() => setLocation('/salon-search-complete')}>
+          Retour à la recherche
+        </Button>
+      </div>
+    );
+  }
 
   // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
   const salon = {
