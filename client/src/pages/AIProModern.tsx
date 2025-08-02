@@ -194,38 +194,38 @@ export default function AIProModern() {
 
         {/* Menu historique des chats dépliable */}
         {showChatHistory && (
-          <div className="absolute top-16 left-6 w-80 bg-white rounded-2xl shadow-2xl border border-purple-100 z-50 overflow-hidden chat-history-menu">
-            <div className="p-4 bg-gradient-to-r from-purple-500 to-violet-600">
-              <h3 className="text-white font-semibold text-lg">Historique des conversations</h3>
+          <div className="absolute top-16 left-6 w-80 backdrop-blur-md bg-white/20 border border-white/30 rounded-2xl shadow-2xl z-50 overflow-hidden chat-history-menu">
+            <div className="p-4 backdrop-blur-md bg-white/30 border-b border-white/20">
+              <h3 className="text-gray-900 font-semibold text-lg">Historique des conversations</h3>
             </div>
             
             <div className="max-h-96 overflow-y-auto">
               {chatHistory.map((chat) => (
                 <div 
                   key={chat.id}
-                  className="p-4 border-b border-gray-100 hover:bg-purple-50 cursor-pointer transition-colors"
+                  className="p-4 border-b border-white/20 hover:bg-white/30 cursor-pointer transition-colors"
                   onClick={() => {
                     // Charger la conversation
                     setShowChatHistory(false);
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-violet-500 rounded-full flex items-center justify-center flex-shrink-0">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-8 h-8 backdrop-blur-md bg-white/40 border border-white/30 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-2 h-2 bg-gray-900 rounded-full"></div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-gray-900 text-sm truncate">{chat.title}</h4>
-                      <p className="text-xs text-gray-500 truncate mt-1">{chat.lastMessage}</p>
-                      <p className="text-xs text-purple-500 mt-1">{chat.date}</p>
+                      <p className="text-xs text-gray-700 truncate mt-1">{chat.lastMessage}</p>
+                      <p className="text-xs text-gray-900 mt-1">{chat.date}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="p-4 bg-gray-50 border-t border-gray-100">
+            <div className="p-4 backdrop-blur-md bg-white/20 border-t border-white/20">
               <button 
-                className="w-full text-sm text-purple-600 hover:text-purple-700 font-medium"
+                className="w-full text-sm text-gray-900 hover:text-gray-700 font-medium"
                 onClick={() => {
                   // Nouveau chat
                   setMessages([{
@@ -335,10 +335,10 @@ export default function AIProModern() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-purple-900 border outline-none transition-all font-medium ${
+              className={`w-full rounded-full px-6 py-4 text-gray-900 border outline-none transition-all font-medium ${
                 isRecording 
                   ? 'bg-red-50 border-red-200 placeholder-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
-                  : 'bg-gradient-to-r from-purple-50 to-violet-50 border-purple-300 placeholder-purple-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-300 shadow-sm'
+                  : 'backdrop-blur-md bg-white/20 border-white/30 placeholder-gray-700 focus:border-white/50 focus:ring-2 focus:ring-white/30 shadow-sm'
               }`}
               disabled={isLoading || isRecording}
             />

@@ -82,15 +82,15 @@ export default function ChatGPTInterface() {
   };
 
   return (
-    <div className="h-screen bg-white flex flex-col">
-      {/* Header minimal */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+    <div className="h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col">
+      {/* Header minimal glassmorphism */}
+      <div className="flex items-center justify-between p-4 backdrop-blur-md bg-white/20 border-b border-white/30">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setLocation('/dashboard')}
-            className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+            className="h-8 w-8 p-0 rounded-full backdrop-blur-md bg-white/30 border border-white/30 hover:bg-white/40 text-gray-900"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -114,8 +114,8 @@ export default function ChatGPTInterface() {
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'bg-blue-500 text-white ml-12'
-                  : 'bg-gray-100 text-gray-900 mr-12'
+                  ? 'backdrop-blur-md bg-blue-500/80 border border-blue-400/30 text-white ml-12'
+                  : 'backdrop-blur-md bg-white/40 border border-white/30 text-gray-900 mr-12'
               }`}
             >
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -136,12 +136,12 @@ export default function ChatGPTInterface() {
         {/* Indicateur de frappe */}
         {chatMutation.isPending && (
           <div className="flex justify-start">
-            <div className="bg-gray-100 rounded-2xl px-4 py-3 mr-12">
+            <div className="backdrop-blur-md bg-white/40 border border-white/30 rounded-2xl px-4 py-3 mr-12">
               <div className="flex items-center space-x-1">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
                 <span className="text-xs text-gray-500 ml-2">Assistant répond...</span>
               </div>
@@ -152,8 +152,8 @@ export default function ChatGPTInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Zone de saisie */}
-      <div className="border-t border-gray-200 p-4">
+      {/* Zone de saisie glassmorphism */}
+      <div className="backdrop-blur-md bg-white/20 border-t border-white/30 p-4">
         <div className="flex items-end gap-3 max-w-4xl mx-auto">
           <div className="flex-1 relative">
             <Input
@@ -162,21 +162,21 @@ export default function ChatGPTInterface() {
               onKeyPress={handleKeyPress}
               placeholder="Tapez votre message..."
               disabled={chatMutation.isPending}
-              className="min-h-[48px] pr-12 rounded-3xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 resize-none"
+              className="min-h-[48px] pr-12 rounded-3xl backdrop-blur-md bg-white/30 border-white/30 text-gray-900 placeholder-gray-700 focus:border-white/50 focus:ring-white/30 resize-none"
               style={{ paddingTop: '12px', paddingBottom: '12px' }}
             />
           </div>
           <Button
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || chatMutation.isPending}
-            className="h-12 w-12 rounded-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 flex-shrink-0"
+            className="h-12 w-12 rounded-full backdrop-blur-md bg-blue-500/80 border border-blue-400/30 hover:bg-blue-600/80 disabled:bg-gray-300/50 flex-shrink-0"
           >
             <Send className="h-5 w-5" />
           </Button>
         </div>
         
         {/* Note informative */}
-        <p className="text-xs text-gray-500 text-center mt-2 max-w-4xl mx-auto">
+        <p className="text-xs text-gray-700 text-center mt-2 max-w-4xl mx-auto">
           L'assistant IA peut vous aider avec la gestion de votre salon, vos rendez-vous, et répondre à vos questions.
         </p>
       </div>
