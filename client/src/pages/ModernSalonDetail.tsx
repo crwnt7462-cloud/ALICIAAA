@@ -171,6 +171,9 @@ export default function ModernSalonDetail() {
     }
   }, [salonData]);
 
+  // DEBUG: Forcer l'affichage des données API
+  console.log('🏪 Données salon récupérées:', salonData?.name, 'ID:', salonId);
+  
   // Utiliser les vraies données de l'API ou fallback
   const salon = {
     id: salonData?.id || 1,

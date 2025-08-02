@@ -599,23 +599,24 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const actualId = (id === 'auto-generated' || id === 'undefined') ? 'salon-demo' : id;
       console.log('💾 ID corrigé pour sauvegarde:', actualId);
       
-      // Sauvegarder avec l'ID corrigé
+      // Sauvegarder avec l'ID corrigé - FORCER LA SAUVEGARDE DIRECTE
       let savedSalon;
-      if (storage.updateBookingPage) {
-        console.log('💾 Sauvegarde salon dans le stockage avec ID:', actualId);
-        savedSalon = await storage.updateBookingPage(actualId, salonData);
-        console.log('✅ Salon sauvegardé avec succès dans le stockage:', actualId);
+      
+      // TOUJOURS sauvegarder directement dans storage.salons pour assurer la synchronisation
+      if (storage.salons) {
+        const existingSalon = storage.salons.get(actualId) || {};
+        const updatedSalon = { ...existingSalon, ...salonData, id: actualId };
+        storage.salons.set(actualId, updatedSalon);
+        savedSalon = updatedSalon;
+        console.log('✅ FORÇAGE SAUVEGARDE - Salon sauvegardé directement:', actualId, 'Nom:', updatedSalon.name);
       } else {
-        // Sauvegarder directement dans storage.salons si pas de méthode updateBookingPage
-        if (storage.salons) {
-          const existingSalon = storage.salons.get(actualId) || {};
-          const updatedSalon = { ...existingSalon, ...salonData, id: actualId };
-          storage.salons.set(actualId, updatedSalon);
-          savedSalon = updatedSalon;
-          console.log('✅ Salon sauvegardé directement dans Map:', actualId);
-        } else {
-          savedSalon = { ...salonData, id: actualId };
-        }
+        savedSalon = { ...salonData, id: actualId };
+      }
+      
+      // Sauvegarde additionnelle avec méthode updateBookingPage si elle existe
+      if (storage.updateBookingPage) {
+        console.log('💾 Sauvegarde additionnelle avec updateBookingPage:', actualId);
+        await storage.updateBookingPage(actualId, salonData);
       }
       
       // 🔥 INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE PUBLIC
@@ -1027,6 +1028,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       console.log('✅ Salon trouvé:', salon.name);
+      console.log('🔍 Données complètes salon:', JSON.stringify(salon, null, 2));
       res.json(salon); // Renvoyer directement les données du salon
     } catch (error) {
       console.error('❌ Erreur récupération salon:', error);
