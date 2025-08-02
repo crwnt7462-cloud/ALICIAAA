@@ -288,7 +288,10 @@ export default function SalonSearchComplete() {
               <div 
                 key={salon.id}
                 className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => setLocation(`/salon/${salon.id}`)}
+                onClick={() => {
+                  console.log('🔗 CLIC SALON - Redirection vers:', `/salon/${salon.id}`, 'Nom:', salon.name);
+                  setLocation(`/salon/${salon.id}`);
+                }}
               >
                 {/* Photo du salon en haut */}
                 <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
