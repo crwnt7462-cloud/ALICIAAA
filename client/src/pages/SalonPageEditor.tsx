@@ -498,11 +498,11 @@ export default function SalonPageEditor() {
                                 size="sm" 
                                 className="mt-2"
                                 style={{
-                                  background: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.85))`,
-                                  backdropFilter: 'blur(12px) saturate(180%)',
-                                  WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-                                  border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 25%, rgba(255, 255, 255, 0.4))`,
-                                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                                  background: 'rgba(245, 158, 11, 0.25)',
+                                  backdropFilter: 'blur(15px) saturate(180%)',
+                                  WebkitBackdropFilter: 'blur(15px) saturate(180%)',
+                                  border: '1px solid rgba(245, 158, 11, 0.4)',
+                                  boxShadow: '0 8px 32px rgba(245, 158, 11, 0.2)',
                                   color: '#374151',
                                   borderRadius: '8px',
                                   fontWeight: '500',
@@ -752,11 +752,17 @@ export default function SalonPageEditor() {
                     <button
                       className="px-6 py-3 rounded-lg font-medium transition-all duration-300"
                       style={{
-                        background: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, rgba(255, 255, 255, 0.85))`,
-                        backdropFilter: 'blur(12px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
-                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 25%, rgba(255, 255, 255, 0.4))`,
-                        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                        background: salonData.customColors?.primary 
+                          ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.25)`
+                          : 'rgba(245, 158, 11, 0.25)',
+                        backdropFilter: 'blur(15px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(15px) saturate(180%)',
+                        border: salonData.customColors?.primary 
+                          ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.4)`
+                          : '1px solid rgba(245, 158, 11, 0.4)',
+                        boxShadow: salonData.customColors?.primary 
+                          ? `0 8px 32px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2)`
+                          : '0 8px 32px rgba(245, 158, 11, 0.2)',
                         color: '#374151',
                         borderRadius: '8px',
                         fontWeight: '500'
@@ -779,11 +785,17 @@ export default function SalonPageEditor() {
                     <button
                       className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300"
                       style={{
-                        background: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 12%, rgba(255, 255, 255, 0.85))`,
-                        backdropFilter: 'blur(10px) saturate(180%)',
-                        WebkitBackdropFilter: 'blur(10px) saturate(180%)',
-                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 22%, rgba(255, 255, 255, 0.4))`,
-                        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+                        background: salonData.customColors?.primary 
+                          ? `rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.2)`
+                          : 'rgba(245, 158, 11, 0.2)',
+                        backdropFilter: 'blur(12px) saturate(180%)',
+                        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+                        border: salonData.customColors?.primary 
+                          ? `1px solid rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.35)`
+                          : '1px solid rgba(245, 158, 11, 0.35)',
+                        boxShadow: salonData.customColors?.primary 
+                          ? `0 4px 16px rgba(${parseInt(salonData.customColors.primary.slice(1,3), 16)}, ${parseInt(salonData.customColors.primary.slice(3,5), 16)}, ${parseInt(salonData.customColors.primary.slice(5,7), 16)}, 0.15)`
+                          : '0 4px 16px rgba(245, 158, 11, 0.15)',
                         color: '#374151',
                         borderRadius: '8px',
                         fontWeight: '500',
@@ -851,11 +863,11 @@ export default function SalonPageEditor() {
           <Button 
             className="w-full py-3 text-lg font-semibold rounded-xl"
             style={{
-              background: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 18%, rgba(255, 255, 255, 0.85))`,
-              backdropFilter: 'blur(15px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(15px) saturate(180%)',
-              border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, rgba(255, 255, 255, 0.4))`,
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+              background: 'rgba(245, 158, 11, 0.3)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              border: '1px solid rgba(245, 158, 11, 0.5)',
+              boxShadow: '0 12px 40px rgba(245, 158, 11, 0.25)',
               color: '#374151',
               borderRadius: '12px',
               fontWeight: '600',
