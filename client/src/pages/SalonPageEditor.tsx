@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,17 +17,14 @@ import {
   Calendar,
   CheckCircle,
   Award,
+  ChevronDown,
+  ChevronUp,
   Edit3,
   Save,
   Upload,
-  X,
-  Plus,
   Trash2,
-  Heart,
-  Share2
+  Plus
 } from 'lucide-react';
-import { apiRequest } from '@/lib/queryClient';
-import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Service {
   id: number;
@@ -44,227 +41,118 @@ interface ServiceCategory {
   services: Service[];
 }
 
-interface Professional {
-  id: string;
-  name: string;
-  specialty: string;
-  avatar: string;
-  rating: number;
-  price: number;
-  bio: string;
-  experience: string;
-}
-
 interface SalonData {
   id: string;
   name: string;
-  description: string;
-  longDescription: string;
-  address: string;
-  phone: string;
   rating: number;
   reviews: number;
-  coverImageUrl?: string;
-  logoUrl?: string;
-  photos: string[];
-  serviceCategories: ServiceCategory[];
-  professionals: Professional[];
+  address: string;
+  phone: string;
   verified: boolean;
   certifications: string[];
   awards: string[];
-  customColors?: {
-    primary: string;
-    accent: string;
-    buttonText: string;
-    priceColor: string;
-    neonFrame: string;
-  };
+  longDescription: string;
+  coverImageUrl: string;
+  photos: string[];
 }
 
 export default function SalonPageEditor() {
   const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState('services');
+  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('services');
-
+  
+  // DONNÉES COMPLÈTES DU SALON BARBIER GENTLEMAN MARAIS (modifiables)
   const [salonData, setSalonData] = useState<SalonData>({
-    id: 'auto-generated', // ID sera récupéré automatiquement de l'API
-    name: 'Excellence Paris',
-    description: 'Salon de beauté moderne et professionnel au cœur de Paris',
-    longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
-
-Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de services pour sublimer votre beauté naturelle. De la coupe classique aux colorations les plus audacieuses, en passant par nos soins anti-âge révolutionnaires, chaque prestation est réalisée avec la plus grande attention.`,
-    address: '15 Avenue des Champs-Élysées, 75008 Paris',
-    phone: '01 42 25 76 89',
-    rating: 4.8,
-    reviews: 247,
-    coverImageUrl: '',
-    logoUrl: '',
-    photos: [],
+    id: 'barbier-gentleman-marais',
+    name: 'Gentleman Barbier',
+    rating: 4.9,
+    reviews: 189,
+    address: '28 Rue des Rosiers, 75004 Paris',
+    phone: '01 48 87 65 43',
     verified: true,
-    certifications: [
-      'Salon labellisé L\'Oréal Professionnel',
-      'Formation continue Kérastase',
-      'Certification bio Shu Uemura'
-    ],
-    awards: [
-      'Élu Meilleur Salon Paris 8ème 2023',
-      'Prix de l\'Innovation Beauté 2022',
-      'Certification Éco-responsable'
-    ],
-    customColors: {
-      primary: '#7c3aed', // violet-600 par défaut
-      accent: '#a855f7',  // violet-500 par défaut
-      buttonText: '#ffffff', // blanc par défaut
-      priceColor: '#7c3aed', // violet-600 par défaut
-      neonFrame: '#a855f7' // violet-500 par défaut
-    },
-    serviceCategories: [
-      {
-        id: 1,
-        name: 'Cheveux',
-        expanded: true,
-        services: [
-          { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée et brushing professionnel' },
-          { id: 2, name: 'Coloration', price: 80, duration: '2h', description: 'Coloration complète avec soins' },
-          { id: 3, name: 'Mèches', price: 120, duration: '2h30', description: 'Mèches naturelles ou colorées' },
-          { id: 4, name: 'Coupe Enfant', price: 25, duration: '30min', description: 'Coupe adaptée aux enfants -12 ans' }
-        ]
-      },
-      {
-        id: 2,
-        name: 'Soins Visage',
-        expanded: false,
-        services: [
-          { id: 5, name: 'Soin du visage classique', price: 65, duration: '1h15', description: 'Nettoyage, gommage et hydratation' },
-          { id: 6, name: 'Soin anti-âge', price: 95, duration: '1h30', description: 'Soin complet avec technologies avancées' },
-          { id: 7, name: 'Épilation sourcils', price: 20, duration: '20min', description: 'Épilation et restructuration' }
-        ]
-      },
-      {
-        id: 3,
-        name: 'Épilation',
-        expanded: false,
-        services: [
-          { id: 8, name: 'Épilation jambes complètes', price: 40, duration: '45min', description: 'Épilation à la cire chaude' },
-          { id: 9, name: 'Épilation maillot', price: 30, duration: '30min', description: 'Épilation zone sensible' },
-          { id: 10, name: 'Épilation aisselles', price: 15, duration: '15min', description: 'Épilation rapide et efficace' }
-        ]
-      }
-    ],
-    professionals: [
-      {
-        id: '1',
-        name: 'Sarah Martinez',
-        specialty: 'Coiffure & Coloration',
-        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-        rating: 4.9,
-        price: 65,
-        bio: 'Expert en coiffure moderne et coloration naturelle',
-        experience: '8 ans d\'expérience'
-      },
-      {
-        id: '2', 
-        name: 'Marie Dubois',
-        specialty: 'Soins Esthétiques',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-        rating: 4.8,
-        price: 80,
-        bio: 'Spécialiste en soins anti-âge et bien-être',
-        experience: '10 ans d\'expérience'
-      },
-      {
-        id: '3',
-        name: 'Emma Laurent',
-        specialty: 'Massage & Bien-être',
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
-        rating: 4.9,
-        price: 75,
-        bio: 'Thérapeute certifiée en massage relaxant',
-        experience: '6 ans d\'expérience'
-      }
+    certifications: ['Barbier traditionnel certifié', 'Rasage au coupe-chou', 'Produits artisanaux'],
+    awards: ['Meilleur barbier du Marais 2024', 'Tradition & Modernité', 'Service d\'exception'],
+    longDescription: 'Gentleman Barbier vous propose une expérience unique dans l\'art du barbier traditionnel. Spécialisés dans la coupe masculine et le rasage traditionnel au coupe-chou, nous perpétuons les techniques ancestrales dans un cadre authentique du Marais historique.',
+    coverImageUrl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    photos: [
+      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ]
   });
 
-  // Récupérer les données du salon connecté (auto-détection)
-  const { data: currentSalon, isLoading } = useQuery({
-    queryKey: ['/api/salon/current'], // API qui retourne le salon du pro connecté
-    retry: 1,
-    refetchOnWindowFocus: false
-  });
-
-  useEffect(() => {
-    if (currentSalon && typeof currentSalon === 'object') {
-      const salon = currentSalon as any;
-      console.log('📖 Données salon récupérées depuis l\'API:', salon.id || 'salon-demo');
-      console.log('🔄 Mise à jour complète des données salon avec ID:', salon.id);
-      setSalonData(prev => ({
-        ...prev,
-        ...salon,
-        id: salon.id || 'salon-demo', // S'assurer que l'ID est bien défini
-        customColors: salon.customColors || {
-          primary: '#7c3aed',
-          accent: '#a855f7',
-          buttonText: '#ffffff',
-          priceColor: '#7c3aed',
-          neonFrame: '#a855f7'
-        }
-      }));
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
+    {
+      id: 1,
+      name: 'Coupes Homme',
+      expanded: true,
+      services: [
+        { id: 1, name: 'Coupe Classique', price: 35, duration: '30min', description: 'Coupe traditionnelle aux ciseaux et tondeuse' },
+        { id: 2, name: 'Coupe Dégradée', price: 40, duration: '35min', description: 'Dégradé moderne et personnalisé' },
+        { id: 3, name: 'Coupe + Barbe', price: 55, duration: '45min', description: 'Forfait coupe + taille de barbe' },
+        { id: 4, name: 'Coupe Enfant (-12 ans)', price: 25, duration: '25min', description: 'Coupe spéciale pour les petits messieurs' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Barbe & Rasage',
+      expanded: false,
+      services: [
+        { id: 5, name: 'Taille de Barbe', price: 25, duration: '20min', description: 'Taille et mise en forme de barbe' },
+        { id: 6, name: 'Rasage Traditionnel', price: 45, duration: '40min', description: 'Rasage complet au coupe-chou avec serviettes chaudes' },
+        { id: 7, name: 'Barbe + Moustache', price: 30, duration: '25min', description: 'Entretien barbe et moustache' },
+        { id: 8, name: 'Rasage de Luxe', price: 65, duration: '1h', description: 'Expérience complète avec soins visage' }
+      ]
+    },
+    {
+      id: 3,
+      name: 'Soins Homme',
+      expanded: false,
+      services: [
+        { id: 9, name: 'Soin Visage Homme', price: 50, duration: '45min', description: 'Nettoyage et hydratation du visage' },
+        { id: 10, name: 'Masque Purifiant', price: 35, duration: '30min', description: 'Masque spécial peau masculine' },
+        { id: 11, name: 'Épilation Sourcils', price: 15, duration: '15min', description: 'Épilation et mise en forme des sourcils' }
+      ]
     }
-  }, [currentSalon]);
+  ]);
 
-  // Mutation pour sauvegarder (système universel)
   const saveMutation = useMutation({
-    mutationFn: async (updatedData: Partial<SalonData>) => {
-      // 🔧 CORRECTION : Toujours utiliser 'salon-demo' pour assurer la synchronisation
-      const salonId = currentSalon?.id || 'salon-demo';
-      console.log('💾 Sauvegarde salon ID:', salonId);
-      
-      const response = await apiRequest('PUT', `/api/salon/${salonId}`, {
-        ...updatedData,
-        id: salonId // S'assurer que l'ID est correct
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/salon/current', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
+      if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast({
-        title: "Salon publié avec succès !",
-        description: "Votre salon est maintenant visible dans la recherche publique et accessible via votre lien partageable.",
+        title: "Salon mis à jour !",
+        description: "Vos modifications ont été sauvegardées avec succès."
       });
-      
-      // Afficher l'URL partageable
-      if (data?.shareableUrl) {
-        console.log('🔗 Lien partageable:', data.shareableUrl);
-        
-        // Afficher une notification supplémentaire avec le lien
-        setTimeout(() => {
-          toast({
-            title: "Lien partageable créé",
-            description: `Votre salon est accessible via: ${data.shareableUrl}`,
-          });
-        }, 2000);
-      }
-      
-      // Invalider les caches (système universel)
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/booking-pages'] }); // Invalider tous les salons
-      queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] });
+      setIsEditing(false);
     },
-    onError: (error: any) => {
-      console.error('Erreur sauvegarde:', error);
+    onError: () => {
       toast({
         title: "Erreur de sauvegarde",
-        description: "Impossible de sauvegarder. Vérifiez votre connexion.",
-        variant: "destructive",
+        description: "Impossible de sauvegarder les modifications.",
+        variant: "destructive"
       });
     }
   });
 
-  const handleSave = () => {
-    console.log('💾 Déclenchement sauvegarde salon:', salonData.id);
-    console.log('🎨 Couleurs à sauvegarder:', salonData.customColors);
-    saveMutation.mutate(salonData);
+  const toggleCategory = (categoryId: number) => {
+    setServiceCategories(prev => 
+      prev.map(cat => 
+        cat.id === categoryId 
+          ? { ...cat, expanded: !cat.expanded }
+          : cat
+      )
+    );
   };
 
   const updateField = (field: keyof SalonData, value: any) => {
@@ -274,1203 +162,490 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
     }));
   };
 
-  // Gestion des couleurs personnalisées avec forçage temps réel
-  const updateCustomColor = (colorType: 'primary' | 'accent' | 'buttonText' | 'priceColor' | 'neonFrame', color: string) => {
-    console.log('🎨 Mise à jour couleur:', colorType, '=', color);
-    setSalonData(prev => ({
-      ...prev,
-      customColors: {
-        primary: prev.customColors?.primary || '#7c3aed',
-        accent: prev.customColors?.accent || '#a855f7',
-        buttonText: prev.customColors?.buttonText || '#ffffff',
-        priceColor: prev.customColors?.priceColor || '#7c3aed',
-        neonFrame: prev.customColors?.neonFrame || '#a855f7',
-        [colorType]: color
-      }
-    }));
+  const updateService = (categoryId: number, serviceId: number, updates: Partial<Service>) => {
+    setServiceCategories(prev =>
+      prev.map(cat =>
+        cat.id === categoryId
+          ? {
+              ...cat,
+              services: cat.services.map(service =>
+                service.id === serviceId ? { ...service, ...updates } : service
+              )
+            }
+          : cat
+      )
+    );
   };
 
-  // FORÇAGE TEMPS RÉEL des couleurs dans l'aperçu
-  useEffect(() => {
-    if (salonData.customColors) {
-      const forcePreviewColors = () => {
-        // Forcer les boutons
-        const previewButtons = document.querySelectorAll('.reservation-preview-btn');
-        previewButtons.forEach((btn: any) => {
-          btn.style.backgroundColor = salonData.customColors?.primary || '#7c3aed';
-          btn.style.color = salonData.customColors?.buttonText || '#ffffff';
-        });
+  const addService = (categoryId: number) => {
+    const newService: Service = {
+      id: Date.now(),
+      name: 'Nouveau service',
+      price: 30,
+      duration: '30min',
+      description: 'Description du service'
+    };
+    
+    setServiceCategories(prev =>
+      prev.map(cat =>
+        cat.id === categoryId
+          ? { ...cat, services: [...cat.services, newService] }
+          : cat
+      )
+    );
+  };
 
-        // Forcer les prix
-        const previewPrices = document.querySelectorAll('.price-preview');
-        previewPrices.forEach((price: any) => {
-          price.style.color = salonData.customColors?.priceColor || '#7c3aed';
-        });
+  const deleteService = (categoryId: number, serviceId: number) => {
+    setServiceCategories(prev =>
+      prev.map(cat =>
+        cat.id === categoryId
+          ? { ...cat, services: cat.services.filter(s => s.id !== serviceId) }
+          : cat
+      )
+    );
+  };
 
-        // Forcer les cartes de catégories avec effet néon (seulement si expanded)
-        const categoryCards = document.querySelectorAll('.category-card-preview');
-        categoryCards.forEach((card: any, index: number) => {
-          const category = salonData.serviceCategories[index];
-          if (category?.expanded) {
-            card.style.border = `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`;
-            card.style.boxShadow = `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`;
-          } else {
-            card.style.border = '1px solid #e5e7eb';
-            card.style.boxShadow = 'none';
-          }
-        });
-      };
+  const handleSave = () => {
+    saveMutation.mutate({
+      ...salonData,
+      serviceCategories
+    });
+  };
 
-      forcePreviewColors();
-      setTimeout(forcePreviewColors, 50);
-    }
-  }, [salonData.customColors]);
-
-  // Couleurs prédéfinies
-  const predefinedColors = [
-    '#7c3aed', // violet
-    '#ef4444', // rouge
-    '#22c55e', // vert  
-    '#3b82f6', // bleu
-    '#f59e0b', // orange
-    '#ec4899', // rose
-    '#06b6d4', // cyan
-    '#8b5cf6', // purple
-  ];
-
-  // Gestion de l'upload de photo de couverture
-  const handleCoverImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleCoverImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
-      // Vérification de la taille (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast({
-          title: "Fichier trop volumineux",
-          description: "La photo ne doit pas dépasser 5MB",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Vérification du type
-      if (!file.type.startsWith('image/')) {
-        toast({
-          title: "Format non supporté",
-          description: "Veuillez sélectionner un fichier image",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Créer un aperçu avec FileReader
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const imageUrl = event.target?.result as string;
-        updateField('coverImageUrl', imageUrl);
-        toast({
-          title: "Photo mise à jour",
-          description: "La photo de couverture a été modifiée",
-        });
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        updateField('coverImageUrl', result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Supprimer la photo de couverture
-  const removeCoverImage = () => {
-    updateField('coverImageUrl', '');
-    toast({
-      title: "Photo supprimée",
-      description: "La photo de couverture a été supprimée",
-    });
-  };
-
-  const addService = (categoryId: number) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.map(cat => 
-        cat.id === categoryId ? {
-          ...cat,
-          services: [...cat.services, {
-            id: Date.now(),
-            name: 'Nouvelle prestation',
-            price: 0,
-            duration: '1h',
-            description: 'Description de la prestation'
-          }]
-        } : cat
-      )
-    }));
-  };
-
-  const updateService = (categoryId: number, serviceId: number, updates: Partial<Service>) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.map(cat => 
-        cat.id === categoryId ? {
-          ...cat,
-          services: cat.services.map(service => 
-            service.id === serviceId ? { ...service, ...updates } : service
-          )
-        } : cat
-      )
-    }));
-  };
-
-  const deleteService = (categoryId: number, serviceId: number) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.map(cat => 
-        cat.id === categoryId ? {
-          ...cat,
-          services: cat.services.filter(service => service.id !== serviceId)
-        } : cat
-      )
-    }));
-  };
-
-  // 🔥 AJOUTER UNE NOUVELLE CATÉGORIE DE SERVICES
-  const addCategory = () => {
-    const newCategory = {
-      id: Date.now(),
-      name: 'Nouvelle catégorie',
-      expanded: true,
-      services: [{
-        id: Date.now() + 1,
-        name: 'Nouvelle prestation',
-        price: 0,
-        duration: '1h',
-        description: ''
-      }]
-    };
-    
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: [...prev.serviceCategories, newCategory]
-    }));
-    
-    toast({
-      title: "Catégorie ajoutée",
-      description: "Nouvelle catégorie de services créée. Vous pouvez maintenant la personnaliser.",
-    });
-  };
-
-  // 🔥 SUPPRIMER UNE CATÉGORIE COMPLÈTE
-  const deleteCategory = (categoryId: number) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.filter(cat => cat.id !== categoryId)
-    }));
-    
-    toast({
-      title: "Catégorie supprimée",
-      description: "La catégorie et tous ses services ont été supprimés.",
-    });
-  };
-
-  // 🔥 MODIFIER LE NOM D'UNE CATÉGORIE
-  const updateCategoryName = (categoryId: number, newName: string) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.map(cat => 
-        cat.id === categoryId ? { ...cat, name: newName } : cat
-      )
-    }));
-  };
-
-  const toggleCategory = (categoryId: number) => {
-    setSalonData(prev => ({
-      ...prev,
-      serviceCategories: prev.serviceCategories.map(cat => 
-        cat.id === categoryId ? { ...cat, expanded: !cat.expanded } : cat
-      )
-    }));
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50/30 to-purple-100/20 backdrop-blur-sm">
-      <div className="max-w-lg mx-auto glass-card shadow-lg">
-        {/* Header identique à la recherche publique */}
-        <div className="sticky top-0 z-50 glass-button border-b border-white/20">
-          <div className="flex items-center justify-between p-4">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header avec photo de couverture */}
+      <div className="relative h-64 bg-gradient-to-br from-amber-600 to-orange-700">
+        <img 
+          src={salonData.coverImageUrl} 
+          alt={salonData.name}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        
+        {/* Boutons d'action dans le header */}
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
+          <button 
+            onClick={() => {
+              console.log('🔙 Bouton retour cliqué - Navigation vers dashboard');
+              window.history.back();
+            }}
+            className="glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center"
+          >
+            <ArrowLeft className="h-5 w-5 text-white" />
+          </button>
+
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => window.history.back()}
-              className="glass-button text-black rounded-xl"
+              onClick={() => setIsEditing(!isEditing)}
+              className={`glass-button-secondary text-white rounded-xl ${isEditing ? 'bg-pink-100/50' : ''}`}
             >
-              <ArrowLeft className="w-4 h-4" />
+              <Edit3 className="w-4 h-4 mr-1" />
+              {isEditing ? 'Aperçu' : 'Modifier'}
             </Button>
-            
-            <div className="flex items-center gap-2">
-              {/* Boutons publics : favoris et partage */}
+            {isEditing && (
               <Button
-                variant="ghost"
                 size="sm"
-                className="glass-button text-black rounded-xl"
+                onClick={handleSave}
+                disabled={saveMutation.isPending}
+                className="glass-button text-black rounded-xl disabled:opacity-50"
               >
-                <Heart className="w-4 h-4" />
+                <Save className="w-4 h-4 mr-1" />
+                {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="glass-button text-black rounded-xl"
-              >
-                <Share2 className="w-4 h-4" />
-              </Button>
-              
-              {/* Boutons d'édition (seulement pour le propriétaire) */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-                className={`glass-button text-black rounded-xl ${isEditing ? 'bg-pink-100/50' : ''}`}
-              >
-                <Edit3 className="w-4 h-4 mr-1" />
-                {isEditing ? 'Aperçu' : 'Modifier'}
-              </Button>
-              {isEditing && (
-                <Button
-                  size="sm"
-                  onClick={handleSave}
-                  disabled={saveMutation.isPending}
-                  className="glass-button text-black rounded-xl disabled:opacity-50"
-                >
-                  <Save className="w-4 h-4 mr-1" />
-                  {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Photo de couverture - identique à la recherche publique */}
-        <div className="relative h-48 bg-gradient-to-br from-violet-400 to-purple-500">
-          {salonData.coverImageUrl ? (
-            <img 
-              src={salonData.coverImageUrl} 
-              alt="Photo de couverture" 
-              className="absolute inset-0 w-full h-full object-cover" 
-            />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-cyan-400 to-pink-400 flex items-center justify-center">
-              <div className="text-center text-white">
-                <h1 className="text-xl font-bold">{salonData.name}</h1>
-              </div>
-            </div>
-          )}
-          <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-          
-          {/* Badges sur la photo - comme dans la recherche */}
-          <div className="absolute top-3 left-3 flex gap-2">
-            {salonData.verified && (
-              <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                <CheckCircle className="h-3 w-3 inline mr-1" />
-                Vérifié
-              </span>
             )}
-            <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-medium">
-              Ouvert
-            </span>
           </div>
-          
-          {/* Boutons d'édition photo (overlay en mode édition) */}
-          {isEditing && (
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <div className="flex gap-2">
-                <label htmlFor="cover-upload" className="cursor-pointer">
-                  <div className="glass-button text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2">
-                    <Upload className="w-4 h-4" />
-                    Changer la photo
-                  </div>
-                  <input
-                    id="cover-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleCoverImageUpload}
-                    className="hidden"
-                  />
-                </label>
-                {salonData.coverImageUrl && (
-                  <button
-                    onClick={removeCoverImage}
-                    className="glass-button-red text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Supprimer
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Informations du salon - comme dans la recherche publique */}
-        <div className="p-4">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex-1">
-              {isEditing ? (
-                <Input
-                  value={salonData.name}
-                  onChange={(e) => updateField('name', e.target.value)}
-                  className="text-lg font-semibold glass-input text-gray-900 mb-1"
-                  placeholder="Nom du salon"
+        {/* Overlay d'édition photo */}
+        {isEditing && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <div className="flex gap-2">
+              <label htmlFor="cover-upload" className="cursor-pointer">
+                <div className="glass-button text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                  <Upload className="w-4 h-4" />
+                  Changer la photo
+                </div>
+                <input
+                  id="cover-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverImageUpload}
+                  className="hidden"
                 />
-              ) : (
-                <h4 className="font-semibold text-gray-900 text-lg mb-1">{salonData.name}</h4>
-              )}
-              
-              {isEditing ? (
-                <Input
-                  value={salonData.address}
-                  onChange={(e) => updateField('address', e.target.value)}
-                  className="glass-input text-gray-500 text-sm"
-                  placeholder="Localisation"
-                />
-              ) : (
-                <p className="text-sm text-gray-500 mb-2">{salonData.address}</p>
-              )}
+              </label>
             </div>
-            <span className="text-sm text-gray-600 font-medium">dès 25€</span>
           </div>
-          
-          {/* Note et distance - comme dans la recherche */}
-          <div className="flex items-center gap-3 mb-3">
+        )}
+        
+        {/* Informations salon en overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <div className="flex items-center gap-2 mb-2">
+            {isEditing ? (
+              <Input
+                value={salonData.name}
+                onChange={(e) => updateField('name', e.target.value)}
+                className="text-2xl font-bold bg-white/20 border-white/30 text-white placeholder-white/70"
+                placeholder="Nom du salon"
+              />
+            ) : (
+              <h1 className="text-2xl font-bold">{salonData.name}</h1>
+            )}
+            {salonData.verified && (
+              <CheckCircle className="h-5 w-5 text-blue-400" />
+            )}
+          </div>
+          <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="text-sm font-semibold">{salonData.rating}</span>
-              <span className="text-sm text-gray-500">({salonData.reviews} avis)</span>
+              <span className="font-semibold">{salonData.rating}</span>
+              <span className="opacity-80">({salonData.reviews} avis)</span>
             </div>
-            <span className="text-sm text-gray-500">• 500m</span>
-          </div>
-          
-          {/* Services - comme dans la recherche */}
-          <div className="flex flex-wrap gap-1 mb-3">
-            {salonData.serviceCategories.slice(0, 3).map((category) => (
-              <span key={category.id} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                {category.name}
-              </span>
-            ))}
-          </div>
-          
-          {/* Description */}
-          {isEditing ? (
-            <Textarea
-              value={salonData.description}
-              onChange={(e) => updateField('description', e.target.value)}
-              className="glass-input text-gray-900 text-sm mb-3"
-              placeholder="Description courte du salon"
-              rows={2}
-            />
-          ) : (
-            <p className="text-gray-600 text-sm mb-3">{salonData.description}</p>
-          )}
-          
-          {/* Disponibilité et bouton réserver - comme dans la recherche */}
-          <div className="flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-green-600 font-medium">
-                Dispo maintenant
-              </span>
+              <MapPin className="h-4 w-4" />
+              <span className="opacity-80">Le Marais</span>
             </div>
-            <Button
-              className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
-              style={{ backgroundColor: salonData.customColors?.primary }}
-              onClick={() => {
-                if (!isEditing) {
-                  // Redirection vers réservation en mode public
-                  console.log('Redirection vers réservation');
-                }
-              }}
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation par onglets */}
+      <div className="bg-white border-b">
+        <div className="flex">
+          {[
+            { id: 'services', label: 'Services', icon: Calendar },
+            { id: 'info', label: 'Infos', icon: MapPin },
+            { id: 'avis', label: 'Avis', icon: Star }
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
+                activeTab === tab.id
+                  ? 'glass-button-amber border-b-2 border-amber-600'
+                  : 'glass-button-secondary'
+              }`}
             >
-              Réserver
-            </Button>
-          </div>
+              <tab.icon className="h-4 w-4" />
+              {tab.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Navigation par onglets */}
-        <div className="sticky top-16 z-40 glass-button border-b border-white/20">
-          <div className="flex overflow-x-auto">
-            {['services', 'personnel', 'couleurs', 'infos', 'avis'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 px-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'text-violet-600 border-b-2 border-violet-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
+      {/* Contenu des onglets */}
+      <div className="p-4">
+        {activeTab === 'services' && (
+          <div className="space-y-4">
+            {/* Bouton ajouter catégorie en mode édition */}
+            {isEditing && (
+              <Button
+                onClick={() => {
+                  const newCategory: ServiceCategory = {
+                    id: Date.now(),
+                    name: 'Nouvelle catégorie',
+                    expanded: true,
+                    services: []
+                  };
+                  setServiceCategories(prev => [...prev, newCategory]);
+                }}
+                className="w-full glass-button border-2 border-dashed border-amber-300 py-6"
               >
-                {tab === 'services' && 'Services'}
-                {tab === 'personnel' && 'Personnel'}
-                {tab === 'couleurs' && 'Couleurs'}
-                {tab === 'infos' && 'Infos'}
-                {tab === 'avis' && 'Avis'}
-              </button>
-            ))}
-          </div>
-        </div>
+                <Plus className="w-5 h-5 mr-2" />
+                Ajouter une catégorie de services
+              </Button>
+            )}
 
-        {/* Contenu des onglets */}
-        <div className="p-4">
-          {activeTab === 'services' && (
-            <div className="space-y-4">
-              {/* Bouton pour ajouter une nouvelle catégorie */}
-              {isEditing && (
-                <div className="text-center">
-                  <Button
-                    onClick={addCategory}
-                    className="glass-button text-black border-2 border-dashed border-violet-300 w-full py-6"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Ajouter une catégorie (ex: Cheveux, Visage, Ongles...)
-                  </Button>
-                </div>
-              )}
-              
-              {salonData.serviceCategories.map((category) => (
-                <Card 
-                  key={category.id} 
-                  className="glass-card shadow-sm category-card-preview"
-                  style={category.expanded ? {
-                    border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
-                    boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
-                  } : {
-                    border: '1px solid #e5e7eb'
-                  }}
-                >
-                  <CardContent className="p-4">
-                    <div 
-                      className="flex items-center justify-between cursor-pointer"
+            {serviceCategories.map(category => (
+              <Card key={category.id} className="overflow-hidden">
+                <div className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  {isEditing ? (
+                    <Input
+                      value={category.name}
+                      onChange={(e) => {
+                        setServiceCategories(prev =>
+                          prev.map(cat =>
+                            cat.id === category.id
+                              ? { ...cat, name: e.target.value }
+                              : cat
+                          )
+                        );
+                      }}
+                      className="font-semibold text-lg border-0 bg-transparent focus:bg-white"
+                      placeholder="Nom de la catégorie"
+                    />
+                  ) : (
+                    <button
                       onClick={() => toggleCategory(category.id)}
+                      className="flex items-center justify-between w-full"
                     >
-                      {/* Nom de la catégorie éditable */}
-                      {isEditing ? (
-                        <Input
-                          value={category.name}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            updateCategoryName(category.id, e.target.value);
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                          className="glass-input text-gray-900 font-semibold text-base max-w-xs"
-                          placeholder="Nom de la catégorie (ex: Cheveux, Visage...)"
-                        />
-                      ) : (
-                        <h3 className="font-semibold text-gray-900">{category.name}</h3>
-                      )}
-                      
-                      <div className="flex items-center gap-2">
-                        {isEditing && (
-                          <>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                addService(category.id);
-                              }}
-                              className="glass-button text-black"
-                              title="Ajouter un service"
-                            >
-                              <Plus className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteCategory(category.id);
-                              }}
-                              className="glass-button-red text-white"
-                              title="Supprimer cette catégorie"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </>
-                        )}
-                        <span className="text-gray-500">
-                          {category.expanded ? '−' : '+'}
-                        </span>
-                      </div>
+                      <h3 className="font-semibold text-lg">{category.name}</h3>
+                      {category.expanded ? 
+                        <ChevronUp className="h-5 w-5 text-gray-500" /> : 
+                        <ChevronDown className="h-5 w-5 text-gray-500" />
+                      }
+                    </button>
+                  )}
+
+                  {isEditing && (
+                    <div className="flex items-center gap-2 ml-4">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => addService(category.id)}
+                        className="text-amber-600 hover:bg-amber-50"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setServiceCategories(prev => prev.filter(cat => cat.id !== category.id));
+                        }}
+                        className="text-red-600 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    
-                    {category.expanded && (
-                      <div className="mt-3 space-y-3">
-                        {category.services.map((service) => (
-                          <div key={service.id} className="border-t border-gray-200 pt-3">
+                  )}
+                </div>
+                
+                {category.expanded && (
+                  <CardContent className="pt-0">
+                    <div className="space-y-3">
+                      {category.services.map(service => (
+                        <div key={service.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex-1">
                             {isEditing ? (
                               <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Input
-                                    value={service.name}
-                                    onChange={(e) => updateService(category.id, service.id, { name: e.target.value })}
-                                    className="glass-input text-gray-900 text-sm"
-                                    placeholder="Nom du service"
-                                  />
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    onClick={() => deleteService(category.id, service.id)}
-                                    className="glass-button-red text-white"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
-                                <div className="grid grid-cols-2 gap-2">
+                                <Input
+                                  value={service.name}
+                                  onChange={(e) => updateService(category.id, service.id, { name: e.target.value })}
+                                  className="font-medium"
+                                  placeholder="Nom du service"
+                                />
+                                <Textarea
+                                  value={service.description}
+                                  onChange={(e) => updateService(category.id, service.id, { description: e.target.value })}
+                                  className="text-sm"
+                                  placeholder="Description du service"
+                                  rows={2}
+                                />
+                                <div className="flex gap-2">
                                   <Input
                                     type="number"
                                     value={service.price}
                                     onChange={(e) => updateService(category.id, service.id, { price: parseInt(e.target.value) })}
-                                    className="glass-input text-gray-900 text-sm"
+                                    className="text-sm"
                                     placeholder="Prix"
                                   />
                                   <Input
                                     value={service.duration}
                                     onChange={(e) => updateService(category.id, service.id, { duration: e.target.value })}
-                                    className="glass-input text-gray-900 text-sm"
+                                    className="text-sm"
                                     placeholder="Durée"
                                   />
                                 </div>
-                                <Textarea
-                                  value={service.description || ''}
-                                  onChange={(e) => updateService(category.id, service.id, { description: e.target.value })}
-                                  className="bg-white border-gray-300 text-gray-900 text-sm"
-                                  placeholder="Description"
-                                  rows={2}
-                                />
                               </div>
                             ) : (
-                              <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-gray-900">{service.name}</h4>
-                                  {service.description && (
-                                    <p className="text-gray-600 text-xs mt-1">{service.description}</p>
-                                  )}
-                                  <div className="flex items-center gap-3 mt-2 text-sm">
-                                    <div className="flex items-center gap-1 text-gray-500">
-                                      <Clock className="w-3 h-3" />
-                                      <span>{service.duration}</span>
-                                    </div>
+                              <>
+                                <h4 className="font-medium">{service.name}</h4>
+                                {service.description && (
+                                  <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                                )}
+                                <div className="flex items-center gap-3 mt-2">
+                                  <div className="flex items-center gap-1 text-sm text-gray-500">
+                                    <Clock className="h-3 w-3" />
+                                    {service.duration}
                                   </div>
                                 </div>
-                                <div className="text-right">
-                                  <div 
-                                    className="text-lg font-bold price-preview"
-                                    style={{
-                                      color: salonData.customColors?.priceColor || '#7c3aed'
-                                    }}
-                                  >
-                                    {service.price}€
-                                  </div>
-                                  <button 
-                                    className="mt-2 px-4 py-2 text-sm font-medium rounded-md text-white transition-colors reservation-preview-btn"
-                                    style={{
-                                      backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                                      color: salonData.customColors?.buttonText || '#ffffff'
-                                    }}
-                                  >
-                                    Réserver
-                                  </button>
-                                </div>
-                              </div>
+                              </>
                             )}
                           </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'personnel' && (
-            <div className="space-y-4">
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-900">👩‍💼 Votre équipe</h3>
-                    {isEditing && (
-                      <Button
-                        onClick={() => {
-                          const newPro = {
-                            id: Date.now().toString(),
-                            name: 'Nouveau professionnel',
-                            specialty: 'Spécialité',
-                            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-                            rating: 5.0,
-                            price: 50,
-                            bio: 'Description du professionnel',
-                            experience: '1 an d\'expérience'
-                          };
-                          setSalonData(prev => ({
-                            ...prev,
-                            professionals: [...(prev.professionals || []), newPro]
-                          }));
-                        }}
-                        className="bg-violet-100 text-violet-700 hover:bg-violet-200 border border-violet-300"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Ajouter un professionnel
-                      </Button>
-                    )}
-                  </div>
-                  
-                  <p className="text-gray-600 text-sm mb-6">
-                    Présentez votre équipe aux clients. Ils pourront choisir avec qui prendre rendez-vous.
-                  </p>
-
-                  <div className="space-y-4">
-                    {(salonData.professionals || []).map((professional, index) => (
-                      <div key={professional.id} className="border border-gray-200 rounded-lg p-4 space-y-4">
-                        <div className="flex items-start gap-4">
-                          {/* Photo de profil */}
-                          <div className="flex-shrink-0">
-                            <img
-                              src={professional.avatar}
-                              alt={professional.name}
-                              className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                            />
-                            {isEditing && (
-                              <div className="mt-2">
-                                <label className="cursor-pointer">
-                                  <div className="text-xs text-violet-600 hover:text-violet-800 flex items-center gap-1">
-                                    <Upload className="w-3 h-3" />
-                                    Changer
-                                  </div>
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        const url = URL.createObjectURL(file);
-                                        setSalonData(prev => ({
-                                          ...prev,
-                                          professionals: prev.professionals?.map(p => 
-                                            p.id === professional.id ? { ...p, avatar: url } : p
-                                          ) || []
-                                        }));
-                                      }
-                                    }}
-                                    className="hidden"
-                                  />
-                                </label>
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="flex-1 space-y-3">
-                            {/* Nom */}
-                            <div>
-                              {isEditing ? (
-                                <Input
-                                  value={professional.name}
-                                  onChange={(e) => {
-                                    setSalonData(prev => ({
-                                      ...prev,
-                                      professionals: prev.professionals?.map(p => 
-                                        p.id === professional.id ? { ...p, name: e.target.value } : p
-                                      ) || []
-                                    }));
-                                  }}
-                                  className="font-semibold text-gray-900"
-                                  placeholder="Nom du professionnel"
-                                />
-                              ) : (
-                                <h4 className="font-semibold text-gray-900">{professional.name}</h4>
-                              )}
-                            </div>
-
-                            {/* Spécialité */}
-                            <div>
-                              {isEditing ? (
-                                <Input
-                                  value={professional.specialty}
-                                  onChange={(e) => {
-                                    setSalonData(prev => ({
-                                      ...prev,
-                                      professionals: prev.professionals?.map(p => 
-                                        p.id === professional.id ? { ...p, specialty: e.target.value } : p
-                                      ) || []
-                                    }));
-                                  }}
-                                  className="text-sm text-gray-600"
-                                  placeholder="Spécialité (ex: Coiffure & Coloration)"
-                                />
-                              ) : (
-                                <p className="text-sm text-gray-600">{professional.specialty}</p>
-                              )}
-                            </div>
-
-                            {/* Prix et note */}
-                            <div className="flex items-center gap-4">
-                              <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                {isEditing ? (
-                                  <Input
-                                    type="number"
-                                    min="1"
-                                    max="5"
-                                    step="0.1"
-                                    value={professional.rating}
-                                    onChange={(e) => {
-                                      setSalonData(prev => ({
-                                        ...prev,
-                                        professionals: prev.professionals?.map(p => 
-                                          p.id === professional.id ? { ...p, rating: parseFloat(e.target.value) } : p
-                                        ) || []
-                                      }));
-                                    }}
-                                    className="w-16 text-sm"
-                                  />
-                                ) : (
-                                  <span className="text-sm font-medium">{professional.rating}</span>
-                                )}
-                              </div>
-                              
-                              <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-600">À partir de</span>
-                                {isEditing ? (
-                                  <div className="flex items-center gap-1">
-                                    <Input
-                                      type="number"
-                                      min="0"
-                                      value={professional.price}
-                                      onChange={(e) => {
-                                        setSalonData(prev => ({
-                                          ...prev,
-                                          professionals: prev.professionals?.map(p => 
-                                            p.id === professional.id ? { ...p, price: parseInt(e.target.value) } : p
-                                          ) || []
-                                        }));
-                                      }}
-                                      className="w-20 text-sm"
-                                    />
-                                    <span className="text-sm">€</span>
-                                  </div>
-                                ) : (
-                                  <span className="font-semibold" style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}>
-                                    {professional.price}€
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Bio */}
-                            <div>
-                              {isEditing ? (
-                                <Textarea
-                                  value={professional.bio}
-                                  onChange={(e) => {
-                                    setSalonData(prev => ({
-                                      ...prev,
-                                      professionals: prev.professionals?.map(p => 
-                                        p.id === professional.id ? { ...p, bio: e.target.value } : p
-                                      ) || []
-                                    }));
-                                  }}
-                                  className="text-sm"
-                                  placeholder="Description courte du professionnel"
-                                  rows={2}
-                                />
-                              ) : (
-                                <p className="text-sm text-gray-700">{professional.bio}</p>
-                              )}
-                            </div>
-
-                            {/* Expérience */}
-                            <div>
-                              {isEditing ? (
-                                <Input
-                                  value={professional.experience}
-                                  onChange={(e) => {
-                                    setSalonData(prev => ({
-                                      ...prev,
-                                      professionals: prev.professionals?.map(p => 
-                                        p.id === professional.id ? { ...p, experience: e.target.value } : p
-                                      ) || []
-                                    }));
-                                  }}
-                                  className="text-xs text-gray-500"
-                                  placeholder="Expérience (ex: 5 ans d'expérience)"
-                                />
-                              ) : (
-                                <p className="text-xs text-gray-500">{professional.experience}</p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Bouton supprimer */}
-                          {isEditing && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => {
-                                setSalonData(prev => ({
-                                  ...prev,
-                                  professionals: prev.professionals?.filter(p => p.id !== professional.id) || []
-                                }));
-                                toast({
-                                  title: "Professionnel supprimé",
-                                  description: `${professional.name} a été retiré de votre équipe.`,
-                                });
-                              }}
-                              className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-
-                    {(salonData.professionals || []).length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        <p className="mb-4">Aucun professionnel ajouté</p>
-                        {isEditing && (
-                          <p className="text-sm">Cliquez sur "Ajouter un professionnel" pour commencer</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {activeTab === 'couleurs' && (
-            <div className="space-y-6">
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-4">🎨 Personnaliser les couleurs</h3>
-                  <p className="text-gray-600 text-sm mb-6">
-                    Personnalisez les couleurs de votre salon pour refléter votre identité visuelle.
-                  </p>
-
-                  <div className="space-y-6">
-                    {/* Couleur principale */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Couleur principale (boutons et liens)
-                      </label>
-                      <div className="flex items-center gap-3 mb-3">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.primary || '#7c3aed'}
-                          onChange={(e) => updateCustomColor('primary', e.target.value)}
-                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={salonData.customColors?.primary || '#7c3aed'}
-                          onChange={(e) => updateCustomColor('primary', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                          placeholder="#7c3aed"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {predefinedColors.map((color, index) => (
-                          <button
-                            key={index}
-                            onClick={() => updateCustomColor('primary', color)}
-                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Couleur d'accent */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Couleur d'accent (hover et bordures)
-                      </label>
-                      <div className="flex items-center gap-3 mb-3">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.accent || '#a855f7'}
-                          onChange={(e) => updateCustomColor('accent', e.target.value)}
-                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={salonData.customColors?.accent || '#a855f7'}
-                          onChange={(e) => updateCustomColor('accent', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                          placeholder="#a855f7"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {predefinedColors.map((color, index) => (
-                          <button
-                            key={index}
-                            onClick={() => updateCustomColor('accent', color)}
-                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Couleur du texte des boutons */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Couleur du texte des boutons
-                      </label>
-                      <div className="flex items-center gap-3 mb-3">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.buttonText || '#ffffff'}
-                          onChange={(e) => updateCustomColor('buttonText', e.target.value)}
-                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={salonData.customColors?.buttonText || '#ffffff'}
-                          onChange={(e) => updateCustomColor('buttonText', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                          placeholder="#ffffff"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {['#ffffff', '#000000'].map((color, index) => (
-                          <button
-                            key={index}
-                            onClick={() => updateCustomColor('buttonText', color)}
-                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Couleur des prix */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Couleur des prix
-                      </label>
-                      <div className="flex items-center gap-3 mb-3">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.priceColor || '#7c3aed'}
-                          onChange={(e) => updateCustomColor('priceColor', e.target.value)}
-                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={salonData.customColors?.priceColor || '#7c3aed'}
-                          onChange={(e) => updateCustomColor('priceColor', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                          placeholder="#7c3aed"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {predefinedColors.map((color, index) => (
-                          <button
-                            key={index}
-                            onClick={() => updateCustomColor('priceColor', color)}
-                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Couleur du cadre néon */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Couleur du cadre néon (effet lumineux)
-                      </label>
-                      <div className="flex items-center gap-3 mb-3">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.neonFrame || '#a855f7'}
-                          onChange={(e) => updateCustomColor('neonFrame', e.target.value)}
-                          className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={salonData.customColors?.neonFrame || '#a855f7'}
-                          onChange={(e) => updateCustomColor('neonFrame', e.target.value)}
-                          className="px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                          placeholder="#a855f7"
-                        />
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {predefinedColors.map((color, index) => (
-                          <button
-                            key={index}
-                            onClick={() => updateCustomColor('neonFrame', color)}
-                            className="w-12 h-8 rounded-lg border-2 border-gray-200 hover:border-gray-400 transition-colors"
-                            style={{ backgroundColor: color }}
-                            title={color}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Aperçu complet */}
-                    <div className="pt-4 border-t border-gray-200">
-                      <h4 className="font-medium text-gray-900 mb-3">🔍 Aperçu des couleurs</h4>
-                      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                        {/* Bouton principal avec effet néon */}
-                        <button 
-                          className="w-full px-4 py-3 rounded-lg font-medium transition-all"
-                          style={{ 
-                            backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                            color: salonData.customColors?.buttonText || '#ffffff',
-                            boxShadow: `0 0 15px ${salonData.customColors?.neonFrame || '#a855f7'}60`,
-                            border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`
-                          }}
-                        >
-                          🎯 Bouton "Réserver" avec effet néon
-                        </button>
-
-                        {/* Exemple de prix */}
-                        <div className="flex justify-between items-center p-3 bg-white rounded-lg">
-                          <div className="text-gray-700">Coupe + Brushing</div>
-                          <div 
-                            className="text-xl font-bold"
-                            style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}
-                          >
-                            45€
-                          </div>
-                        </div>
-
-                        {/* Exemple de catégorie dépliée avec effet néon */}
-                        <div 
-                          className="bg-white p-4 rounded-lg space-y-2"
-                          style={{
-                            border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
-                            boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
-                          }}
-                        >
-                          <h4 className="font-semibold text-gray-900 mb-2">💇‍♀️ Cheveux (dépliée = cadre néon)</h4>
-                          <div className="flex justify-between items-start border-t border-gray-200 pt-2">
-                            <div>
-                              <h5 className="font-medium text-gray-900">Coloration complète</h5>
-                              <p className="text-sm text-gray-600">Avec soin professionnel</p>
-                            </div>
-                            <div className="text-right">
-                              <div 
-                                className="text-lg font-bold mb-2"
-                                style={{ color: salonData.customColors?.priceColor || '#7c3aed' }}
-                              >
-                                80€
-                              </div>
-                              <button 
-                                className="px-3 py-1.5 text-sm rounded-md font-medium"
-                                style={{ 
-                                  backgroundColor: salonData.customColors?.primary || '#7c3aed',
-                                  color: salonData.customColors?.buttonText || '#ffffff'
-                                }}
+                          <div className="text-right ml-4">
+                            <p className="font-bold text-lg">{service.price}€</p>
+                            {!isEditing ? (
+                              <Button 
+                                size="sm" 
+                                className="mt-2 glass-button-amber"
+                                onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
-                              </button>
-                            </div>
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => deleteService(category.id, service.id)}
+                                className="mt-2 text-red-600 hover:bg-red-50"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
 
-                        {/* Exemple de catégorie fermée */}
-                        <div 
-                          className="bg-white p-4 rounded-lg"
-                          style={{
-                            border: '1px solid #e5e7eb'
+        {activeTab === 'info' && (
+          <div className="space-y-6">
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-4">À propos</h3>
+                {isEditing ? (
+                  <Textarea
+                    value={salonData.longDescription}
+                    onChange={(e) => updateField('longDescription', e.target.value)}
+                    className="mb-6"
+                    rows={4}
+                    placeholder="Description longue du salon"
+                  />
+                ) : (
+                  <p className="text-gray-700 mb-6">{salonData.longDescription}</p>
+                )}
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-5 w-5 text-gray-400" />
+                    {isEditing ? (
+                      <Input
+                        value={salonData.address}
+                        onChange={(e) => updateField('address', e.target.value)}
+                        placeholder="Adresse complète"
+                      />
+                    ) : (
+                      <span>{salonData.address}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone className="h-5 w-5 text-gray-400" />
+                    {isEditing ? (
+                      <Input
+                        value={salonData.phone}
+                        onChange={(e) => updateField('phone', e.target.value)}
+                        placeholder="Numéro de téléphone"
+                      />
+                    ) : (
+                      <span>{salonData.phone}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-5 w-5 text-gray-400" />
+                    <span>Mar-Sam: 9h-19h • Lun: Fermé • Dim: 10h-17h</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-4">Spécialités & Expertise</h3>
+                <div className="space-y-3">
+                  {salonData.certifications.map((cert, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Award className="h-4 w-4 text-amber-500" />
+                      {isEditing ? (
+                        <Input
+                          value={cert}
+                          onChange={(e) => {
+                            const newCertifications = [...salonData.certifications];
+                            newCertifications[index] = e.target.value;
+                            updateField('certifications', newCertifications);
                           }}
-                        >
-                          <h4 className="font-semibold text-gray-900">🧴 Soins Visage (fermée = pas de néon)</h4>
-                        </div>
-                      </div>
+                          className="text-sm"
+                        />
+                      ) : (
+                        <span className="text-sm">{cert}</span>
+                      )}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {activeTab === 'infos' && (
-            <div className="space-y-4">
-              {/* Histoire du salon */}
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">À propos du salon</h3>
-                  {isEditing ? (
-                    <Textarea
-                      value={salonData.longDescription}
-                      onChange={(e) => updateField('longDescription', e.target.value)}
-                      className="bg-white border-gray-300 text-gray-900 text-sm min-h-[120px]"
-                      placeholder="Histoire et description détaillée du salon"
-                    />
-                  ) : (
-                    <div className="text-gray-700 text-sm leading-relaxed whitespace-pre-line">
-                      {salonData.longDescription}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Certifications */}
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">Certifications</h3>
-                  <div className="space-y-2">
-                    {salonData.certifications.map((cert, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <Award className="w-4 h-4 text-yellow-500" />
-                        <span className="text-gray-700 text-sm">{cert}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Récompenses */}
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">Récompenses</h3>
-                  <div className="space-y-2">
+                  ))}
+                </div>
+                
+                <div className="mt-6">
+                  <h4 className="font-medium mb-3">Distinctions</h4>
+                  <div className="flex flex-wrap gap-2">
                     {salonData.awards.map((award, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        <span className="text-gray-700 text-sm">{award}</span>
-                      </div>
+                      <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
+                        {award}
+                      </Badge>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
-          {activeTab === 'avis' && (
-            <div className="space-y-4">
-              <Card className="bg-white border-gray-200 shadow-sm">
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">Avis clients</h3>
-                  <div className="text-center text-gray-500">
-                    <p>Section en développement</p>
-                    <p className="text-sm mt-1">Les avis clients seront bientôt disponibles</p>
-                  </div>
-                </CardContent>
-              </Card>
+        {activeTab === 'avis' && (
+          <div className="space-y-4">
+            <div className="text-center py-8">
+              <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">
+                {salonData.rating}/5 étoiles
+              </h3>
+              <p className="text-gray-600">
+                Basé sur {salonData.reviews} avis clients
+              </p>
             </div>
-          )}
-        </div>
+            
+            {/* Avis exemple */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                    <User className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-medium">Pierre D.</span>
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">Il y a 1 semaine</p>
+                    <p className="text-sm">"Un vrai barbier à l'ancienne ! Le rasage au coupe-chou était parfait et l'ambiance du salon authentique. Je reviendrai sans hésitation."</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
+
+      {/* Bouton réservation fixe en bas */}
+      {!isEditing && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
+          <Button 
+            className="w-full glass-button py-3 text-lg font-semibold"
+            onClick={() => setLocation('/salon-booking')}
+          >
+            Réserver maintenant
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
