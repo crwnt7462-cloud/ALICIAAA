@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import { 
   Search, 
   MapPin, 
@@ -187,63 +188,53 @@ export default function SalonSearchComplete() {
               <p className="text-gray-400 text-sm">or browse categories</p>
             </div>
           
-            {/* Catégories - exactement comme screenshot en bas */}
-            <div className="grid grid-cols-2 gap-4">
-              <button
-                onClick={() => {
-                  setActiveFilter("coiffure");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Coiffure
-              </button>
-              <button
-                onClick={() => {
-                  setActiveFilter("esthetique");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Esthétique
-              </button>
-              <button
-                onClick={() => {
-                  setActiveFilter("barbier");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Barbier
-              </button>
-              <button
-                onClick={() => {
-                  setActiveFilter("ongles");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Manucure
-              </button>
-              <button
-                onClick={() => {
-                  setActiveFilter("massage");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Massage
-              </button>
-              <button
-                onClick={() => {
-                  setActiveFilter("all");
-                  setSearchQuery("");
-                }}
-                className="h-12 bg-gray-50 hover:bg-gray-100 rounded-2xl text-sm font-medium text-gray-600 transition-colors"
-              >
-                Tous
-              </button>
-            </div>
+            {/* Catégories avec animations - navigation moderne */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-2 gap-4"
+            >
+              {[
+                { filter: "coiffure", label: "Coiffure", delay: 0.1 },
+                { filter: "esthetique", label: "Esthétique", delay: 0.2 },
+                { filter: "barbier", label: "Barbier", delay: 0.3 },
+                { filter: "ongles", label: "Manucure", delay: 0.4 },
+                { filter: "massage", label: "Massage", delay: 0.5 },
+                { filter: "all", label: "Tous", delay: 0.6 }
+              ].map((category) => (
+                <motion.button
+                  key={category.filter}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ 
+                    duration: 0.3, 
+                    delay: category.delay,
+                    ease: "easeOut"
+                  }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    backgroundColor: "#f3f4f6",
+                    transition: { duration: 0.2 }
+                  }}
+                  whileTap={{ 
+                    scale: 0.95,
+                    backgroundColor: "#e5e7eb"
+                  }}
+                  onClick={() => {
+                    setActiveFilter(category.filter);
+                    setSearchQuery("");
+                  }}
+                  className={`h-12 rounded-2xl text-sm font-medium transition-all duration-200 ${
+                    activeFilter === category.filter 
+                      ? "bg-violet-600 text-white shadow-lg" 
+                      : "bg-gray-50 text-gray-600"
+                  }`}
+                >
+                  {category.label}
+                </motion.button>
+              ))}
+            </motion.div>
 
           </div>
         </div>
@@ -284,10 +275,23 @@ export default function SalonSearchComplete() {
               </div>
             )}
             
-            {!isLoading && salons.map((salon: any) => (
-              <div 
+            {!isLoading && salons.map((salon: any, index: number) => (
+              <motion.div 
                 key={salon.id}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.4, 
+                  delay: index * 0.1,
+                  ease: "easeOut"
+                }}
+                whileHover={{ 
+                  scale: 1.02, 
+                  y: -2,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
                 onClick={() => {
                   console.log('🔗 CLIC SALON - Redirection vers:', `/salon/${salon.id}`, 'Nom:', salon.name);
                   setLocation(`/salon/${salon.id}`);
@@ -382,7 +386,7 @@ export default function SalonSearchComplete() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
