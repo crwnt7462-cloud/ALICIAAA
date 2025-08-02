@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Star, MapPin, Phone, Clock, Globe, CheckCircle2, Award, Instagram, Facebook, Twitter } from 'lucide-react';
 import rendlyLogo from "@assets/3_1753714421825.png";
@@ -121,25 +122,63 @@ const getCustomButtonStyle = (customColors: any) => {
 export default function SalonPagePublicView() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
-  const [salon, setSalon] = useState<any>(null);
+  const [salonId, setSalonId] = useState<string | null>(null);
 
   // Extraire l'ID du salon depuis l'URL
   useEffect(() => {
     const path = window.location.pathname;
     const match = path.match(/\/salon\/(.+)/);
     if (match) {
-      const salonId = match[1];
-      const foundSalon = salonData[salonId as keyof typeof salonData];
-      setSalon(foundSalon || null);
+      setSalonId(match[1]);
     }
   }, []);
 
-  if (!salon) {
+  // Récupérer les données du salon depuis l'API
+  const { data: salon, isLoading, error } = useQuery({
+    queryKey: ['/api/salon', salonId],
+    queryFn: async () => {
+      if (!salonId) return null;
+      
+      // Essayer d'abord l'API réelle
+      try {
+        const response = await fetch(`/api/salon/${salonId}`);
+        if (response.ok) {
+          const data = await response.json();
+          return data.salon || data;
+        }
+      } catch (err) {
+        console.log('API pas disponible, utilisation données fallback');
+      }
+      
+      // Fallback vers les données statiques si l'API n'est pas disponible
+      return salonData[salonId as keyof typeof salonData] || null;
+    },
+    enabled: !!salonId
+  });
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
           <p>Chargement du salon...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !salon) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Salon non trouvé</h2>
+          <p className="text-gray-600 mb-4">Le salon que vous cherchez n'existe pas ou n'est plus disponible.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700"
+          >
+            Retour à la recherche
+          </button>
         </div>
       </div>
     );

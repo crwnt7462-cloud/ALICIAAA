@@ -147,9 +147,11 @@ export default function SalonPageEditor() {
     onSuccess: () => {
       toast({
         title: "Salon mis à jour !",
-        description: "Vos modifications ont été sauvegardées avec succès."
+        description: "Vos modifications ont été sauvegardées avec succès et sont maintenant visibles au public."
       });
+      // Invalider à la fois les données du professionnel et les données publiques
       queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/salon'] });
       setIsEditing(false);
     },
     onError: () => {
