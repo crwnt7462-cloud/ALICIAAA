@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { firebaseStorage } from "./firebaseStorage";
 import { storage as memoryStorage } from "./storage";
+import { createAutomaticSalonPage, linkSalonToProfessional } from './autoSalonCreation';
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
@@ -1098,7 +1099,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // API d'inscription professionnel avec création automatique de page salon
+  // 🚀 API D'INSCRIPTION PROFESSIONNEL AVEC CRÉATION AUTOMATIQUE DE PAGE SALON
   app.post('/api/professional/register', async (req, res) => {
     try {
       const { 
@@ -1110,8 +1111,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         businessType, 
         services, 
         description,
-        password 
+        password,
+        subscriptionPlan = 'basic' // Plan par défaut
       } = req.body;
+
+      console.log('🎯 INSCRIPTION PROFESSIONNEL AVEC ABONNEMENT:', subscriptionPlan);
+      console.log('🏢 Business:', businessName, 'Email:', email);
 
       // Vérifier si l'email existe déjà
       const existingPro = await storage.getBusinessByEmail?.(email);
@@ -1119,103 +1124,103 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         return res.status(400).json({ error: 'Un compte professionnel avec cet email existe déjà' });
       }
 
-      // Générer un ID unique pour le salon
-      const businessId = `business-${Date.now()}`;
-      const salonId = `salon-${businessId}`;
+      // 🚀 CRÉATION AUTOMATIQUE DE PAGE SALON PERSONNALISÉE
+      const professionalData = {
+        ownerName,
+        businessName,
+        email,
+        phone,
+        address,
+        subscriptionPlan: subscriptionPlan as 'basic' | 'premium' | 'enterprise',
+        services,
+        description
+      };
+
+      console.log('🏗️ Création automatique page salon pour:', businessName);
+      const createdSalon = await createAutomaticSalonPage(professionalData);
+      
+      // 🔗 Associer le salon au professionnel
+      await linkSalonToProfessional(createdSalon.id, email);
 
       // Créer le compte professionnel
-      const professionalAccount = {
-        id: businessId,
+      const businessData = {
         businessName,
         ownerName,
         email,
         phone,
         address,
         businessType,
+        services,
         description,
-        password, // En production, hasher le mot de passe
-        createdAt: new Date(),
-        salonId // Lier le salon au professionnel
+        salonId: createdSalon.id, // Associer le salon créé
+        subscriptionPlan,
+        isActive: true
       };
 
-      // Créer la page salon automatiquement
-      const salonPage = {
-        id: salonId,
-        name: businessName,
-        description: description || `${businessName} - Votre salon de beauté professionnel`,
-        address,
-        phone,
-        email,
-        website: '',
-        photos: [
-          'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
-          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
-        ],
-        professionals: [
-          {
-            id: '1',
-            name: ownerName,
-            specialty: businessType === 'hair_salon' ? 'Coiffure' : 
-                     businessType === 'beauty_institute' ? 'Soins esthétiques' :
-                     businessType === 'nail_salon' ? 'Manucure & Pédicure' :
-                     businessType === 'spa' ? 'Massage & Bien-être' : 'Services de beauté',
-            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-            rating: 5.0,
-            price: 60,
-            bio: `Professionnel expérimenté chez ${businessName}`,
-            experience: 'Professionnel qualifié'
-          }
-        ],
-        serviceCategories: services ? [{
-          name: businessType === 'hair_salon' ? 'Coiffure' : 
-                businessType === 'beauty_institute' ? 'Soins esthétiques' :
-                businessType === 'nail_salon' ? 'Manucure' :
-                businessType === 'spa' ? 'Massage' : 'Services',
-          services: services.map((service: string, index: number) => ({
-            id: (index + 1).toString(),
-            name: service,
-            price: 50,
-            duration: 60,
-            description: `Service ${service} professionnel`
-          }))
-        }] : [],
-        tags: [businessType, 'professionnel', 'beauté'],
-        ownerId: businessId,
-        rating: 5.0,
-        reviewCount: 0,
-        verified: true
-      };
-
-      // Sauvegarder dans le storage
+      let business;
       if (storage.createBusiness) {
-        await storage.createBusiness(professionalAccount);
+        business = await storage.createBusiness(businessData);
+      } else {
+        business = { ...businessData, id: `business-${Date.now()}`, createdAt: new Date() };
       }
-      
-      storage.salons?.set(salonId, salonPage);
-      
-      console.log(`🏢 Nouveau professionnel inscrit: ${businessName}`);
-      console.log(`📄 Page salon créée automatiquement: ${salonId}`);
+
+      console.log('✅ INSCRIPTION COMPLÈTE:', {
+        business: business.businessName,
+        salon: createdSalon.name,
+        salonId: createdSalon.id,
+        salonUrl: createdSalon.shareableUrl,
+        plan: subscriptionPlan
+      });
 
       res.json({
         success: true,
-        message: 'Inscription réussie ! Votre page salon a été créée automatiquement.',
-        business: {
-          id: businessId,
-          businessName,
-          ownerName,
-          email
-        },
-        salon: {
-          id: salonId,
-          name: businessName,
-          url: `/salon/${salonId}`,
-          editUrl: `/salon-page-editor`
-        }
+        message: 'Inscription réussie avec création automatique de page salon',
+        business,
+        salon: createdSalon,
+        salonUrl: `http://localhost:5000${createdSalon.shareableUrl}`,
+        editorUrl: `/salon-editor/${createdSalon.id}`,
+        subscriptionPlan
       });
 
     } catch (error) {
-      console.error('Erreur inscription professionnel:', error);
-      res.status(500).json({ error: 'Erreur lors de l\'inscription' });
+      console.error('❌ Erreur inscription professionnel:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors de l\'inscription professionnelle' 
+      });
+    }
+  });
+
+  // 🧪 ROUTE DE TEST POUR CRÉER UN SALON DE DÉMONSTRATION
+  app.post('/api/test/create-demo-salon', async (req, res) => {
+    try {
+      const { businessName = 'Salon Test', subscriptionPlan = 'premium' } = req.body;
+      
+      const demoData = {
+        ownerName: 'Propriétaire Test',
+        businessName,
+        email: `demo-${Date.now()}@test.com`,
+        phone: '01 23 45 67 89',
+        address: '123 Rue de Test, 75001 Paris',
+        subscriptionPlan: subscriptionPlan as 'basic' | 'premium' | 'enterprise',
+        services: ['Service Test 1', 'Service Test 2'],
+        description: `${businessName} - Salon de démonstration créé automatiquement`
+      };
+
+      console.log('🧪 Création salon de test:', businessName);
+      const testSalon = await createAutomaticSalonPage(demoData);
+      
+      res.json({
+        success: true,
+        message: 'Salon de test créé avec succès',
+        salon: testSalon,
+        publicUrl: `http://localhost:5000${testSalon.shareableUrl}`,
+        editorUrl: `/salon-editor/${testSalon.id}`
+      });
+
+    } catch (error) {
+      console.error('❌ Erreur création salon test:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du salon test' });
     }
   });
 
