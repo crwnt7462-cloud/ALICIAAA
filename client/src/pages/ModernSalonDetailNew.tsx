@@ -117,23 +117,15 @@ export default function ModernSalonDetail() {
     }
   ]);
 
+  // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
   const salon = {
-    id: "salon-excellence",
-    name: "Salon Excellence Paris",
-    subtitle: "L'art de la beauté réinventé",
+    name: "Mon Salon de Beauté",
+    subtitle: "L'art capillaire depuis 1995",
+    address: "42 rue de Rivoli, Paris 1er",
+    phone: "01 42 96 17 83",
     rating: 4.9,
     reviews: 324,
-    verified: true,
-    address: "123 Avenue des Champs-Élysées, Paris 8ème",
-    phone: "01 42 86 67 89",
-    story: "Depuis 15 ans, le Salon Excellence Paris révolutionne l'industrie de la beauté en combinant savoir-faire traditionnel français et innovations technologiques de pointe. Notre équipe de 12 experts passionnés vous accueille dans un écrin de 200m² entièrement rénové, où chaque détail a été pensé pour votre bien-être.",
-    awards: [
-      "Prix d'Excellence Beauté 2024",
-      "Meilleur Salon Parisien 2023",
-      "Innovation Award 2022",
-      "Certification Bio-Éthique"
-    ],
-    certifications: ["Bio-certifié", "Expert L'Oréal", "Formation Kérastase", "Technique Aveda"]
+    categories: ["Coiffure", "Coloration", "Soins"]
   };
 
   const services = [
@@ -220,7 +212,7 @@ export default function ModernSalonDetail() {
       clientName: "Julie M.",
       rating: 5,
       date: "Il y a 1 semaine",
-      comment: "Première visite chez Excellence Paris et je suis conquise ! Marie a su comprendre exactement ce que je voulais. Le résultat dépasse mes attentes.",
+      comment: "Première visite dans ce salon et je suis conquise ! Marie a su comprendre exactement ce que je voulais. Le résultat dépasse mes attentes.",
       service: "Coupe & Styling Expert",
       verified: true
     },
@@ -436,7 +428,7 @@ export default function ModernSalonDetail() {
                     <div className="flex items-start gap-2 p-2 bg-gray-50 rounded">
                       <div className="w-1 h-1 bg-gray-500 rounded-full mt-1.5 flex-shrink-0"></div>
                       <div>
-                        <h4 className="text-xs text-gray-900 font-medium">Excellence client</h4>
+                        <h4 className="text-xs text-gray-900 font-medium">Service client</h4>
                         <p className="text-xs text-gray-600">Service personnalisé et attentionné</p>
                       </div>
                     </div>

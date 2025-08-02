@@ -122,7 +122,7 @@ Nous proposons une gamme complète de services pour sublimer votre beauté natur
     ],
     awards: [
       'Salon de qualité certifié',
-      'Excellence service client',
+      'Service client de qualité',
       'Certification professionnelle'
     ],
     customColors: {

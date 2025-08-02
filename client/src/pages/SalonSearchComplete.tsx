@@ -62,7 +62,7 @@ export default function SalonSearchComplete() {
     },
     {
       id: "salon-2",
-      name: "Salon Excellence",
+      name: "Mon Salon",
       location: "Marais, Paris 4ème",
       rating: 4.9,
       reviews: 298,

@@ -25,7 +25,7 @@ export default function SalonSettings() {
   const [isLoading, setIsLoading] = useState(false);
   
   const [salonData, setSalonData] = useState({
-    name: 'Salon Excellence',
+    name: 'Mon Salon de Beauté',
     address: '123 Rue de la Beauté, Paris',
     phone: '01 23 45 67 89',
     email: 'contact@salon-excellence.fr',

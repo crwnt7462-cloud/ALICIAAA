@@ -99,7 +99,7 @@ export default function FuturisticProLogin() {
                     <input
                       type="text"
                       className="w-full px-3 py-2 border border-gray-300 rounded-full focus:ring-2 focus:ring-violet-500 focus:border-violet-500"
-                      placeholder="Excellence Beauty Paris"
+                      placeholder="Mon Salon de Beauté"
                     />
                   </div>
                 )}

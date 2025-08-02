@@ -1274,21 +1274,44 @@ export class DatabaseStorage implements IStorage {
     // Sauvegarder en mémoire
     this.salons.set(salonId, updatedSalon);
     
-    // NOUVEAU : Sauvegarder aussi en PostgreSQL pour persistance
+    // NOUVEAU : Sauvegarder aussi en PostgreSQL avec vraie structure
     try {
       const { salons } = await import("@shared/schema");
       await db.insert(salons).values({
         id: salonId,
-        data: JSON.stringify(updatedSalon),
+        name: updatedSalon.name || 'Mon Salon',
+        description: updatedSalon.description || 'Salon de beauté',
+        address: updatedSalon.address || '',
+        phone: updatedSalon.phone || '',
+        email: updatedSalon.email || '',
+        customColors: updatedSalon.customColors || {
+          primary: '#7c3aed',
+          accent: '#a855f7',
+          buttonText: '#ffffff'
+        },
+        serviceCategories: updatedSalon.serviceCategories || [],
+        photos: updatedSalon.photos || [],
+        isPublished: true,
         updatedAt: new Date()
       }).onConflictDoUpdate({
         target: salons.id,
         set: {
-          data: JSON.stringify(updatedSalon),
+          name: updatedSalon.name || 'Mon Salon',
+          description: updatedSalon.description || 'Salon de beauté',
+          address: updatedSalon.address || '',
+          phone: updatedSalon.phone || '',
+          email: updatedSalon.email || '',
+          customColors: updatedSalon.customColors || {
+            primary: '#7c3aed',
+            accent: '#a855f7',
+            buttonText: '#ffffff'
+          },
+          serviceCategories: updatedSalon.serviceCategories || [],
+          photos: updatedSalon.photos || [],
           updatedAt: new Date()
         }
       });
-      console.log('💾 Salon aussi sauvegardé en PostgreSQL:', salonId);
+      console.log('💾 Salon sauvegardé en PostgreSQL avec vraie structure:', salonId);
     } catch (dbError) {
       console.error('⚠️ Erreur sauvegarde PostgreSQL (mais salon en mémoire OK):', dbError);
     }
@@ -1306,19 +1329,41 @@ export class DatabaseStorage implements IStorage {
       return inMemorySalons;
     }
     
-    // 2. Si aucun salon en mémoire, essayer PostgreSQL
+    // 2. Si aucun salon en mémoire, essayer PostgreSQL avec vraie structure
     try {
       const { salons } = await import("@shared/schema");
       const salonRecords = await db.select().from(salons).orderBy(desc(salons.updatedAt));
       
       const parsedSalons = salonRecords.map(record => {
-        try {
-          return JSON.parse(record.data);
-        } catch (parseError) {
-          console.error('❌ Erreur parsing salon:', record.id, parseError);
-          return null;
-        }
-      }).filter(salon => salon !== null);
+        // Convertir la structure PostgreSQL vers le format attendu
+        return {
+          id: record.id,
+          name: record.name,
+          description: record.description,
+          address: record.address,
+          phone: record.phone,
+          email: record.email,
+          customColors: record.customColors || {
+            primary: '#7c3aed',
+            accent: '#a855f7',
+            buttonText: '#ffffff',
+            priceColor: '#7c3aed',
+            neonFrame: '#a855f7'
+          },
+          serviceCategories: record.serviceCategories || [],
+          photos: record.photos || ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'],
+          isPublished: record.isPublished,
+          rating: 4.8,
+          reviews: 0,
+          verified: true,
+          coverImageUrl: (record.photos as any)?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          professionals: [],
+          certifications: [],
+          awards: [],
+          createdAt: record.createdAt?.toISOString() || new Date().toISOString(),
+          updatedAt: record.updatedAt?.toISOString() || new Date().toISOString()
+        };
+      });
       
       // Charger en mémoire pour accès rapide
       parsedSalons.forEach(salon => {

@@ -44,7 +44,7 @@ export default function SimpleBooking() {
   });
 
   const salon = {
-    name: "Salon Excellence Paris",
+    name: "Mon Salon de Beauté",
     subtitle: "L'Art Capillaire Depuis 1995",
     address: "42 rue de Rivoli, Paris 1er",
     phone: "01 42 96 17 83",

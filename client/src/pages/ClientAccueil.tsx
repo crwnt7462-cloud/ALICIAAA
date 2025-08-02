@@ -26,7 +26,7 @@ export default function ClientAccueil() {
       {
         id: 1,
         serviceName: "Coupe + Brushing",
-        salonName: "Salon Excellence Paris",
+        salonName: "Mon Salon de Beauté",
         date: "2025-01-30",
         time: "14:30",
         price: "45€",
@@ -48,7 +48,7 @@ export default function ClientAccueil() {
       {
         id: 1,
         name: "Coupe + Brushing",
-        salon: "Salon Excellence Paris",
+        salon: "Mon Salon de Beauté",
         price: "45€",
         rating: 4.8
       },

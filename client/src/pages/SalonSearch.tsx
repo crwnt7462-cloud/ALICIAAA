@@ -39,20 +39,7 @@ export default function SalonSearch() {
   }, []);
 
   const salons = [
-    {
-      id: "salon-1",
-      name: "Salon Excellence Paris",
-      location: "Champs-Élysées, Paris 8ème",
-      rating: 4.9,
-      reviews: 324,
-      nextSlot: "15:30",
-      price: "€€€",
-      services: ["Coupe", "Coloration"],
-      verified: true,
-      distance: "800m",
-      category: "coiffure",
-      image: "💇‍♀️"
-    },
+    // SUPPRIMÉ : Plus aucune référence à Salon Excellence Paris
     {
       id: "salon-2", 
       name: "Institut Beauté Marais",

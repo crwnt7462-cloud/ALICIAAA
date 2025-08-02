@@ -128,7 +128,7 @@ export default function AIProComplete() {
     if (lowerInput.includes('description') || lowerInput.includes('présent')) {
       return `Voici une description optimisée pour votre salon :
 
-"🌟 **Salon Excellence Paris** - Votre oasis de beauté au cœur de Paris
+"🌟 **Mon Salon de Beauté** - Votre oasis de beauté au cœur de Paris
 
 Découvrez une expérience beauté unique dans notre salon premium. Nos experts certifiés vous offrent des prestations haut de gamme dans un cadre moderne et relaxant.
 
@@ -212,7 +212,7 @@ Souhaitez-vous que je génère des messages automatiques pour promouvoir ces cr�
 • #CoiffureHauteCouture
 • #SoinsPremium
 • #ExpertBeauté
-• #SalonExcellence
+• #MonSalonBeaute
 
 **Tags services :**
 • balayage-professionnel

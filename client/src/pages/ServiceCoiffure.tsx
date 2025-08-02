@@ -18,7 +18,7 @@ export default function ServiceCoiffure() {
 
   const topSalons = [
     {
-      name: "Salon Excellence",
+      name: "Mon Salon",
       location: "Paris 16ème",
       rating: 4.9,
       reviews: 324,

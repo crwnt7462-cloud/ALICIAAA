@@ -20,7 +20,7 @@ export default function ClientMessaging() {
   // Informations professionnel (salon de test)
   const professionalInfo = {
     id: 'pro_1',
-    name: 'Salon Excellence',
+    name: 'Mon Salon',
     type: 'professional' as const
   };
 

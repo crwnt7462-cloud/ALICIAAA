@@ -46,7 +46,7 @@ export default function InstitutBeauteSaintGermain() {
     phone: '01 43 26 89 45',
     verified: true,
     certifications: ['Institut agréé CIDESCO', 'Esthéticienne diplômée d\'État', 'Soins anti-âge certifiés'],
-    awards: ['Excellence soins visage 2024', 'Institut de référence Saint-Germain', 'Prix qualité service'],
+    awards: ['Prix soins visage 2024', 'Institut de référence Saint-Germain', 'Prix qualité service'],
     longDescription: 'Institut Beauté Saint-Germain vous propose une parenthèse bien-être au cœur de Saint-Germain-des-Prés. Spécialisés dans les soins visage haut de gamme et les techniques anti-âge, nous utilisons les dernières innovations cosmétiques pour révéler votre beauté naturelle.',
     coverImageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
     photos: [

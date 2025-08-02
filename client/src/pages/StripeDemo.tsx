@@ -28,7 +28,7 @@ export default function StripeDemo() {
   const [planType, setPlanType] = useState('essentiel');
   const [amount, setAmount] = useState(50);
   const [description, setDescription] = useState('Acompte réservation - Coupe & Brushing');
-  const [salonName, setSalonName] = useState('Salon Excellence Paris');
+  const [salonName, setSalonName] = useState('Mon Salon de Beauté');
 
   const handleSubscriptionPayment = async () => {
     setLoading(true);

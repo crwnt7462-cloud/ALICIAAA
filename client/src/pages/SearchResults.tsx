@@ -63,7 +63,7 @@ export default function SearchResults() {
       popular: true,
       newClient: false,
       responseTime: "2h",
-      awards: ["Prix Excellence 2024"]
+      awards: ["Prix Qualité 2024"]
     },
     {
       id: "salon-2",

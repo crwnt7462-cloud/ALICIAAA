@@ -179,7 +179,7 @@ export default function BookingPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                {salonInfo?.businessName || 'Salon Excellence Test'}
+                {salonInfo?.businessName || 'Mon Salon'}
               </h1>
               <div className="flex items-center gap-4 text-gray-600 mt-1">
                 <div className="flex items-center gap-1">

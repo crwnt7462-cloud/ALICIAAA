@@ -179,7 +179,7 @@ export default function BusinessFeaturesWithBottomSheets() {
           <div className="bg-gray-50 rounded-2xl p-4">
             <h3 className="font-medium text-gray-900 mb-3">Informations de base</h3>
             <div className="space-y-2 text-sm text-gray-600">
-              <div>Salon Excellence Paris</div>
+              <div>Mon Salon de Beauté</div>
               <div>123 Rue de la Beauté, 75001 Paris</div>
               <div>01 23 45 67 89</div>
             </div>

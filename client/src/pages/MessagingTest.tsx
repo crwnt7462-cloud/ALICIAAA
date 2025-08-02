@@ -22,7 +22,7 @@ export default function MessagingTest() {
 
     const professionalInfo = {
       id: 'pro_1',
-      name: 'Salon Excellence',
+      name: 'Mon Salon',
       type: 'professional' as const
     };
 

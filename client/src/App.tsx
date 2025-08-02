@@ -28,7 +28,7 @@ import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
-// SalonExcellenceParis supprimé définitivement
+// SUPPRIMÉ : Plus aucune référence à SalonExcellenceParis
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
@@ -434,7 +434,7 @@ function Router() {
   if (location === '/salon/salon-excellence-paris') {
     return (
       <div className="h-full">
-        <SalonExcellenceParis />
+        {/* SUPPRIMÉ : Plus aucune route SalonExcellenceParis */}
       </div>
     );
   }

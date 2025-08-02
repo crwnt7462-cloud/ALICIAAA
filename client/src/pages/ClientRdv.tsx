@@ -19,7 +19,7 @@ export default function ClientRdv() {
       {
         id: 1,
         serviceName: "Coupe + Brushing",
-        salonName: "Salon Excellence Paris",
+        salonName: "Mon Salon de Beauté",
         date: "2025-01-30",
         time: "14:30",
         price: "45€",
@@ -49,7 +49,7 @@ export default function ClientRdv() {
       {
         id: 4,
         serviceName: "Coloration",
-        salonName: "Salon Excellence Paris",
+        salonName: "Mon Salon de Beauté",
         date: "2024-12-20",
         time: "15:00",
         price: "85€",

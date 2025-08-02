@@ -16,7 +16,7 @@ export default function NewPageCreator() {
   const [isEditingReview, setIsEditingReview] = useState(false);
 
   const [salonData, setSalonData] = useState({
-    name: "Excellence Beauty Paris",
+    name: "Mon Salon de Beauté",
     description: "Votre salon de beauté au cœur de Paris, spécialisé dans les soins capillaires et esthétiques depuis 15 ans.",
     services: [
       { name: "Coupe & Brushing", duration: "45 min", specialist: "Expert Sophie", price: "45€" },

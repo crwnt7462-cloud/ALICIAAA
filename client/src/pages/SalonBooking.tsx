@@ -750,7 +750,7 @@ export default function SalonBooking() {
               onClick={() => {
                 // Sauvegarder l'état de réservation avant la connexion
                 const bookingState = {
-                  salonName: "Salon Excellence Paris",
+                  salonName: "Mon Salon de Beauté",
                   salonLocation: "75004 Paris",
                   serviceName: selectedService?.name || "Coupe + Shampoing",
                   servicePrice: selectedService?.price || 39,

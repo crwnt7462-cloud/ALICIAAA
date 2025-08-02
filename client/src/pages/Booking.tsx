@@ -113,7 +113,7 @@ export default function Booking() {
               <h1 className="text-xl font-semibold text-gray-900">
                 Réserver un rendez-vous
               </h1>
-              <p className="text-sm text-gray-600">Salon Excellence Paris</p>
+              <p className="text-sm text-gray-600">Mon Salon de Beauté</p>
             </div>
           </div>
 
