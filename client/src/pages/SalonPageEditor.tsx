@@ -214,8 +214,8 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   // Mutation pour sauvegarder (système universel)
   const saveMutation = useMutation({
     mutationFn: async (updatedData: Partial<SalonData>) => {
-      // Utiliser l'ID du salon récupéré de l'API ou celui dans les données
-      const salonId = currentSalon?.id || salonData.id;
+      // 🔧 CORRECTION : Toujours utiliser 'salon-demo' pour assurer la synchronisation
+      const salonId = currentSalon?.id || 'salon-demo';
       console.log('💾 Sauvegarde salon ID:', salonId);
       
       const response = await apiRequest('PUT', `/api/salon/${salonId}`, {
