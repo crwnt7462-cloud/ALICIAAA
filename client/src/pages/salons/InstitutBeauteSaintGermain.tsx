@@ -208,7 +208,7 @@ export default function InstitutBeauteSaintGermain() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 glass-button"
+                              className="mt-2 glass-button-neutral"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver
