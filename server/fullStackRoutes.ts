@@ -1298,32 +1298,41 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       let salons = await storage.getAllSalons();
       console.log(`🔍 Recherche salons: ${salons.length} salons trouvés`);
       
-      // Filtrer par catégorie si spécifiée
+      // Filtrer par catégorie si spécifiée - logique plus souple basée sur le nom
       if (category && category !== 'all') {
+        const initialCount = salons.length;
+        const categoryLower = (category as string).toLowerCase();
+        
         salons = salons.filter(salon => {
-          if (!salon.serviceCategories) return false;
+          const salonName = salon.name?.toLowerCase() || '';
+          const salonDesc = salon.description?.toLowerCase() || '';
           
-          const categoryLower = (category as string).toLowerCase();
-          return salon.serviceCategories.some((cat: any) => {
-            const catName = cat.name?.toLowerCase() || '';
-            return (catName.includes('coiffure') && categoryLower === 'coiffure') ||
-                   (catName.includes('barbier') && categoryLower === 'barbier') ||
-                   (catName.includes('manucure') && categoryLower === 'ongles') ||
-                   (catName.includes('massage') && categoryLower === 'massage') ||
-                   (catName.includes('soin') && categoryLower === 'esthetique') ||
-                   (catName.includes('esthétique') && categoryLower === 'esthetique');
-          });
+          // Correspondances plus larges basées sur les vrais noms des salons
+          if (categoryLower === 'coiffure') return salonName.includes('coiffure') || salonDesc.includes('coiffure');
+          if (categoryLower === 'barbier') return salonName.includes('barbier') || salonDesc.includes('barbier');
+          if (categoryLower === 'esthetique') return salonName.includes('institut') || salonName.includes('beauté') || salonDesc.includes('institut') || salonDesc.includes('beauté');
+          if (categoryLower === 'massage') return salonName.includes('spa') || salonName.includes('wellness') || salonDesc.includes('massage') || salonDesc.includes('spa');
+          if (categoryLower === 'onglerie' || categoryLower === 'ongles') return salonName.includes('nail') || salonDesc.includes('ongles') || salonDesc.includes('manucure');
+          
+          return false;
         });
-        console.log(`🏷️ Filtre catégorie "${category}": ${salons.length} salons`);
+        console.log(`🏷️ Filtre catégorie "${category}": ${initialCount} → ${salons.length} salons`);
       }
       
-      // Filtrer par ville si spécifiée
-      if (city) {
+      // Filtrer par ville si spécifiée - plus souple
+      if (city && city !== 'all') {
+        const initialCount = salons.length;
         const cityLower = (city as string).toLowerCase();
-        salons = salons.filter(salon => 
-          salon.address?.toLowerCase().includes(cityLower)
-        );
-        console.log(`📍 Filtre ville "${city}": ${salons.length} salons`);
+        
+        // Si c'est "paris", on garde tous les salons (ils sont tous à Paris)
+        if (cityLower === 'paris') {
+          // Pas de filtrage car tous nos salons sont à Paris
+        } else {
+          salons = salons.filter(salon => 
+            salon.address?.toLowerCase().includes(cityLower)
+          );
+        }
+        console.log(`📍 Filtre ville "${city}": ${initialCount} → ${salons.length} salons`);
       }
       
       // Filtrer par recherche textuelle si spécifiée
