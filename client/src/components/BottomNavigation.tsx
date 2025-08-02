@@ -43,8 +43,8 @@ export function BottomNavigation() {
 
   return (
     <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-      {/* Barre flottante glassmorphism compacte */}
-      <div className={`${getGenericGlassButton(1)} rounded-full shadow-lg px-4 py-1.5`}>
+      {/* Barre flottante vraiment transparente */}
+      <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-full shadow-2xl px-4 py-1.5">
         <div className="flex items-center gap-4">
           {navItems.map((item) => (
             <button
