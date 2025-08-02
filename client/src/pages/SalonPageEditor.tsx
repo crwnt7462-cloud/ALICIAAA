@@ -192,7 +192,7 @@ export default function SalonPageEditor() {
     const b = rgb & 255;
     
     const primaryOpacity = intensity / 100;
-    const secondaryOpacity = Math.max(0.1, (intensity - 10) / 100);
+    const secondaryOpacity = Math.max(0.05, (intensity - 5) / 100);
     
     return {
       background: `linear-gradient(135deg, rgba(${r}, ${g}, ${b}, ${primaryOpacity}) 0%, rgba(${r}, ${g}, ${b}, ${secondaryOpacity}) 100%)`,
@@ -792,7 +792,7 @@ export default function SalonPageEditor() {
                     <span className="text-xs text-gray-500 w-16">Subtile</span>
                     <input
                       type="range"
-                      min="10"
+                      min="5"
                       max="80"
                       value={salonData.customColors?.intensity || 35}
                       onChange={(e) => updateField('customColors', {
@@ -807,7 +807,7 @@ export default function SalonPageEditor() {
                     <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Ajuste la visibilité de votre couleur dans les boutons (10% = très subtil, 80% = très visible)
+                    Ajuste la visibilité de votre couleur dans les boutons (5% = très subtil, 80% = très visible)
                   </p>
                 </div>
               </CardContent>
