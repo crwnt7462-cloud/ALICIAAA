@@ -32,6 +32,34 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
+/* Carte glassmorphism principale */
+.glass-card {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 16px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Bouton rouge glassmorphism */
+.glass-button-red {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(239, 68, 68, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 8px 32px rgba(239, 68, 68, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+.glass-button-red:hover {
+  background: rgba(220, 38, 38, 0.9);
+  box-shadow: 
+    0 12px 48px rgba(239, 68, 68, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
 .glass-button:hover {
   backdrop-filter: blur(20px) saturate(200%);
   background: rgba(255, 255, 255, 0.15);

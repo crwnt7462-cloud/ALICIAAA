@@ -494,16 +494,16 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-lg mx-auto bg-white shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50/30 to-purple-100/20 backdrop-blur-sm">
+      <div className="max-w-lg mx-auto glass-card shadow-lg">
         {/* Header avec boutons d'action */}
-        <div className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+        <div className="sticky top-0 z-50 glass-button border-b border-white/20">
           <div className="flex items-center justify-between p-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => window.history.back()}
-              className="text-gray-700 hover:bg-gray-100"
+              className="glass-button text-black rounded-xl"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
@@ -512,7 +512,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditing(!isEditing)}
-                className={`text-gray-700 ${isEditing ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'}`}
+                className={`glass-button text-black rounded-xl ${isEditing ? 'bg-pink-100/50' : ''}`}
               >
                 <Edit3 className="w-4 h-4 mr-1" />
                 {isEditing ? 'Mode Aperçu' : 'Modifier'}
@@ -522,7 +522,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                   size="sm"
                   onClick={handleSave}
                   disabled={saveMutation.isPending}
-                  className={getGenericGlassButton(0)}
+                  className="glass-button text-black rounded-xl disabled:opacity-50"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {saveMutation.isPending ? 'Sauvegarde...' : 'Enregistrer'}
@@ -554,7 +554,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
               <div className="flex gap-2">
                 <label htmlFor="cover-upload" className="cursor-pointer">
-                  <div className="bg-white/90 backdrop-blur-sm text-gray-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-white transition-colors">
+                  <div className="glass-button text-black px-4 py-2 rounded-lg font-medium flex items-center gap-2">
                     <Upload className="w-4 h-4" />
                     Changer la photo
                   </div>
@@ -569,7 +569,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 {salonData.coverImageUrl && (
                   <button
                     onClick={removeCoverImage}
-                    className="bg-red-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-red-600 transition-colors"
+                    className="glass-button-red text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"
                   >
                     <Trash2 className="w-4 h-4" />
                     Supprimer
@@ -588,7 +588,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               <Input
                 value={salonData.name}
                 onChange={(e) => updateField('name', e.target.value)}
-                className="text-xl font-bold bg-white border-gray-300 text-gray-900"
+                className="text-xl font-bold glass-input text-gray-900"
                 placeholder="Nom du salon"
               />
             ) : (
@@ -610,7 +610,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               <Textarea
                 value={salonData.description}
                 onChange={(e) => updateField('description', e.target.value)}
-                className="bg-white border-gray-300 text-gray-900 text-sm"
+                className="glass-input text-gray-900 text-sm"
                 placeholder="Description courte du salon"
                 rows={2}
               />
@@ -627,7 +627,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 <Input
                   value={salonData.address}
                   onChange={(e) => updateField('address', e.target.value)}
-                  className="bg-white border-gray-300 text-gray-900 text-sm"
+                  className="glass-input text-gray-900 text-sm"
                   placeholder="Adresse"
                 />
               ) : (
@@ -640,7 +640,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 <Input
                   value={salonData.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
-                  className="bg-white border-gray-300 text-gray-900 text-sm"
+                  className="glass-input text-gray-900 text-sm"
                   placeholder="Téléphone"
                 />
               ) : (
@@ -651,7 +651,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
         </div>
 
         {/* Navigation par onglets */}
-        <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+        <div className="sticky top-16 z-40 glass-button border-b border-white/20">
           <div className="flex overflow-x-auto">
             {['services', 'personnel', 'couleurs', 'infos', 'avis'].map((tab) => (
               <button
@@ -682,7 +682,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                 <div className="text-center">
                   <Button
                     onClick={addCategory}
-                    className="bg-violet-100 text-violet-700 hover:bg-violet-200 border-2 border-dashed border-violet-300 w-full py-6"
+                    className="glass-button text-black border-2 border-dashed border-violet-300 w-full py-6"
                   >
                     <Plus className="w-5 h-5 mr-2" />
                     Ajouter une catégorie (ex: Cheveux, Visage, Ongles...)
@@ -693,7 +693,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
               {salonData.serviceCategories.map((category) => (
                 <Card 
                   key={category.id} 
-                  className="bg-white shadow-sm category-card-preview"
+                  className="glass-card shadow-sm category-card-preview"
                   style={category.expanded ? {
                     border: `2px solid ${salonData.customColors?.neonFrame || '#a855f7'}`,
                     boxShadow: `0 0 12px ${salonData.customColors?.neonFrame || '#a855f7'}30`
@@ -715,7 +715,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                             updateCategoryName(category.id, e.target.value);
                           }}
                           onClick={(e) => e.stopPropagation()}
-                          className="bg-white border-gray-300 text-gray-900 font-semibold text-base max-w-xs"
+                          className="glass-input text-gray-900 font-semibold text-base max-w-xs"
                           placeholder="Nom de la catégorie (ex: Cheveux, Visage...)"
                         />
                       ) : (
@@ -732,7 +732,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                 e.stopPropagation();
                                 addService(category.id);
                               }}
-                              className="text-violet-600 hover:bg-violet-50"
+                              className="glass-button text-black"
                               title="Ajouter un service"
                             >
                               <Plus className="w-4 h-4" />
@@ -744,7 +744,7 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                 e.stopPropagation();
                                 deleteCategory(category.id);
                               }}
-                              className="text-red-600 hover:bg-red-50"
+                              className="glass-button-red text-white"
                               title="Supprimer cette catégorie"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -767,14 +767,14 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                   <Input
                                     value={service.name}
                                     onChange={(e) => updateService(category.id, service.id, { name: e.target.value })}
-                                    className="bg-white border-gray-300 text-gray-900 text-sm"
+                                    className="glass-input text-gray-900 text-sm"
                                     placeholder="Nom du service"
                                   />
                                   <Button
                                     size="sm"
                                     variant="ghost"
                                     onClick={() => deleteService(category.id, service.id)}
-                                    className="text-red-600 hover:bg-red-50"
+                                    className="glass-button-red text-white"
                                   >
                                     <Trash2 className="w-4 h-4" />
                                   </Button>
@@ -784,13 +784,13 @@ Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de s
                                     type="number"
                                     value={service.price}
                                     onChange={(e) => updateService(category.id, service.id, { price: parseInt(e.target.value) })}
-                                    className="bg-white border-gray-300 text-gray-900 text-sm"
+                                    className="glass-input text-gray-900 text-sm"
                                     placeholder="Prix"
                                   />
                                   <Input
                                     value={service.duration}
                                     onChange={(e) => updateService(category.id, service.id, { duration: e.target.value })}
-                                    className="bg-white border-gray-300 text-gray-900 text-sm"
+                                    className="glass-input text-gray-900 text-sm"
                                     placeholder="Durée"
                                   />
                                 </div>
