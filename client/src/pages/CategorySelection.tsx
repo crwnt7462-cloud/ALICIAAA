@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import AuthGuard from "@/components/AuthGuard";
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Category {
   id: string;
@@ -107,7 +108,7 @@ export default function CategorySelection() {
                         </Badge>
                       </div>
                       
-                      <Button className="w-full h-12 text-lg font-medium bg-violet-600 hover:bg-violet-700">
+                      <Button className={`w-full h-12 text-lg font-medium ${getGenericGlassButton(category.id)}`}>
                         Voir les salons {category.name.toLowerCase()}
                       </Button>
                     </CardContent>

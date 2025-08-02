@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Save, Palette, Settings, Eye } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 export default function BookingCustomization() {
   const [, setLocation] = useLocation();
@@ -133,7 +134,7 @@ export default function BookingCustomization() {
               <Button
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className="bg-violet-600 hover:bg-violet-700 text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105"
+                className={`${getGenericGlassButton(0)} text-white rounded-full px-6 py-2 font-medium transition-all hover:scale-105`}
               >
                 <Save className="h-4 w-4 mr-2" />
                 {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}

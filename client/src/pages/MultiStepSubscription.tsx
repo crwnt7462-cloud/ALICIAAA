@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { getGenericGlassButton } from '@/lib/salonColors';
 import { apiRequest } from "@/lib/queryClient";
 
 // Schémas de validation pour chaque étape
@@ -203,7 +204,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                   step <= currentStep
-                    ? "bg-violet-600 text-white"
+                    ? `${getGenericGlassButton(step)} text-white`
                     : "bg-gray-200 text-gray-600"
                 }`}
               >
@@ -212,7 +213,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
               {step < 3 && (
                 <div
                   className={`flex-1 h-1 mx-4 ${
-                    step < currentStep ? "bg-violet-600" : "bg-gray-200"
+                    step < currentStep ? `${getGenericGlassButton(step + 3)}` : "bg-gray-200"
                   }`}
                 />
               )}
@@ -610,7 +611,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
                     </Button>
                     <Button 
                       type="submit" 
-                      className="flex-1 bg-violet-600 hover:bg-violet-700"
+                      className={`flex-1 ${getGenericGlassButton(2)}`}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (

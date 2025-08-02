@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { LogIn, Building2 } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 export default function DemoLogin() {
   const [, setLocation] = useLocation();
@@ -60,7 +61,7 @@ export default function DemoLogin() {
           <Button
             onClick={handleDemoLogin}
             disabled={isLoading}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium"
+            className={`w-full ${getGenericGlassButton(0)} text-white py-3 rounded-lg font-medium`}
           >
             <LogIn className="h-4 w-4 mr-2" />
             {isLoading ? 'Connexion...' : 'Se connecter en mode démo'}

@@ -686,3 +686,58 @@
   letter-spacing: 0.02em;
   font-size: clamp(1rem, 2vw, 1.25rem);
 }
+
+/* Classes glassmorphism pour cartes de salon */
+.glass-card-pink {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(236, 72, 153, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(236, 72, 153, 0.15);
+  box-shadow: 0 8px 32px rgba(236, 72, 153, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-card-indigo {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(129, 140, 248, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(129, 140, 248, 0.15);
+  box-shadow: 0 8px 32px rgba(129, 140, 248, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-card-amber {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(245, 158, 11, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  box-shadow: 0 8px 32px rgba(245, 158, 11, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-card-rose {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(244, 114, 182, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(244, 114, 182, 0.15);
+  box-shadow: 0 8px 32px rgba(244, 114, 182, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-card-emerald {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(52, 211, 153, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(52, 211, 153, 0.15);
+  box-shadow: 0 8px 32px rgba(52, 211, 153, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glass-card-neutral {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(107, 114, 128, 0.08) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(107, 114, 128, 0.15);
+  box-shadow: 0 8px 32px rgba(107, 114, 128, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}

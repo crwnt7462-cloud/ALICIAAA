@@ -42,3 +42,17 @@ export const getGenericGlassButton = (index: number = 0): string => {
   const colorIndex = index % colors.length;
   return getSalonButtonClass(undefined, colors[colorIndex]);
 };
+
+// Fonction pour cartes glassmorphism des salons
+export const getSalonGlassCard = (salonId?: string): string => {
+  const variant = getSalonColor(salonId);
+  const classMap: Record<SalonColorVariant, string> = {
+    pink: 'glass-card-pink',
+    indigo: 'glass-card-indigo', 
+    amber: 'glass-card-amber',
+    rose: 'glass-card-rose',
+    emerald: 'glass-card-emerald',
+    neutral: 'glass-card-neutral'
+  };
+  return classMap[variant];
+};

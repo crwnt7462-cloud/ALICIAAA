@@ -33,6 +33,20 @@ const getSalonButtonClass = (salonId: string) => {
   return salonColors[salonId] || 'glass-button-neutral';
 };
 
+// Fonction pour obtenir la classe de carte glassmorphism spécifique à chaque salon
+const getSalonGlassCard = (salonId: string) => {
+  const salonCardColors = {
+    'salon-excellence-paris': 'glass-card-pink',
+    'salon-moderne-republique': 'glass-card-indigo', 
+    'barbier-gentleman-marais': 'glass-card-amber',
+    'institut-beaute-saint-germain': 'glass-card-rose',
+    'nail-art-opera': 'glass-card-rose',
+    'spa-wellness-bastille': 'glass-card-emerald',
+    'beauty-lounge-montparnasse': 'glass-card-indigo'
+  };
+  return salonCardColors[salonId] || 'glass-card-neutral';
+};
+
 export default function SalonSearchComplete() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("barbier");
@@ -328,7 +342,7 @@ export default function SalonSearchComplete() {
                   transition: { duration: 0.2 }
                 }}
                 whileTap={{ scale: 0.98 }}
-                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300"
+                className={`${getSalonGlassCard(salon.id)} rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300`}
                 onClick={() => {
                   console.log('🔗 CLIC SALON - Redirection vers:', `/salon/${salon.id}`, 'Nom:', salon.name);
                   setLocation(`/salon/${salon.id}`);

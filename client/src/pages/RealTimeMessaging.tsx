@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Send, User, MessageCircle, Clock } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { getGenericGlassButton } from '@/lib/salonColors';
 
 interface Message {
   id: string;
@@ -252,7 +253,7 @@ export default function RealTimeMessaging({
                 <div
                   className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                     message.fromUserId === currentUserId
-                      ? 'bg-violet-600 text-white'
+                      ? `${getGenericGlassButton(0)} text-white`
                       : 'bg-white border shadow-sm'
                   }`}
                 >

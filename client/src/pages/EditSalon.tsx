@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { getGenericGlassButton } from '@/lib/salonColors';
 // Pas d'importation d'icônes selon les préférences utilisateur
 
 export default function EditSalon() {
@@ -171,7 +172,7 @@ export default function EditSalon() {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="bg-violet-600 hover:bg-violet-700"
+              className={getGenericGlassButton(0)}
             >
               {isSaving ? "Sauvegarde..." : "Sauvegarder"}
             </Button>
@@ -370,7 +371,7 @@ export default function EditSalon() {
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-violet-600 hover:bg-violet-700"
+            className={getGenericGlassButton(1)}
           >
             {isSaving ? "Sauvegarde..." : "Sauvegarder les modifications"}
           </Button>
