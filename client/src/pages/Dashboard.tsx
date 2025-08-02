@@ -44,7 +44,7 @@ export default function Dashboard() {
     }
   }, [webSocketData?.notifications]);
 
-  const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+  const COLORS = ["#FF6B35", "#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
 
   if (statsLoading || revenueLoading || appointmentsLoading || servicesLoading || staffLoading || retentionLoading) {
     return <LoadingDashboard />;
@@ -55,9 +55,9 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-purple-600 tracking-tight">Tableau de bord</h1>
-          <p className="text-purple-600 mt-1 flex items-center text-xs">
-            <Calendar className="w-3 h-3 mr-1.5 text-purple-600" />
+          <h1 className="text-2xl font-bold text-white tracking-tight">Tableau de bord</h1>
+          <p className="text-white mt-1 flex items-center text-xs">
+            <Calendar className="w-3 h-3 mr-1.5 text-white" />
             {new Date().toLocaleDateString('fr-FR', { 
               weekday: 'short', 
               month: 'short', 
@@ -147,97 +147,97 @@ export default function Dashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-3">
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-purple-600">Aujourd'hui</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">
+                <p className="text-xs font-medium text-white">Aujourd'hui</p>
+                <p className="text-xl font-bold text-white mt-1">
                   {(stats as any)?.todayAppointments || 0}
                 </p>
-                <p className="text-xs text-purple-600">RDV</p>
+                <p className="text-xs text-white">RDV</p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <CalendarCheck className="w-4 h-4 text-purple-600" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <CalendarCheck className="w-4 h-4 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-purple-600">CA Semaine</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">
+                <p className="text-xs font-medium text-white">CA Semaine</p>
+                <p className="text-xl font-bold text-white mt-1">
                   {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '0€'}
                 </p>
-                <p className="text-xs text-purple-600 font-medium">+12%</p>
+                <p className="text-xs text-white font-medium">+12%</p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <TrendingUp className="w-4 h-4 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-purple-600">Récurrence 30j</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">75%</p>
-                <p className="text-xs text-purple-600 font-medium">12 clients</p>
-              </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <UserCheck className="w-4 h-4 text-purple-600" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-4 h-4 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-purple-600">Clients Fidèles</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">65%</p>
-                <p className="text-xs text-purple-600 font-medium">8 clients 3+ visites</p>
+                <p className="text-xs font-medium text-white">Récurrence 30j</p>
+                <p className="text-xl font-bold text-white mt-1">75%</p>
+                <p className="text-xs text-white font-medium">12 clients</p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <Award className="w-4 h-4 text-purple-600" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <UserCheck className="w-4 h-4 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-purple-600">Clients</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">
+                <p className="text-xs font-medium text-white">Clients Fidèles</p>
+                <p className="text-xl font-bold text-white mt-1">65%</p>
+                <p className="text-xs text-white font-medium">8 clients 3+ visites</p>
+              </div>
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <Award className="w-4 h-4 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium text-white">Clients</p>
+                <p className="text-xl font-bold text-white mt-1">
                   {(stats as any)?.totalClients || 0}
                 </p>
-                <p className="text-xs text-purple-600">Total</p>
+                <p className="text-xs text-white">Total</p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <Users className="w-4 h-4 text-purple-600" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <Users className="w-4 h-4 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <Card className="border-0 shadow-md bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-purple-600">Taux</p>
-                <p className="text-xl font-bold text-purple-600 mt-1">82%</p>
-                <p className="text-xs text-purple-600 font-medium">Semaine</p>
+                <p className="text-xs font-medium text-white">Taux</p>
+                <p className="text-xl font-bold text-white mt-1">82%</p>
+                <p className="text-xs text-white font-medium">Semaine</p>
               </div>
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100">
-                <Clock className="w-4 h-4 text-purple-600" />
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <Clock className="w-4 h-4 text-white" />
               </div>
             </div>
           </CardContent>
@@ -247,8 +247,8 @@ export default function Dashboard() {
       {/* Revenue Chart */}
       <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-bold text-purple-600 tracking-tight">Évolution du chiffre d'affaires</CardTitle>
-          <p className="text-sm text-purple-600">30 derniers jours</p>
+          <CardTitle className="text-xl font-bold text-white tracking-tight">Évolution du chiffre d'affaires</CardTitle>
+          <p className="text-sm text-white">30 derniers jours</p>
         </CardHeader>
         <CardContent>
           <div className="h-80">
@@ -269,7 +269,7 @@ export default function Dashboard() {
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
-                  stroke="#3B82F6" 
+                  stroke="#FF6B35" 
                   strokeWidth={2}
                   dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
                 />
@@ -283,8 +283,8 @@ export default function Dashboard() {
         {/* Top Services */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-purple-600">Prestations les plus vendues</CardTitle>
-            <p className="text-sm text-purple-600">30 derniers jours</p>
+            <CardTitle className="text-lg font-semibold text-white">Prestations les plus vendues</CardTitle>
+            <p className="text-sm text-white">30 derniers jours</p>
           </CardHeader>
           <CardContent>
             <div className="h-64">
@@ -300,7 +300,7 @@ export default function Dashboard() {
                     width={80}
                   />
                   <Tooltip formatter={(value, name) => [value, name === 'count' ? 'Nombre de ventes' : 'Chiffre d\'affaires']} />
-                  <Bar dataKey="count" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="count" fill="#FF6B35" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -310,29 +310,29 @@ export default function Dashboard() {
         {/* Staff Performance */}
         <Card className="border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-lg font-semibold text-purple-600">Classement équipe</CardTitle>
-            <p className="text-sm text-purple-600">Chiffre d'affaires par personne</p>
+            <CardTitle className="text-lg font-semibold text-white">Classement équipe</CardTitle>
+            <p className="text-sm text-white">Chiffre d'affaires par personne</p>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {Array.isArray(staffPerformance) && staffPerformance.map((staff: any, index: number) => (
                 <div key={staff.staffName} className="flex items-center justify-between p-3 bg-white/30 backdrop-blur-sm border border-gray-200/30 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-black font-semibold bg-gradient-to-br from-blue-100 to-purple-100">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-black font-semibold bg-white/20 rounded-lg flex items-center justify-center">
                       {index + 1}
                     </div>
                     <div>
-                      <p className="font-medium text-purple-600">{staff.staffName}</p>
-                      <p className="text-sm text-purple-600">{staff.appointmentCount} RDV</p>
+                      <p className="font-medium text-white">{staff.staffName}</p>
+                      <p className="text-sm text-white">{staff.appointmentCount} RDV</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-purple-600">{staff.revenue}€</p>
-                    {index === 0 && <Award className="w-4 h-4 text-purple-600 ml-auto" />}
+                    <p className="font-semibold text-white">{staff.revenue}€</p>
+                    {index === 0 && <Award className="w-4 h-4 text-white ml-auto" />}
                   </div>
                 </div>
               )) || (
-                <div className="text-center py-8 text-purple-600">
+                <div className="text-center py-8 text-white">
                   <p>Aucune donnée de performance disponible</p>
                 </div>
               )}
@@ -344,42 +344,42 @@ export default function Dashboard() {
       {/* Client Retention Analysis */}
       <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-4">
-          <CardTitle className="text-xl font-bold text-purple-600 tracking-tight">Analyse de Fidélisation Client</CardTitle>
-          <p className="text-sm text-purple-600">Indicateurs de récurrence et fidélité</p>
+          <CardTitle className="text-xl font-bold text-white tracking-tight">Analyse de Fidélisation Client</CardTitle>
+          <p className="text-sm text-white">Indicateurs de récurrence et fidélité</p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-white/30 backdrop-blur-md border border-gray-200/50/50">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-purple-600">Récurrence 30 jours</h4>
-                <UserCheck className="w-5 h-5 text-purple-600" />
+                <h4 className="text-sm font-semibold text-white">Récurrence 30 jours</h4>
+                <UserCheck className="w-5 h-5 text-white" />
               </div>
-              <p className="text-2xl font-bold text-purple-600">75%</p>
-              <p className="text-xs text-purple-600 mt-1">12 / 16 clients</p>
+              <p className="text-2xl font-bold text-white">75%</p>
+              <p className="text-xs text-white mt-1">12 / 16 clients</p>
             </div>
             
             <div className="bg-white/30 backdrop-blur-md border border-gray-200/50/50">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="text-sm font-semibold text-purple-600">Clients VIP</h4>
-                <Award className="w-5 h-5 text-purple-600" />
+                <h4 className="text-sm font-semibold text-white">Clients VIP</h4>
+                <Award className="w-5 h-5 text-white" />
               </div>
-              <p className="text-2xl font-bold text-purple-600">40%</p>
-              <p className="text-xs text-purple-600 mt-1">6 clients (5+ visites)</p>
+              <p className="text-2xl font-bold text-white">40%</p>
+              <p className="text-xs text-white mt-1">6 clients (5+ visites)</p>
             </div>
           </div>
           
           <div className="grid grid-cols-3 gap-3">
             <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <p className="text-lg font-bold text-purple-600">65%</p>
-              <p className="text-xs text-purple-600">Récurrence 90j</p>
+              <p className="text-lg font-bold text-white">65%</p>
+              <p className="text-xs text-white">Récurrence 90j</p>
             </div>
             <div className="text-center p-3 bg-emerald-50 rounded-lg">
-              <p className="text-lg font-bold text-purple-600">2.4</p>
-              <p className="text-xs text-purple-600">Visites/client</p>
+              <p className="text-lg font-bold text-white">2.4</p>
+              <p className="text-xs text-white">Visites/client</p>
             </div>
             <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <p className="text-lg font-bold text-purple-600">58%</p>
-              <p className="text-xs text-purple-600">Clients fidèles</p>
+              <p className="text-lg font-bold text-white">58%</p>
+              <p className="text-xs text-white">Clients fidèles</p>
             </div>
           </div>
         </CardContent>
@@ -388,8 +388,8 @@ export default function Dashboard() {
       {/* Upcoming Appointments */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold text-purple-600">Prochains rendez-vous</CardTitle>
-          <p className="text-sm text-purple-600">7 prochains jours</p>
+          <CardTitle className="text-lg font-semibold text-white">Prochains rendez-vous</CardTitle>
+          <p className="text-sm text-white">7 prochains jours</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -398,24 +398,24 @@ export default function Dashboard() {
                 <div key={index} className="flex items-center justify-between p-3 border border-gray-200/50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
-                      <CalendarCheck className="w-5 h-5 text-purple-600" />
+                      <CalendarCheck className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="font-medium text-purple-600">{appointment.clientName}</p>
-                      <p className="text-sm text-purple-600">{appointment.serviceName}</p>
+                      <p className="font-medium text-white">{appointment.clientName}</p>
+                      <p className="text-sm text-white">{appointment.serviceName}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-purple-600">
+                    <p className="text-sm font-medium text-white">
                       {new Date(appointment.date).toLocaleDateString('fr-FR')}
                     </p>
-                    <p className="text-sm text-purple-600">{appointment.time}</p>
+                    <p className="text-sm text-white">{appointment.time}</p>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="text-center py-8 text-purple-600">
-                <CalendarCheck className="w-12 h-12 text-purple-600 mx-auto mb-3" />
+              <div className="text-center py-8 text-white">
+                <CalendarCheck className="w-12 h-12 text-white mx-auto mb-3" />
                 <p>Aucun rendez-vous prévu</p>
               </div>
             )}
