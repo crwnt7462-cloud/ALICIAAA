@@ -228,7 +228,7 @@ export default function NailArtOpera() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 glass-button-neutral"
+                              className="mt-2 glass-button-rose"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver

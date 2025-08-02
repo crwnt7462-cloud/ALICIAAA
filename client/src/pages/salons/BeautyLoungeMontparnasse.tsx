@@ -246,7 +246,7 @@ export default function BeautyLoungeMontparnasse() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 glass-button-neutral"
+                              className="mt-2 glass-button-indigo"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver

@@ -228,7 +228,7 @@ export default function SpaWellnessBastille() {
                             <p className="font-bold text-lg">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 glass-button-neutral"
+                              className="mt-2 glass-button-emerald"
                               onClick={() => setLocation('/salon-booking')}
                             >
                               Réserver
