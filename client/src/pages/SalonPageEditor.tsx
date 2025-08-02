@@ -342,6 +342,7 @@ export default function SalonPageEditor() {
           {[
             { id: 'services', label: 'Services', icon: Calendar },
             { id: 'info', label: 'Infos', icon: MapPin },
+            { id: 'couleurs', label: 'Couleurs', icon: Palette },
             { id: 'avis', label: 'Avis', icon: Star }
           ].map(tab => (
             <button
@@ -580,127 +581,7 @@ export default function SalonPageEditor() {
               </CardContent>
             </Card>
 
-            {/* Personnalisation des couleurs (mode édition uniquement) */}
-            {isEditing && (
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
-                    <Palette className="h-5 w-5" />
-                    Personnalisation des boutons
-                  </h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Couleur principale</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.primary || '#f59e0b'}
-                          onChange={(e) => updateField('customColors', {
-                            ...salonData.customColors,
-                            primary: e.target.value
-                          })}
-                          className="w-12 h-10 rounded border border-gray-300"
-                        />
-                        <Input
-                          value={salonData.customColors?.primary || '#f59e0b'}
-                          onChange={(e) => updateField('customColors', {
-                            ...salonData.customColors,
-                            primary: e.target.value
-                          })}
-                          className="flex-1 text-sm"
-                          placeholder="#f59e0b"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Couleur accent</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="color"
-                          value={salonData.customColors?.accent || '#d97706'}
-                          onChange={(e) => updateField('customColors', {
-                            ...salonData.customColors,
-                            accent: e.target.value
-                          })}
-                          className="w-12 h-10 rounded border border-gray-300"
-                        />
-                        <Input
-                          value={salonData.customColors?.accent || '#d97706'}
-                          onChange={(e) => updateField('customColors', {
-                            ...salonData.customColors,
-                            accent: e.target.value
-                          })}
-                          className="flex-1 text-sm"
-                          placeholder="#d97706"
-                        />
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="mt-4">
-                    <label className="block text-sm font-medium mb-2">Couleurs prédéfinies</label>
-                    <div className="grid grid-cols-6 gap-2">
-                      {[
-                        { name: 'Ambre', primary: '#f59e0b', accent: '#d97706' },
-                        { name: 'Bleu', primary: '#3b82f6', accent: '#2563eb' },
-                        { name: 'Rose', primary: '#ec4899', accent: '#db2777' },
-                        { name: 'Vert', primary: '#10b981', accent: '#059669' },
-                        { name: 'Violet', primary: '#8b5cf6', accent: '#7c3aed' },
-                        { name: 'Rouge', primary: '#ef4444', accent: '#dc2626' }
-                      ].map((color) => (
-                        <button
-                          key={color.name}
-                          onClick={() => updateField('customColors', {
-                            ...salonData.customColors,
-                            primary: color.primary,
-                            accent: color.accent
-                          })}
-                          className="w-12 h-10 rounded border border-gray-300 hover:scale-105 transition-transform"
-                          style={{ backgroundColor: color.primary }}
-                          title={color.name}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Aperçu des boutons avec effet glassmorphism */}
-                  <div className="mt-6 p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg">
-                    <h4 className="font-medium mb-3">Aperçu des boutons avec effet glass</h4>
-                    <div className="flex gap-3">
-                      <button
-                        className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
-                        style={{
-                          backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 85%, transparent)`,
-                          color: salonData.customColors?.buttonText || '#000000',
-                          backdropFilter: 'blur(10px) saturate(180%)',
-                          border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, transparent)`,
-                          boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, transparent)`
-                        }}
-                      >
-                        Réserver
-                      </button>
-                      <button
-                        className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
-                        style={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.25)',
-                          color: salonData.customColors?.primary || '#f59e0b',
-                          backdropFilter: 'blur(10px) saturate(180%)',
-                          border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, transparent)`,
-                          boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, transparent)`
-                        }}
-                      >
-                        Voir plus
-                      </button>
-                    </div>
-                    <p className="text-xs text-gray-600 mt-2">
-                      ✨ Effet glassmorphism conservé avec vos couleurs personnalisées
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
 
             <Card>
               <CardContent className="p-6">
@@ -735,6 +616,176 @@ export default function SalonPageEditor() {
                       </Badge>
                     ))}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'couleurs' && (
+          <div className="space-y-6">
+            {/* Header avec description */}
+            <Card className="glass-card-amber">
+              <CardContent className="p-6 text-center">
+                <Palette className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
+                <p className="text-gray-600">
+                  Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
+                  L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Sélecteurs de couleur */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium mb-3">Couleur principale</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={salonData.customColors?.primary || '#f59e0b'}
+                        onChange={(e) => updateField('customColors', {
+                          ...salonData.customColors,
+                          primary: e.target.value
+                        })}
+                        className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                      />
+                      <Input
+                        value={salonData.customColors?.primary || '#f59e0b'}
+                        onChange={(e) => updateField('customColors', {
+                          ...salonData.customColors,
+                          primary: e.target.value
+                        })}
+                        className="flex-1 text-sm font-mono"
+                        placeholder="#f59e0b"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les boutons de réservation</p>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-3">Couleur accent</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={salonData.customColors?.accent || '#d97706'}
+                        onChange={(e) => updateField('customColors', {
+                          ...salonData.customColors,
+                          accent: e.target.value
+                        })}
+                        className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                      />
+                      <Input
+                        value={salonData.customColors?.accent || '#d97706'}
+                        onChange={(e) => updateField('customColors', {
+                          ...salonData.customColors,
+                          accent: e.target.value
+                        })}
+                        className="flex-1 text-sm font-mono"
+                        placeholder="#d97706"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Couleurs prédéfinies */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-4">Thèmes prédéfinis</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {[
+                    { name: 'Ambre Classique', primary: '#f59e0b', accent: '#d97706', desc: 'Chaleureux et professionnel' },
+                    { name: 'Bleu Moderne', primary: '#3b82f6', accent: '#2563eb', desc: 'Confiance et sérénité' },
+                    { name: 'Rose Élégant', primary: '#ec4899', accent: '#db2777', desc: 'Féminité et douceur' },
+                    { name: 'Vert Nature', primary: '#10b981', accent: '#059669', desc: 'Naturel et apaisant' },
+                    { name: 'Violet Royal', primary: '#8b5cf6', accent: '#7c3aed', desc: 'Luxe et créativité' },
+                    { name: 'Rouge Passion', primary: '#ef4444', accent: '#dc2626', desc: 'Énergie et dynamisme' }
+                  ].map((theme) => (
+                    <button
+                      key={theme.name}
+                      onClick={() => updateField('customColors', {
+                        ...salonData.customColors,
+                        primary: theme.primary,
+                        accent: theme.accent
+                      })}
+                      className="p-4 border rounded-lg hover:shadow-lg transition-all text-left group"
+                      style={{ 
+                        borderColor: theme.primary,
+                        background: `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.accent}08 100%)`
+                      }}
+                    >
+                      <div className="flex items-center gap-3 mb-2">
+                        <div 
+                          className="w-6 h-6 rounded-full border"
+                          style={{ backgroundColor: theme.primary, borderColor: theme.accent }}
+                        />
+                        <h4 className="font-medium text-sm">{theme.name}</h4>
+                      </div>
+                      <p className="text-xs text-gray-600">{theme.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Aperçu en temps réel */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-4">Aperçu en temps réel</h3>
+                <div 
+                  className="p-6 rounded-lg"
+                  style={{ 
+                    background: `linear-gradient(135deg, ${salonData.customColors?.primary || '#f59e0b'}10 0%, ${salonData.customColors?.accent || '#d97706'}05 100%)` 
+                  }}
+                >
+                  <div className="flex flex-wrap gap-4 items-center justify-center">
+                    <button
+                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom"
+                      style={{
+                        backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 85%, transparent)`,
+                        color: salonData.customColors?.buttonText || '#000000',
+                        backdropFilter: 'blur(10px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, transparent)`,
+                        boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, transparent)`
+                      }}
+                    >
+                      Réserver maintenant
+                    </button>
+                    <button
+                      className="px-6 py-3 rounded-lg font-medium transition-all duration-300 glass-button-custom"
+                      style={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.25)',
+                        color: salonData.customColors?.primary || '#f59e0b',
+                        backdropFilter: 'blur(10px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, transparent)`,
+                        boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, transparent)`
+                      }}
+                    >
+                      Voir les avis
+                    </button>
+                    <button
+                      className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
+                      style={{
+                        backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 85%, transparent)`,
+                        color: salonData.customColors?.buttonText || '#000000',
+                        backdropFilter: 'blur(10px) saturate(180%)',
+                        border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, transparent)`,
+                        boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, transparent)`
+                      }}
+                    >
+                      Réserver
+                    </button>
+                  </div>
+                  <p className="text-center text-sm text-gray-600 mt-4">
+                    ✨ Aperçu de vos boutons avec effet glassmorphism et couleurs personnalisées
+                  </p>
                 </div>
               </CardContent>
             </Card>
