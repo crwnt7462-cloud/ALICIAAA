@@ -33,12 +33,30 @@ interface ServiceCategory {
   services: Service[];
 }
 
+interface SalonData {
+  id: string;
+  name: string;
+  rating: number;
+  reviews?: number;
+  reviewCount?: number;
+  address: string;
+  phone: string;
+  verified: boolean;
+  certifications: string[];
+  awards: string[];
+  description?: string;
+  longDescription: string;
+  serviceCategories?: ServiceCategory[];
+  coverImageUrl?: string;
+  photos: string[];
+}
+
 export default function BeautyLoungeMontparnasse() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   
   // RÉCUPÉRER LES VRAIES DONNÉES UNIQUES DEPUIS L'API
-  const { data: salonData, isLoading } = useQuery({
+  const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/booking-pages', 'beauty-lounge-montparnasse'],
     retry: 2,
     refetchOnWindowFocus: false,
