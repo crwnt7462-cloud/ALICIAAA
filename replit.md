@@ -58,16 +58,20 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
-### ✅ Conversion Glassmorphism Complète
+### ✅ Conversion Glassmorphism Complète + Homepage Salon Update
 - **Date**: 02/08/2025
-- **Changement**: Conversion complète de tous les boutons violets vers le style glassmorphism unifié
-- **Impact**: Design cohérent et moderne sur toute la plateforme
+- **Changement**: Conversion complète vers glassmorphism unifié + remplacement des salons de la page d'accueil
+- **Impact**: Design cohérent et redirections correctes vers les vraies pages de salons
 - **Détails**: 
   - Nouvelle page ClientLoginModern avec design épuré
-  - Tous les boutons de la page d'accueil convertis au glassmorphism
-  - MessagingHub et ClientManagement mis à jour
-  - Landing.tsx et PublicLanding.tsx harmonisés
-  - Redirection correcte vers /client-login-modern
+  - TOUS les boutons convertis au glassmorphism (fin des dégradés)
+  - Remplacement des salons homepage par les 4 salons de /search :
+    * Barbier Moderne → /salon/barbier-gentleman-marais
+    * Salon Excellence → /salon/salon-excellence-paris
+    * Beauty Institute → /salon/institut-beaute-saint-germain
+    * Nail Art Studio → /salon/nail-art-opera
+  - Corrections redirections des boutons "Réserver"
+  - Nettoyage fichier PublicLanding.tsx corrompu
 
 ### ✅ Intégration OpenAI Complétée
 - **Date**: 01/08/2025

@@ -1054,3 +1054,322 @@ export default function PublicLanding() {
     </div>
   );
 }
+                <img 
+                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
+                  alt="Gentleman Barbier Marais"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                
+                {/* Badges sur la photo */}
+                <div className="absolute top-3 left-3 flex gap-2">
+                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                    Vérifié
+                  </span>
+                </div>
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Gentleman Barbier Marais</h4>
+                    <p className="text-sm text-gray-500 mb-2">Paris 4ème</p>
+                  </div>
+                  <span className="text-sm text-gray-600 font-medium">À partir de 25€</span>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1">
+                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-sm font-semibold">4.8</span>
+                    <span className="text-sm text-gray-500">(198 avis)</span>
+                  </div>
+                  <span className="text-sm text-gray-500">• 0.3 km</span>
+                </div>
+                
+                <div className="flex flex-wrap gap-1 mb-3">
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Coupe homme
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Barbe
+                  </span>
+                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    Rasage
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-green-600 font-medium">
+                      Dispo 14h30
+                    </span>
+                  </div>
+                  <button 
+                    className="bg-gradient-to-r from-amber-400/30 to-rose-400/30 backdrop-blur-md border border-white/20 shadow-lg hover:shadow-xl text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setLocation('/salon-booking');
+                    }}
+                  >
+                    Réserver
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comment ça marche */}
+      <section id="how-it-works" className="py-12 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            Comment ça marche ?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { step: "1", title: "Recherchez", description: "Trouvez le service et le professionnel près de chez vous", icon: <Search className="w-6 h-6" /> },
+              { step: "2", title: "Réservez", description: "Choisissez votre créneau et confirmez en quelques clics", icon: <Calendar className="w-6 h-6" /> },
+              { step: "3", title: "Profitez", description: "Rendez-vous directement au salon, tout est organisé", icon: <Heart className="w-6 h-6" /> }
+            ].map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-violet-100 to-violet-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="text-violet-600">
+                    {item.icon}
+                  </div>
+                </div>
+                <div className="text-sm font-medium text-violet-600 mb-2">Étape {item.step}</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Avantages */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            Pourquoi choisir BeautyBook ?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="text-center">
+                <div className="w-12 h-12 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                  <div className="text-violet-600">
+                    {benefit.icon}
+                  </div>
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">
+                  {benefit.title}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {benefit.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Témoignages clients */}
+      <section className="py-12 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            Avis clients
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((testimonial, index) => (
+              <div key={testimonial.id} className="bg-gray-50 p-4 rounded-lg">
+                <div className="flex items-center gap-1 mb-3">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-sm text-gray-700 mb-3">
+                  "{testimonial.comment}"
+                </p>
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>{testimonial.name}, {testimonial.location}</span>
+                  <span>{testimonial.service}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Application mobile */}
+      <section className="py-6 gradient-bg">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-lg md:text-xl font-bold text-white mb-2">
+              Application mobile
+            </h2>
+            <p className="text-violet-100 mb-4 text-sm">
+              Réservez encore plus facilement depuis votre téléphone
+            </p>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+              <button
+                onClick={() => window.open('https://apps.apple.com/app/beautybook', '_blank')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation"
+              >
+                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
+                  <Phone className="w-3 h-3 text-violet-600" />
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-medium text-sm">App Store</div>
+                  <div className="text-violet-100 text-xs">iOS</div>
+                </div>
+              </button>
+              <button
+                onClick={() => window.open('https://play.google.com/store/apps/details?id=com.beautybook', '_blank')}
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20 active:bg-white/20 transition-colors cursor-pointer touch-manipulation"
+              >
+                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
+                  <Phone className="w-3 h-3 text-violet-600" />
+                </div>
+                <div className="text-left">
+                  <div className="text-white font-medium text-sm">Google Play</div>
+                  <div className="text-violet-100 text-xs">Android</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* CTA Professionnels */}
+      <section className="py-8 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
+            Professionnel de la beauté ?
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Rejoignez notre réseau de 2,500+ salons partenaires
+          </p>
+          <div className="space-y-2 md:flex md:flex-row md:gap-3 md:justify-center md:space-y-0">
+            <Button 
+              onClick={() => setLocation("/pro-login")}
+              className="w-full md:w-auto h-10 gradient-bg text-white rounded-lg touch-manipulation text-sm"
+            >
+              Rejoindre le réseau
+            </Button>
+            <Button 
+              variant="outline"
+              className="w-full md:w-auto h-10 border-violet-200 text-violet-600 active:bg-violet-50 rounded-lg touch-manipulation text-sm"
+              onClick={() => {
+                const element = document.querySelector('#how-it-works');
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+            >
+              En savoir plus
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-12 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+            Questions fréquentes
+          </h2>
+
+          <div className="space-y-3">
+            {faqs.slice(0, 3).map((faq, index) => (
+              <div key={index} className="bg-white rounded-lg border">
+                <button
+                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                  className="w-full p-4 text-left hover:bg-gray-50"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-gray-900">
+                      {faq.question}
+                    </h3>
+                    <div className={`transform transition-transform ${expandedFaq === index ? 'rotate-180' : ''}`}>
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+                
+                {expandedFaq === index && (
+                  <div className="px-4 pb-4 border-t">
+                    <p className="text-sm text-gray-600 pt-3">
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-600 mb-3">
+              Une question ? Contactez-nous
+            </p>
+            <Button variant="outline" size="sm">
+              Support
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer professionnel */}
+      <footer className="bg-slate-50 border-t border-slate-200 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="mb-4">
+                <img src={logoImage} alt="Logo" className="h-14 w-auto" />
+              </div>
+              <p className="text-gray-600 mb-4 max-w-md">
+                La plateforme de référence pour réserver vos rendez-vous beauté en France. 
+                Simple, rapide et sécurisé.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-4">Services</h4>
+              <ul className="space-y-2 text-gray-600">
+                <li><button onClick={() => handleSearchService('coiffure')} className="hover:text-violet-600 text-left">Coiffure</button></li>
+                <li><button onClick={() => handleSearchService('esthetique')} className="hover:text-violet-600 text-left">Esthétique</button></li>
+                <li><button onClick={() => handleSearchService('massage')} className="hover:text-violet-600 text-left">Massage</button></li>
+                <li><button onClick={() => handleSearchService('onglerie')} className="hover:text-violet-600 text-left">Onglerie</button></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-600">
+                <li><button onClick={() => setLocation('/support')} className="hover:text-violet-600 text-left">Centre d'aide</button></li>
+                <li><button onClick={() => setLocation('/contact')} className="hover:text-violet-600 text-left">Contact</button></li>
+                <li><button onClick={() => setLocation('/conditions')} className="hover:text-violet-600 text-left">Conditions</button></li>
+                <li><button onClick={() => setLocation('/confidentialite')} className="hover:text-violet-600 text-left">Confidentialité</button></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
+            <p>&copy; 2025 Beauty Platform. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
