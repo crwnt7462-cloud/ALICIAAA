@@ -22,13 +22,13 @@ import rendlyLogo from "@assets/3_1753714421825.png";
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
 const getSalonButtonClass = (salonId: string) => {
   const salonColors = {
-    'salon-1': 'glass-button-amber',        // Barbier Moderne
-    'salon-2': 'glass-button-pink',         // Salon Excellence  
-    'salon-3': 'glass-button-emerald',      // Institut Beauté
-    'salon-4': 'glass-button-rose',         // Nail Art Studio
-    'salon-5': 'glass-button-indigo',       // Spa Zen
-    'salon-6': 'glass-button-amber',        // Barbier Chic
-    'salon-7': 'glass-button-rose'          // Beauty Lounge
+    'salon-excellence-paris': 'glass-button-pink',
+    'salon-moderne-republique': 'glass-button-indigo', 
+    'barbier-gentleman-marais': 'glass-button-amber',
+    'institut-beaute-saint-germain': 'glass-button-rose',
+    'nail-art-opera': 'glass-button-rose',
+    'spa-wellness-bastille': 'glass-button-emerald',
+    'beauty-lounge-montparnasse': 'glass-button-indigo'
   };
   return salonColors[salonId] || 'glass-button-neutral';
 };
@@ -364,9 +364,9 @@ export default function SalonSearchComplete() {
                   <motion.button 
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="absolute top-3 right-3 glass-button-secondary w-8 h-8 rounded-full flex items-center justify-center"
+                    className={`absolute top-3 right-3 ${getSalonButtonClass(salon.id)} w-8 h-8 rounded-full flex items-center justify-center`}
                   >
-                    <Heart className="h-4 w-4 text-white" />
+                    <Heart className="h-4 w-4 text-black" />
                   </motion.button>
                   
                   {/* Promotion en bas de l'image */}
