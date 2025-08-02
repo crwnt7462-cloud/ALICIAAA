@@ -495,11 +495,16 @@ export default function SalonPageEditor() {
                             {!isEditing ? (
                               <Button 
                                 size="sm" 
-                                className="mt-2 text-sm font-medium rounded-lg transition-colors"
+                                className="mt-2 glass-button-custom transition-all duration-300"
                                 style={{
-                                  backgroundColor: salonData.customColors?.primary || '#f59e0b',
-                                  color: salonData.customColors?.buttonText || '#000000'
-                                }}
+                                  '--custom-bg': salonData.customColors?.primary || '#f59e0b',
+                                  '--custom-text': salonData.customColors?.buttonText || '#000000',
+                                  backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 85%, transparent)`,
+                                  color: salonData.customColors?.buttonText || '#000000',
+                                  backdropFilter: 'blur(10px) saturate(180%)',
+                                  border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, transparent)`,
+                                  boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, transparent)`
+                                } as React.CSSProperties}
                                 onClick={() => setLocation('/salon-booking')}
                               >
                                 Réserver
@@ -660,30 +665,38 @@ export default function SalonPageEditor() {
                     </div>
                   </div>
 
-                  {/* Aperçu des boutons */}
-                  <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-medium mb-3">Aperçu des boutons</h4>
+                  {/* Aperçu des boutons avec effet glassmorphism */}
+                  <div className="mt-6 p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg">
+                    <h4 className="font-medium mb-3">Aperçu des boutons avec effet glass</h4>
                     <div className="flex gap-3">
                       <button
-                        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
                         style={{
-                          backgroundColor: salonData.customColors?.primary || '#f59e0b',
-                          color: salonData.customColors?.buttonText || '#000000'
+                          backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 85%, transparent)`,
+                          color: salonData.customColors?.buttonText || '#000000',
+                          backdropFilter: 'blur(10px) saturate(180%)',
+                          border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 30%, transparent)`,
+                          boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 15%, transparent)`
                         }}
                       >
                         Réserver
                       </button>
                       <button
-                        className="px-4 py-2 rounded-lg text-sm font-medium transition-colors border-2"
+                        className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 glass-button-custom"
                         style={{
-                          borderColor: salonData.customColors?.primary || '#f59e0b',
+                          backgroundColor: 'rgba(255, 255, 255, 0.25)',
                           color: salonData.customColors?.primary || '#f59e0b',
-                          backgroundColor: 'transparent'
+                          backdropFilter: 'blur(10px) saturate(180%)',
+                          border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, transparent)`,
+                          boxShadow: `0 8px 32px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 10%, transparent)`
                         }}
                       >
                         Voir plus
                       </button>
                     </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      ✨ Effet glassmorphism conservé avec vos couleurs personnalisées
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -770,11 +783,16 @@ export default function SalonPageEditor() {
       {!isEditing && (
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
           <Button 
-            className="w-full py-3 text-lg font-semibold rounded-xl transition-colors"
+            className="w-full py-3 text-lg font-semibold rounded-xl glass-button-custom transition-all duration-300"
             style={{
-              backgroundColor: salonData.customColors?.primary || '#f59e0b',
-              color: salonData.customColors?.buttonText || '#000000'
-            }}
+              '--custom-bg': salonData.customColors?.primary || '#f59e0b',
+              '--custom-text': salonData.customColors?.buttonText || '#000000',
+              backgroundColor: `color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 90%, transparent)`,
+              color: salonData.customColors?.buttonText || '#000000',
+              backdropFilter: 'blur(15px) saturate(180%)',
+              border: `1px solid color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 40%, transparent)`,
+              boxShadow: `0 12px 40px color-mix(in srgb, ${salonData.customColors?.primary || '#f59e0b'} 20%, transparent)`
+            } as React.CSSProperties}
             onClick={() => setLocation('/salon-booking')}
           >
             Réserver maintenant
