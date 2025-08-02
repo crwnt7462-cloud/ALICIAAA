@@ -140,7 +140,7 @@ export default function SpaWellnessBastille() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 bg-green-600 hover:bg-green-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-green-500/20 backdrop-blur-sm border border-green-300/30 text-green-700 hover:bg-green-500/30-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -180,8 +180,8 @@ export default function SpaWellnessBastille() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
         activeTab === tab.id
-         ? 'bg-green-600 hover:bg-green-700 text-white-emerald border-b-2 border-green-600'
-         : 'bg-green-600 hover:bg-green-700 text-white-secondary'
+         ? 'bg-green-500/20 backdrop-blur-sm border border-green-300/30 text-green-700 hover:bg-green-500/30-emerald border-b-2 border-green-600'
+         : 'bg-green-500/20 backdrop-blur-sm border border-green-300/30 text-green-700 hover:bg-green-500/30-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -229,7 +229,7 @@ export default function SpaWellnessBastille() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 bg-green-600 hover:bg-green-700 text-white-emerald"
+               className="mt-2 bg-green-500/20 backdrop-blur-sm border border-green-300/30 text-green-700 hover:bg-green-500/30-emerald"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -337,7 +337,7 @@ export default function SpaWellnessBastille() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
+     className="w-full bg-green-500/20 backdrop-blur-sm border border-green-300/30 text-green-700 hover:bg-green-500/30 py-3"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant

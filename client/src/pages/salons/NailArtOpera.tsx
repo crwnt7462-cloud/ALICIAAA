@@ -140,7 +140,7 @@ export default function NailArtOpera() {
       console.log('🔙 Bouton retour cliqué - Navigation vers /search');
       setLocation('/search');
      }}
-     className="absolute top-4 left-4 bg-cyan-600 hover:bg-cyan-700 text-white-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+     className="absolute top-4 left-4 bg-cyan-500/20 backdrop-blur-sm border border-cyan-300/30 text-cyan-700 hover:bg-cyan-500/30-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
     >
      <ArrowLeft className="h-5 w-5 text-black" />
     </button>
@@ -180,8 +180,8 @@ export default function NailArtOpera() {
        onClick={() => setActiveTab(tab.id)}
        className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-colors ${
         activeTab === tab.id
-         ? 'bg-cyan-600 hover:bg-cyan-700 text-white-rose border-b-2 border-pink-600'
-         : 'bg-cyan-600 hover:bg-cyan-700 text-white-secondary'
+         ? 'bg-cyan-500/20 backdrop-blur-sm border border-cyan-300/30 text-cyan-700 hover:bg-cyan-500/30-rose border-b-2 border-pink-600'
+         : 'bg-cyan-500/20 backdrop-blur-sm border border-cyan-300/30 text-cyan-700 hover:bg-cyan-500/30-secondary'
        }`}
       >
        <tab.icon className="h-4 w-4" />
@@ -229,7 +229,7 @@ export default function NailArtOpera() {
               <p className="font-bold text-lg">{service.price}€</p>
               <Button 
                size="sm" 
-               className="mt-2 bg-cyan-600 hover:bg-cyan-700 text-white-rose"
+               className="mt-2 bg-cyan-500/20 backdrop-blur-sm border border-cyan-300/30 text-cyan-700 hover:bg-cyan-500/30-rose"
                onClick={() => setLocation('/salon-booking')}
               >
                Réserver
@@ -337,7 +337,7 @@ export default function NailArtOpera() {
    {/* Bouton réservation fixe en bas */}
    <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
     <Button 
-     className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-3"
+     className="w-full bg-cyan-500/20 backdrop-blur-sm border border-cyan-300/30 text-cyan-700 hover:bg-cyan-500/30 py-3"
      onClick={() => setLocation('/salon-booking')}
     >
      Réserver maintenant
