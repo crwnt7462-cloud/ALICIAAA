@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import glassmorphism authentique */
+@import './styles/glassmorphism.css';
+
 /* Glassmorphism Styles - Avec teinte violet subtile et forme visible */
 .glass-button {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.15) 100%);

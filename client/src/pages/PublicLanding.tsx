@@ -445,20 +445,20 @@ export default function PublicLanding() {
             
             <div className="flex items-center gap-2 md:gap-4">
               <Button 
-                className="backdrop-blur-md bg-white/20 border border-white/30 text-black text-sm md:text-base px-2 md:px-4 hidden lg:flex hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out rounded-lg"
+                className="glass-button text-black text-sm md:text-base px-2 md:px-4 hidden lg:flex rounded-lg"
                 onClick={() => setLocation("/client-login-modern")}
               >
                 <span className="hidden md:inline">Se connecter</span>
                 <span className="md:hidden">Connexion</span>
               </Button>
               <Button 
-                className="backdrop-blur-md bg-white/20 border border-white/30 text-black text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                className="glass-button text-black text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
                 onClick={() => setLocation("/salon/salon-elegance")}
               >
                 Réserver
               </Button>
               <Button 
-                className="backdrop-blur-md bg-white/20 border border-white/30 p-2 rounded-lg hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                className="glass-button p-2 rounded-lg"
                 onClick={() => setLocation("/pro-login")}
               >
                 <LogIn className="w-5 h-5 text-black" />
@@ -550,7 +550,7 @@ export default function PublicLanding() {
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full h-11 backdrop-blur-md bg-white/20 border border-white/30 text-black text-sm font-medium rounded-lg touch-manipulation hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                  className="w-full h-11 glass-button text-black text-sm font-medium rounded-lg touch-manipulation"
                 >
                   <Search className="w-4 h-4 mr-2" />
                   Rechercher un salon
@@ -586,7 +586,7 @@ export default function PublicLanding() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/pro-login")}
-                className="px-4 py-2 backdrop-blur-md bg-white/20 border border-white/30 text-black hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out text-sm rounded-lg"
+                className="px-4 py-2 glass-button text-black text-sm rounded-lg"
               >
                 Connexion Salon
               </Button>
@@ -740,7 +740,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="backdrop-blur-md bg-white/20 border border-white/30 text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon/barbier-gentleman-marais');
@@ -811,7 +811,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="backdrop-blur-md bg-white/20 border border-white/30 text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon/salon-excellence-paris');
@@ -882,7 +882,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="backdrop-blur-md bg-white/20 border border-white/30 text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon/institut-beaute-saint-germain');
@@ -953,7 +953,7 @@ export default function PublicLanding() {
                     </span>
                   </div>
                   <button 
-                    className="backdrop-blur-md bg-white/20 border border-white/30 text-black px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out"
+                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
                     onClick={(e) => {
                       e.stopPropagation();
                       setLocation('/salon/nail-art-opera');
@@ -980,7 +980,7 @@ export default function PublicLanding() {
             Découvrez des milliers de salons vérifiés près de chez vous et réservez en quelques clics.
           </p>
           <button 
-            className="backdrop-blur-md bg-white/20 border border-white/30 text-black px-8 py-4 rounded-2xl text-lg font-semibold hover:bg-white/30 hover:border-white/40 hover:shadow-lg active:scale-[0.98] transition-all duration-200 ease-out shadow-xl hover:shadow-2xl"
+            className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
             onClick={() => setLocation('/search')}
           >
             Explorer tous les salons
