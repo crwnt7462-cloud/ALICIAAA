@@ -127,13 +127,15 @@ export default function SalonSearchComplete() {
       {/* Layout exactement comme le screenshot - mobile-first */}
       <div className="relative">
         
-        {/* Bouton retour en haut à gauche - position exacte */}
-        <button
+        {/* Bouton retour glassmorphism - position exacte */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => setLocation('/')}
-          className="absolute left-4 top-4 z-10 p-2"
+          className="absolute left-4 top-4 z-10 glass-button-secondary w-10 h-10 rounded-2xl flex items-center justify-center"
         >
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
+          <ArrowLeft className="h-5 w-5" />
+        </motion.button>
 
         {/* Container principal - plus compact */}
         <div className="px-6 pt-16 pb-6">
@@ -248,8 +250,8 @@ export default function SalonSearchComplete() {
                   }}
                   className={`h-12 rounded-2xl text-sm font-medium transition-all duration-200 ${
                     activeFilter === category.filter 
-                      ? "bg-violet-600 text-white shadow-lg" 
-                      : "bg-gray-50 text-gray-600"
+                      ? "glass-button neon-violet" 
+                      : "glass-button-secondary"
                   }`}
                 >
                   {category.label}
@@ -345,9 +347,13 @@ export default function SalonSearchComplete() {
                   </div>
                   
                   {/* Bouton favoris */}
-                  <button className="absolute top-3 right-3 p-2 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30">
+                  <motion.button 
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="absolute top-3 right-3 glass-button-secondary w-8 h-8 rounded-full flex items-center justify-center"
+                  >
                     <Heart className="h-4 w-4 text-white" />
-                  </button>
+                  </motion.button>
                   
                   {/* Promotion en bas de l'image */}
                   {salon.promotion && (
@@ -396,15 +402,17 @@ export default function SalonSearchComplete() {
                         Dispo {salon.nextSlot}
                       </span>
                     </div>
-                    <button 
-                      className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors"
+                    <motion.button 
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="glass-button neon-violet px-4 py-2 rounded-xl text-sm font-medium"
                       onClick={(e) => {
                         e.stopPropagation();
                         setLocation('/salon-booking');
                       }}
                     >
                       Réserver
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </motion.div>

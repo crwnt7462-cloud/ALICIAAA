@@ -155,21 +155,24 @@ export default function Landing() {
           </motion.button>
           
           {/* Bouton secondaire */}
-          <Button 
-            className="w-full gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-xl py-3"
+          <motion.button 
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full glass-button neon-violet rounded-xl py-3 text-white font-medium"
             onClick={() => setLocation('/dashboard')}
           >
             Accéder au tableau de bord
             <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          </motion.button>
           
-          <Button 
-            variant="outline" 
-            className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl py-3"
+          <motion.button 
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full glass-button-secondary rounded-xl py-3 font-medium"
             onClick={() => setLocation('/client-login')}
           >
             Espace client
-          </Button>
+          </motion.button>
         </div>
 
         {/* Footer */}

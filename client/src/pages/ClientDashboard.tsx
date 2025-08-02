@@ -55,23 +55,23 @@ export default function ClientDashboard() {
                 <Bell className="h-5 w-5 text-gray-600" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
               </div>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setLocation('/settings')}>
+              <button className="glass-button-secondary h-8 w-8 rounded-xl flex items-center justify-center" onClick={() => setLocation('/settings')}>
                 <Settings className="h-4 w-4" />
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-lg mx-auto p-4 space-y-4">
-        {/* Réservation rapide */}
-        <div className="bg-gradient-to-r from-blue-400 to-blue-500 rounded-lg p-4">
-          <Button 
+        {/* Réservation rapide avec glassmorphism */}
+        <div className="glass-button neon-violet rounded-lg p-4">
+          <button 
             className="w-full bg-transparent hover:bg-white/10 text-white font-medium py-2 rounded-lg"
             onClick={() => setLocation('/search')}
           >
             Réserver un rendez-vous
-          </Button>
+          </button>
         </div>
 
         {/* Prochain RDV */}
@@ -142,23 +142,23 @@ export default function ClientDashboard() {
                       <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
                       <span className="text-sm font-medium">Salon Excellence</span>
                     </div>
-                    <Button size="sm" variant="outline">Réserver</Button>
+                    <button className="glass-button neon-violet px-3 py-1 rounded-lg text-sm">Réserver</button>
                   </div>
                   <div className="flex items-center justify-between p-2 bg-white rounded-lg">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
                       <span className="text-sm font-medium">Beauty Studio</span>
                     </div>
-                    <Button size="sm" variant="outline">Réserver</Button>
+                    <button className="glass-button neon-violet px-3 py-1 rounded-lg text-sm">Réserver</button>
                   </div>
                 </div>
 
-                <Button 
+                <button 
                   onClick={() => setLocation('/search')}
-                  className="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 rounded-lg"
+                  className="w-full glass-button neon-violet font-medium py-3 rounded-lg"
                 >
                   Découvrir plus de salons
-                </Button>
+                </button>
               </div>
             </div>
           </CardContent>
