@@ -250,7 +250,7 @@ export default function SalonSearchComplete() {
                   }}
                   className={`h-12 rounded-2xl text-sm font-medium transition-all duration-200 ${
                     activeFilter === category.filter 
-                      ? "glass-button neon-violet" 
+                      ? "glass-button-pink" 
                       : "glass-button-secondary"
                   }`}
                 >
@@ -405,7 +405,7 @@ export default function SalonSearchComplete() {
                     <motion.button 
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-button neon-violet px-4 py-2 rounded-xl text-sm font-medium"
+                      className="glass-button px-4 py-2 rounded-xl text-sm font-medium"
                       onClick={(e) => {
                         e.stopPropagation();
                         setLocation('/salon-booking');
