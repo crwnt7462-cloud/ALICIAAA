@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star } from "lucide-react";
+import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search } from "lucide-react";
 import { useLocation } from "wouter";
+import { motion } from "framer-motion";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -34,10 +35,20 @@ export default function Landing() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
+    >
       <div className="max-w-md mx-auto space-y-8">
         {/* Hero Section */}
-        <div className="text-center space-y-6 pt-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-center space-y-6 pt-8"
+        >
           <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
             <Sparkles className="w-8 h-8 text-white" />
           </div>
@@ -57,10 +68,15 @@ export default function Landing() {
             ))}
             <span className="text-sm text-gray-600 ml-2">4.9/5 - 2,847 salons</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid grid-cols-2 gap-4"
+        >
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -79,10 +95,15 @@ export default function Landing() {
               </Card>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Quick Stats */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
           <CardContent className="p-4">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
@@ -100,9 +121,40 @@ export default function Landing() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
-        {/* CTA Buttons */}
-        <div className="space-y-3">
+        {/* CTA Buttons with Glassmorphism */}
+        <div className="space-y-4">
+          {/* Bouton Glassmorphism Principal - Rechercher un salon */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            whileHover={{ 
+              scale: 1.02,
+              y: -2,
+              transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setLocation('/search')}
+            className="relative w-full h-16 rounded-3xl overflow-hidden group"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+              <Search className="w-5 h-5 mr-3" />
+              Rechercher un salon
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+          </motion.button>
+          
+          {/* Bouton secondaire */}
           <Button 
             className="w-full gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-xl py-3"
             onClick={() => setLocation('/dashboard')}
@@ -114,9 +166,9 @@ export default function Landing() {
           <Button 
             variant="outline" 
             className="w-full border-purple-200 text-purple-700 hover:bg-purple-50 rounded-xl py-3"
-            onClick={() => setLocation('/booking')}
+            onClick={() => setLocation('/client-login')}
           >
-            Prendre rendez-vous en ligne
+            Espace client
           </Button>
         </div>
 
@@ -125,6 +177,6 @@ export default function Landing() {
           <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
