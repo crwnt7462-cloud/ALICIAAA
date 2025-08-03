@@ -1404,16 +1404,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Routes Stripe pour paiements réels
   app.post('/api/create-payment-intent', async (req, res) => {
     try {
+      console.log('💳 Création Payment Intent - Données reçues:', req.body);
+      
       if (!stripe) {
+        console.error('❌ Stripe non configuré');
         return res.status(500).json({ error: "Stripe not configured. Please set STRIPE_SECRET_KEY." });
       }
 
       const { amount, currency = 'eur', metadata = {} } = req.body;
       
       if (!amount || amount <= 0) {
+        console.error('❌ Montant invalide:', amount);
         return res.status(400).json({ error: "Invalid amount" });
       }
 
+      console.log('🔧 Création Payment Intent Stripe...');
+      
       // Créer un Payment Intent avec Stripe
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convertir en centimes
@@ -1423,14 +1429,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           enabled: true,
         },
       });
-
+      
+      console.log('✅ Payment Intent créé:', paymentIntent.id);
+      
       res.json({
+        success: true,
         clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id
+        paymentIntentId: paymentIntent.id,
+        amount: amount,
+        currency: currency
       });
     } catch (error: any) {
-      console.error("Error creating payment intent:", error);
-      res.status(500).json({ error: error?.message || "Failed to create payment intent" });
+      console.error("❌ Erreur création Payment Intent:", error);
+      res.status(500).json({ 
+        success: false,
+        error: error?.message || "Failed to create payment intent",
+        details: error?.code || 'stripe_error'
+      });
     }
   });
 
