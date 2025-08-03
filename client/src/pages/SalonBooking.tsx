@@ -1528,10 +1528,19 @@ export default function SalonBooking() {
         throw new Error(`Erreur HTTP ${paymentResponse.status}`);
       }
       
-      const paymentData = await paymentResponse.json();
-      console.log('💰 Données Payment Intent:', paymentData);
+      const paymentText = await paymentResponse.text();
+      console.log('📄 Réponse brute Payment Intent:', paymentText);
       
-      if (paymentData.clientSecret) {
+      let paymentData;
+      try {
+        paymentData = JSON.parse(paymentText);
+        console.log('💰 Données Payment Intent:', paymentData);
+      } catch (e) {
+        console.error('❌ Réponse non-JSON:', paymentText);
+        throw new Error('Réponse serveur invalide');
+      }
+      
+      if (paymentData.success && paymentData.clientSecret) {
         setClientSecret(paymentData.clientSecret);
         
         // Afficher le bottom sheet automatiquement après succès
@@ -1549,18 +1558,12 @@ export default function SalonBooking() {
     } catch (error: any) {
       console.error('🚨 Erreur Payment Intent:', error);
       
-      // En mode développement, simuler le paiement
+      // En cas d'erreur, afficher un message d'erreur plutôt que simuler
       toast({
-        title: "Mode développement",
-        description: "Simulation du paiement - shell ouvert",
-        variant: "default"
+        title: "Erreur de paiement",
+        description: "Configuration Stripe requise. Contactez l'administrateur.",
+        variant: "destructive"
       });
-      
-      // Simuler un clientSecret pour les tests
-      setClientSecret('pi_demo_client_secret_for_testing');
-      setTimeout(() => {
-        setShowPaymentSheet(true);
-      }, 800);
     }
   };
 

@@ -1782,6 +1782,62 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     return services.slice(0, 3); // Limiter à 3 services principaux
   }
 
+  // Route Payment Intent pour éviter interception Vite
+  app.post('/api/create-payment-intent', async (req, res) => {
+    try {
+      console.log('💳 Payment Intent fullStack - Données reçues:', req.body);
+      
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      
+      if (!process.env.STRIPE_SECRET_KEY) {
+        console.error('❌ STRIPE_SECRET_KEY manquant');
+        return res.status(500).json({ 
+          success: false,
+          error: "Stripe not configured. Please set STRIPE_SECRET_KEY." 
+        });
+      }
+
+      const { amount, currency = 'eur', metadata = {} } = req.body;
+      
+      if (!amount || amount <= 0) {
+        console.error('❌ Montant invalide:', amount);
+        return res.status(400).json({ 
+          success: false,
+          error: "Invalid amount" 
+        });
+      }
+
+      console.log('🔧 Création Payment Intent Stripe (fullStack)...');
+      
+      // Créer un Payment Intent avec Stripe
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convertir en centimes
+        currency,
+        metadata,
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+      
+      console.log('✅ Payment Intent créé (fullStack):', paymentIntent.id);
+      
+      res.json({
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        amount: amount,
+        currency: currency
+      });
+    } catch (error: any) {
+      console.error("❌ Erreur création Payment Intent (fullStack):", error);
+      res.status(500).json({ 
+        success: false,
+        error: error?.message || "Failed to create payment intent",
+        details: error?.code || 'stripe_error'
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
