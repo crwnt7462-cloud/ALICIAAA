@@ -944,8 +944,8 @@ export default function SalonBooking() {
               <span className="font-medium">{service.price},00 €</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-violet-600">Acompte</span>
-              <span className="font-bold text-violet-600 text-lg">20,50 €</span>
+              <span className="font-semibold text-gray-900">Acompte</span>
+              <span className="font-bold text-gray-900 text-lg">20,50 €</span>
             </div>
           </div>
 
@@ -953,8 +953,8 @@ export default function SalonBooking() {
           <div className="mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">Méthode de paiement</h3>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 border-2 border-violet-600 rounded-lg bg-violet-50">
-                <div className="w-5 h-5 rounded-full border-2 border-violet-600 bg-violet-600 flex items-center justify-center">
+              <div className="flex items-center space-x-3 p-3 glass-card rounded-lg">
+                <div className="w-5 h-5 rounded-full border-2 border-gray-400 bg-gray-400 flex items-center justify-center">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -984,7 +984,7 @@ export default function SalonBooking() {
             </Elements>
           ) : (
             <div className="text-center py-8">
-              <div className="w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-8 h-8 border-4 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
               <p className="text-gray-600">Préparation du paiement...</p>
             </div>
           )}
@@ -1002,7 +1002,7 @@ export default function SalonBooking() {
             <Button 
               onClick={() => setShowPaymentSheet(false)}
               variant="outline"
-              className="w-full py-3 rounded-full font-medium border-gray-300"
+              className="w-full py-3 rounded-full font-medium glass-button hover:glass-effect text-black transition-all duration-300"
             >
               Annuler
             </Button>
@@ -1745,7 +1745,7 @@ export default function SalonBooking() {
 
             <Button
               onClick={handleModalLogin}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium"
+              className="w-full glass-button hover:glass-effect text-black py-3 rounded-full font-medium transition-all duration-300"
             >
               Se connecter
             </Button>
@@ -1756,7 +1756,7 @@ export default function SalonBooking() {
                   setShowLoginModal(false);
                   // Focus sur le formulaire d'inscription
                 }}
-                className="text-violet-600 hover:text-violet-700 underline"
+                className="glass-button hover:glass-effect text-black underline transition-all duration-300"
               >
                 Pas encore de compte ? Créer un compte
               </button>
