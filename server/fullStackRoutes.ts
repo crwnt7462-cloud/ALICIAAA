@@ -1787,8 +1787,6 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       console.log('💳 Payment Intent fullStack - Données reçues:', req.body);
       
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-      
       if (!process.env.STRIPE_SECRET_KEY) {
         console.error('❌ STRIPE_SECRET_KEY manquant');
         return res.status(500).json({ 
@@ -1796,6 +1794,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           error: "Stripe not configured. Please set STRIPE_SECRET_KEY." 
         });
       }
+
+      // Import dynamique de Stripe pour éviter les erreurs de module
+      const Stripe = (await import('stripe')).default;
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+        apiVersion: '2023-10-16',
+      });
 
       const { amount, currency = 'eur', metadata = {} } = req.body;
       
