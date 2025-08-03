@@ -30,8 +30,6 @@ const getSalonButtonClass = (salonId: string) => {
     'spa-wellness-bastille': 'glass-button-emerald',
     'beauty-lounge-montparnasse': 'glass-button-indigo',
     'salon-demo': 'glass-button-amber', // ✅ AJOUT DU SALON MODIFIABLE
-    'current': 'glass-button-amber' // ✅ FALLBACK POUR L'ID COURANT,
-    'salon-demo': 'glass-button-amber', // ✅ AJOUT DU SALON MODIFIABLE
     'current': 'glass-button-amber' // ✅ FALLBACK POUR L'ID COURANT
   };
   return salonColors[salonId] || 'glass-button-neutral';
@@ -47,8 +45,6 @@ const getSalonGlassCard = (salonId: string) => {
     'nail-art-opera': 'glass-card-rose',
     'spa-wellness-bastille': 'glass-card-emerald',
     'beauty-lounge-montparnasse': 'glass-card-indigo',
-    'salon-demo': 'glass-card-amber', // ✅ AJOUT DU SALON MODIFIABLE
-    'current': 'glass-card-amber' // ✅ FALLBACK POUR L'ID COURANT,
     'salon-demo': 'glass-card-amber', // ✅ AJOUT DU SALON MODIFIABLE
     'current': 'glass-card-amber' // ✅ FALLBACK POUR L'ID COURANT
   };
