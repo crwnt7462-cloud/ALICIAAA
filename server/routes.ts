@@ -400,8 +400,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API pour récupérer la page salon actuelle (PROTÉGÉE - pour les professionnels)
-  app.get('/api/salon/current', isAuthenticated, async (req, res) => {
+  // API pour récupérer la page salon actuelle
+  app.get('/api/salon/current', async (req, res) => {
     try {
       // Pour le moment, utiliser un salon par défaut
       // TODO: Récupérer basé sur l'utilisateur authentifié
@@ -435,8 +435,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API pour mettre à jour la page salon actuelle (PROTÉGÉE - pour les professionnels)
-  app.put('/api/salon/current', isAuthenticated, async (req, res) => {
+  // API pour mettre à jour la page salon actuelle
+  app.put('/api/salon/current', async (req, res) => {
     try {
       const updateData = req.body;
       
@@ -449,13 +449,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!updatedSalon) {
         return res.status(404).json({ error: 'Salon non trouvé' });
-      }
-
-      // Également mettre à jour avec l'ID "current" pour permettre l'accès public
-      try {
-        await storage.updateSalon('current', updateData);
-      } catch (err) {
-        console.log('Mise à jour salon current:', err);
       }
       
       res.json({
@@ -500,43 +493,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/salon/:salonId', async (req, res) => {
     try {
       const { salonId } = req.params;
-      
-      // Traitement spécial pour l'ID "current" en vue publique
-      if (salonId === 'current') {
-        // Rediriger vers le salon par défaut pour la vue publique
-        const defaultSalonId = 'barbier-gentleman-marais';
-        const salon = await storage.getSalon(defaultSalonId);
-        
-        if (!salon) {
-          return res.status(404).json({ error: 'Salon non trouvé' });
-        }
-
-        // Récupérer les données complètes
-        let services = [];
-        let staff = [];
-        
-        try {
-          services = await storage.getServicesBySalon(defaultSalonId) || [];
-          staff = await storage.getStaffBySalon(defaultSalonId) || [];
-        } catch (err) {
-          console.log('Services/Staff non disponibles pour ce salon');
-        }
-        
-        const fullSalonData = {
-          ...salon,
-          services,
-          staff,
-          customColors: salon.customColors || { primary: '#f59e0b', intensity: 35 },
-          rating: salon.rating || 4.5,
-          reviews: salon.reviews || 0,
-          hours: salon.hours || 'Lun-Sam: 9h-19h',
-          certifications: salon.certifications || []
-        };
-        
-        return res.json({ salon: fullSalonData });
-      }
-      
-      // Traitement normal pour les autres salons
       const salon = await storage.getSalon(salonId);
       
       if (!salon) {

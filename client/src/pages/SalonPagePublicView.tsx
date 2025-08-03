@@ -139,24 +139,7 @@ export default function SalonPagePublicView() {
     queryFn: async () => {
       if (!salonId) return null;
       
-      // Si l'ID est "current", rediriger vers un salon par défaut pour la vue publique
-      if (salonId === 'current') {
-        // Utiliser les données de "barbier-gentleman-marais" comme fallback
-        const defaultSalonId = 'barbier-gentleman-marais';
-        try {
-          const response = await fetch(`/api/salon/${defaultSalonId}`);
-          if (response.ok) {
-            const data = await response.json();
-            return data.salon || data;
-          }
-        } catch (err) {
-          console.log('API pas disponible pour salon par défaut');
-        }
-        // Fallback vers les données statiques
-        return salonData[defaultSalonId as keyof typeof salonData] || null;
-      }
-      
-      // Pour les autres salons, essayer l'API normale
+      // Essayer d'abord l'API réelle
       try {
         const response = await fetch(`/api/salon/${salonId}`);
         if (response.ok) {
@@ -285,20 +268,18 @@ export default function SalonPagePublicView() {
             </div>
 
             {/* Certifications */}
-            {salon.certifications && salon.certifications.length > 0 && (
-              <div className="flex gap-2 mb-6">
-                {salon.certifications.map((cert: string, index: number) => (
-                  <div key={index} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs" style={{
-                    backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}20` : '#f59e0b20',
-                    color: salon.customColors?.primary || '#f59e0b',
-                    border: `1px solid ${salon.customColors?.primary || '#f59e0b'}40`
-                  }}>
-                    <Award className="h-3 w-3" />
-                    {cert}
-                  </div>
-                ))}
-              </div>
-            )}
+            <div className="flex gap-2 mb-6">
+              {salon.certifications.map((cert: string, index: number) => (
+                <div key={index} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs" style={{
+                  backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}20` : '#f59e0b20',
+                  color: salon.customColors?.primary || '#f59e0b',
+                  border: `1px solid ${salon.customColors?.primary || '#f59e0b'}40`
+                }}>
+                  <Award className="h-3 w-3" />
+                  {cert}
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Navigation onglets */}
@@ -330,36 +311,30 @@ export default function SalonPagePublicView() {
           {/* Contenu des onglets */}
           {activeTab === 'services' && (
             <div className="space-y-4">
-              {salon.services && salon.services.length > 0 ? (
-                salon.services.map((service: any) => (
-                  <div key={service.id} className="glass-card-neutral rounded-2xl p-4">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 mb-1">{service.name}</h3>
-                        <p className="text-gray-600 text-sm mb-2">{service.description}</p>
-                        <div className="flex items-center gap-3 text-sm text-gray-500">
-                          <span>{service.duration} min</span>
-                          <span className="px-2 py-1 bg-gray-100 rounded-full text-xs">{service.category}</span>
-                        </div>
-                      </div>
-                      <div className="text-right ml-4">
-                        <div className="text-xl font-bold text-gray-900 mb-2">{service.price}€</div>
-                        <button 
-                          className="px-4 py-2 rounded-xl font-medium transition-all hover:scale-105"
-                          style={getCustomButtonStyle(salon.customColors)}
-                          onClick={() => setLocation('/booking')}
-                        >
-                          Réserver
-                        </button>
+              {salon.services.map((service: any) => (
+                <div key={service.id} className="glass-card-neutral rounded-2xl p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-gray-900 mb-1">{service.name}</h3>
+                      <p className="text-gray-600 text-sm mb-2">{service.description}</p>
+                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <span>{service.duration} min</span>
+                        <span className="px-2 py-1 bg-gray-100 rounded-full text-xs">{service.category}</span>
                       </div>
                     </div>
+                    <div className="text-right ml-4">
+                      <div className="text-xl font-bold text-gray-900 mb-2">{service.price}€</div>
+                      <button 
+                        className="px-4 py-2 rounded-xl font-medium transition-all hover:scale-105"
+                        style={getCustomButtonStyle(salon.customColors)}
+                        onClick={() => setLocation('/booking')}
+                      >
+                        Réserver
+                      </button>
+                    </div>
                   </div>
-                ))
-              ) : (
-                <div className="glass-card-neutral rounded-2xl p-6 text-center">
-                  <p className="text-gray-600">Aucun service disponible pour le moment.</p>
                 </div>
-              )}
+              ))}
             </div>
           )}
 
@@ -368,7 +343,7 @@ export default function SalonPagePublicView() {
               <div className="glass-card-neutral rounded-2xl p-6">
                 <h3 className="font-semibold text-gray-900 mb-4">Notre équipe</h3>
                 <div className="space-y-3">
-                  {salon.staff && salon.staff.length > 0 ? salon.staff.map((member: any, index: number) => (
+                  {salon.staff.map((member: any, index: number) => (
                     <div key={index} className="flex justify-between items-center">
                       <div>
                         <p className="font-medium text-gray-900">{member.name}</p>
@@ -376,9 +351,7 @@ export default function SalonPagePublicView() {
                       </div>
                       <span className="text-sm text-gray-500">{member.experience}</span>
                     </div>
-                  )) : (
-                    <p className="text-gray-600">Informations équipe non disponibles.</p>
-                  )}
+                  ))}
                 </div>
                 
                 <div className="mt-6 pt-6 border-t border-gray-200">
