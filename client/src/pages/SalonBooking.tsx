@@ -908,25 +908,25 @@ export default function SalonBooking() {
       
       {/* Bottom Sheet */}
       <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
+        className={`fixed bottom-0 left-0 right-0 glass-card border-white/30 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
           showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ maxHeight: '90vh' }}
       >
         {/* Handle barre de glissement */}
         <div className="flex justify-center pt-3 pb-2">
-          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+          <div className="w-12 h-1 bg-white/40 rounded-full"></div>
         </div>
 
         <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
           {/* Header */}
           <div className="text-center mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Finaliser le paiement</h2>
-            <p className="text-gray-600">Réglez votre acompte de manière sécurisée</p>
+            <h2 className="text-xl font-bold text-black mb-1">Finaliser le paiement</h2>
+            <p className="text-gray-700">Réglez votre acompte de manière sécurisée</p>
           </div>
 
           {/* Récapitulatif rapide */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+          <div className="glass-card rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Service</span>
               <span className="font-medium">{service.name}</span>
@@ -951,7 +951,7 @@ export default function SalonBooking() {
 
           {/* Sélection méthode de paiement */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Méthode de paiement</h3>
+            <h3 className="font-semibold text-black mb-3">Méthode de paiement</h3>
             <div className="space-y-3">
               <div className="flex items-center space-x-3 p-3 glass-card rounded-lg">
                 <div className="w-5 h-5 rounded-full border-2 border-gray-400 bg-gray-400 flex items-center justify-center">
