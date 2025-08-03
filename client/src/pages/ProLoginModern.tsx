@@ -86,7 +86,7 @@ export default function ProLoginModern() {
 
 
   return (
-    <div className="min-h-screen" style={{backgroundColor: '#c8a2c8'}}>
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
       {/* Layout ultra-minimaliste - même style que page recherche */}
       <div className="relative">
         

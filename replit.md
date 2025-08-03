@@ -58,17 +58,16 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
-### ✅ **COULEURS LOGIN DISTINCTES APPLIQUÉES - EXACTEMENT SELON SCREEN**
+### ✅ **PAGES CONNEXION RESTAURÉES + IA VIOLETTE FINALISÉE**
 - **Date**: 03/08/2025  
-- **Changement**: Application du fond violet clair uniforme sur pages de connexion + différenciation totale avec l'IA
-- **Impact**: Séparation nette entre interfaces de connexion (violet) et IA (gris/blanc)
-- **Problème résolu**: Utilisateur voulait exactement les mêmes couleurs que son screen violet sur les logins
+- **Changement**: Retour au dégradé rose/blanc pour les pages de connexion + interface IA entièrement violette
+- **Impact**: Pages connexion avec dégradé harmonieux, IA avec design violet uniforme
 - **Pages modifiées**:
-  - ✅ ProLoginModern.tsx : Fond violet clair #c8a2c8 + glassmorphism + suppression ombres
-  - ✅ ClientLoginWhite.tsx : Même fond violet + éléments transparents + texte blanc
-  - ✅ AIProModern.tsx : Fond gris/blanc totalement différent (plus de violet)
-- **Design final**: Login = violet uniforme, IA = gris/blanc, séparation visuelle claire
-- **Couleurs exactes**: #c8a2c8 pour les pages de connexion (selon image fournie)
+  - ✅ ProLoginModern.tsx : Dégradé from-pink-200 via-rose-100 to-white
+  - ✅ ClientLoginWhite.tsx : Même dégradé rose/blanc restauré
+  - ✅ AIProModern.tsx : Boutons violets partout + zone saisie violette + texte "Bonjour, Demo"
+- **Design final**: Login = dégradé rose/blanc, IA = violet uniforme sur tous éléments
+- **IA complète**: Boutons haut violets, zone saisie violette, boutons Send/Mic violets, texte centré visible
 
 ### ✅ **TRANSFORMATION GLASSMORPHISM TOTALE FINALISÉE**
 - **Date**: 03/08/2025
