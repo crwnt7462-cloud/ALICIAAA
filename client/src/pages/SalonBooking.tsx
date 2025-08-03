@@ -609,7 +609,7 @@ export default function SalonBooking() {
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" className="text-violet-600 text-sm font-medium" onClick={() => setCurrentStep(1)}>
+              <Button variant="ghost" className="glass-button hover:glass-effect text-black text-sm font-medium transition-all duration-300" onClick={() => setCurrentStep(1)}>
                 Changer
               </Button>
             </div>
@@ -618,7 +618,7 @@ export default function SalonBooking() {
 
         <Button 
           onClick={() => toast({ title: "Fonctionnalité", description: "Ajouter une prestation supplémentaire" })}
-          className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+          className="w-full glass-button hover:glass-effect text-black py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300"
         >
           Ajouter une prestation à la suite
         </Button>
@@ -874,7 +874,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={handleAccountCreation}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+              className="w-full glass-button hover:glass-effect text-black py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300"
               disabled={!formData.acceptCGU || !formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName}
             >
               Créer mon compte et continuer
@@ -1306,7 +1306,7 @@ export default function SalonBooking() {
               });
               setLocation('/');
             }}
-            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+            className="w-full glass-button hover:glass-effect text-black py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300"
           >
             Confirmer la réservation
           </Button>
@@ -1340,7 +1340,7 @@ export default function SalonBooking() {
                 <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
                 <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
               </div>
-              <Button variant="link" className="text-violet-600 text-sm">
+              <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Supprimer
               </Button>
             </div>
@@ -1356,7 +1356,7 @@ export default function SalonBooking() {
                 <h3 className="font-semibold text-gray-900">{selectedSlot?.date || selectedDate}</h3>
                 <p className="text-sm text-gray-600">à {selectedSlot?.time}</p>
               </div>
-              <Button variant="link" className="text-violet-600 text-sm">
+              <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Modifier
               </Button>
             </div>
@@ -1373,7 +1373,7 @@ export default function SalonBooking() {
 
           <Button 
             variant="outline"
-            className="w-full mb-4 py-3 border-gray-300 text-gray-700 rounded-full"
+            className="w-full mb-4 py-3 glass-button hover:glass-effect text-black rounded-full transition-all duration-300"
             onClick={() => setShowLoginModal(true)}
           >
             J'ai déjà un compte - Se connecter
@@ -1481,7 +1481,7 @@ export default function SalonBooking() {
 
             <Button 
               onClick={handleCreateAccountAndPay}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all"
+              className="w-full glass-button hover:glass-effect text-black py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300"
               disabled={!formData.email || !formData.phone || !formData.password || !formData.firstName || !formData.lastName || !formData.acceptCGU}
             >
               Créer mon compte et continuer
