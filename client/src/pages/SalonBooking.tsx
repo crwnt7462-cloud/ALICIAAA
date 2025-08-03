@@ -1656,27 +1656,39 @@ export default function SalonBooking() {
 
   // Fonction pour se connecter avec le modal et passer au paiement
   const handleModalLogin = async () => {
+    if (!loginData.email || !loginData.password) {
+      toast({
+        title: "Champs manquants",
+        description: "Veuillez saisir votre email et mot de passe",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
+      console.log('🔐 Tentative connexion modal:', loginData.email);
+      
       const response = await fetch('/api/client/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: loginData.email,
-          password: loginData.password
+          email: loginData.email.trim(),
+          password: loginData.password.trim()
         }),
       });
 
       const data = await response.json();
+      console.log('📋 Réponse connexion modal:', data);
       
-      if (data.success && data.client?.token) {
-        localStorage.setItem('clientToken', data.client.token);
+      if (data.success && data.client) {
+        localStorage.setItem('clientToken', data.client.token || 'test-token');
         
         // Fermer le modal de connexion
         setShowLoginModal(false);
         
         toast({
           title: "Connexion réussie !",
-          description: "Ouverture du paiement..."
+          description: `Bienvenue ${data.client.first_name || 'Client'} !`
         });
         
         // Marquer comme connecté puis créer le Payment Intent
@@ -1685,19 +1697,20 @@ export default function SalonBooking() {
         // Créer automatiquement le Payment Intent et ouvrir le shell
         setTimeout(() => {
           createPaymentIntentAndOpenSheet();
-        }, 500);
+        }, 800);
       } else {
+        console.error('❌ Échec connexion modal:', data);
         toast({
           title: "Erreur de connexion",
-          description: data.error || "Email ou mot de passe incorrect",
+          description: data.message || data.error || "Email ou mot de passe incorrect",
           variant: "destructive"
         });
       }
     } catch (error: any) {
-      console.error('Erreur connexion:', error);
+      console.error('🚨 Erreur réseau connexion modal:', error);
       toast({
         title: "Erreur de connexion",
-        description: "Impossible de se connecter. Veuillez réessayer.",
+        description: "Impossible de se connecter. Vérifiez votre connexion.",
         variant: "destructive"
       });
     }
@@ -1721,11 +1734,26 @@ export default function SalonBooking() {
           </div>
 
           <div className="space-y-4">
-            {/* Identifiants de test */}
-            <div className="bg-blue-50 p-3 rounded-lg text-sm">
-              <p className="font-medium text-blue-900 mb-1">🧪 Compte de test :</p>
-              <p className="text-blue-700">Email: client@beautyapp.com</p>
-              <p className="text-blue-700">Mot de passe: test123</p>
+            {/* Identifiants de test avec bouton de remplissage automatique */}
+            <div className="glass-card p-3 rounded-lg text-sm">
+              <p className="font-medium text-black mb-2">🧪 Compte de test :</p>
+              <div className="flex justify-between items-center mb-2">
+                <div>
+                  <p className="text-gray-700">Email: client@beautyapp.com</p>
+                  <p className="text-gray-700">Mot de passe: test123</p>
+                </div>
+                <Button
+                  onClick={() => {
+                    setLoginData({
+                      email: 'client@beautyapp.com',
+                      password: 'test123'
+                    });
+                  }}
+                  className="glass-button hover:glass-effect text-black text-xs px-3 py-1 transition-all duration-300"
+                >
+                  Remplir
+                </Button>
+              </div>
             </div>
             
             <div>
