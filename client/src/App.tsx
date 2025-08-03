@@ -140,7 +140,6 @@ import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
-import SalonPagePublicView from "@/pages/SalonPagePublicView";
 import SalonBookingFlow from "@/pages/SalonBookingFlow";
 import StripeCheckout from "@/pages/StripeCheckout";
 import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
@@ -367,15 +366,6 @@ function Router() {
     return (
       <div className="h-full">
         <SalonSearchComplete />
-      </div>
-    );
-  }
-
-  // Pages publiques des salons (accessible depuis la recherche)
-  if (location.startsWith('/salon/')) {
-    return (
-      <div className="h-full">
-        <SalonPagePublicView />
       </div>
     );
   }
