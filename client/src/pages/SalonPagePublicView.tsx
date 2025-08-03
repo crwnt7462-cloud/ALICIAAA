@@ -139,7 +139,24 @@ export default function SalonPagePublicView() {
     queryFn: async () => {
       if (!salonId) return null;
       
-      // Essayer d'abord l'API réelle
+      // Si l'ID est "current", rediriger vers un salon par défaut pour la vue publique
+      if (salonId === 'current') {
+        // Utiliser les données de "barbier-gentleman-marais" comme fallback
+        const defaultSalonId = 'barbier-gentleman-marais';
+        try {
+          const response = await fetch(`/api/salon/${defaultSalonId}`);
+          if (response.ok) {
+            const data = await response.json();
+            return data.salon || data;
+          }
+        } catch (err) {
+          console.log('API pas disponible pour salon par défaut');
+        }
+        // Fallback vers les données statiques
+        return salonData[defaultSalonId as keyof typeof salonData] || null;
+      }
+      
+      // Pour les autres salons, essayer l'API normale
       try {
         const response = await fetch(`/api/salon/${salonId}`);
         if (response.ok) {
