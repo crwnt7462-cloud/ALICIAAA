@@ -257,7 +257,7 @@ export default function AIProModern() {
           </div>
         )}
 
-        {messages.length === 1 ? (
+        {messages.length === 0 ? (
           <div className="text-center px-8">
             <h1 className="text-4xl font-light text-violet-600 mb-4">
               Bonjour, Demo
@@ -268,7 +268,7 @@ export default function AIProModern() {
           </div>
         ) : (
           <div className="w-full px-4 py-4 space-y-4 overflow-y-auto">
-            {messages.slice(1).map((message) => (
+            {messages.map((message) => (
               <div key={message.id} className="flex flex-col">
                 {message.role === 'assistant' ? (
                   <div className="self-start max-w-[85%]">
@@ -331,10 +331,10 @@ export default function AIProModern() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isRecording ? "🎤 Parlez maintenant..." : "Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-gray-800 border outline-none transition-all font-medium ${
+              className={`w-full rounded-full px-6 py-4 text-white border outline-none transition-all font-medium ${
                 isRecording 
-                  ? 'bg-red-100/80 border-red-300 placeholder-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
-                  : 'bg-white/80 border-gray-300 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-300 shadow-sm backdrop-blur-md'
+                  ? 'bg-red-500/80 border-red-400 placeholder-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
+                  : 'bg-violet-500/80 border-violet-400 placeholder-violet-200 focus:border-violet-400 focus:ring-2 focus:ring-violet-300 shadow-sm backdrop-blur-md'
               }`}
               disabled={isLoading || isRecording}
             />
