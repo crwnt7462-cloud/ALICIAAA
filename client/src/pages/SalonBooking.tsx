@@ -445,21 +445,21 @@ export default function SalonBooking() {
 
   // Étape 1: Sélection du professionnel
   const renderProfessionalSelection = () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header simple avec retour */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               onClick={() => window.history.back()}
-              className="h-10 w-10 p-0 rounded-full"
+              className="h-10 w-10 p-0 rounded-full hover:bg-white/30"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
               <h1 className="font-semibold text-gray-900">{salon.name}</h1>
-              <p className="text-sm text-gray-600">{salon.location}</p>
+              <p className="text-sm text-gray-700">{salon.location}</p>
             </div>
           </div>
         </div>
@@ -472,7 +472,7 @@ export default function SalonBooking() {
           {professionals.map((pro) => (
             <Card 
               key={pro.id}
-              className="bg-white border border-gray-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="bg-white/30 backdrop-blur-md border border-white/40 hover:border-violet-300/50 hover:shadow-lg hover:bg-white/40 transition-all duration-300 cursor-pointer"
               onClick={() => handleProfessionalSelect(pro)}
             >
               <CardContent className="p-4">
@@ -508,7 +508,7 @@ export default function SalonBooking() {
   const renderServiceSelection = () => (
     <div className="min-h-screen bg-gray-50">
       {/* Header simple avec retour */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Button
@@ -583,9 +583,9 @@ export default function SalonBooking() {
 
   // Étape 3: Sélection de la date 
   const renderDateSelection = () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Tabs navigation */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex space-x-6">
             <button className="text-black font-medium border-b-2 border-black pb-2">

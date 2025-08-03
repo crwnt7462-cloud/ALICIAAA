@@ -82,16 +82,16 @@ export default function ProfessionalPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header très simple */}
-      <header className="bg-white border-b sticky top-0 z-40">
+      <header className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center h-16">
             <Button 
               variant="ghost" 
               size="sm"
               onClick={() => setLocation("/")}
-              className="text-gray-600 hover:text-gray-900 mr-4"
+              className="text-gray-700 hover:text-gray-900 hover:bg-white/30 mr-4"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
@@ -111,13 +111,13 @@ export default function ProfessionalPlans() {
           </p>
 
           {/* Toggle facturation responsive */}
-          <div className="inline-flex items-center bg-gray-100 rounded-lg p-1">
+          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm border border-white/40 rounded-lg p-1">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'monthly' 
-                  ? 'bg-white text-gray-900 shadow-md' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white/80 backdrop-blur-sm text-gray-900 shadow-md' 
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               Mensuel
@@ -126,12 +126,12 @@ export default function ProfessionalPlans() {
               onClick={() => setBillingCycle('annual')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'annual' 
-                  ? 'bg-white text-gray-900 shadow-md' 
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'bg-white/80 backdrop-blur-sm text-gray-900 shadow-md' 
+                  : 'text-gray-700 hover:text-gray-900'
               }`}
             >
               Annuel
-              <span className="ml-1 px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full md:ml-2 md:px-2 md:py-1">
+              <span className="ml-1 px-1.5 py-0.5 bg-green-100/80 text-green-700 text-xs rounded-full md:ml-2 md:px-2 md:py-1">
                 -25%
               </span>
             </button>
@@ -147,16 +147,16 @@ export default function ProfessionalPlans() {
             return (
               <div 
                 key={plan.id}
-                className={`relative bg-white rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg md:p-8 md:rounded-2xl md:hover:shadow-2xl ${
+                className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 md:p-8 md:rounded-2xl md:hover:shadow-2xl ${
                   plan.popular 
-                    ? 'border-purple-500 shadow-md ring-2 ring-purple-100 md:ring-4' 
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'bg-white/40 backdrop-blur-md border border-white/30 ring-2 ring-violet-400/50 shadow-xl shadow-violet-400/25' 
+                    : 'bg-white/25 backdrop-blur-md border border-white/30 hover:bg-white/35'
                 }`}
                 onClick={() => handleSelectPlan(plan.id)}
               >
                 {plan.popular && (
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 md:-top-4">
-                    <div className="bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold md:px-4 md:py-2 md:text-sm">
+                    <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold md:px-4 md:py-2 md:text-sm shadow-lg">
                       Recommandé
                     </div>
                   </div>
@@ -165,7 +165,7 @@ export default function ProfessionalPlans() {
                 {/* Icon et nom mobile */}
                 <div className="flex items-center gap-3 mb-4 md:text-center md:block md:mb-8">
                   <div className="flex-shrink-0 md:flex md:justify-center md:mb-4">
-                    <div className="p-2 bg-gray-50 rounded-full md:p-3">
+                    <div className="p-2 bg-white/30 backdrop-blur-sm border border-white/40 rounded-full md:p-3">
                       {plan.icon}
                     </div>
                   </div>

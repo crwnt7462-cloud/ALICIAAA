@@ -69,7 +69,7 @@ function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPric
         <p className="text-sm text-gray-600 mt-1">Plan {planName} - {planPrice}€/mois</p>
       </div>
 
-      <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+      <div className="p-4 border border-white/40 rounded-xl bg-white/30 backdrop-blur-sm">
         <CardElement
           options={{
             style: {
@@ -268,8 +268,8 @@ export default function BusinessRegistration() {
   const renderBusinessPaymentSheet = () => (
     showPaymentSheet && clientSecret && (
       <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-        <div className="bg-white w-full max-w-lg rounded-t-3xl max-h-[90vh] overflow-y-auto">
-          <div className="sticky top-0 bg-white border-b border-gray-100 p-4 rounded-t-3xl">
+        <div className="bg-white/95 backdrop-blur-md w-full max-w-lg rounded-t-3xl max-h-[90vh] overflow-y-auto border border-white/30">
+          <div className="sticky top-0 bg-white/90 backdrop-blur-md border-b border-white/30 p-4 rounded-t-3xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CreditCard className="h-6 w-6 text-violet-600" />
@@ -305,20 +305,20 @@ export default function BusinessRegistration() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white/40 backdrop-blur-md border-b border-white/30">
         <div className="max-w-md mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             <div>
               <h1 className="text-lg font-semibold text-gray-900">Rendly</h1>
-              <p className="text-xs text-gray-500">Inscription</p>
+              <p className="text-xs text-gray-600">Inscription</p>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setLocation("/professional-plans")}
-              className="text-gray-600 hover:text-gray-900"
+              className="text-gray-700 hover:text-gray-900 hover:bg-white/30"
             >
               Retour
             </Button>
@@ -329,12 +329,12 @@ export default function BusinessRegistration() {
       <div className="max-w-md mx-auto px-4 py-6">
         <div className="space-y-6">
           {/* Formulaire */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-4 border-b border-gray-100">
+          <div className="bg-white/30 backdrop-blur-md rounded-lg shadow-sm border border-white/40">
+            <div className="p-4 border-b border-white/30">
               <h2 className="text-lg font-semibold text-gray-900 mb-1">
                 Informations entreprise
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-700">
                 Complétez votre inscription
               </p>
             </div>
