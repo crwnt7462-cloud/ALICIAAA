@@ -72,6 +72,26 @@ export default function SalonPageEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // 🔧 CORRECTION : Charger les données existantes du salon au démarrage
+  useEffect(() => {
+    const loadSalonData = async () => {
+      try {
+        const response = await fetch('/api/salon/salon-demo');
+        if (response.ok) {
+          const existingSalon = await response.json();
+          if (existingSalon) {
+            console.log('📖 Chargement données salon existantes:', existingSalon.name);
+            setSalonData(prev => ({ ...prev, ...existingSalon }));
+          }
+        }
+      } catch (error) {
+        console.log('ℹ️ Aucune donnée salon existante, utilisation données par défaut');
+      }
+    };
+    
+    loadSalonData();
+  }, []);
+  
   // DONNÉES COMPLÈTES DU SALON BARBIER GENTLEMAN MARAIS (modifiables)
   const [salonData, setSalonData] = useState<SalonData>({
     id: 'barbier-gentleman-marais',
@@ -136,7 +156,7 @@ export default function SalonPageEditor() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await fetch('/api/salon/current', {
+      const response = await fetch('/api/salon/salon-demo', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -149,7 +169,7 @@ export default function SalonPageEditor() {
         title: "Salon mis à jour !",
         description: "Vos modifications ont été sauvegardées avec succès."
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/salon/current'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/salon/salon-demo'] });
       setIsEditing(false);
     },
     onError: () => {

@@ -1147,33 +1147,45 @@ export class DatabaseStorage implements IStorage {
 
   // Salon Data Management for Editor
   async getSalonData(salonId: string): Promise<any | undefined> {
-    // Récupérer depuis le stockage en mémoire
-    const salon = this.salons.get(salonId);
+    // ✅ CORRECTION MAPPING ID POUR COHÉRENCE
+    let actualId = salonId;
+    if (salonId === 'current' || salonId === 'auto-generated' || salonId === 'undefined' || !salonId) {
+      actualId = 'salon-demo';
+    }
+    
+    // Récupérer depuis le stockage en mémoire avec l'ID corrigé
+    const salon = this.salons.get(actualId);
     if (salon) {
-      console.log('📖 Salon trouvé en mémoire:', salonId);
+      console.log('📖 Salon trouvé en mémoire avec ID corrigé:', actualId, 'pour requête:', salonId);
       return salon;
     }
     
-    console.log('ℹ️ Salon non trouvé, retour données par défaut:', salonId);
+    console.log('ℹ️ Salon non trouvé même avec mapping, retour données par défaut:', actualId, 'pour requête:', salonId);
     return undefined;
   }
 
   async saveSalonData(salonId: string, salonData: any): Promise<void> {
-    console.log('💾 Sauvegarde salon dans le stockage:', salonId);
+    // ✅ CORRECTION MAPPING ID POUR COHÉRENCE
+    let actualId = salonId;
+    if (salonId === 'current' || salonId === 'auto-generated' || salonId === 'undefined' || !salonId) {
+      actualId = 'salon-demo';
+    }
+    
+    console.log('💾 Sauvegarde salon avec ID corrigé:', actualId, 'pour requête:', salonId);
     
     // Merger avec les données existantes si elles existent
-    const existingSalon = this.salons.get(salonId);
+    const existingSalon = this.salons.get(actualId);
     const updatedSalon = {
       ...existingSalon,
       ...salonData,
-      id: salonId,
+      id: actualId, // ✅ Utiliser l'ID corrigé
       updatedAt: new Date().toISOString()
     };
     
-    // Sauvegarder en mémoire
-    this.salons.set(salonId, updatedSalon);
+    // Sauvegarder en mémoire avec l'ID corrigé
+    this.salons.set(actualId, updatedSalon);
     
-    console.log('✅ Salon sauvegardé avec succès:', salonId);
+    console.log('✅ Salon sauvegardé avec succès avec ID corrigé:', actualId);
   }
 
   // Messages IA automatiques pour analyse clients

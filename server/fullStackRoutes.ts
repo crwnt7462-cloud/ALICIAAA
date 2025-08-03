@@ -571,11 +571,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Salon/BookingPage routes (compatible Firebase)
+  // Route duplicata pour compatibilité booking pages
   app.get('/api/booking-pages/:id', async (req, res) => {
     try {
       const { id } = req.params;
-      console.log('📖 Récupération page salon:', id);
+      console.log('📖 Récupération page salon (booking-pages):', id);
       
       let salon = await storage.getSalon?.(id);
       
@@ -642,6 +642,92 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Salon/BookingPage routes (compatible Firebase) - ROUTE PRINCIPALE SALON
+  app.get('/api/salon/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log('📖 Récupération données salon pour éditeur:', id);
+      
+      // ✅ CORRECTION MAPPING ID : Utiliser getSalonData avec mapping intégré
+      let salon = await storage.getSalonData?.(id);
+      
+      if (!salon) {
+        console.log('ℹ️ Aucune donnée salon trouvée pour éditeur - création données par défaut:', id);
+        // Créer des données par défaut pour l'éditeur
+        salon = {
+          id: id,
+          name: 'Mon Salon',
+          rating: 4.5,
+          reviews: 0,
+          address: '1 Rue de la Beauté, 75001 Paris',
+          phone: '01 23 45 67 89',
+          verified: true,
+          certifications: [],
+          awards: [],
+          longDescription: 'Description de votre salon...',
+          coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          photos: [],
+          customColors: {
+            primary: '#f59e0b',
+            accent: '#ec4899',
+            buttonText: '#000000',
+            buttonClass: 'glass-button',
+            intensity: 35
+          }
+        };
+      }
+        
+      
+      console.log('📖 Salon trouvé:', salon.name, 'ID:', salon.id);
+      
+      // ✅ FORCER L'AJOUT DES PHOTOS POUR TOUS LES SALONS - CORRECTION DÉFINITIVE
+      if (!salon.photos || salon.photos.length === 0) {
+        salon.photos = [
+          "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
+        ];
+        console.log(`📸 Photos ajoutées au salon: ${salon.name}`);
+      }
+      
+      if (!salon.coverImageUrl) {
+        salon.coverImageUrl = salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
+        console.log(`🖼️ Cover image ajoutée au salon: ${salon.name}`);
+      }
+
+      // ✅ AJOUTER LES PROPRIÉTÉS MANQUANTES POUR ÉVITER LES ERREURS
+      if (!salon.certifications) {
+        salon.certifications = [
+          "Salon labellisé L'Oréal Professionnel",
+          "Formation continue Kérastase", 
+          "Certification bio Shu Uemura"
+        ];
+      }
+      
+      if (!salon.awards) {
+        salon.awards = [
+          "Élu Meilleur Salon 2023",
+          "Prix de l'Innovation Beauté 2022",
+          "Certification Éco-responsable"
+        ];
+      }
+      
+      if (!salon.staff) {
+        salon.staff = [];
+      }
+      
+      if (!salon.longDescription) {
+        salon.longDescription = "Notre salon vous accueille dans un cadre moderne et chaleureux.";
+      }
+      
+      console.log(`✅ DONNÉES SALON POUR ÉDITEUR: ${salon.name} - Photos: ${salon.photos?.length || 0}`);
+      res.json(salon);
+    } catch (error) {
+      console.error('❌ Erreur récupération salon:', error);
+      res.status(500).json({ message: 'Erreur serveur' });
+    }
+  });
+
   app.put('/api/salon/:id', async (req, res) => {
     try {
       const { id } = req.params;
@@ -677,10 +763,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         await storage.updateBookingPage(actualId, salonData);
       }
       
-      // 🔥 INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE PUBLIC
+      // 🔥 INTÉGRATION AUTOMATIQUE AU SYSTÈME DE RECHERCHE PUBLIC - CORRECTION COHÉRENCE ID
       if (salonData.isPublished !== false) {
         const publicSalonData = {
-          id: id,
+          id: actualId, // ✅ UTILISER L'ID CORRIGÉ, PAS L'ID ORIGINAL
           name: salonData.name || 'Salon sans nom',
           description: salonData.description || '',
           address: salonData.address || '',
@@ -692,7 +778,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           city: extractCity(salonData.address || ''),
           services: extractServices(salonData.serviceCategories || []),
           customColors: salonData.customColors,
-          shareableUrl: `/salon/${id}`,
+          shareableUrl: `/salon/${actualId}`, // ✅ URL CORRIGÉE AVEC actualId
           isActive: true,
           createdAt: new Date(),
           nextSlot: 'Disponible aujourd\'hui'
@@ -705,7 +791,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         ];
         publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
         
-        // Ajouter ou mettre à jour dans le système de recherche
+        // ✅ SAUVEGARDE COHÉRENTE : Même ID partout (actualId)
         if (storage.salons) {
           storage.salons.set(actualId, { ...savedSalon, ...publicSalonData });
         }
