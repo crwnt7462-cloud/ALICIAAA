@@ -268,18 +268,20 @@ export default function SalonPagePublicView() {
             </div>
 
             {/* Certifications */}
-            <div className="flex gap-2 mb-6">
-              {salon.certifications.map((cert: string, index: number) => (
-                <div key={index} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs" style={{
-                  backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}20` : '#f59e0b20',
-                  color: salon.customColors?.primary || '#f59e0b',
-                  border: `1px solid ${salon.customColors?.primary || '#f59e0b'}40`
-                }}>
-                  <Award className="h-3 w-3" />
-                  {cert}
-                </div>
-              ))}
-            </div>
+            {salon.certifications && salon.certifications.length > 0 && (
+              <div className="flex gap-2 mb-6">
+                {salon.certifications.map((cert: string, index: number) => (
+                  <div key={index} className="flex items-center gap-1 px-3 py-1 rounded-full text-xs" style={{
+                    backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}20` : '#f59e0b20',
+                    color: salon.customColors?.primary || '#f59e0b',
+                    border: `1px solid ${salon.customColors?.primary || '#f59e0b'}40`
+                  }}>
+                    <Award className="h-3 w-3" />
+                    {cert}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Navigation onglets */}
