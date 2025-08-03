@@ -175,21 +175,17 @@ export default function AIProModern() {
       {/* Header glassmorphism violet */}
       <div className="px-6 py-4 flex items-center justify-between relative bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div 
-          className="w-12 h-12 bg-gray-100/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border border-gray-300"
+          className="w-12 h-12 bg-violet-500 hover:bg-violet-600 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border-none"
           onClick={() => setShowChatHistory(!showChatHistory)}
         >
-          <div className="w-6 h-6 bg-gray-300/60 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
-          </div>
+          <div className="w-3 h-3 bg-white rounded-full"></div>
         </div>
         
-        <div className="w-12 h-12 bg-gray-100/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-gray-300">
-          <div className="w-8 h-8 bg-gray-300/60 rounded-full flex items-center justify-center">
-            <ArrowLeft 
-              className="w-4 h-4 text-gray-600 cursor-pointer" 
-              onClick={() => setLocation('/dashboard')}
-            />
-          </div>
+        <div className="w-12 h-12 bg-violet-500 hover:bg-violet-600 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border-none">
+          <ArrowLeft 
+            className="w-4 h-4 text-white cursor-pointer" 
+            onClick={() => setLocation('/dashboard')}
+          />
         </div>
 
         {/* Menu historique des chats dépliable */}
@@ -263,8 +259,8 @@ export default function AIProModern() {
 
         {messages.length === 1 ? (
           <div className="text-center px-8">
-            <h1 className="text-4xl font-light text-gray-800 mb-4">
-              Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Demo'}
+            <h1 className="text-4xl font-light text-violet-600 mb-4">
+              Bonjour, Demo
             </h1>
             <p className="text-gray-600 text-sm">
               Votre assistant IA est prêt à vous aider
@@ -334,7 +330,7 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "🎤 Parlez maintenant..." : ""}
+              placeholder={isRecording ? "🎤 Parlez maintenant..." : "Ask Rendly"}
               className={`w-full rounded-full px-6 py-4 text-gray-800 border outline-none transition-all font-medium ${
                 isRecording 
                   ? 'bg-red-100/80 border-red-300 placeholder-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
