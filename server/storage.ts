@@ -123,6 +123,38 @@ export interface IStorage {
   createSubscription(subscriptionData: any): Promise<any>;
   getSubscriptionsByUserId(userId: string): Promise<any[]>;
   getClientsByProfessional(professionalId: string): Promise<any[]>;
+  
+  // Inventory Management
+  getInventory(userId: string): Promise<any[]>;
+  getLowStockItems(userId: string): Promise<any[]>;
+  createInventoryItem(userId: string, item: any): Promise<any>;
+  updateInventoryItem(id: number, item: any): Promise<any>;
+  deleteInventoryItem(id: number): Promise<void>;
+  
+  // Notifications
+  getNotifications(userId: string): Promise<any[]>;
+  createNotification(userId: string, notification: any): Promise<any>;
+  
+  // IA Conversations
+  saveConversation(userId: string, conversationId: string, conversation: any): Promise<any>;
+  getConversations(userId: string): Promise<any[]>;
+  deleteConversation(userId: string, conversationId: string): Promise<void>;
+  clearConversations(userId: string): Promise<void>;
+  
+  // Client AI Messages
+  getClientAIMessages(userId: string): Promise<any[]>;
+  deleteClientAIMessage(userId: string, messageId: string): Promise<void>;
+  clearClientAIMessages(userId: string): Promise<void>;
+  
+  // Business operations
+  getBusinessByEmail(email: string): Promise<any>;
+  createBusiness(businessData: any): Promise<any>;
+  
+  // Service by ID
+  getServiceById(serviceId: number): Promise<any>;
+  
+  // Salon operations
+  salons: Map<string, any>;
   createOrUpdateClientNote(noteData: any): Promise<any>;
   getCustomTagsByProfessional(professionalId: string): Promise<any[]>;
   createCustomTag(tagData: any): Promise<any>;
@@ -151,7 +183,7 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // Stockage en mémoire pour les salons (développement)
-  private salons: Map<string, any> = new Map();
+  public salons: Map<string, any> = new Map();
   // Stockage en mémoire pour les messages IA clients
   private clientAIMessages: Map<string, any[]> = new Map();
   // Stockage en mémoire pour les conversations IA en temps réel
@@ -1374,6 +1406,120 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Inventory Management Methods
+  async getInventory(userId: string): Promise<any[]> {
+    // Return demo inventory data for the user
+    if (userId === 'demo') {
+      return [
+        { id: 1, name: "Shampoing Professionnel L'Oréal", category: "Soins", quantity: 25, minStock: 10, price: 15.50 },
+        { id: 2, name: "Crème de jour Hydratante", category: "Cosmétiques", quantity: 8, minStock: 15, price: 32.00 },
+        { id: 3, name: "Ciseaux Professionnels Jaguar", category: "Outils", quantity: 3, minStock: 2, price: 120.00 },
+        { id: 4, name: "Gel Coiffant Forte Tenue", category: "Produits", quantity: 18, minStock: 12, price: 9.90 },
+        { id: 5, name: "Huile Capillaire Argan Bio", category: "Soins", quantity: 6, minStock: 8, price: 28.50 },
+        { id: 6, name: "Brosse Démêlante Céramique", category: "Outils", quantity: 12, minStock: 6, price: 18.00 }
+      ];
+    }
+    return [];
+  }
+
+  async getLowStockItems(userId: string): Promise<any[]> {
+    const inventory = await this.getInventory(userId);
+    return inventory.filter(item => item.quantity <= item.minStock);
+  }
+
+  async createInventoryItem(userId: string, item: any): Promise<any> {
+    // For demo purposes, just return the item with an ID
+    return { id: Date.now(), ...item };
+  }
+
+  async updateInventoryItem(id: number, item: any): Promise<any> {
+    // For demo purposes, just return the updated item
+    return { id, ...item };
+  }
+
+  async deleteInventoryItem(id: number): Promise<void> {
+    // For demo purposes, just log the deletion
+    console.log(`Deleted inventory item ${id}`);
+  }
+
+  // Notification Methods
+  async getNotifications(userId: string): Promise<any[]> {
+    // Return demo notifications for the user
+    if (userId === 'demo') {
+      return [
+        { id: 1, title: "Nouvelle réservation", message: "Sophie M. a réservé pour demain 14h", type: "booking", read: false, timestamp: new Date() },
+        { id: 2, title: "Stock faible", message: "Crème hydratante en rupture", type: "inventory", read: false, timestamp: new Date() }
+      ];
+    }
+    return [];
+  }
+
+  async createNotification(userId: string, notification: any): Promise<any> {
+    // For demo purposes, just return the notification with an ID
+    return { id: Date.now(), userId, ...notification, timestamp: new Date() };
+  }
+
+  // IA Conversation Methods
+  async saveConversation(userId: string, conversationId: string, conversation: any): Promise<any> {
+    if (!this.conversations.has(userId)) {
+      this.conversations.set(userId, new Map());
+    }
+    this.conversations.get(userId)!.set(conversationId, conversation);
+    return conversation;
+  }
+
+  async getConversations(userId: string): Promise<any[]> {
+    const userConversations = this.conversations.get(userId);
+    return userConversations ? Array.from(userConversations.values()) : [];
+  }
+
+  async deleteConversation(userId: string, conversationId: string): Promise<void> {
+    const userConversations = this.conversations.get(userId);
+    if (userConversations) {
+      userConversations.delete(conversationId);
+    }
+  }
+
+  async clearConversations(userId: string): Promise<void> {
+    this.conversations.set(userId, new Map());
+  }
+
+  // Client AI Messages Methods
+  async getClientAIMessages(userId: string): Promise<any[]> {
+    return this.clientAIMessages.get(userId) || [];
+  }
+
+  async deleteClientAIMessage(userId: string, messageId: string): Promise<void> {
+    const messages = this.clientAIMessages.get(userId) || [];
+    const filtered = messages.filter(msg => msg.id !== messageId);
+    this.clientAIMessages.set(userId, filtered);
+  }
+
+  async clearClientAIMessages(userId: string): Promise<void> {
+    this.clientAIMessages.set(userId, []);
+  }
+
+  // Business Methods
+  async getBusinessByEmail(email: string): Promise<any> {
+    // For demo purposes, return null (no existing business)
+    return null;
+  }
+
+  async createBusiness(businessData: any): Promise<any> {
+    // For demo purposes, just return the business data with an ID
+    return { id: Date.now(), ...businessData };
+  }
+
+  // Service by ID Method
+  async getServiceById(serviceId: number): Promise<any> {
+    try {
+      const [service] = await db.select().from(services).where(eq(services.id, serviceId));
+      return service;
+    } catch (error) {
+      console.error('Error fetching service by ID:', error);
+      return null;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

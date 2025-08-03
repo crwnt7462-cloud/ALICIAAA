@@ -947,6 +947,18 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Route pour récupérer l'inventaire par userId (pour les URLs directes comme /api/inventory/demo)
+  app.get('/api/inventory/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const inventory = await storage.getInventory(userId);
+      res.json(inventory);
+    } catch (error) {
+      console.error("Error fetching inventory for user:", error);
+      res.status(500).json({ error: "Failed to fetch inventory" });
+    }
+  });
+
   app.get('/api/inventory/low-stock', async (req, res) => {
     try {
       const userId = (req.session as any)?.user?.id || 'demo';
@@ -961,8 +973,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.post('/api/inventory', async (req, res) => {
     try {
       const userId = (req.session as any)?.user?.id || 'demo';
-      const itemData = { ...req.body, userId };
-      const item = await storage.createInventoryItem(itemData);
+      const item = await storage.createInventoryItem(userId, req.body);
       res.json(item);
     } catch (error) {
       console.error("Error creating inventory item:", error);
@@ -1920,7 +1931,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Import dynamique de Stripe pour éviter les erreurs de module
       const Stripe = (await import('stripe')).default;
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-        apiVersion: '2023-10-16',
+        apiVersion: '2025-06-30.basil',
       });
 
       const { amount, currency = 'eur', metadata = {} } = req.body;
