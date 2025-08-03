@@ -86,7 +86,14 @@ export default function ProLoginModern() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-white relative overflow-hidden">
+      {/* Motifs géométriques subtils en arrière-plan */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-20 left-20 w-32 h-32 bg-purple-200 rounded-full blur-xl"></div>
+        <div className="absolute top-40 right-32 w-24 h-24 bg-blue-200 rounded-full blur-lg"></div>
+        <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-rose-200 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 right-20 w-28 h-28 bg-amber-200 rounded-full blur-xl"></div>
+      </div>
       {/* Layout ultra-minimaliste - même style que page recherche */}
       <div className="relative">
         
@@ -100,7 +107,7 @@ export default function ProLoginModern() {
 
         {/* Container principal - même style que page recherche */}
         <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto bg-white border border-gray-200 p-8 rounded-2xl shadow-xl">
+          <div className="max-w-sm mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-8 rounded-3xl shadow-2xl relative z-10">
             
             {/* Logo Rendly centré */}
             <div className="text-center mb-3">
