@@ -58,17 +58,17 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
-### ✅ **COULEURS IA ORIGINALES RESTAURÉES - PRIORITÉ UTILISATEUR**
-- **Date**: 03/08/2025
-- **Changement**: Restauration complète du thème violet/bleu intense sur TOUTES les interfaces IA
-- **Impact**: Pages IA retrouvent leur identité visuelle originale après conversion glassmorphism accidentelle
-- **Problème résolu**: Utilisateur a signalé 2x que les pages IA avaient perdu leurs couleurs violettes caractéristiques
-- **Pages restaurées**:
-  - ✅ ChatGPTInterface.tsx : Arrière-plan violet intense + header violet + zone saisie violette + bulles messages violettes
-  - ✅ AIProModern.tsx : Dégradé violet-purple-bleu + header violet + input violet + boutons violets + menu historique violet
-  - ✅ AIAssistantSimple.tsx : Arrière-plan violet intense + header violet + zone saisie violette + indicateurs de frappe violets
-- **Couleurs préservées**: Interface IA maintenant 100% violet/bleu intense comme souhaité par l'utilisateur (TOUTES les pages IA converties)
-- **Note**: Les pages IA gardent leur thème distinctif même avec le glassmorphism général de la plateforme
+### ✅ **INTERFACE IA GLASSMORPHISM RESTAURÉE - DEMANDE UTILISATEUR**
+- **Date**: 03/08/2025  
+- **Changement**: Restauration du design glassmorphism sur AIProModern.tsx (/ai route)
+- **Impact**: Page principale IA retrouve l'interface transparente demandée par l'utilisateur
+- **Problème résolu**: Utilisateur préférait l'ancien design glassmorphism aux couleurs violettes
+- **Conversions effectuées**:
+  - ✅ AIProModern.tsx (/ai) : Fond gradient clair + header glassmorphism + input transparent + boutons glassmorphism
+  - ✅ ChatGPTInterface.tsx : Reste violet intense (route différente)
+  - ✅ AIAssistantSimple.tsx : Reste violet intense (route différente)  
+- **Design final**: Interface IA principale (/ai) en glassmorphism avec placeholder "✨ Ask Rendly"
+- **Routes distinctes**: /ai = glassmorphism, autres routes IA = violet selon préférences
 
 ### ✅ **TRANSFORMATION GLASSMORPHISM TOTALE FINALISÉE**
 - **Date**: 03/08/2025
