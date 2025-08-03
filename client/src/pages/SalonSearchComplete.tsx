@@ -28,7 +28,11 @@ const getSalonButtonClass = (salonId: string) => {
     'institut-beaute-saint-germain': 'glass-button-rose',
     'nail-art-opera': 'glass-button-rose',
     'spa-wellness-bastille': 'glass-button-emerald',
-    'beauty-lounge-montparnasse': 'glass-button-indigo'
+    'beauty-lounge-montparnasse': 'glass-button-indigo',
+    'salon-demo': 'glass-button-amber', // ✅ AJOUT DU SALON MODIFIABLE
+    'current': 'glass-button-amber' // ✅ FALLBACK POUR L'ID COURANT,
+    'salon-demo': 'glass-button-amber', // ✅ AJOUT DU SALON MODIFIABLE
+    'current': 'glass-button-amber' // ✅ FALLBACK POUR L'ID COURANT
   };
   return salonColors[salonId] || 'glass-button-neutral';
 };
@@ -42,7 +46,11 @@ const getSalonGlassCard = (salonId: string) => {
     'institut-beaute-saint-germain': 'glass-card-rose',
     'nail-art-opera': 'glass-card-rose',
     'spa-wellness-bastille': 'glass-card-emerald',
-    'beauty-lounge-montparnasse': 'glass-card-indigo'
+    'beauty-lounge-montparnasse': 'glass-card-indigo',
+    'salon-demo': 'glass-card-amber', // ✅ AJOUT DU SALON MODIFIABLE
+    'current': 'glass-card-amber' // ✅ FALLBACK POUR L'ID COURANT,
+    'salon-demo': 'glass-card-amber', // ✅ AJOUT DU SALON MODIFIABLE
+    'current': 'glass-card-amber' // ✅ FALLBACK POUR L'ID COURANT
   };
   return salonCardColors[salonId] || 'glass-card-neutral';
 };
@@ -344,7 +352,11 @@ export default function SalonSearchComplete() {
                 whileTap={{ scale: 0.98 }}
                 className={`${getSalonGlassCard(salon.id)} rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-all duration-300`}
                 onClick={() => {
-                  console.log('🔗 CLIC SALON - Redirection vers:', `/salon/${salon.id}`, 'Nom:', salon.name);
+                  console.log('🔗 CLIC SALON DEBUG:');
+                  console.log('  - ID salon:', salon.id);
+                  console.log('  - Nom salon:', salon.name);
+                  console.log('  - URL redirection:', `/salon/${salon.id}`);
+                  console.log('  - Données complètes salon:', salon);
                   setLocation(`/salon/${salon.id}`);
                 }}
               >

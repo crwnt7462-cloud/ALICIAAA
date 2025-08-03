@@ -1708,6 +1708,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Récupérer tous les salons
       let salons = Array.from(storage.salons.values());
       console.log(`🔍 Recherche salons: ${salons.length} salons trouvés`);
+      console.log('📋 IDs des salons:', salons.map(s => s.id));
+      console.log('📋 Noms des salons:', salons.map(s => s.name));
       
       // Filtrer par catégorie si spécifiée
       if (category && category !== 'all') {
