@@ -58,6 +58,17 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 
 ## Recent Changes (Janvier 2025)
 
+### ✅ **COULEURS IA ORIGINALES RESTAURÉES - PRIORITÉ UTILISATEUR**
+- **Date**: 03/08/2025
+- **Changement**: Restauration complète du thème violet/bleu intense sur TOUTES les interfaces IA
+- **Impact**: Pages IA retrouvent leur identité visuelle originale après conversion glassmorphism accidentelle
+- **Problème résolu**: Utilisateur a signalé 2x que les pages IA avaient perdu leurs couleurs violettes caractéristiques
+- **Pages restaurées**:
+  - ✅ ChatGPTInterface.tsx : Arrière-plan violet intense + header violet + zone saisie violette + bulles messages violettes
+  - ✅ AIProModern.tsx : Dégradé violet-purple-bleu + header violet + input violet + boutons violets + menu historique violet
+- **Couleurs préservées**: Interface IA maintenant 100% violet/bleu intense comme souhaité par l'utilisateur
+- **Note**: Les pages IA gardent leur thème distinctif même avec le glassmorphism général de la plateforme
+
 ### ✅ **TRANSFORMATION GLASSMORPHISM TOTALE FINALISÉE**
 - **Date**: 03/08/2025
 - **Changement**: Conversion complète de TOUS les boutons en glassmorphism authentique
