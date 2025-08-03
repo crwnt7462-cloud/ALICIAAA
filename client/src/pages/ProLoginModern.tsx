@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import rendlyLogo from "@assets/3_1753714421825.png";
-import backgroundImage from "@assets/Sans titre (Votre story)_1754235187256.png";
+// import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ProLoginModern() {
@@ -86,7 +86,7 @@ export default function ProLoginModern() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
+    <div className="min-h-screen" style={{backgroundColor: '#c8a2c8'}}>
       {/* Layout ultra-minimaliste - même style que page recherche */}
       <div className="relative">
         

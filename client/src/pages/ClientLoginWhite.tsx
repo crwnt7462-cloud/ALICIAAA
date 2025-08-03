@@ -18,7 +18,7 @@ import {
   Star
 } from "lucide-react";
 import rendlyLogo from "@assets/3_1753714421825.png";
-import backgroundImage from "@assets/Sans titre (Votre story)_1754235187256.png";
+// import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ClientLoginWhite() {
@@ -96,7 +96,7 @@ export default function ClientLoginWhite() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
+    <div className="min-h-screen" style={{backgroundColor: '#c8a2c8'}}>
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
