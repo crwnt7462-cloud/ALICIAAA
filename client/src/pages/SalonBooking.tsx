@@ -908,7 +908,7 @@ export default function SalonBooking() {
       
       {/* Bottom Sheet */}
       <div 
-        className={`fixed bottom-0 left-0 right-0 glass-card border-white/30 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
+        className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border border-white/40 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
           showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
         }`}
         style={{ maxHeight: '90vh' }}
@@ -926,7 +926,7 @@ export default function SalonBooking() {
           </div>
 
           {/* Récapitulatif rapide */}
-          <div className="glass-card rounded-lg p-4 mb-6">
+          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Service</span>
               <span className="font-medium">{service.name}</span>
@@ -953,7 +953,7 @@ export default function SalonBooking() {
           <div className="mb-6">
             <h3 className="font-semibold text-black mb-3">Méthode de paiement</h3>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 glass-card rounded-lg">
+              <div className="flex items-center space-x-3 p-3 bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg">
                 <div className="w-5 h-5 rounded-full border-2 border-gray-400 bg-gray-400 flex items-center justify-center">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
