@@ -69,7 +69,7 @@ function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPric
         <p className="text-sm text-gray-600 mt-1">Plan {planName} - {planPrice}€/mois</p>
       </div>
 
-      <div className="p-4 border border-white/40 rounded-xl bg-white/30 backdrop-blur-sm">
+      <div className="p-4 glass-card rounded-xl">
         <CardElement
           options={{
             style: {
@@ -329,7 +329,7 @@ export default function BusinessRegistration() {
       <div className="max-w-md mx-auto px-4 py-6">
         <div className="space-y-6">
           {/* Formulaire */}
-          <div className="bg-white/30 backdrop-blur-md rounded-lg shadow-sm border border-white/40">
+          <div className="glass-card rounded-lg shadow-sm">
             <div className="p-4 border-b border-white/30">
               <h2 className="text-lg font-semibold text-gray-900 mb-1">
                 Informations entreprise

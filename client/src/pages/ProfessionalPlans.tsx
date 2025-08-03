@@ -111,12 +111,12 @@ export default function ProfessionalPlans() {
           </p>
 
           {/* Toggle facturation responsive */}
-          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm border border-white/40 rounded-lg p-1">
+          <div className="inline-flex items-center glass-effect rounded-lg p-1">
             <button
               onClick={() => setBillingCycle('monthly')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'monthly' 
-                  ? 'bg-white/80 backdrop-blur-sm text-gray-900 shadow-md' 
+                  ? 'glass-button text-gray-900 shadow-md' 
                   : 'text-gray-700 hover:text-gray-900'
               }`}
             >
@@ -126,7 +126,7 @@ export default function ProfessionalPlans() {
               onClick={() => setBillingCycle('annual')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition-all md:px-6 md:py-3 md:text-base ${
                 billingCycle === 'annual' 
-                  ? 'bg-white/80 backdrop-blur-sm text-gray-900 shadow-md' 
+                  ? 'glass-button text-gray-900 shadow-md' 
                   : 'text-gray-700 hover:text-gray-900'
               }`}
             >
@@ -147,10 +147,10 @@ export default function ProfessionalPlans() {
             return (
               <div 
                 key={plan.id}
-                className={`relative rounded-xl border-2 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 md:p-8 md:rounded-2xl md:hover:shadow-2xl ${
+                className={`relative rounded-xl p-4 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 md:p-8 md:rounded-2xl md:hover:shadow-2xl ${
                   plan.popular 
-                    ? 'bg-white/40 backdrop-blur-md border border-white/30 ring-2 ring-violet-400/50 shadow-xl shadow-violet-400/25' 
-                    : 'bg-white/25 backdrop-blur-md border border-white/30 hover:bg-white/35'
+                    ? 'glass-effect ring-2 ring-violet-400/30 shadow-2xl shadow-violet-400/20' 
+                    : 'glass-card hover:bg-white/15'
                 }`}
                 onClick={() => handleSelectPlan(plan.id)}
               >
@@ -165,7 +165,7 @@ export default function ProfessionalPlans() {
                 {/* Icon et nom mobile */}
                 <div className="flex items-center gap-3 mb-4 md:text-center md:block md:mb-8">
                   <div className="flex-shrink-0 md:flex md:justify-center md:mb-4">
-                    <div className="p-2 bg-white/30 backdrop-blur-sm border border-white/40 rounded-full md:p-3">
+                    <div className="p-2 glass-button rounded-full md:p-3">
                       {plan.icon}
                     </div>
                   </div>

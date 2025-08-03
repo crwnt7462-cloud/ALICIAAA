@@ -472,7 +472,7 @@ export default function SalonBooking() {
           {professionals.map((pro) => (
             <Card 
               key={pro.id}
-              className="bg-white/30 backdrop-blur-md border border-white/40 hover:border-violet-300/50 hover:shadow-lg hover:bg-white/40 transition-all duration-300 cursor-pointer"
+              className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
               onClick={() => handleProfessionalSelect(pro)}
             >
               <CardContent className="p-4">
