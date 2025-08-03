@@ -973,7 +973,8 @@ export default function SalonBooking() {
                   setShowPaymentSheet(false);
                   toast({
                     title: "Paiement réussi !",
-                    description: "Votre réservation a été confirmée."
+                    description: "Votre réservation a été confirmée.",
+                    variant: "success" as any
                   });
                   setTimeout(() => {
                     setLocation('/');
@@ -1647,7 +1648,8 @@ export default function SalonBooking() {
         
         toast({
           title: "Compte créé avec succès !",
-          description: "Préparation du paiement..."
+          description: "Préparation du paiement...",
+          variant: "success" as any
         });
         
         // 2. Marquer comme connecté puis créer le Payment Intent
@@ -1708,7 +1710,8 @@ export default function SalonBooking() {
         
         toast({
           title: "Connexion réussie !",
-          description: `Bienvenue ${data.client.first_name || 'Client'} !`
+          description: `Bienvenue ${data.client.first_name || 'Client'} !`,
+          variant: "success" as any
         });
         
         // Marquer comme connecté puis créer le Payment Intent
