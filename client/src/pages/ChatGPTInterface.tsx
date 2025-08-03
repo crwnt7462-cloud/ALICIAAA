@@ -82,23 +82,23 @@ export default function ChatGPTInterface() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col">
-      {/* Header minimal glassmorphism */}
-      <div className="flex items-center justify-between p-4 backdrop-blur-md bg-white/20 border-b border-white/30">
+    <div className="h-screen bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex flex-col">
+      {/* Header violet intense */}
+      <div className="flex items-center justify-between p-4 bg-violet-700/90 border-b border-violet-500/50">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setLocation('/dashboard')}
-            className="h-8 w-8 p-0 rounded-full backdrop-blur-md bg-white/40 border border-black/30 hover:bg-white/50 text-black"
+            className="h-8 w-8 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-lg font-semibold text-black">Assistant IA</h1>
+            <h1 className="text-lg font-semibold text-white">Assistant IA</h1>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-              <span className="text-sm text-gray-800">En ligne</span>
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-white/90">En ligne</span>
             </div>
           </div>
         </div>
@@ -114,15 +114,15 @@ export default function ChatGPTInterface() {
             <div
               className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                 message.role === 'user'
-                  ? 'backdrop-blur-md bg-blue-500/80 border border-blue-400/30 text-white ml-12'
-                  : 'backdrop-blur-md bg-white/50 border border-black/30 text-black mr-12'
+                  ? 'bg-violet-600 text-white ml-12 shadow-lg'
+                  : 'bg-white text-gray-900 mr-12 shadow-lg border border-gray-200'
               }`}
             >
               <p className="text-sm leading-relaxed whitespace-pre-wrap">
                 {message.content}
               </p>
               <div className={`text-xs mt-2 ${
-                message.role === 'user' ? 'text-blue-100' : 'text-gray-800'
+                message.role === 'user' ? 'text-violet-100' : 'text-gray-500'
               }`}>
                 {message.timestamp.toLocaleTimeString('fr-FR', { 
                   hour: '2-digit', 
@@ -136,14 +136,14 @@ export default function ChatGPTInterface() {
         {/* Indicateur de frappe */}
         {chatMutation.isPending && (
           <div className="flex justify-start">
-            <div className="backdrop-blur-md bg-white/50 border border-black/30 rounded-2xl px-4 py-3 mr-12">
+            <div className="bg-white text-gray-900 rounded-2xl px-4 py-3 mr-12 shadow-lg border border-gray-200">
               <div className="flex items-center space-x-1">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
-                <span className="text-xs text-gray-800 ml-2">Assistant répond...</span>
+                <span className="text-xs text-gray-500 ml-2">Assistant répond...</span>
               </div>
             </div>
           </div>
@@ -152,8 +152,8 @@ export default function ChatGPTInterface() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Zone de saisie glassmorphism */}
-      <div className="backdrop-blur-md bg-white/20 border-t border-white/30 p-4">
+      {/* Zone de saisie violette */}
+      <div className="bg-violet-700/90 border-t border-violet-500/50 p-4">
         <div className="flex items-end gap-3 max-w-4xl mx-auto">
           <div className="flex-1 relative">
             <Input
@@ -162,21 +162,21 @@ export default function ChatGPTInterface() {
               onKeyPress={handleKeyPress}
               placeholder="Tapez votre message..."
               disabled={chatMutation.isPending}
-              className="min-h-[48px] pr-12 rounded-3xl backdrop-blur-md bg-white/40 border-black/30 text-black placeholder-gray-800 focus:border-black/50 focus:ring-black/30 resize-none"
+              className="min-h-[48px] pr-12 rounded-3xl bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:border-white/50 focus:ring-0 resize-none"
               style={{ paddingTop: '12px', paddingBottom: '12px' }}
             />
           </div>
           <Button
             onClick={handleSendMessage}
             disabled={!inputMessage.trim() || chatMutation.isPending}
-            className="h-12 w-12 rounded-full backdrop-blur-md bg-blue-500/80 border border-blue-400/30 hover:bg-blue-600/80 disabled:bg-gray-300/50 flex-shrink-0"
+            className="h-12 w-12 rounded-full bg-violet-600 hover:bg-violet-500 text-white shadow-lg disabled:opacity-50 flex-shrink-0"
           >
             <Send className="h-5 w-5" />
           </Button>
         </div>
         
         {/* Note informative */}
-        <p className="text-xs text-black text-center mt-2 max-w-4xl mx-auto">
+        <p className="text-xs text-white/80 text-center mt-2 max-w-4xl mx-auto">
           L'assistant IA peut vous aider avec la gestion de votre salon, vos rendez-vous, et répondre à vos questions.
         </p>
       </div>

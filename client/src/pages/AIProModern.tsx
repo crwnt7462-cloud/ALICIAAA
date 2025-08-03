@@ -171,22 +171,22 @@ export default function AIProModern() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white max-w-md mx-auto relative overflow-hidden">
-      {/* Header violet */}
-      <div className="px-6 py-4 flex items-center justify-between relative">
+    <div className="h-full flex flex-col bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 max-w-md mx-auto relative overflow-hidden">
+      {/* Header violet intense */}
+      <div className="px-6 py-4 flex items-center justify-between relative bg-violet-700/90">
         <div 
-          className={`w-12 h-12 ${getGenericGlassButton(0)} rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform`}
+          className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border border-white/30"
           onClick={() => setShowChatHistory(!showChatHistory)}
         >
-          <div className="w-6 h-6 bg-black/40 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-black rounded-full"></div>
+          <div className="w-6 h-6 bg-white/40 rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-white rounded-full"></div>
           </div>
         </div>
         
-        <div className={`w-12 h-12 ${getGenericGlassButton(1)} rounded-full flex items-center justify-center shadow-lg`}>
-          <div className="w-8 h-8 bg-black/40 rounded-full flex items-center justify-center">
+        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/30">
+          <div className="w-8 h-8 bg-white/40 rounded-full flex items-center justify-center">
             <ArrowLeft 
-              className="w-4 h-4 text-black cursor-pointer" 
+              className="w-4 h-4 text-white cursor-pointer" 
               onClick={() => setLocation('/dashboard')}
             />
           </div>
@@ -194,38 +194,38 @@ export default function AIProModern() {
 
         {/* Menu historique des chats dépliable */}
         {showChatHistory && (
-          <div className="absolute top-16 left-6 w-80 backdrop-blur-md bg-white/20 border border-white/30 rounded-2xl shadow-2xl z-50 overflow-hidden chat-history-menu">
-            <div className="p-4 backdrop-blur-md bg-white/30 border-b border-white/20">
-              <h3 className="text-black font-semibold text-lg">Historique des conversations</h3>
+          <div className="absolute top-16 left-6 w-80 backdrop-blur-md bg-violet-800/90 border border-violet-500/50 rounded-2xl shadow-2xl z-50 overflow-hidden chat-history-menu">
+            <div className="p-4 bg-violet-700/90 border-b border-violet-500/50">
+              <h3 className="text-white font-semibold text-lg">Historique des conversations</h3>
             </div>
             
             <div className="max-h-96 overflow-y-auto">
               {chatHistory.map((chat) => (
                 <div 
                   key={chat.id}
-                  className="p-4 border-b border-white/20 hover:bg-white/30 cursor-pointer transition-colors"
+                  className="p-4 border-b border-violet-500/50 hover:bg-violet-700/50 cursor-pointer transition-colors"
                   onClick={() => {
                     // Charger la conversation
                     setShowChatHistory(false);
                   }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 backdrop-blur-md bg-black/40 border border-black/30 rounded-full flex items-center justify-center flex-shrink-0">
-                      <div className="w-2 h-2 bg-black rounded-full"></div>
+                    <div className="w-8 h-8 bg-white/20 border border-white/30 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-black text-sm truncate">{chat.title}</h4>
-                      <p className="text-xs text-gray-800 truncate mt-1">{chat.lastMessage}</p>
-                      <p className="text-xs text-black mt-1">{chat.date}</p>
+                      <h4 className="font-medium text-white text-sm truncate">{chat.title}</h4>
+                      <p className="text-xs text-white/70 truncate mt-1">{chat.lastMessage}</p>
+                      <p className="text-xs text-white/80 mt-1">{chat.date}</p>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
             
-            <div className="p-4 backdrop-blur-md bg-white/20 border-t border-white/20">
+            <div className="p-4 bg-violet-700/90 border-t border-violet-500/50">
               <button 
-                className="w-full text-sm text-black hover:text-gray-800 font-medium"
+                className="w-full text-sm text-white hover:text-white/80 font-medium"
                 onClick={() => {
                   // Nouveau chat
                   setMessages([{
@@ -317,13 +317,13 @@ export default function AIProModern() {
         )}
       </div>
 
-      {/* Input violet sur fond blanc */}
-      <div className="p-6 border-t border-gray-100">
+      {/* Input violet intense */}
+      <div className="p-6 bg-violet-700/90 border-t border-violet-500/50">
         {/* Indicateur d'enregistrement */}
         {isRecording && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            <span className="text-red-700 text-sm font-medium">Enregistrement en cours... Cliquez sur le micro pour arrêter</span>
+          <div className="mb-4 p-3 bg-red-900/50 border border-red-500/50 rounded-xl flex items-center gap-3">
+            <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
+            <span className="text-red-200 text-sm font-medium">Enregistrement en cours... Cliquez sur le micro pour arrêter</span>
           </div>
         )}
         
@@ -335,10 +335,10 @@ export default function AIProModern() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-black border outline-none transition-all font-medium ${
+              className={`w-full rounded-full px-6 py-4 text-white border outline-none transition-all font-medium ${
                 isRecording 
-                  ? 'bg-red-50 border-red-200 placeholder-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200' 
-                  : 'backdrop-blur-md bg-white/30 border-black/30 placeholder-gray-800 focus:border-black/50 focus:ring-2 focus:ring-black/30 shadow-sm'
+                  ? 'bg-red-900/50 border-red-500/50 placeholder-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
+                  : 'bg-white/20 border-white/30 placeholder-white/70 focus:border-white/50 focus:ring-2 focus:ring-white/30 shadow-sm backdrop-blur-md'
               }`}
               disabled={isLoading || isRecording}
             />
@@ -348,7 +348,7 @@ export default function AIProModern() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             size="sm"
-            className={`w-12 h-12 rounded-full ${getGenericGlassButton(2)} border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105`}
+            className="w-12 h-12 rounded-full bg-violet-600 hover:bg-violet-500 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
           >
             <Send className="w-5 h-5 text-white" />
           </Button>
@@ -359,7 +359,7 @@ export default function AIProModern() {
             className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
               isRecording 
                 ? 'bg-red-500 hover:bg-red-400' 
-                : getGenericGlassButton(3)
+                : 'bg-violet-600 hover:bg-violet-500'
             }`}
           >
             {isRecording ? (
