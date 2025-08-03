@@ -263,10 +263,10 @@ export default function AIProModern() {
 
         {messages.length === 1 ? (
           <div className="text-center px-8">
-            <h1 className="text-4xl font-light text-transparent bg-gradient-to-r from-purple-500 via-violet-500 to-purple-600 bg-clip-text mb-4">
-              Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Agash'}
+            <h1 className="text-4xl font-light text-white mb-4">
+              Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Demo'}
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-white/80 text-sm">
               Votre assistant IA est prêt à vous aider
             </p>
           </div>
