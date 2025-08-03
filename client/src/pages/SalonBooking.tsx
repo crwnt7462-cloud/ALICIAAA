@@ -1721,11 +1721,18 @@ export default function SalonBooking() {
           </div>
 
           <div className="space-y-4">
+            {/* Identifiants de test */}
+            <div className="bg-blue-50 p-3 rounded-lg text-sm">
+              <p className="font-medium text-blue-900 mb-1">🧪 Compte de test :</p>
+              <p className="text-blue-700">Email: client@beautyapp.com</p>
+              <p className="text-blue-700">Mot de passe: test123</p>
+            </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
               <Input
                 type="email"
-                placeholder="Votre email"
+                placeholder="client@beautyapp.com"
                 value={loginData.email}
                 onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                 className="w-full"
@@ -1736,7 +1743,7 @@ export default function SalonBooking() {
               <label className="block text-sm font-medium text-gray-900 mb-2">Mot de passe</label>
               <Input
                 type="password"
-                placeholder="Votre mot de passe"
+                placeholder="test123"
                 value={loginData.password}
                 onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                 className="w-full"
