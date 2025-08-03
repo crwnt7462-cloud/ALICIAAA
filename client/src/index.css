@@ -34,16 +34,16 @@
 /* Toast Notifications Glassmorphism Personnalisé */
 .glass-toast-success {
   background: linear-gradient(135deg, 
-    rgba(34, 197, 94, 0.25) 0%,
+    rgba(168, 85, 247, 0.25) 0%,
     rgba(255, 255, 255, 0.2) 30%,
     rgba(255, 255, 255, 0.1) 100%
   ) !important;
   backdrop-filter: blur(25px) !important;
   -webkit-backdrop-filter: blur(25px) !important;
-  border: 1px solid rgba(34, 197, 94, 0.4) !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
   border-radius: 20px !important;
   box-shadow: 
-    0 12px 40px rgba(34, 197, 94, 0.2),
+    0 12px 40px rgba(168, 85, 247, 0.2),
     0 6px 20px rgba(255, 255, 255, 0.15),
     inset 0 2px 0 rgba(255, 255, 255, 0.5) !important;
   color: #000000 !important;
