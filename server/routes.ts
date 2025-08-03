@@ -401,66 +401,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // API pour récupérer la page salon actuelle
-  app.get('/api/salon/current', async (req, res) => {
+  app.get('/api/booking-pages/current', async (req, res) => {
     try {
-      // Pour le moment, utiliser un salon par défaut
-      // TODO: Récupérer basé sur l'utilisateur authentifié
-      const currentSalonId = 'barbier-gentleman-marais';
-      const salon = await storage.getSalon(currentSalonId);
+      // Simuler récupération de la page salon actuelle
+      const currentPage = {
+        id: 'salon-test-pro-user',
+        salonName: 'Salon Excellence Paris',
+        salonDescription: 'Salon de beauté professionnel situé au cœur de Paris. Spécialisé en coiffure, soins esthétiques et bien-être.',
+        salonAddress: '123 Avenue des Champs-Élysées, 75008 Paris',
+        salonPhone: '01 42 25 76 88',
+        logoUrl: null,
+        coverImageUrl: null,
+        photos: [],
+        primaryColor: '#8B5CF6',
+        isPublished: true,
+        pageUrl: 'salon-excellence-paris'
+      };
       
-      if (!salon) {
-        // Créer un salon par défaut si aucun n'existe
-        const defaultSalon = {
-          id: currentSalonId,
-          name: 'Mon Salon',
-          description: 'Description de mon salon',
-          address: 'Adresse de mon salon',
-          phone: 'Téléphone',
-          customColors: {
-            primary: '#f59e0b',
-            accent: '#d97706',
-            intensity: 35
-          }
-        };
-        const createdSalon = await storage.createSalon(defaultSalon);
-        return res.json(createdSalon);
-      }
-      
-      res.json(salon);
+      res.json(currentPage);
     } catch (error) {
-      console.error("Erreur récupération salon actuel:", error);
+      console.error("Erreur récupération page salon:", error);
       res.status(500).json({
-        error: 'Erreur lors de la récupération du salon actuel'
-      });
-    }
-  });
-
-  // API pour mettre à jour la page salon actuelle
-  app.put('/api/salon/current', async (req, res) => {
-    try {
-      const updateData = req.body;
-      
-      // Pour le moment, utiliser un salon par défaut
-      // TODO: Récupérer basé sur l'utilisateur authentifié
-      const currentSalonId = 'barbier-gentleman-marais';
-      
-      // Mettre à jour le salon dans la base de données
-      const updatedSalon = await storage.updateSalon(currentSalonId, updateData);
-      
-      if (!updatedSalon) {
-        return res.status(404).json({ error: 'Salon non trouvé' });
-      }
-      
-      res.json({
-        success: true,
-        salon: updatedSalon,
-        message: 'Salon mis à jour avec succès - modifications visibles publiquement'
-      });
-    } catch (error) {
-      console.error("Erreur mise à jour salon actuel:", error);
-      res.status(500).json({
-        error: 'Erreur lors de la mise à jour du salon',
-        details: error instanceof Error ? error.message : 'Erreur inconnue'
+        error: 'Erreur lors de la récupération de la page salon'
       });
     }
   });
@@ -499,36 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'Salon non trouvé' });
       }
       
-      // Récupérer les données complètes pour la page publique
-      let services = [];
-      let staff = [];
-      
-      try {
-        // Essayer de récupérer les services et l'équipe
-        services = await storage.getServicesBySalon(salonId) || [];
-        staff = await storage.getStaffBySalon(salonId) || [];
-      } catch (err) {
-        console.log('Services/Staff non disponibles pour ce salon');
-      }
-      
-      // Assembler toutes les données avec fallback pour les couleurs
-      const fullSalonData = {
-        ...salon,
-        services,
-        staff,
-        // S'assurer que les couleurs personnalisées sont toujours présentes
-        customColors: salon.customColors || {
-          primary: '#f59e0b',
-          intensity: 35
-        },
-        // Ajouter des données par défaut si manquantes
-        rating: salon.rating || 4.5,
-        reviews: salon.reviews || 0,
-        hours: salon.hours || 'Lun-Sam: 9h-19h',
-        certifications: salon.certifications || []
-      };
-      
-      res.json({ salon: fullSalonData });
+      res.json({ salon });
     } catch (error) {
       console.error("Erreur récupération salon:", error);
       res.status(500).json({ 

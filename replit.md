@@ -71,20 +71,6 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
   - ✅ Application automatique sur tous les boutons de réservation
   - ✅ Interface utilisateur intuitive avec labels "Subtile" → "Intense"
 
-### ✅ Pages Salons Publiques + Modification Temps Réel
-- **Date**: 02/08/2025
-- **Changement**: Système complet pages salon publiques avec modifications temps réel
-- **Impact**: Les modifications des professionnels sont automatiquement visibles au public
-- **Détails**: 
-  - ✅ Route `/salon/:id` pour pages publiques accessibles à tous
-  - ✅ Connexion API réelle : SalonPagePublicView récupère données base 
-  - ✅ Modifications profesionnelles → visibilité publique automatique
-  - ✅ Système couleurs personnalisées appliqué sur pages publiques
-  - ✅ Cache invalidation automatique pour mise à jour temps réel
-  - ✅ Fallback intelligent vers données statiques si API indisponible
-  - ✅ Navigation /search → /salon/id fonctionnelle
-  - ✅ Design uniforme glassmorphism entre pages pro et publiques
-
 ### ✅ Conversion Glassmorphism Complète + Interfaces IA
 - **Date**: 02/08/2025
 - **Changement**: Conversion complète vers glassmorphism unifié pour TOUTES les interfaces
