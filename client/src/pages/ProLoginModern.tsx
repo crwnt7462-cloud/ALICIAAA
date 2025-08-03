@@ -106,21 +106,21 @@ export default function ProLoginModern() {
         </button>
 
         {/* Container principal - même style que page recherche */}
-        <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-8 rounded-3xl shadow-2xl relative z-10">
+        <div className="px-4 pt-12 pb-6 flex items-center justify-center min-h-screen">
+          <div className="w-full max-w-xs mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-6 rounded-3xl shadow-2xl relative z-10">
             
             {/* Logo Rendly centré */}
-            <div className="text-center mb-3">
-              <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mx-auto" />
+            <div className="text-center mb-2">
+              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}
-            <div className="text-center mb-6">
-              <h2 className="text-xl text-gray-800 font-normal">Sign in to your salon</h2>
+            <div className="text-center mb-4">
+              <h2 className="text-lg text-gray-800 font-normal">Sign in to your salon</h2>
             </div>
           
             {/* Champs de connexion - même style que recherche */}
-            <form onSubmit={handleSubmit} className="space-y-3 mb-6">
+            <form onSubmit={handleSubmit} className="space-y-3 mb-4">
               <div className="relative">
                 <input
                   type="email"
