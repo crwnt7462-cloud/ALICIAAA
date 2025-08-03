@@ -17,6 +17,16 @@ export default function BusinessFeatures() {
   const [, setLocation] = useLocation();
   const [activeSection, setActiveSection] = useState<string>('main');
 
+  // Récupérer l'inventaire avec vraies données API
+  const { data: inventory = [] } = useQuery({
+    queryKey: ["/api/inventory"],
+  });
+
+  // Récupérer les articles en rupture de stock
+  const { data: lowStockItems = [] } = useQuery({
+    queryKey: ["/api/inventory/low-stock"],
+  });
+
   // Authentification désactivée temporairement pour debugging
   console.log('BusinessFeatures chargé - page visible');
 
@@ -283,40 +293,48 @@ export default function BusinessFeatures() {
                 </div>
                 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div>
-                      <div className="font-medium text-gray-900">Shampoing Pro</div>
-                      <div className="text-sm text-gray-500">Stock: 12</div>
-                    </div>
-                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div className="flex items-start gap-2">
-                      <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5" />
-                      <div>
-                        <div className="font-medium text-gray-900">Masque Hydratant</div>
-                        <div className="text-sm text-gray-500">Stock: 3</div>
+                  {inventory.slice(0, 3).map((item: any) => {
+                    const isLowStock = item.currentStock <= item.minStock;
+                    return (
+                      <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div className="flex items-start gap-2">
+                          {isLowStock && <AlertTriangle className="h-4 w-4 text-red-500 mt-0.5" />}
+                          <div>
+                            <div className="font-medium text-gray-900">{item.name}</div>
+                            <div className="text-sm text-gray-500">Stock: {item.currentStock}</div>
+                          </div>
+                        </div>
+                        <Badge className={isLowStock 
+                          ? "bg-red-500 text-white px-3 py-1 rounded-full text-xs"
+                          : "bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs"
+                        }>
+                          {isLowStock ? "Stock bas" : "OK"}
+                        </Badge>
                       </div>
-                    </div>
-                    <Badge className="bg-red-500 text-white px-3 py-1 rounded-full text-xs">Stock bas</Badge>
-                  </div>
+                    );
+                  })}
                   
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div>
-                      <div className="font-medium text-gray-900">Sérum Anti-Âge</div>
-                      <div className="text-sm text-gray-500">Stock: 8</div>
+                  {inventory.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>Aucun article en stock</p>
                     </div>
-                    <Badge className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">OK</Badge>
-                  </div>
+                  )}
                 </div>
                 
                 <div className="flex gap-3 mt-4">
-                  <Button className="flex-1 bg-green-600 text-white hover:bg-green-700 rounded-xl">
+                  <Button 
+                    className="flex-1 bg-green-600 text-white hover:bg-green-700 rounded-xl"
+                    onClick={() => setLocation('/inventory')}
+                  >
                     <Package className="h-4 w-4 mr-2" />
                     Gérer Stock
                   </Button>
-                  <Button variant="outline" className="px-4 rounded-xl">
+                  <Button 
+                    variant="outline" 
+                    className="px-4 rounded-xl"
+                    onClick={() => setLocation('/inventory')}
+                  >
                     + Nouveau
                   </Button>
                 </div>
@@ -480,40 +498,48 @@ export default function BusinessFeatures() {
           </div>
           
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Shampooing Pro</div>
-                <div className="text-sm text-gray-600">Stock: 12</div>
-              </div>
-              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div className="flex items-center gap-2">
-                <div>
-                  <div className="font-medium text-gray-900">Masque Hydratant</div>
-                  <div className="text-sm text-gray-600">Stock: 3</div>
+            {inventory.slice(0, 3).map((item: any) => {
+              const isLowStock = item.currentStock <= item.minStock;
+              return (
+                <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <div className="font-medium text-gray-900">{item.name}</div>
+                      <div className="text-sm text-gray-600">Stock: {item.currentStock}</div>
+                    </div>
+                    {isLowStock && <AlertTriangle className="h-4 w-4 text-orange-500" />}
+                  </div>
+                  <Badge className={isLowStock 
+                    ? "bg-red-100 text-red-800 rounded-full px-3 py-1 text-xs font-medium"
+                    : "bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium"
+                  }>
+                    {isLowStock ? "Stock bas" : "OK"}
+                  </Badge>
                 </div>
-                <AlertTriangle className="h-4 w-4 text-orange-500" />
+              );
+            })}
+            
+            {inventory.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>Aucun article en stock</p>
               </div>
-              <Badge className="bg-red-100 text-red-800 rounded-full px-3 py-1 text-xs font-medium">Stock bas</Badge>
-            </div>
-
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div>
-                <div className="font-medium text-gray-900">Sérum Anti-Age</div>
-                <div className="text-sm text-gray-600">Stock: 8</div>
-              </div>
-              <Badge className="bg-green-100 text-green-800 rounded-full px-3 py-1 text-xs font-medium">OK</Badge>
-            </div>
+            )}
           </div>
 
           <div className="flex gap-3 mt-4">
-            <Button className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl">
+            <Button 
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl"
+              onClick={() => setLocation('/inventory')}
+            >
               <Package className="h-4 w-4 mr-2" />
               Gérer Stock
             </Button>
-            <Button variant="outline" className="px-4 py-3 rounded-xl">
+            <Button 
+              variant="outline" 
+              className="px-4 py-3 rounded-xl"
+              onClick={() => setLocation('/inventory')}
+            >
               + Nouveau
             </Button>
           </div>
