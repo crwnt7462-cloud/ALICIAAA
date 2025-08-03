@@ -96,7 +96,7 @@ export default function ClientLoginWhite() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
+    <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
@@ -140,7 +140,7 @@ export default function ClientLoginWhite() {
 
         {/* Côté droit - Formulaire */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
-          <Card className="w-full max-w-md bg-white/20 backdrop-blur-md border border-white/30 rounded-lg">
+          <Card className="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-xl">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex flex-col items-center justify-center mb-6">
                 <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mb-4" />

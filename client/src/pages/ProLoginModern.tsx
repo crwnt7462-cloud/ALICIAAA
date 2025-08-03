@@ -86,7 +86,7 @@ export default function ProLoginModern() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
+    <div className="min-h-screen bg-white">
       {/* Layout ultra-minimaliste - même style que page recherche */}
       <div className="relative">
         
@@ -100,7 +100,7 @@ export default function ProLoginModern() {
 
         {/* Container principal - même style que page recherche */}
         <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto bg-white/20 backdrop-blur-md border border-white/30 p-8 rounded-2xl">
+          <div className="max-w-sm mx-auto bg-white border border-gray-200 p-8 rounded-2xl shadow-xl">
             
             {/* Logo Rendly centré */}
             <div className="text-center mb-3">
@@ -109,7 +109,7 @@ export default function ProLoginModern() {
 
             {/* Titre - même style */}
             <div className="text-center mb-6">
-              <h2 className="text-xl text-gray-500 font-normal">Sign in to your salon</h2>
+              <h2 className="text-xl text-gray-800 font-normal">Sign in to your salon</h2>
             </div>
           
             {/* Champs de connexion - même style que recherche */}
@@ -120,7 +120,7 @@ export default function ProLoginModern() {
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Email professionnel"
-                  className="w-full h-12 px-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-base text-white placeholder:text-white/70"
+                  className="w-full h-12 px-4 bg-gray-50 border border-gray-300 rounded-2xl text-base text-gray-800 placeholder:text-gray-500"
                   required
                 />
               </div>
@@ -131,13 +131,13 @@ export default function ProLoginModern() {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Mot de passe"
-                  className="w-full h-12 px-4 pr-12 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-base text-white placeholder:text-white/70"
+                  className="w-full h-12 px-4 pr-12 bg-gray-50 border border-gray-300 rounded-2xl text-base text-gray-800 placeholder:text-gray-500"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
