@@ -147,11 +147,11 @@ export default function ClientLoginWhite() {
 
         {/* Côté droit - Formulaire */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
-          <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-2xl relative z-10">
-            <CardHeader className="space-y-2 text-center pb-6">
-              <div className="flex flex-col items-center justify-center mb-6">
-                <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mb-4" />
-                <h2 className="text-2xl font-light text-gray-900">Espace Client</h2>
+          <Card className="w-full max-w-lg bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-2xl relative z-10">
+            <CardHeader className="space-y-3 text-center pb-8">
+              <div className="flex flex-col items-center justify-center mb-8">
+                <img src={rendlyLogo} alt="Rendly" className="h-24 w-auto mb-6" />
+                <h2 className="text-3xl font-light text-gray-900">Espace Client</h2>
               </div>
               <div className="flex justify-center">
                 <div className="flex bg-gray-50 rounded-lg p-1 border border-gray-200">

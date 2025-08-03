@@ -106,28 +106,28 @@ export default function ProLoginModern() {
         </button>
 
         {/* Container principal - même style que page recherche */}
-        <div className="px-4 pt-12 pb-6 flex items-center justify-center min-h-screen">
-          <div className="w-full max-w-xs mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-6 rounded-3xl shadow-2xl relative z-10">
+        <div className="px-6 pt-16 pb-6 flex items-center justify-center min-h-screen">
+          <div className="w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-10 rounded-3xl shadow-2xl relative z-10">
             
             {/* Logo Rendly centré */}
-            <div className="text-center mb-2">
-              <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mx-auto" />
+            <div className="text-center mb-6">
+              <img src={rendlyLogo} alt="Rendly" className="h-32 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}
-            <div className="text-center mb-4">
-              <h2 className="text-lg text-gray-800 font-normal">Sign in to your salon</h2>
+            <div className="text-center mb-8">
+              <h2 className="text-2xl text-gray-800 font-normal">Sign in to your salon</h2>
             </div>
           
             {/* Champs de connexion - même style que recherche */}
-            <form onSubmit={handleSubmit} className="space-y-3 mb-4">
+            <form onSubmit={handleSubmit} className="space-y-5 mb-6">
               <div className="relative">
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Email professionnel"
-                  className="w-full h-12 px-4 bg-gray-50 border border-gray-300 rounded-2xl text-base text-gray-800 placeholder:text-gray-500"
+                  className="w-full h-14 px-6 bg-gray-50 border border-gray-300 rounded-2xl text-lg text-gray-800 placeholder:text-gray-500"
                   required
                 />
               </div>
@@ -138,7 +138,7 @@ export default function ProLoginModern() {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Mot de passe"
-                  className="w-full h-12 px-4 pr-12 bg-gray-50 border border-gray-300 rounded-2xl text-base text-gray-800 placeholder:text-gray-500"
+                  className="w-full h-14 px-6 pr-12 bg-gray-50 border border-gray-300 rounded-2xl text-lg text-gray-800 placeholder:text-gray-500"
                   required
                 />
                 <button
@@ -154,7 +154,7 @@ export default function ProLoginModern() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full h-12 ${getGenericGlassButton(0)} rounded-2xl text-base font-medium`}
+                className={`w-full h-14 ${getGenericGlassButton(0)} rounded-2xl text-lg font-medium`}
               >
                 {isLoading ? "Connexion..." : "Sign in"}
               </button>
