@@ -348,24 +348,24 @@ export default function AIProModern() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             size="sm"
-            className="w-12 h-12 rounded-full bg-gray-100/80 hover:bg-gray-200/80 border border-gray-300 p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 backdrop-blur-md"
+            className="w-12 h-12 rounded-full bg-violet-500 hover:bg-violet-600 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
           >
-            <Send className="w-5 h-5 text-gray-600" />
+            <Send className="w-5 h-5 text-white" />
           </Button>
           
           <Button
             onClick={isRecording ? stopRecording : startRecording}
             size="sm"
-            className={`w-12 h-12 rounded-full border p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 backdrop-blur-md ${
+            className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
               isRecording 
-                ? 'bg-red-200/80 hover:bg-red-300/80 border-red-400' 
-                : 'bg-gray-100/80 hover:bg-gray-200/80 border-gray-300'
+                ? 'bg-red-500 hover:bg-red-600' 
+                : 'bg-violet-500 hover:bg-violet-600'
             }`}
           >
             {isRecording ? (
-              <MicOff className="w-5 h-5 text-red-600" />
+              <MicOff className="w-5 h-5 text-white" />
             ) : (
-              <Mic className="w-5 h-5 text-gray-600" />
+              <Mic className="w-5 h-5 text-white" />
             )}
           </Button>
         </div>

@@ -96,10 +96,7 @@ export default function ClientLoginWhite() {
   ];
 
   return (
-    <div 
-      className="min-h-screen bg-cover bg-center bg-no-repeat" 
-      style={{backgroundImage: `url(${backgroundImage})`}}
-    >
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-rose-100 to-white">
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
