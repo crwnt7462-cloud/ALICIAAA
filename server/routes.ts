@@ -1493,6 +1493,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route de test pour notifications
+  app.post('/api/test-notification', async (req, res) => {
+    try {
+      const { userId = 'demo', type = 'appointment', title, message } = req.body;
+      
+      // Déclencher une notification de test
+      await notificationService.notifyNewAppointment({
+        userId,
+        clientName: 'Test Client',
+        serviceName: 'Test Service',
+        appointmentDate: new Date().toISOString(),
+        appointmentTime: '14:30',
+        totalPrice: 50,
+        notes: 'Test notification système'
+      });
+
+      console.log(`🧪 Test notification envoyée à ${userId}`);
+      res.json({ 
+        success: true, 
+        message: `Notification envoyée à ${userId}`,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error('Erreur test notification:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // Initialize WebSocket service for real-time notifications
