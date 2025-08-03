@@ -92,6 +92,37 @@
   padding: 20px 24px !important;
 }
 
+/* ✅ GLASSMORPHISM POUR CARTES STATISTIQUES DASHBOARD */
+.glass-stat-card {
+  background: linear-gradient(135deg, 
+    rgba(168, 85, 247, 0.15) 0%,
+    rgba(255, 255, 255, 0.25) 30%,
+    rgba(255, 255, 255, 0.1) 100%
+  ) !important;
+  backdrop-filter: blur(25px) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(168, 85, 247, 0.2) !important;
+  border-radius: 20px !important;
+  box-shadow: 
+    0 8px 32px rgba(168, 85, 247, 0.1),
+    0 4px 16px rgba(255, 255, 255, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.4) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-stat-card:hover {
+  background: linear-gradient(135deg, 
+    rgba(168, 85, 247, 0.2) 0%,
+    rgba(255, 255, 255, 0.3) 30%,
+    rgba(255, 255, 255, 0.15) 100%
+  ) !important;
+  box-shadow: 
+    0 12px 40px rgba(168, 85, 247, 0.15),
+    0 6px 20px rgba(255, 255, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px) scale(1.02);
+}
+
 /* Glassmorphism Styles - Avec teinte violet subtile et forme visible */
 .glass-button {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.15) 100%);
