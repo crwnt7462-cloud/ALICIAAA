@@ -13,7 +13,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
 let stripe: Stripe | null = null;
 if (process.env.STRIPE_SECRET_KEY) {
   stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2023-10-16",
+    apiVersion: "2025-06-30.basil",
   });
 }
 
@@ -1467,7 +1467,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           salonId: bookingData.salonId || 1,
           serviceId: bookingData.serviceId || 1,
           staffId: bookingData.staffId || 1,
-          appointmentDate: new Date(bookingData.date),
+          appointmentDate: bookingData.date,
           appointmentTime: bookingData.time,
           status: 'confirmed',
           totalPrice: bookingData.totalPrice,

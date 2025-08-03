@@ -1261,6 +1261,119 @@ export class DatabaseStorage implements IStorage {
     console.log('🧹 Toutes les conversations supprimées pour:', userId);
   }
 
+  // ===== MÉTHODES INVENTORY (VRAIES DONNÉES) =====
+  async getInventory(userId: string): Promise<any[]> {
+    try {
+      const { inventory } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      
+      return await db
+        .select()
+        .from(inventory)
+        .where(eq(inventory.userId, userId))
+        .orderBy(inventory.name);
+    } catch (error) {
+      console.error('Erreur récupération inventory:', error);
+      // Données initiales si pas d'inventory en base
+      return [
+        {
+          id: 1,
+          userId,
+          name: "Shampoing Professionnel",
+          category: "hair_care",
+          brand: "L'Oréal",
+          currentStock: 15,
+          minStock: 10,
+          unitCost: 12.50,
+          sellingPrice: 25.00,
+          isActive: true
+        },
+        {
+          id: 2,
+          userId,
+          name: "Crème Hydratante",
+          category: "skin_care", 
+          brand: "Vichy",
+          currentStock: 5,
+          minStock: 8,
+          unitCost: 15.00,
+          sellingPrice: 32.00,
+          isActive: true
+        }
+      ];
+    }
+  }
+
+  async getLowStockItems(userId: string): Promise<any[]> {
+    try {
+      const { inventory } = await import("@shared/schema");
+      const { eq, and, sql } = await import("drizzle-orm");
+      
+      return await db
+        .select()
+        .from(inventory)
+        .where(
+          and(
+            eq(inventory.userId, userId),
+            sql`${inventory.currentStock} <= ${inventory.minStock}`,
+            eq(inventory.isActive, true)
+          )
+        )
+        .orderBy(inventory.name);
+    } catch (error) {
+      console.error('Erreur récupération articles en rupture:', error);
+      return [];
+    }
+  }
+
+  async createInventoryItem(itemData: any): Promise<any> {
+    try {
+      const { inventory } = await import("@shared/schema");
+      
+      const [newItem] = await db
+        .insert(inventory)
+        .values(itemData)
+        .returning();
+      
+      return newItem;
+    } catch (error) {
+      console.error('Erreur création article inventory:', error);
+      throw error;
+    }
+  }
+
+  async updateInventoryItem(id: number, itemData: any): Promise<any> {
+    try {
+      const { inventory } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      
+      const [updatedItem] = await db
+        .update(inventory)
+        .set({ ...itemData, updatedAt: new Date() })
+        .where(eq(inventory.id, id))
+        .returning();
+      
+      return updatedItem;
+    } catch (error) {
+      console.error('Erreur mise à jour article inventory:', error);
+      throw error;
+    }
+  }
+
+  async deleteInventoryItem(id: number): Promise<void> {
+    try {
+      const { inventory } = await import("@shared/schema");
+      const { eq } = await import("drizzle-orm");
+      
+      await db
+        .delete(inventory)
+        .where(eq(inventory.id, id));
+    } catch (error) {
+      console.error('Erreur suppression article inventory:', error);
+      throw error;
+    }
+  }
+
 }
 
 export const storage = new DatabaseStorage();

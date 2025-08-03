@@ -939,22 +939,56 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.get('/api/inventory', async (req, res) => {
     try {
       const userId = (req.session as any)?.user?.id || 'demo';
-      // Fallback pour inventory si la méthode n'existe pas
-      let inventory = [];
-      if (storage.getInventory) {
-        inventory = await storage.getInventory(userId);
-      } else {
-        // Données d'exemple d'inventory
-        inventory = [
-          { id: 1, name: "Shampoing L'Oréal", quantity: 15, minStock: 5, price: 12.50 },
-          { id: 2, name: "Sèche-cheveux Dyson", quantity: 3, minStock: 2, price: 299.99 },
-          { id: 3, name: "Ciseaux professionnels", quantity: 8, minStock: 3, price: 45.00 }
-        ];
-      }
+      const inventory = await storage.getInventory(userId);
       res.json(inventory);
     } catch (error) {
       console.error("Error fetching inventory:", error);
       res.status(500).json({ error: "Failed to fetch inventory" });
+    }
+  });
+
+  app.get('/api/inventory/low-stock', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const lowStockItems = await storage.getLowStockItems(userId);
+      res.json(lowStockItems);
+    } catch (error) {
+      console.error("Error fetching low stock items:", error);
+      res.status(500).json({ error: "Failed to fetch low stock items" });
+    }
+  });
+
+  app.post('/api/inventory', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const itemData = { ...req.body, userId };
+      const item = await storage.createInventoryItem(itemData);
+      res.json(item);
+    } catch (error) {
+      console.error("Error creating inventory item:", error);
+      res.status(500).json({ error: "Failed to create inventory item" });
+    }
+  });
+
+  app.put('/api/inventory/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const item = await storage.updateInventoryItem(id, req.body);
+      res.json(item);
+    } catch (error) {
+      console.error("Error updating inventory item:", error);
+      res.status(500).json({ error: "Failed to update inventory item" });
+    }
+  });
+
+  app.delete('/api/inventory/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteInventoryItem(id);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting inventory item:", error);
+      res.status(500).json({ error: "Failed to delete inventory item" });
     }
   });
 

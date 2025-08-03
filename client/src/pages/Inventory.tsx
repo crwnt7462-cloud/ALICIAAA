@@ -39,12 +39,12 @@ export default function Inventory() {
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   // Récupérer l'inventaire
-  const { data: inventory = [], isLoading } = useQuery({
+  const { data: inventory = [], isLoading } = useQuery<InventoryItem[]>({
     queryKey: ["/api/inventory"],
   });
 
   // Récupérer les articles en rupture de stock
-  const { data: lowStockItems = [] } = useQuery({
+  const { data: lowStockItems = [] } = useQuery<InventoryItem[]>({
     queryKey: ["/api/inventory/low-stock"],
   });
 
@@ -109,7 +109,7 @@ export default function Inventory() {
   });
 
   // Filtrer les articles
-  const filteredInventory = inventory.filter((item: InventoryItem) => {
+  const filteredInventory = (inventory as InventoryItem[]).filter((item: InventoryItem) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (item.brand && item.brand.toLowerCase().includes(searchTerm.toLowerCase())) ||
                          (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()));

@@ -163,19 +163,19 @@ export default function ClientsModern() {
                 <p className="text-sm text-gray-400 mt-1">{mockClients.length} clients total</p>
               </div>
 
-              {/* Stats rapides */}
+              {/* Stats rapides - ✅ GLASSMORPHISM APPLIQUÉ */}
               <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="bg-gray-50 rounded-2xl p-3 text-center">
+                <div className="glass-stat-card rounded-2xl p-3 text-center">
                   <div className="text-lg font-bold text-purple-600">{mockClients.filter(c => c.status === 'VIP').length}</div>
-                  <div className="text-xs text-gray-500">VIP</div>
+                  <div className="text-xs text-gray-700">VIP</div>
                 </div>
-                <div className="bg-gray-50 rounded-2xl p-3 text-center">
+                <div className="glass-stat-card rounded-2xl p-3 text-center">
                   <div className="text-lg font-bold text-green-600">{mockClients.filter(c => c.status === 'Fidèle').length}</div>
-                  <div className="text-xs text-gray-500">Fidèles</div>
+                  <div className="text-xs text-gray-700">Fidèles</div>
                 </div>
-                <div className="bg-gray-50 rounded-2xl p-3 text-center">
+                <div className="glass-stat-card rounded-2xl p-3 text-center">
                   <div className="text-lg font-bold text-blue-600">{mockClients.filter(c => c.status === 'Nouvelle').length}</div>
-                  <div className="text-xs text-gray-500">Nouvelles</div>
+                  <div className="text-xs text-gray-700">Nouvelles</div>
                 </div>
               </div>
 
@@ -321,8 +321,8 @@ export default function ClientsModern() {
           <div className="p-6">
             <div className="max-w-sm mx-auto space-y-6">
               
-              {/* Infos principales */}
-              <div className="bg-gray-50 rounded-2xl p-4">
+              {/* Infos principales - ✅ GLASSMORPHISM APPLIQUÉ */}
+              <div className="glass-stat-card rounded-2xl p-4">
                 <div className="flex items-center gap-3 mb-4">
                   {currentClient?.avatar ? (
                     <img
@@ -346,15 +346,15 @@ export default function ClientsModern() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-center">
                     <div className="text-lg font-bold text-violet-600">{currentClient?.totalVisits}</div>
-                    <div className="text-xs text-gray-500">Visites</div>
+                    <div className="text-xs text-gray-700">Visites</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-green-600">€{currentClient?.totalSpent}</div>
-                    <div className="text-xs text-gray-500">Dépensé</div>
+                    <div className="text-xs text-gray-700">Dépensé</div>
                   </div>
                   <div className="text-center">
                     <div className="text-lg font-bold text-yellow-600">{currentClient?.rating}</div>
-                    <div className="text-xs text-gray-500">Note</div>
+                    <div className="text-xs text-gray-700">Note</div>
                   </div>
                 </div>
               </div>
