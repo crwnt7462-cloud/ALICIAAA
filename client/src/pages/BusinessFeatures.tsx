@@ -399,22 +399,23 @@ export default function BusinessFeatures() {
                   <h2 className="text-lg font-semibold text-gray-900">Analytics Pro</h2>
                 </div>
                 
+                {/* ✅ GLASSMORPHISM APPLIQUÉ - Analytics Pro Stats */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="text-center p-4 glass-stat-card rounded-xl">
                     <div className="text-2xl font-bold text-blue-600 mb-1">156</div>
-                    <div className="text-sm text-gray-600">RDV ce mois</div>
+                    <div className="text-sm text-gray-700">RDV ce mois</div>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="text-center p-4 glass-stat-card rounded-xl">
                     <div className="text-2xl font-bold text-green-600 mb-1">€4,680</div>
-                    <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+                    <div className="text-sm text-gray-700">Chiffre d'affaires</div>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="text-center p-4 glass-stat-card rounded-xl">
                     <div className="text-2xl font-bold text-violet-600 mb-1">89%</div>
-                    <div className="text-sm text-gray-600">Taux présence</div>
+                    <div className="text-sm text-gray-700">Taux présence</div>
                   </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-xl">
+                  <div className="text-center p-4 glass-stat-card rounded-xl">
                     <div className="text-2xl font-bold text-orange-600 mb-1">4.8</div>
-                    <div className="text-sm text-gray-600">Note moyenne</div>
+                    <div className="text-sm text-gray-700">Note moyenne</div>
                   </div>
                 </div>
               </CardContent>

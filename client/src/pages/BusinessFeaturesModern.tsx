@@ -151,21 +151,21 @@ export default function BusinessFeaturesModern() {
               ))}
             </div>
 
-            {/* Stats rapides */}
-            <div className="glass-button rounded-2xl p-4 mb-6">
-              <h3 className="font-medium text-gray-900 mb-3">Aujourd'hui</h3>
+            {/* Stats rapides - ✅ GLASSMORPHISM APPLIQUÉ */}
+            <div className="glass-stat-card rounded-2xl p-4 mb-6">
+              <h3 className="font-medium text-black mb-3">Aujourd'hui</h3>
               <div className="grid grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="text-lg font-bold text-violet-600">12</div>
-                  <div className="text-xs text-gray-500">RDV</div>
+                  <div className="text-xs text-gray-600">RDV</div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-green-600">€890</div>
-                  <div className="text-xs text-gray-500">CA</div>
+                  <div className="text-xs text-gray-600">CA</div>
                 </div>
                 <div className="text-center">
                   <div className="text-lg font-bold text-blue-600">4.8</div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-600">
                     <Star className="h-3 w-3 inline text-yellow-400 fill-current" />
                   </div>
                 </div>

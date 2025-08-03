@@ -332,22 +332,22 @@ export default function ClientDashboardNew() {
               </CardContent>
             </Card>
 
-            {/* Statistiques rapides */}
+            {/* Statistiques rapides - ✅ GLASSMORPHISM APPLIQUÉ */}
             <div className="grid grid-cols-2 gap-4">
-              <Card>
+              <Card className="glass-stat-card border-0">
                 <CardContent className="p-4 text-center">
                   <div className="text-2xl font-bold text-violet-600">
                     {appointments.filter(a => a.status === 'completed').length}
                   </div>
-                  <div className="text-sm text-gray-600">RDV terminés</div>
+                  <div className="text-sm text-gray-700">RDV terminés</div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="glass-stat-card border-0">
                 <CardContent className="p-4 text-center">
                   <div className="text-2xl font-bold text-violet-600">
                     {client.totalSpent?.toFixed(0) || '0'}€
                   </div>
-                  <div className="text-sm text-gray-600">Total dépensé</div>
+                  <div className="text-sm text-gray-700">Total dépensé</div>
                 </CardContent>
               </Card>
             </div>
