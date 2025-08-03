@@ -453,7 +453,7 @@ export default function SalonBooking() {
             <Button
               variant="ghost"
               onClick={() => window.history.back()}
-              className="h-10 w-10 p-0 rounded-full hover:bg-white/30"
+              className="h-10 w-10 p-0 rounded-full glass-button hover:glass-effect transition-all duration-300"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -565,8 +565,7 @@ export default function SalonBooking() {
                       <Button
                         key={time}
                         onClick={() => handleTimeSlotSelect(time)}
-                        variant="outline"
-                        className="text-sm py-2 px-3 hover:bg-violet-50 hover:border-violet-200"
+                        className="text-sm py-2 px-3 glass-button hover:glass-effect text-black transition-all duration-300"
                       >
                         {time}
                       </Button>
@@ -1216,14 +1215,14 @@ export default function SalonBooking() {
             <Button
               variant={paymentMethod === 'card' ? 'default' : 'outline'}
               onClick={() => setPaymentMethod('card')}
-              className="flex-1 py-3 border-violet-200 text-violet-700 bg-violet-50"
+              className="flex-1 py-3 glass-button hover:glass-effect text-black transition-all duration-300"
             >
               💳 Carte bancaire
             </Button>
             <Button
               variant={paymentMethod === 'apple' ? 'default' : 'outline'}
               onClick={() => setPaymentMethod('apple')}
-              className="flex-1 py-3"
+              className="flex-1 py-3 glass-button hover:glass-effect text-black transition-all duration-300"
             >
               🍎 Apple Pay
             </Button>

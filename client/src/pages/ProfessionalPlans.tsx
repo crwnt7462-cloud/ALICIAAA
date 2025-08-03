@@ -214,10 +214,10 @@ export default function ProfessionalPlans() {
 
                 {/* Bouton responsive */}
                 <Button 
-                  className={`w-full h-10 text-sm font-medium rounded-lg md:h-14 md:text-lg md:font-semibold md:rounded-xl ${
+                  className={`w-full h-10 text-sm font-medium rounded-lg md:h-14 md:text-lg md:font-semibold md:rounded-xl glass-button hover:glass-effect text-black shadow-lg transition-all duration-300 ${
                     plan.popular 
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg' 
-                      : 'bg-gray-900 hover:bg-gray-800 text-white'
+                      ? 'ring-2 ring-violet-400/30' 
+                      : ''
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();

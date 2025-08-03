@@ -94,7 +94,7 @@ function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPric
       <Button 
         type="submit"
         disabled={!stripe || isProcessing}
-        className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all"
+        className="w-full glass-button hover:glass-effect text-black py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300"
       >
         {isProcessing ? (
           <div className="flex items-center gap-2">
@@ -318,7 +318,7 @@ export default function BusinessRegistration() {
               variant="ghost"
               size="sm"
               onClick={() => setLocation("/professional-plans")}
-              className="text-gray-700 hover:text-gray-900 hover:bg-white/30"
+              className="text-black glass-button hover:glass-effect transition-all duration-300"
             >
               Retour
             </Button>
@@ -581,7 +581,7 @@ export default function BusinessRegistration() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full h-10 bg-violet-600 hover:bg-violet-700 text-white font-medium"
+                    className="w-full h-10 glass-button hover:glass-effect text-black font-medium transition-all duration-300"
                   >
                     {isLoading ? "Traitement..." : "Finaliser l'inscription"}
                   </Button>
@@ -603,7 +603,7 @@ export default function BusinessRegistration() {
                 variant="outline"
                 size="sm"
                 onClick={() => setLocation("/professional-plans")}
-                className="w-full text-violet-600 border-violet-200 hover:bg-violet-50"
+                className="w-full glass-button hover:glass-effect text-black transition-all duration-300"
               >
                 Changer de plan
               </Button>
