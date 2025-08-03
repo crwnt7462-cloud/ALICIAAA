@@ -76,28 +76,28 @@ export default function AIAssistantSimple() {
   }, [messages]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col">
-      {/* Header fixe glassmorphism */}
-      <div className="backdrop-blur-md bg-white/20 border-b border-white/30 sticky top-0 z-10">
+    <div className="min-h-screen bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex flex-col">
+      {/* Header violet intense */}
+      <div className="bg-violet-700/90 border-b border-violet-500/50 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
               variant="ghost"
               onClick={() => setLocation('/')}
-              className="h-9 w-9 p-0 rounded-full backdrop-blur-md bg-white/40 border border-black/30 hover:bg-white/50 text-black"
+              className="h-9 w-9 p-0 rounded-full bg-white/20 border border-white/30 hover:bg-white/30 text-white"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
             
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 backdrop-blur-md bg-white/50 border border-black/30 rounded-full flex items-center justify-center">
-                <Sparkles className="h-4 w-4 text-black" />
+              <div className="h-8 w-8 bg-white/20 border border-white/30 rounded-full flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h1 className="text-base font-medium text-black">
+                <h1 className="text-base font-medium text-white">
                   Rendly AI
                 </h1>
-                <p className="text-xs text-gray-800">
+                <p className="text-xs text-white/90">
                   Assistant beauté
                 </p>
               </div>
@@ -127,15 +127,15 @@ export default function AIAssistantSimple() {
               <div className={`max-w-2xl ${message.isFromUser ? 'order-first' : ''}`}>
                 <div className={`p-4 rounded-2xl ${
                   message.isFromUser
-                    ? 'backdrop-blur-md bg-purple-600/80 border border-purple-500/30 text-white ml-12'
-                    : 'backdrop-blur-md bg-white/50 border border-black/30 text-black'
+                    ? 'bg-violet-600 text-white ml-12 shadow-lg'
+                    : 'bg-white text-gray-900 shadow-lg border border-gray-200'
                 }`}>
                   <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {message.content}
                   </p>
                 </div>
-                <p className={`text-xs text-gray-800 mt-2 ${
-                  message.isFromUser ? 'text-right mr-12' : 'ml-0'
+                <p className={`text-xs mt-2 ${
+                  message.isFromUser ? 'text-white/70 text-right mr-12' : 'text-gray-500 ml-0'
                 }`}>
                   {message.timestamp}
                 </p>
@@ -159,11 +159,11 @@ export default function AIAssistantSimple() {
                   AI
                 </AvatarFallback>
               </Avatar>
-              <div className="backdrop-blur-md bg-white/50 border border-black/30 p-4 rounded-2xl">
+              <div className="bg-white text-gray-900 p-4 rounded-2xl shadow-lg border border-gray-200">
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                  <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
+                  <div className="w-2 h-2 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                 </div>
               </div>
             </div>
@@ -173,8 +173,8 @@ export default function AIAssistantSimple() {
         </div>
       </div>
 
-      {/* Zone de saisie fixe en bas glassmorphism */}
-      <div className="backdrop-blur-md bg-white/20 border-t border-white/30 sticky bottom-0">
+      {/* Zone de saisie violette */}
+      <div className="bg-violet-700/90 border-t border-violet-500/50 sticky bottom-0">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <form onSubmit={handleSendMessage} className="flex items-end gap-3">
             <div className="flex-1 relative">
@@ -182,7 +182,7 @@ export default function AIAssistantSimple() {
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
                 placeholder="Posez votre question sur la beauté..."
-                className="pr-12 py-3 rounded-2xl backdrop-blur-md bg-white/40 border-black/30 text-black placeholder-gray-800 focus:border-black/50 focus:ring-black/30 resize-none"
+                className="pr-12 py-3 rounded-2xl bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:border-white/50 focus:ring-0 resize-none"
                 disabled={aiMutation.isPending}
               />
             </div>
@@ -190,13 +190,13 @@ export default function AIAssistantSimple() {
               type="submit"
               size="sm"
               disabled={!newMessage.trim() || aiMutation.isPending}
-              className="h-10 w-10 p-0 rounded-full backdrop-blur-md bg-purple-600/80 border border-purple-500/30 hover:bg-purple-700/80 text-white"
+              className="h-10 w-10 p-0 rounded-full bg-violet-600 hover:bg-violet-500 text-white shadow-lg disabled:opacity-50"
             >
               <Send className="h-4 w-4" />
             </Button>
           </form>
           
-          <p className="text-xs text-black text-center mt-2">
+          <p className="text-xs text-white/80 text-center mt-2">
             Rendly AI peut faire des erreurs. Vérifiez les informations importantes.
           </p>
         </div>
