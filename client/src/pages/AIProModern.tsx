@@ -171,22 +171,22 @@ export default function AIProModern() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 max-w-md mx-auto relative overflow-hidden">
+    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 max-w-md mx-auto relative overflow-hidden">
       {/* Header glassmorphism violet */}
-      <div className="px-6 py-4 flex items-center justify-between relative bg-white/10 backdrop-blur-md border-b border-white/20">
+      <div className="px-6 py-4 flex items-center justify-between relative bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div 
-          className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border border-white/30"
+          className="w-12 h-12 bg-gray-100/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border border-gray-300"
           onClick={() => setShowChatHistory(!showChatHistory)}
         >
-          <div className="w-6 h-6 bg-white/40 rounded-full flex items-center justify-center">
-            <div className="w-3 h-3 bg-white rounded-full"></div>
+          <div className="w-6 h-6 bg-gray-300/60 rounded-full flex items-center justify-center">
+            <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
           </div>
         </div>
         
-        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-white/30">
-          <div className="w-8 h-8 bg-white/40 rounded-full flex items-center justify-center">
+        <div className="w-12 h-12 bg-gray-100/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border border-gray-300">
+          <div className="w-8 h-8 bg-gray-300/60 rounded-full flex items-center justify-center">
             <ArrowLeft 
-              className="w-4 h-4 text-white cursor-pointer" 
+              className="w-4 h-4 text-gray-600 cursor-pointer" 
               onClick={() => setLocation('/dashboard')}
             />
           </div>
@@ -263,10 +263,10 @@ export default function AIProModern() {
 
         {messages.length === 1 ? (
           <div className="text-center px-8">
-            <h1 className="text-4xl font-light text-white mb-4">
+            <h1 className="text-4xl font-light text-gray-800 mb-4">
               Bonjour, {(user as any)?.firstName || (user as any)?.name || 'Demo'}
             </h1>
-            <p className="text-white/80 text-sm">
+            <p className="text-gray-600 text-sm">
               Votre assistant IA est prêt à vous aider
             </p>
           </div>
@@ -318,7 +318,7 @@ export default function AIProModern() {
       </div>
 
       {/* Input glassmorphism violet */}
-      <div className="p-6 bg-white/10 backdrop-blur-md border-t border-white/20">
+      <div className="p-6 bg-white/80 backdrop-blur-md border-t border-gray-200">
         {/* Indicateur d'enregistrement */}
         {isRecording && (
           <div className="mb-4 p-3 bg-red-900/50 border border-red-500/50 rounded-xl flex items-center gap-3">
@@ -335,10 +335,10 @@ export default function AIProModern() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
-              className={`w-full rounded-full px-6 py-4 text-white border outline-none transition-all font-medium ${
+              className={`w-full rounded-full px-6 py-4 text-gray-800 border outline-none transition-all font-medium ${
                 isRecording 
-                  ? 'bg-red-900/50 border-red-500/50 placeholder-red-300 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
-                  : 'bg-white/20 border-white/30 placeholder-white/70 focus:border-white/50 focus:ring-2 focus:ring-white/30 shadow-sm backdrop-blur-md'
+                  ? 'bg-red-100/80 border-red-300 placeholder-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
+                  : 'bg-white/80 border-gray-300 placeholder-gray-500 focus:border-gray-400 focus:ring-2 focus:ring-gray-300 shadow-sm backdrop-blur-md'
               }`}
               disabled={isLoading || isRecording}
             />
@@ -348,9 +348,9 @@ export default function AIProModern() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             size="sm"
-            className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 backdrop-blur-md"
+            className="w-12 h-12 rounded-full bg-gray-100/80 hover:bg-gray-200/80 border border-gray-300 p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 backdrop-blur-md"
           >
-            <Send className="w-5 h-5 text-white" />
+            <Send className="w-5 h-5 text-gray-600" />
           </Button>
           
           <Button
@@ -358,14 +358,14 @@ export default function AIProModern() {
             size="sm"
             className={`w-12 h-12 rounded-full border p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 backdrop-blur-md ${
               isRecording 
-                ? 'bg-red-500/50 hover:bg-red-600/50 border-red-400/50' 
-                : 'bg-white/20 hover:bg-white/30 border-white/30'
+                ? 'bg-red-200/80 hover:bg-red-300/80 border-red-400' 
+                : 'bg-gray-100/80 hover:bg-gray-200/80 border-gray-300'
             }`}
           >
             {isRecording ? (
-              <MicOff className="w-5 h-5 text-white" />
+              <MicOff className="w-5 h-5 text-red-600" />
             ) : (
-              <Mic className="w-5 h-5 text-white" />
+              <Mic className="w-5 h-5 text-gray-600" />
             )}
           </Button>
         </div>

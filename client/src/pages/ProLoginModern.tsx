@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import rendlyLogo from "@assets/3_1753714421825.png";
+import backgroundImage from "@assets/Sans titre (Votre story)_1754235187256.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ProLoginModern() {
@@ -85,7 +86,10 @@ export default function ProLoginModern() {
 
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat" 
+      style={{backgroundImage: `url(${backgroundImage})`}}
+    >
       {/* Layout ultra-minimaliste - même style que page recherche */}
       <div className="relative">
         
@@ -99,7 +103,7 @@ export default function ProLoginModern() {
 
         {/* Container principal - même style que page recherche */}
         <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto glass-card p-8 rounded-2xl">
+          <div className="max-w-sm mx-auto bg-white/20 backdrop-blur-md border border-white/30 p-8 rounded-2xl">
             
             {/* Logo Rendly centré */}
             <div className="text-center mb-3">
@@ -119,7 +123,7 @@ export default function ProLoginModern() {
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="Email professionnel"
-                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
+                  className="w-full h-12 px-4 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-base text-white placeholder:text-white/70"
                   required
                 />
               </div>
@@ -130,13 +134,13 @@ export default function ProLoginModern() {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Mot de passe"
-                  className="w-full h-12 px-4 pr-12 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
+                  className="w-full h-12 px-4 pr-12 bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl text-base text-white placeholder:text-white/70"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/70"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>

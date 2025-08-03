@@ -18,6 +18,7 @@ import {
   Star
 } from "lucide-react";
 import rendlyLogo from "@assets/3_1753714421825.png";
+import backgroundImage from "@assets/Sans titre (Votre story)_1754235187256.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ClientLoginWhite() {
@@ -95,13 +96,16 @@ export default function ClientLoginWhite() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat" 
+      style={{backgroundImage: `url(${backgroundImage})`}}
+    >
       {/* Header */}
       <div className="absolute top-4 left-4 z-10">
         <Button
           variant="ghost"
           onClick={() => setLocation('/')}
-          className="h-10 w-10 p-0 rounded-full bg-white hover:bg-gray-50 shadow-sm border border-gray-200 transition-all duration-300 text-gray-600 hover:scale-110"
+          className="h-10 w-10 p-0 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 transition-all duration-300 text-white hover:scale-110 backdrop-blur-md"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>
@@ -139,7 +143,7 @@ export default function ClientLoginWhite() {
 
         {/* Côté droit - Formulaire */}
         <div className="w-full lg:w-1/2 flex items-center justify-center p-6 relative">
-          <Card className="w-full max-w-md bg-white border border-gray-200 shadow-sm rounded-lg">
+          <Card className="w-full max-w-md bg-white/20 backdrop-blur-md border border-white/30 rounded-lg">
             <CardHeader className="space-y-2 text-center pb-6">
               <div className="flex flex-col items-center justify-center mb-6">
                 <img src={rendlyLogo} alt="Rendly" className="h-20 w-auto mb-4" />
