@@ -55,15 +55,6 @@ export default function ModernSalonDetail() {
   // Extraire le salonId depuis l'URL (/salon/salon-demo -> salon-demo)
   const salonId = location.startsWith('/salon/') ? location.replace('/salon/', '') : 'salon-demo';
   
-  // DEBUG: Vérifier quelle URL et quel ID sont utilisés
-  console.log('🔍 DEBUG SALON ROUTING:', {
-    location,
-    salonId,
-    apiUrl: `/api/salon/${salonId}`,
-    salonDataReceived: !!salonData,
-    salonName: salonData?.name
-  });
-  
   // Récupérer les vraies données du salon depuis l'API
   const { data: salonData, isLoading } = useQuery<SalonData>({
     queryKey: ['/api/salon', salonId],
@@ -71,6 +62,15 @@ export default function ModernSalonDetail() {
     refetchOnWindowFocus: false,
     staleTime: 0, // Pas de cache pour voir les changements immédiatement
     refetchOnMount: true
+  });
+
+  // DEBUG: Vérifier quelle URL et quel ID sont utilisés
+  console.log('🔍 DEBUG SALON ROUTING:', {
+    location,
+    salonId,
+    apiUrl: `/api/salon/${salonId}`,
+    salonDataReceived: !!salonData,
+    salonName: salonData?.name
   });
   
   // Données de fallback si API échoue
@@ -209,13 +209,36 @@ export default function ModernSalonDetail() {
     isLoading
   });
 
+  // Données par défaut si pas de données API
+  const fallbackData = {
+    name: "Excellence Paris",
+    rating: 4.8,
+    reviews: 247,
+    address: "15 Avenue des Champs-Élysées, 75008 Paris",
+    phone: "01 42 25 76 89",
+    longDescription: "Notre salon vous accueille dans un cadre moderne et chaleureux.",
+    coverImageUrl: "/api/placeholder/800/400",
+    certifications: [
+      "Salon labellisé L'Oréal Professionnel",
+      "Formation continue Kérastase",
+      "Certification bio Shu Uemura"
+    ],
+    awards: [
+      "Élu Meilleur Salon Paris 8ème 2023",
+      "Prix de l'Innovation Beauté 2022",
+      "Certification Éco-responsable"
+    ]
+  };
+
   // Utiliser les vraies données de l'API si disponibles
   const displayData = salonData ? {
     ...salonData,
     longDescription: salonData.longDescription || fallbackData.longDescription,
     address: (salonData as any).address || fallbackData.address,
     phone: (salonData as any).phone || fallbackData.phone,
-    coverImageUrl: (salonData as any).coverImageUrl || (salonData as any).photos?.[0] || fallbackData.coverImageUrl
+    coverImageUrl: (salonData as any).coverImageUrl || (salonData as any).photos?.[0] || fallbackData.coverImageUrl,
+    certifications: salonData.certifications || fallbackData.certifications,
+    awards: salonData.awards || fallbackData.awards
   } : fallbackData;
 
   // Couleurs personnalisées depuis l'API
