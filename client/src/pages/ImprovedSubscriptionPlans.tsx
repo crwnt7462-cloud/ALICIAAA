@@ -137,9 +137,9 @@ export default function ImprovedSubscriptionPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button
@@ -158,7 +158,7 @@ export default function ImprovedSubscriptionPlans() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-sm border border-white/40 text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4" />
             Offre de lancement - 30% de réduction la première année
           </div>
@@ -176,7 +176,7 @@ export default function ImprovedSubscriptionPlans() {
           </p>
 
           {/* Billing Toggle */}
-          <div className="inline-flex items-center bg-white rounded-full p-1 shadow-md mb-8">
+          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm border border-white/40 rounded-full p-1 shadow-md mb-8">
             <button
               onClick={() => setBillingPeriod('monthly')}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
@@ -216,8 +216,8 @@ export default function ImprovedSubscriptionPlans() {
                 key={plan.id}
                 className={`relative overflow-hidden transition-all duration-300 hover:shadow-2xl hover:scale-105 ${
                   plan.popular 
-                    ? 'ring-2 ring-violet-500 shadow-xl scale-105' 
-                    : 'hover:shadow-lg border-gray-200'
+                    ? 'bg-white/40 backdrop-blur-md ring-2 ring-violet-400/50 shadow-xl shadow-violet-400/25 scale-105 border border-white/30' 
+                    : 'bg-white/25 backdrop-blur-md hover:bg-white/35 hover:shadow-lg border border-white/30'
                 }`}
               >
                 {/* Ribbon */}
