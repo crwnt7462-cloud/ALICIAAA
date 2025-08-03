@@ -334,7 +334,7 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "🎤 Parlez maintenant..." : "✨ Ask Rendly"}
+              placeholder={isRecording ? "🎤 Parlez maintenant..." : ""}
               className={`w-full rounded-full px-6 py-4 text-gray-800 border outline-none transition-all font-medium ${
                 isRecording 
                   ? 'bg-red-100/80 border-red-300 placeholder-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 
@@ -348,7 +348,7 @@ export default function AIProModern() {
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isLoading}
             size="sm"
-            className="w-12 h-12 rounded-full bg-violet-500 hover:bg-violet-600 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+            className="w-14 h-14 rounded-full bg-violet-600 hover:bg-violet-700 border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105"
           >
             <Send className="w-5 h-5 text-white" />
           </Button>
@@ -356,10 +356,10 @@ export default function AIProModern() {
           <Button
             onClick={isRecording ? stopRecording : startRecording}
             size="sm"
-            className={`w-12 h-12 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
+            className={`w-14 h-14 rounded-full border-none p-0 flex items-center justify-center shadow-lg transition-all hover:scale-105 ${
               isRecording 
                 ? 'bg-red-500 hover:bg-red-600' 
-                : 'bg-violet-500 hover:bg-violet-600'
+                : 'bg-violet-600 hover:bg-violet-700'
             }`}
           >
             {isRecording ? (
