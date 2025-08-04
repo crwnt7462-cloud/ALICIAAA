@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import BookingConfirmationPopup from '@/components/BookingConfirmationPopup';
 
 // Configuration Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
@@ -129,6 +130,7 @@ export default function SalonBooking() {
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [showConfirmationPopup, setShowConfirmationPopup] = useState(false);
   const [paymentData, setPaymentData] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -381,9 +383,9 @@ export default function SalonBooking() {
         };
         sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
-        // Déclencher l'affichage du bottom sheet de paiement
+        // Déclencher l'affichage du popup de confirmation AVANT le paiement
         setTimeout(() => {
-          setShowPaymentSheet(true);
+          setShowConfirmationPopup(true);
         }, 500);
       } else {
         toast({
@@ -441,6 +443,20 @@ export default function SalonBooking() {
   // Fonction pour formater la date d'expiration
   const formatExpiryDate = (value: string) => {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
+  };
+
+  // Fonction pour gérer la confirmation du popup
+  const handleConfirmationPopupConfirm = () => {
+    setShowConfirmationPopup(false);
+    // Déclencher l'affichage du bottom sheet de paiement après validation du popup
+    setTimeout(() => {
+      setShowPaymentSheet(true);
+    }, 300);
+  };
+
+  // Fonction pour fermer le popup de confirmation
+  const handleConfirmationPopupClose = () => {
+    setShowConfirmationPopup(false);
   };
 
   // Étape 1: Sélection du professionnel
@@ -1825,6 +1841,45 @@ export default function SalonBooking() {
     )
   );
 
+  // Préparer les données pour le popup de confirmation
+  const bookingDetails = {
+    serviceName: selectedService?.name || defaultService.name,
+    servicePrice: selectedService?.price || defaultService.price,  
+    serviceDuration: selectedService?.duration || defaultService.durationMinutes || 45,
+    appointmentDate: selectedDate || 'lundi 28 juillet 2025',
+    appointmentTime: selectedSlot?.time || '10:00',
+    staffName: selectedProfessional?.name || 'Lucas',
+    clientName: `${formData.firstName} ${formData.lastName}` || 'Client',
+    clientEmail: formData.email || 'client@example.com',
+    clientPhone: formData.phone || '0612345678',
+    depositRequired: 20.5, // 30% d'acompte
+    isWeekendPremium: false
+  };
+
+  const salonInfo = {
+    name: salon.name,
+    address: salon.location,
+    phone: '01 42 25 76 89', 
+    email: 'contact@salon.com',
+    rating: 4.8,
+    reviewCount: 156,
+    policies: {
+      cancellation: 'Annulation gratuite jusqu\'à 24h avant le rendez-vous',
+      lateness: 'Retard de plus de 15min = annulation automatique',
+      deposit: '30% d\'acompte requis pour valider la réservation',
+      rescheduling: 'Modification possible jusqu\'à 12h avant'
+    },
+    openingHours: {
+      'Lundi': '9h00 - 19h00',
+      'Mardi': '9h00 - 19h00', 
+      'Mercredi': '9h00 - 19h00',
+      'Jeudi': '9h00 - 19h00',
+      'Vendredi': '9h00 - 20h00',
+      'Samedi': '9h00 - 18h00',
+      'Dimanche': 'Fermé'
+    }
+  };
+
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
@@ -1837,6 +1892,16 @@ export default function SalonBooking() {
       
       {/* Modal de connexion */}
       {renderLoginModal()}
+      
+      {/* Popup de confirmation AVANT paiement */}
+      <BookingConfirmationPopup
+        isOpen={showConfirmationPopup}
+        onClose={handleConfirmationPopupClose}
+        onConfirm={handleConfirmationPopupConfirm}
+        bookingDetails={bookingDetails}
+        salonInfo={salonInfo}
+        isLoading={false}
+      />
     </>
   );
 }
