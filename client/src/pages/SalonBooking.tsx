@@ -1730,12 +1730,21 @@ export default function SalonBooking() {
           variant: "success" as any
         });
         
-        // Marquer comme connecté puis créer le Payment Intent
+        // Marquer comme connecté puis afficher le popup de confirmation
         setIsUserLoggedIn(true);
         
-        // Créer automatiquement le Payment Intent et ouvrir le shell
+        // Mettre à jour les données client pour le popup
+        setFormData(prev => ({
+          ...prev,
+          firstName: data.client.firstName || data.client.first_name || 'Client',
+          lastName: data.client.lastName || data.client.last_name || '',
+          email: data.client.email || loginData.email,
+          phone: data.client.phone || '0612345678'
+        }));
+        
+        // Afficher le popup de confirmation AVANT le paiement
         setTimeout(() => {
-          createPaymentIntentAndOpenSheet();
+          setShowConfirmationPopup(true);
         }, 800);
       } else {
         console.error('❌ Échec connexion modal:', data);
@@ -1845,7 +1854,7 @@ export default function SalonBooking() {
   const bookingDetails = {
     serviceName: selectedService?.name || defaultService.name,
     servicePrice: selectedService?.price || defaultService.price,  
-    serviceDuration: selectedService?.duration || defaultService.durationMinutes || 45,
+    serviceDuration: selectedService?.duration || 45,
     appointmentDate: selectedDate || 'lundi 28 juillet 2025',
     appointmentTime: selectedSlot?.time || '10:00',
     staffName: selectedProfessional?.name || 'Lucas',
