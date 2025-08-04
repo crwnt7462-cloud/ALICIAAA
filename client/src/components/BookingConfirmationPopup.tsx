@@ -67,7 +67,25 @@ export default function BookingConfirmationPopup({
   const depositAmount = bookingDetails.depositRequired || 0;
   const remainingAmount = finalPrice - depositAmount;
 
-  const appointmentDate = new Date(`${bookingDetails.appointmentDate}T${bookingDetails.appointmentTime}`);
+  // Correction du format de date pour éviter l'erreur "Invalid time value"
+  const formatDateForDisplay = () => {
+    try {
+      if (bookingDetails.appointmentDate && bookingDetails.appointmentTime) {
+        // Si la date est déjà au format français (ex: "lundi 28 juillet 2025")
+        if (bookingDetails.appointmentDate.includes('juillet') || bookingDetails.appointmentDate.includes('janvier')) {
+          return bookingDetails.appointmentDate;
+        }
+        // Sinon, essayer de parser la date
+        const date = new Date(`${bookingDetails.appointmentDate}T${bookingDetails.appointmentTime}`);
+        if (!isNaN(date.getTime())) {
+          return format(date, 'EEEE dd MMMM yyyy', { locale: fr });
+        }
+      }
+      return bookingDetails.appointmentDate || 'Date à définir';
+    } catch (error) {
+      return bookingDetails.appointmentDate || 'Date à définir';
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -161,7 +179,7 @@ export default function BookingConfirmationPopup({
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
                   <span className="font-medium">
-                    {format(appointmentDate, 'EEEE d MMMM yyyy', { locale: fr })}
+                    {formatDateForDisplay()}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
