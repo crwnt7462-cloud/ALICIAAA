@@ -121,6 +121,83 @@ export const subscriptions = pgTable("subscriptions", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Promotional codes and special offers
+export const promoCodes = pgTable("promo_codes", {
+  id: serial("id").primaryKey(),
+  code: varchar("code").notNull().unique(),
+  description: text("description"),
+  discountType: varchar("discount_type").notNull(), // percentage, fixed_amount
+  discountValue: decimal("discount_value", { precision: 10, scale: 2 }).notNull(),
+  validFrom: timestamp("valid_from").notNull(),
+  validUntil: timestamp("valid_until").notNull(),
+  maxUses: integer("max_uses"),
+  currentUses: integer("current_uses").default(0),
+  applicableServices: jsonb("applicable_services"), // Array of service IDs
+  weekendPremium: boolean("weekend_premium").default(false), // Prix majoré weekend
+  salonId: varchar("salon_id").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Client reliability tracking for deposit adjustments
+export const clientReliability = pgTable("client_reliability", {
+  id: serial("id").primaryKey(),
+  clientId: varchar("client_id").notNull(),
+  salonId: varchar("salon_id").notNull(),
+  consecutiveCancellations: integer("consecutive_cancellations").default(0),
+  lastCancellationDate: timestamp("last_cancellation_date"),
+  customDepositPercentage: integer("custom_deposit_percentage"), // Override default deposit
+  reliabilityScore: integer("reliability_score").default(100), // 0-100 scale
+  totalAppointments: integer("total_appointments").default(0),
+  totalCancellations: integer("total_cancellations").default(0),
+  totalNoShows: integer("total_no_shows").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Staff management for individual/group agenda views
+export const staffMembers = pgTable("staff_members", {
+  id: serial("id").primaryKey(),
+  salonId: varchar("salon_id").notNull(),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  specialties: jsonb("specialties"), // Array of specialty IDs/names
+  workSchedule: jsonb("work_schedule"), // Weekly schedule
+  color: varchar("color").default("#8B5CF6"), // Color for calendar display
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Service photos and gallery
+export const servicePhotos = pgTable("service_photos", {
+  id: serial("id").primaryKey(),
+  serviceId: integer("service_id").notNull(),
+  photoUrl: text("photo_url").notNull(),
+  caption: text("caption"),
+  displayOrder: integer("display_order").default(0),
+  isMain: boolean("is_main").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Weekend and premium pricing
+export const pricingRules = pgTable("pricing_rules", {
+  id: serial("id").primaryKey(),
+  salonId: varchar("salon_id").notNull(),
+  serviceId: integer("service_id"),
+  dayOfWeek: varchar("day_of_week"), // "0"=Sunday, "6"=Saturday
+  timeSlot: varchar("time_slot"), // e.g., "09:00-12:00"
+  priceMultiplier: decimal("price_multiplier", { precision: 3, scale: 2 }).default(1.0),
+  fixedSurcharge: decimal("fixed_surcharge", { precision: 10, scale: 2 }).default(0),
+  isWeekendPremium: boolean("is_weekend_premium").default(false),
+  description: text("description"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Services offered by the professional
 export const services = pgTable("services", {
   id: serial("id").primaryKey(),
@@ -139,21 +216,8 @@ export const services = pgTable("services", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Staff members
-export const staff = pgTable("staff", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  firstName: varchar("first_name").notNull(),
-  lastName: varchar("last_name").notNull(),
-  email: varchar("email"),
-  phone: varchar("phone"),
-  specialties: text("specialties"), // JSON array of service IDs or names
-  isActive: boolean("is_active").default(true),
-  avatar: varchar("avatar"),
-  bio: text("bio"),
-  workingHours: text("working_hours"), // JSON object with schedule
-  createdAt: timestamp("created_at").defaultNow(),
-});
+// Staff members (removed duplicate - already defined above as staff)
+// Using the staff table defined above in the new advanced features section
 
 // Client accounts (for customer login and authentication)
 export const clientAccounts = pgTable("client_accounts", {
@@ -201,7 +265,7 @@ export const appointments = pgTable("appointments", {
   clientId: integer("client_id").references(() => clients.id),
   clientAccountId: varchar("client_account_id").references(() => clientAccounts.id), // Lien vers compte client si connecté
   serviceId: integer("service_id").references(() => services.id),
-  staffId: integer("staff_id").references(() => staff.id),
+  staffId: integer("staff_id").references(() => staffMembers.id),
   clientName: varchar("client_name"), // for walk-in clients
   clientEmail: varchar("client_email"),
   clientPhone: varchar("client_phone"),
@@ -297,7 +361,7 @@ export const clientBehaviorData = pgTable("client_behavior_data", {
   cancelCount: integer("cancel_count").default(0),
   totalAppointments: integer("total_appointments").default(0),
   avgDaysBetweenVisits: numeric("avg_days_between_visits", { precision: 8, scale: 2 }),
-  preferredTimeSlots: text("preferred_time_slots").array(), // ["09:00-12:00", "14:00-17:00"]
+  preferredTimeSlots: jsonb("preferred_time_slots"), // ["09:00-12:00", "14:00-17:00"]
   seasonalPatterns: text("seasonal_patterns"), // JSON des patterns saisonniers
   lastNoShow: timestamp("last_no_show"),
   riskScore: numeric("risk_score", { precision: 3, scale: 2 }).default("0.00"), // Score de risque de no-show (0-1)
@@ -635,7 +699,7 @@ export const clientCommunications = pgTable("client_communications", {
 // Staff Availability and Time Off
 export const staffAvailability = pgTable("staff_availability", {
   id: serial("id").primaryKey(),
-  staffId: integer("staff_id").notNull().references(() => staff.id),
+  staffId: integer("staff_id").notNull().references(() => staffMembers.id),
   dayOfWeek: integer("day_of_week").notNull(), // 0=Sunday, 1=Monday, etc.
   startTime: time("start_time").notNull(),
   endTime: time("end_time").notNull(),
@@ -645,7 +709,7 @@ export const staffAvailability = pgTable("staff_availability", {
 
 export const staffTimeOff = pgTable("staff_time_off", {
   id: serial("id").primaryKey(),
-  staffId: integer("staff_id").notNull().references(() => staff.id),
+  staffId: integer("staff_id").notNull().references(() => staffMembers.id),
   startDate: date("start_date").notNull(),
   endDate: date("end_date").notNull(),
   reason: text("reason"),
@@ -699,9 +763,9 @@ export const marketingCampaigns = pgTable("marketing_campaigns", {
 export const clientPreferences = pgTable("client_preferences", {
   id: serial("id").primaryKey(),
   clientId: integer("client_id").notNull().references(() => clients.id),
-  preferredStaffId: integer("preferred_staff_id").references(() => staff.id),
-  preferredTimeSlots: text("preferred_time_slots").array(), // ["09:00-12:00", "14:00-17:00"]
-  preferredDays: text("preferred_days").array(), // ["monday", "tuesday"]
+  preferredStaffId: integer("preferred_staff_id").references(() => staffMembers.id),
+  preferredTimeSlots: jsonb("preferred_time_slots"), // ["09:00-12:00", "14:00-17:00"]
+  preferredDays: jsonb("preferred_days"), // ["monday", "tuesday"]
   allergies: text("allergies"),
   skinType: text("skin_type"),
   hairType: text("hair_type"),
@@ -719,7 +783,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   services: many(services),
   clients: many(clients),
   appointments: many(appointments),
-  staff: many(staff),
+  staff: many(staffMembers),
   forumPosts: many(forumPosts),
   forumReplies: many(forumReplies),
   forumLikes: many(forumLikes),
@@ -744,11 +808,7 @@ export const servicesRelations = relations(services, ({ one, many }) => ({
   appointments: many(appointments),
 }));
 
-export const staffRelations = relations(staff, ({ one, many }) => ({
-  user: one(users, {
-    fields: [staff.userId],
-    references: [users.id],
-  }),
+export const staffMembersRelations = relations(staffMembers, ({ one, many }) => ({
   appointments: many(appointments),
 }));
 
@@ -773,9 +833,9 @@ export const appointmentsRelations = relations(appointments, ({ one }) => ({
     fields: [appointments.serviceId],
     references: [services.id],
   }),
-  staff: one(staff, {
+  staff: one(staffMembers, {
     fields: [appointments.staffId],
-    references: [staff.id],
+    references: [staffMembers.id],
   }),
 }));
 
@@ -931,8 +991,8 @@ export type Service = typeof services.$inferSelect;
 export type InsertClient = typeof clients.$inferInsert;
 export type Client = typeof clients.$inferSelect;
 
-export type InsertStaff = typeof staff.$inferInsert;
-export type Staff = typeof staff.$inferSelect;
+export type InsertStaffMember = typeof staffMembers.$inferInsert;
+export type StaffMember = typeof staffMembers.$inferSelect;
 
 export type InsertAppointment = typeof appointments.$inferInsert;
 export type Appointment = typeof appointments.$inferSelect;
@@ -1000,7 +1060,7 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   createdAt: true,
 });
 
-export const insertStaffSchema = createInsertSchema(staff).omit({
+export const insertStaffMemberSchema = createInsertSchema(staffMembers).omit({
   id: true,
   createdAt: true,
 });

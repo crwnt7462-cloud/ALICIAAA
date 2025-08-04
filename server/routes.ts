@@ -24,6 +24,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register all full-stack routes
   registerFullStackRoutes(app);
 
+  // Register new advanced feature routes
+  // Import inline to avoid module resolution issues
+  const promoCodeSchema = {
+    create: (data: any) => ({
+      code: data.code?.toUpperCase(),
+      description: data.description,
+      discountType: data.discountType,
+      discountValue: data.discountValue,
+      validFrom: new Date(data.validFrom),
+      validUntil: new Date(data.validUntil),
+      maxUses: data.maxUses,
+      weekendPremium: data.weekendPremium || false,
+      isActive: data.isActive !== false,
+      applicableServices: data.applicableServices || [],
+    })
+  };
+
   // Routes existantes (API d'authentification, etc.)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -1518,6 +1535,150 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Erreur test notification:', error);
       res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
+  // Routes pour les codes promo
+  app.get('/api/promo-codes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      // Mock data for now - would implement in storage later
+      const promoCodes = [
+        {
+          id: 1,
+          code: 'WELCOME20',
+          description: 'Remise de bienvenue pour nouveaux clients',
+          discountType: 'percentage',
+          discountValue: 20,
+          validFrom: new Date('2025-01-01'),
+          validUntil: new Date('2025-12-31'),
+          maxUses: 100,
+          currentUses: 15,
+          weekendPremium: false,
+          isActive: true,
+          applicableServices: []
+        },
+        {
+          id: 2,
+          code: 'WEEKEND10',
+          description: 'Remise spéciale weekend',
+          discountType: 'fixed_amount',
+          discountValue: 10,
+          validFrom: new Date('2025-01-01'),
+          validUntil: new Date('2025-06-30'),
+          maxUses: 50,
+          currentUses: 32,
+          weekendPremium: true,
+          isActive: true,
+          applicableServices: [1, 2]
+        }
+      ];
+      res.json(promoCodes);
+    } catch (error) {
+      console.error('Error fetching promo codes:', error);
+      res.status(500).json({ message: 'Failed to fetch promo codes' });
+    }
+  });
+
+  app.post('/api/promo-codes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const promoCodeData = promoCodeSchema.create(req.body);
+      
+      // Mock response - would implement in storage
+      const newPromoCode = {
+        id: Date.now(),
+        ...promoCodeData,
+        currentUses: 0,
+        salonId: userId
+      };
+      
+      res.status(201).json(newPromoCode);
+    } catch (error) {
+      console.error('Error creating promo code:', error);
+      res.status(500).json({ message: 'Failed to create promo code' });
+    }
+  });
+
+  // Routes pour la fiabilité client
+  app.get('/api/client-reliability', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      // Mock data for demo
+      const reliabilityData = [
+        {
+          clientId: 'client-1',
+          consecutiveCancellations: 0,
+          reliabilityScore: 95,
+          totalAppointments: 12,
+          totalCancellations: 1,
+          totalNoShows: 0,
+          customDepositPercentage: null
+        },
+        {
+          clientId: 'client-2',
+          consecutiveCancellations: 2,
+          reliabilityScore: 25,
+          totalAppointments: 8,
+          totalCancellations: 4,
+          totalNoShows: 1,
+          customDepositPercentage: 70,
+          lastCancellationDate: new Date('2025-01-15')
+        }
+      ];
+      res.json(reliabilityData);
+    } catch (error) {
+      console.error('Error fetching client reliability:', error);
+      res.status(500).json({ message: 'Failed to fetch client reliability' });
+    }
+  });
+
+  // Routes pour les équipes (staff)
+  app.get('/api/staff', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      // Mock staff data
+      const staff = [
+        {
+          id: 1,
+          firstName: 'Marie',
+          lastName: 'Dubois',
+          email: 'marie@salon.com',
+          phone: '0123456789',
+          specialties: ['Coiffure', 'Coloration'],
+          color: '#8B5CF6',
+          isActive: true,
+          workSchedule: {
+            monday: { start: '09:00', end: '18:00' },
+            tuesday: { start: '09:00', end: '18:00' },
+            wednesday: { start: '09:00', end: '18:00' },
+            thursday: { start: '09:00', end: '18:00' },
+            friday: { start: '09:00', end: '18:00' },
+            saturday: { start: '10:00', end: '17:00' }
+          }
+        },
+        {
+          id: 2,
+          firstName: 'Sophie',
+          lastName: 'Martin',
+          email: 'sophie@salon.com',
+          phone: '0123456790',
+          specialties: ['Manucure', 'Pédicure'],
+          color: '#06B6D4',
+          isActive: true,
+          workSchedule: {
+            tuesday: { start: '10:00', end: '19:00' },
+            wednesday: { start: '10:00', end: '19:00' },
+            thursday: { start: '10:00', end: '19:00' },
+            friday: { start: '10:00', end: '19:00' },
+            saturday: { start: '09:00', end: '16:00' }
+          }
+        }
+      ];
+      res.json(staff);
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+      res.status(500).json({ message: 'Failed to fetch staff' });
     }
   });
 

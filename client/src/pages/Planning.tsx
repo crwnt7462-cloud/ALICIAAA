@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import WeeklyPlanningView from '@/components/WeeklyPlanningView';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -37,7 +38,7 @@ export default function Planning() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'day' | 'month'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -203,7 +204,7 @@ export default function Planning() {
           </Button>
         </div>
 
-        {/* Toggle vue jour/mois */}
+        {/* Toggle vue jour/semaine/mois */}
         <div className="flex items-center justify-center gap-2">
           <Button
             variant={viewMode === 'day' ? 'default' : 'outline'}
@@ -211,6 +212,13 @@ export default function Planning() {
             onClick={() => setViewMode('day')}
           >
             Jour
+          </Button>
+          <Button
+            variant={viewMode === 'week' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('week')}
+          >
+            Semaine
           </Button>
           <Button
             variant={viewMode === 'month' ? 'default' : 'outline'}
@@ -401,6 +409,36 @@ export default function Planning() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Vue semaine - Planning hebdomadaire */}
+      {viewMode === 'week' && (
+        <WeeklyPlanningView
+          appointments={filteredAppointments.map(apt => ({
+            id: apt.id,
+            clientName: apt.client?.firstName + ' ' + (apt.client?.lastName || ''),
+            serviceName: apt.service?.name || '',
+            startTime: apt.startTime,
+            endTime: apt.endTime,
+            appointmentDate: apt.appointmentDate,
+            staffId: apt.staffId,
+            staffName: apt.staffId ? `Staff ${apt.staffId}` : undefined,
+            status: apt.status,
+            price: apt.service?.price
+          }))}
+          staff={[
+            { id: 1, firstName: 'Marie', lastName: 'Dubois', color: '#8B5CF6', specialties: ['Coiffure'] },
+            { id: 2, firstName: 'Sophie', lastName: 'Martin', color: '#06B6D4', specialties: ['Manucure'] },
+            { id: 3, firstName: 'Julie', lastName: 'Petit', color: '#10B981', specialties: ['Soins'] }
+          ]}
+          onNewAppointment={(date, time) => {
+            setSelectedDate(date);
+            form.setValue('appointmentDate', date);
+            form.setValue('startTime', time);
+            setIsDialogOpen(true);
+          }}
+          showStaffView={true}
+        />
       )}
 
       {/* Liste des rendez-vous - Vue jour */}

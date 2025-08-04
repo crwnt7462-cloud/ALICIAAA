@@ -73,6 +73,8 @@ import SalonPageFixed from "@/pages/SalonPageFixed";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
+import PromoCodeManagement from "@/pages/PromoCodeManagement";
+import ClientReliabilityDashboard from "@/pages/ClientReliabilityDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StockAlerts from "@/pages/StockAlerts";
@@ -571,6 +573,24 @@ function Router() {
     );
   }
 
+  // Gestion des codes promotionnels
+  if (location === '/promo-codes') {
+    return (
+      <div className="h-full">
+        <PromoCodeManagement />
+      </div>
+    );
+  }
+
+  // Tableau de bord de fiabilité client
+  if (location === '/client-reliability') {
+    return (
+      <div className="h-full">
+        <ClientReliabilityDashboard />
+      </div>
+    );
+  }
+
   // Page de connexion professionnelle
   if (location === '/pro-login') {
     return (
@@ -803,6 +823,8 @@ function Router() {
           <Route path="/staff" component={Staff} />
           <Route path="/inventory" component={InventoryModern} />
           <Route path="/booking-pages" component={BookingPages} />
+          <Route path="/promo-codes" component={PromoCodeManagement} />
+          <Route path="/client-reliability" component={ClientReliabilityDashboard} />
 
           <Route path="/notifications" component={NotificationTest} />
           <Route path="/share" component={ShareBooking} />
