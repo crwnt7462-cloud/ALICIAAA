@@ -151,13 +151,14 @@ export default function ProLoginModern() {
                 </button>
               </div>
 
-                <Button 
-                  type="submit" 
-                  disabled={isLoading}
-                  className={`w-full ${getGenericGlassButton(2)} text-white font-medium py-2 h-10 rounded-md`}
-                >
-                  {isLoading ? "Connexion..." : "Sign in"}
-                </Button>
+              {/* Bouton connexion - copié de ClientLoginModern */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-12 glass-button rounded-2xl text-base font-medium text-black disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Connexion..." : "Sign in"}
+              </button>
             </form>
 
             {/* Navigation liens */}
