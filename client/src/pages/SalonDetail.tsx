@@ -361,7 +361,9 @@ export default function SalonDetail() {
                             duration: service.duration,
                             category: service.category
                           };
+                          console.log('💾 Stockage service dans sessionStorage:', selectedServiceData);
                           sessionStorage.setItem('selectedService', JSON.stringify(selectedServiceData));
+                          console.log('✅ Service stocké, vérification:', sessionStorage.getItem('selectedService'));
                           setLocation('/salon-booking');
                         }}
                       >
