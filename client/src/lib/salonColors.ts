@@ -39,7 +39,7 @@ export const getRandomSalonColor = (): SalonColorVariant => {
 
 // Fonction pour les pages sans salon spécifique
 export const getGenericGlassButton = (index: number = 0): string => {
-  const colors: SalonColorVariant[] = ['violet', 'indigo', 'amber', 'rose', 'emerald'];
+  const colors: SalonColorVariant[] = ['violet', 'indigo', 'violet', 'rose', 'emerald'];
   const colorIndex = index % colors.length;
   return getSalonButtonClass(undefined, colors[colorIndex]);
 };
