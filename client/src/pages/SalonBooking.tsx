@@ -438,7 +438,7 @@ export default function SalonBooking() {
           salon_id: 'bonhomme-paris-archives',
           client_email: formData.email,
           service_name: service.name,
-          appointment_date: selectedDate?.toISOString() || new Date().toISOString(),
+          appointment_date: selectedDate || new Date().toISOString().split('T')[0],
           appointment_time: selectedSlot?.time || '10:00',
           total_amount: totalAmount,
           deposit_amount: depositAmount,
