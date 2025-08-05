@@ -1359,8 +1359,8 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
-                <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
+                <h3 className="font-semibold text-gray-900">{selectedService?.name || "Service non défini"}</h3>
+                <p className="text-sm text-gray-600">{selectedService?.duration || 0}min • {selectedService?.price || 0} €</p>
               </div>
               <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Supprimer
