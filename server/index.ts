@@ -121,6 +121,59 @@ app.use((req, res, next) => {
     await storage.createSalon(salonDemo);
     console.log('✅ Salon démo modifiable créé avec ID: salon-demo');
     
+    // Créer des services pour le salon démo
+    const demoServices = [
+      {
+        id: 1,
+        name: "Coupe + Brushing Femme",
+        description: "Coupe de cheveux personnalisée avec shampoing et brushing professionnel",
+        price: 65,
+        duration: 90,
+        category: "Coiffure Femme",
+        businessId: "demo",
+        isActive: true
+      },
+      {
+        id: 2,
+        name: "Coloration Complète",
+        description: "Coloration racines et longueurs avec soin nourrissant",
+        price: 120,
+        duration: 180,
+        category: "Coloration",
+        businessId: "demo",
+        isActive: true
+      },
+      {
+        id: 3,
+        name: "Mèches ou Balayage",
+        description: "Technique de décoloration partielle pour un effet naturel",
+        price: 95,
+        duration: 150,
+        category: "Coloration",
+        businessId: "demo",
+        isActive: true
+      },
+      {
+        id: 4,
+        name: "Soin Réparateur",
+        description: "Masque capillaire profond pour cheveux abîmés",
+        price: 35,
+        duration: 45,
+        category: "Soins",
+        businessId: "demo",
+        isActive: true
+      }
+    ];
+
+    for (const service of demoServices) {
+      try {
+        await storage.createService(service);
+        console.log(`✅ Service créé: ${service.name} - ${service.price}€`);
+      } catch (error) {
+        console.log(`ℹ️ Service ${service.name} existe déjà`);
+      }
+    }
+    
   } catch (error) {
     console.log('ℹ️ Salon démo existe déjà ou erreur de création:', error);
   }

@@ -143,17 +143,20 @@ export default function SalonBooking() {
         console.error('❌ Erreur parsing service:', error);
       }
     } else {
-      console.log('⚠️ Aucun service trouvé dans sessionStorage - utilisation service par défaut');
-      // Fallback vers un service par défaut si aucun service n'est pré-sélectionné
-      const fallbackService = {
-        id: 1,
-        name: "Coupe + Shampoing",
-        description: "Coupe de cheveux avec shampoing et brushing",
-        price: 45,
-        duration: 60,
-        category: "Coiffure"
-      };
-      setSelectedService(fallbackService);
+      console.log('⚠️ Aucun service trouvé dans sessionStorage - récupération des services réels');
+      // Récupérer les services réels depuis l'API
+      fetch('/api/services')
+        .then(res => res.json())
+        .then(services => {
+          if (services && services.length > 0) {
+            const firstService = services[0];
+            console.log('🎯 Premier service trouvé:', firstService);
+            setSelectedService(firstService);
+          }
+        })
+        .catch(error => {
+          console.error('❌ Erreur récupération services:', error);
+        });
     }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
