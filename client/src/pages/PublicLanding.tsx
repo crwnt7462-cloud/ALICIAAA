@@ -477,9 +477,14 @@ export default function PublicLanding() {
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
-              <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
+            <div className="inline-flex items-center gap-2 glass-button rounded-full px-4 py-2 mb-6" 
+                 style={{
+                   background: 'rgba(255, 255, 255, 0.15)',
+                   backdropFilter: 'blur(20px)',
+                   border: '1px solid rgba(168, 85, 247, 0.2)'
+                 }}>
+              <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></span>
+              <span className="text-sm font-medium text-black">Réservation instantanée</span>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
