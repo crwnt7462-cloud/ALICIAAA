@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import rendlyLogo from "@assets/3_1753714421825.png";
 // import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
@@ -150,14 +151,14 @@ export default function ProLoginModern() {
                 </button>
               </div>
 
-              {/* Bouton connexion - style violet glassmorphism */}
-              <button
+              {/* Bouton connexion - même style que client */}
+              <Button 
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-14 glass-button-violet rounded-2xl text-lg font-medium text-black"
+                className={`w-full ${getGenericGlassButton(2)} text-white font-medium py-2 h-14 rounded-2xl`}
               >
                 {isLoading ? "Connexion..." : "Sign in"}
-              </button>
+              </Button>
             </form>
 
             {/* Navigation liens */}
