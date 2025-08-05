@@ -401,7 +401,7 @@ export default function SalonPageEditor() {
           <button 
             onClick={() => {
               console.log('🔙 Bouton retour cliqué - Navigation vers dashboard');
-              window.history.back();
+              setLocation('/dashboard');
             }}
             className="glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center"
           >
