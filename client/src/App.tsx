@@ -152,6 +152,7 @@ import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
+import UpgradePlans from "@/pages/UpgradePlans";
 
 
 function Router() {
@@ -690,6 +691,15 @@ function Router() {
     return (
       <div className="h-full">
         <ModernSubscriptionPlans />
+      </div>
+    );
+  }
+
+  // Page d'upgrade des plans (nouvelle page stylée)
+  if (location === '/upgrade-plans') {
+    return (
+      <div className="h-full">
+        <UpgradePlans />
       </div>
     );
   }

@@ -111,8 +111,19 @@ export default function SalonPageEditor() {
   // Charger les données du salon de l'utilisateur connecté
   useEffect(() => {
     if (userSalon) {
-      setSalonData({
-        ...userSalon,
+      const salonWithColors: SalonData = {
+        id: userSalon.id || 'salon-demo',
+        name: userSalon.name || 'Salon Démo',
+        rating: userSalon.rating || 4.5,
+        reviews: userSalon.reviews || 128,
+        address: userSalon.address || '123 Rue de la Beauté, 75001 Paris',
+        phone: userSalon.phone || '01 23 45 67 89',
+        verified: userSalon.verified || true,
+        certifications: userSalon.certifications || ['Certifié Bio', 'Label Qualité'],
+        awards: userSalon.awards || ['Prix Excellence 2024'],
+        longDescription: userSalon.longDescription || 'Salon de beauté moderne et professionnel.',
+        coverImageUrl: userSalon.coverImageUrl || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop',
+        photos: userSalon.photos || ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
         customColors: userSalon.customColors || {
           primary: '#f59e0b',
           accent: '#d97706',
@@ -120,7 +131,8 @@ export default function SalonPageEditor() {
           buttonClass: 'glass-button-amber',
           intensity: 35
         }
-      });
+      };
+      setSalonData(salonWithColors);
     }
   }, [userSalon]);
 
