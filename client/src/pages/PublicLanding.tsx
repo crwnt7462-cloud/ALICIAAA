@@ -490,10 +490,11 @@ export default function PublicLanding() {
               Réservez votre rendez-vous{" "}
               <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1"
                     style={{
-                      background: 'rgba(168, 85, 247, 0.1)',
-                      backdropFilter: 'blur(15px)',
-                      border: '1px solid rgba(168, 85, 247, 0.3)',
-                      color: '#000'
+                      background: 'rgba(255, 255, 255, 0.25)',
+                      backdropFilter: 'blur(25px)',
+                      border: '1px solid rgba(168, 85, 247, 0.4)',
+                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15)',
+                      color: '#6b21a8'
                     }}>
                 <AnimatePresence mode="wait">
                   <motion.span
