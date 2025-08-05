@@ -87,6 +87,9 @@ export default function SalonPageEditor() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
+  const [salonData, setSalonData] = useState<SalonData | null>(null);
+
   // Récupérer le salon du professionnel connecté
   const { data: userSalon, isLoading: salonLoading } = useQuery({
     queryKey: ['/api/user/salon'],
@@ -104,9 +107,6 @@ export default function SalonPageEditor() {
       </div>
     );
   }
-  
-  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
-  const [salonData, setSalonData] = useState<SalonData | null>(null);
 
   // Charger les données du salon de l'utilisateur connecté
   useEffect(() => {
