@@ -76,36 +76,57 @@ export default function BookingConfirmationPopup({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Popup moderne comme l'image */}
-      <div className="relative">
-        {/* Fond coloré arrondi */}
-        <div className="bg-gradient-to-b from-pink-400 to-pink-500 rounded-3xl p-8 max-w-sm w-full shadow-2xl">
-          {/* Bouton X */}
+      {/* Modal moderne avec header */}
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full relative overflow-hidden max-h-[90vh] overflow-y-auto">
+        {/* Header avec titre et X */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Confirmer votre réservation
+          </h2>
           <button 
             onClick={onClose}
-            className="absolute top-4 right-4 text-pink-800/70 hover:text-pink-800"
+            className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700"
           >
             <X className="w-6 h-6" />
           </button>
-          
-          {/* Icône centrale */}
-          <div className="flex justify-center mb-6 mt-4">
-            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
-              <CreditCard className="w-8 h-8 text-white" />
-            </div>
-          </div>
         </div>
         
-        {/* Zone de contenu blanche */}
-        <div className="bg-white rounded-2xl shadow-xl mx-4 -mt-6 relative z-10 p-6 text-center">
-          {/* Message principal */}
-          <p className="text-gray-600 text-base leading-relaxed mb-6">
-            Confirmez votre réservation pour le {formatDateForDisplay()} à {bookingDetails.appointmentTime} avec {bookingDetails.staffName} chez {salonInfo.name}.
-            {depositAmount > 0 && ` Un acompte de ${depositAmount}€ sera débité.`}
-          </p>
+        {/* Contenu */}
+        <div className="p-4 space-y-4">
+          {/* Détails réservation */}
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {bookingDetails.serviceName}
+            </h3>
+            <div className="space-y-1 text-gray-600 mb-3">
+              <p className="text-base">{formatDateForDisplay()}</p>
+              <p className="text-base">à {bookingDetails.appointmentTime} avec {bookingDetails.staffName}</p>
+            </div>
+            <div className="border-t border-gray-200 pt-3">
+              <p className="text-3xl font-bold text-gray-900">{bookingDetails.servicePrice}€</p>
+              {depositAmount > 0 && (
+                <p className="text-sm text-gray-600 mt-1">Acompte: {depositAmount}€</p>
+              )}
+            </div>
+          </div>
+
+          {/* Salon */}
+          <div className="bg-gray-50 rounded-xl p-4 text-center">
+            <h4 className="font-semibold text-gray-900">{salonInfo.name}</h4>
+            <p className="text-sm text-gray-600">{salonInfo.address}</p>
+          </div>
+
+          {/* Conditions */}
+          <div className="bg-gray-50 rounded-xl p-4">
+            <div className="text-sm text-gray-700 space-y-1">
+              <p>• Annulation gratuite jusqu'à 24h avant</p>
+              <p>• Retard de +15min = annulation automatique</p>
+              {depositAmount > 0 && <p>• Acompte de {depositAmount}€ requis</p>}
+            </div>
+          </div>
 
           {/* Case à cocher */}
-          <div className="flex items-start space-x-3 text-left mb-6">
+          <div className="flex items-start space-x-3">
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
@@ -114,26 +135,36 @@ export default function BookingConfirmationPopup({
             />
             <label
               htmlFor="accept-policies"
-              className="text-sm text-gray-600 leading-relaxed flex-1 cursor-pointer"
+              className="text-sm text-gray-700 leading-relaxed flex-1 cursor-pointer"
             >
               J'accepte les conditions du salon et confirme ma réservation.
             </label>
           </div>
 
-          {/* Boutons comme dans l'image */}
-          <div className="flex gap-3">
+          {/* Boutons */}
+          <div className="flex gap-3 pt-2">
             <button
               onClick={onClose}
-              className="flex-1 h-12 bg-gray-100 text-gray-600 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+              className="flex-1 h-12 bg-gray-100 text-gray-600 rounded-lg font-medium hover:bg-gray-200 transition-colors"
             >
-              Later
+              Modifier
             </button>
             <button
               onClick={onConfirm}
               disabled={!acceptedPolicies || isLoading}
-              className="flex-1 h-12 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="flex-1 h-12 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {isLoading ? "..." : "Confirmer"}
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  Traitement...
+                </div>
+              ) : (
+                <>
+                  <CreditCard className="h-4 w-4 mr-2" />
+                  Confirmer et payer
+                </>
+              )}
             </button>
           </div>
         </div>
