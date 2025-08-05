@@ -131,15 +131,19 @@ export default function SalonBooking() {
     
     // Récupérer le service pré-sélectionné depuis SalonDetail.tsx
     const preSelectedService = sessionStorage.getItem('selectedService');
+    console.log('🔍 Service dans sessionStorage:', preSelectedService);
     if (preSelectedService) {
       try {
         const serviceData = JSON.parse(preSelectedService);
+        console.log('✅ Service récupéré:', serviceData);
         setSelectedService(serviceData);
-        // Supprimer de sessionStorage après utilisation
-        sessionStorage.removeItem('selectedService');
+        // NE PAS supprimer de sessionStorage pour éviter la perte
+        // sessionStorage.removeItem('selectedService');
       } catch (error) {
-        console.error('Erreur parsing service:', error);
+        console.error('❌ Erreur parsing service:', error);
       }
+    } else {
+      console.log('⚠️ Aucun service trouvé dans sessionStorage');
     }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
@@ -211,6 +215,9 @@ export default function SalonBooking() {
 
   // Service actuel - utilise TOUJOURS le service pré-sélectionné
   const currentService = selectedService;
+  
+  // Log pour déboguer
+  console.log('💰 Service sélectionné au rendu:', selectedService);
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
