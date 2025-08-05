@@ -75,24 +75,19 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Shell Modal Fixe */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-gray-200 overflow-hidden">
-        {/* Barre de titre shell */}
-        <div className="h-8 bg-gray-100 rounded-t-2xl flex items-center justify-between px-4">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          <span className="text-xs text-gray-600 font-medium">Confirmation</span>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {/* Modal Simple */}
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full relative overflow-hidden">
+        {/* Bouton fermer */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors z-10"
+        >
+          <X className="w-5 h-5 text-gray-600" />
+        </button>
         
-        {/* Contenu du shell */}
-        <div className="bg-white p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+        {/* Contenu */}
+        <div className="p-6 pt-12 space-y-6">
           {/* Récapitulatif principal */}
           <div className="bg-gray-50 rounded-xl p-5 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
@@ -144,18 +139,12 @@ export default function BookingConfirmationPopup({
           </div>
         </div>
         
-        {/* Footer avec boutons shell */}
-        <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50">
-          <button
-            onClick={onClose}
-            className="flex-1 h-12 bg-white/30 backdrop-blur-md border border-white/40 text-gray-700 hover:bg-white/50 transition-colors rounded-lg font-medium"
-          >
-            Modifier
-          </button>
+        {/* Footer avec bouton unique */}
+        <div className="px-6 pb-6">
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="flex-1 h-12 bg-violet-600/90 backdrop-blur-md border border-violet-500/30 text-white hover:bg-violet-700/90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center"
+            className="w-full h-14 bg-violet-600/90 backdrop-blur-md border border-violet-500/30 text-white hover:bg-violet-700/90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-2xl font-semibold flex items-center justify-center"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -164,7 +153,7 @@ export default function BookingConfirmationPopup({
               </div>
             ) : (
               <>
-                <CreditCard className="h-4 w-4 mr-2" />
+                <CreditCard className="h-5 w-5 mr-2" />
                 Confirmer et payer
               </>
             )}
