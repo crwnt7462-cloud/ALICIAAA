@@ -40,10 +40,11 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-violet-50/30 via-white/80 to-purple-50/20 backdrop-blur-xl p-4"
+      className="min-h-screen p-4"
       style={{
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(255, 255, 255, 0.85) 30%, rgba(255, 255, 255, 0.95) 70%, rgba(124, 58, 237, 0.1) 100%)',
+        backdropFilter: 'blur(25px)',
+        WebkitBackdropFilter: 'blur(25px)',
       }}
     >
       <div className="max-w-md mx-auto space-y-8">
