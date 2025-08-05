@@ -182,8 +182,8 @@ export default function SalonBooking() {
             const prof = professionals.find(p => p.name === bookingState.professionalName);
             if (prof) setSelectedProfessional(prof);
           }
-          if (bookingState.serviceName) {
-            setSelectedService(defaultService);
+          if (bookingState.serviceData) {
+            setSelectedService(bookingState.serviceData);
           }
         }
       } catch (error) {
@@ -209,8 +209,8 @@ export default function SalonBooking() {
   // Services disponibles selon le professionnel sélectionné
   const availableServices = selectedProfessional?.services || [];
 
-  // Service actuel (priorité : service pré-sélectionné > premier du professionnel > service par défaut)
-  const currentService = selectedService || (availableServices.length > 0 ? availableServices[0] : { id: 0, name: "Service", duration: 30, price: 39 });
+  // Service actuel - utilise TOUJOURS le service pré-sélectionné
+  const currentService = selectedService;
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -226,13 +226,7 @@ export default function SalonBooking() {
     { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
   ];
 
-  // Simple service pour l'étape 1 (suppression complète de "Choix de la prestation")
-  const defaultService = {
-    id: 1,
-    name: "Coupe Bonhomme",
-    price: 39,
-    duration: "30min"
-  };
+
 
   // Professionnels disponibles avec leurs services spécifiques
   const professionals = [
@@ -462,7 +456,7 @@ export default function SalonBooking() {
   // Fonction pour créer le Payment Intent selon le mode choisi
   const createPaymentIntent = async () => {
     try {
-      const totalAmount = currentService.price;
+      const totalAmount = selectedService?.price || 0;
       const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
       const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
       const isDeposit = depositAmount > 0;
@@ -475,7 +469,7 @@ export default function SalonBooking() {
         metadata: {
           salon_id: 'bonhomme-paris-archives',
           client_email: formData.email,
-          service_name: currentService.name,
+          service_name: selectedService?.name || "Service non défini",
           appointment_date: selectedDate || new Date().toISOString().split('T')[0],
           appointment_time: selectedSlot?.time || '10:00',
           total_amount: totalAmount,
@@ -505,7 +499,7 @@ export default function SalonBooking() {
 
   // Bottom Sheet de paiement avec choix du mode
   const renderPaymentBottomSheet = () => {
-    const totalAmount = currentService.price;
+    const totalAmount = selectedService?.price || 0;
     const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
     const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
 
@@ -542,7 +536,7 @@ export default function SalonBooking() {
             <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Service</span>
-                <span className="font-medium">{currentService.name}</span>
+                <span className="font-medium">{selectedService?.name || "Service non défini"}</span>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Date & Heure</span>
@@ -1537,12 +1531,12 @@ export default function SalonBooking() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: 20.50,
+          amount: selectedService?.price || 0,
           currency: 'eur',
           metadata: {
             salon: salon.name,
             professional: selectedProfessional?.name,
-            service: defaultService.name,
+            service: selectedService?.name || "Service non défini",
             time: selectedSlot?.time,
             date: selectedSlot?.date || selectedDate,
             clientEmail: formData.email || loginData.email
@@ -1863,8 +1857,8 @@ export default function SalonBooking() {
 
   // Préparer les données pour le popup de confirmation
   const bookingDetails = {
-    serviceName: selectedService?.name || defaultService.name,
-    servicePrice: selectedService?.price || defaultService.price,  
+    serviceName: selectedService?.name || "Service non défini",
+    servicePrice: selectedService?.price || 0,  
     serviceDuration: selectedService?.duration || 45,
     appointmentDate: selectedDate || 'lundi 28 juillet 2025',
     appointmentTime: selectedSlot?.time || '10:00',
@@ -1872,7 +1866,7 @@ export default function SalonBooking() {
     clientName: `${formData.firstName} ${formData.lastName}` || 'Client',
     clientEmail: formData.email || 'client@example.com',
     clientPhone: formData.phone || '0612345678',
-    depositRequired: 20.5, // 30% d'acompte
+    depositRequired: selectedService?.price && selectedService.price > 50 ? Math.round(selectedService.price * 0.3) : 0, // 30% d'acompte si >50€
     isWeekendPremium: false
   };
 
