@@ -193,18 +193,11 @@ export default function SalonBooking() {
     location: "Paris Archives"
   };
 
-  // Services disponibles avec prix différents
-  const availableServices = [
-    { id: 1, name: "Coupe + Shampoing", duration: 45, price: 39 },
-    { id: 2, name: "Coloration", duration: 90, price: 65 },
-    { id: 3, name: "Soins Hydratants", duration: 60, price: 120 },
-    { id: 4, name: "Forfait Complet", duration: 120, price: 180 },
-    { id: 5, name: "Brushing Express", duration: 30, price: 25 },
-    { id: 6, name: "Mèches + Coupe", duration: 105, price: 95 }
-  ];
+  // Services disponibles selon le professionnel sélectionné
+  const availableServices = selectedProfessional?.services || [];
 
-  // Service actuel (sélectionné ou par défaut)
-  const currentService = selectedService || availableServices[0];
+  // Service actuel (sélectionné ou premier du professionnel)
+  const currentService = selectedService || (availableServices.length > 0 ? availableServices[0] : { id: 0, name: "Service", duration: 30, price: 39 });
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -228,7 +221,7 @@ export default function SalonBooking() {
     duration: "30min"
   };
 
-  // Professionnels disponibles
+  // Professionnels disponibles avec leurs services spécifiques
   const professionals = [
     {
       id: 1,
@@ -238,7 +231,13 @@ export default function SalonBooking() {
       nextSlot: "Aujourd'hui 10:00",
       image: "👨‍💼",
       photoUrl: null,
-      experience: "5 ans d'expérience"
+      experience: "5 ans d'expérience",
+      services: [
+        { id: 1, name: "Coupe Homme", duration: 30, price: 35 },
+        { id: 2, name: "Coupe + Barbe", duration: 45, price: 50 },
+        { id: 3, name: "Barbe seule", duration: 20, price: 25 },
+        { id: 4, name: "Coupe + Shampoing", duration: 40, price: 42 }
+      ]
     },
     {
       id: 2,
@@ -248,7 +247,13 @@ export default function SalonBooking() {
       nextSlot: "Aujourd'hui 11:30",
       image: "👩‍💼",
       photoUrl: null,
-      experience: "7 ans d'expérience"
+      experience: "7 ans d'expérience",
+      services: [
+        { id: 5, name: "Coloration Complète", duration: 120, price: 85 },
+        { id: 6, name: "Mèches", duration: 90, price: 75 },
+        { id: 7, name: "Soin Hydratant", duration: 45, price: 55 },
+        { id: 8, name: "Coloration + Coupe", duration: 150, price: 120 }
+      ]
     },
     {
       id: 3,
@@ -258,7 +263,13 @@ export default function SalonBooking() {
       nextSlot: "Demain 9:00",
       image: "👨‍🎨",
       photoUrl: null,
-      experience: "3 ans d'expérience"
+      experience: "3 ans d'expérience",
+      services: [
+        { id: 9, name: "Coupe Moderne", duration: 40, price: 45 },
+        { id: 10, name: "Coupe + Styling", duration: 60, price: 65 },
+        { id: 11, name: "Brushing", duration: 30, price: 30 },
+        { id: 12, name: "Coupe + Barbe Moderne", duration: 50, price: 60 }
+      ]
     },
     {
       id: 4,
@@ -268,7 +279,13 @@ export default function SalonBooking() {
       nextSlot: "Demain 14:00",
       image: "👩‍🔬",
       photoUrl: null,
-      experience: "10 ans d'expérience"
+      experience: "10 ans d'expérience",
+      services: [
+        { id: 13, name: "Permanente", duration: 180, price: 150 },
+        { id: 14, name: "Défrisage", duration: 150, price: 120 },
+        { id: 15, name: "Lissage Brésilien", duration: 200, price: 200 },
+        { id: 16, name: "Soins Capillaires", duration: 60, price: 70 }
+      ]
     }
   ];
 
@@ -282,12 +299,12 @@ export default function SalonBooking() {
 
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
-    setCurrentStep(2);
+    setCurrentStep(3);
   };
 
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional);
-    setCurrentStep(3);
+    setCurrentStep(2);
   };
 
   const handleTimeSlotSelect = (time: string) => {
@@ -635,27 +652,47 @@ export default function SalonBooking() {
       <div className="max-w-lg mx-auto p-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un service</h2>
         
-        <div className="space-y-3">
-          {availableServices.map((service) => (
-            <Card 
-              key={service.id}
-              className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
-              onClick={() => handleServiceSelect(service)}
+        {selectedProfessional ? (
+          <div>
+            <div className="glass-card p-3 mb-4 rounded-lg">
+              <p className="text-sm text-gray-700">
+                <span className="font-medium">Professionnel sélectionné :</span> {selectedProfessional.name}
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              {availableServices.map((service) => (
+                <Card 
+                  key={service.id}
+                  className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
+                  onClick={() => handleServiceSelect(service)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
+                        <p className="text-sm text-gray-600">{service.duration}min</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-gray-900">{service.price}€</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="glass-card p-6 text-center">
+            <p className="text-gray-600">Veuillez d'abord sélectionner un professionnel</p>
+            <Button 
+              onClick={() => setCurrentStep(1)}
+              className="mt-4 glass-button hover:glass-effect text-black"
             >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
-                    <p className="text-sm text-gray-600">{service.duration}min</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-gray-900">{service.price}€</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              Retour aux professionnels
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1915,8 +1952,8 @@ export default function SalonBooking() {
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
-      {currentStep === 1 && renderServiceSelection()}
-      {currentStep === 2 && renderProfessionalSelection()}
+      {currentStep === 1 && renderProfessionalSelection()}
+      {currentStep === 2 && renderServiceSelection()}
       {currentStep === 3 && renderDateSelection()}
       {currentStep === 4 && renderLoginSignup()}
       
