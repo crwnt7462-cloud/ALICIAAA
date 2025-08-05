@@ -75,34 +75,34 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Modal glassmorphism compact */}
-      <div className="bg-white/30 backdrop-blur-md border border-white/40 rounded-2xl shadow-2xl max-w-xs w-full max-h-[90vh] overflow-y-auto">
-        {/* Header glassmorphism */}
-        <div className="flex items-center justify-between p-3 border-b border-white/20 bg-white/40 backdrop-blur-md rounded-t-2xl">
-          <h2 className="text-base font-semibold text-black">
+    <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4">
+      {/* Modal compact fond blanc */}
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xs w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-3 border-b border-gray-100">
+          <h2 className="text-base font-semibold text-gray-900">
             Confirmer réservation
           </h2>
           <button 
             onClick={onClose}
-            className="w-6 h-6 flex items-center justify-center text-gray-600 hover:text-gray-800 rounded-full hover:bg-white/30 transition-all"
+            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
         
-        {/* Contenu glassmorphism */}
+        {/* Contenu compact */}
         <div className="p-3 space-y-2">
-          {/* Service glassmorphism */}
-          <div className="bg-white/30 backdrop-blur-md border border-white/40 rounded-lg p-3 text-center">
-            <h3 className="text-sm font-bold text-black mb-1">
+          {/* Service condensé */}
+          <div className="bg-gray-50 rounded-lg p-3 text-center">
+            <h3 className="text-sm font-bold text-gray-900 mb-1">
               {bookingDetails.serviceName}
             </h3>
-            <div className="text-xs text-gray-700 space-y-0.5 mb-2">
+            <div className="text-xs text-gray-600 space-y-0.5 mb-2">
               <p>{formatDateForDisplay()} à {bookingDetails.appointmentTime}</p>
               <p>avec {bookingDetails.staffName}</p>
             </div>
-            <p className="text-xl font-bold text-black">{bookingDetails.servicePrice}€</p>
+            <p className="text-xl font-bold text-gray-900">{bookingDetails.servicePrice}€</p>
             {depositAmount > 0 && (
               <p className="text-xs text-gray-600 mt-1">
                 Acompte: {depositAmount}€
@@ -110,15 +110,15 @@ export default function BookingConfirmationPopup({
             )}
           </div>
 
-          {/* Salon glassmorphism */}
-          <div className="bg-white/30 backdrop-blur-md border border-white/40 rounded-lg p-2 text-center">
-            <p className="font-semibold text-black text-xs">{salonInfo.name}</p>
+          {/* Salon */}
+          <div className="bg-gray-50 rounded-lg p-2 text-center">
+            <p className="font-semibold text-gray-900 text-xs">{salonInfo.name}</p>
             <p className="text-xs text-gray-600">{salonInfo.address}</p>
           </div>
 
-          {/* Conditions glassmorphism */}
-          <div className="bg-white/30 backdrop-blur-md border border-white/40 rounded-lg p-2">
-            <p className="font-semibold text-black text-xs mb-1">Conditions</p>
+          {/* Conditions condensées */}
+          <div className="bg-amber-50 rounded-lg p-2">
+            <p className="font-semibold text-gray-900 text-xs mb-1">Conditions</p>
             <div className="text-xs text-gray-700 space-y-0.5">
               <p>• Annulation gratuite 24h avant</p>
               <p>• Retard +15min = annulation</p>
@@ -126,29 +126,27 @@ export default function BookingConfirmationPopup({
             </div>
           </div>
 
-          {/* Case à cocher glassmorphism */}
-          <div className="bg-white/30 backdrop-blur-md border border-white/40 rounded-lg p-2">
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="accept-policies"
-                checked={acceptedPolicies}
-                onCheckedChange={(checked) => setAcceptedPolicies(checked === true)}
-                className="mt-0.5 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600"
-              />
-              <label
-                htmlFor="accept-policies"
-                className="text-xs text-black flex-1 cursor-pointer"
-              >
-                J'accepte les conditions et confirme ma réservation.
-              </label>
-            </div>
+          {/* Case à cocher */}
+          <div className="flex items-start space-x-2 p-2">
+            <Checkbox
+              id="accept-policies"
+              checked={acceptedPolicies}
+              onCheckedChange={(checked) => setAcceptedPolicies(checked === true)}
+              className="mt-0.5 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600"
+            />
+            <label
+              htmlFor="accept-policies"
+              className="text-xs text-gray-700 flex-1 cursor-pointer"
+            >
+              J'accepte les conditions et confirme ma réservation.
+            </label>
           </div>
 
-          {/* Boutons glassmorphism */}
+          {/* Boutons compacts avec glass style */}
           <div className="flex gap-2 pt-1">
             <button
               onClick={onClose}
-              className="flex-1 h-8 bg-white/30 backdrop-blur-md border border-white/40 text-black rounded-lg text-xs font-medium hover:bg-white/50 transition-all"
+              className="flex-1 h-8 glass-button text-black rounded-lg text-xs font-medium hover:glass-effect transition-all"
             >
               Modifier
             </button>
