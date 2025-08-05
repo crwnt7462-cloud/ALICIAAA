@@ -130,7 +130,7 @@ export default function Landing() {
 
         {/* CTA Buttons with Glassmorphism */}
         <div className="space-y-4">
-          {/* Bouton Glassmorphism Principal - Rechercher un salon */}
+          {/* Bouton Glassmorphism Principal - Connexion Pro */}
           <motion.button
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -141,7 +141,7 @@ export default function Landing() {
               transition: { duration: 0.2 }
             }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setLocation('/search')}
+            onClick={() => setLocation('/pro-login-modern')}
             className="relative w-full h-16 rounded-3xl overflow-hidden group"
             style={{
               background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
@@ -153,30 +153,31 @@ export default function Landing() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
-              <Search className="w-5 h-5 mr-3" />
-              Rechercher un salon
+              <Users className="w-5 h-5 mr-3" />
+              Espace Professionnel
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
           </motion.button>
           
-          {/* Bouton secondaire */}
+          {/* Bouton secondaire - Espace Client */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
-            onClick={() => setLocation('/dashboard')}
+            onClick={() => setLocation('/client-login-modern')}
           >
-            Accéder au tableau de bord
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <Search className="w-4 h-4 mr-2" />
+            Trouver un salon
           </motion.button>
           
+          {/* Bouton tertiaire - Demo */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-            onClick={() => setLocation('/client-login-modern')}
+            onClick={() => setLocation('/salon-demo')}
           >
-            Espace client
+            Voir démo salon
           </motion.button>
         </div>
 
