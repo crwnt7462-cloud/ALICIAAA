@@ -89,7 +89,7 @@ export default function SalonPageEditor() {
   useEffect(() => {
     const loadSalonData = async () => {
       try {
-        const response = await fetch('/api/salon/salon-demo');
+        const response = await fetch(`/api/salon/${salonData.id}`);
         if (response.ok) {
           const existingSalon = await response.json();
           if (existingSalon) {
@@ -103,7 +103,7 @@ export default function SalonPageEditor() {
     };
     
     loadSalonData();
-  }, []);
+  }, [salonData.id]);
   
   // DONNÉES COMPLÈTES DU SALON BARBIER GENTLEMAN MARAIS (modifiables)
   const [salonData, setSalonData] = useState<SalonData>({
@@ -209,7 +209,7 @@ export default function SalonPageEditor() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await fetch('/api/salon/salon-demo', {
+      const response = await fetch(`/api/salon/${salonData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -222,7 +222,7 @@ export default function SalonPageEditor() {
         title: "Salon mis à jour !",
         description: "Vos modifications ont été sauvegardées avec succès."
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/salon/salon-demo'] });
+      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData.id}`] });
       setIsEditing(false);
     },
     onError: () => {
