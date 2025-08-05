@@ -520,11 +520,6 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       });
 
       console.log(`✅ Salon personnel créé pour ${userData.email}: /salon/${automaticSalon.id}`);
-      
-      // 🎯 GÉNÉRATION AUTOMATIQUE DES SERVICES pour le nouveau salon
-      const { generateServicesForSalon } = await import('./autoServiceGeneration.js');
-      const servicesCreated = await generateServicesForSalon(automaticSalon.id, automaticSalon.name, ['Coiffure']);
-      console.log(`🎯 ${servicesCreated} services automatiquement créés pour ${automaticSalon.name}`);
       console.log('✅ Inscription PRO réussie pour:', userData.email);
       
       res.json({ 
@@ -1164,21 +1159,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // Services routes
-  // Route publique pour récupérer les services du salon demo
-  app.get('/api/services', async (req, res) => {
-    try {
-      console.log('🎯 Route publique /api/services - recherche pour userId: "demo"');
-      const services = await storage.getServices("demo");
-      console.log(`✅ Services retournés: ${services.length}`);
-      res.json(services);
-    } catch (error) {
-      console.error('Error fetching services:', error);
-      res.status(500).json({ message: 'Failed to fetch services' });
-    }
-  });
-
-  // Route authentifiée pour récupérer les services d'un utilisateur spécifique
-  app.get('/api/user/services', isAuthenticated, async (req, res) => {
+  app.get('/api/services', isAuthenticated, async (req, res) => {
     try {
       const userId = (req.user as any)?.claims?.sub;
       if (!userId) {
@@ -1681,11 +1662,6 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       // 🔗 Associer le salon au professionnel
       await linkSalonToProfessional(createdSalon.id, email);
-      
-      // 🎯 GÉNÉRATION AUTOMATIQUE DES SERVICES pour le nouveau salon
-      const { generateServicesForSalon } = await import('./autoServiceGeneration.js');
-      const servicesCreated = await generateServicesForSalon(createdSalon.id, createdSalon.name, ['Coiffure']);
-      console.log(`🎯 ${servicesCreated} services automatiquement créés pour ${createdSalon.name}`);
 
       // Créer le compte professionnel
       const businessData = {

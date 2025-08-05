@@ -128,36 +128,6 @@ export default function SalonBooking() {
     if (token) {
       setIsUserLoggedIn(true);
     }
-    
-    // Récupérer le service pré-sélectionné depuis SalonDetail.tsx
-    const preSelectedService = sessionStorage.getItem('selectedService');
-    console.log('🔍 Service dans sessionStorage:', preSelectedService);
-    if (preSelectedService) {
-      try {
-        const serviceData = JSON.parse(preSelectedService);
-        console.log('✅ Service récupéré:', serviceData);
-        setSelectedService(serviceData);
-        // NE PAS supprimer de sessionStorage pour éviter la perte
-        // sessionStorage.removeItem('selectedService');
-      } catch (error) {
-        console.error('❌ Erreur parsing service:', error);
-      }
-    } else {
-      console.log('⚠️ Aucun service trouvé dans sessionStorage - récupération des services réels');
-      // Récupérer les services réels depuis l'API
-      fetch('/api/services')
-        .then(res => res.json())
-        .then(services => {
-          if (services && services.length > 0) {
-            const firstService = services[0];
-            console.log('🎯 Premier service trouvé:', firstService);
-            setSelectedService(firstService);
-          }
-        })
-        .catch(error => {
-          console.error('❌ Erreur récupération services:', error);
-        });
-    }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -199,8 +169,8 @@ export default function SalonBooking() {
             const prof = professionals.find(p => p.name === bookingState.professionalName);
             if (prof) setSelectedProfessional(prof);
           }
-          if (bookingState.serviceData) {
-            setSelectedService(bookingState.serviceData);
+          if (bookingState.serviceName) {
+            setSelectedService(defaultService);
           }
         }
       } catch (error) {
@@ -223,14 +193,18 @@ export default function SalonBooking() {
     location: "Paris Archives"
   };
 
-  // Services disponibles selon le professionnel sélectionné
-  const availableServices = selectedProfessional?.services || [];
+  // Services disponibles avec prix différents
+  const availableServices = [
+    { id: 1, name: "Coupe + Shampoing", duration: 45, price: 39 },
+    { id: 2, name: "Coloration", duration: 90, price: 65 },
+    { id: 3, name: "Soins Hydratants", duration: 60, price: 120 },
+    { id: 4, name: "Forfait Complet", duration: 120, price: 180 },
+    { id: 5, name: "Brushing Express", duration: 30, price: 25 },
+    { id: 6, name: "Mèches + Coupe", duration: 105, price: 95 }
+  ];
 
-  // Service actuel - utilise TOUJOURS le service pré-sélectionné
-  const currentService = selectedService;
-  
-  // Log pour déboguer
-  console.log('💰 Service sélectionné au rendu:', selectedService);
+  // Service actuel (sélectionné ou par défaut)
+  const currentService = selectedService || availableServices[0];
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -246,9 +220,15 @@ export default function SalonBooking() {
     { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
   ];
 
+  // Simple service pour l'étape 1 (suppression complète de "Choix de la prestation")
+  const defaultService = {
+    id: 1,
+    name: "Coupe Bonhomme",
+    price: 39,
+    duration: "30min"
+  };
 
-
-  // Professionnels disponibles avec leurs services spécifiques
+  // Professionnels disponibles
   const professionals = [
     {
       id: 1,
@@ -256,15 +236,7 @@ export default function SalonBooking() {
       specialties: ["Coupe", "Barbe"],
       rating: 4.9,
       nextSlot: "Aujourd'hui 10:00",
-      image: "👨‍💼",
-      photoUrl: null,
-      experience: "5 ans d'expérience",
-      services: [
-        { id: 1, name: "Coupe Homme", duration: 30, price: 35 },
-        { id: 2, name: "Coupe + Barbe", duration: 45, price: 50 },
-        { id: 3, name: "Barbe seule", duration: 20, price: 25 },
-        { id: 4, name: "Coupe + Shampoing", duration: 40, price: 42 }
-      ]
+      image: "👨‍💼"
     },
     {
       id: 2,
@@ -272,15 +244,7 @@ export default function SalonBooking() {
       specialties: ["Coloration", "Soin"],
       rating: 4.8,
       nextSlot: "Aujourd'hui 11:30",
-      image: "👩‍💼",
-      photoUrl: null,
-      experience: "7 ans d'expérience",
-      services: [
-        { id: 5, name: "Coloration Complète", duration: 120, price: 85 },
-        { id: 6, name: "Mèches", duration: 90, price: 75 },
-        { id: 7, name: "Soin Hydratant", duration: 45, price: 55 },
-        { id: 8, name: "Coloration + Coupe", duration: 150, price: 120 }
-      ]
+      image: "👩‍💼"
     },
     {
       id: 3,
@@ -288,15 +252,7 @@ export default function SalonBooking() {
       specialties: ["Coupe Moderne", "Style"],
       rating: 4.7,
       nextSlot: "Demain 9:00",
-      image: "👨‍🎨",
-      photoUrl: null,
-      experience: "3 ans d'expérience",
-      services: [
-        { id: 9, name: "Coupe Moderne", duration: 40, price: 45 },
-        { id: 10, name: "Coupe + Styling", duration: 60, price: 65 },
-        { id: 11, name: "Brushing", duration: 30, price: 30 },
-        { id: 12, name: "Coupe + Barbe Moderne", duration: 50, price: 60 }
-      ]
+      image: "👨‍🎨"
     },
     {
       id: 4,
@@ -304,15 +260,7 @@ export default function SalonBooking() {
       specialties: ["Permanente", "Défrisage"],
       rating: 4.9,
       nextSlot: "Demain 14:00",
-      image: "👩‍🔬",
-      photoUrl: null,
-      experience: "10 ans d'expérience",
-      services: [
-        { id: 13, name: "Permanente", duration: 180, price: 150 },
-        { id: 14, name: "Défrisage", duration: 150, price: 120 },
-        { id: 15, name: "Lissage Brésilien", duration: 200, price: 200 },
-        { id: 16, name: "Soins Capillaires", duration: 60, price: 70 }
-      ]
+      image: "👩‍🔬"
     }
   ];
 
@@ -324,15 +272,20 @@ export default function SalonBooking() {
     ));
   };
 
+  const handleServiceSelect = (service: any) => {
+    setSelectedService(service);
+    setCurrentStep(2);
+  };
+
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional);
-    setCurrentStep(2);
+    setCurrentStep(3);
   };
 
   const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
-    // Aller à l'étape de connexion/inscription (étape 3 dans le nouveau flux)
-    setCurrentStep(3);
+    // Aller à l'étape de connexion/inscription
+    setCurrentStep(4);
   };
 
   const handleDateSelect = (dateInfo: any) => {
@@ -476,7 +429,7 @@ export default function SalonBooking() {
   // Fonction pour créer le Payment Intent selon le mode choisi
   const createPaymentIntent = async () => {
     try {
-      const totalAmount = selectedService?.price || 0;
+      const totalAmount = currentService.price;
       const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
       const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
       const isDeposit = depositAmount > 0;
@@ -489,7 +442,7 @@ export default function SalonBooking() {
         metadata: {
           salon_id: 'bonhomme-paris-archives',
           client_email: formData.email,
-          service_name: selectedService?.name || "Service non défini",
+          service_name: currentService.name,
           appointment_date: selectedDate || new Date().toISOString().split('T')[0],
           appointment_time: selectedSlot?.time || '10:00',
           total_amount: totalAmount,
@@ -498,13 +451,11 @@ export default function SalonBooking() {
         }
       });
 
-      if (!paymentResponse.ok) {
-        const errorData = await paymentResponse.json();
-        throw new Error(errorData.error || 'Erreur création paiement');
+      if (!paymentResponse.success) {
+        throw new Error(paymentResponse.error || 'Erreur création paiement');
       }
 
-      const data = await paymentResponse.json();
-      setClientSecret(data.clientSecret);
+      setClientSecret(paymentResponse.clientSecret);
       console.log('✅ Payment Intent créé', bankingMethod === 'authorization' ? '(Empreinte bancaire)' : '(Carte bancaire)');
       
     } catch (error: any) {
@@ -519,7 +470,7 @@ export default function SalonBooking() {
 
   // Bottom Sheet de paiement avec choix du mode
   const renderPaymentBottomSheet = () => {
-    const totalAmount = selectedService?.price || 0;
+    const totalAmount = currentService.price;
     const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
     const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
 
@@ -556,7 +507,7 @@ export default function SalonBooking() {
             <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Service</span>
-                <span className="font-medium">{selectedService?.name || "Service non défini"}</span>
+                <span className="font-medium">{currentService.name}</span>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Date & Heure</span>
@@ -649,7 +600,55 @@ export default function SalonBooking() {
     );
   };
 
+  // Étape 1: Sélection du service
+  const renderServiceSelection = () => (
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      {/* Header simple avec retour */}
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => window.history.back()}
+              className="h-10 w-10 p-0 rounded-full glass-button hover:glass-effect transition-all duration-300"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="font-semibold text-gray-900">{salon.name}</h1>
+              <p className="text-sm text-gray-700">{salon.location}</p>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div className="max-w-lg mx-auto p-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un service</h2>
+        
+        <div className="space-y-3">
+          {availableServices.map((service) => (
+            <Card 
+              key={service.id}
+              className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
+              onClick={() => handleServiceSelect(service)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
+                    <p className="text-sm text-gray-600">{service.duration}min</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-gray-900">{service.price}€</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   // Étape 2: Sélection du professionnel
   const renderProfessionalSelection = () => (
@@ -675,18 +674,6 @@ export default function SalonBooking() {
 
       <div className="max-w-lg mx-auto p-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
-        
-        {/* Affichage du service pré-sélectionné */}
-        {selectedService && (
-          <div className="glass-card p-3 mb-4 rounded-lg">
-            <p className="text-sm text-gray-700">
-              <span className="font-medium">Service sélectionné :</span> {selectedService.name} - {selectedService.price}€
-            </p>
-            {selectedService.description && (
-              <p className="text-xs text-gray-600 mt-1">{selectedService.description}</p>
-            )}
-          </div>
-        )}
         
         <div className="space-y-3">
           {professionals.map((pro) => (
@@ -1154,7 +1141,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer une partie maintenant, le reste sur place</div>
                   <div className="text-sm text-gray-600">
-                    Payer une partie {Math.round(currentService.price * 0.5)} € maintenant puis le reste {Math.round(currentService.price * 0.5)} € sur place.
+                    Payer une partie {Math.round(service.price * 0.5)} € maintenant puis le reste {Math.round(service.price * 0.5)} € sur place.
                   </div>
                 </div>
               </label>
@@ -1170,7 +1157,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer la totalité</div>
                   <div className="text-sm text-gray-600">
-                    Payer maintenant le montant total {currentService.price},00 € de votre réservation.
+                    Payer maintenant le montant total {service.price},00 € de votre réservation.
                   </div>
                 </div>
               </label>
@@ -1195,21 +1182,21 @@ export default function SalonBooking() {
 
           <div className="bg-white rounded-lg p-4 space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-900">{currentService.name}</span>
-              <span className="text-gray-900">{currentService.price},00 €</span>
+              <span className="text-gray-900">{service.name}</span>
+              <span className="text-gray-900">{service.price},00 €</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">{currentService.price},00 €</span>
+              <span className="text-gray-900">{service.price},00 €</span>
             </div>
             <div className="border-t border-gray-200 pt-3">
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler maintenant</span>
-                <span className="text-gray-900">{Math.round(currentService.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler sur place</span>
-                <span className="text-gray-900">{Math.round(currentService.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
               </div>
             </div>
           </div>
@@ -1379,8 +1366,8 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{selectedService?.name || "Service non défini"}</h3>
-                <p className="text-sm text-gray-600">{selectedService?.duration || 0}min • {selectedService?.price || 0} €</p>
+                <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
+                <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
               </div>
               <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Supprimer
@@ -1551,12 +1538,12 @@ export default function SalonBooking() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: selectedService?.price || 0,
+          amount: 20.50,
           currency: 'eur',
           metadata: {
             salon: salon.name,
             professional: selectedProfessional?.name,
-            service: selectedService?.name || "Service non défini",
+            service: defaultService.name,
             time: selectedSlot?.time,
             date: selectedSlot?.date || selectedDate,
             clientEmail: formData.email || loginData.email
@@ -1877,8 +1864,8 @@ export default function SalonBooking() {
 
   // Préparer les données pour le popup de confirmation
   const bookingDetails = {
-    serviceName: selectedService?.name || "Service non défini",
-    servicePrice: selectedService?.price || 0,  
+    serviceName: selectedService?.name || defaultService.name,
+    servicePrice: selectedService?.price || defaultService.price,  
     serviceDuration: selectedService?.duration || 45,
     appointmentDate: selectedDate || 'lundi 28 juillet 2025',
     appointmentTime: selectedSlot?.time || '10:00',
@@ -1886,7 +1873,7 @@ export default function SalonBooking() {
     clientName: `${formData.firstName} ${formData.lastName}` || 'Client',
     clientEmail: formData.email || 'client@example.com',
     clientPhone: formData.phone || '0612345678',
-    depositRequired: selectedService?.price && selectedService.price > 50 ? Math.round(selectedService.price * 0.3) : 0, // 30% d'acompte si >50€
+    depositRequired: 20.5, // 30% d'acompte
     isWeekendPremium: false
   };
 
@@ -1918,9 +1905,10 @@ export default function SalonBooking() {
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
-      {currentStep === 1 && renderProfessionalSelection()}
-      {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && renderLoginSignup()}
+      {currentStep === 1 && renderServiceSelection()}
+      {currentStep === 2 && renderProfessionalSelection()}
+      {currentStep === 3 && renderDateSelection()}
+      {currentStep === 4 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}

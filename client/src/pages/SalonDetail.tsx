@@ -351,23 +351,9 @@ export default function SalonDetail() {
                       <Button 
                         size="sm" 
                         className="glass-button-neutral"
-                        onClick={() => {
-                          // Stocker les données du service sélectionné dans sessionStorage
-                          const selectedServiceData = {
-                            id: service.id,
-                            name: service.name,
-                            description: service.description,
-                            price: service.price,
-                            duration: service.duration,
-                            category: service.category
-                          };
-                          console.log('💾 Stockage service dans sessionStorage:', selectedServiceData);
-                          sessionStorage.setItem('selectedService', JSON.stringify(selectedServiceData));
-                          console.log('✅ Service stocké, vérification:', sessionStorage.getItem('selectedService'));
-                          setLocation('/salon-booking');
-                        }}
+                        onClick={() => setLocation('/booking')}
                       >
-                        Réserver
+                        Choisir
                       </Button>
                     </div>
                   </div>

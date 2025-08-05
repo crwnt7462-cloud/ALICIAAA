@@ -53,10 +53,6 @@ app.use((req, res, next) => {
   // Créer les salons de test avec photos
   await seedSalons();
   
-  // Générer automatiquement des services pour tous les salons
-  const { generateServicesForAllSalons } = await import("./autoServiceGeneration.js");
-  await generateServicesForAllSalons();
-  
   // ✅ CRÉATION SALON DEMO MODIFIABLE - NÉCESSAIRE POUR ÉDITEUR
   try {
     const { storage } = await import("./storage");
@@ -124,75 +120,6 @@ app.use((req, res, next) => {
 
     await storage.createSalon(salonDemo);
     console.log('✅ Salon démo modifiable créé avec ID: salon-demo');
-    
-    // Créer des services pour le salon démo
-    const demoServices = [
-      {
-        name: "Coupe + Brushing Femme",
-        description: "Coupe de cheveux personnalisée avec shampoing et brushing professionnel",
-        price: "65",
-        duration: 90,
-        categoryId: 1,
-        userId: "demo",
-        isActive: true,
-        isOnlineBookable: true,
-        requiresDeposit: true,
-        depositAmount: "19.50",
-        maxAdvanceBooking: 30,
-        color: "#8B5CF6"
-      },
-      {
-        name: "Coloration Complète",
-        description: "Coloration racines et longueurs avec soin nourrissant",
-        price: "120",
-        duration: 180,
-        categoryId: 1,
-        userId: "demo",
-        isActive: true,
-        isOnlineBookable: true,
-        requiresDeposit: true,
-        depositAmount: "36.00",
-        maxAdvanceBooking: 30,
-        color: "#8B5CF6"
-      },
-      {
-        name: "Mèches ou Balayage",
-        description: "Technique de décoloration partielle pour un effet naturel",
-        price: "95",
-        duration: 150,
-        categoryId: 1,
-        userId: "demo",
-        isActive: true,
-        isOnlineBookable: true,
-        requiresDeposit: true,
-        depositAmount: "28.50",
-        maxAdvanceBooking: 30,
-        color: "#8B5CF6"
-      },
-      {
-        name: "Soin Réparateur",
-        description: "Masque capillaire profond pour cheveux abîmés",
-        price: "35",
-        duration: 45,
-        categoryId: 2,
-        userId: "demo",
-        isActive: true,
-        isOnlineBookable: true,
-        requiresDeposit: false,
-        depositAmount: null,
-        maxAdvanceBooking: 30,
-        color: "#F59E0B"
-      }
-    ];
-
-    for (const service of demoServices) {
-      try {
-        await storage.createService(service);
-        console.log(`✅ Service créé: ${service.name} - ${service.price}€`);
-      } catch (error) {
-        console.log(`ℹ️ Service ${service.name} existe déjà`);
-      }
-    }
     
   } catch (error) {
     console.log('ℹ️ Salon démo existe déjà ou erreur de création:', error);

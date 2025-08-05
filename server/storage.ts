@@ -389,35 +389,67 @@ export class DatabaseStorage implements IStorage {
     return client;
   }
 
-  // Salons
-  async getAllSalons(): Promise<any[]> {
-    try {
-      const allSalons = await db.select().from(salonRegistrations).limit(100);
-      console.log(`🏢 ${allSalons.length} salons trouvés dans salonRegistrations`);
-      return allSalons.map(salon => ({
-        id: salon.id?.toString() || 'salon-' + salon.id,
-        name: salon.salonName,
-        description: salon.salonDescription
-      }));
-    } catch (error) {
-      console.log('ℹ️ Erreur récupération salons:', error);
-      return [];
-    }
-  }
-
   // Services
   async getServices(userId: string): Promise<Service[]> {
-    console.log(`🔍 Recherche services pour userId: "${userId}"`);
-    const result = await db
+    // Return demo services for testing
+    if (userId === "demo") {
+      return [
+        {
+          id: 1,
+          userId: "demo",
+          categoryId: 1,
+          name: "Coupe + Brushing",
+          description: "Coupe personnalisée avec brushing professionnel",
+          price: "45",
+          duration: 60,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: true,
+          depositAmount: "13.50",
+          maxAdvanceBooking: 30,
+          color: "#8B5CF6",
+          createdAt: new Date()
+        },
+        {
+          id: 2,
+          userId: "demo",
+          categoryId: 1,
+          name: "Coloration complète",
+          description: "Coloration avec soins capillaires inclus",
+          price: "85",
+          duration: 120,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: true,
+          depositAmount: "25.50",
+          maxAdvanceBooking: 30,
+          color: "#8B5CF6",
+          createdAt: new Date()
+        },
+        {
+          id: 3,
+          userId: "demo",
+          categoryId: 2,
+          name: "Soin visage relaxant",
+          description: "Nettoyage de peau avec masque hydratant",
+          price: "65",
+          duration: 75,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: true,
+          depositAmount: "19.50",
+          maxAdvanceBooking: 30,
+          color: "#F59E0B",
+          createdAt: new Date()
+        }
+      ];
+    }
+
+    return await db
       .select()
       .from(services)
       .where(eq(services.userId, userId))
       .orderBy(services.name);
-    console.log(`📊 Services trouvés: ${result.length}`);
-    if (result.length > 0) {
-      console.log(`📋 Premier service: ${result[0].name} - ${result[0].price}€`);
-    }
-    return result;
   }
 
   async getActiveServices(userId: string): Promise<any[]> {

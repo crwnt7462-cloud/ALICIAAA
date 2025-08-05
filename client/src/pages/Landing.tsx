@@ -130,7 +130,7 @@ export default function Landing() {
 
         {/* CTA Buttons with Glassmorphism */}
         <div className="space-y-4">
-          {/* Bouton principal - Rechercher un salon */}
+          {/* Bouton Glassmorphism Principal - Rechercher un salon */}
           <motion.button
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -159,25 +159,24 @@ export default function Landing() {
             <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
           </motion.button>
           
-          {/* Bouton de connexion PRO */}
+          {/* Bouton secondaire */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
-            onClick={() => setLocation('/pro-login-modern')}
+            onClick={() => setLocation('/dashboard')}
           >
-            <Users className="w-4 h-4 mr-2" />
-            Connexion Professionnel
+            Accéder au tableau de bord
+            <ArrowRight className="w-4 h-4 ml-2" />
           </motion.button>
           
-          {/* Bouton démo - vers /search aussi */}
           <motion.button 
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-            onClick={() => setLocation('/search')}
+            onClick={() => setLocation('/client-login-modern')}
           >
-            Voir nos salons
+            Espace client
           </motion.button>
         </div>
 
