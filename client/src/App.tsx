@@ -230,6 +230,39 @@ function Router() {
     );
   }
 
+  // Pages de support sans interface professionnelle
+  if (location === '/support/centre-aide') {
+    return (
+      <div className="h-full">
+        <CentreAide />
+      </div>
+    );
+  }
+
+  if (location === '/support/contact') {
+    return (
+      <div className="h-full">
+        <Contact />
+      </div>
+    );
+  }
+
+  if (location === '/support/cgu') {
+    return (
+      <div className="h-full">
+        <CGU />
+      </div>
+    );
+  }
+
+  if (location === '/support/confidentialite') {
+    return (
+      <div className="h-full">
+        <Confidentialite />
+      </div>
+    );
+  }
+
   // Page de connexion professionnelle
   if (location === '/pro-login') {
     return (
@@ -871,10 +904,7 @@ function Router() {
           <Route path="/services/massage" component={MassageService} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/services/manucure" component={ManucureService} />
-          <Route path="/support/centre-aide" component={CentreAide} />
-          <Route path="/support/contact" component={Contact} />
-          <Route path="/support/cgu" component={CGU} />
-          <Route path="/support/confidentialite" component={Confidentialite} />
+
           <Route path="/pro" component={Landing} />
           <Route path="/pro-pages" component={ProPagesManager} />
           <Route path="/salon-settings" component={SalonSettingsModern} />
