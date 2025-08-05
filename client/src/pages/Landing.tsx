@@ -40,7 +40,11 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-white p-4"
+      className="min-h-screen bg-gradient-to-br from-violet-50/30 via-white/80 to-purple-50/20 backdrop-blur-xl p-4"
+      style={{
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+      }}
     >
       <div className="max-w-md mx-auto space-y-8">
         {/* Hero Section */}
