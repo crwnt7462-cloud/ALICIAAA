@@ -128,6 +128,19 @@ export default function SalonBooking() {
     if (token) {
       setIsUserLoggedIn(true);
     }
+    
+    // Récupérer le service pré-sélectionné depuis SalonDetail.tsx
+    const preSelectedService = sessionStorage.getItem('selectedService');
+    if (preSelectedService) {
+      try {
+        const serviceData = JSON.parse(preSelectedService);
+        setSelectedService(serviceData);
+        // Supprimer de sessionStorage après utilisation
+        sessionStorage.removeItem('selectedService');
+      } catch (error) {
+        console.error('Erreur parsing service:', error);
+      }
+    }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -196,7 +209,7 @@ export default function SalonBooking() {
   // Services disponibles selon le professionnel sélectionné
   const availableServices = selectedProfessional?.services || [];
 
-  // Service actuel (sélectionné ou premier du professionnel)
+  // Service actuel (priorité : service pré-sélectionné > premier du professionnel > service par défaut)
   const currentService = selectedService || (availableServices.length > 0 ? availableServices[0] : { id: 0, name: "Service", duration: 30, price: 39 });
 
   // Créneaux horaires disponibles par jour
