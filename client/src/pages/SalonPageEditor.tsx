@@ -261,8 +261,8 @@ export default function SalonPageEditor() {
 
   // Génère le style personnalisé des boutons avec intensité
   const getCustomButtonStyle = () => {
-    // Utilise toujours les couleurs personnalisées (même par défaut)
-    const primaryColor = salonData.customColors?.primary || '#f59e0b';
+    // Utilise violet par défaut pour cohérence avec le thème
+    const primaryColor = salonData.customColors?.primary || '#8b5cf6';
     const intensity = salonData.customColors?.intensity || 35;
     
 
@@ -848,8 +848,8 @@ export default function SalonPageEditor() {
                               <Star 
                                 className="h-4 w-4" 
                                 style={{ 
-                                  color: salonData.customColors?.primary || '#f59e0b',
-                                  fill: salonData.customColors?.primary || '#f59e0b'
+                                  color: salonData.customColors?.primary || '#8b5cf6',
+                                  fill: salonData.customColors?.primary || '#8b5cf6'
                                 }} 
                               />
                               <span className="text-sm font-medium">{professional.rating}</span>
@@ -869,8 +869,8 @@ export default function SalonPageEditor() {
                                 variant="outline" 
                                 className="text-xs"
                                 style={{
-                                  borderColor: salonData.customColors?.primary || '#f59e0b',
-                                  color: salonData.customColors?.primary || '#f59e0b'
+                                  borderColor: salonData.customColors?.primary || '#8b5cf6',
+                                  color: salonData.customColors?.primary || '#8b5cf6'
                                 }}
                               >
                                 {specialty}
@@ -881,7 +881,7 @@ export default function SalonPageEditor() {
                           {/* Disponibilité */}
                           <p 
                             className="text-sm font-medium"
-                            style={{ color: salonData.customColors?.primary || '#f59e0b' }}
+                            style={{ color: salonData.customColors?.primary || '#8b5cf6' }}
                           >
                             {professional.nextSlot}
                           </p>
@@ -1149,7 +1149,7 @@ export default function SalonPageEditor() {
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        value={salonData.customColors?.primary || '#f59e0b'}
+                        value={salonData.customColors?.primary || '#8b5cf6'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           primary: e.target.value
@@ -1157,13 +1157,13 @@ export default function SalonPageEditor() {
                         className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
                       />
                       <Input
-                        value={salonData.customColors?.primary || '#f59e0b'}
+                        value={salonData.customColors?.primary || '#8b5cf6'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           primary: e.target.value
                         })}
                         className="flex-1 text-sm font-mono"
-                        placeholder="#f59e0b"
+                        placeholder="#8b5cf6"
                       />
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les boutons de réservation</p>
@@ -1174,7 +1174,7 @@ export default function SalonPageEditor() {
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        value={salonData.customColors?.accent || '#d97706'}
+                        value={salonData.customColors?.accent || '#7c3aed'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           accent: e.target.value
@@ -1182,13 +1182,13 @@ export default function SalonPageEditor() {
                         className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
                       />
                       <Input
-                        value={salonData.customColors?.accent || '#d97706'}
+                        value={salonData.customColors?.accent || '#7c3aed'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           accent: e.target.value
                         })}
                         className="flex-1 text-sm font-mono"
-                        placeholder="#d97706"
+                        placeholder="#7c3aed"
                       />
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
@@ -1213,7 +1213,7 @@ export default function SalonPageEditor() {
                       })}
                       className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#f59e0b'}40 0%, ${salonData.customColors?.primary || '#f59e0b'}80 100%)`
+                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#8b5cf6'}40 0%, ${salonData.customColors?.primary || '#8b5cf6'}80 100%)`
                       }}
                     />
                     <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
@@ -1272,7 +1272,7 @@ export default function SalonPageEditor() {
                 <div 
                   className="p-6 rounded-lg"
                   style={{ 
-                    background: `linear-gradient(135deg, ${salonData.customColors?.primary || '#f59e0b'}10 0%, ${salonData.customColors?.accent || '#d97706'}05 100%)` 
+                    background: `linear-gradient(135deg, ${salonData.customColors?.primary || '#8b5cf6'}10 0%, ${salonData.customColors?.accent || '#7c3aed'}05 100%)` 
                   }}
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
