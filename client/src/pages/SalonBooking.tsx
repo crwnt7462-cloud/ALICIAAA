@@ -445,13 +445,60 @@ export default function SalonBooking() {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
   };
 
-  // Fonction pour gérer la confirmation du popup
-  const handleConfirmationPopupConfirm = () => {
-    setShowConfirmationPopup(false);
-    // Déclencher l'affichage du bottom sheet de paiement après validation du popup
-    setTimeout(() => {
-      setShowPaymentSheet(true);
-    }, 300);
+  // Fonction pour gérer la confirmation du popup avec empreinte bancaire
+  const handleConfirmationPopupConfirm = async () => {
+    try {
+      setShowConfirmationPopup(false);
+      console.log('🎯 Confirmation réservation avec empreinte bancaire...');
+
+      // Calculer montants pour empreinte bancaire
+      const totalAmount = service.price;
+      const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
+      const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
+      const isDeposit = depositAmount > 0;
+
+      console.log('💰 Montants calculés:', { totalAmount, depositAmount, amountToPay, isDeposit });
+
+      // Créer Payment Intent avec empreinte bancaire si acompte
+      const paymentResponse = await apiRequest('POST', '/api/create-payment-intent', {
+        amount: amountToPay,
+        currency: 'eur',
+        isDeposit: isDeposit,
+        bankAuthorization: isDeposit, // Empreinte bancaire pour acomptes
+        metadata: {
+          salon_id: 'bonhomme-paris-archives',
+          client_email: formData.email,
+          service_name: service.name,
+          appointment_date: selectedDate?.toISOString() || new Date().toISOString(),
+          appointment_time: selectedSlot?.time || '10:00',
+          total_amount: totalAmount,
+          deposit_amount: depositAmount,
+          payment_type: isDeposit ? 'deposit_with_authorization' : 'full_payment'
+        }
+      });
+
+      if (!paymentResponse.success) {
+        throw new Error(paymentResponse.error || 'Erreur création paiement');
+      }
+
+      console.log('✅ Payment Intent créé', isDeposit ? '(avec empreinte bancaire)' : '');
+      
+      // Sauvegarder client secret pour Stripe
+      setClientSecret(paymentResponse.clientSecret);
+      
+      // Afficher interface de paiement
+      setTimeout(() => {
+        setShowPaymentSheet(true);
+      }, 300);
+      
+    } catch (error: any) {
+      console.error('❌ Erreur confirmation réservation:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de confirmer la réservation",
+        variant: "destructive",
+      });
+    }
   };
 
   // Fonction pour fermer le popup de confirmation

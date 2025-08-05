@@ -1499,24 +1499,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Stripe not configured. Please set STRIPE_SECRET_KEY." });
       }
 
-      const { amount, currency = 'eur', metadata = {} } = req.body;
+      const { amount, currency = 'eur', metadata = {}, isDeposit = false, bankAuthorization = false } = req.body;
       
       if (!amount || amount <= 0) {
         console.error('❌ Montant invalide:', amount);
         return res.status(400).json({ error: "Invalid amount" });
       }
 
-      console.log('🔧 Création Payment Intent Stripe...');
+      console.log('🔧 Création Payment Intent Stripe...', bankAuthorization ? '(Empreinte bancaire)' : '');
       
-      // Créer un Payment Intent avec Stripe
-      const paymentIntent = await stripe.paymentIntents.create({
+      // Configuration pour empreinte bancaire
+      const paymentIntentData: any = {
         amount: Math.round(amount * 100), // Convertir en centimes
         currency,
-        metadata,
+        metadata: {
+          ...metadata,
+          type: isDeposit ? 'deposit' : 'full_payment',
+          bank_authorization: bankAuthorization ? 'true' : 'false'
+        },
         automatic_payment_methods: {
           enabled: true,
         },
-      });
+      };
+
+      // Si c'est une empreinte bancaire pour acompte
+      if (isDeposit && bankAuthorization) {
+        paymentIntentData.capture_method = 'manual'; // Autorisation sans capture immédiate
+        paymentIntentData.metadata.authorization_type = 'bank_hold';
+        console.log('🏦 Configuration empreinte bancaire activée');
+      }
+      
+      // Créer un Payment Intent avec Stripe
+      const paymentIntent = await stripe.paymentIntents.create(paymentIntentData);
       
       console.log('✅ Payment Intent créé:', paymentIntent.id);
       
@@ -1525,7 +1539,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
         amount: amount,
-        currency: currency
+        currency: currency,
+        requiresAuthorization: bankAuthorization,
+        captureMethod: paymentIntentData.capture_method || 'automatic'
       });
     } catch (error: any) {
       console.error("❌ Erreur création Payment Intent:", error);

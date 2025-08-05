@@ -69,6 +69,20 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Design final**: Login = dégradé rose/blanc, IA = violet uniforme sur tous éléments
 - **IA complète**: Boutons haut violets, zone saisie violette, boutons Send/Mic violets, texte centré visible
 
+### ✅ **SYSTÈME EMPREINTE BANCAIRE INTÉGRÉ**
+- **Date**: 05/08/2025
+- **Changement**: Ajout empreinte bancaire sécurisée pour les acomptes avec validation transparente
+- **Impact**: Sécurisation des réservations et réduction des annulations de dernière minute
+- **Détails**:
+  - ✅ Section empreinte bancaire visuelle dans BookingConfirmationPopup
+  - ✅ Case à cocher obligatoire spécifique pour autorisation bancaire
+  - ✅ Affichage transparent : montant, conditions de débit, déduction automatique
+  - ✅ Backend Stripe configuré pour autorisation manuelle (capture_method: 'manual')
+  - ✅ API /api/create-payment-intent enrichie avec paramètres bankAuthorization
+  - ✅ Logique différenciée : empreinte pour acomptes, paiement direct pour montants <50€
+  - ✅ Métadonnées Stripe détaillées pour traçabilité des autorisations
+- **Sécurité**: Autorisation sans capture immédiate, débit uniquement si annulation tardive
+
 ### ✅ **POPUP CONFIRMATION RÉSERVATION INTÉGRÉ**
 - **Date**: 03/08/2025
 - **Changement**: Intégration complète du popup de confirmation AVANT validation paiement
