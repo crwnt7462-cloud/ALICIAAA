@@ -42,9 +42,8 @@ export default function Landing() {
       transition={{ duration: 0.8 }}
       className="min-h-screen p-4"
       style={{
-        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(255, 255, 255, 0.85) 30%, rgba(255, 255, 255, 0.95) 70%, rgba(124, 58, 237, 0.1) 100%)',
-        backdropFilter: 'blur(25px)',
-        WebkitBackdropFilter: 'blur(25px)',
+        background: '#f8f9fa',
+        backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%)',
       }}
     >
       <div className="max-w-md mx-auto space-y-8">
