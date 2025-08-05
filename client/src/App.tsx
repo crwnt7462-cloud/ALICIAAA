@@ -151,6 +151,7 @@ import SalonBooking from "@/pages/SalonBooking";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
+import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
 
 
 function Router() {
@@ -211,7 +212,14 @@ function Router() {
     );
   }
 
-
+  // Page de test des comptes d'abonnement
+  if (location === '/test-subscription-accounts') {
+    return (
+      <div className="h-full">
+        <SubscriptionTestLogin />
+      </div>
+    );
+  }
 
   // Page de connexion professionnelle
   if (location === '/pro-login') {
