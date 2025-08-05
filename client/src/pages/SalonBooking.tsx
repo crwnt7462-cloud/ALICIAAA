@@ -310,11 +310,6 @@ export default function SalonBooking() {
     ));
   };
 
-  const handleServiceSelect = (service: any) => {
-    setSelectedService(service);
-    setCurrentStep(3);
-  };
-
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional);
     setCurrentStep(2);
@@ -640,75 +635,7 @@ export default function SalonBooking() {
     );
   };
 
-  // Étape 1: Sélection du service
-  const renderServiceSelection = () => (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header simple avec retour */}
-      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => window.history.back()}
-              className="h-10 w-10 p-0 rounded-full glass-button hover:glass-effect transition-all duration-300"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="font-semibold text-gray-900">{salon.name}</h1>
-              <p className="text-sm text-gray-700">{salon.location}</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div className="max-w-lg mx-auto p-4">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un service</h2>
-        
-        {selectedProfessional ? (
-          <div>
-            <div className="glass-card p-3 mb-4 rounded-lg">
-              <p className="text-sm text-gray-700">
-                <span className="font-medium">Professionnel sélectionné :</span> {selectedProfessional.name}
-              </p>
-            </div>
-            
-            <div className="space-y-3">
-              {availableServices.map((service) => (
-                <Card 
-                  key={service.id}
-                  className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
-                  onClick={() => handleServiceSelect(service)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
-                        <p className="text-sm text-gray-600">{service.duration}min</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-gray-900">{service.price}€</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="glass-card p-6 text-center">
-            <p className="text-gray-600">Veuillez d'abord sélectionner un professionnel</p>
-            <Button 
-              onClick={() => setCurrentStep(1)}
-              className="mt-4 glass-button hover:glass-effect text-black"
-            >
-              Retour aux professionnels
-            </Button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
   // Étape 2: Sélection du professionnel
   const renderProfessionalSelection = () => (
@@ -734,6 +661,18 @@ export default function SalonBooking() {
 
       <div className="max-w-lg mx-auto p-4">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
+        
+        {/* Affichage du service pré-sélectionné */}
+        {selectedService && (
+          <div className="glass-card p-3 mb-4 rounded-lg">
+            <p className="text-sm text-gray-700">
+              <span className="font-medium">Service sélectionné :</span> {selectedService.name} - {selectedService.price}€
+            </p>
+            {selectedService.description && (
+              <p className="text-xs text-gray-600 mt-1">{selectedService.description}</p>
+            )}
+          </div>
+        )}
         
         <div className="space-y-3">
           {professionals.map((pro) => (
@@ -1966,9 +1905,8 @@ export default function SalonBooking() {
   return (
     <>
       {currentStep === 1 && renderProfessionalSelection()}
-      {currentStep === 2 && renderServiceSelection()}
-      {currentStep === 3 && renderDateSelection()}
-      {currentStep === 4 && renderLoginSignup()}
+      {currentStep === 2 && renderDateSelection()}
+      {currentStep === 3 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}
