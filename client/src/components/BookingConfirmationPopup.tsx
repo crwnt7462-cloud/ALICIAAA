@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react';
+import { X, CreditCard } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CreditCard } from 'lucide-react';
 
 interface BookingDetails {
   serviceName: string;
@@ -74,20 +72,32 @@ export default function BookingConfirmationPopup({
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg border-0 bg-white/95 backdrop-blur-xl shadow-2xl p-0 gap-0 rounded-2xl">
-        {/* Header moderne */}
-        <div className="px-6 py-5 border-b border-gray-100">
-          <DialogTitle className="text-center text-xl font-semibold text-gray-900">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      {/* Modal Shell */}
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
+        {/* Header avec bouton fermer */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="text-xl font-semibold text-gray-900">
             Confirmation de réservation
-          </DialogTitle>
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
         </div>
 
-        <div className="px-6 py-5 space-y-6">
+        {/* Contenu scrollable */}
+        <div className="px-6 py-5 space-y-5 max-h-[60vh] overflow-y-auto">
           {/* Récapitulatif principal */}
-          <div className="bg-gray-50/80 rounded-xl p-5 text-center border-0">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">{bookingDetails.serviceName}</h3>
+          <div className="bg-gray-50 rounded-xl p-5 text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              {bookingDetails.serviceName}
+            </h3>
             <div className="space-y-1 text-gray-600 mb-4">
               <p className="text-base">{formatDateForDisplay()}</p>
               <p className="text-base">à {bookingDetails.appointmentTime}</p>
@@ -102,13 +112,13 @@ export default function BookingConfirmationPopup({
           </div>
 
           {/* Salon */}
-          <div className="bg-gray-50/80 rounded-xl p-4 border-0">
+          <div className="bg-gray-50 rounded-xl p-4">
             <h4 className="font-semibold text-gray-900 mb-1">{salonInfo.name}</h4>
             <p className="text-sm text-gray-600">{salonInfo.address}</p>
           </div>
 
-          {/* Conditions simples */}
-          <div className="bg-amber-50/80 rounded-xl p-4 border-0">
+          {/* Conditions importantes */}
+          <div className="bg-amber-50 rounded-xl p-4">
             <h5 className="font-medium text-gray-900 mb-2">Conditions importantes</h5>
             <div className="text-sm text-gray-700 space-y-1">
               <p>• Annulation gratuite jusqu'à 24h avant</p>
@@ -118,7 +128,7 @@ export default function BookingConfirmationPopup({
           </div>
 
           {/* Case à cocher obligatoire */}
-          <div className="flex items-start space-x-3 p-4 bg-blue-50/50 rounded-xl border-0">
+          <div className="flex items-start space-x-3 p-4 bg-blue-50 rounded-xl">
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
@@ -127,26 +137,25 @@ export default function BookingConfirmationPopup({
             />
             <label
               htmlFor="accept-policies"
-              className="text-sm text-gray-700 leading-relaxed flex-1"
+              className="text-sm text-gray-700 leading-relaxed flex-1 cursor-pointer"
             >
               J'accepte les conditions du salon et confirme ma réservation. Je comprends que l'acompte sera débité immédiatement.
             </label>
           </div>
         </div>
 
-        {/* Boutons modernes */}
-        <div className="flex gap-3 px-6 py-5 border-t border-gray-100 bg-gray-50/30">
-          <Button
-            variant="outline"
+        {/* Footer avec boutons */}
+        <div className="flex gap-3 px-6 py-5 border-t border-gray-100 bg-gray-50/50">
+          <button
             onClick={onClose}
-            className="flex-1 h-12 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+            className="flex-1 h-12 border border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-colors rounded-lg font-medium"
           >
             Modifier
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="flex-1 h-12 bg-gray-900 hover:bg-gray-800 text-white border-0 transition-colors disabled:bg-gray-400"
+            className="flex-1 h-12 bg-gray-900 hover:bg-gray-800 text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -159,9 +168,9 @@ export default function BookingConfirmationPopup({
                 Confirmer et payer
               </>
             )}
-          </Button>
+          </button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
