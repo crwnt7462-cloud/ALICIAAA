@@ -1466,6 +1466,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Business Settings / Salon Policies Routes
+  app.get('/api/business-settings/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const settings = await storage.getBusinessSettings(userId);
+      res.json({ success: true, settings });
+    } catch (error) {
+      console.error("Error fetching business settings:", error);
+      res.status(500).json({ error: "Failed to fetch business settings" });
+    }
+  });
+
+  app.put('/api/business-settings/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const settings = await storage.updateBusinessSettings(userId, req.body);
+      res.json({ success: true, settings });
+    } catch (error) {
+      console.error("Error updating business settings:", error);
+      res.status(500).json({ error: "Failed to update business settings" });
+    }
+  });
+
   // Routes Stripe pour paiements réels
   app.post('/api/create-payment-intent', async (req, res) => {
     try {

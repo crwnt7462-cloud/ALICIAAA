@@ -1883,6 +1883,7 @@ export default function SalonBooking() {
     address: salon.location,
     phone: '01 42 25 76 89', 
     email: 'contact@salon.com',
+    userId: 'demo', // ID du propriétaire du salon pour récupérer les conditions personnalisées
     rating: 4.8,
     reviewCount: 156,
     policies: {

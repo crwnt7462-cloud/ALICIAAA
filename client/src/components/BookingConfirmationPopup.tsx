@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CreditCard } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useQuery } from '@tanstack/react-query';
 
 interface BookingDetails {
   serviceName: string;
@@ -22,6 +23,7 @@ interface SalonInfo {
   address: string;
   phone: string;
   email: string;
+  userId?: string; // ID du propriétaire du salon
   rating?: number;
   reviewCount?: number;
   website?: string;
@@ -53,8 +55,46 @@ export default function BookingConfirmationPopup({
 }: BookingConfirmationPopupProps) {
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
 
+  // Récupérer les conditions personnalisées du salon
+  const { data: businessSettings } = useQuery({
+    queryKey: [`/api/business-settings/${salonInfo.userId}`],
+    enabled: isOpen && !!salonInfo.userId,
+    retry: false,
+  });
+
   const finalPrice = bookingDetails.servicePrice - (bookingDetails.discount || 0);
   const depositAmount = bookingDetails.depositRequired || 0;
+
+  // Utiliser les conditions personnalisées si disponibles, sinon utiliser les conditions par défaut
+  const getPolicy = (type: 'cancellation' | 'late' | 'deposit' | 'modification') => {
+    if (businessSettings?.settings) {
+      switch (type) {
+        case 'cancellation':
+          return businessSettings.settings.cancellationPolicy || "Annulation gratuite 24h avant";
+        case 'late':
+          return businessSettings.settings.latePolicy || "Retard +15min = annulation";
+        case 'deposit':
+          return businessSettings.settings.depositPolicy || (depositAmount > 0 ? `Acompte ${depositAmount}€` : "");
+        case 'modification':
+          return businessSettings.settings.modificationPolicy || "Modification gratuite jusqu'à 24h avant";
+        default:
+          return '';
+      }
+    }
+    // Fallback vers les politiques par défaut
+    switch (type) {
+      case 'cancellation':
+        return salonInfo.policies?.cancellation || "Annulation gratuite 24h avant";
+      case 'late':
+        return salonInfo.policies?.lateness || "Retard +15min = annulation";
+      case 'deposit':
+        return salonInfo.policies?.deposit || (depositAmount > 0 ? `Acompte ${depositAmount}€` : "");
+      case 'modification':
+        return salonInfo.policies?.rescheduling || "Modification gratuite jusqu'à 24h avant";
+      default:
+        return '';
+    }
+  };
 
   // Fonction de formatage date sécurisée
   const formatDateForDisplay = () => {
@@ -116,13 +156,14 @@ export default function BookingConfirmationPopup({
             <p className="text-xs text-gray-600">{salonInfo.address}</p>
           </div>
 
-          {/* Conditions condensées */}
+          {/* Conditions personnalisées dynamiques */}
           <div className="bg-amber-50 rounded-lg p-2">
-            <p className="font-semibold text-gray-900 text-xs mb-1">Conditions</p>
+            <p className="font-semibold text-gray-900 text-xs mb-1">Conditions du salon</p>
             <div className="text-xs text-gray-700 space-y-0.5">
-              <p>• Annulation gratuite 24h avant</p>
-              <p>• Retard +15min = annulation</p>
-              {depositAmount > 0 && <p>• Acompte {depositAmount}€</p>}
+              <p>• {getPolicy('cancellation')}</p>
+              <p>• {getPolicy('late')}</p>
+              {depositAmount > 0 && <p>• {getPolicy('deposit')}</p>}
+              <p>• {getPolicy('modification')}</p>
             </div>
           </div>
 
