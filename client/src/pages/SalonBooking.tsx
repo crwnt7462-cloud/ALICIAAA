@@ -193,13 +193,18 @@ export default function SalonBooking() {
     location: "Paris Archives"
   };
 
-  // Service par défaut
-  const service = {
-    id: 1,
-    name: "Coupe Bonhomme",
-    duration: 30,
-    price: 39
-  };
+  // Services disponibles avec prix différents
+  const availableServices = [
+    { id: 1, name: "Coupe + Shampoing", duration: 45, price: 39 },
+    { id: 2, name: "Coloration", duration: 90, price: 65 },
+    { id: 3, name: "Soins Hydratants", duration: 60, price: 120 },
+    { id: 4, name: "Forfait Complet", duration: 120, price: 180 },
+    { id: 5, name: "Brushing Express", duration: 30, price: 25 },
+    { id: 6, name: "Mèches + Coupe", duration: 105, price: 95 }
+  ];
+
+  // Service actuel (sélectionné ou par défaut)
+  const currentService = selectedService || availableServices[0];
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -269,18 +274,18 @@ export default function SalonBooking() {
 
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
-    setCurrentStep(3);
+    setCurrentStep(2);
   };
 
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional);
-    setCurrentStep(2);
+    setCurrentStep(3);
   };
 
   const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
     // Aller à l'étape de connexion/inscription
-    setCurrentStep(3);
+    setCurrentStep(4);
   };
 
   const handleDateSelect = (dateInfo: any) => {
@@ -317,7 +322,7 @@ export default function SalonBooking() {
         localStorage.setItem('clientData', JSON.stringify(data.client));
         
         setIsUserLoggedIn(true);
-        setCurrentStep(4);
+        setCurrentStep(5);
         
         toast({
           title: "Compte créé avec succès !",
@@ -332,16 +337,16 @@ export default function SalonBooking() {
           salonId: 'bonhomme-paris-archives',
           salonName: salon.name,
           salonLocation: salon.location,
-          serviceName: service.name,
-          servicePrice: service.price,
-          serviceDuration: service.duration,
+          serviceName: currentService.name,
+          servicePrice: currentService.price,
+          serviceDuration: currentService.duration,
           selectedDate: selectedDate || 'lundi 28 juillet 2025',
           selectedTime: selectedSlot?.time || '10:00',
           clientName: `${formData.firstName} ${formData.lastName}`,
           clientEmail: formData.email,
           clientPhone: formData.phone,
           professionalName: selectedProfessional?.name || 'Lucas',
-          totalPrice: service.price
+          totalPrice: currentService.price
         };
         sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
@@ -424,7 +429,7 @@ export default function SalonBooking() {
   // Fonction pour créer le Payment Intent selon le mode choisi
   const createPaymentIntent = async () => {
     try {
-      const totalAmount = service.price;
+      const totalAmount = currentService.price;
       const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
       const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
       const isDeposit = depositAmount > 0;
@@ -437,7 +442,7 @@ export default function SalonBooking() {
         metadata: {
           salon_id: 'bonhomme-paris-archives',
           client_email: formData.email,
-          service_name: service.name,
+          service_name: currentService.name,
           appointment_date: selectedDate || new Date().toISOString().split('T')[0],
           appointment_time: selectedSlot?.time || '10:00',
           total_amount: totalAmount,
@@ -465,7 +470,7 @@ export default function SalonBooking() {
 
   // Bottom Sheet de paiement avec choix du mode
   const renderPaymentBottomSheet = () => {
-    const totalAmount = service.price;
+    const totalAmount = currentService.price;
     const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
     const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
 
@@ -502,7 +507,7 @@ export default function SalonBooking() {
             <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Service</span>
-                <span className="font-medium">{service.name}</span>
+                <span className="font-medium">{currentService.name}</span>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span className="text-gray-600">Date & Heure</span>
@@ -595,7 +600,57 @@ export default function SalonBooking() {
     );
   };
 
-  // Étape 1: Sélection du professionnel
+  // Étape 1: Sélection du service
+  const renderServiceSelection = () => (
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      {/* Header simple avec retour */}
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => window.history.back()}
+              className="h-10 w-10 p-0 rounded-full glass-button hover:glass-effect transition-all duration-300"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="font-semibold text-gray-900">{salon.name}</h1>
+              <p className="text-sm text-gray-700">{salon.location}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto p-4">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un service</h2>
+        
+        <div className="space-y-3">
+          {availableServices.map((service) => (
+            <Card 
+              key={service.id}
+              className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
+              onClick={() => handleServiceSelect(service)}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
+                    <p className="text-sm text-gray-600">{service.duration}min</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-gray-900">{service.price}€</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Étape 2: Sélection du professionnel
   const renderProfessionalSelection = () => (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header simple avec retour */}
@@ -663,82 +718,6 @@ export default function SalonBooking() {
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  // Étape 2: Affichage du service par défaut et redirection vers dates
-  const renderServiceSelection = () => (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header simple avec retour */}
-      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => setCurrentStep(1)}
-              className="h-10 w-10 p-0 rounded-full"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="font-semibold text-gray-900">Service sélectionné</h1>
-              <p className="text-sm text-gray-600">Choisir la date</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-lg mx-auto p-4">
-        <div className="bg-white rounded-lg p-4 border border-gray-100 mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="text-xl">{selectedProfessional?.image}</div>
-            <div>
-              <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
-              <p className="text-sm text-gray-600">{selectedProfessional?.specialties?.join(', ')}</p>
-            </div>
-          </div>
-          <div className="border-t pt-3">
-            <h4 className="font-medium text-gray-900">{defaultService.name}</h4>
-            <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price}€</p>
-          </div>
-        </div>
-
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un créneau</h2>
-        
-        <div className="space-y-3">
-          {dateStates.map((dateInfo, index) => (
-            <div key={index} className="bg-white rounded-lg border border-gray-200">
-              <div 
-                className="p-4 flex items-center justify-between cursor-pointer"
-                onClick={() => toggleDateExpansion(index)}
-              >
-                <span className="font-medium text-gray-900">{dateInfo.date}</span>
-                {dateInfo.expanded ? (
-                  <ChevronUp className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
-                )}
-              </div>
-              
-              {dateInfo.expanded && (
-                <div className="border-t border-gray-100 p-4">
-                  <div className="grid grid-cols-3 gap-2">
-                    {timeSlots.map((time) => (
-                      <Button
-                        key={time}
-                        onClick={() => handleTimeSlotSelect(time)}
-                        className="text-sm py-2 px-3 glass-button hover:glass-effect text-black transition-all duration-300"
-                      >
-                        {time}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
           ))}
         </div>
       </div>
@@ -881,8 +860,8 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{service.name}</h3>
-                <p className="text-sm text-gray-600">{service.duration}min • {service.price} €</p>
+                <h3 className="font-semibold text-gray-900">{currentService.name}</h3>
+                <p className="text-sm text-gray-600">{currentService.duration}min • {currentService.price} €</p>
               </div>
               <Button variant="ghost" className="text-violet-600 text-sm font-medium">
                 Supprimer
@@ -1926,9 +1905,10 @@ export default function SalonBooking() {
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
-      {currentStep === 1 && renderProfessionalSelection()}
-      {currentStep === 2 && renderDateSelection()}
-      {currentStep === 3 && renderLoginSignup()}
+      {currentStep === 1 && renderServiceSelection()}
+      {currentStep === 2 && renderProfessionalSelection()}
+      {currentStep === 3 && renderDateSelection()}
+      {currentStep === 4 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}
