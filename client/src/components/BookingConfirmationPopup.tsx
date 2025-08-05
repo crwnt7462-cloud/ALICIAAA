@@ -76,18 +76,23 @@ export default function BookingConfirmationPopup({
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Modal Simple */}
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full relative overflow-hidden">
-        {/* Bouton fermer */}
-        <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors z-10"
-        >
-          <X className="w-5 h-5 text-gray-600" />
-        </button>
+      {/* Modal comme dans l'image */}
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full relative overflow-hidden">
+        {/* Header avec titre et X */}
+        <div className="flex items-center justify-between p-6 pb-4">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Confirmer la réservation
+          </h2>
+          <button 
+            onClick={onClose}
+            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
         
         {/* Contenu */}
-        <div className="p-6 pt-12 space-y-6">
+        <div className="px-6 pb-6 space-y-5">
           {/* Récapitulatif principal */}
           <div className="bg-gray-50 rounded-xl p-5 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
@@ -137,14 +142,12 @@ export default function BookingConfirmationPopup({
               J'accepte les conditions du salon et confirme ma réservation. Je comprends que l'acompte sera débité immédiatement.
             </label>
           </div>
-        </div>
-        
-        {/* Footer avec bouton unique */}
-        <div className="px-6 pb-6">
+
+          {/* Bouton comme dans l'image */}
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="w-full h-14 bg-violet-600/90 backdrop-blur-md border border-violet-500/30 text-white hover:bg-violet-700/90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-2xl font-semibold flex items-center justify-center"
+            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center mt-6"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -153,7 +156,7 @@ export default function BookingConfirmationPopup({
               </div>
             ) : (
               <>
-                <CreditCard className="h-5 w-5 mr-2" />
+                <CreditCard className="h-4 w-4 mr-2" />
                 Confirmer et payer
               </>
             )}
