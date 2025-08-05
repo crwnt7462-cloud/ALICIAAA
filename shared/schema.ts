@@ -609,12 +609,6 @@ export const businessSettings = pgTable("business_settings", {
   showPrices: boolean("show_prices").default(true),
   showDuration: boolean("show_duration").default(true),
   enableInstantBooking: boolean("enable_instant_booking").default(true),
-  // Custom booking policies
-  customBookingPolicies: jsonb("custom_booking_policies"),
-  cancellationPolicy: text("cancellation_policy").default("Annulation gratuite 24h avant"),
-  latePolicy: text("late_policy").default("Retard +15min = annulation"),
-  depositPolicy: text("deposit_policy"),
-  modificationPolicy: text("modification_policy").default("Modification gratuite jusqu'à 24h avant"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

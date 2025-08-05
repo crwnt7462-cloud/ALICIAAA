@@ -1466,29 +1466,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Business Settings / Salon Policies Routes
-  app.get('/api/business-settings/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const settings = await storage.getBusinessSettings(userId);
-      res.json({ success: true, settings });
-    } catch (error) {
-      console.error("Error fetching business settings:", error);
-      res.status(500).json({ error: "Failed to fetch business settings" });
-    }
-  });
-
-  app.put('/api/business-settings/:userId', async (req, res) => {
-    try {
-      const { userId } = req.params;
-      const settings = await storage.updateBusinessSettings(userId, req.body);
-      res.json({ success: true, settings });
-    } catch (error) {
-      console.error("Error updating business settings:", error);
-      res.status(500).json({ error: "Failed to update business settings" });
-    }
-  });
-
   // Routes Stripe pour paiements réels
   app.post('/api/create-payment-intent', async (req, res) => {
     try {
@@ -1499,38 +1476,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(500).json({ error: "Stripe not configured. Please set STRIPE_SECRET_KEY." });
       }
 
-      const { amount, currency = 'eur', metadata = {}, isDeposit = false, bankAuthorization = false } = req.body;
+      const { amount, currency = 'eur', metadata = {} } = req.body;
       
       if (!amount || amount <= 0) {
         console.error('❌ Montant invalide:', amount);
         return res.status(400).json({ error: "Invalid amount" });
       }
 
-      console.log('🔧 Création Payment Intent Stripe...', bankAuthorization ? '(Empreinte bancaire)' : '');
+      console.log('🔧 Création Payment Intent Stripe...');
       
-      // Configuration pour empreinte bancaire
-      const paymentIntentData: any = {
+      // Créer un Payment Intent avec Stripe
+      const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convertir en centimes
         currency,
-        metadata: {
-          ...metadata,
-          type: isDeposit ? 'deposit' : 'full_payment',
-          bank_authorization: bankAuthorization ? 'true' : 'false'
-        },
+        metadata,
         automatic_payment_methods: {
           enabled: true,
         },
-      };
-
-      // Si c'est une empreinte bancaire pour acompte
-      if (isDeposit && bankAuthorization) {
-        paymentIntentData.capture_method = 'manual'; // Autorisation sans capture immédiate
-        paymentIntentData.metadata.authorization_type = 'bank_hold';
-        console.log('🏦 Configuration empreinte bancaire activée');
-      }
-      
-      // Créer un Payment Intent avec Stripe
-      const paymentIntent = await stripe.paymentIntents.create(paymentIntentData);
+      });
       
       console.log('✅ Payment Intent créé:', paymentIntent.id);
       
@@ -1539,9 +1502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
         amount: amount,
-        currency: currency,
-        requiresAuthorization: bankAuthorization,
-        captureMethod: paymentIntentData.capture_method || 'automatic'
+        currency: currency
       });
     } catch (error: any) {
       console.error("❌ Erreur création Payment Intent:", error);

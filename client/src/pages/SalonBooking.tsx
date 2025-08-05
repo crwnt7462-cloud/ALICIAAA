@@ -113,8 +113,7 @@ export default function SalonBooking() {
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('partial');
-  const [bankingMethod, setBankingMethod] = useState('card'); // 'card' ou 'authorization' // partial, full, gift
+  const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginData, setLoginData] = useState({
@@ -193,18 +192,13 @@ export default function SalonBooking() {
     location: "Paris Archives"
   };
 
-  // Services disponibles avec prix différents
-  const availableServices = [
-    { id: 1, name: "Coupe + Shampoing", duration: 45, price: 39 },
-    { id: 2, name: "Coloration", duration: 90, price: 65 },
-    { id: 3, name: "Soins Hydratants", duration: 60, price: 120 },
-    { id: 4, name: "Forfait Complet", duration: 120, price: 180 },
-    { id: 5, name: "Brushing Express", duration: 30, price: 25 },
-    { id: 6, name: "Mèches + Coupe", duration: 105, price: 95 }
-  ];
-
-  // Service actuel (sélectionné ou par défaut)
-  const currentService = selectedService || availableServices[0];
+  // Service par défaut
+  const service = {
+    id: 1,
+    name: "Coupe Bonhomme",
+    duration: 30,
+    price: 39
+  };
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -274,18 +268,18 @@ export default function SalonBooking() {
 
   const handleServiceSelect = (service: any) => {
     setSelectedService(service);
-    setCurrentStep(2);
+    setCurrentStep(3);
   };
 
   const handleProfessionalSelect = (professional: any) => {
     setSelectedProfessional(professional);
-    setCurrentStep(3);
+    setCurrentStep(2);
   };
 
   const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
     // Aller à l'étape de connexion/inscription
-    setCurrentStep(4);
+    setCurrentStep(3);
   };
 
   const handleDateSelect = (dateInfo: any) => {
@@ -294,7 +288,46 @@ export default function SalonBooking() {
     setCurrentStep(4);
   };
 
+  // Créer un Payment Intent quand l'utilisateur se connecte/s'inscrit
+  const createPaymentIntent = async () => {
+    try {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 20.50, // Montant de l'acompte
+          currency: 'eur',
+          metadata: {
+            salonName: salon.name,
+            serviceName: service.name,
+            clientEmail: formData.email,
+            appointmentDate: selectedDate,
+            appointmentTime: selectedSlot?.time
+          }
+        }),
+      });
 
+      const data = await response.json();
+      
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+      } else {
+        toast({
+          title: "Erreur",
+          description: data.error || "Erreur lors de la préparation du paiement",
+          variant: "destructive"
+        });
+      }
+    } catch (err) {
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion. Veuillez réessayer.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Fonction pour créer le compte et afficher la section de paiement
   const handleAccountCreation = async () => {
@@ -322,7 +355,7 @@ export default function SalonBooking() {
         localStorage.setItem('clientData', JSON.stringify(data.client));
         
         setIsUserLoggedIn(true);
-        setCurrentStep(5);
+        setCurrentStep(4);
         
         toast({
           title: "Compte créé avec succès !",
@@ -337,16 +370,16 @@ export default function SalonBooking() {
           salonId: 'bonhomme-paris-archives',
           salonName: salon.name,
           salonLocation: salon.location,
-          serviceName: currentService.name,
-          servicePrice: currentService.price,
-          serviceDuration: currentService.duration,
+          serviceName: service.name,
+          servicePrice: service.price,
+          serviceDuration: service.duration,
           selectedDate: selectedDate || 'lundi 28 juillet 2025',
           selectedTime: selectedSlot?.time || '10:00',
           clientName: `${formData.firstName} ${formData.lastName}`,
           clientEmail: formData.email,
           clientPhone: formData.phone,
           professionalName: selectedProfessional?.name || 'Lucas',
-          totalPrice: currentService.price
+          totalPrice: service.price
         };
         sessionStorage.setItem('currentBooking', JSON.stringify(bookingData));
 
@@ -415,7 +448,7 @@ export default function SalonBooking() {
   // Fonction pour gérer la confirmation du popup
   const handleConfirmationPopupConfirm = () => {
     setShowConfirmationPopup(false);
-    // Afficher interface de paiement avec choix du mode
+    // Déclencher l'affichage du bottom sheet de paiement après validation du popup
     setTimeout(() => {
       setShowPaymentSheet(true);
     }, 300);
@@ -426,231 +459,7 @@ export default function SalonBooking() {
     setShowConfirmationPopup(false);
   };
 
-  // Fonction pour créer le Payment Intent selon le mode choisi
-  const createPaymentIntent = async () => {
-    try {
-      const totalAmount = currentService.price;
-      const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
-      const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
-      const isDeposit = depositAmount > 0;
-
-      const paymentResponse = await apiRequest('POST', '/api/create-payment-intent', {
-        amount: amountToPay,
-        currency: 'eur',
-        isDeposit: isDeposit,
-        bankAuthorization: bankingMethod === 'authorization', // Empreinte bancaire si sélectionnée
-        metadata: {
-          salon_id: 'bonhomme-paris-archives',
-          client_email: formData.email,
-          service_name: currentService.name,
-          appointment_date: selectedDate || new Date().toISOString().split('T')[0],
-          appointment_time: selectedSlot?.time || '10:00',
-          total_amount: totalAmount,
-          deposit_amount: depositAmount,
-          payment_type: bankingMethod === 'authorization' ? 'bank_authorization' : 'card_payment'
-        }
-      });
-
-      if (!paymentResponse.success) {
-        throw new Error(paymentResponse.error || 'Erreur création paiement');
-      }
-
-      setClientSecret(paymentResponse.clientSecret);
-      console.log('✅ Payment Intent créé', bankingMethod === 'authorization' ? '(Empreinte bancaire)' : '(Carte bancaire)');
-      
-    } catch (error: any) {
-      console.error('❌ Erreur création Payment Intent:', error);
-      toast({
-        title: "Erreur",
-        description: error.message || "Impossible de créer le paiement",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Bottom Sheet de paiement avec choix du mode
-  const renderPaymentBottomSheet = () => {
-    const totalAmount = currentService.price;
-    const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
-    const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
-
-    return (
-      <>
-        {/* Overlay */}
-        <div 
-          className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
-            showPaymentSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
-          onClick={() => setShowPaymentSheet(false)}
-        />
-        
-        {/* Bottom Sheet */}
-        <div 
-          className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border border-white/40 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
-            showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
-          }`}
-          style={{ maxHeight: '90vh' }}
-        >
-          {/* Handle barre de glissement */}
-          <div className="flex justify-center pt-3 pb-2">
-            <div className="w-12 h-1 bg-white/40 rounded-full"></div>
-          </div>
-
-          <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-bold text-black mb-1">Finaliser le paiement</h2>
-              <p className="text-gray-700">Choisissez votre mode de paiement sécurisé</p>
-            </div>
-
-            {/* Récapitulatif */}
-            <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Service</span>
-                <span className="font-medium">{currentService.name}</span>
-              </div>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-gray-600">Date & Heure</span>
-                <span className="font-medium">{selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}</span>
-              </div>
-              <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
-                <span className="text-gray-600">Professionnel</span>
-                <span className="font-medium">{selectedProfessional?.name || 'Lucas'}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-semibold text-gray-900">
-                  {depositAmount > 0 ? 'Acompte' : 'Total'}
-                </span>
-                <span className="font-bold text-gray-900 text-lg">{amountToPay},00 €</span>
-              </div>
-            </div>
-
-            {/* Choix mode de paiement */}
-            <div className="mb-6">
-              <h3 className="font-semibold text-black mb-4">Mode de paiement</h3>
-              <div className="space-y-3">
-                {/* Carte bancaire */}
-                <label className="flex items-start space-x-3 p-4 bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg cursor-pointer hover:border-violet-300 transition-colors">
-                  <input 
-                    type="radio" 
-                    name="bankingMethod" 
-                    value="card"
-                    checked={bankingMethod === 'card'}
-                    onChange={(e) => setBankingMethod(e.target.value)}
-                    className="mt-1 accent-violet-600"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
-                      <span className="font-medium text-black">Carte bancaire</span>
-                    </div>
-                    <p className="text-xs text-gray-600">
-                      Paiement immédiat de {amountToPay}€ par carte bancaire
-                    </p>
-                  </div>
-                </label>
-
-                {/* Empreinte bancaire - seulement pour les acomptes */}
-                {depositAmount > 0 && (
-                  <label className="flex items-start space-x-3 p-4 bg-blue-50/80 backdrop-blur-sm border border-blue-200/50 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
-                    <input 
-                      type="radio" 
-                      name="bankingMethod" 
-                      value="authorization"
-                      checked={bankingMethod === 'authorization'}
-                      onChange={(e) => setBankingMethod(e.target.value)}
-                      className="mt-1 accent-blue-600"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-6 bg-green-600 rounded text-white text-xs font-bold flex items-center justify-center">🔒</div>
-                        <span className="font-medium text-black">Empreinte bancaire</span>
-                      </div>
-                      <div className="text-xs text-gray-600 space-y-1">
-                        <p>• Autorisation de {amountToPay}€ sans débit immédiat</p>
-                        <p>• Débit uniquement en cas d'annulation tardive</p>
-                        <p>• Solde restant ({totalAmount - amountToPay}€) payé sur place</p>
-                      </div>
-                    </div>
-                  </label>
-                )}
-              </div>
-            </div>
-
-            {/* Bouton de confirmation */}
-            <Button 
-              onClick={async () => {
-                await createPaymentIntent();
-                // Rediriger vers la page de paiement Stripe
-                setTimeout(() => {
-                  setLocation('/stripe-payment');
-                }, 500);
-              }}
-              className="w-full glass-button hover:glass-effect text-black py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300"
-            >
-              {bankingMethod === 'authorization' ? '🔒 Autoriser l\'empreinte' : '💳 Payer maintenant'}
-            </Button>
-
-            <p className="text-xs text-gray-600 text-center mt-4">
-              Paiement sécurisé par Stripe • Données cryptées SSL
-            </p>
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  // Étape 1: Sélection du service
-  const renderServiceSelection = () => (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header simple avec retour */}
-      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => window.history.back()}
-              className="h-10 w-10 p-0 rounded-full glass-button hover:glass-effect transition-all duration-300"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div>
-              <h1 className="font-semibold text-gray-900">{salon.name}</h1>
-              <p className="text-sm text-gray-700">{salon.location}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-lg mx-auto p-4">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un service</h2>
-        
-        <div className="space-y-3">
-          {availableServices.map((service) => (
-            <Card 
-              key={service.id}
-              className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
-              onClick={() => handleServiceSelect(service)}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-gray-900 mb-1">{service.name}</h3>
-                    <p className="text-sm text-gray-600">{service.duration}min</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-gray-900">{service.price}€</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  // Étape 2: Sélection du professionnel
+  // Étape 1: Sélection du professionnel
   const renderProfessionalSelection = () => (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
       {/* Header simple avec retour */}
@@ -718,6 +527,82 @@ export default function SalonBooking() {
                 </div>
               </CardContent>
             </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Étape 2: Affichage du service par défaut et redirection vers dates
+  const renderServiceSelection = () => (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header simple avec retour */}
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30 sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => setCurrentStep(1)}
+              className="h-10 w-10 p-0 rounded-full"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="font-semibold text-gray-900">Service sélectionné</h1>
+              <p className="text-sm text-gray-600">Choisir la date</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-lg mx-auto p-4">
+        <div className="bg-white rounded-lg p-4 border border-gray-100 mb-6">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="text-xl">{selectedProfessional?.image}</div>
+            <div>
+              <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
+              <p className="text-sm text-gray-600">{selectedProfessional?.specialties?.join(', ')}</p>
+            </div>
+          </div>
+          <div className="border-t pt-3">
+            <h4 className="font-medium text-gray-900">{defaultService.name}</h4>
+            <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price}€</p>
+          </div>
+        </div>
+
+        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un créneau</h2>
+        
+        <div className="space-y-3">
+          {dateStates.map((dateInfo, index) => (
+            <div key={index} className="bg-white rounded-lg border border-gray-200">
+              <div 
+                className="p-4 flex items-center justify-between cursor-pointer"
+                onClick={() => toggleDateExpansion(index)}
+              >
+                <span className="font-medium text-gray-900">{dateInfo.date}</span>
+                {dateInfo.expanded ? (
+                  <ChevronUp className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-gray-400" />
+                )}
+              </div>
+              
+              {dateInfo.expanded && (
+                <div className="border-t border-gray-100 p-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {timeSlots.map((time) => (
+                      <Button
+                        key={time}
+                        onClick={() => handleTimeSlotSelect(time)}
+                        className="text-sm py-2 px-3 glass-button hover:glass-effect text-black transition-all duration-300"
+                      >
+                        {time}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>
@@ -860,8 +745,8 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{currentService.name}</h3>
-                <p className="text-sm text-gray-600">{currentService.duration}min • {currentService.price} €</p>
+                <h3 className="font-semibold text-gray-900">{service.name}</h3>
+                <p className="text-sm text-gray-600">{service.duration}min • {service.price} €</p>
               </div>
               <Button variant="ghost" className="text-violet-600 text-sm font-medium">
                 Supprimer
@@ -1039,7 +924,123 @@ export default function SalonBooking() {
     </div>
   );
 
+  // Bottom Sheet de Paiement - Style Apple Pay/Planity
+  const renderPaymentBottomSheet = () => (
+    <>
+      {/* Overlay */}
+      <div 
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+          showPaymentSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setShowPaymentSheet(false)}
+      />
+      
+      {/* Bottom Sheet */}
+      <div 
+        className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border border-white/40 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
+          showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        style={{ maxHeight: '90vh' }}
+      >
+        {/* Handle barre de glissement */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-12 h-1 bg-white/40 rounded-full"></div>
+        </div>
 
+        <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-black mb-1">Finaliser le paiement</h2>
+            <p className="text-gray-700">Réglez votre acompte de manière sécurisée</p>
+          </div>
+
+          {/* Récapitulatif rapide */}
+          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Service</span>
+              <span className="font-medium">{service.name}</span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Date & Heure</span>
+              <span className="font-medium">{selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}</span>
+            </div>
+            <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
+              <span className="text-gray-600">Professionnel</span>
+              <span className="font-medium">{selectedProfessional?.name || 'Lucas'}</span>
+            </div>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-600">Prix total</span>
+              <span className="font-medium">{service.price},00 €</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-gray-900">Acompte</span>
+              <span className="font-bold text-gray-900 text-lg">20,50 €</span>
+            </div>
+          </div>
+
+          {/* Sélection méthode de paiement */}
+          <div className="mb-6">
+            <h3 className="font-semibold text-black mb-3">Méthode de paiement</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 p-3 bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg">
+                <div className="w-5 h-5 rounded-full border-2 border-gray-400 bg-gray-400 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
+                  <span className="font-medium">Carte bancaire</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Composant Stripe intégré */}
+          {clientSecret ? (
+            <Elements stripe={stripePromise} options={{ clientSecret }}>
+              <StripePaymentForm 
+                onSuccess={() => {
+                  setShowPaymentSheet(false);
+                  toast({
+                    title: "Paiement réussi !",
+                    description: "Votre réservation a été confirmée.",
+                    variant: "success" as any
+                  });
+                  setTimeout(() => {
+                    setLocation('/');
+                  }, 2000);
+                }}
+                clientSecret={clientSecret}
+              />
+            </Elements>
+          ) : (
+            <div className="text-center py-8">
+              <div className="w-8 h-8 border-4 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Préparation du paiement...</p>
+            </div>
+          )}
+
+          {/* Sécurité */}
+          <div className="flex items-center justify-center space-x-2 mt-4 mb-2 text-sm text-gray-500">
+            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
+            <span>Paiement sécurisé par Stripe</span>
+          </div>
+
+          {/* Bouton annulation */}
+          <div className="mt-4">
+            <Button 
+              onClick={() => setShowPaymentSheet(false)}
+              variant="outline"
+              className="w-full py-3 rounded-full font-medium glass-button hover:glass-effect text-black transition-all duration-300"
+            >
+              Annuler
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   // Étape 4: Supprimée - nom/prénom maintenant dans étape 3
   const renderAccountCompletion = () => (
@@ -1882,7 +1883,6 @@ export default function SalonBooking() {
     address: salon.location,
     phone: '01 42 25 76 89', 
     email: 'contact@salon.com',
-    userId: 'demo', // ID du propriétaire du salon pour récupérer les conditions personnalisées
     rating: 4.8,
     reviewCount: 156,
     policies: {
@@ -1905,10 +1905,9 @@ export default function SalonBooking() {
   // Navigation entre les étapes avec connexion/inscription
   return (
     <>
-      {currentStep === 1 && renderServiceSelection()}
-      {currentStep === 2 && renderProfessionalSelection()}
-      {currentStep === 3 && renderDateSelection()}
-      {currentStep === 4 && renderLoginSignup()}
+      {currentStep === 1 && renderProfessionalSelection()}
+      {currentStep === 2 && renderDateSelection()}
+      {currentStep === 3 && renderLoginSignup()}
       
       {/* Bottom Sheet de Paiement Stripe réel - S'ouvre après connexion/inscription */}
       {showPaymentSheet && renderPaymentBottomSheet()}

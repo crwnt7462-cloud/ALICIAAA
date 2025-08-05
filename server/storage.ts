@@ -149,10 +149,6 @@ export interface IStorage {
   getNotifications(userId: string): Promise<any[]>;
   createNotification(userId: string, notification: any): Promise<any>;
   
-  // Business Settings / Salon Policies
-  getBusinessSettings(userId: string): Promise<any | undefined>;
-  updateBusinessSettings(userId: string, settings: any): Promise<any>;
-  
   // IA Conversations
   saveConversation(userId: string, conversationId: string, conversation: any): Promise<any>;
   getConversations(userId: string): Promise<any[]>;
@@ -1451,60 +1447,6 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Error fetching service by ID:', error);
       return null;
-    }
-  }
-
-  // Business Settings / Salon Policies
-  async getBusinessSettings(userId: string): Promise<any | undefined> {
-    try {
-      const { businessSettings } = await import("@shared/schema");
-      const [settings] = await db
-        .select()
-        .from(businessSettings)
-        .where(eq(businessSettings.userId, userId))
-        .limit(1);
-      
-      return settings;
-    } catch (error) {
-      console.error('Error fetching business settings:', error);
-      return undefined;
-    }
-  }
-
-  async updateBusinessSettings(userId: string, settingsData: any): Promise<any> {
-    try {
-      const { businessSettings } = await import("@shared/schema");
-      
-      // Check if settings exist
-      const existingSettings = await this.getBusinessSettings(userId);
-      
-      if (existingSettings) {
-        // Update existing settings
-        const [updatedSettings] = await db
-          .update(businessSettings)
-          .set({
-            ...settingsData,
-            updatedAt: new Date()
-          })
-          .where(eq(businessSettings.userId, userId))
-          .returning();
-        
-        return updatedSettings;
-      } else {
-        // Create new settings
-        const [newSettings] = await db
-          .insert(businessSettings)
-          .values({
-            userId,
-            ...settingsData
-          })
-          .returning();
-        
-        return newSettings;
-      }
-    } catch (error) {
-      console.error('Error updating business settings:', error);
-      throw error;
     }
   }
 }

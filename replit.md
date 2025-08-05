@@ -69,21 +69,6 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Design final**: Login = dégradé rose/blanc, IA = violet uniforme sur tous éléments
 - **IA complète**: Boutons haut violets, zone saisie violette, boutons Send/Mic violets, texte centré visible
 
-### ✅ **CHOIX PAIEMENT CARTE/EMPREINTE INTÉGRÉ**
-- **Date**: 05/08/2025
-- **Changement**: Interface de choix entre carte bancaire et empreinte bancaire dans le bottom sheet de paiement
-- **Impact**: Flexibilité maximale pour les clients avec options de paiement transparentes
-- **Détails**:
-  - ✅ Bottom sheet redesigné avec choix "Carte bancaire" vs "Empreinte bancaire"
-  - ✅ Option empreinte visible uniquement pour les acomptes (montants >50€)
-  - ✅ Descriptions claires pour chaque mode : paiement immédiat vs autorisation
-  - ✅ Interface glassmorphism cohérente avec design global
-  - ✅ Backend différencié selon le choix utilisateur
-  - ✅ API createPaymentIntent adaptée avec paramètre bankAuthorization dynamique
-  - ✅ Boutons adaptatifs : "💳 Payer maintenant" vs "🔒 Autoriser l'empreinte"
-  - ✅ Calculs automatiques : acompte/total selon montant service
-- **UX**: Choix utilisateur éclairé, transparence totale des conditions
-
 ### ✅ **POPUP CONFIRMATION RÉSERVATION INTÉGRÉ**
 - **Date**: 03/08/2025
 - **Changement**: Intégration complète du popup de confirmation AVANT validation paiement
