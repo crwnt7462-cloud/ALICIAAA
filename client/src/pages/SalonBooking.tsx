@@ -236,7 +236,9 @@ export default function SalonBooking() {
       specialties: ["Coupe", "Barbe"],
       rating: 4.9,
       nextSlot: "Aujourd'hui 10:00",
-      image: "👨‍💼"
+      image: "👨‍💼",
+      photoUrl: null,
+      experience: "5 ans d'expérience"
     },
     {
       id: 2,
@@ -244,7 +246,9 @@ export default function SalonBooking() {
       specialties: ["Coloration", "Soin"],
       rating: 4.8,
       nextSlot: "Aujourd'hui 11:30",
-      image: "👩‍💼"
+      image: "👩‍💼",
+      photoUrl: null,
+      experience: "7 ans d'expérience"
     },
     {
       id: 3,
@@ -252,7 +256,9 @@ export default function SalonBooking() {
       specialties: ["Coupe Moderne", "Style"],
       rating: 4.7,
       nextSlot: "Demain 9:00",
-      image: "👨‍🎨"
+      image: "👨‍🎨",
+      photoUrl: null,
+      experience: "3 ans d'expérience"
     },
     {
       id: 4,
@@ -260,7 +266,9 @@ export default function SalonBooking() {
       specialties: ["Permanente", "Défrisage"],
       rating: 4.9,
       nextSlot: "Demain 14:00",
-      image: "👩‍🔬"
+      image: "👩‍🔬",
+      photoUrl: null,
+      experience: "10 ans d'expérience"
     }
   ];
 
@@ -451,11 +459,13 @@ export default function SalonBooking() {
         }
       });
 
-      if (!paymentResponse.success) {
-        throw new Error(paymentResponse.error || 'Erreur création paiement');
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Erreur création paiement');
       }
 
-      setClientSecret(paymentResponse.clientSecret);
+      const data = await paymentResponse.json();
+      setClientSecret(data.clientSecret);
       console.log('✅ Payment Intent créé', bankingMethod === 'authorization' ? '(Empreinte bancaire)' : '(Carte bancaire)');
       
     } catch (error: any) {
@@ -1141,7 +1151,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer une partie maintenant, le reste sur place</div>
                   <div className="text-sm text-gray-600">
-                    Payer une partie {Math.round(service.price * 0.5)} € maintenant puis le reste {Math.round(service.price * 0.5)} € sur place.
+                    Payer une partie {Math.round(currentService.price * 0.5)} € maintenant puis le reste {Math.round(currentService.price * 0.5)} € sur place.
                   </div>
                 </div>
               </label>
@@ -1157,7 +1167,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer la totalité</div>
                   <div className="text-sm text-gray-600">
-                    Payer maintenant le montant total {service.price},00 € de votre réservation.
+                    Payer maintenant le montant total {currentService.price},00 € de votre réservation.
                   </div>
                 </div>
               </label>
@@ -1182,21 +1192,21 @@ export default function SalonBooking() {
 
           <div className="bg-white rounded-lg p-4 space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-900">{service.name}</span>
-              <span className="text-gray-900">{service.price},00 €</span>
+              <span className="text-gray-900">{currentService.name}</span>
+              <span className="text-gray-900">{currentService.price},00 €</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">{service.price},00 €</span>
+              <span className="text-gray-900">{currentService.price},00 €</span>
             </div>
             <div className="border-t border-gray-200 pt-3">
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler maintenant</span>
-                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round(currentService.price * 0.5)},50 €</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler sur place</span>
-                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round(currentService.price * 0.5)},50 €</span>
               </div>
             </div>
           </div>
