@@ -150,11 +150,11 @@ export default function ProLoginModern() {
                 </button>
               </div>
 
-              {/* Bouton connexion - même style que "Search" */}
+              {/* Bouton connexion - style violet glassmorphism */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full h-14 ${getGenericGlassButton(0)} rounded-2xl text-lg font-medium`}
+                className="w-full h-14 glass-button-violet rounded-2xl text-lg font-medium text-black"
               >
                 {isLoading ? "Connexion..." : "Sign in"}
               </button>
