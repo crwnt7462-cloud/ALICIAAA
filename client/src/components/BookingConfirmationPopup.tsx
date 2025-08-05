@@ -75,57 +75,37 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Shell Modal comme connexion/paiement */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-200 overflow-hidden">
-        {/* Barre de titre shell système */}
-        <div className="h-8 bg-gray-100 rounded-t-2xl flex items-center justify-between px-4">
-          <div className="flex space-x-2">
-            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-          </div>
-          <span className="text-xs text-gray-600 font-medium">Confirmation</span>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            <X className="w-4 h-4" />
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {/* Popup moderne comme l'image */}
+      <div className="relative">
+        {/* Fond coloré arrondi */}
+        <div className="bg-gradient-to-b from-pink-400 to-pink-500 rounded-3xl p-8 max-w-sm w-full shadow-2xl">
+          {/* Bouton X */}
+          <button 
+            onClick={onClose}
+            className="absolute top-4 right-4 text-pink-800/70 hover:text-pink-800"
+          >
+            <X className="w-6 h-6" />
           </button>
-        </div>
-        
-        {/* Contenu du shell */}
-        <div className="bg-white p-6 text-center space-y-6 max-h-[75vh] overflow-y-auto">
-          {/* Date et heure comme dans l'image */}
-          <div className="space-y-1">
-            <p className="text-lg text-gray-700">{formatDateForDisplay()}</p>
-            <p className="text-lg text-gray-700">à {bookingDetails.appointmentTime}</p>
-            <p className="text-lg text-gray-700">avec {bookingDetails.staffName}</p>
-          </div>
-
-          {/* Prix principal exactement comme l'image */}
-          <div className="py-6">
-            <p className="text-5xl font-light text-gray-900">{bookingDetails.servicePrice}€</p>
-            {depositAmount > 0 && (
-              <p className="text-sm text-gray-600 mt-2">Acompte requis: {depositAmount}€</p>
-            )}
-          </div>
-
-          {/* Nom du salon exactement comme l'image */}
-          <div className="space-y-1">
-            <h3 className="text-xl font-medium text-gray-900">{salonInfo.name}</h3>
-            <p className="text-gray-600">{salonInfo.address}</p>
-          </div>
-
-          {/* Conditions importantes dans shell */}
-          <div className="bg-yellow-50 rounded-lg p-4 text-left">
-            <h4 className="font-semibold text-gray-900 mb-3">Conditions importantes</h4>
-            <div className="text-sm text-gray-700 space-y-1">
-              <p>• Annulation gratuite jusqu'à 24h avant</p>
-              <p>• Retard de +15min = annulation automatique</p>
-              {depositAmount > 0 && <p>• Acompte de {depositAmount}€ requis pour confirmer</p>}
+          
+          {/* Icône centrale */}
+          <div className="flex justify-center mb-6 mt-4">
+            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+              <CreditCard className="w-8 h-8 text-white" />
             </div>
           </div>
+        </div>
+        
+        {/* Zone de contenu blanche */}
+        <div className="bg-white rounded-2xl shadow-xl mx-4 -mt-6 relative z-10 p-6 text-center">
+          {/* Message principal */}
+          <p className="text-gray-600 text-base leading-relaxed mb-6">
+            Confirmez votre réservation pour le {formatDateForDisplay()} à {bookingDetails.appointmentTime} avec {bookingDetails.staffName} chez {salonInfo.name}.
+            {depositAmount > 0 && ` Un acompte de ${depositAmount}€ sera débité.`}
+          </p>
 
-          {/* Case à cocher dans shell */}
-          <div className="flex items-start space-x-3 text-left">
+          {/* Case à cocher */}
+          <div className="flex items-start space-x-3 text-left mb-6">
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
@@ -134,30 +114,28 @@ export default function BookingConfirmationPopup({
             />
             <label
               htmlFor="accept-policies"
-              className="text-sm text-gray-700 leading-relaxed flex-1 cursor-pointer"
+              className="text-sm text-gray-600 leading-relaxed flex-1 cursor-pointer"
             >
-              J'accepte les conditions du salon et confirme ma réservation. Je comprends que l'acompte sera débité immédiatement.
+              J'accepte les conditions du salon et confirme ma réservation.
             </label>
           </div>
 
-          {/* Bouton shell */}
-          <button
-            onClick={onConfirm}
-            disabled={!acceptedPolicies || isLoading}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
-          >
-            {isLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                Traitement...
-              </div>
-            ) : (
-              <>
-                <CreditCard className="h-4 w-4 mr-2" />
-                Confirmer et payer
-              </>
-            )}
-          </button>
+          {/* Boutons comme dans l'image */}
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 h-12 bg-gray-100 text-gray-600 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+            >
+              Later
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={!acceptedPolicies || isLoading}
+              className="flex-1 h-12 bg-pink-500 text-white rounded-xl font-medium hover:bg-pink-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "..." : "Confirmer"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
