@@ -462,13 +462,25 @@ export default function PublicLanding() {
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
-              <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1"
+              <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1 transition-all duration-300 hover:scale-105 cursor-pointer"
                     style={{
                       background: 'rgba(255, 255, 255, 0.25)',
                       backdropFilter: 'blur(25px)',
                       border: '1px solid rgba(168, 85, 247, 0.4)',
                       boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15)',
                       color: '#6b21a8'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)';
+                      e.currentTarget.style.backdropFilter = 'blur(30px)';
+                      e.currentTarget.style.border = '1px solid rgba(168, 85, 247, 0.6)';
+                      e.currentTarget.style.boxShadow = '0 12px 40px rgba(168, 85, 247, 0.25)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
+                      e.currentTarget.style.backdropFilter = 'blur(25px)';
+                      e.currentTarget.style.border = '1px solid rgba(168, 85, 247, 0.4)';
+                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(168, 85, 247, 0.15)';
                     }}>
                 <AnimatePresence mode="wait">
                   <motion.span
