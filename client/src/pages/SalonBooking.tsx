@@ -128,25 +128,6 @@ export default function SalonBooking() {
     if (token) {
       setIsUserLoggedIn(true);
     }
-
-    // Récupérer les paramètres URL du service sélectionné
-    const urlParams = new URLSearchParams(window.location.search);
-    const serviceId = urlParams.get('serviceId');
-    const serviceName = urlParams.get('serviceName');
-    const servicePrice = urlParams.get('servicePrice');
-    const serviceDuration = urlParams.get('serviceDuration');
-
-    if (serviceId && serviceName && servicePrice && serviceDuration) {
-      // Service sélectionné depuis la page salon - passer directement à l'étape professionnel
-      const preSelectedService = {
-        id: parseInt(serviceId),
-        name: decodeURIComponent(serviceName),
-        price: parseInt(servicePrice),
-        duration: parseInt(serviceDuration)
-      };
-      setSelectedService(preSelectedService);
-      setCurrentStep(2); // Aller directement à la sélection du professionnel
-    }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
