@@ -151,8 +151,29 @@ export default function SalonBooking() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Restaurer l'état de réservation si l'utilisateur revient de la connexion
+  // Récupérer le service sélectionné depuis sessionStorage au chargement
   useEffect(() => {
+    // Vérifier s'il y a un service présélectionné
+    const savedService = sessionStorage.getItem('selectedService');
+    console.log('🔍 Service dans sessionStorage:', savedService);
+    
+    if (savedService) {
+      try {
+        const serviceData = JSON.parse(savedService);
+        console.log('💰 Service sélectionné au rendu:', serviceData);
+        setSelectedService(serviceData);
+        // Aller directement à l'étape de sélection du professionnel
+        setCurrentStep(2);
+      } catch (error) {
+        console.error('Erreur lors de la récupération du service:', error);
+      }
+    } else {
+      console.log('⚠️ Aucun service trouvé dans sessionStorage - récupération des services réels');
+      // Utiliser le service par défaut si aucun service n'est présélectionné
+      setSelectedService(defaultService);
+    }
+
+    // Restaurer l'état de réservation si l'utilisateur revient de la connexion
     const savedBooking = sessionStorage.getItem('currentBooking');
     if (savedBooking) {
       try {
@@ -163,13 +184,10 @@ export default function SalonBooking() {
           if (bookingState.selectedTime) {
             setSelectedSlot({ time: bookingState.selectedTime, date: bookingState.selectedDate });
           }
-          // Restaurer le professionnel et service sélectionnés
+          // Restaurer le professionnel sélectionné
           if (bookingState.professionalName) {
             const prof = professionals.find(p => p.name === bookingState.professionalName);
             if (prof) setSelectedProfessional(prof);
-          }
-          if (bookingState.serviceName) {
-            setSelectedService(defaultService);
           }
         }
       } catch (error) {
@@ -181,8 +199,6 @@ export default function SalonBooking() {
     const userToken = localStorage.getItem('clientToken');
     if (userToken) {
       setIsUserLoggedIn(true);
-      // L'utilisateur est connecté mais on n'ouvre PAS automatiquement le paiement
-      // Il faut qu'il passe par le flux normal de réservation
     }
   }, []);
 
@@ -565,8 +581,13 @@ export default function SalonBooking() {
             </div>
           </div>
           <div className="border-t pt-3">
-            <h4 className="font-medium text-gray-900">{defaultService.name}</h4>
-            <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price}€</p>
+            <h4 className="font-medium text-gray-900">{selectedService?.name || defaultService.name}</h4>
+            <p className="text-sm text-gray-600">
+              {selectedService?.duration || defaultService.duration} • {selectedService?.price || defaultService.price}€
+            </p>
+            {selectedService?.description && (
+              <p className="text-xs text-gray-500 mt-1">{selectedService.description}</p>
+            )}
           </div>
         </div>
 
@@ -745,8 +766,13 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{service.name}</h3>
-                <p className="text-sm text-gray-600">{service.duration}min • {service.price} €</p>
+                <h3 className="font-semibold text-gray-900">{selectedService?.name || service.name}</h3>
+                <p className="text-sm text-gray-600">
+                  {selectedService?.duration || service.duration}min • {selectedService?.price || service.price} €
+                </p>
+                {selectedService?.description && (
+                  <p className="text-xs text-gray-500 mt-1">{selectedService.description}</p>
+                )}
               </div>
               <Button variant="ghost" className="text-violet-600 text-sm font-medium">
                 Supprimer
@@ -1158,7 +1184,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer la totalité</div>
                   <div className="text-sm text-gray-600">
-                    Payer maintenant le montant total {service.price},00 € de votre réservation.
+                    Payer maintenant le montant total {selectedService?.price || service.price},00 € de votre réservation.
                   </div>
                 </div>
               </label>
@@ -1183,21 +1209,21 @@ export default function SalonBooking() {
 
           <div className="bg-white rounded-lg p-4 space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-900">{service.name}</span>
-              <span className="text-gray-900">{service.price},00 €</span>
+              <span className="text-gray-900">{selectedService?.name || service.name}</span>
+              <span className="text-gray-900">{selectedService?.price || service.price},00 €</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">{service.price},00 €</span>
+              <span className="text-gray-900">{selectedService?.price || service.price},00 €</span>
             </div>
             <div className="border-t border-gray-200 pt-3">
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler maintenant</span>
-                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)},50 €</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler sur place</span>
-                <span className="text-gray-900">{Math.round(service.price * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)},50 €</span>
               </div>
             </div>
           </div>

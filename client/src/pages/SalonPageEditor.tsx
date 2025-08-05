@@ -671,7 +671,20 @@ export default function SalonPageEditor() {
                                 whileTap={{ scale: 0.95 }}
                                 className="mt-2 px-4 py-2 text-sm font-semibold rounded-xl"
                                 style={getCustomButtonStyle()}
-                                onClick={() => setLocation('/salon-booking')}
+                                onClick={() => {
+                                  // Stocker les données du service sélectionné
+                                  const serviceData = {
+                                    id: service.id,
+                                    name: service.name,
+                                    description: service.description,
+                                    duration: service.duration,
+                                    price: service.price,
+                                    category: category.name
+                                  };
+                                  sessionStorage.setItem('selectedService', JSON.stringify(serviceData));
+                                  console.log('💰 Service sélectionné stocké:', serviceData);
+                                  setLocation('/salon-booking');
+                                }}
                               >
                                 Réserver
                               </motion.button>
@@ -1302,7 +1315,11 @@ export default function SalonPageEditor() {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-3 rounded-xl font-semibold"
                   style={getCustomButtonStyle()}
-                  onClick={() => setLocation('/salon-booking')}
+                  onClick={() => {
+                    // Aller à la réservation sans service préselectionné
+                    sessionStorage.removeItem('selectedService');
+                    setLocation('/salon-booking');
+                  }}
                 >
                   Réserver après lecture des avis
                 </motion.button>
@@ -1325,7 +1342,11 @@ export default function SalonPageEditor() {
             whileTap={{ scale: 0.95 }}
             className="w-full h-16 rounded-xl font-semibold text-lg"
             style={getCustomButtonStyle()}
-            onClick={() => setLocation('/salon-booking')}
+            onClick={() => {
+              // Aller à la réservation sans service préselectionné
+              sessionStorage.removeItem('selectedService');
+              setLocation('/salon-booking');
+            }}
           >
             Réserver maintenant
           </motion.button>
