@@ -161,37 +161,6 @@ export default function ProLoginModern() {
               </button>
             </form>
 
-            {/* Navigation liens */}
-            <div className="mt-6 flex justify-between items-center">
-              <button
-                type="button"
-                onClick={() => setLocation('/')}
-                className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour à l'accueil
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => setLocation('/business-registration')}
-                className="text-gray-600 hover:text-gray-800 text-sm transition-colors"
-              >
-                Pas encore inscrit ? Créer un compte →
-              </button>
-            </div>
-            
-            {/* Lien vers les comptes de test */}
-            <div className="mt-4 text-center border-t border-gray-200 pt-4">
-              <button
-                type="button"
-                onClick={() => setLocation('/test-subscription-accounts')}
-                className="text-xs text-gray-500 hover:text-violet-600 transition-colors"
-              >
-                🧪 Tester les 3 plans d'abonnement (comptes démo)
-              </button>
-            </div>
-
           </div>
         </div>
       </div>
