@@ -462,26 +462,38 @@ export default function PublicLanding() {
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
-              <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1 transition-all duration-300 hover:scale-105 cursor-pointer"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.25)',
-                      backdropFilter: 'blur(25px)',
-                      border: '1px solid rgba(168, 85, 247, 0.4)',
-                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15)',
-                      color: '#6b21a8'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.35)';
-                      e.currentTarget.style.backdropFilter = 'blur(30px)';
-                      e.currentTarget.style.border = '1px solid rgba(168, 85, 247, 0.6)';
-                      e.currentTarget.style.boxShadow = '0 12px 40px rgba(168, 85, 247, 0.25)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)';
-                      e.currentTarget.style.backdropFilter = 'blur(25px)';
-                      e.currentTarget.style.border = '1px solid rgba(168, 85, 247, 0.4)';
-                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(168, 85, 247, 0.15)';
-                    }}>
+              <motion.span 
+                className="inline-block rounded-xl relative overflow-hidden text-center px-4 py-2 cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.1) 100%)',
+                  backdropFilter: 'blur(30px)',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                  boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                  color: '#6b21a8'
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(168, 85, 247, 0.2) 100%)',
+                  boxShadow: '0 12px 40px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                }}
+                animate={{
+                  boxShadow: [
+                    '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                    '0 12px 40px rgba(168, 85, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                    '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                  ]
+                }}
+                transition={{
+                  boxShadow: {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  },
+                  scale: {
+                    duration: 0.3,
+                    ease: "easeOut"
+                  }
+                }}>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentWord}
@@ -506,7 +518,7 @@ export default function PublicLanding() {
                     ))}
                   </motion.span>
                 </AnimatePresence>
-              </span>
+              </motion.span>
             </h1>
             <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
               Trouvez et réservez chez les meilleurs professionnels près de chez vous
