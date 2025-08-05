@@ -76,82 +76,90 @@ export default function BookingConfirmationPopup({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-center text-xl font-semibold text-black">
-            Confirmer votre réservation
+      <DialogContent className="max-w-lg border-0 bg-white/95 backdrop-blur-xl shadow-2xl p-0 gap-0 rounded-2xl">
+        {/* Header moderne */}
+        <div className="px-6 py-5 border-b border-gray-100">
+          <DialogTitle className="text-center text-xl font-semibold text-gray-900">
+            Confirmation de réservation
           </DialogTitle>
-        </DialogHeader>
+        </div>
 
-        <div className="space-y-4">
+        <div className="px-6 py-5 space-y-6">
           {/* Récapitulatif principal */}
-          <div className="glass-card border-white/40 p-4 text-center">
-            <h3 className="text-lg font-semibold text-black mb-2">{bookingDetails.serviceName}</h3>
-            <p className="text-gray-600 mb-1">{formatDateForDisplay()}</p>
-            <p className="text-gray-600 mb-1">à {bookingDetails.appointmentTime} avec {bookingDetails.staffName}</p>
-            <p className="text-2xl font-bold text-black mt-3">{bookingDetails.servicePrice}€</p>
-            {depositAmount > 0 && (
-              <p className="text-sm text-gray-600 mt-1">Acompte: {depositAmount}€</p>
-            )}
+          <div className="bg-gray-50/80 rounded-xl p-5 text-center border-0">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">{bookingDetails.serviceName}</h3>
+            <div className="space-y-1 text-gray-600 mb-4">
+              <p className="text-base">{formatDateForDisplay()}</p>
+              <p className="text-base">à {bookingDetails.appointmentTime}</p>
+              <p className="text-sm">avec {bookingDetails.staffName}</p>
+            </div>
+            <div className="border-t border-gray-200 pt-4">
+              <p className="text-2xl font-bold text-gray-900">{bookingDetails.servicePrice}€</p>
+              {depositAmount > 0 && (
+                <p className="text-sm text-gray-500 mt-1">Acompte requis: {depositAmount}€</p>
+              )}
+            </div>
           </div>
 
           {/* Salon */}
-          <div className="glass-card border-white/40 p-3 text-center">
-            <h4 className="font-semibold text-black">{salonInfo.name}</h4>
+          <div className="bg-gray-50/80 rounded-xl p-4 border-0">
+            <h4 className="font-semibold text-gray-900 mb-1">{salonInfo.name}</h4>
             <p className="text-sm text-gray-600">{salonInfo.address}</p>
           </div>
 
           {/* Conditions simples */}
-          <div className="glass-card border-white/40 p-3">
-            <div className="text-sm text-gray-600 space-y-1">
+          <div className="bg-amber-50/80 rounded-xl p-4 border-0">
+            <h5 className="font-medium text-gray-900 mb-2">Conditions importantes</h5>
+            <div className="text-sm text-gray-700 space-y-1">
               <p>• Annulation gratuite jusqu'à 24h avant</p>
               <p>• Retard de +15min = annulation automatique</p>
-              {depositAmount > 0 && <p>• Acompte de {depositAmount}€ requis</p>}
+              {depositAmount > 0 && <p>• Acompte de {depositAmount}€ requis pour confirmer</p>}
             </div>
           </div>
 
           {/* Case à cocher obligatoire */}
-          <div className="flex items-start space-x-2">
+          <div className="flex items-start space-x-3 p-4 bg-blue-50/50 rounded-xl border-0">
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
               onCheckedChange={setAcceptedPolicies}
+              className="mt-0.5"
             />
             <label
               htmlFor="accept-policies"
-              className="text-sm text-gray-700 leading-relaxed"
+              className="text-sm text-gray-700 leading-relaxed flex-1"
             >
-              J'accepte les conditions du salon et confirme ma réservation.
+              J'accepte les conditions du salon et confirme ma réservation. Je comprends que l'acompte sera débité immédiatement.
             </label>
           </div>
+        </div>
 
-          {/* Boutons */}
-          <div className="flex gap-3 pt-2">
-            <Button
-              variant="outline"
-              onClick={onClose}
-              className="flex-1 glass-button hover:glass-effect text-black"
-            >
-              Modifier
-            </Button>
-            <Button
-              onClick={onConfirm}
-              disabled={!acceptedPolicies || isLoading}
-              className="flex-1 glass-button hover:glass-effect text-white bg-violet-600 hover:bg-violet-700"
-            >
-              {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                  Confirmation...
-                </div>
-              ) : (
-                <>
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Confirmer et payer
-                </>
-              )}
-            </Button>
-          </div>
+        {/* Boutons modernes */}
+        <div className="flex gap-3 px-6 py-5 border-t border-gray-100 bg-gray-50/30">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="flex-1 h-12 border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+          >
+            Modifier
+          </Button>
+          <Button
+            onClick={onConfirm}
+            disabled={!acceptedPolicies || isLoading}
+            className="flex-1 h-12 bg-gray-900 hover:bg-gray-800 text-white border-0 transition-colors disabled:bg-gray-400"
+          >
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                Traitement...
+              </div>
+            ) : (
+              <>
+                <CreditCard className="h-4 w-4 mr-2" />
+                Confirmer et payer
+              </>
+            )}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
