@@ -226,6 +226,7 @@ export class DatabaseStorage implements IStorage {
         city: "Paris",
         isProfessional: true,
         isVerified: true,
+        subscriptionPlan: "basic-pro",
         subscriptionStatus: "active",
         trialEndDate: null,
         mentionHandle: "@demo",
@@ -280,7 +281,8 @@ export class DatabaseStorage implements IStorage {
       city: userData.city,
       isProfessional: true,
       isVerified: false,
-      subscriptionStatus: "trial",
+      subscriptionPlan: userData.subscriptionPlan || "basic-pro",
+      subscriptionStatus: userData.subscriptionStatus || "trial",
       trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days trial
     };
 
