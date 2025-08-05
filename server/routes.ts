@@ -78,6 +78,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour récupérer l'abonnement de l'utilisateur
+  app.get('/api/user/subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: 'Utilisateur non trouvé' });
+      }
+      
+      const subscription = {
+        planId: user.subscriptionPlan || 'basic-pro',
+        status: user.subscriptionStatus || 'inactive',
+        userId: user.id
+      };
+      
+      res.json(subscription);
+    } catch (error) {
+      console.error("Error fetching user subscription:", error);
+      res.status(500).json({ message: "Failed to fetch user subscription" });
+    }
+  });
+
   // Routes pour les photos de salon
   app.get('/api/salon-photos/:userId', async (req, res) => {
     try {

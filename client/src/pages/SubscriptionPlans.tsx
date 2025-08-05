@@ -1,345 +1,204 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useLocation } from 'wouter';
+import { useSubscription } from '@/hooks/useSubscription';
+import { SUBSCRIPTION_PLANS } from '../../shared/subscriptionPlans';
 import { 
-  Check,
-  Crown,
-  Star,
-  Users,
-  MessageCircle,
+  ArrowLeft, 
+  Check, 
+  Crown, 
+  Sparkles, 
+  Users, 
+  Calendar,
   BarChart3,
+  MessageCircle,
+  Brain,
   Zap,
-  Shield,
-  ArrowLeft,
-  Sparkles,
-  Gift
-} from "lucide-react";
+  Star
+} from 'lucide-react';
 
-const plans = [
-  {
-    id: "basic",
-    name: "Plan Basic",
-    price: 49,
-    priceAnnual: 39,
-    description: "Parfait pour débuter avec les fonctionnalités essentielles",
-    icon: <Star className="w-6 h-6" />,
-    color: "blue",
-    features: [
-      "Gestion complète des rendez-vous",
-      "Base de données clients illimitée",
-      "Calendrier synchronisé",
-      "Notifications par email",
-      "Support technique par email",
-      "Sauvegarde automatique",
-      "Interface mobile optimisée"
-    ],
-    limitations: [
-      "Pas d'Intelligence Artificielle",
-      "Support limité aux heures ouvrables",
-      "Pas de messagerie directe"
-    ]
-  },
-  {
-    id: "premium",
-    name: "Plan Premium",
-    price: 149,
-    priceAnnual: 119,
-    description: "Solution complète avec IA et fonctionnalités avancées",
-    icon: <Crown className="w-6 h-6" />,
-    color: "violet",
-    popular: true,
-    features: [
-      "Toutes les fonctionnalités Basic",
-      "Intelligence Artificielle Rendly",
-      "Messagerie directe avec clients",
-      "Analytics et rapports avancés",
-      "Prédictions et optimisations IA",
-      "Support prioritaire 24/7",
-      "Intégrations tierces",
-      "Personnalisation avancée",
-      "Formation et accompagnement"
-    ],
-    limitations: []
-  }
-];
+const iconMapping = {
+  'Gestion des rendez-vous': Calendar,
+  'Fiche client complète': Users,
+  'Planning professionnel': Calendar,
+  'Notifications automatiques': MessageCircle,
+  'Statistiques de base': BarChart3,
+  '🤖 IA Assistant intégrée': Brain,
+  '📊 Analyse prédictive avancée': BarChart3,
+  '💬 Chatbot intelligent pour clients': MessageCircle,
+  '⚡ Optimisation automatique planning': Zap,
+  '🎯 Recommendations personnalisées': Star,
+};
 
 export default function SubscriptionPlans() {
   const [, setLocation] = useLocation();
-  const [billingType, setBillingType] = useState<"monthly" | "annual">("monthly");
+  const { currentPlan, isActive } = useSubscription();
 
-  const handleSelectPlan = (planId: string) => {
-    setLocation(`/multi-step-subscription/${planId}`);
+  const handlePlanSelect = (planId: string) => {
+    if (planId === currentPlan && isActive) {
+      return; // Déjà abonné à ce plan
+    }
+    
+    // Rediriger vers le processus de paiement Stripe
+    setLocation(`/subscribe/${planId}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-violet-50/30">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => setLocation("/pro-tools")}
-            className="mb-4 self-start"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour aux outils pro
-          </Button>
-          
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Sparkles className="w-8 h-8 text-violet-600" />
-            <h1 className="text-3xl font-bold text-gray-900">
-              Plans Professionnels
-            </h1>
-          </div>
-          
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choisissez le plan qui correspond le mieux à vos besoins professionnel. 
-            Tous nos plans incluent une période d'<a 
-              href="/free-trial"
-              className="text-green-600 hover:text-green-700 hover:underline font-medium"
-            >
-              essai gratuite de 14 jours
-            </a>.
-          </p>
-        </div>
-
-        {/* Toggle de facturation */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="bg-white border rounded-lg p-1 flex">
-            <button
-              onClick={() => setBillingType("monthly")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                billingType === "monthly"
-                  ? "bg-violet-600 text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Mensuel
-            </button>
-            <button
-              onClick={() => setBillingType("annual")}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                billingType === "annual"
-                  ? "bg-violet-600 text-white"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              Annuel
-              <Badge className="ml-2 text-xs bg-green-100 text-green-700">
-                -20%
-              </Badge>
-            </button>
-          </div>
-        </div>
-
-        {/* Bouton d'essai gratuit mis en avant */}
-        <div className="text-center mb-8">
-          <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 max-w-md mx-auto">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Gift className="w-8 h-8 text-green-600" />
-                <h3 className="text-xl font-bold text-gray-900">
-                  Essai Gratuit 14 Jours
-                </h3>
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      {/* Header */}
+      <div className="bg-white/40 backdrop-blur-md border-b border-white/30">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                onClick={() => setLocation('/dashboard')}
+                className="glass-button"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Plans d'abonnement</h1>
+                <p className="text-gray-600">Choisissez le plan qui correspond à vos besoins</p>
               </div>
-              <p className="text-gray-600 mb-4">
-                Testez toutes les fonctionnalités sans engagement ni carte bancaire
-              </p>
-              <a href="/free-trial" className="block">
-                <Button 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white"
-                >
-                  <Gift className="w-4 h-4 mr-2" />
-                  Commencer l'essai gratuit
-                </Button>
-              </a>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Plans */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.id}
-              className={`relative ${
-                plan.popular 
-                  ? "border-violet-200 shadow-lg scale-105" 
-                  : "border-gray-200"
-              }`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-violet-600 text-white px-3 py-1">
-                    Le plus populaire
-                  </Badge>
-                </div>
-              )}
-              
-              <CardHeader className="text-center pb-4">
-                <div className={`w-16 h-16 bg-${plan.color}-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
-                  <div className="text-white">
-                    {plan.icon}
-                  </div>
-                </div>
-                
-                <CardTitle className="text-2xl font-bold text-gray-900">
-                  {plan.name}
-                </CardTitle>
-                
-                <p className="text-gray-600 text-sm mt-2">
-                  {plan.description}
-                </p>
-                
-                <div className="mt-4">
-                  <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold text-gray-900">
-                      {billingType === "monthly" ? plan.price : plan.priceAnnual}€ TTC
-                    </span>
-                    <span className="text-gray-500 ml-2">
-                      /{billingType === "monthly" ? "mois" : "mois"}
-                    </span>
-                  </div>
-                  
-                  {billingType === "annual" && (
-                    <p className="text-sm text-green-600 mt-1">
-                      Économisez {(plan.price - plan.priceAnnual) * 12}€ par an
-                    </p>
+      {/* Plans */}
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {SUBSCRIPTION_PLANS.map((plan, index) => {
+            const isCurrentPlan = plan.id === currentPlan;
+            const isPremium = plan.id === 'premium-pro';
+            
+            return (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className={`relative ${isPremium ? 'lg:scale-105' : ''}`}
+              >
+                <Card className={`h-full ${isPremium ? 'ring-2 ring-violet-200 bg-gradient-to-br from-violet-50/50 to-purple-50/50' : 'bg-white/50'} backdrop-blur-md border-white/40`}>
+                  {plan.popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white px-4 py-1">
+                        <Crown className="w-3 h-3 mr-1" />
+                        Le plus populaire
+                      </Badge>
+                    </div>
                   )}
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                {/* Fonctionnalités */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                    <Check className="w-4 h-4 text-green-600" />
-                    Fonctionnalités incluses
-                  </h4>
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-2">
-                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Limitations */}
-                {plan.limitations.length > 0 && (
-                  <div className="space-y-3 pt-4 border-t">
-                    <h4 className="font-semibold text-gray-900">Non inclus</h4>
-                    <ul className="space-y-2">
-                      {plan.limitations.map((limitation, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <div className="w-4 h-4 rounded-full bg-gray-300 mt-0.5 flex-shrink-0" />
-                          <span className="text-sm text-gray-500">{limitation}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Bouton d'action */}
-                <div className="pt-4">
-                  <Button
-                    onClick={() => handleSelectPlan(plan.id)}
-                    className={`w-full ${
-                      plan.popular
-                        ? "bg-violet-600 hover:bg-violet-700"
-                        : "bg-gray-900 hover:bg-gray-800"
-                    } text-white py-3`}
-                  >
-                    {plan.popular ? (
-                      <>
-                        <Crown className="w-4 h-4 mr-2" />
-                        Choisir Premium
-                      </>
-                    ) : (
-                      <>
-                        <Star className="w-4 h-4 mr-2" />
-                        Choisir Basic
-                      </>
+                  
+                  <CardHeader className="text-center pb-4">
+                    <div className="flex items-center justify-center mb-4">
+                      {isPremium ? (
+                        <Crown className="w-8 h-8 text-violet-500" />
+                      ) : (
+                        <Sparkles className="w-8 h-8 text-amber-500" />
+                      )}
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
+                    
+                    <div className="mt-3">
+                      <span className="text-4xl font-bold text-gray-900">{plan.price}€</span>
+                      <span className="text-gray-600 ml-2">/{plan.interval === 'month' ? 'mois' : 'an'}</span>
+                    </div>
+                    
+                    {isCurrentPlan && isActive && (
+                      <Badge variant="outline" className="mt-3">
+                        Plan actuel
+                      </Badge>
                     )}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="space-y-4 mb-6">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 mb-3">✅ Fonctionnalités incluses :</h4>
+                        <ul className="space-y-2">
+                          {plan.features.map((feature, idx) => {
+                            const IconComponent = iconMapping[feature] || Check;
+                            return (
+                              <li key={idx} className="flex items-start space-x-3">
+                                <IconComponent className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-sm text-gray-700">{feature}</span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                      
+                      {plan.restrictions.length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3">❌ Limitations :</h4>
+                          <ul className="space-y-2">
+                            {plan.restrictions.map((restriction, idx) => (
+                              <li key={idx} className="flex items-start space-x-3">
+                                <div className="w-4 h-4 border border-gray-300 rounded-sm mt-0.5 flex-shrink-0" />
+                                <span className="text-sm text-gray-600">{restriction}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <Button
+                      onClick={() => handlePlanSelect(plan.id)}
+                      disabled={isCurrentPlan && isActive}
+                      className={`w-full ${isPremium ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700' : ''} glass-button`}
+                    >
+                      {isCurrentPlan && isActive ? (
+                        'Plan actuel'
+                      ) : (
+                        <>
+                          {isPremium ? <Crown className="w-4 h-4 mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                          Choisir ce plan
+                        </>
+                      )}
+                    </Button>
+                    
+                    {isPremium && (
+                      <p className="text-center text-xs text-gray-500 mt-3">
+                        🚀 Toutes les fonctionnalités IA incluses
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
-
-        {/* Garanties */}
-        <div className="bg-white rounded-lg p-6 border">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-            Nos garanties
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
+        
+        {/* Comparaison rapide */}
+        <div className="mt-12 bg-white/30 backdrop-blur-md rounded-lg p-6 border border-white/40">
+          <h3 className="text-lg font-semibold text-center mb-6">🤔 Quelle différence entre les plans ?</h3>
+          
+          <div className="grid md:grid-cols-2 gap-6">
             <div className="text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Shield className="w-6 h-6 text-green-600" />
+              <div className="bg-amber-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Sparkles className="w-8 h-8 text-amber-600" />
               </div>
-              <h4 className="font-medium text-gray-900 mb-2">
-                <a 
-                  href="/free-trial"
-                  className="text-green-600 hover:text-green-700 hover:underline"
-                >
-                  Essai gratuit 14 jours
-                </a>
-              </h4>
+              <h4 className="font-semibold text-gray-900 mb-2">Basic Pro - 29€/mois</h4>
               <p className="text-sm text-gray-600">
-                Testez toutes les fonctionnalités sans engagement
+                Parfait pour débuter avec toutes les fonctionnalités essentielles de gestion de salon
               </p>
             </div>
+            
             <div className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="bg-violet-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Crown className="w-8 h-8 text-violet-600" />
               </div>
-              <h4 className="font-medium text-gray-900 mb-2">
-                Support dédié
-              </h4>
+              <h4 className="font-semibold text-gray-900 mb-2">Premium Pro - 149€/mois</h4>
               <p className="text-sm text-gray-600">
-                Équipe d'experts disponible pour vous accompagner
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Zap className="w-6 h-6 text-purple-600" />
-              </div>
-              <h4 className="font-medium text-gray-900 mb-2">
-                Annulation flexible
-              </h4>
-              <p className="text-sm text-gray-600">
-                Changez ou annulez votre plan à tout moment
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* FAQ */}
-        <div className="mt-12 text-center">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Questions fréquentes
-          </h3>
-          <div className="space-y-4 max-w-2xl mx-auto">
-            <div className="bg-white rounded-lg p-4 border text-left">
-              <h4 className="font-medium text-gray-900 mb-2">
-                Puis-je changer de plan à tout moment ?
-              </h4>
-              <p className="text-sm text-gray-600">
-                Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. 
-                Les changements sont proratisés automatiquement.
-              </p>
-            </div>
-            <div className="bg-white rounded-lg p-4 border text-left">
-              <h4 className="font-medium text-gray-900 mb-2">
-                Que se passe-t-il si j'annule mon abonnement ?
-              </h4>
-              <p className="text-sm text-gray-600">
-                Vous gardez l'accès à toutes les fonctionnalités jusqu'à la fin de votre période de facturation. 
-                Vos données restent sauvegardées pendant 30 jours.
+                Pour les professionnels qui veulent l'IA et des fonctionnalités avancées
               </p>
             </div>
           </div>

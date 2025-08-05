@@ -1,0 +1,31 @@
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from './useAuth';
+import { hasAIAccess, hasAdvancedFeatures, canAccessFeature, SUBSCRIPTION_PLANS } from '@shared/subscriptionPlans';
+
+export function useSubscription() {
+  const { user } = useAuth();
+
+  const { data: subscription, isLoading } = useQuery({
+    queryKey: ['/api/user/subscription'],
+    enabled: !!user,
+  });
+
+  // Utiliser les données de subscription de l'API si disponibles, sinon utiliser user
+  const currentPlan = subscription?.planId || 'basic-pro';
+  const planData = SUBSCRIPTION_PLANS.find(p => p.id === currentPlan);
+  const status = subscription?.status || 'inactive';
+
+  return {
+    subscription,
+    isLoading,
+    currentPlan,
+    planData,
+    isBasicPro: currentPlan === 'basic-pro',
+    isPremiumPro: currentPlan === 'premium-pro',
+    hasAI: hasAIAccess(currentPlan),
+    hasAdvanced: hasAdvancedFeatures(currentPlan),
+    canAccess: (feature: string) => canAccessFeature(currentPlan, feature),
+    isActive: status === 'active',
+    isTrial: status === 'trial'
+  };
+}

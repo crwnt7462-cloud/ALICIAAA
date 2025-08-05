@@ -45,7 +45,8 @@ export const users = pgTable("users", {
   city: varchar("city"),
   isProfessional: boolean("is_professional").default(true),
   isVerified: boolean("is_verified").default(false),
-  subscriptionStatus: varchar("subscription_status").default("trial"), // free, basic, premium, trial
+  subscriptionPlan: varchar("subscription_plan").default("basic-pro"), // basic-pro, premium-pro
+  subscriptionStatus: varchar("subscription_status").default("inactive"), // active, inactive, trial, cancelled
   trialEndDate: timestamp("trial_end_date"),
   mentionHandle: varchar("mention_handle").unique(), // @identifiant unique pour mentions dans messagerie
   createdAt: timestamp("created_at").defaultNow(),

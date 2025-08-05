@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Send, Mic, MicOff } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { SubscriptionGate } from '@/components/SubscriptionGate';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { getGenericGlassButton } from '@/lib/salonColors';
@@ -15,12 +17,40 @@ interface Message {
 
 export default function AIProModern() {
   const [, setLocation] = useLocation();
+  const { hasAI, currentPlan } = useSubscription();
   
   // Récupérer les infos du compte connecté
   const { data: user } = useQuery({
     queryKey: ["/api/auth/user"],
     retry: false,
   });
+
+  // Vérifier l'accès à l'IA
+  if (!hasAI) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4">
+        <div className="max-w-2xl mx-auto pt-8">
+          <div className="flex items-center mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => setLocation('/dashboard')}
+              className="glass-button mr-4"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour
+            </Button>
+            <h1 className="text-2xl font-bold text-gray-900">IA Assistant</h1>
+          </div>
+          
+          <SubscriptionGate 
+            feature="ai-assistant" 
+            featureName="Assistant IA Personnalisé"
+            children={null}
+          />
+        </div>
+      </div>
+    );
+  }
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
