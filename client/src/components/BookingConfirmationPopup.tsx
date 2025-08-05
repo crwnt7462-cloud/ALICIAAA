@@ -75,9 +75,14 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
       {/* Modal Shell */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
+      <div 
+        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
+        style={{
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+        }}
+      >
         {/* Header avec bouton fermer */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h2 className="text-xl font-semibold text-gray-900">
@@ -155,7 +160,7 @@ export default function BookingConfirmationPopup({
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="flex-1 h-12 bg-gray-900 hover:bg-gray-800 text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center"
+            className="flex-1 h-12 bg-violet-600 hover:bg-violet-700 text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center shadow-lg"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
