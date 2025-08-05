@@ -113,7 +113,8 @@ export default function SalonBooking() {
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
+  const [paymentMethod, setPaymentMethod] = useState('partial');
+  const [bankingMethod, setBankingMethod] = useState('card'); // 'card' ou 'authorization' // partial, full, gift
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginData, setLoginData] = useState({
@@ -288,46 +289,7 @@ export default function SalonBooking() {
     setCurrentStep(4);
   };
 
-  // Créer un Payment Intent quand l'utilisateur se connecte/s'inscrit
-  const createPaymentIntent = async () => {
-    try {
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: 20.50, // Montant de l'acompte
-          currency: 'eur',
-          metadata: {
-            salonName: salon.name,
-            serviceName: service.name,
-            clientEmail: formData.email,
-            appointmentDate: selectedDate,
-            appointmentTime: selectedSlot?.time
-          }
-        }),
-      });
 
-      const data = await response.json();
-      
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-      } else {
-        toast({
-          title: "Erreur",
-          description: data.error || "Erreur lors de la préparation du paiement",
-          variant: "destructive"
-        });
-      }
-    } catch (err) {
-      toast({
-        title: "Erreur",
-        description: "Erreur de connexion. Veuillez réessayer.",
-        variant: "destructive"
-      });
-    }
-  };
 
   // Fonction pour créer le compte et afficher la section de paiement
   const handleAccountCreation = async () => {
@@ -445,26 +407,33 @@ export default function SalonBooking() {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
   };
 
-  // Fonction pour gérer la confirmation du popup avec empreinte bancaire
-  const handleConfirmationPopupConfirm = async () => {
-    try {
-      setShowConfirmationPopup(false);
-      console.log('🎯 Confirmation réservation avec empreinte bancaire...');
+  // Fonction pour gérer la confirmation du popup
+  const handleConfirmationPopupConfirm = () => {
+    setShowConfirmationPopup(false);
+    // Afficher interface de paiement avec choix du mode
+    setTimeout(() => {
+      setShowPaymentSheet(true);
+    }, 300);
+  };
 
-      // Calculer montants pour empreinte bancaire
+  // Fonction pour fermer le popup de confirmation
+  const handleConfirmationPopupClose = () => {
+    setShowConfirmationPopup(false);
+  };
+
+  // Fonction pour créer le Payment Intent selon le mode choisi
+  const createPaymentIntent = async () => {
+    try {
       const totalAmount = service.price;
       const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
       const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
       const isDeposit = depositAmount > 0;
 
-      console.log('💰 Montants calculés:', { totalAmount, depositAmount, amountToPay, isDeposit });
-
-      // Créer Payment Intent avec empreinte bancaire si acompte
       const paymentResponse = await apiRequest('POST', '/api/create-payment-intent', {
         amount: amountToPay,
         currency: 'eur',
         isDeposit: isDeposit,
-        bankAuthorization: isDeposit, // Empreinte bancaire pour acomptes
+        bankAuthorization: bankingMethod === 'authorization', // Empreinte bancaire si sélectionnée
         metadata: {
           salon_id: 'bonhomme-paris-archives',
           client_email: formData.email,
@@ -473,7 +442,7 @@ export default function SalonBooking() {
           appointment_time: selectedSlot?.time || '10:00',
           total_amount: totalAmount,
           deposit_amount: depositAmount,
-          payment_type: isDeposit ? 'deposit_with_authorization' : 'full_payment'
+          payment_type: bankingMethod === 'authorization' ? 'bank_authorization' : 'card_payment'
         }
       });
 
@@ -481,29 +450,149 @@ export default function SalonBooking() {
         throw new Error(paymentResponse.error || 'Erreur création paiement');
       }
 
-      console.log('✅ Payment Intent créé', isDeposit ? '(avec empreinte bancaire)' : '');
-      
-      // Sauvegarder client secret pour Stripe
       setClientSecret(paymentResponse.clientSecret);
-      
-      // Afficher interface de paiement
-      setTimeout(() => {
-        setShowPaymentSheet(true);
-      }, 300);
+      console.log('✅ Payment Intent créé', bankingMethod === 'authorization' ? '(Empreinte bancaire)' : '(Carte bancaire)');
       
     } catch (error: any) {
-      console.error('❌ Erreur confirmation réservation:', error);
+      console.error('❌ Erreur création Payment Intent:', error);
       toast({
         title: "Erreur",
-        description: error.message || "Impossible de confirmer la réservation",
+        description: error.message || "Impossible de créer le paiement",
         variant: "destructive",
       });
     }
   };
 
-  // Fonction pour fermer le popup de confirmation
-  const handleConfirmationPopupClose = () => {
-    setShowConfirmationPopup(false);
+  // Bottom Sheet de paiement avec choix du mode
+  const renderPaymentBottomSheet = () => {
+    const totalAmount = service.price;
+    const depositAmount = totalAmount > 50 ? Math.round(totalAmount * 0.3) : 0;
+    const amountToPay = depositAmount > 0 ? depositAmount : totalAmount;
+
+    return (
+      <>
+        {/* Overlay */}
+        <div 
+          className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
+            showPaymentSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setShowPaymentSheet(false)}
+        />
+        
+        {/* Bottom Sheet */}
+        <div 
+          className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border border-white/40 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
+            showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
+          }`}
+          style={{ maxHeight: '90vh' }}
+        >
+          {/* Handle barre de glissement */}
+          <div className="flex justify-center pt-3 pb-2">
+            <div className="w-12 h-1 bg-white/40 rounded-full"></div>
+          </div>
+
+          <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold text-black mb-1">Finaliser le paiement</h2>
+              <p className="text-gray-700">Choisissez votre mode de paiement sécurisé</p>
+            </div>
+
+            {/* Récapitulatif */}
+            <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600">Service</span>
+                <span className="font-medium">{service.name}</span>
+              </div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-gray-600">Date & Heure</span>
+                <span className="font-medium">{selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}</span>
+              </div>
+              <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
+                <span className="text-gray-600">Professionnel</span>
+                <span className="font-medium">{selectedProfessional?.name || 'Lucas'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-900">
+                  {depositAmount > 0 ? 'Acompte' : 'Total'}
+                </span>
+                <span className="font-bold text-gray-900 text-lg">{amountToPay},00 €</span>
+              </div>
+            </div>
+
+            {/* Choix mode de paiement */}
+            <div className="mb-6">
+              <h3 className="font-semibold text-black mb-4">Mode de paiement</h3>
+              <div className="space-y-3">
+                {/* Carte bancaire */}
+                <label className="flex items-start space-x-3 p-4 bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg cursor-pointer hover:border-violet-300 transition-colors">
+                  <input 
+                    type="radio" 
+                    name="bankingMethod" 
+                    value="card"
+                    checked={bankingMethod === 'card'}
+                    onChange={(e) => setBankingMethod(e.target.value)}
+                    className="mt-1 accent-violet-600"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
+                      <span className="font-medium text-black">Carte bancaire</span>
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      Paiement immédiat de {amountToPay}€ par carte bancaire
+                    </p>
+                  </div>
+                </label>
+
+                {/* Empreinte bancaire - seulement pour les acomptes */}
+                {depositAmount > 0 && (
+                  <label className="flex items-start space-x-3 p-4 bg-blue-50/80 backdrop-blur-sm border border-blue-200/50 rounded-lg cursor-pointer hover:border-blue-400 transition-colors">
+                    <input 
+                      type="radio" 
+                      name="bankingMethod" 
+                      value="authorization"
+                      checked={bankingMethod === 'authorization'}
+                      onChange={(e) => setBankingMethod(e.target.value)}
+                      className="mt-1 accent-blue-600"
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-6 bg-green-600 rounded text-white text-xs font-bold flex items-center justify-center">🔒</div>
+                        <span className="font-medium text-black">Empreinte bancaire</span>
+                      </div>
+                      <div className="text-xs text-gray-600 space-y-1">
+                        <p>• Autorisation de {amountToPay}€ sans débit immédiat</p>
+                        <p>• Débit uniquement en cas d'annulation tardive</p>
+                        <p>• Solde restant ({totalAmount - amountToPay}€) payé sur place</p>
+                      </div>
+                    </div>
+                  </label>
+                )}
+              </div>
+            </div>
+
+            {/* Bouton de confirmation */}
+            <Button 
+              onClick={async () => {
+                await createPaymentIntent();
+                // Rediriger vers la page de paiement Stripe
+                setTimeout(() => {
+                  setLocation('/stripe-payment');
+                }, 500);
+              }}
+              className="w-full glass-button hover:glass-effect text-black py-4 rounded-full font-medium text-lg shadow-md hover:shadow-lg transition-all duration-300"
+            >
+              {bankingMethod === 'authorization' ? '🔒 Autoriser l\'empreinte' : '💳 Payer maintenant'}
+            </Button>
+
+            <p className="text-xs text-gray-600 text-center mt-4">
+              Paiement sécurisé par Stripe • Données cryptées SSL
+            </p>
+          </div>
+        </div>
+      </>
+    );
   };
 
   // Étape 1: Sélection du professionnel
@@ -971,123 +1060,7 @@ export default function SalonBooking() {
     </div>
   );
 
-  // Bottom Sheet de Paiement - Style Apple Pay/Planity
-  const renderPaymentBottomSheet = () => (
-    <>
-      {/* Overlay */}
-      <div 
-        className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
-          showPaymentSheet ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setShowPaymentSheet(false)}
-      />
-      
-      {/* Bottom Sheet */}
-      <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border border-white/40 rounded-t-3xl z-50 transform transition-transform duration-500 ease-out ${
-          showPaymentSheet ? 'translate-y-0' : 'translate-y-full'
-        }`}
-        style={{ maxHeight: '90vh' }}
-      >
-        {/* Handle barre de glissement */}
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-12 h-1 bg-white/40 rounded-full"></div>
-        </div>
 
-        <div className="px-6 pb-8 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 40px)' }}>
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-bold text-black mb-1">Finaliser le paiement</h2>
-            <p className="text-gray-700">Réglez votre acompte de manière sécurisée</p>
-          </div>
-
-          {/* Récapitulatif rapide */}
-          <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Service</span>
-              <span className="font-medium">{service.name}</span>
-            </div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Date & Heure</span>
-              <span className="font-medium">{selectedDate || 'lundi 28 juillet'} à {selectedSlot?.time || '10:00'}</span>
-            </div>
-            <div className="flex justify-between items-center mb-3 pb-3 border-b border-gray-200">
-              <span className="text-gray-600">Professionnel</span>
-              <span className="font-medium">{selectedProfessional?.name || 'Lucas'}</span>
-            </div>
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-gray-600">Prix total</span>
-              <span className="font-medium">{service.price},00 €</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-900">Acompte</span>
-              <span className="font-bold text-gray-900 text-lg">20,50 €</span>
-            </div>
-          </div>
-
-          {/* Sélection méthode de paiement */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-black mb-3">Méthode de paiement</h3>
-            <div className="space-y-3">
-              <div className="flex items-center space-x-3 p-3 bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg">
-                <div className="w-5 h-5 rounded-full border-2 border-gray-400 bg-gray-400 flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-6 bg-blue-600 rounded text-white text-xs font-bold flex items-center justify-center">VISA</div>
-                  <span className="font-medium">Carte bancaire</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Composant Stripe intégré */}
-          {clientSecret ? (
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <StripePaymentForm 
-                onSuccess={() => {
-                  setShowPaymentSheet(false);
-                  toast({
-                    title: "Paiement réussi !",
-                    description: "Votre réservation a été confirmée.",
-                    variant: "success" as any
-                  });
-                  setTimeout(() => {
-                    setLocation('/');
-                  }, 2000);
-                }}
-                clientSecret={clientSecret}
-              />
-            </Elements>
-          ) : (
-            <div className="text-center py-8">
-              <div className="w-8 h-8 border-4 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-gray-600">Préparation du paiement...</p>
-            </div>
-          )}
-
-          {/* Sécurité */}
-          <div className="flex items-center justify-center space-x-2 mt-4 mb-2 text-sm text-gray-500">
-            <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-            </div>
-            <span>Paiement sécurisé par Stripe</span>
-          </div>
-
-          {/* Bouton annulation */}
-          <div className="mt-4">
-            <Button 
-              onClick={() => setShowPaymentSheet(false)}
-              variant="outline"
-              className="w-full py-3 rounded-full font-medium glass-button hover:glass-effect text-black transition-all duration-300"
-            >
-              Annuler
-            </Button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
 
   // Étape 4: Supprimée - nom/prénom maintenant dans étape 3
   const renderAccountCompletion = () => (

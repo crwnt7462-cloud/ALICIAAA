@@ -54,7 +54,6 @@ export default function BookingConfirmationPopup({
   isLoading = false
 }: BookingConfirmationPopupProps) {
   const [acceptedPolicies, setAcceptedPolicies] = useState(false);
-  const [acceptedBankAuthorization, setAcceptedBankAuthorization] = useState(false);
 
   // Récupérer les conditions personnalisées du salon
   const { data: businessSettings } = useQuery({
@@ -168,17 +167,7 @@ export default function BookingConfirmationPopup({
             </div>
           </div>
 
-          {/* Empreinte bancaire pour l'acompte */}
-          {depositAmount > 0 && (
-            <div className="bg-blue-50 rounded-lg p-2">
-              <p className="font-semibold text-gray-900 text-xs mb-1">Empreinte bancaire</p>
-              <div className="text-xs text-gray-700 space-y-0.5">
-                <p>• Autorisation de {depositAmount}€ sur votre carte</p>
-                <p>• Débit immédiat uniquement si annulation tardive</p>
-                <p>• Déduction automatique du solde restant le jour J</p>
-              </div>
-            </div>
-          )}
+
 
           {/* Cases à cocher */}
           <div className="space-y-2">
@@ -197,22 +186,6 @@ export default function BookingConfirmationPopup({
             </label>
           </div>
 
-          {depositAmount > 0 && (
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="accept-bank-auth"
-                checked={acceptedBankAuthorization}
-                onCheckedChange={(checked) => setAcceptedBankAuthorization(checked === true)}
-                className="mt-0.5 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-              />
-              <label
-                htmlFor="accept-bank-auth"
-                className="text-xs text-gray-700 flex-1 cursor-pointer"
-              >
-                J'autorise l'empreinte bancaire de {depositAmount}€ pour sécuriser ma réservation.
-              </label>
-            </div>
-          )}
         </div>
 
           {/* Boutons compacts avec glass style */}
@@ -225,7 +198,7 @@ export default function BookingConfirmationPopup({
             </button>
             <button
               onClick={onConfirm}
-              disabled={!acceptedPolicies || (depositAmount > 0 && !acceptedBankAuthorization) || isLoading}
+              disabled={!acceptedPolicies || isLoading}
               className="flex-1 h-8 glass-button text-black rounded-lg text-xs font-medium hover:glass-effect transition-all flex items-center justify-center disabled:opacity-50"
             >
               {isLoading ? (

@@ -69,19 +69,20 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Design final**: Login = dégradé rose/blanc, IA = violet uniforme sur tous éléments
 - **IA complète**: Boutons haut violets, zone saisie violette, boutons Send/Mic violets, texte centré visible
 
-### ✅ **SYSTÈME EMPREINTE BANCAIRE INTÉGRÉ**
+### ✅ **CHOIX PAIEMENT CARTE/EMPREINTE INTÉGRÉ**
 - **Date**: 05/08/2025
-- **Changement**: Ajout empreinte bancaire sécurisée pour les acomptes avec validation transparente
-- **Impact**: Sécurisation des réservations et réduction des annulations de dernière minute
+- **Changement**: Interface de choix entre carte bancaire et empreinte bancaire dans le bottom sheet de paiement
+- **Impact**: Flexibilité maximale pour les clients avec options de paiement transparentes
 - **Détails**:
-  - ✅ Section empreinte bancaire visuelle dans BookingConfirmationPopup
-  - ✅ Case à cocher obligatoire spécifique pour autorisation bancaire
-  - ✅ Affichage transparent : montant, conditions de débit, déduction automatique
-  - ✅ Backend Stripe configuré pour autorisation manuelle (capture_method: 'manual')
-  - ✅ API /api/create-payment-intent enrichie avec paramètres bankAuthorization
-  - ✅ Logique différenciée : empreinte pour acomptes, paiement direct pour montants <50€
-  - ✅ Métadonnées Stripe détaillées pour traçabilité des autorisations
-- **Sécurité**: Autorisation sans capture immédiate, débit uniquement si annulation tardive
+  - ✅ Bottom sheet redesigné avec choix "Carte bancaire" vs "Empreinte bancaire"
+  - ✅ Option empreinte visible uniquement pour les acomptes (montants >50€)
+  - ✅ Descriptions claires pour chaque mode : paiement immédiat vs autorisation
+  - ✅ Interface glassmorphism cohérente avec design global
+  - ✅ Backend différencié selon le choix utilisateur
+  - ✅ API createPaymentIntent adaptée avec paramètre bankAuthorization dynamique
+  - ✅ Boutons adaptatifs : "💳 Payer maintenant" vs "🔒 Autoriser l'empreinte"
+  - ✅ Calculs automatiques : acompte/total selon montant service
+- **UX**: Choix utilisateur éclairé, transparence totale des conditions
 
 ### ✅ **POPUP CONFIRMATION RÉSERVATION INTÉGRÉ**
 - **Date**: 03/08/2025
