@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -84,53 +85,44 @@ export default function SalonPageEditor() {
   const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  
-  // 🔧 CORRECTION : Charger les données existantes du salon au démarrage
-  useEffect(() => {
-    const loadSalonData = async () => {
-      try {
-        const response = await fetch(`/api/salon/${salonData.id}`);
-        if (response.ok) {
-          const existingSalon = await response.json();
-          if (existingSalon) {
-            console.log('📖 Chargement données salon existantes:', existingSalon.name);
-            setSalonData(prev => ({ ...prev, ...existingSalon }));
-          }
-        }
-      } catch (error) {
-        console.log('ℹ️ Aucune donnée salon existante, utilisation données par défaut');
-      }
-    };
-    
-    loadSalonData();
-  }, [salonData.id]);
-  
-  // DONNÉES COMPLÈTES DU SALON BARBIER GENTLEMAN MARAIS (modifiables)
-  const [salonData, setSalonData] = useState<SalonData>({
-    id: 'barbier-gentleman-marais',
-    name: 'Gentleman Barbier',
-    rating: 4.9,
-    reviews: 189,
-    address: '28 Rue des Rosiers, 75004 Paris',
-    phone: '01 48 87 65 43',
-    verified: true,
-    certifications: ['Barbier traditionnel certifié', 'Rasage au coupe-chou', 'Produits artisanaux'],
-    awards: ['Meilleur barbier du Marais 2024', 'Tradition & Modernité', 'Service d\'exception'],
-    longDescription: 'Gentleman Barbier vous propose une expérience unique dans l\'art du barbier traditionnel. Spécialisés dans la coupe masculine et le rasage traditionnel au coupe-chou, nous perpétuons les techniques ancestrales dans un cadre authentique du Marais historique.',
-    coverImageUrl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    photos: [
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    ],
-    customColors: {
-      primary: '#f59e0b', // amber-500 par défaut pour Barbier Gentleman
-      accent: '#d97706',   // amber-600
-      buttonText: '#000000', // noir
-      buttonClass: 'glass-button-amber',
-      intensity: 35 // Intensité par défaut
-    }
+  const { user } = useAuth();
+
+  // Récupérer le salon du professionnel connecté
+  const { data: userSalon, isLoading: salonLoading } = useQuery({
+    queryKey: ['/api/user/salon'],
+    enabled: !!user,
   });
+  
+  // Afficher un état de chargement si pas de données salon
+  if (salonLoading || !salonData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement de votre salon...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
+  const [salonData, setSalonData] = useState<SalonData | null>(null);
+
+  // Charger les données du salon de l'utilisateur connecté
+  useEffect(() => {
+    if (userSalon) {
+      setSalonData({
+        ...userSalon,
+        customColors: userSalon.customColors || {
+          primary: '#f59e0b',
+          accent: '#d97706',
+          buttonText: '#000000',
+          buttonClass: 'glass-button-amber',
+          intensity: 35
+        }
+      });
+    }
+  }, [userSalon]);
 
   // État des professionnels
   const [professionals, setProfessionals] = useState<Professional[]>([
@@ -209,6 +201,7 @@ export default function SalonPageEditor() {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
+      if (!salonData?.id) throw new Error('ID salon manquant');
       const response = await fetch(`/api/salon/${salonData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -222,7 +215,8 @@ export default function SalonPageEditor() {
         title: "Salon mis à jour !",
         description: "Vos modifications ont été sauvegardées avec succès."
       });
-      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData.id}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData?.id}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/salon'] });
       setIsEditing(false);
     },
     onError: () => {

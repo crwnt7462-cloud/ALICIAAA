@@ -53,6 +53,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour récupérer le salon du professionnel connecté
+  app.get('/api/user/salon', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Mapping des utilisateurs vers leurs salons (à terme ça viendra de la BDD)
+      const userSalonMapping = {
+        'demo': 'barbier-gentleman-marais', // Utilisateur de démo -> Barbier
+        // Ajoutez d'autres mappings selon vos utilisateurs
+      };
+      
+      const salonId = userSalonMapping[userId] || 'barbier-gentleman-marais'; // Fallback
+      const salon = await storage.getSalon(salonId);
+      
+      if (!salon) {
+        return res.status(404).json({ error: 'Aucun salon associé à cet utilisateur' });
+      }
+      
+      res.json(salon);
+    } catch (error) {
+      console.error("Error fetching user salon:", error);
+      res.status(500).json({ message: "Failed to fetch user salon" });
+    }
+  });
+
   // Routes pour les photos de salon
   app.get('/api/salon-photos/:userId', async (req, res) => {
     try {
