@@ -1,7 +1,7 @@
 import { useLocation } from 'wouter';
 import { 
   Home, Calendar, Settings, MessageCircle, 
-  Sparkles, Users, BarChart3 
+  Sparkles, Users 
 } from 'lucide-react';
 
 export function BottomNavigationFloating() {
@@ -26,12 +26,7 @@ export function BottomNavigationFloating() {
       path: '/clients',
       active: location === '/clients'
     },
-    {
-      label: 'Pro Tools',
-      icon: BarChart3,
-      path: '/business-features',
-      active: location === '/business-features' || location.includes('/pro-')
-    },
+
     {
       label: 'IA',
       icon: Sparkles,

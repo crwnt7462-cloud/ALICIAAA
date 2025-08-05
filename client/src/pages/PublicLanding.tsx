@@ -196,40 +196,28 @@ export default function PublicLanding() {
       action: () => setLocation("/client-login-modern")
     },
     { 
-      id: 'login', 
-      label: 'Espace Pro', 
-      icon: <LogIn className="w-5 h-5" />,
-      action: () => setLocation("/pro-login")
-    },
-    { 
-      id: 'pro', 
-      label: 'Je suis un professionnel de beauté', 
-      icon: <UserCheck className="w-5 h-5" />,
-      action: () => setLocation("/professional-plans")
-    },
-    { 
       id: 'coiffeur', 
-      label: 'Coiffeur', 
+      label: 'Coiffure', 
       icon: <ScissorsIcon className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => handleSearchService('coiffure')
     },
     { 
-      id: 'barbier', 
-      label: 'Barbier', 
-      icon: <UsersIcon className="w-5 h-5" />,
-      action: () => handleSearch()
+      id: 'esthetique', 
+      label: 'Esthétique', 
+      icon: <SparklesIcon className="w-5 h-5" />,
+      action: () => handleSearchService('esthetique')
     },
     { 
       id: 'manucure', 
       label: 'Manucure', 
       icon: <Palette className="w-5 h-5" />,
-      action: () => handleSearch()
+      action: () => handleSearchService('manucure')
     },
     { 
-      id: 'institut', 
-      label: 'Institut de beauté', 
-      icon: <SparklesIcon className="w-5 h-5" />,
-      action: () => handleSearch()
+      id: 'massage', 
+      label: 'Massage', 
+      icon: <Heart className="w-5 h-5" />,
+      action: () => handleSearchService('massage')
     }
   ];
 
@@ -242,21 +230,7 @@ export default function PublicLanding() {
   };
 
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
-    if (item.id === 'coiffeur') {
-      setSearchQuery('coiffure');
-      setLocation(`/search?q=coiffure&location=${encodeURIComponent(searchLocation || 'paris')}`);
-    } else if (item.id === 'barbier') {
-      setSearchQuery('barbier');
-      setLocation(`/search?q=barbier&location=${encodeURIComponent(searchLocation || 'paris')}`);
-    } else if (item.id === 'manucure') {
-      setSearchQuery('ongle');
-      setLocation(`/search?q=ongle&location=${encodeURIComponent(searchLocation || 'paris')}`);
-    } else if (item.id === 'institut') {
-      setSearchQuery('esthetique');
-      setLocation(`/search?q=esthetique&location=${encodeURIComponent(searchLocation || 'paris')}`);
-    } else {
-      item.action();
-    }
+    item.action();
     closeMenu();
   };
 
