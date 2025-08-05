@@ -53,6 +53,10 @@ app.use((req, res, next) => {
   // Créer les salons de test avec photos
   await seedSalons();
   
+  // Générer automatiquement des services pour tous les salons
+  const { generateServicesForAllSalons } = await import("./autoServiceGeneration.js");
+  await generateServicesForAllSalons();
+  
   // ✅ CRÉATION SALON DEMO MODIFIABLE - NÉCESSAIRE POUR ÉDITEUR
   try {
     const { storage } = await import("./storage");
@@ -124,44 +128,60 @@ app.use((req, res, next) => {
     // Créer des services pour le salon démo
     const demoServices = [
       {
-        id: 1,
         name: "Coupe + Brushing Femme",
         description: "Coupe de cheveux personnalisée avec shampoing et brushing professionnel",
-        price: 65,
+        price: "65",
         duration: 90,
-        category: "Coiffure Femme",
-        businessId: "demo",
-        isActive: true
+        categoryId: 1,
+        userId: "demo",
+        isActive: true,
+        isOnlineBookable: true,
+        requiresDeposit: true,
+        depositAmount: "19.50",
+        maxAdvanceBooking: 30,
+        color: "#8B5CF6"
       },
       {
-        id: 2,
         name: "Coloration Complète",
         description: "Coloration racines et longueurs avec soin nourrissant",
-        price: 120,
+        price: "120",
         duration: 180,
-        category: "Coloration",
-        businessId: "demo",
-        isActive: true
+        categoryId: 1,
+        userId: "demo",
+        isActive: true,
+        isOnlineBookable: true,
+        requiresDeposit: true,
+        depositAmount: "36.00",
+        maxAdvanceBooking: 30,
+        color: "#8B5CF6"
       },
       {
-        id: 3,
         name: "Mèches ou Balayage",
         description: "Technique de décoloration partielle pour un effet naturel",
-        price: 95,
+        price: "95",
         duration: 150,
-        category: "Coloration",
-        businessId: "demo",
-        isActive: true
+        categoryId: 1,
+        userId: "demo",
+        isActive: true,
+        isOnlineBookable: true,
+        requiresDeposit: true,
+        depositAmount: "28.50",
+        maxAdvanceBooking: 30,
+        color: "#8B5CF6"
       },
       {
-        id: 4,
         name: "Soin Réparateur",
         description: "Masque capillaire profond pour cheveux abîmés",
-        price: 35,
+        price: "35",
         duration: 45,
-        category: "Soins",
-        businessId: "demo",
-        isActive: true
+        categoryId: 2,
+        userId: "demo",
+        isActive: true,
+        isOnlineBookable: true,
+        requiresDeposit: false,
+        depositAmount: null,
+        maxAdvanceBooking: 30,
+        color: "#F59E0B"
       }
     ];
 

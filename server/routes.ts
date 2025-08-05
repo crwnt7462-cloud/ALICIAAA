@@ -1149,7 +1149,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Route pour récupérer tous les services du salon demo (par défaut)
   app.get('/api/services', async (req, res) => {
     try {
+      console.log('🎯 Route /api/services appelée - recherche pour userId: "demo"');
       const services = await storage.getServices("demo");
+      console.log(`✅ Services retournés: ${services.length}`);
       res.json(services);
     } catch (error) {
       console.error("Error fetching services:", error);

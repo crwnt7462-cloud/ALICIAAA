@@ -389,13 +389,35 @@ export class DatabaseStorage implements IStorage {
     return client;
   }
 
+  // Salons
+  async getAllSalons(): Promise<any[]> {
+    try {
+      const allSalons = await db.select().from(salonRegistrations).limit(100);
+      console.log(`🏢 ${allSalons.length} salons trouvés dans salonRegistrations`);
+      return allSalons.map(salon => ({
+        id: salon.id?.toString() || 'salon-' + salon.id,
+        name: salon.salonName,
+        description: salon.salonDescription
+      }));
+    } catch (error) {
+      console.log('ℹ️ Erreur récupération salons:', error);
+      return [];
+    }
+  }
+
   // Services
   async getServices(userId: string): Promise<Service[]> {
-    return await db
+    console.log(`🔍 Recherche services pour userId: "${userId}"`);
+    const result = await db
       .select()
       .from(services)
-      .where(eq(services.businessId, userId))
+      .where(eq(services.userId, userId))
       .orderBy(services.name);
+    console.log(`📊 Services trouvés: ${result.length}`);
+    if (result.length > 0) {
+      console.log(`📋 Premier service: ${result[0].name} - ${result[0].price}€`);
+    }
+    return result;
   }
 
   async getActiveServices(userId: string): Promise<any[]> {
