@@ -75,36 +75,14 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-end justify-center">
-      {/* Payment Shell - Glisse depuis le bas */}
-      <div 
-        className={`bg-white rounded-t-3xl shadow-2xl w-full max-w-lg transform transition-all duration-500 ease-out ${
-          isOpen ? 'translate-y-0' : 'translate-y-full'
-        }`}
-        style={{
-          boxShadow: '0 -25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)',
-          maxHeight: '85vh'
-        }}
-      >
-        {/* Poignée de glissement */}
-        <div className="flex justify-center pt-3 pb-2">
-          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
-        </div>
-
-        {/* Header style paiement */}
-        <div className="px-6 py-4 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={onClose}
-              className="text-violet-600 hover:text-violet-700 font-medium"
-            >
-              Annuler
-            </button>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Confirmer la réservation
-            </h2>
-            <div className="w-16"></div> {/* Spacer pour centrer le titre */}
-          </div>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {/* Modal Shell Glassmorphism */}
+      <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden border border-white/20">
+        {/* Header glassmorphism */}
+        <div className="px-6 py-5 border-b border-white/20">
+          <h2 className="text-center text-xl font-semibold text-gray-900">
+            Confirmation de réservation
+          </h2>
         </div>
 
         {/* Contenu scrollable */}
@@ -160,12 +138,18 @@ export default function BookingConfirmationPopup({
           </div>
         </div>
 
-        {/* Footer avec bouton paiement */}
-        <div className="px-6 py-6 border-t border-gray-100 bg-white">
+        {/* Footer avec boutons glassmorphism */}
+        <div className="flex gap-3 px-6 py-5 border-t border-white/20 bg-white/40 backdrop-blur-md">
+          <button
+            onClick={onClose}
+            className="flex-1 h-12 bg-white/30 backdrop-blur-md border border-white/40 text-gray-700 hover:bg-white/50 transition-colors rounded-lg font-medium"
+          >
+            Modifier
+          </button>
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-2xl transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center shadow-lg transform active:scale-95"
+            className="flex-1 h-12 bg-violet-600/90 backdrop-blur-md border border-violet-500/30 text-white hover:bg-violet-700/90 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -179,11 +163,6 @@ export default function BookingConfirmationPopup({
               </>
             )}
           </button>
-          
-          {/* Texte d'aide sous le bouton */}
-          <p className="text-xs text-gray-500 text-center mt-3">
-            Paiement sécurisé • Annulation gratuite 24h avant
-          </p>
         </div>
       </div>
     </div>
