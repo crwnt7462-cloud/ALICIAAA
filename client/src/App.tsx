@@ -61,6 +61,7 @@ import MultiStepSubscription from "@/pages/MultiStepSubscription";
 import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
+import UpgradePlans from "@/pages/UpgradePlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
@@ -152,7 +153,6 @@ import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
-import UpgradePlans from "@/pages/UpgradePlans";
 
 
 function Router() {

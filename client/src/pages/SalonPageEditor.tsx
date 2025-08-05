@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -86,6 +87,7 @@ export default function SalonPageEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { isAdvancedPro, isPremiumPro, currentPlan } = useSubscription();
 
   // Données du salon - automatiquement déterminées selon l'utilisateur connecté
   const [salonData, setSalonData] = useState<SalonData | null>(null);
@@ -1083,22 +1085,63 @@ export default function SalonPageEditor() {
 
         {activeTab === 'couleurs' && (
           <div className="space-y-6">
-            {/* Header avec description */}
-            <Card className="glass-card-amber">
-              <CardContent className="p-6 text-center">
-                <Palette className="h-12 w-12 text-amber-600 mx-auto mb-4" />
-                <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
-                <p className="text-gray-600">
-                  Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
-                  L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
-                </p>
-              </CardContent>
-            </Card>
+            {/* Vérification de l'abonnement */}
+            {!isAdvancedPro && !isPremiumPro ? (
+              /* Restriction pour Basic Pro */
+              <Card className="border-orange-200 bg-orange-50/50">
+                <CardContent className="p-6 text-center">
+                  <div className="mb-4">
+                    <Palette className="w-12 h-12 text-orange-500 mx-auto mb-3" />
+                    <h3 className="font-semibold text-lg mb-2">Personnalisation des couleurs</h3>
+                    <p className="text-gray-600 mb-4">
+                      La personnalisation des couleurs de bouton est disponible à partir des plans Advanced Pro (79€) et Premium Pro (149€).
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Plan actuel : <Badge variant="outline">Basic Pro (29€/mois)</Badge>
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-3 mb-6">
+                    <div className="text-sm text-gray-600 p-3 bg-white/50 rounded-lg">
+                      <strong>Advanced Pro (79€/mois)</strong> : Personnalisation complète des couleurs + IA optimisation + Messagerie premium
+                    </div>
+                    <div className="text-sm text-gray-600 p-3 bg-white/50 rounded-lg">
+                      <strong>Premium Pro (149€/mois)</strong> : Toutes les fonctionnalités + IA prédictive + Solution white-label
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    className="glass-button-violet hover:glass-effect"
+                    onClick={() => setLocation('/upgrade-plans')}
+                  >
+                    Passer à Advanced Pro
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              /* Fonctionnalité complète pour Advanced et Premium */
+              <>
+                {/* Header avec description */}
+                <Card className="glass-card-amber">
+                  <CardContent className="p-6 text-center">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <Palette className="h-12 w-12 text-amber-600" />
+                      <Badge className="bg-green-100 text-green-800">
+                        {isPremiumPro ? 'Premium Pro' : 'Advanced Pro'}
+                      </Badge>
+                    </div>
+                    <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
+                    <p className="text-gray-600">
+                      Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
+                      L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
+                    </p>
+                  </CardContent>
+                </Card>
 
-            {/* Sélecteurs de couleur */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
+                {/* Sélecteurs de couleur */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -1268,6 +1311,8 @@ export default function SalonPageEditor() {
                 </div>
               </CardContent>
             </Card>
+                </>
+              )}
           </div>
         )}
 
