@@ -75,18 +75,24 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Modal Shell Glassmorphism */}
-      <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden border border-white/20">
-        {/* Header glassmorphism */}
-        <div className="px-6 py-5 border-b border-white/20">
-          <h2 className="text-center text-xl font-semibold text-gray-900">
-            Confirmation de réservation
-          </h2>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {/* Shell Modal Fixe */}
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full border border-gray-200 overflow-hidden">
+        {/* Barre de titre shell */}
+        <div className="h-8 bg-gray-100 rounded-t-2xl flex items-center justify-between px-4">
+          <div className="flex space-x-2">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          </div>
+          <span className="text-xs text-gray-600 font-medium">Confirmation</span>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X className="w-4 h-4" />
+          </button>
         </div>
-
-        {/* Contenu scrollable */}
-        <div className="px-6 py-5 space-y-5 max-h-[60vh] overflow-y-auto">
+        
+        {/* Contenu du shell */}
+        <div className="bg-white p-6 space-y-6 max-h-[75vh] overflow-y-auto">
           {/* Récapitulatif principal */}
           <div className="bg-gray-50 rounded-xl p-5 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
@@ -126,7 +132,7 @@ export default function BookingConfirmationPopup({
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
-              onCheckedChange={setAcceptedPolicies}
+              onCheckedChange={(checked) => setAcceptedPolicies(checked === true)}
               className="mt-0.5"
             />
             <label
@@ -137,9 +143,9 @@ export default function BookingConfirmationPopup({
             </label>
           </div>
         </div>
-
-        {/* Footer avec boutons glassmorphism */}
-        <div className="flex gap-3 px-6 py-5 border-t border-white/20 bg-white/40 backdrop-blur-md">
+        
+        {/* Footer avec boutons shell */}
+        <div className="flex gap-3 p-6 border-t border-gray-200 bg-gray-50">
           <button
             onClick={onClose}
             className="flex-1 h-12 bg-white/30 backdrop-blur-md border border-white/40 text-gray-700 hover:bg-white/50 transition-colors rounded-lg font-medium"
