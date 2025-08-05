@@ -40,7 +40,7 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-white/90 via-gray-50/30 to-violet-50/20 p-4"
+      className="min-h-screen bg-white p-4"
     >
       <div className="max-w-md mx-auto space-y-8">
         {/* Hero Section */}
