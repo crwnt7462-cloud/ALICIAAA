@@ -43,6 +43,19 @@ interface ServiceCategory {
   services: Service[];
 }
 
+interface Professional {
+  id: number;
+  name: string;
+  image: string;
+  photoUrl?: string;
+  rating: number;
+  specialties: string[];
+  nextSlot: string;
+  experience: string;
+  description?: string;
+  available: boolean;
+}
+
 interface SalonData {
   id: string;
   name: string;
@@ -118,6 +131,46 @@ export default function SalonPageEditor() {
       intensity: 35 // Intensité par défaut
     }
   });
+
+  // État des professionnels
+  const [professionals, setProfessionals] = useState<Professional[]>([
+    {
+      id: 1,
+      name: 'Lucas Martin',
+      image: '👨‍🦰',
+      photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format',
+      rating: 4.8,
+      specialties: ['Coupe Moderne', 'Barbe'],
+      nextSlot: 'Disponible à 14:30',
+      experience: '8 ans d\'expérience',
+      description: 'Spécialiste des coupes modernes et du rasage traditionnel',
+      available: true
+    },
+    {
+      id: 2,
+      name: 'Sophie Dubois',
+      image: '👩‍🦱',
+      photoUrl: 'https://images.unsplash.com/photo-1494790108755-2616b612b830?w=150&h=150&fit=crop&auto=format',
+      rating: 4.9,
+      specialties: ['Coupe Femme', 'Coloration'],
+      nextSlot: 'Disponible à 16:00',
+      experience: '12 ans d\'expérience',
+      description: 'Experte en coiffure féminine et techniques de coloration',
+      available: true
+    },
+    {
+      id: 3,
+      name: 'Antoine Leroux',
+      image: '👨‍🦲',
+      photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&auto=format',
+      rating: 4.7,
+      specialties: ['Rasage', 'Soins'],
+      nextSlot: 'Disponible à 15:15',
+      experience: '15 ans d\'expérience',
+      description: 'Barbier traditionnel, maître du rasage au coupe-chou',
+      available: false
+    }
+  ]);
 
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
     {
@@ -270,10 +323,53 @@ export default function SalonPageEditor() {
     );
   };
 
+  // Fonctions de gestion des professionnels
+  const updateProfessional = (professionalId: number, updates: Partial<Professional>) => {
+    setProfessionals(prev =>
+      prev.map(pro =>
+        pro.id === professionalId ? { ...pro, ...updates } : pro
+      )
+    );
+  };
+
+  const addProfessional = () => {
+    const newProfessional: Professional = {
+      id: Date.now(),
+      name: 'Nouveau professionnel',
+      image: '👤',
+      photoUrl: '',
+      rating: 4.5,
+      specialties: ['Coupe'],
+      nextSlot: 'Disponible',
+      experience: '2 ans d\'expérience',
+      description: 'Professionnel expérimenté',
+      available: true
+    };
+    
+    setProfessionals(prev => [...prev, newProfessional]);
+  };
+
+  const deleteProfessional = (professionalId: number) => {
+    setProfessionals(prev => prev.filter(pro => pro.id !== professionalId));
+  };
+
+  const handleProfessionalPhotoUpload = (professionalId: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        updateProfessional(professionalId, { photoUrl: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = () => {
     saveMutation.mutate({
       ...salonData,
-      serviceCategories
+      serviceCategories,
+      professionals
     });
   };
 
@@ -400,6 +496,7 @@ export default function SalonPageEditor() {
         <div className="flex">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
+            { id: 'professionnels', label: 'Équipe', icon: User },
             { id: 'info', label: 'Infos', icon: MapPin },
             { id: 'couleurs', label: 'Couleurs', icon: Palette },
             { id: 'avis', label: 'Avis', icon: Star }
@@ -602,6 +699,252 @@ export default function SalonPageEditor() {
                 )}
               </Card>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'professionnels' && (
+          <div className="space-y-4">
+            {/* Bouton ajouter professionnel en mode édition */}
+            {isEditing && (
+              <Button
+                onClick={addProfessional}
+                className="w-full border-2 border-dashed py-6"
+                style={{
+                  ...getCustomButtonStyle(),
+                  borderColor: salonData.customColors?.primary || '#f59e0b',
+                  borderStyle: 'dashed'
+                }}
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Ajouter un professionnel
+              </Button>
+            )}
+
+            {professionals.map(professional => (
+              <Card key={professional.id} className="overflow-hidden">
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-4">
+                    {/* Photo du professionnel */}
+                    <div className="relative">
+                      {professional.photoUrl ? (
+                        <img
+                          src={professional.photoUrl}
+                          alt={professional.name}
+                          className="w-20 h-20 rounded-full object-cover border-2"
+                          style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
+                        />
+                      ) : (
+                        <div
+                          className="w-20 h-20 rounded-full flex items-center justify-center text-4xl border-2"
+                          style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
+                        >
+                          {professional.image}
+                        </div>
+                      )}
+                      
+                      {/* Bouton changement de photo en mode édition */}
+                      {isEditing && (
+                        <label
+                          htmlFor={`photo-upload-${professional.id}`}
+                          className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer"
+                          style={{
+                            ...getCustomButtonStyle(),
+                            padding: '0',
+                            fontSize: '12px'
+                          }}
+                        >
+                          📷
+                          <input
+                            id={`photo-upload-${professional.id}`}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleProfessionalPhotoUpload(professional.id, e)}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* Informations du professionnel */}
+                    <div className="flex-1">
+                      {isEditing ? (
+                        <div className="space-y-3">
+                          {/* Nom */}
+                          <Input
+                            value={professional.name}
+                            onChange={(e) => updateProfessional(professional.id, { name: e.target.value })}
+                            className="font-semibold text-lg"
+                            placeholder="Nom du professionnel"
+                          />
+                          
+                          {/* Emoji/Avatar */}
+                          <Input
+                            value={professional.image}
+                            onChange={(e) => updateProfessional(professional.id, { image: e.target.value })}
+                            className="text-sm"
+                            placeholder="Emoji (ex: 👨‍🦰)"
+                            maxLength={2}
+                          />
+                          
+                          {/* Description */}
+                          <Textarea
+                            value={professional.description}
+                            onChange={(e) => updateProfessional(professional.id, { description: e.target.value })}
+                            className="text-sm"
+                            placeholder="Description du professionnel"
+                            rows={2}
+                          />
+                          
+                          {/* Expérience */}
+                          <Input
+                            value={professional.experience}
+                            onChange={(e) => updateProfessional(professional.id, { experience: e.target.value })}
+                            className="text-sm"
+                            placeholder="Expérience (ex: 5 ans d'expérience)"
+                          />
+                          
+                          {/* Spécialités */}
+                          <Input
+                            value={professional.specialties.join(', ')}
+                            onChange={(e) => updateProfessional(professional.id, { specialties: e.target.value.split(', ').filter(s => s.trim()) })}
+                            className="text-sm"
+                            placeholder="Spécialités (séparées par des virgules)"
+                          />
+                          
+                          {/* Disponibilité */}
+                          <Input
+                            value={professional.nextSlot}
+                            onChange={(e) => updateProfessional(professional.id, { nextSlot: e.target.value })}
+                            className="text-sm"
+                            placeholder="Prochaine disponibilité"
+                          />
+                          
+                          {/* Note */}
+                          <Input
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            max="5"
+                            value={professional.rating}
+                            onChange={(e) => updateProfessional(professional.id, { rating: parseFloat(e.target.value) || 0 })}
+                            className="text-sm"
+                            placeholder="Note (0-5)"
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {/* Mode aperçu */}
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-lg">{professional.name}</h3>
+                            <div className="flex items-center gap-1">
+                              <Star 
+                                className="h-4 w-4" 
+                                style={{ 
+                                  color: salonData.customColors?.primary || '#f59e0b',
+                                  fill: salonData.customColors?.primary || '#f59e0b'
+                                }} 
+                              />
+                              <span className="text-sm font-medium">{professional.rating}</span>
+                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-gray-600 mb-2">{professional.experience}</p>
+                          {professional.description && (
+                            <p className="text-sm text-gray-700 mb-3">{professional.description}</p>
+                          )}
+                          
+                          {/* Spécialités */}
+                          <div className="flex flex-wrap gap-1 mb-3">
+                            {professional.specialties.map((specialty, idx) => (
+                              <Badge 
+                                key={idx} 
+                                variant="outline" 
+                                className="text-xs"
+                                style={{
+                                  borderColor: salonData.customColors?.primary || '#f59e0b',
+                                  color: salonData.customColors?.primary || '#f59e0b'
+                                }}
+                              >
+                                {specialty}
+                              </Badge>
+                            ))}
+                          </div>
+                          
+                          {/* Disponibilité */}
+                          <p 
+                            className="text-sm font-medium"
+                            style={{ color: salonData.customColors?.primary || '#f59e0b' }}
+                          >
+                            {professional.nextSlot}
+                          </p>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col items-center gap-2">
+                      {isEditing ? (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => deleteProfessional(professional.id)}
+                          className="text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      ) : (
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="px-4 py-2 text-sm font-semibold rounded-lg"
+                          style={getCustomButtonStyle()}
+                          onClick={() => setLocation('/salon-booking')}
+                        >
+                          Choisir
+                        </motion.button>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Aperçu section réservation */}
+            {!isEditing && (
+              <Card className="mt-6 border-2 border-dashed border-gray-300">
+                <CardContent className="p-6 text-center">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                    Aperçu dans la réservation
+                  </h3>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium mb-3">Choisir un professionnel</h4>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {professionals.slice(0, 2).map((pro) => (
+                        <div key={pro.id} className="flex items-center gap-3 p-2 bg-white rounded border">
+                          {pro.photoUrl ? (
+                            <img
+                              src={pro.photoUrl}
+                              alt={pro.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="text-lg">{pro.image}</div>
+                          )}
+                          <div className="flex-1 text-left">
+                            <div className="font-medium text-sm">{pro.name}</div>
+                            <div className="text-xs text-gray-500">{pro.nextSlot}</div>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs">
+                            <Star className="h-3 w-3 text-amber-400 fill-amber-400" />
+                            {pro.rating}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
 

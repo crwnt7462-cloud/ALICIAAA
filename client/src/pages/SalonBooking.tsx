@@ -493,7 +493,16 @@ export default function SalonBooking() {
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="text-2xl">{pro.image}</div>
+                  {/* Photo du professionnel avec fallback sur emoji */}
+                  {pro.photoUrl ? (
+                    <img
+                      src={pro.photoUrl}
+                      alt={pro.name}
+                      className="w-12 h-12 rounded-full object-cover border-2 border-violet-200"
+                    />
+                  ) : (
+                    <div className="text-2xl">{pro.image}</div>
+                  )}
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-medium text-gray-900">{pro.name}</h3>
@@ -502,6 +511,10 @@ export default function SalonBooking() {
                         <span className="text-sm text-gray-600">{pro.rating}</span>
                       </div>
                     </div>
+                    {/* Affichage de l'expérience si disponible */}
+                    {pro.experience && (
+                      <p className="text-xs text-gray-500 mb-1">{pro.experience}</p>
+                    )}
                     <div className="flex flex-wrap gap-1 mb-2">
                       {pro.specialties.map((specialty, idx) => (
                         <Badge key={idx} variant="outline" className="text-xs">
