@@ -81,7 +81,7 @@ import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StockAlerts from "@/pages/StockAlerts";
 import Settings from "@/pages/Settings";
 import Support from "@/pages/Support";
-import Contact from "@/pages/Contact";
+import ContactOld from "@/pages/Contact";
 import ServiceCoiffure from "@/pages/ServiceCoiffure";
 import ServiceEsthetique from "@/pages/ServiceEsthetique";
 import ServiceMassage from "@/pages/ServiceMassage";
@@ -153,6 +153,14 @@ import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
+import CoiffureService from "@/pages/services/CoiffureService";
+import EsthetiqueService from "@/pages/services/EsthetiqueService";
+import ManucureService from "@/pages/services/ManucureService";
+import MassageService from "@/pages/services/MassageService";
+import CentreAide from "@/pages/support/CentreAide";
+import Contact from "@/pages/support/Contact";
+import CGU from "@/pages/support/CGU";
+import Confidentialite from "@/pages/support/Confidentialite";
 
 
 function Router() {
@@ -848,7 +856,7 @@ function Router() {
           <Route path="/share" component={ShareBooking} />
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
-          <Route path="/contact" component={Contact} />
+          <Route path="/contact-old" component={ContactOld} />
           <Route path="/ai-pro" component={AIProModern} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
@@ -858,10 +866,15 @@ function Router() {
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />
           <Route path="/client-management" component={ClientManagement} />
-          <Route path="/services/coiffure" component={ServiceCoiffure} />
-          <Route path="/services/esthetique" component={ServiceEsthetique} />
-          <Route path="/services/massage" component={ServiceMassage} />
+          <Route path="/services/coiffure" component={CoiffureService} />
+          <Route path="/services/esthetique" component={EsthetiqueService} />
+          <Route path="/services/massage" component={MassageService} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
+          <Route path="/services/manucure" component={ManucureService} />
+          <Route path="/support/centre-aide" component={CentreAide} />
+          <Route path="/support/contact" component={Contact} />
+          <Route path="/support/cgu" component={CGU} />
+          <Route path="/support/confidentialite" component={Confidentialite} />
           <Route path="/pro" component={Landing} />
           <Route path="/pro-pages" component={ProPagesManager} />
           <Route path="/salon-settings" component={SalonSettingsModern} />

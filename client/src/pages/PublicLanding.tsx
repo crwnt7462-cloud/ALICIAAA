@@ -1007,9 +1007,9 @@ export default function PublicLanding() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">BeautyApp</h3>
+              <h3 className="text-xl font-bold mb-4">Rendly</h3>
               <p className="text-gray-400 text-sm">
                 La plateforme de réservation beauté qui révolutionne votre expérience.
               </p>
@@ -1017,35 +1017,66 @@ export default function PublicLanding() {
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <div>Coiffure</div>
-                <div>Esthétique</div>
-                <div>Manucure</div>
-                <div>Massage</div>
+                <button 
+                  onClick={() => setLocation('/services/coiffure')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Coiffure
+                </button>
+                <button 
+                  onClick={() => setLocation('/services/esthetique')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Esthétique
+                </button>
+                <button 
+                  onClick={() => setLocation('/services/manucure')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Manucure
+                </button>
+                <button 
+                  onClick={() => setLocation('/services/massage')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Massage
+                </button>
               </div>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <div>Centre d'aide</div>
-                <div>Contact</div>
-                <div>CGU</div>
-                <div>Confidentialité</div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Professionnels</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div>Rejoignez-nous</div>
-                <div>Dashboard Pro</div>
-                <div>Tarifs</div>
-                <div>Support Pro</div>
+                <button 
+                  onClick={() => setLocation('/support/centre-aide')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Centre d'aide
+                </button>
+                <button 
+                  onClick={() => setLocation('/support/contact')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Contact
+                </button>
+                <button 
+                  onClick={() => setLocation('/support/cgu')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  CGU
+                </button>
+                <button 
+                  onClick={() => setLocation('/support/confidentialite')}
+                  className="block text-left hover:text-white transition-colors"
+                >
+                  Confidentialité
+                </button>
               </div>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 BeautyApp. Tous droits réservés.
+              © 2024 Rendly. Tous droits réservés.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <button className="text-gray-400 hover:text-white transition-colors">
