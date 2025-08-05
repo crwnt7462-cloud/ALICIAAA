@@ -488,7 +488,13 @@ export default function PublicLanding() {
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
-              <span className="inline-block border-2 border-violet-500 bg-violet-50 text-violet-700 px-3 py-1 rounded-lg relative overflow-hidden text-center">
+              <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1"
+                    style={{
+                      background: 'rgba(168, 85, 247, 0.1)',
+                      backdropFilter: 'blur(15px)',
+                      border: '1px solid rgba(168, 85, 247, 0.3)',
+                      color: '#000'
+                    }}>
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentWord}
