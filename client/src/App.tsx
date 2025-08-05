@@ -149,6 +149,7 @@ import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
 import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBooking from "@/pages/SalonBooking";
+import SalonPageDemo from "@/pages/SalonPageDemo";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
@@ -922,7 +923,9 @@ function Router() {
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />
           <Route path="/salon-page-editor" component={SalonPageEditor} />
-          <Route path="/salon-booking" component={SalonBookingFlow} />
+          <Route path="/salon-demo" component={SalonPageDemo} />
+          <Route path="/salon-booking" component={SalonBooking} />
+          <Route path="/salon-booking-flow" component={SalonBookingFlow} />
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
