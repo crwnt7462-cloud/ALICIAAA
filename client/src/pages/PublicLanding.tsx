@@ -283,7 +283,11 @@ export default function PublicLanding() {
   }, [isMenuOpen]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" 
+         style={{
+           background: '#f8f9fa',
+           backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%)',
+         }}>
       {/* Menu plein écran style ProQuote avec Framer Motion */}
       <AnimatePresence>
         {isMenuOpen && (
