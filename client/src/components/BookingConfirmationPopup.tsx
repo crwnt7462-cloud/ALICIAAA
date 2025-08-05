@@ -75,25 +75,36 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
-      {/* Modal Shell */}
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-end justify-center">
+      {/* Payment Shell - Glisse depuis le bas */}
       <div 
-        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out"
+        className={`bg-white rounded-t-3xl shadow-2xl w-full max-w-lg transform transition-all duration-500 ease-out ${
+          isOpen ? 'translate-y-0' : 'translate-y-full'
+        }`}
         style={{
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)'
+          boxShadow: '0 -25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+          maxHeight: '85vh'
         }}
       >
-        {/* Header avec bouton fermer */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Confirmation de réservation
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5 text-gray-500" />
-          </button>
+        {/* Poignée de glissement */}
+        <div className="flex justify-center pt-3 pb-2">
+          <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        </div>
+
+        {/* Header style paiement */}
+        <div className="px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={onClose}
+              className="text-violet-600 hover:text-violet-700 font-medium"
+            >
+              Annuler
+            </button>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Confirmer la réservation
+            </h2>
+            <div className="w-16"></div> {/* Spacer pour centrer le titre */}
+          </div>
         </div>
 
         {/* Contenu scrollable */}
@@ -149,18 +160,12 @@ export default function BookingConfirmationPopup({
           </div>
         </div>
 
-        {/* Footer avec boutons */}
-        <div className="flex gap-3 px-6 py-5 border-t border-gray-100 bg-gray-50/50">
-          <button
-            onClick={onClose}
-            className="flex-1 h-12 border border-gray-200 text-gray-700 hover:bg-white hover:border-gray-300 transition-colors rounded-lg font-medium"
-          >
-            Modifier
-          </button>
+        {/* Footer avec bouton paiement */}
+        <div className="px-6 py-6 border-t border-gray-100 bg-white">
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="flex-1 h-12 bg-violet-600 hover:bg-violet-700 text-white transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed rounded-lg font-medium flex items-center justify-center shadow-lg"
+            className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-2xl transition-all duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center shadow-lg transform active:scale-95"
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -174,6 +179,11 @@ export default function BookingConfirmationPopup({
               </>
             )}
           </button>
+          
+          {/* Texte d'aide sous le bouton */}
+          <p className="text-xs text-gray-500 text-center mt-3">
+            Paiement sécurisé • Annulation gratuite 24h avant
+          </p>
         </div>
       </div>
     </div>
