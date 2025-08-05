@@ -317,8 +317,8 @@ export default function SalonBooking() {
 
   const handleTimeSlotSelect = (time: string) => {
     setSelectedSlot({ time, date: selectedDate });
-    // Aller à l'étape de connexion/inscription
-    setCurrentStep(4);
+    // Aller à l'étape de connexion/inscription (étape 3 dans le nouveau flux)
+    setCurrentStep(3);
   };
 
   const handleDateSelect = (dateInfo: any) => {
