@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from './useAuth';
-import { hasAIAccess, hasAdvancedFeatures, canAccessFeature, SUBSCRIPTION_PLANS } from '@shared/subscriptionPlans';
+import { hasAIAccess, hasAdvancedFeatures, hasBasicAI, hasFullAI, canAccessFeature, SUBSCRIPTION_PLANS } from '@shared/subscriptionPlans';
 
 export function useSubscription() {
   const { user } = useAuth();
@@ -21,8 +21,11 @@ export function useSubscription() {
     currentPlan,
     planData,
     isBasicPro: currentPlan === 'basic-pro',
+    isAdvancedPro: currentPlan === 'advanced-pro',
     isPremiumPro: currentPlan === 'premium-pro',
     hasAI: hasAIAccess(currentPlan),
+    hasBasicAI: hasBasicAI(currentPlan),
+    hasFullAI: hasFullAI(currentPlan),
     hasAdvanced: hasAdvancedFeatures(currentPlan),
     canAccess: (feature: string) => canAccessFeature(currentPlan, feature),
     isActive: status === 'active',

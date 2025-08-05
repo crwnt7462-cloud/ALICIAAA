@@ -35,7 +35,7 @@ const iconMapping = {
 
 export default function SubscriptionPlans() {
   const [, setLocation] = useLocation();
-  const { currentPlan, isActive } = useSubscription();
+  const { currentPlan, isActive, isBasicPro, isAdvancedPro, isPremiumPro } = useSubscription();
 
   const handlePlanSelect = (planId: string) => {
     if (planId === currentPlan && isActive) {
@@ -72,10 +72,11 @@ export default function SubscriptionPlans() {
 
       {/* Plans */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6">
           {SUBSCRIPTION_PLANS.map((plan, index) => {
             const isCurrentPlan = plan.id === currentPlan;
             const isPremium = plan.id === 'premium-pro';
+            const isAdvanced = plan.id === 'advanced-pro';
             
             return (
               <motion.div
@@ -85,7 +86,11 @@ export default function SubscriptionPlans() {
                 transition={{ delay: index * 0.1 }}
                 className={`relative ${isPremium ? 'lg:scale-105' : ''}`}
               >
-                <Card className={`h-full ${isPremium ? 'ring-2 ring-violet-200 bg-gradient-to-br from-violet-50/50 to-purple-50/50' : 'bg-white/50'} backdrop-blur-md border-white/40`}>
+                <Card className={`h-full ${
+                  isPremium ? 'ring-2 ring-violet-200 bg-gradient-to-br from-violet-50/50 to-purple-50/50' :
+                  isAdvanced ? 'ring-2 ring-amber-200 bg-gradient-to-br from-amber-50/50 to-orange-50/50' :
+                  'bg-white/50'
+                } backdrop-blur-md border-white/40`}>
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                       <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white px-4 py-1">
@@ -99,8 +104,10 @@ export default function SubscriptionPlans() {
                     <div className="flex items-center justify-center mb-4">
                       {isPremium ? (
                         <Crown className="w-8 h-8 text-violet-500" />
+                      ) : isAdvanced ? (
+                        <Star className="w-8 h-8 text-amber-500" />
                       ) : (
-                        <Sparkles className="w-8 h-8 text-amber-500" />
+                        <Sparkles className="w-8 h-8 text-blue-500" />
                       )}
                     </div>
                     

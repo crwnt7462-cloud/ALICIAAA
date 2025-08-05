@@ -17,7 +17,7 @@ interface Message {
 
 export default function AIProModern() {
   const [, setLocation] = useLocation();
-  const { hasAI, currentPlan } = useSubscription();
+  const { hasBasicAI, hasFullAI, currentPlan, isAdvancedPro, isPremiumPro } = useSubscription();
   
   // Récupérer les infos du compte connecté
   const { data: user } = useQuery({
@@ -25,8 +25,8 @@ export default function AIProModern() {
     retry: false,
   });
 
-  // Vérifier l'accès à l'IA
-  if (!hasAI) {
+  // Vérifier l'accès à l'IA (Basic ou Full)
+  if (!hasBasicAI) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4">
         <div className="max-w-2xl mx-auto pt-8">
