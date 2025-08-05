@@ -142,22 +142,22 @@ export default function BookingConfirmationPopup({
             </label>
           </div>
 
-          {/* Boutons compacts */}
+          {/* Boutons compacts - style glassmorphism */}
           <div className="flex gap-2 pt-1">
             <button
               onClick={onClose}
-              className="flex-1 h-8 bg-gray-100 text-gray-700 rounded-lg text-xs font-medium hover:bg-gray-200"
+              className="flex-1 h-8 bg-white/30 backdrop-blur-md border border-white/40 text-black rounded-lg text-xs font-medium hover:bg-white/50 transition-all"
             >
               Modifier
             </button>
             <button
               onClick={onConfirm}
               disabled={!acceptedPolicies || isLoading}
-              className="flex-1 h-8 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-lg text-xs font-medium hover:from-violet-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 flex items-center justify-center"
+              className="flex-1 h-8 glass-button text-black rounded-lg text-xs font-medium hover:glass-effect transition-all flex items-center justify-center disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="flex items-center gap-1">
-                  <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  <div className="w-3 h-3 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                 </div>
               ) : (
                 <>
