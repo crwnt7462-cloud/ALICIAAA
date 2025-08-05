@@ -75,19 +75,24 @@ export default function BookingConfirmationPopup({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      {/* Modal exactement comme l'image */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full relative overflow-hidden">
-        {/* Bouton X en haut à droite */}
-        <button 
-          onClick={onClose}
-          className="absolute top-4 right-4 w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-700 z-10"
-        >
-          <X className="w-6 h-6" />
-        </button>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      {/* Shell Modal comme connexion/paiement */}
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full border border-gray-200 overflow-hidden">
+        {/* Barre de titre shell système */}
+        <div className="h-8 bg-gray-100 rounded-t-2xl flex items-center justify-between px-4">
+          <div className="flex space-x-2">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+          </div>
+          <span className="text-xs text-gray-600 font-medium">Confirmation</span>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
         
-        {/* Contenu exactement comme l'image */}
-        <div className="p-6 pt-12 text-center space-y-6">
+        {/* Contenu du shell */}
+        <div className="bg-white p-6 text-center space-y-6 max-h-[75vh] overflow-y-auto">
           {/* Date et heure comme dans l'image */}
           <div className="space-y-1">
             <p className="text-lg text-gray-700">{formatDateForDisplay()}</p>
@@ -109,8 +114,8 @@ export default function BookingConfirmationPopup({
             <p className="text-gray-600">{salonInfo.address}</p>
           </div>
 
-          {/* Conditions importantes exactement comme l'image */}
-          <div className="bg-yellow-50 rounded-lg p-4 text-left mx-4">
+          {/* Conditions importantes dans shell */}
+          <div className="bg-yellow-50 rounded-lg p-4 text-left">
             <h4 className="font-semibold text-gray-900 mb-3">Conditions importantes</h4>
             <div className="text-sm text-gray-700 space-y-1">
               <p>• Annulation gratuite jusqu'à 24h avant</p>
@@ -119,8 +124,8 @@ export default function BookingConfirmationPopup({
             </div>
           </div>
 
-          {/* Case à cocher exactement comme l'image */}
-          <div className="flex items-start space-x-3 text-left px-4">
+          {/* Case à cocher dans shell */}
+          <div className="flex items-start space-x-3 text-left">
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
@@ -135,19 +140,22 @@ export default function BookingConfirmationPopup({
             </label>
           </div>
 
-          {/* Bouton exactement comme l'image */}
+          {/* Bouton shell */}
           <button
             onClick={onConfirm}
             disabled={!acceptedPolicies || isLoading}
-            className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-xl transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed mx-4"
+            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                 Traitement...
               </div>
             ) : (
-              "Confirmer et payer"
+              <>
+                <CreditCard className="h-4 w-4 mr-2" />
+                Confirmer et payer
+              </>
             )}
           </button>
         </div>
