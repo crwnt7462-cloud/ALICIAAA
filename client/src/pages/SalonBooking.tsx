@@ -143,7 +143,17 @@ export default function SalonBooking() {
         console.error('❌ Erreur parsing service:', error);
       }
     } else {
-      console.log('⚠️ Aucun service trouvé dans sessionStorage');
+      console.log('⚠️ Aucun service trouvé dans sessionStorage - utilisation service par défaut');
+      // Fallback vers un service par défaut si aucun service n'est pré-sélectionné
+      const fallbackService = {
+        id: 1,
+        name: "Coupe + Shampoing",
+        description: "Coupe de cheveux avec shampoing et brushing",
+        price: 45,
+        duration: 60,
+        category: "Coiffure"
+      };
+      setSelectedService(fallbackService);
     }
   }, []);
   const [showPaymentSheet, setShowPaymentSheet] = useState(false);
