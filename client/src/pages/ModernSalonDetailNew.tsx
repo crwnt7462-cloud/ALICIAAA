@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,9 +26,26 @@ import {
 } from "lucide-react";
 
 export default function ModernSalonDetail() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
+  
+  // Extraire l'ID du salon depuis l'URL
+  const salonId = location.split('/salon/')[1];
+  
+  // Récupérer les données réelles du salon depuis l'API
+  const { data: salonData, isLoading } = useQuery({
+    queryKey: [`/api/salon/${salonId}`],
+    enabled: !!salonId,
+  });
+
+  // Mettre à jour les catégories de services quand les données du salon sont chargées
+  useEffect(() => {
+    if (salonData?.serviceCategories) {
+      setServiceCategories(salonData.serviceCategories);
+    }
+  }, [salonData]);
+  // Utiliser les catégories de services depuis les données réelles du salon
   const [serviceCategories, setServiceCategories] = useState([
     {
       id: 1,
@@ -117,24 +135,32 @@ export default function ModernSalonDetail() {
     }
   ]);
 
-  const salon = {
-    id: "salon-excellence",
-    name: "Salon Excellence Paris",
-    subtitle: "L'art de la beauté réinventé",
-    rating: 4.9,
-    reviews: 324,
-    verified: true,
-    address: "123 Avenue des Champs-Élysées, Paris 8ème",
-    phone: "01 42 86 67 89",
-    story: "Depuis 15 ans, le Salon Excellence Paris révolutionne l'industrie de la beauté en combinant savoir-faire traditionnel français et innovations technologiques de pointe. Notre équipe de 12 experts passionnés vous accueille dans un écrin de 200m² entièrement rénové, où chaque détail a été pensé pour votre bien-être.",
-    awards: [
-      "Prix d'Excellence Beauté 2024",
-      "Meilleur Salon Parisien 2023",
-      "Innovation Award 2022",
-      "Certification Bio-Éthique"
-    ],
-    certifications: ["Bio-certifié", "Expert L'Oréal", "Formation Kérastase", "Technique Aveda"]
+  // Utiliser les données réelles du salon ou fallback
+  const salon = salonData || {
+    id: salonId || "salon-demo",
+    name: "Salon non trouvé",
+    subtitle: "Chargement...",
+    rating: 0,
+    reviews: 0,
+    verified: false,
+    address: "Adresse non disponible",
+    phone: "Téléphone non disponible",
+    story: "Chargement des informations...",
+    awards: [],
+    certifications: []
   };
+
+  // Afficher un état de chargement
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement du salon...</p>
+        </div>
+      </div>
+    );
+  }
 
   const services = [
     {
