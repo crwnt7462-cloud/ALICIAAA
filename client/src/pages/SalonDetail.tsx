@@ -251,7 +251,11 @@ export default function SalonDetail() {
         </div>
 
         <Button 
-          onClick={() => setLocation('/booking')}
+          onClick={() => {
+            // Utiliser le premier service par défaut pour le bouton principal
+            const defaultService = mockServices[0];
+            setLocation(`/booking?serviceId=${defaultService.id}&serviceName=${encodeURIComponent(defaultService.name)}&servicePrice=${defaultService.price}&serviceDuration=${defaultService.duration}`);
+          }}
           className="w-full glass-button-neutral font-medium h-12"
         >
           <Calendar className="w-5 h-5 mr-2" />
@@ -351,7 +355,7 @@ export default function SalonDetail() {
                       <Button 
                         size="sm" 
                         className="glass-button-neutral"
-                        onClick={() => setLocation('/booking')}
+                        onClick={() => setLocation(`/booking?serviceId=${service.id}&serviceName=${encodeURIComponent(service.name)}&servicePrice=${service.price}&serviceDuration=${service.duration}`)}
                       >
                         Choisir
                       </Button>
