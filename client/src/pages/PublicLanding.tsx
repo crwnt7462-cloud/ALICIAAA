@@ -462,38 +462,16 @@ export default function PublicLanding() {
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
-              <motion.span 
-                className="inline-block rounded-xl relative overflow-hidden text-center px-4 py-2 cursor-pointer"
+              <span 
+                className="inline-block rounded-lg px-3 py-1 text-center cursor-pointer transition-all duration-300 hover:scale-105"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(168, 85, 247, 0.1) 100%)',
-                  backdropFilter: 'blur(30px)',
-                  border: '1px solid rgba(168, 85, 247, 0.3)',
-                  boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-                  color: '#6b21a8'
+                  background: 'rgba(139, 92, 246, 0.15)',
+                  backdropFilter: 'blur(15px)',
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  boxShadow: '0 4px 20px rgba(139, 92, 246, 0.1)',
+                  color: '#7c3aed'
                 }}
-                whileHover={{
-                  scale: 1.05,
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(168, 85, 247, 0.2) 100%)',
-                  boxShadow: '0 12px 40px rgba(168, 85, 247, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                }}
-                animate={{
-                  boxShadow: [
-                    '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
-                    '0 12px 40px rgba(168, 85, 247, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                    '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                  ]
-                }}
-                transition={{
-                  boxShadow: {
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  },
-                  scale: {
-                    duration: 0.3,
-                    ease: "easeOut"
-                  }
-                }}>
+              >
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentWord}
@@ -518,7 +496,7 @@ export default function PublicLanding() {
                     ))}
                   </motion.span>
                 </AnimatePresence>
-              </motion.span>
+              </span>
             </h1>
             <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
               Trouvez et réservez chez les meilleurs professionnels près de chez vous
