@@ -69,7 +69,7 @@ export default function BusinessFeatures() {
         <div className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg p-4">
           <Button 
             className="w-full bg-transparent hover:bg-white/10 text-white font-medium py-2 rounded-lg"
-            onClick={() => setLocation("/upgrade-plans")}
+            onClick={() => toast({ title: "Plans", description: "Voir les plans d'abonnement" })}
           >
             Voir les plans d'abonnement
           </Button>

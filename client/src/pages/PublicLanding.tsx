@@ -196,28 +196,40 @@ export default function PublicLanding() {
       action: () => setLocation("/client-login-modern")
     },
     { 
-      id: 'coiffeur', 
-      label: 'Coiffure', 
-      icon: <ScissorsIcon className="w-5 h-5" />,
-      action: () => handleSearchService('coiffure')
+      id: 'login', 
+      label: 'Espace Pro', 
+      icon: <LogIn className="w-5 h-5" />,
+      action: () => setLocation("/pro-login")
     },
     { 
-      id: 'esthetique', 
-      label: 'Esthétique', 
-      icon: <SparklesIcon className="w-5 h-5" />,
-      action: () => handleSearchService('esthetique')
+      id: 'pro', 
+      label: 'Je suis un professionnel de beauté', 
+      icon: <UserCheck className="w-5 h-5" />,
+      action: () => setLocation("/professional-plans")
+    },
+    { 
+      id: 'coiffeur', 
+      label: 'Coiffeur', 
+      icon: <ScissorsIcon className="w-5 h-5" />,
+      action: () => handleSearch()
+    },
+    { 
+      id: 'barbier', 
+      label: 'Barbier', 
+      icon: <UsersIcon className="w-5 h-5" />,
+      action: () => handleSearch()
     },
     { 
       id: 'manucure', 
       label: 'Manucure', 
       icon: <Palette className="w-5 h-5" />,
-      action: () => handleSearchService('manucure')
+      action: () => handleSearch()
     },
     { 
-      id: 'massage', 
-      label: 'Massage', 
-      icon: <Heart className="w-5 h-5" />,
-      action: () => handleSearchService('massage')
+      id: 'institut', 
+      label: 'Institut de beauté', 
+      icon: <SparklesIcon className="w-5 h-5" />,
+      action: () => handleSearch()
     }
   ];
 
@@ -230,7 +242,21 @@ export default function PublicLanding() {
   };
 
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
-    item.action();
+    if (item.id === 'coiffeur') {
+      setSearchQuery('coiffure');
+      setLocation(`/search?q=coiffure&location=${encodeURIComponent(searchLocation || 'paris')}`);
+    } else if (item.id === 'barbier') {
+      setSearchQuery('barbier');
+      setLocation(`/search?q=barbier&location=${encodeURIComponent(searchLocation || 'paris')}`);
+    } else if (item.id === 'manucure') {
+      setSearchQuery('ongle');
+      setLocation(`/search?q=ongle&location=${encodeURIComponent(searchLocation || 'paris')}`);
+    } else if (item.id === 'institut') {
+      setSearchQuery('esthetique');
+      setLocation(`/search?q=esthetique&location=${encodeURIComponent(searchLocation || 'paris')}`);
+    } else {
+      item.action();
+    }
     closeMenu();
   };
 
@@ -257,11 +283,7 @@ export default function PublicLanding() {
   }, [isMenuOpen]);
 
   return (
-    <div className="min-h-screen" 
-         style={{
-           background: '#f8f9fa',
-           backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.06) 0%, transparent 50%)',
-         }}>
+    <div className="min-h-screen bg-white">
       {/* Menu plein écran style ProQuote avec Framer Motion */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -451,25 +473,13 @@ export default function PublicLanding() {
         
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 glass-button rounded-full px-4 py-2 mb-6" 
-                 style={{
-                   background: 'rgba(255, 255, 255, 0.15)',
-                   backdropFilter: 'blur(20px)',
-                   border: '1px solid rgba(168, 85, 247, 0.2)'
-                 }}>
-              <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-black">Réservation instantanée</span>
+            <div className="inline-flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-6">
+              <span className="w-2 h-2 bg-violet-600 rounded-full animate-pulse"></span>
+              <span className="text-sm font-medium text-violet-700">Réservation instantanée</span>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
               Réservez votre rendez-vous{" "}
-              <span className="inline-block rounded-lg relative overflow-hidden text-center px-3 py-1"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.25)',
-                      backdropFilter: 'blur(25px)',
-                      border: '1px solid rgba(168, 85, 247, 0.4)',
-                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15)',
-                      color: '#6b21a8'
-                    }}>
+              <span className="inline-block border-2 border-violet-500 bg-violet-50 text-violet-700 px-3 py-1 rounded-lg relative overflow-hidden text-center">
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={currentWord}
@@ -981,9 +991,9 @@ export default function PublicLanding() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-16">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">Rendly</h3>
+              <h3 className="text-xl font-bold mb-4">BeautyApp</h3>
               <p className="text-gray-400 text-sm">
                 La plateforme de réservation beauté qui révolutionne votre expérience.
               </p>
@@ -991,66 +1001,35 @@ export default function PublicLanding() {
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <button 
-                  onClick={() => setLocation('/services/coiffure')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Coiffure
-                </button>
-                <button 
-                  onClick={() => setLocation('/services/esthetique')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Esthétique
-                </button>
-                <button 
-                  onClick={() => setLocation('/services/manucure')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Manucure
-                </button>
-                <button 
-                  onClick={() => setLocation('/services/massage')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Massage
-                </button>
+                <div>Coiffure</div>
+                <div>Esthétique</div>
+                <div>Manucure</div>
+                <div>Massage</div>
               </div>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <button 
-                  onClick={() => setLocation('/support/centre-aide')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Centre d'aide
-                </button>
-                <button 
-                  onClick={() => setLocation('/support/contact')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Contact
-                </button>
-                <button 
-                  onClick={() => setLocation('/support/cgu')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  CGU
-                </button>
-                <button 
-                  onClick={() => setLocation('/support/confidentialite')}
-                  className="block text-left hover:text-white transition-colors"
-                >
-                  Confidentialité
-                </button>
+                <div>Centre d'aide</div>
+                <div>Contact</div>
+                <div>CGU</div>
+                <div>Confidentialité</div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4">Professionnels</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div>Rejoignez-nous</div>
+                <div>Dashboard Pro</div>
+                <div>Tarifs</div>
+                <div>Support Pro</div>
               </div>
             </div>
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 Rendly. Tous droits réservés.
+              © 2024 BeautyApp. Tous droits réservés.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <button className="text-gray-400 hover:text-white transition-colors">

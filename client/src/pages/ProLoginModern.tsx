@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import rendlyLogo from "@assets/3_1753714421825.png";
 // import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
@@ -151,15 +150,46 @@ export default function ProLoginModern() {
                 </button>
               </div>
 
-              {/* Bouton connexion - copié de ClientLoginModern */}
+              {/* Bouton connexion - même style que "Search" */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-12 glass-button rounded-2xl text-base font-medium text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`w-full h-14 ${getGenericGlassButton(0)} rounded-2xl text-lg font-medium`}
               >
                 {isLoading ? "Connexion..." : "Sign in"}
               </button>
             </form>
+
+            {/* Navigation liens */}
+            <div className="mt-6 flex justify-between items-center">
+              <button
+                type="button"
+                onClick={() => setLocation('/')}
+                className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour à l'accueil
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setLocation('/business-registration')}
+                className="text-gray-600 hover:text-gray-800 text-sm transition-colors"
+              >
+                Pas encore inscrit ? Créer un compte →
+              </button>
+            </div>
+            
+            {/* Lien vers les comptes de test */}
+            <div className="mt-4 text-center border-t border-gray-200 pt-4">
+              <button
+                type="button"
+                onClick={() => setLocation('/test-subscription-accounts')}
+                className="text-xs text-gray-500 hover:text-violet-600 transition-colors"
+              >
+                🧪 Tester les 3 plans d'abonnement (comptes démo)
+              </button>
+            </div>
 
           </div>
         </div>

@@ -67,7 +67,7 @@ export default function ProfessionalPlans() {
   ];
 
   const handleSelectPlan = (planId: string) => {
-    setLocation(`/upgrade-plans?selected=${planId}`);
+    setLocation(`/business-registration?plan=${planId}`);
   };
 
   const getPrice = (plan: typeof plans[0]) => {

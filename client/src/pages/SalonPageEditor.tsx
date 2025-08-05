@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { useSubscription } from '@/hooks/useSubscription';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -87,10 +86,6 @@ export default function SalonPageEditor() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const { isAdvancedPro, isPremiumPro, currentPlan } = useSubscription();
-
-  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
-  const [salonData, setSalonData] = useState<SalonData | null>(null);
 
   // Récupérer le salon du professionnel connecté
   const { data: userSalon, isLoading: salonLoading } = useQuery({
@@ -109,23 +104,15 @@ export default function SalonPageEditor() {
       </div>
     );
   }
+  
+  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
+  const [salonData, setSalonData] = useState<SalonData | null>(null);
 
   // Charger les données du salon de l'utilisateur connecté
   useEffect(() => {
     if (userSalon) {
-      const salonWithColors: SalonData = {
-        id: userSalon.id || 'salon-demo',
-        name: userSalon.name || 'Salon Démo',
-        rating: userSalon.rating || 4.5,
-        reviews: userSalon.reviews || 128,
-        address: userSalon.address || '123 Rue de la Beauté, 75001 Paris',
-        phone: userSalon.phone || '01 23 45 67 89',
-        verified: userSalon.verified || true,
-        certifications: userSalon.certifications || ['Certifié Bio', 'Label Qualité'],
-        awards: userSalon.awards || ['Prix Excellence 2024'],
-        longDescription: userSalon.longDescription || 'Salon de beauté moderne et professionnel.',
-        coverImageUrl: userSalon.coverImageUrl || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&h=400&fit=crop',
-        photos: userSalon.photos || ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop'],
+      setSalonData({
+        ...userSalon,
         customColors: userSalon.customColors || {
           primary: '#f59e0b',
           accent: '#d97706',
@@ -133,8 +120,7 @@ export default function SalonPageEditor() {
           buttonClass: 'glass-button-amber',
           intensity: 35
         }
-      };
-      setSalonData(salonWithColors);
+      });
     }
   }, [userSalon]);
 
@@ -261,8 +247,8 @@ export default function SalonPageEditor() {
 
   // Génère le style personnalisé des boutons avec intensité
   const getCustomButtonStyle = () => {
-    // Utilise violet par défaut pour cohérence avec le thème
-    const primaryColor = salonData.customColors?.primary || '#8b5cf6';
+    // Utilise toujours les couleurs personnalisées (même par défaut)
+    const primaryColor = salonData.customColors?.primary || '#f59e0b';
     const intensity = salonData.customColors?.intensity || 35;
     
 
@@ -848,8 +834,8 @@ export default function SalonPageEditor() {
                               <Star 
                                 className="h-4 w-4" 
                                 style={{ 
-                                  color: salonData.customColors?.primary || '#8b5cf6',
-                                  fill: salonData.customColors?.primary || '#8b5cf6'
+                                  color: salonData.customColors?.primary || '#f59e0b',
+                                  fill: salonData.customColors?.primary || '#f59e0b'
                                 }} 
                               />
                               <span className="text-sm font-medium">{professional.rating}</span>
@@ -869,8 +855,8 @@ export default function SalonPageEditor() {
                                 variant="outline" 
                                 className="text-xs"
                                 style={{
-                                  borderColor: salonData.customColors?.primary || '#8b5cf6',
-                                  color: salonData.customColors?.primary || '#8b5cf6'
+                                  borderColor: salonData.customColors?.primary || '#f59e0b',
+                                  color: salonData.customColors?.primary || '#f59e0b'
                                 }}
                               >
                                 {specialty}
@@ -881,7 +867,7 @@ export default function SalonPageEditor() {
                           {/* Disponibilité */}
                           <p 
                             className="text-sm font-medium"
-                            style={{ color: salonData.customColors?.primary || '#8b5cf6' }}
+                            style={{ color: salonData.customColors?.primary || '#f59e0b' }}
                           >
                             {professional.nextSlot}
                           </p>
@@ -1085,63 +1071,22 @@ export default function SalonPageEditor() {
 
         {activeTab === 'couleurs' && (
           <div className="space-y-6">
-            {/* Vérification de l'abonnement */}
-            {!isAdvancedPro && !isPremiumPro ? (
-              /* Restriction pour Basic Pro */
-              <Card className="border-orange-200 bg-orange-50/50">
-                <CardContent className="p-6 text-center">
-                  <div className="mb-4">
-                    <Palette className="w-12 h-12 text-orange-500 mx-auto mb-3" />
-                    <h3 className="font-semibold text-lg mb-2">Personnalisation des couleurs</h3>
-                    <p className="text-gray-600 mb-4">
-                      La personnalisation des couleurs de bouton est disponible à partir des plans Advanced Pro (79€) et Premium Pro (149€).
-                    </p>
-                    <p className="text-sm text-gray-500 mb-6">
-                      Plan actuel : <Badge variant="outline">Basic Pro (29€/mois)</Badge>
-                    </p>
-                  </div>
-                  
-                  <div className="space-y-3 mb-6">
-                    <div className="text-sm text-gray-600 p-3 bg-white/50 rounded-lg">
-                      <strong>Advanced Pro (79€/mois)</strong> : Personnalisation complète des couleurs + IA optimisation + Messagerie premium
-                    </div>
-                    <div className="text-sm text-gray-600 p-3 bg-white/50 rounded-lg">
-                      <strong>Premium Pro (149€/mois)</strong> : Toutes les fonctionnalités + IA prédictive + Solution white-label
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    className="glass-button-violet hover:glass-effect"
-                    onClick={() => setLocation('/upgrade-plans')}
-                  >
-                    Passer à Advanced Pro
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              /* Fonctionnalité complète pour Advanced et Premium */
-              <>
-                {/* Header avec description */}
-                <Card className="glass-card-amber">
-                  <CardContent className="p-6 text-center">
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <Palette className="h-12 w-12 text-amber-600" />
-                      <Badge className="bg-green-100 text-green-800">
-                        {isPremiumPro ? 'Premium Pro' : 'Advanced Pro'}
-                      </Badge>
-                    </div>
-                    <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
-                    <p className="text-gray-600">
-                      Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
-                      L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
-                    </p>
-                  </CardContent>
-                </Card>
+            {/* Header avec description */}
+            <Card className="glass-card-amber">
+              <CardContent className="p-6 text-center">
+                <Palette className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
+                <p className="text-gray-600">
+                  Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
+                  L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
+                </p>
+              </CardContent>
+            </Card>
 
-                {/* Sélecteurs de couleur */}
-                <Card>
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
+            {/* Sélecteurs de couleur */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -1149,7 +1094,7 @@ export default function SalonPageEditor() {
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        value={salonData.customColors?.primary || '#8b5cf6'}
+                        value={salonData.customColors?.primary || '#f59e0b'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           primary: e.target.value
@@ -1157,13 +1102,13 @@ export default function SalonPageEditor() {
                         className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
                       />
                       <Input
-                        value={salonData.customColors?.primary || '#8b5cf6'}
+                        value={salonData.customColors?.primary || '#f59e0b'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           primary: e.target.value
                         })}
                         className="flex-1 text-sm font-mono"
-                        placeholder="#8b5cf6"
+                        placeholder="#f59e0b"
                       />
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les boutons de réservation</p>
@@ -1174,7 +1119,7 @@ export default function SalonPageEditor() {
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        value={salonData.customColors?.accent || '#7c3aed'}
+                        value={salonData.customColors?.accent || '#d97706'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           accent: e.target.value
@@ -1182,13 +1127,13 @@ export default function SalonPageEditor() {
                         className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
                       />
                       <Input
-                        value={salonData.customColors?.accent || '#7c3aed'}
+                        value={salonData.customColors?.accent || '#d97706'}
                         onChange={(e) => updateField('customColors', {
                           ...salonData.customColors,
                           accent: e.target.value
                         })}
                         className="flex-1 text-sm font-mono"
-                        placeholder="#7c3aed"
+                        placeholder="#d97706"
                       />
                     </div>
                     <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
@@ -1213,7 +1158,7 @@ export default function SalonPageEditor() {
                       })}
                       className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#8b5cf6'}40 0%, ${salonData.customColors?.primary || '#8b5cf6'}80 100%)`
+                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#f59e0b'}40 0%, ${salonData.customColors?.primary || '#f59e0b'}80 100%)`
                       }}
                     />
                     <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
@@ -1272,7 +1217,7 @@ export default function SalonPageEditor() {
                 <div 
                   className="p-6 rounded-lg"
                   style={{ 
-                    background: `linear-gradient(135deg, ${salonData.customColors?.primary || '#8b5cf6'}10 0%, ${salonData.customColors?.accent || '#7c3aed'}05 100%)` 
+                    background: `linear-gradient(135deg, ${salonData.customColors?.primary || '#f59e0b'}10 0%, ${salonData.customColors?.accent || '#d97706'}05 100%)` 
                   }}
                 >
                   <div className="flex flex-wrap gap-4 items-center justify-center">
@@ -1311,8 +1256,6 @@ export default function SalonPageEditor() {
                 </div>
               </CardContent>
             </Card>
-                </>
-              )}
           </div>
         )}
 

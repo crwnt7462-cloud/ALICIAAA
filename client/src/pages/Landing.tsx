@@ -40,11 +40,7 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen p-4"
-      style={{
-        background: '#f8f9fa',
-        backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%)',
-      }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
     >
       <div className="max-w-md mx-auto space-y-8">
         {/* Hero Section */}

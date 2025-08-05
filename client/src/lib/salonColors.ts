@@ -1,7 +1,7 @@
 // Fonction utilitaire globale pour les couleurs glassmorphism des salons
 // Centralise la logique des couleurs pour tous les boutons du site
 
-export type SalonColorVariant = 'pink' | 'indigo' | 'amber' | 'rose' | 'emerald' | 'violet' | 'neutral';
+export type SalonColorVariant = 'pink' | 'indigo' | 'amber' | 'rose' | 'emerald' | 'neutral';
 
 // Mapping des salons vers leurs couleurs
 export const getSalonColor = (salonId?: string): SalonColorVariant => {
@@ -25,7 +25,6 @@ export const getSalonButtonClass = (salonId?: string, variant: SalonColorVariant
     amber: 'glass-button-amber',
     rose: 'glass-button-rose',
     emerald: 'glass-button-emerald',
-    violet: 'glass-button-violet',
     neutral: 'glass-button-neutral'
   };
   return classMap[variant];
@@ -39,7 +38,7 @@ export const getRandomSalonColor = (): SalonColorVariant => {
 
 // Fonction pour les pages sans salon spécifique
 export const getGenericGlassButton = (index: number = 0): string => {
-  const colors: SalonColorVariant[] = ['violet', 'indigo', 'violet', 'rose', 'emerald'];
+  const colors: SalonColorVariant[] = ['pink', 'indigo', 'amber', 'rose', 'emerald'];
   const colorIndex = index % colors.length;
   return getSalonButtonClass(undefined, colors[colorIndex]);
 };
@@ -53,7 +52,6 @@ export const getSalonGlassCard = (salonId?: string): string => {
     amber: 'glass-card-amber',
     rose: 'glass-card-rose',
     emerald: 'glass-card-emerald',
-    violet: 'glass-card-violet',
     neutral: 'glass-card-neutral'
   };
   return classMap[variant];

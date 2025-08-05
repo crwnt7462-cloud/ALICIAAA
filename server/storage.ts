@@ -43,20 +43,6 @@ import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
-// Type temporaire pour la connexion
-interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  businessName: string;
-  phone: string;
-  address: string;
-  city: string;
-  subscriptionPlan?: string;
-  subscriptionStatus?: string;
-}
-
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
@@ -90,9 +76,9 @@ export interface IStorage {
   deleteClient(id: number): Promise<void>;
 
   // Staff
-  getStaff(userId: string): Promise<StaffMember[]>;
-  createStaff(staff: InsertStaffMember): Promise<StaffMember>;
-  updateStaff(id: number, staff: Partial<InsertStaffMember>): Promise<StaffMember>;
+  getStaff(userId: string): Promise<Staff[]>;
+  createStaff(staff: InsertStaff): Promise<Staff>;
+  updateStaff(id: number, staff: Partial<InsertStaff>): Promise<Staff>;
   deleteStaff(id: number): Promise<void>;
 
   // Appointments
@@ -508,30 +494,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Staff
-  async getStaff(userId: string): Promise<StaffMember[]> {
+  async getStaff(userId: string): Promise<Staff[]> {
     return await db
       .select()
-      .from(staffMembers)
-      .where(eq(staffMembers.userId, userId))
-      .orderBy(staffMembers.lastName, staffMembers.firstName);
+      .from(staff)
+      .where(eq(staff.userId, userId))
+      .orderBy(staff.lastName, staff.firstName);
   }
 
-  async createStaff(staffMember: InsertStaffMember): Promise<StaffMember> {
-    const [newStaff] = await db.insert(staffMembers).values(staffMember).returning();
+  async createStaff(staffMember: InsertStaff): Promise<Staff> {
+    const [newStaff] = await db.insert(staff).values(staffMember).returning();
     return newStaff;
   }
 
-  async updateStaff(id: number, staffMember: Partial<InsertStaffMember>): Promise<StaffMember> {
+  async updateStaff(id: number, staffMember: Partial<InsertStaff>): Promise<Staff> {
     const [updated] = await db
-      .update(staffMembers)
+      .update(staff)
       .set(staffMember)
-      .where(eq(staffMembers.id, id))
+      .where(eq(staff.id, id))
       .returning();
     return updated;
   }
 
   async deleteStaff(id: number): Promise<void> {
-    await db.delete(staffMembers).where(eq(staffMembers.id, id));
+    await db.delete(staff).where(eq(staff.id, id));
   }
 
   // Appointments
@@ -1422,11 +1408,98 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // Inventory Management Methods
+  async getInventory(userId: string): Promise<any[]> {
+    // Return demo inventory data for the user
+    if (userId === 'demo') {
+      return [
+        { id: 1, name: "Shampoing Professionnel L'Oréal", category: "Soins", quantity: 25, minStock: 10, price: 15.50 },
+        { id: 2, name: "Crème de jour Hydratante", category: "Cosmétiques", quantity: 8, minStock: 15, price: 32.00 },
+        { id: 3, name: "Ciseaux Professionnels Jaguar", category: "Outils", quantity: 3, minStock: 2, price: 120.00 },
+        { id: 4, name: "Gel Coiffant Forte Tenue", category: "Produits", quantity: 18, minStock: 12, price: 9.90 },
+        { id: 5, name: "Huile Capillaire Argan Bio", category: "Soins", quantity: 6, minStock: 8, price: 28.50 },
+        { id: 6, name: "Brosse Démêlante Céramique", category: "Outils", quantity: 12, minStock: 6, price: 18.00 }
+      ];
+    }
+    return [];
+  }
 
+  async getLowStockItems(userId: string): Promise<any[]> {
+    const inventory = await this.getInventory(userId);
+    return inventory.filter(item => item.quantity <= item.minStock);
+  }
 
+  async createInventoryItem(userId: string, item: any): Promise<any> {
+    // For demo purposes, just return the item with an ID
+    return { id: Date.now(), ...item };
+  }
 
+  async updateInventoryItem(id: number, item: any): Promise<any> {
+    // For demo purposes, just return the updated item
+    return { id, ...item };
+  }
 
+  async deleteInventoryItem(id: number): Promise<void> {
+    // For demo purposes, just log the deletion
+    console.log(`Deleted inventory item ${id}`);
+  }
 
+  // Notification Methods
+  async getNotifications(userId: string): Promise<any[]> {
+    // Return demo notifications for the user
+    if (userId === 'demo') {
+      return [
+        { id: 1, title: "Nouvelle réservation", message: "Sophie M. a réservé pour demain 14h", type: "booking", read: false, timestamp: new Date() },
+        { id: 2, title: "Stock faible", message: "Crème hydratante en rupture", type: "inventory", read: false, timestamp: new Date() }
+      ];
+    }
+    return [];
+  }
+
+  async createNotification(userId: string, notification: any): Promise<any> {
+    // For demo purposes, just return the notification with an ID
+    return { id: Date.now(), userId, ...notification, timestamp: new Date() };
+  }
+
+  // IA Conversation Methods
+  async saveConversation(userId: string, conversationId: string, conversation: any): Promise<any> {
+    if (!this.conversations.has(userId)) {
+      this.conversations.set(userId, new Map());
+    }
+    this.conversations.get(userId)!.set(conversationId, conversation);
+    return conversation;
+  }
+
+  async getConversations(userId: string): Promise<any[]> {
+    const userConversations = this.conversations.get(userId);
+    return userConversations ? Array.from(userConversations.values()) : [];
+  }
+
+  async deleteConversation(userId: string, conversationId: string): Promise<void> {
+    const userConversations = this.conversations.get(userId);
+    if (userConversations) {
+      userConversations.delete(conversationId);
+    }
+  }
+
+  async clearConversations(userId: string): Promise<void> {
+    this.conversations.set(userId, new Map());
+  }
+
+  // Client AI Messages Methods
+  async getClientAIMessages(userId: string): Promise<any[]> {
+    return this.clientAIMessages.get(userId) || [];
+  }
+
+  async deleteClientAIMessage(userId: string, messageId: string): Promise<void> {
+    const messages = this.clientAIMessages.get(userId) || [];
+    const filtered = messages.filter(msg => msg.id !== messageId);
+    this.clientAIMessages.set(userId, filtered);
+  }
+
+  async clearClientAIMessages(userId: string): Promise<void> {
+    this.clientAIMessages.set(userId, []);
+  }
 
   // Business Methods
   async getBusinessByEmail(email: string): Promise<any> {
