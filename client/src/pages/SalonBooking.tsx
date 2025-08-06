@@ -98,7 +98,7 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
             Traitement en cours...
           </div>
         ) : (
-          'Confirmer & Payer 20,50 €'
+          `Confirmer & Payer ${Math.round((selectedService?.price || defaultService.price) * 0.5)},00 €`
         )}
       </Button>
     </form>
@@ -461,19 +461,9 @@ export default function SalonBooking() {
     return value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
   };
 
-  // Fonction pour gérer la confirmation du popup
-  const handleConfirmationPopupConfirm = () => {
-    setShowConfirmationPopup(false);
-    // Déclencher l'affichage du bottom sheet de paiement après validation du popup
-    setTimeout(() => {
-      setShowPaymentSheet(true);
-    }, 300);
-  };
 
-  // Fonction pour fermer le popup de confirmation
-  const handleConfirmationPopupClose = () => {
-    setShowConfirmationPopup(false);
-  };
+
+
 
   // Étape 1: Sélection du professionnel
   const renderProfessionalSelection = () => (
@@ -984,7 +974,7 @@ export default function SalonBooking() {
           <div className="bg-white/80 backdrop-blur-sm border border-white/50 rounded-lg p-4 mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Service</span>
-              <span className="font-medium">{service.name}</span>
+              <span className="font-medium">{selectedService?.name || defaultService.name}</span>
             </div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Date & Heure</span>
@@ -996,11 +986,11 @@ export default function SalonBooking() {
             </div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Prix total</span>
-              <span className="font-medium">{service.price},00 €</span>
+              <span className="font-medium">{selectedService?.price || defaultService.price},00 €</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold text-gray-900">Acompte</span>
-              <span className="font-bold text-gray-900 text-lg">20,50 €</span>
+              <span className="font-bold text-gray-900 text-lg">{Math.round((selectedService?.price || defaultService.price) * 0.5)},00 €</span>
             </div>
           </div>
 
@@ -1393,8 +1383,8 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 border border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900">{defaultService.name}</h3>
-                <p className="text-sm text-gray-600">{defaultService.duration} • {defaultService.price} €</p>
+                <h3 className="font-semibold text-gray-900">{selectedService?.name || defaultService.name}</h3>
+                <p className="text-sm text-gray-600">{selectedService?.duration || defaultService.duration} • {selectedService?.price || defaultService.price} €</p>
               </div>
               <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Supprimer
@@ -1565,12 +1555,12 @@ export default function SalonBooking() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: 20.50,
+          amount: Math.round((selectedService?.price || defaultService.price) * 0.5),
           currency: 'eur',
           metadata: {
             salon: salon.name,
             professional: selectedProfessional?.name,
-            service: defaultService.name,
+            service: selectedService?.name || defaultService.name,
             time: selectedSlot?.time,
             date: selectedSlot?.date || selectedDate,
             clientEmail: formData.email || loginData.email
@@ -1621,6 +1611,17 @@ export default function SalonBooking() {
         variant: "destructive"
       });
     }
+  };
+
+  // Fonctions de gestion du modal de confirmation
+  const handleConfirmationPopupClose = () => {
+    setShowConfirmationPopup(false);
+  };
+
+  const handleConfirmationPopupConfirm = () => {
+    setShowConfirmationPopup(false);
+    // Créer le Payment Intent et ouvrir le shell de paiement
+    createPaymentIntentAndOpenSheet();
   };
 
   // Fonction pour se connecter (utilisateur existant)
@@ -1900,7 +1901,7 @@ export default function SalonBooking() {
     clientName: `${formData.firstName} ${formData.lastName}` || 'Client',
     clientEmail: formData.email || 'client@example.com',
     clientPhone: formData.phone || '0612345678',
-    depositRequired: 20.5, // 30% d'acompte
+    depositRequired: Math.round((selectedService?.price || defaultService.price) * 0.5), // 50% d'acompte
     isWeekendPremium: false
   };
 
