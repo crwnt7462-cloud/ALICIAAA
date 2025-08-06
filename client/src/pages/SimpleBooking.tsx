@@ -44,19 +44,19 @@ export default function SimpleBooking() {
   });
 
   const salon = {
-    name: "Salon Excellence Paris",
-    subtitle: "L'Art Capillaire Depuis 1995",
-    address: "42 rue de Rivoli, Paris 1er",
-    phone: "01 42 96 17 83",
-    rating: 4.9,
-    reviews: 1247,
-    verified: true,
-    nextAvailable: "Aujourd'hui 14h30",
-    specialties: ["Coiffure Haute Couture", "Coloration Bio", "Soins Experts"],
-    certifications: ["L'Oréal Professionnel", "Kérastase Expert", "Olaplex Certified"],
-    amenities: ["WiFi Gratuit", "Café Offert", "Parking Partenaire", "Produits Premium"],
-    images: ["salon1.jpg", "salon2.jpg"],
-    awards: ["Meilleur Salon 2024", "Prix Innovation Bio"]
+    name: "",
+    subtitle: "",
+    address: "",
+    phone: "",
+    rating: 0,
+    reviews: 0,
+    verified: false,
+    nextAvailable: "",
+    specialties: [],
+    certifications: [],
+    amenities: [],
+    images: [],
+    awards: []
   };
 
   const services = [

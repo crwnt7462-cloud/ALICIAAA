@@ -55,38 +55,17 @@ export default function SalonBookingEditor() {
   const [activeTab, setActiveTab] = useState('general');
 
   const [salonData, setSalonData] = useState<SalonBookingData>({
-    salonName: "Bonhomme",
-    location: "Paris Archives",
-    serviceName: "Coupe Bonhomme",
-    servicePrice: 39,
-    serviceDuration: 30,
-    professionals: [
-      {
-        id: 1,
-        name: "Lucas",
-        specialties: ["Coupe", "Barbe"],
-        rating: 4.9,
-        nextSlot: "Aujourd'hui 10:00",
-        image: "👨‍💼"
-      },
-      {
-        id: 2,
-        name: "Emma",
-        specialties: ["Coloration", "Soin"],
-        rating: 4.8,
-        nextSlot: "Aujourd'hui 11:30",
-        image: "👩‍💼"
-      }
-    ],
-    timeSlots: ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'],
-    availableDates: [
-      { date: 'lundi 28 juillet', full: 'lundi 28 juillet 2025', expanded: false },
-      { date: 'mardi 29 juillet', full: 'mardi 29 juillet 2025', expanded: false },
-      { date: 'mercredi 30 juillet', full: 'mercredi 30 juillet 2025', expanded: false }
-    ],
-    primaryColor: '#7c3aed',
-    backgroundColor: '#ffffff',
-    textColor: '#1f2937'
+    salonName: "",
+    location: "",
+    serviceName: "",
+    servicePrice: 0,
+    serviceDuration: 0,
+    professionals: [],
+    timeSlots: [],
+    availableDates: [],
+    primaryColor: '',
+    backgroundColor: '',
+    textColor: ''
   });
 
   const handleSave = async () => {

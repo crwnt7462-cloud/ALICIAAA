@@ -99,14 +99,8 @@ export default function AIProModern() {
       recorder.onstop = () => {
         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
         // Simulation de transcription vocale
-        const simulatedTranscriptions = [
-          "Comment optimiser mon planning de demain ?",
-          "Quels sont mes clients VIP cette semaine ?",
-          "Génère-moi un rapport de mes ventes",
-          "Aide-moi à créer une campagne marketing",
-          "Quels produits sont en rupture de stock ?"
-        ];
-        const randomTranscription = simulatedTranscriptions[Math.floor(Math.random() * simulatedTranscriptions.length)];
+        // Transcription vocale réelle uniquement
+        const randomTranscription = "";
         
         // Arrêter l'enregistrement et envoyer le message
         setIsRecording(false);

@@ -23,12 +23,12 @@ export default function StripeDemo() {
   const [paymentType, setPaymentType] = useState<'subscription' | 'payment'>('subscription');
   
   // Données du formulaire
-  const [customerEmail, setCustomerEmail] = useState('test@example.com');
-  const [customerName, setCustomerName] = useState('Client Test');
-  const [planType, setPlanType] = useState('essentiel');
-  const [amount, setAmount] = useState(50);
-  const [description, setDescription] = useState('Acompte réservation - Coupe & Brushing');
-  const [salonName, setSalonName] = useState('Salon Excellence Paris');
+  const [customerEmail, setCustomerEmail] = useState('');
+  const [customerName, setCustomerName] = useState('');
+  const [planType, setPlanType] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [description, setDescription] = useState('');
+  const [salonName, setSalonName] = useState('');
 
   const handleSubscriptionPayment = async () => {
     setLoading(true);

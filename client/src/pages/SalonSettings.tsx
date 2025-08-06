@@ -25,29 +25,29 @@ export default function SalonSettings() {
   const [isLoading, setIsLoading] = useState(false);
   
   const [salonData, setSalonData] = useState({
-    name: 'Salon Excellence',
-    address: '123 Rue de la Beauté, Paris',
-    phone: '01 23 45 67 89',
-    email: 'contact@salon-excellence.fr',
-    description: 'Salon de coiffure moderne et professionnel',
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+    description: '',
     openingHours: {
-      monday: { open: '09:00', close: '19:00', closed: false },
-      tuesday: { open: '09:00', close: '19:00', closed: false },
-      wednesday: { open: '09:00', close: '19:00', closed: false },
-      thursday: { open: '09:00', close: '19:00', closed: false },
-      friday: { open: '09:00', close: '19:00', closed: false },
-      saturday: { open: '09:00', close: '18:00', closed: false },
+      monday: { open: '', close: '', closed: true },
+      tuesday: { open: '', close: '', closed: true },
+      wednesday: { open: '', close: '', closed: true },
+      thursday: { open: '', close: '', closed: true },
+      friday: { open: '', close: '', closed: true },
+      saturday: { open: '', close: '', closed: true },
       sunday: { open: '', close: '', closed: true }
     },
     notifications: {
-      newBookings: true,
-      cancellations: true,
-      reminders: true,
-      reviews: true
+      newBookings: false,
+      cancellations: false,
+      reminders: false,
+      reviews: false
     },
     bookingSettings: {
-      advanceBooking: 30,
-      cancellationDelay: 24,
+      advanceBooking: 0,
+      cancellationDelay: 0,
       autoConfirm: false
     }
   });

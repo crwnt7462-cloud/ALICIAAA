@@ -1802,15 +1802,15 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         location: extractCity(salon.address),
         rating: salon.rating || 4.5,
         reviews: salon.reviewCount || 0,
-        nextSlot: "14:30",
-        price: "€€",
+        nextSlot: "",
+        price: "",
         services: extractServices(salon.serviceCategories),
-        verified: true,
-        distance: "1.2km",
+        verified: false,
+        distance: "",
         category: determineCategory(salon.serviceCategories),
         photo: salon.coverImageUrl || salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
         coverImageUrl: salon.coverImageUrl,
-        openNow: true,
+        openNow: false,
         promotion: null,
         // Données complètes pour les détails
         description: salon.description,
@@ -1862,9 +1862,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         city: extractCity(salon.address),
         services: extractServices(salon.serviceCategories),
         // Ajouter des infos supplémentaires pour la page détail
-        verified: true,
-        certifications: ["Certifié qualité service", "Produits professionnels"],
-        awards: ["Top salon 2024", "Excellence client"]
+        verified: false,
+        certifications: [],
+        awards: []
       };
       
       res.json(formattedSalon);

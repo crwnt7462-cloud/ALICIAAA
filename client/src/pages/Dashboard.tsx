@@ -161,7 +161,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-xs font-medium text-gray-700">Aujourd'hui</p>
                 <p className="text-xl font-bold text-black mt-1">
-                  {(stats as any)?.todayAppointments || 8}
+                  {(stats as any)?.todayAppointments || 0}
                 </p>
                 <p className="text-xs text-gray-600">RDV</p>
               </div>
@@ -178,7 +178,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-xs font-medium text-gray-700">CA Semaine</p>
                 <p className="text-xl font-bold text-black mt-1">
-                  {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '2340€'}
+                  {(stats as any)?.weekRevenue ? `${(stats as any).weekRevenue}€` : '0€'}
                 </p>
                 <p className="text-xs text-emerald-600 font-medium">+12%</p>
               </div>
@@ -194,8 +194,12 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-700">Récurrence 30j</p>
-                <p className="text-xl font-bold text-black mt-1">75%</p>
-                <p className="text-xs text-violet-600 font-medium">12 clients</p>
+                <p className="text-xl font-bold text-black mt-1">
+                  {(stats as any)?.recurrenceRate || '0%'}
+                </p>
+                <p className="text-xs text-violet-600 font-medium">
+                  {(stats as any)?.recurrentClients || 0} clients
+                </p>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-violet-400/30 to-purple-400/30 rounded-lg flex items-center justify-center backdrop-blur-sm">
                 <UserCheck className="w-4 h-4 text-violet-600" />
@@ -209,8 +213,12 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-700">Clients Fidèles</p>
-                <p className="text-xl font-bold text-black mt-1">65%</p>
-                <p className="text-xs text-orange-600 font-medium">8 clients 3+ visites</p>
+                <p className="text-xl font-bold text-black mt-1">
+                  {(stats as any)?.loyalClientRate || '0%'}
+                </p>
+                <p className="text-xs text-orange-600 font-medium">
+                  {(stats as any)?.loyalClients || 0} clients 3+ visites
+                </p>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-orange-400/30 to-amber-400/30 rounded-lg flex items-center justify-center backdrop-blur-sm">
                 <Award className="w-4 h-4 text-orange-600" />
@@ -225,7 +233,7 @@ export default function Dashboard() {
               <div>
                 <p className="text-xs font-medium text-gray-700">Clients</p>
                 <p className="text-xl font-bold text-black mt-1">
-                  {(stats as any)?.totalClients || 156}
+                  {(stats as any)?.totalClients || 0}
                 </p>
                 <p className="text-xs text-gray-600">Total</p>
               </div>
@@ -241,7 +249,9 @@ export default function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-gray-700">Taux</p>
-                <p className="text-xl font-bold text-black mt-1">82%</p>
+                <p className="text-xl font-bold text-black mt-1">
+                  {(stats as any)?.weeklyRate || '0%'}
+                </p>
                 <p className="text-xs text-amber-600 font-medium">Semaine</p>
               </div>
               <div className="w-8 h-8 bg-gradient-to-br from-amber-400/30 to-orange-400/30 rounded-lg flex items-center justify-center backdrop-blur-sm">

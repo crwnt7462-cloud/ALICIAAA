@@ -31,9 +31,8 @@ export default function SystemTest() {
     
     const tests = [
       // Tests d'authentification
-      { name: 'CLIENT Login', endpoint: '/api/client/login', method: 'POST', data: { email: 'client@test.com', password: 'client123' } },
-      { name: 'PRO Login', endpoint: '/api/auth/login', method: 'POST', data: { email: 'test@monapp.com', password: 'test1234' } },
-      { name: 'CLIENT Register', endpoint: '/api/client/register', method: 'POST', data: { email: 'test' + Date.now() + '@example.com', password: 'test123', firstName: 'Test', lastName: 'User' } },
+      // Tests d'authentification supprimés - utiliser vraie connexion
+      // Connexion uniquement via interface utilisateur
       
       // Tests de données
       { name: 'Services List', endpoint: '/api/services', method: 'GET' },
@@ -41,19 +40,7 @@ export default function SystemTest() {
       { name: 'Notifications', endpoint: '/api/notifications/unread', method: 'GET' },
       
       // Tests de réservation
-      { name: 'Create Appointment', endpoint: '/api/appointments', method: 'POST', data: {
-        userId: 'test-pro-user',
-        serviceId: 1,
-        clientName: 'Marie Dupont',
-        clientEmail: 'client@test.com',
-        clientPhone: '06 12 34 56 78',
-        appointmentDate: '2025-01-29',
-        startTime: '14:00',
-        endTime: '15:30',
-        notes: 'Test automatique système',
-        totalPrice: 45.00,
-        depositPaid: 13.50
-      }},
+      // Tests de création RDV supprimés - utiliser vraie réservation
       
       // Tests Analytics et Messaging
       { name: 'Analytics Dashboard', endpoint: '/api/analytics/dashboard', method: 'GET' },

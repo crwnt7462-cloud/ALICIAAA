@@ -76,78 +76,14 @@ export default function SalonSearchComplete() {
   const salons = salonsData?.salons || [];
 
   // Données statiques de fallback si l'API ne répond pas
-  const fallbackSalons = [
-    {
-      id: "salon-1",
-      name: "Barbier Moderne",
-      location: "République, Paris 11ème",
-      rating: 4.8,
-      reviews: 156,
-      nextSlot: "11:30",
-      price: "€€",
-      services: ["Coupe homme", "Barbe", "Shampoing"],
-      verified: true,
-      distance: "0.8km",
-      category: "coiffure",
-      photo: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: "-20% première visite"
-    },
-    {
-      id: "salon-2",
-      name: "Salon Excellence",
-      location: "Marais, Paris 4ème",
-      rating: 4.9,
-      reviews: 298,
-      nextSlot: "14:15",
-      price: "€€€",
-      services: ["Coupe", "Coloration", "Brushing"],
-      verified: true,
-      distance: "1.2km",
-      category: "coiffure",
-      photo: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: null
-    },
-    {
-      id: "salon-3",
-      name: "Beauty Institute",
-      location: "Saint-Germain, Paris 6ème",
-      rating: 4.7,
-      reviews: 187,
-      nextSlot: "16:00",
-      price: "€€",
-      services: ["Soins visage", "Épilation", "Massage"],
-      verified: true,
-      distance: "1.5km",
-      category: "esthetique",
-      photo: "https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop",
-      openNow: false,
-      promotion: "Nouveau client -15%"
-    },
-    {
-      id: "salon-4",
-      name: "Nail Art Studio",
-      location: "Opéra, Paris 9ème",
-      rating: 4.6,
-      reviews: 89,
-      nextSlot: "15:30",
-      price: "€€",
-      services: ["Manucure", "Pose gel", "Nail art"],
-      verified: true,
-      distance: "2.1km",
-      category: "onglerie",
-      photo: "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop",
-      openNow: true,
-      promotion: "3ème séance offerte"
-    }
-  ];
+  // Pas de données fallback - seules les vraies données
+  const fallbackSalons: any[] = [];
 
   const categories = [
     { id: "all", name: "Tous", count: salons.length },
-    { id: "coiffure", name: "Coiffure", count: 2 },
-    { id: "esthetique", name: "Esthétique", count: 1 },
-    { id: "onglerie", name: "Onglerie", count: 1 }
+    { id: "coiffure", name: "Coiffure", count: 0 },
+    { id: "esthetique", name: "Esthétique", count: 0 },
+    { id: "onglerie", name: "Onglerie", count: 0 }
   ];
 
   const filteredSalons = activeFilter === "all" 
