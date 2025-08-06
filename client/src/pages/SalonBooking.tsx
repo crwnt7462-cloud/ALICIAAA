@@ -202,23 +202,55 @@ export default function SalonBooking() {
     }
   }, []);
 
-  // Récupérer l'ID du salon depuis l'URL actuelle ou sessionStorage
+  // Récupérer automatiquement l'ID du salon depuis l'URL
+  const [, params] = useLocation();
+  const urlParts = window.location.pathname.split('/');
+  const potentialSalonId = urlParts[urlParts.length - 1];
+  
   const getSalonId = () => {
-    // Essayer de récupérer depuis l'URL (ex: /salon-booking?salonId=salon-demo)
+    const currentPath = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
-    let salonId = urlParams.get('salonId');
     
-    if (!salonId) {
-      // Ou depuis l'URL path (ex: /salon-booking/salon-demo)
-      const path = window.location.pathname;
-      const pathMatch = path.match(/\/salon-booking\/(.+)$/);
-      if (pathMatch) {
-        salonId = pathMatch[1];
+    // Paramètre d'URL direct (?salonId=excellence)
+    const queryParam = urlParams.get('salonId');
+    if (queryParam) {
+      console.log('🔗 Salon détecté depuis paramètre URL:', queryParam);
+      return queryParam;
+    }
+    
+    // URL type /salon-booking/excellence
+    if (potentialSalonId && potentialSalonId !== 'salon-booking') {
+      console.log('🔗 Salon détecté depuis path:', potentialSalonId);
+      return potentialSalonId;
+    }
+    
+    // URL avec nom de salon (ex: /excellence-hair-paris/booking)
+    const salonMappings = {
+      'excellence-hair-paris': 'excellence',
+      'salon-moderne-republique': 'moderne',
+      'gentleman-barbier': 'gentleman'
+    };
+    
+    for (const [pathName, salonId] of Object.entries(salonMappings)) {
+      if (currentPath.includes(pathName)) {
+        console.log('🔗 Salon détecté depuis mapping URL:', pathName, '→', salonId);
+        return salonId;
       }
     }
     
-    // Par défaut, utiliser salon-demo
-    return salonId || 'salon-demo';
+    // Vérifier depuis le référent
+    const referrer = document.referrer;
+    if (referrer.includes('/salon/')) {
+      const match = referrer.match(/\/salon\/([^\/\?]+)/);
+      if (match) {
+        console.log('🔗 Salon détecté depuis referrer:', match[1]);
+        return match[1];
+      }
+    }
+    
+    // Salon par défaut
+    console.log('🔗 Utilisation salon par défaut: salon-demo');
+    return 'salon-demo';
   };
 
   const salonId = getSalonId();

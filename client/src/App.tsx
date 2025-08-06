@@ -515,8 +515,17 @@ function Router() {
     );
   }
 
-  // Page de réservation salon
-  if (location === '/salon-booking') {
+  // Page de réservation salon avec détection automatique
+  if (location === '/salon-booking' || location.startsWith('/salon-booking/')) {
+    return (
+      <div className="h-full">
+        <SalonBooking />
+      </div>
+    );
+  }
+
+  // Routes spécifiques pour chaque salon - détection automatique
+  if (location.includes('/excellence-hair-paris/') || location.includes('/salon-moderne-republique/') || location.includes('/gentleman-barbier/')) {
     return (
       <div className="h-full">
         <SalonBooking />
