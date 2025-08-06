@@ -929,44 +929,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     try {
       const { salonId } = req.query;
       
-      // Si pas de salonId, retourner des professionnels par défaut
-      if (!salonId) {
-        const defaultStaff = [
-          {
-            id: 1,
-            name: "Lucas Martin",
-            specialties: ["Coupe", "Barbe"],
-            rating: 4.9,
-            nextSlot: "Aujourd'hui 10:00",
-            image: "👨‍💼",
-            experience: "5 ans d'expérience"
-          },
-          {
-            id: 2,
-            name: "Emma Dubois",
-            specialties: ["Coloration", "Soin"],
-            rating: 4.8,
-            nextSlot: "Aujourd'hui 11:30",
-            image: "👩‍💼",
-            experience: "3 ans d'expérience"
-          },
-          {
-            id: 3,
-            name: "Alex Legrand",
-            specialties: ["Coupe Moderne", "Style"],
-            rating: 4.7,
-            nextSlot: "Demain 9:00",
-            image: "👨‍🎨",
-            experience: "7 ans d'expérience"
-          }
-        ];
-        return res.json(defaultStaff);
-      }
-      
-      // Récupérer le staff du salon spécifique
+      // Récupérer le staff depuis PostgreSQL uniquement - plus de données par défaut
       let staff = [];
       if (storage.getStaff) {
-        staff = await storage.getStaff(salonId);
+        staff = await storage.getStaff(salonId || 'salon-demo');
       }
       
       res.json(staff);
@@ -1198,49 +1164,123 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Services routes publics pour réservation
+  // Services routes publics pour réservation - PostgreSQL uniquement
   app.get('/api/services', async (req, res) => {
     try {
       const { salonId } = req.query;
       
-      // Si pas de salonId, retourner des services par défaut
-      if (!salonId) {
-        const defaultServices = [
-          {
-            id: 1,
-            name: "Coupe Homme",
-            price: 35,
-            duration: 30,
-            description: "Coupe classique avec finition"
-          },
-          {
-            id: 2,
-            name: "Coupe Femme",
-            price: 45,
-            duration: 45,
-            description: "Coupe avec brushing"
-          },
-          {
-            id: 3,
-            name: "Coloration",
-            price: 65,
-            duration: 90,
-            description: "Coloration complète avec soins"
-          }
-        ];
-        return res.json(defaultServices);
-      }
-
-      // Récupérer les services du salon spécifique
+      // Récupérer les services depuis PostgreSQL uniquement - plus de données par défaut
       let services = [];
       if (storage.getServices) {
-        services = await storage.getServices(salonId);
+        services = await storage.getServices(salonId || 'salon-demo');
       }
       
       res.json(services);
     } catch (error) {
       console.error('Error fetching services:', error);
       res.status(500).json({ message: 'Failed to fetch services' });
+    }
+  });
+
+  // API pour modifier/créer un service (pour les professionnels)
+  app.post('/api/services', async (req, res) => {
+    try {
+      const serviceData = req.body;
+      console.log('🔧 Création/modification service:', serviceData);
+      
+      let service;
+      if (storage.createService) {
+        service = await storage.createService(serviceData);
+      } else {
+        service = { ...serviceData, id: Date.now() };
+      }
+      
+      res.json(service);
+    } catch (error) {
+      console.error('Error creating service:', error);
+      res.status(500).json({ message: 'Failed to create service' });
+    }
+  });
+
+  // API pour modifier un service existant
+  app.put('/api/services/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const serviceData = req.body;
+      console.log('🔧 Modification service:', id, serviceData);
+      
+      let service;
+      if (storage.updateService) {
+        service = await storage.updateService(id, serviceData);
+      } else {
+        service = { ...serviceData, id };
+      }
+      
+      res.json(service);
+    } catch (error) {
+      console.error('Error updating service:', error);
+      res.status(500).json({ message: 'Failed to update service' });
+    }
+  });
+
+  // API pour modifier/créer un professionnel
+  app.post('/api/staff', async (req, res) => {
+    try {
+      const staffData = req.body;
+      console.log('🔧 Création/modification professionnel:', staffData);
+      
+      let staff;
+      if (storage.createStaff) {
+        staff = await storage.createStaff(staffData);
+      } else {
+        staff = { ...staffData, id: Date.now() };
+      }
+      
+      res.json(staff);
+    } catch (error) {
+      console.error('Error creating staff:', error);
+      res.status(500).json({ message: 'Failed to create staff' });
+    }
+  });
+
+  // API pour modifier un professionnel existant
+  app.put('/api/staff/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const staffData = req.body;
+      console.log('🔧 Modification professionnel:', id, staffData);
+      
+      let staff;
+      if (storage.updateStaff) {
+        staff = await storage.updateStaff(id, staffData);
+      } else {
+        staff = { ...staffData, id };
+      }
+      
+      res.json(staff);
+    } catch (error) {
+      console.error('Error updating staff:', error);
+      res.status(500).json({ message: 'Failed to update staff' });
+    }
+  });
+
+  // API pour récupérer le salon courant
+  app.get('/api/salon/current', async (req, res) => {
+    try {
+      // Pour les tests, retourner le salon demo
+      const salon = {
+        id: 'salon-demo',
+        name: 'Salon Excellence',
+        location: 'Paris 75008',
+        address: '123 Avenue des Champs-Élysées, 75008 Paris',
+        phone: '01 42 25 85 96',
+        email: 'contact@excellence-salon.fr'
+      };
+      
+      res.json(salon);
+    } catch (error) {
+      console.error('Error fetching salon:', error);
+      res.status(500).json({ message: 'Failed to fetch salon' });
     }
   });
   

@@ -208,6 +208,9 @@ export default function SalonBooking() {
     retry: false,
   });
 
+  // Utiliser salonData comme salon avec des valeurs par défaut
+  const salon = salonData || { name: 'Salon Demo', location: 'Paris 75001' };
+
   // Pas de service par défaut - utiliser seulement les données réelles
 
   // Créneaux horaires disponibles par jour
@@ -279,7 +282,7 @@ export default function SalonBooking() {
           currency: 'eur',
           metadata: {
             salonName: salon.name,
-            serviceName: service.name,
+            serviceName: selectedService?.name || "Service",
             clientEmail: formData.email,
             appointmentDate: selectedDate,
             appointmentTime: selectedSlot?.time
