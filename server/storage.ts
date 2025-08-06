@@ -273,6 +273,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(userData: RegisterRequest): Promise<User> {
+    // Validation du mot de passe
+    if (!userData.password || userData.password.length < 3) {
+      throw new Error('Mot de passe requis (minimum 3 caractères)');
+    }
+    
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
     const userId = nanoid();

@@ -1987,12 +1987,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         businessType, 
         services, 
         description,
-        password,
+        password = 'defaultpass123', // Mot de passe par défaut si non fourni
         subscriptionPlan = 'basic' // Plan par défaut
       } = req.body;
 
       console.log('🎯 INSCRIPTION PROFESSIONNEL AVEC ABONNEMENT:', subscriptionPlan);
       console.log('🏢 Business:', businessName, 'Email:', email);
+      
+      // Validation des données requises
+      if (!password || password.length < 3) {
+        return res.status(400).json({ error: 'Mot de passe requis (minimum 3 caractères)' });
+      }
+      
+      if (!email || !businessName) {
+        return res.status(400).json({ error: 'Email et nom d\'entreprise requis' });
+      }
 
       // Vérifier si l'email existe déjà dans la table users
       const existingUser = await storage.getUserByEmail(email);
