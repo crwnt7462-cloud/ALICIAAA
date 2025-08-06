@@ -84,9 +84,9 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
   - ✅ Correction erreur "Invalid time value" avec formatage date sécurisé
 - **Workflow**: Client inscription → Popup confirmation + validation → Paiement final
 
-### ✅ **TRANSFORMATION GLASSMORPHISM TOTALE FINALISÉE**
+### ✅ **TRANSFORMATION GLASSMORPHISM TOTALE FINALISÉE + EFFETS ANIMÉS**
 - **Date**: 03/08/2025
-- **Changement**: Conversion complète de TOUS les boutons en glassmorphism authentique
+- **Changement**: Conversion complète de TOUS les boutons ET effets animés en glassmorphism authentique
 - **Impact**: Design 100% unifié avec effets de verre transparents sur toute la plateforme
 - **Détails**: 
   - ✅ Boutons "Ajouter une prestation à la suite" → glass-button + hover:glass-effect
@@ -95,7 +95,10 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
   - ✅ Shell de paiement entièrement converti (suppression couleurs violettes)
   - ✅ Tous les boutons navigation, actions, paiement uniformisés
   - ✅ Suppression complète bg-violet/bg-gray/text-white au profit transparence
-- **Résultat**: Interface glassmorphism 100% cohérente sur l'ensemble de la plateforme
+  - ✅ Badge "Réservation instantanée" PublicLanding.tsx → glassmorphism Apple
+  - ✅ Effet changement de mots animé (beauté, coiffure, etc.) → glassmorphism Apple
+  - ✅ Transparence violette 15-20% avec blur 25px pour effet verre authentique
+- **Résultat**: Interface glassmorphism 100% cohérente avec effets Apple sur TOUS les éléments
 
 ### ✅ **ÉRADICATION COMPLÈTE DONNÉES PAR DÉFAUT - ZÉRO FALLBACK**
 - **Date**: 03/08/2025
