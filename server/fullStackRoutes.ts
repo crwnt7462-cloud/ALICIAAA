@@ -1194,23 +1194,79 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // API pour modifier/créer un service (pour les professionnels)
+  // API pour modifier/créer un service (pour les professionnels) - POSTGRESQL UNIQUEMENT
   app.post('/api/services', async (req, res) => {
     try {
       const serviceData = req.body;
-      console.log('🔧 Création/modification service:', serviceData);
+      console.log('🔧 Création service PostgreSQL:', serviceData);
       
-      let service;
-      if (storage.createService) {
-        service = await storage.createService(serviceData);
-      } else {
-        service = { ...serviceData, id: Date.now() };
+      // Vérification utilisateur authentifié
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ 
+          error: 'Token d\'authentification requis'
+        });
       }
+
+      const token = authHeader.substring(7);
+      const userId = token.replace('demo-token-', '');
+
+      // UNIQUEMENT PostgreSQL - aucune donnée factice
+      const service = await storage.createService({
+        ...serviceData,
+        userId: userId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
       
+      console.log('✅ Service créé dans PostgreSQL:', service.name, 'Prix:', service.price);
       res.json(service);
-    } catch (error) {
-      console.error('Error creating service:', error);
-      res.status(500).json({ message: 'Failed to create service' });
+    } catch (error: any) {
+      console.error('❌ Erreur création service PostgreSQL:', error);
+      res.status(500).json({ 
+        error: 'Erreur base de données PostgreSQL',
+        message: error.message
+      });
+    }
+  });
+
+  // API pour modifier les détails du salon
+  app.put('/api/salon/:salonId', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const salonData = req.body;
+      console.log('🏢 Modification salon PostgreSQL:', salonId, salonData.name);
+
+      // Vérification authentification
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ 
+          error: 'Token d\'authentification requis'
+        });
+      }
+
+      const token = authHeader.substring(7);
+      const userId = token.replace('demo-token-', '');
+
+      // Mise à jour dans PostgreSQL via storage
+      await storage.saveSalonData(salonId, {
+        ...salonData,
+        ownerId: userId,
+        updatedAt: new Date()
+      });
+
+      console.log('✅ Salon modifié dans PostgreSQL:', salonData.name);
+      res.json({ 
+        success: true, 
+        message: 'Salon mis à jour avec succès',
+        salon: salonData
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur modification salon:', error);
+      res.status(500).json({ 
+        error: 'Erreur sauvegarde PostgreSQL',
+        message: error.message
+      });
     }
   });
 
@@ -1635,32 +1691,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         
         userSalon = {
           id: uniqueId,
-          name: 'Mon Salon',
-          description: 'Mon salon personnalisé',
-          longDescription: 'Bienvenue dans mon salon de beauté. Personnalisez cette description selon vos services.',
-          address: '123 Rue de la Beauté, 75001 Paris',
-          phone: '01 23 45 67 89',
-          email: 'contact@monsalon.fr',
+          name: `Salon de ${userId}`,
+          description: 'Nouveau salon - À personnaliser',
+          longDescription: 'Bienvenue dans votre salon ! Modifiez cette description depuis votre dashboard.',
+          address: 'Adresse à définir',
+          phone: 'Téléphone à définir',
+          email: `contact@salon-${uniqueId}.fr`,
           website: '',
           photos: [
             'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'
           ],
-          professionals: [
-            {
-              id: '1',
-              name: 'Professionnel',
-              specialty: 'Services de beauté',
-              avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-              rating: 4.8,
-              price: 60,
-              bio: 'Professionnel expérimenté',
-              experience: '5 ans d\'expérience'
-            }
-          ],
-          rating: 5.0,
+          professionals: [],
+          rating: 0,
           reviewCount: 0,
-          verified: true,
-          certifications: ['Professionnel Certifié'],
+          verified: false,
+          certifications: [],
           awards: [],
           customColors: {
             primary: '#7c3aed',
@@ -1673,7 +1718,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           ownerId: userId,
           ownerEmail: userId,
           shareableUrl: `/salon/${uniqueId}`,
-          isPublished: true,
+          isPublished: false,
           createdAt: new Date(),
           updatedAt: new Date()
         };
@@ -1729,32 +1774,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           
           userSalon = {
             id: uniqueId,
-            name: 'Mon Salon',
-            description: 'Mon salon personnalisé',
-            longDescription: 'Bienvenue dans mon salon de beauté. Personnalisez cette description selon vos services.',
-            address: '123 Rue de la Beauté, 75001 Paris',
-            phone: '01 23 45 67 89',
-            email: 'contact@monsalon.fr',
+            name: `Salon de ${userId}`,
+            description: 'Nouveau salon - À personnaliser',
+            longDescription: 'Bienvenue dans votre salon ! Modifiez cette description depuis votre dashboard.',
+            address: 'Adresse à définir',
+            phone: 'Téléphone à définir',
+            email: `contact@salon-${uniqueId}.fr`,
             website: '',
             photos: [
               'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format'
             ],
-            professionals: [
-              {
-                id: '1',
-                name: 'Professionnel',
-                specialty: 'Services de beauté',
-                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
-                rating: 4.8,
-                price: 60,
-                bio: 'Professionnel expérimenté',
-                experience: '5 ans d\'expérience'
-              }
-            ],
-            rating: 5.0,
+            professionals: [],
+            rating: 0,
             reviewCount: 0,
-            verified: true,
-            certifications: ['Professionnel Certifié'],
+            verified: false,
+            certifications: [],
             awards: [],
             customColors: {
               primary: '#7c3aed',
@@ -1767,7 +1801,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
             ownerId: userId,
             ownerEmail: userId,
             shareableUrl: `/salon/${uniqueId}`,
-            isPublished: true,
+            isPublished: false,
             createdAt: new Date(),
             updatedAt: new Date()
           };
