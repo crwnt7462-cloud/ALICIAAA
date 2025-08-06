@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Scissors, Plus, Edit, Trash2, Clock, Euro } from "lucide-react";
+import { Scissors, Plus, Edit, Trash2, Clock, Euro, CreditCard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,8 @@ const serviceSchema = z.object({
   price: z.number().min(0, "Le prix doit être positif"),
   duration: z.number().min(5, "La durée minimum est de 5 minutes"),
   category: z.string().optional(),
+  requiresDeposit: z.boolean().default(false),
+  depositPercentage: z.number().min(0).max(100).default(30),
 });
 
 type ServiceFormData = z.infer<typeof serviceSchema>;
@@ -97,6 +99,8 @@ export default function Services() {
     setValue("price", service.price);
     setValue("duration", service.duration);
     setValue("category", service.category || "");
+    setValue("requiresDeposit", service.requiresDeposit || false);
+    setValue("depositPercentage", service.depositPercentage || 30);
     setIsDialogOpen(true);
   };
 
@@ -206,6 +210,42 @@ export default function Services() {
                   placeholder="Ex: Coiffure, Esthétique..."
                 />
               </div>
+
+              {/* Section Acompte */}
+              <div className="space-y-3 p-4 bg-gradient-to-r from-amber-50/80 to-orange-50/80 rounded-lg border border-amber-200/50">
+                <div className="flex items-center gap-2">
+                  <input
+                    id="requiresDeposit"
+                    type="checkbox"
+                    {...register("requiresDeposit")}
+                    className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                  />
+                  <Label htmlFor="requiresDeposit" className="text-sm font-medium text-amber-800">
+                    💰 Demander un acompte pour ce service
+                  </Label>
+                </div>
+                
+                <div>
+                  <Label htmlFor="depositPercentage" className="text-sm text-amber-700">
+                    Pourcentage d'acompte (%)
+                  </Label>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Input
+                      id="depositPercentage"
+                      type="number"
+                      min="0"
+                      max="100"
+                      {...register("depositPercentage", { valueAsNumber: true })}
+                      placeholder="30"
+                      className="w-20"
+                    />
+                    <span className="text-sm text-amber-600">% du prix total</span>
+                  </div>
+                  <p className="text-xs text-amber-600 mt-1">
+                    Recommandé : 30% pour fidéliser vos clients, 50-100% pour les nouveaux clients
+                  </p>
+                </div>
+              </div>
               
               <Button 
                 type="submit" 
@@ -286,22 +326,39 @@ export default function Services() {
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-1">
+                          <Clock className="w-4 h-4 text-gray-500" />
+                          <span className="text-sm text-gray-600">
+                            {service.duration} min
+                          </span>
+                        </div>
+                      </div>
+                      
                       <div className="flex items-center space-x-1">
-                        <Clock className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">
-                          {service.duration} min
+                        <Euro className="w-4 h-4 text-green-600" />
+                        <span className="text-lg font-semibold text-green-600">
+                          {service.price}€
                         </span>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-1">
-                      <Euro className="w-4 h-4 text-green-600" />
-                      <span className="text-lg font-semibold text-green-600">
-                        {service.price}€
-                      </span>
-                    </div>
+                    {/* Affichage acompte si configuré */}
+                    {service.requiresDeposit && (
+                      <div className="flex items-center justify-between p-2 bg-amber-50 rounded-lg border border-amber-200">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="w-4 h-4 text-amber-600" />
+                          <span className="text-sm text-amber-700 font-medium">
+                            Acompte {service.depositPercentage || 30}%
+                          </span>
+                        </div>
+                        <span className="text-sm font-semibold text-amber-700">
+                          {Math.round((service.price * (service.depositPercentage || 30)) / 100)}€
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -212,6 +212,7 @@ export const services = pgTable("services", {
   isOnlineBookable: boolean("is_online_bookable").default(true),
   requiresDeposit: boolean("requires_deposit").default(false),
   depositAmount: decimal("deposit_amount", { precision: 10, scale: 2 }),
+  depositPercentage: integer("deposit_percentage").default(30), // Pourcentage acompte choisi par le pro (0-100%)
   maxAdvanceBooking: integer("max_advance_booking").default(30), // days
   color: text("color").default("#8B5CF6"),
   createdAt: timestamp("created_at").defaultNow(),

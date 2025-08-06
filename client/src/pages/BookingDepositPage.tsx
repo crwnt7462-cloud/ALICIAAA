@@ -31,7 +31,9 @@ export default function BookingDepositPage() {
     
     setIsLoading(true);
     try {
-      const depositAmount = Math.round(bookingData.service.price * 0.3); // 30% d'acompte
+      // Utiliser le pourcentage d'acompte défini par le professionnel
+      const depositPercentage = bookingData.service.depositPercentage || 30;
+      const depositAmount = Math.round(bookingData.service.price * (depositPercentage / 100));
       
       const response = await apiRequest('POST', '/api/stripe/create-deposit-checkout', {
         amount: depositAmount,
@@ -73,7 +75,9 @@ export default function BookingDepositPage() {
     );
   }
 
-  const depositAmount = Math.round(bookingData.service.price * 0.3);
+  // Calculer l'acompte avec le pourcentage choisi par le professionnel
+  const depositPercentage = bookingData.service.depositPercentage || 30;
+  const depositAmount = Math.round(bookingData.service.price * (depositPercentage / 100));
   const remainingAmount = bookingData.service.price - depositAmount;
 
   return (
@@ -183,7 +187,7 @@ export default function BookingDepositPage() {
                       <span className="font-medium">{bookingData.service.price}€</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Acompte à payer (30%)</span>
+                      <span className="text-sm text-gray-600">Acompte à payer ({depositPercentage}%)</span>
                       <span className="font-semibold text-violet-600">{depositAmount}€</span>
                     </div>
                     <div className="border-t pt-3 flex justify-between">
