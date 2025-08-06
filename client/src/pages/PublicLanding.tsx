@@ -1026,30 +1026,62 @@ export default function PublicLanding() {
             <div>
               <h4 className="font-semibold mb-4">Services</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <div>Coiffure</div>
-                <div>Esthétique</div>
-                <div>Manucure</div>
-                <div>Massage</div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/search')}
+                >
+                  Coiffure
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/search')}
+                >
+                  Esthétique
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/search')}
+                >
+                  Manucure
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/search')}
+                >
+                  Massage
+                </div>
               </div>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <div className="space-y-2 text-sm text-gray-400">
-                <div>Centre d'aide</div>
-                <div>Contact</div>
-                <div>CGU</div>
-                <div>Confidentialité</div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/centre-aide')}
+                >
+                  Centre d'aide
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/contact')}
+                >
+                  Contact
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/cgu')}
+                >
+                  CGU
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
+                  onClick={() => setLocation('/confidentialite')}
+                >
+                  Confidentialité
+                </div>
               </div>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Professionnels</h4>
-              <div className="space-y-2 text-sm text-gray-400">
-                <div>Rejoignez-nous</div>
-                <div>Dashboard Pro</div>
-                <div>Tarifs</div>
-                <div>Support Pro</div>
-              </div>
-            </div>
+
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
