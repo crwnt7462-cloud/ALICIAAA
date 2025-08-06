@@ -56,6 +56,26 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Calendars**: Intégration avec Google Calendar et Outlook (pour les rappels et la synchronisation des rendez-vous)
 - **Communication**: Services d'envoi d'emails et SMS (pour les confirmations et rappels automatiques)
 
+## Recent Changes (Août 2025)
+
+### ✅ **FOOTER OPTIMISÉ + PAGES SUPPORT CRÉÉES**
+- **Date**: 06/08/2025
+- **Changement**: Suppression section "Professionnels" footer + création pages support individuelles
+- **Impact**: Navigation footer simplifiée avec accès direct aux pages d'aide
+- **Détails**:
+  - ✅ Section "Professionnels" supprimée du footer PublicLanding.tsx
+  - ✅ Services footer (Coiffure, Esthétique, Manucure, Massage) liés vers /search
+  - ✅ Pages support créées : CentreAide.tsx, Contact.tsx, CGU.tsx, Confidentialite.tsx
+  - ✅ Design glassmorphism cohérent sur toutes les nouvelles pages
+  - ✅ Navigation cliquable avec hover effects sur éléments footer
+  - ✅ Routes publiques ajoutées dans App.tsx pour accès direct
+- **Pages créées**:
+  - ✅ /centre-aide : Centre d'aide avec FAQ et categories
+  - ✅ /contact : Formulaire contact + méthodes communication
+  - ✅ /cgu : Conditions Générales d'Utilisation complètes
+  - ✅ /confidentialite : Politique confidentialité RGPD
+- **Navigation**: Footer → Services → /search, Support → pages individuelles
+
 ## Recent Changes (Janvier 2025)
 
 ### ✅ **PAGES CONNEXION RESTAURÉES + IA VIOLETTE FINALISÉE**

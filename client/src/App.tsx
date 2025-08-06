@@ -82,6 +82,9 @@ import StockAlerts from "@/pages/StockAlerts";
 import Settings from "@/pages/Settings";
 import Support from "@/pages/Support";
 import Contact from "@/pages/Contact";
+import CentreAide from "@/pages/CentreAide";
+import CGU from "@/pages/CGU";
+import Confidentialite from "@/pages/Confidentialite";
 import ServiceCoiffure from "@/pages/ServiceCoiffure";
 import ServiceEsthetique from "@/pages/ServiceEsthetique";
 import ServiceMassage from "@/pages/ServiceMassage";
@@ -377,6 +380,39 @@ function Router() {
     return (
       <div className="h-full">
         <PublicLanding />
+      </div>
+    );
+  }
+
+  // Pages de support publiques
+  if (location === '/centre-aide') {
+    return (
+      <div className="h-full">
+        <CentreAide />
+      </div>
+    );
+  }
+
+  if (location === '/contact') {
+    return (
+      <div className="h-full">
+        <Contact />
+      </div>
+    );
+  }
+
+  if (location === '/cgu') {
+    return (
+      <div className="h-full">
+        <CGU />
+      </div>
+    );
+  }
+
+  if (location === '/confidentialite') {
+    return (
+      <div className="h-full">
+        <Confidentialite />
       </div>
     );
   }
@@ -849,6 +885,9 @@ function Router() {
           <Route path="/test-booking" component={BookingTest} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
+          <Route path="/centre-aide" component={CentreAide} />
+          <Route path="/cgu" component={CGU} />
+          <Route path="/confidentialite" component={Confidentialite} />
           <Route path="/ai-pro" component={AIProModern} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
