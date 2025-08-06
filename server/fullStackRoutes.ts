@@ -1121,6 +1121,60 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // 💳 API PAIEMENT PROFESSIONNEL STRIPE
+  app.post('/api/create-professional-payment-intent', async (req, res) => {
+    try {
+      const { salonId, plan, amount } = req.body;
+      
+      console.log('💳 Création Payment Intent professionnel:', { salonId, plan, amount });
+      
+      if (!process.env.STRIPE_SECRET_KEY) {
+        return res.status(500).json({ error: 'Clé Stripe non configurée' });
+      }
+      
+      // Utiliser Stripe directement (package installé)
+      const { default: Stripe } = await import('stripe');
+      const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+        apiVersion: '2023-10-16',
+      });
+      
+      // Calcul du montant en centimes
+      const amountInCents = Math.round(parseFloat(amount) * 100);
+      
+      // Créer le Payment Intent
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amountInCents,
+        currency: 'eur',
+        automatic_payment_methods: {
+          enabled: true,
+        },
+        metadata: {
+          salonId,
+          subscriptionPlan: plan,
+          type: 'professional_subscription'
+        },
+        description: `Abonnement ${plan} - Salon ${salonId}`
+      });
+      
+      console.log('✅ Payment Intent créé:', paymentIntent.id);
+      
+      res.json({
+        success: true,
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id,
+        amount: amountInCents,
+        currency: 'eur'
+      });
+      
+    } catch (error) {
+      console.error('❌ Erreur création Payment Intent professionnel:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création du Payment Intent',
+        details: error.message 
+      });
+    }
+  });
+
   // Client routes (Firebase ready) 
   app.post('/api/client/register', async (req, res) => {
     try {
