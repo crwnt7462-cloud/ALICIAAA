@@ -20,7 +20,7 @@ export default function ClientRegister() {
   const [isLoading, setIsLoading] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [createdAccount, setCreatedAccount] = useState(null);
+  const [createdAccount, setCreatedAccount] = useState<any>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {

@@ -2428,6 +2428,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           createdAccount = await storage.createClientAccount?.(userData);
         } catch (error) {
           console.error('Erreur création compte client:', error);
+          // Si le client existe déjà, récupérer le compte existant
+          if (error.code === '23505' && error.constraint === 'client_accounts_email_key') {
+            console.log('Client déjà existant, récupération...');
+            createdAccount = await storage.getClientAccountByEmail(userData.email);
+            console.log('Compte existant récupéré:', createdAccount ? 'Trouvé' : 'Non trouvé');
+          }
         }
       }
 
