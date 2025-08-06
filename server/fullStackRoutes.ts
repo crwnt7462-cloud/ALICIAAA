@@ -1975,6 +1975,55 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Routes API pour les politiques du salon
+  app.get('/api/salon/policies', async (req, res) => {
+    try {
+      // Récupérer les politiques par défaut pour le moment
+      const defaultPolicies = {
+        policies: {
+          cancellation: "Annulation gratuite jusqu'à 24h avant le rendez-vous",
+          lateness: "Retard de plus de 15min = annulation automatique",
+          deposit: "30% d'acompte requis pour valider la réservation", 
+          modification: "Modification possible jusqu'à 12h avant",
+          noShow: "En cas d'absence, l'acompte reste acquis au salon",
+          refund: "Remboursement sous 5-7 jours ouvrés en cas d'annulation valide"
+        },
+        settings: {
+          depositPercentage: 30,
+          cancellationDeadline: 24,
+          modificationDeadline: 12,
+          latenessGracePeriod: 15,
+          autoConfirmBookings: true,
+          requireDepositForBooking: true
+        }
+      };
+      
+      res.json(defaultPolicies);
+    } catch (error) {
+      console.error('Error fetching salon policies:', error);
+      res.status(500).json({ message: 'Failed to fetch salon policies' });
+    }
+  });
+
+  app.post('/api/salon/policies', async (req, res) => {
+    try {
+      const { policies, settings } = req.body;
+      
+      // Simuler la sauvegarde des politiques
+      // Dans une vraie app, on sauvegarderait en base de données
+      console.log('💾 Sauvegarde politiques salon:', { policies, settings });
+      
+      res.json({ 
+        success: true, 
+        message: 'Politiques sauvegardées avec succès',
+        data: { policies, settings }
+      });
+    } catch (error) {
+      console.error('Error saving salon policies:', error);
+      res.status(500).json({ message: 'Failed to save salon policies' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

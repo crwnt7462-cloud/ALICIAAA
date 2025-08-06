@@ -35,7 +35,7 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/client-retention"],
   });
 
-  const webSocketData = useWebSocket("");
+  const webSocketData = useWebSocket({ url: "" });
 
   useEffect(() => {
     if (webSocketData?.notifications?.length > 0) {
@@ -99,6 +99,15 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-4 gap-2">
+        <Button 
+          variant="outline" 
+          className="h-16 flex-col border-2 border-gray-400 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-xl text-xs font-bold"
+          onClick={() => setLocation("/salon-policies")}
+        >
+          <Settings className="w-5 h-5 mb-1" />
+          POLITIQUES
+        </Button>
+
         <Button 
           variant="outline" 
           className="h-16 flex-col border-4 border-orange-500 bg-orange-50 text-orange-700 hover:bg-orange-100 rounded-xl text-xs font-bold"

@@ -49,114 +49,91 @@ export default function BookingConfirmationModal({
         onClick={onClose}
       />
       
-      {/* Modal */}
-      <div className="relative w-full max-w-md mx-4">
+      {/* Modal compact */}
+      <div className="relative w-full max-w-sm mx-4">
         <div 
-          className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30"
+          className="bg-white/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/30 overflow-hidden"
           style={{
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%)',
             backdropFilter: 'blur(20px) saturate(180%)',
             WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           }}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 pb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Confirmer réservation</h2>
+          {/* Header compact */}
+          <div className="flex items-center justify-between p-4 pb-2 border-b border-white/20">
+            <h2 className="text-lg font-semibold text-gray-900">Confirmer</h2>
             <Button
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-8 w-8 p-0 rounded-full hover:bg-gray-100/50"
+              className="h-7 w-7 p-0 rounded-full hover:bg-gray-100/50"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </Button>
           </div>
 
-          {/* Content */}
-          <div className="px-6 pb-6 space-y-4">
-            {/* Service Info */}
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                {bookingData.serviceName}
-              </h3>
-              <p className="text-gray-600 text-sm mb-1">
-                {bookingData.date} à {bookingData.time}
-              </p>
-              <p className="text-gray-600 text-sm mb-6">
-                avec {bookingData.professionalName}
-              </p>
-              
-              <div className="text-center mb-2">
-                <span className="text-4xl font-bold text-gray-900">
-                  {bookingData.servicePrice}€
-                </span>
+          {/* Récapitulatif compact */}
+          <div className="p-4 space-y-3">
+            <div className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Service</span>
+                <span className="font-medium text-gray-900">{bookingData.serviceName}</span>
               </div>
-              
-              <p className="text-sm text-gray-600 mb-4">
-                Acompte: {depositAmount}€
-              </p>
-            </div>
-
-            {/* Salon Info */}
-            <div className="text-center bg-gray-50/50 rounded-lg p-3 mb-4">
-              <h4 className="font-semibold text-gray-900 text-base">
-                {bookingData.salonName}
-              </h4>
-              <p className="text-sm text-gray-600">
-                {bookingData.salonLocation}
-              </p>
-            </div>
-
-            {/* Conditions */}
-            <div className="bg-amber-50/80 rounded-lg p-4 mb-4">
-              <h4 className="font-semibold text-gray-900 mb-3 text-sm">
-                Conditions du salon
-              </h4>
-              <div className="space-y-1 text-xs text-gray-700">
-                <p>• {bookingData.salonPolicies.cancellation}</p>
-                <p>• {bookingData.salonPolicies.lateness}</p>
-                <p>• {bookingData.salonPolicies.deposit}</p>
-                <p>• {bookingData.salonPolicies.modification}</p>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Date & Heure</span>
+                <span className="font-medium text-gray-900">{bookingData.date} à {bookingData.time}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Professionnel</span>
+                <span className="font-medium text-gray-900">{bookingData.professionalName}</span>
               </div>
             </div>
 
-            {/* Acceptance Checkbox */}
-            <div className="flex items-start space-x-3 mb-6">
+            <div className="border-t border-white/20 pt-2">
+              <div className="flex justify-between items-center text-sm mb-1">
+                <span className="text-gray-600">Prix total</span>
+                <span className="font-medium text-gray-900">{bookingData.servicePrice},00 €</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-900">Acompte</span>
+                <span className="font-bold text-gray-900 text-lg">{depositAmount},00 €</span>
+              </div>
+            </div>
+
+            {/* Politiques condensées */}
+            <div className="bg-gray-50/50 rounded-lg p-3 space-y-1">
+              <p className="text-xs font-medium text-gray-700 mb-2">Conditions du salon :</p>
+              <ul className="text-xs text-gray-600 space-y-1">
+                <li>• {bookingData.salonPolicies.cancellation}</li>
+                <li>• {bookingData.salonPolicies.lateness}</li>
+                <li>• {bookingData.salonPolicies.deposit}</li>
+              </ul>
+            </div>
+
+            {/* Checkbox validation */}
+            <div className="flex items-start space-x-2 pt-2">
               <Checkbox
                 id="accept-conditions"
                 checked={acceptConditions}
                 onCheckedChange={(checked) => setAcceptConditions(checked as boolean)}
-                className="mt-1"
+                className="mt-0.5"
               />
               <label 
-                htmlFor="accept-conditions"
-                className="text-sm text-gray-700 leading-5 cursor-pointer"
+                htmlFor="accept-conditions" 
+                className="text-xs text-gray-700 leading-4 cursor-pointer"
               >
-                J'accepte les conditions et confirme ma réservation.
+                J'accepte les conditions du salon et confirme ma réservation
               </label>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                className="flex-1 glass-button hover:glass-effect text-gray-700 py-3"
-              >
-                Modifier
-              </Button>
-              <Button
-                onClick={handleConfirm}
-                disabled={!acceptConditions}
-                className={`flex-1 font-semibold py-3 ${
-                  acceptConditions 
-                    ? 'glass-button hover:glass-effect text-black' 
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                Confirmer
-              </Button>
-            </div>
+            {/* Bouton confirmation */}
+            <Button
+              onClick={handleConfirm}
+              disabled={!acceptConditions}
+              className="w-full mt-4 glass-button hover:glass-effect text-black font-medium py-2.5 rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Confirmer & Payer {depositAmount},00 €
+            </Button>
           </div>
         </div>
       </div>

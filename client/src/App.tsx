@@ -73,6 +73,7 @@ import SalonPageFixed from "@/pages/SalonPageFixed";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
+import SalonPolicies from "@/pages/SalonPolicies";
 import PromoCodeManagement from "@/pages/PromoCodeManagement";
 import ClientReliabilityDashboard from "@/pages/ClientReliabilityDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -271,6 +272,15 @@ function Router() {
     return (
       <div className="h-full">
         <SalonSettings />
+      </div>
+    );
+  }
+
+  // Politiques du salon
+  if (location === '/salon-policies') {
+    return (
+      <div className="h-full">
+        <SalonPolicies />
       </div>
     );
   }
