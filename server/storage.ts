@@ -9,6 +9,7 @@ import {
   clientNotes,
   customTags,
   salonPhotos,
+  emailVerifications,
   type User,
   type UpsertUser,
   type InsertUser,
@@ -28,6 +29,8 @@ import {
   type InsertCustomTag,
   type SalonPhoto,
   type InsertSalonPhoto,
+  type EmailVerification,
+  type InsertEmailVerification,
   salonRegistrations,
   type SalonRegistration,
   type InsertSalonRegistration,
@@ -499,30 +502,30 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Staff
-  async getStaff(userId: string): Promise<Staff[]> {
+  async getStaff(userId: string): Promise<StaffMember[]> {
     return await db
       .select()
-      .from(staff)
-      .where(eq(staff.userId, userId))
-      .orderBy(staff.lastName, staff.firstName);
+      .from(staffMembers)
+      .where(eq(staffMembers.userId, userId))
+      .orderBy(staffMembers.lastName, staffMembers.firstName);
   }
 
-  async createStaff(staffMember: InsertStaff): Promise<Staff> {
-    const [newStaff] = await db.insert(staff).values(staffMember).returning();
+  async createStaff(staffMember: InsertStaffMember): Promise<StaffMember> {
+    const [newStaff] = await db.insert(staffMembers).values(staffMember).returning();
     return newStaff;
   }
 
-  async updateStaff(id: number, staffMember: Partial<InsertStaff>): Promise<Staff> {
+  async updateStaff(id: number, staffMember: Partial<InsertStaffMember>): Promise<StaffMember> {
     const [updated] = await db
-      .update(staff)
+      .update(staffMembers)
       .set(staffMember)
-      .where(eq(staff.id, id))
+      .where(eq(staffMembers.id, id))
       .returning();
     return updated;
   }
 
   async deleteStaff(id: number): Promise<void> {
-    await db.delete(staff).where(eq(staff.id, id));
+    await db.delete(staffMembers).where(eq(staffMembers.id, id));
   }
 
   // Salon Data Management - MÉTHODES MANQUANTES CRITIQUES
@@ -1106,11 +1109,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Staff management  
-  async getStaffBySalonId(salonId: string): Promise<any[]> {
+  async getStaffBySalonId(salonId: string): Promise<StaffMember[]> {
     try {
       const rows = await db.select()
-        .from(staff)
-        .where(eq(staff.userId, salonId));
+        .from(staffMembers)
+        .where(eq(staffMembers.userId, salonId));
       return rows || [];
     } catch (error) {
       console.error('Erreur récupération staff:', error);
@@ -1121,7 +1124,7 @@ export class DatabaseStorage implements IStorage {
   // Business management methods
   async getBusinessByEmail(email: string): Promise<any> {
     try {
-      const [business] = await this.db.select()
+      const [business] = await db.select()
         .from(businessRegistrations)
         .where(eq(businessRegistrations.email, email));
       return business;
@@ -1133,7 +1136,7 @@ export class DatabaseStorage implements IStorage {
 
   async createBusiness(businessData: any): Promise<any> {
     try {
-      const [business] = await this.db.insert(businessRegistrations)
+      const [business] = await db.insert(businessRegistrations)
         .values(businessData)
         .returning();
       return business;
@@ -1146,7 +1149,7 @@ export class DatabaseStorage implements IStorage {
   // Client Account methods
   async getClientAccount(id: number): Promise<any> {
     try {
-      const [client] = await this.db.select()
+      const [client] = await db.select()
         .from(clientAccounts)
         .where(eq(clientAccounts.id, id));
       return client;
@@ -1158,7 +1161,7 @@ export class DatabaseStorage implements IStorage {
 
   async authenticateClient(email: string, password: string): Promise<any> {
     try {
-      const [client] = await this.db.select()
+      const [client] = await db.select()
         .from(clientAccounts)
         .where(eq(clientAccounts.email, email));
       
@@ -1182,6 +1185,57 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Erreur récupération service by ID:', error);
       return null;
+    }
+  }
+
+  // Email verification methods
+  async createEmailVerification(verificationData: any): Promise<any> {
+    try {
+      const [verification] = await db.insert(emailVerifications)
+        .values(verificationData)
+        .returning();
+      return verification;
+    } catch (error) {
+      console.error('Erreur création vérification email:', error);
+      throw error;
+    }
+  }
+
+  async getEmailVerification(email: string, code: string): Promise<any> {
+    try {
+      const [verification] = await db.select()
+        .from(emailVerifications)
+        .where(
+          and(
+            eq(emailVerifications.email, email),
+            eq(emailVerifications.verificationCode, code),
+            eq(emailVerifications.isVerified, false)
+          )
+        );
+      return verification;
+    } catch (error) {
+      console.error('Erreur récupération vérification email:', error);
+      return null;
+    }
+  }
+
+  async markEmailVerificationAsUsed(id: number): Promise<void> {
+    try {
+      await db.update(emailVerifications)
+        .set({ isVerified: true })
+        .where(eq(emailVerifications.id, id));
+    } catch (error) {
+      console.error('Erreur marquage vérification utilisée:', error);
+      throw error;
+    }
+  }
+
+  async cleanExpiredEmailVerifications(): Promise<void> {
+    try {
+      await db.delete(emailVerifications)
+        .where(sql`${emailVerifications.expiresAt} < NOW()`);
+    } catch (error) {
+      console.error('Erreur nettoyage vérifications expirées:', error);
     }
   }
 

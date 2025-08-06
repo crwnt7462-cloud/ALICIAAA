@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import rendlyLogo from "@assets/3_1753714421825.png";
+import { EmailVerificationForm } from "@/components/EmailVerificationForm";
+import { EmailVerificationSuccess } from "@/components/EmailVerificationSuccess";
 
 export default function ClientRegister() {
   const [, setLocation] = useLocation();
@@ -16,6 +18,9 @@ export default function ClientRegister() {
     phone: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [createdAccount, setCreatedAccount] = useState(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -48,72 +53,69 @@ export default function ClientRegister() {
       return;
     }
     
-    setIsLoading(true);
+    // ✨ NOUVELLE LOGIQUE : Passer à l'étape de validation email
+    setShowEmailVerification(true);
+  };
 
-    try {
-      const response = await fetch('/api/client/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+  // Gestion du succès de la vérification email
+  const handleEmailVerificationSuccess = (result: any) => {
+    console.log('✅ Email vérifié avec succès:', result);
+    setCreatedAccount(result.account);
+    setShowSuccess(true);
+    
+    toast({
+      title: "Compte créé avec succès !",
+      description: "Votre compte client a été créé et vérifié.",
+    });
+  };
+
+  // Gestion du retour depuis la vérification email
+  const handleBackFromVerification = () => {
+    setShowEmailVerification(false);
+  };
+
+  // Gestion de la continuation après le succès
+  const handleContinue = () => {
+    // Sauvegarder les données client et rediriger
+    if (createdAccount) {
+      const token = `client-${createdAccount.id}`;
+      localStorage.setItem('clientToken', token);
+      localStorage.setItem('clientData', JSON.stringify(createdAccount));
+    }
+    
+    // Redirection vers le dashboard client
+    window.location.href = '/client-dashboard';
+  };
+
+  // Si on est en phase de vérification email
+  if (showEmailVerification && !showSuccess) {
+    return (
+      <EmailVerificationForm
+        email={formData.email}
+        userType="client"
+        userData={{
           firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
           phone: formData.phone
-        }),
-        credentials: 'include'
-      });
+        }}
+        onSuccess={handleEmailVerificationSuccess}
+        onBack={handleBackFromVerification}
+      />
+    );
+  }
 
-      const responseText = await response.text();
-      console.log('Raw response:', responseText);
-      
-      if (response.ok) {
-        try {
-          const data = JSON.parse(responseText);
-          console.log('Register response:', data);
-          
-          if (data.success && data.client) {
-            localStorage.setItem('clientToken', data.client.token);
-            localStorage.setItem('clientData', JSON.stringify(data.client));
-            
-            toast({
-              title: "Compte créé !",
-              description: "Votre compte a été créé avec succès",
-            });
-            
-            // Redirection vers le dashboard client
-            window.location.href = '/client-dashboard';
-          } else {
-            throw new Error('Format de réponse invalide');
-          }
-        } catch (parseError) {
-          console.error('Parse error:', parseError);
-          toast({
-            title: "Erreur d'inscription",
-            description: "Réponse serveur invalide",
-            variant: "destructive"
-          });
-        }
-      } else {
-        toast({
-          title: "Erreur d'inscription",
-          description: `Erreur ${response.status}: L'email est peut-être déjà utilisé`,
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error('Network error:', error);
-      toast({
-        title: "Erreur de connexion",
-        description: "Impossible de se connecter au serveur",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Si on est en phase de succès
+  if (showSuccess && createdAccount) {
+    return (
+      <EmailVerificationSuccess
+        userType="client"
+        account={createdAccount}
+        onContinue={handleContinue}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col">

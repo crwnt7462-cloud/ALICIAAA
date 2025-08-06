@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { getGenericGlassButton } from '@/lib/salonColors';
 import { apiRequest } from "@/lib/queryClient";
+import { EmailVerificationForm } from "@/components/EmailVerificationForm";
+import { EmailVerificationSuccess } from "@/components/EmailVerificationSuccess";
 
 // Schémas de validation pour chaque étape
 const step1Schema = z.object({
@@ -60,6 +62,9 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [createdAccount, setCreatedAccount] = useState<any>(null);
 
   // État pour stocker les données de toutes les étapes
   const [formData, setFormData] = useState({
@@ -117,32 +122,41 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   };
 
   const handleFinalSubmit = (data: Step3Form) => {
-    setIsSubmitting(true);
-    const completeData = {
-      // Données étape 1 (infos personnelles)
-      ownerFirstName: formData.step1.firstName,
-      ownerLastName: formData.step1.lastName,
-      email: formData.step1.email,
-      password: formData.step1.password,
-      phone: formData.step1.phone,
-      
-      // Données étape 2 (infos business)
-      businessName: formData.step2.companyName,
-      businessType: "salon",
-      siret: formData.step2.siret,
-      address: formData.step2.businessAddress,
-      city: formData.step2.businessCity,
-      postalCode: formData.step2.businessPostalCode,
-      legalForm: formData.step2.legalForm,
-      vatNumber: formData.step2.vatNumber || "",
-      description: "",
-      
-      // Données étape 3 (plan et conditions)
-      planType: data.planType || selectedPlan || 'basic',
-    };
+    // Sauvegarder les données de l'étape 3
+    setFormData(prev => ({ ...prev, step3: data }));
     
-    console.log("Données complètes à envoyer:", completeData);
-    createAccountMutation.mutate(completeData);
+    // ✨ NOUVELLE LOGIQUE : Passer à l'étape de validation email
+    setShowEmailVerification(true);
+  };
+
+  // Gestion du succès de la vérification email
+  const handleEmailVerificationSuccess = (result: any) => {
+    console.log('✅ Email vérifié avec succès:', result);
+    setCreatedAccount(result.account);
+    setShowSuccess(true);
+    
+    toast({
+      title: "Compte professionnel créé !",
+      description: "Votre salon a été créé avec succès.",
+    });
+  };
+
+  // Gestion du retour depuis la vérification email
+  const handleBackFromVerification = () => {
+    setShowEmailVerification(false);
+  };
+
+  // Gestion de la continuation après le succès
+  const handleContinue = () => {
+    // Sauvegarder les données pro et rediriger
+    if (createdAccount) {
+      const token = `pro-${createdAccount.id}`;
+      localStorage.setItem('proToken', token);
+      localStorage.setItem('proData', JSON.stringify(createdAccount));
+    }
+    
+    // Redirection vers le dashboard professionnel
+    window.location.href = '/business-features';
   };
 
   const plans = {
@@ -174,6 +188,53 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   };
 
   const currentPlan = plans[step3Form.watch("planType")];
+
+  // Si on est en phase de vérification email
+  if (showEmailVerification && !showSuccess) {
+    const completeUserData = {
+      // Données étape 1 (infos personnelles)
+      ownerFirstName: formData.step1.firstName,
+      ownerLastName: formData.step1.lastName,
+      email: formData.step1.email,
+      password: formData.step1.password,
+      phone: formData.step1.phone,
+      
+      // Données étape 2 (infos business)
+      businessName: formData.step2.companyName,
+      businessType: "salon",
+      siret: formData.step2.siret,
+      address: formData.step2.businessAddress,
+      city: formData.step2.businessCity,
+      postalCode: formData.step2.businessPostalCode,
+      legalForm: formData.step2.legalForm,
+      vatNumber: formData.step2.vatNumber || "",
+      description: "",
+      
+      // Données étape 3 (plan et conditions)
+      planType: formData.step3.planType || selectedPlan || 'basic',
+    };
+
+    return (
+      <EmailVerificationForm
+        email={formData.step1.email}
+        userType="professional"
+        userData={completeUserData}
+        onSuccess={handleEmailVerificationSuccess}
+        onBack={handleBackFromVerification}
+      />
+    );
+  }
+
+  // Si on est en phase de succès
+  if (showSuccess && createdAccount) {
+    return (
+      <EmailVerificationSuccess
+        userType="professional"
+        account={createdAccount}
+        onContinue={handleContinue}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-6">
