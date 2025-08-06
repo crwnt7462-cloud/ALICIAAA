@@ -1175,6 +1175,55 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // 🔐 API CONNEXION PROFESSIONNEL BUSINESS
+  app.post('/api/business/login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      console.log('🔐 Tentative de connexion BUSINESS:', email);
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: 'Email et mot de passe requis' });
+      }
+
+      // Récupérer le business par email
+      const business = await storage.getBusinessByEmail(email);
+      if (!business) {
+        console.log('❌ Business non trouvé:', email);
+        return res.status(401).json({ error: 'Identifiants incorrects' });
+      }
+
+      // Vérifier le mot de passe avec bcrypt
+      const bcrypt = await import('bcrypt');
+      const isValidPassword = await bcrypt.compare(password, business.password);
+      
+      if (!isValidPassword) {
+        console.log('❌ Mot de passe incorrect pour:', email);
+        return res.status(401).json({ error: 'Identifiants incorrects' });
+      }
+
+      console.log('✅ Connexion BUSINESS réussie:', email);
+      
+      res.json({
+        success: true,
+        user: {
+          id: business.id,
+          email: business.email,
+          firstName: business.ownerName.split(' ')[0],
+          lastName: business.ownerName.split(' ').slice(1).join(' '),
+          businessName: business.businessName,
+          salonId: business.salonId,
+          role: 'professional'
+        },
+        token: `business-token-${business.id}`,
+        message: 'Connexion professionnelle réussie'
+      });
+      
+    } catch (error) {
+      console.error('❌ Erreur connexion business:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
   // Client routes (Firebase ready) 
   app.post('/api/client/register', async (req, res) => {
     try {
