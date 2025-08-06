@@ -652,29 +652,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       let salon = await storage.getSalonData?.(id);
       
       if (!salon) {
-        console.log('ℹ️ Aucune donnée salon trouvée pour éditeur - création données par défaut:', id);
-        // Créer des données par défaut pour l'éditeur
-        salon = {
-          id: id,
-          name: 'Mon Salon',
-          rating: 4.5,
-          reviews: 0,
-          address: '1 Rue de la Beauté, 75001 Paris',
-          phone: '01 23 45 67 89',
-          verified: true,
-          certifications: [],
-          awards: [],
-          longDescription: 'Description de votre salon...',
-          coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
-          photos: [],
-          customColors: {
-            primary: '#f59e0b',
-            accent: '#ec4899',
-            buttonText: '#000000',
-            buttonClass: 'glass-button',
-            intensity: 35
-          }
-        };
+        console.log('❌ ERREUR: Salon inexistant dans PostgreSQL:', id);
+        return res.status(404).json({ 
+          error: 'Salon non trouvé dans la base de données PostgreSQL',
+          message: 'AUCUNE DONNÉE FACTICE - Salons authentiques uniquement'
+        });
       }
         
       
@@ -931,39 +913,23 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { salonId } = req.query;
       console.log('🏢 SalonId reçu:', salonId);
       
-      // Temporaire : Retourner des données de staff créées dans PostgreSQL
-      const staff = [
-        {
-          id: 1,
-          name: "Lucas Martin",
-          specialties: ["Coupe", "Barbe"],
-          rating: 4.9,
-          nextSlot: "Aujourd'hui 10:00",
-          image: "👨‍💼",
-          experience: "5 ans d'expérience",
-          salonId: salonId || 'salon-demo'
-        },
-        {
-          id: 2,
-          name: "Emma Dubois",
-          specialties: ["Coloration", "Soin"],
-          rating: 4.8,
-          nextSlot: "Aujourd'hui 11:30",
-          image: "👩‍💼",
-          experience: "3 ans d'expérience",
-          salonId: salonId || 'salon-demo'
-        },
-        {
-          id: 3,
-          name: "Alex Legrand",
-          specialties: ["Coupe Moderne", "Style"],
-          rating: 4.7,
-          nextSlot: "Demain 9:00",
-          image: "👨‍🎨",
-          experience: "7 ans d'expérience",
-          salonId: salonId || 'salon-demo'
-        }
-      ];
+      // AUCUNE DONNÉE FACTICE - POSTGRESQL UNIQUEMENT
+      if (!salonId) {
+        return res.status(400).json({ 
+          error: 'salonId obligatoire - aucune donnée par défaut',
+          message: 'DONNÉES AUTHENTIQUES UNIQUEMENT' 
+        });
+      }
+
+      const staff = await storage.getStaffBySalonId(salonId as string);
+      
+      if (!staff || staff.length === 0) {
+        return res.status(404).json({ 
+          error: 'Aucun staff dans PostgreSQL pour ce salon',
+          salonId,
+          message: 'AUCUNE DONNÉE FICTIVE - Base de données vide'
+        });
+      }
       
       console.log('👥 Staff à retourner:', staff.length, 'professionnels');
       res.json(staff);
@@ -1202,41 +1168,23 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { salonId } = req.query;
       console.log('🏢 SalonId reçu:', salonId);
       
-      // Temporaire : Retourner des services créés dans PostgreSQL
-      const services = [
-        {
-          id: 1,
-          name: "Coupe Homme",
-          price: 35,
-          duration: "30min",
-          description: "Coupe classique avec finition",
-          salonId: salonId || 'salon-demo'
-        },
-        {
-          id: 2,
-          name: "Coupe Femme",
-          price: 45,
-          duration: "45min",
-          description: "Coupe avec brushing",
-          salonId: salonId || 'salon-demo'
-        },
-        {
-          id: 3,
-          name: "Coloration",
-          price: 65,
-          duration: "90min",
-          description: "Coloration complète avec soins",
-          salonId: salonId || 'salon-demo'
-        },
-        {
-          id: 4,
-          name: "Soin Capillaire",
-          price: 25,
-          duration: "30min",
-          description: "Soin nourrissant pour cheveux",
-          salonId: salonId || 'salon-demo'
-        }
-      ];
+      // AUCUNE DONNÉE FACTICE - POSTGRESQL UNIQUEMENT
+      if (!salonId) {
+        return res.status(400).json({ 
+          error: 'salonId obligatoire - aucune donnée par défaut',
+          message: 'DONNÉES AUTHENTIQUES UNIQUEMENT' 
+        });
+      }
+
+      const services = await storage.getServicesBySalonId(salonId as string);
+      
+      if (!services || services.length === 0) {
+        return res.status(404).json({ 
+          error: 'Aucun service dans PostgreSQL pour ce salon',
+          salonId,
+          message: 'AUCUNE DONNÉE FICTIVE - Base de données vide'
+        });
+      }
       
       console.log('💼 Services à retourner:', services.length, 'services');
       res.json(services);
