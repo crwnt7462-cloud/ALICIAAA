@@ -129,6 +129,7 @@ const formSchema = z.object({
   ownerLastName: z.string().min(2, "Le nom est requis"),
   vatNumber: z.string().optional(),
   description: z.string().optional(),
+  password: z.string().min(6, "Le mot de passe doit faire au moins 6 caractères"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -184,6 +185,7 @@ export default function BusinessRegistration() {
       ownerLastName: "",
       vatNumber: "",
       description: "",
+      password: "",
     },
   });
 
@@ -568,6 +570,30 @@ export default function BusinessRegistration() {
                             {...field} 
                             placeholder="Décrivez votre salon..."
                             className="min-h-[80px] resize-none"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Mot de passe */}
+                <div className="space-y-4">
+                  <h3 className="text-base font-medium text-gray-900">Sécurité</h3>
+                  
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium text-gray-700">Mot de passe *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            type="password"
+                            placeholder="Minimum 6 caractères"
+                            className="h-10"
                           />
                         </FormControl>
                         <FormMessage />
