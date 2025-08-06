@@ -202,14 +202,39 @@ export default function SalonBooking() {
     }
   }, []);
 
-  // Récupérer les données du salon depuis l'URL
+  // Récupérer l'ID du salon depuis l'URL actuelle ou sessionStorage
+  const getSalonId = () => {
+    // Essayer de récupérer depuis l'URL (ex: /salon-booking?salonId=salon-demo)
+    const urlParams = new URLSearchParams(window.location.search);
+    let salonId = urlParams.get('salonId');
+    
+    if (!salonId) {
+      // Ou depuis l'URL path (ex: /salon-booking/salon-demo)
+      const path = window.location.pathname;
+      const pathMatch = path.match(/\/salon-booking\/(.+)$/);
+      if (pathMatch) {
+        salonId = pathMatch[1];
+      }
+    }
+    
+    // Par défaut, utiliser salon-demo
+    return salonId || 'salon-demo';
+  };
+
+  const salonId = getSalonId();
+  
+  // Récupérer les données du salon spécifique
   const { data: salonData } = useQuery({
-    queryKey: ['/api/salon/current'],
+    queryKey: ['/api/salon/public', salonId],
     retry: false,
   });
 
-  // Utiliser salonData comme salon avec des valeurs par défaut
-  const salon = salonData || { name: 'Salon Demo', location: 'Paris 75001' };
+  // Utiliser salonData avec des valeurs par défaut
+  const salon = salonData || { 
+    id: salonId,
+    name: 'Salon Demo', 
+    location: 'Paris 75001' 
+  };
 
   // Pas de service par défaut - utiliser seulement les données réelles
 
