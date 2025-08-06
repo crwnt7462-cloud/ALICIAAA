@@ -2019,12 +2019,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       await linkSalonToProfessional(createdSalon.id, email);
 
       // ✅ CRÉER LE COMPTE PROFESSIONNEL DANS LA TABLE USERS (Compatible avec login)
+      // Protection contre ownerName undefined
+      const safeOwnerName = ownerName || businessName || 'Propriétaire';
+      const nameparts = safeOwnerName.split(' ');
+      
       const userData = {
         email,
         password, // Mot de passe brut, sera hashé par storage.createUser()
         businessName,
-        firstName: ownerName.split(' ')[0],
-        lastName: ownerName.split(' ').slice(1).join(' ') || '',
+        firstName: nameparts[0] || 'Pro',
+        lastName: nameparts.slice(1).join(' ') || '',
         phone,
         address,
         subscriptionPlan: subscriptionPlan || 'basic-pro'
@@ -2036,7 +2040,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Créer aussi l'entrée business pour compatibilité (si la méthode existe)
       const businessData = {
         businessName,
-        ownerName,
+        ownerName: ownerName || businessName || 'Propriétaire',
         email,
         phone,
         address,
