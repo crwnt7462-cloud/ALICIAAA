@@ -41,7 +41,7 @@ const step2Schema = z.object({
 });
 
 const step3Schema = z.object({
-  planType: z.enum(["basic", "premium"]),
+  planType: z.enum(["basic-pro", "advanced-pro", "premium-pro"]),
   billingAddress: z.string().optional(),
   billingName: z.string().optional(),
   acceptTerms: z.boolean().refine(val => val === true, "Vous devez accepter les conditions"),
@@ -52,10 +52,10 @@ type Step2Form = z.infer<typeof step2Schema>;
 type Step3Form = z.infer<typeof step3Schema>;
 
 interface MultiStepSubscriptionProps {
-  selectedPlan?: "basic" | "premium";
+  selectedPlan?: "basic-pro" | "advanced-pro" | "premium-pro";
 }
 
-export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiStepSubscriptionProps) {
+export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: MultiStepSubscriptionProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
@@ -70,7 +70,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   const [formData, setFormData] = useState({
     step1: {} as Step1Form,
     step2: {} as Step2Form,
-    step3: { planType: selectedPlan, acceptTerms: false } as Step3Form,
+    step3: { planType: selectedPlan || "basic-pro", acceptTerms: false } as Step3Form,
   });
 
   // Formulaires pour chaque étape
@@ -160,9 +160,9 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
   };
 
   const plans = {
-    basic: {
-      name: "Plan Basic",
-      price: "49€/mois",
+    "basic-pro": {
+      name: "Plan Basic Pro",
+      price: "29€/mois",
       features: [
         "Gestion des rendez-vous",
         "Base de données clients",
@@ -172,11 +172,24 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
       color: "blue",
       icon: <CheckCircle className="w-5 h-5 text-white" />,
     },
-    premium: {
-      name: "Plan Premium", 
+    "advanced-pro": {
+      name: "Plan Advanced Pro", 
+      price: "79€/mois",
+      features: [
+        "Tout du plan Basic Pro",
+        "Gestion des stocks",
+        "Notifications SMS",
+        "Système de fidélité",
+        "Statistiques détaillées",
+      ],
+      color: "green",
+      icon: <Building className="w-5 h-5 text-white" />,
+    },
+    "premium-pro": {
+      name: "Plan Premium Pro", 
       price: "149€/mois",
       features: [
-        "Tout du plan Basic",
+        "Tout du plan Advanced Pro",
         "Intelligence Artificielle",
         "Messagerie directe clients",
         "Analytics avancés",
@@ -211,7 +224,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
       description: "",
       
       // Données étape 3 (plan et conditions)
-      planType: formData.step3.planType || selectedPlan || 'basic',
+      planType: formData.step3.planType || selectedPlan || 'basic-pro',
     };
 
     return (
@@ -454,7 +467,10 @@ export default function MultiStepSubscription({ selectedPlan = "basic" }: MultiS
                   </div>
                   <div>
                     <Label htmlFor="legalForm">Forme juridique *</Label>
-                    <Select {...step2Form.register("legalForm")}>
+                    <Select 
+                      value={step2Form.watch("legalForm")} 
+                      onValueChange={(value) => step2Form.setValue("legalForm", value as any)}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner" />
                       </SelectTrigger>
