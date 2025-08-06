@@ -1185,16 +1185,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         return res.status(400).json({ error: 'Email et mot de passe requis' });
       }
 
-      // Récupérer le business par email
-      const business = await storage.getBusinessByEmail(email);
-      if (!business) {
-        console.log('❌ Business non trouvé:', email);
+      // Récupérer l'utilisateur professionnel par email dans la table users
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        console.log('❌ Utilisateur professionnel non trouvé:', email);
         return res.status(401).json({ error: 'Identifiants incorrects' });
       }
 
       // Vérifier le mot de passe avec bcrypt
       const bcrypt = await import('bcrypt');
-      const isValidPassword = await bcrypt.compare(password, business.password);
+      const isValidPassword = await bcrypt.compare(password, user.password);
       
       if (!isValidPassword) {
         console.log('❌ Mot de passe incorrect pour:', email);
@@ -1206,15 +1206,14 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       res.json({
         success: true,
         user: {
-          id: business.id,
-          email: business.email,
-          firstName: business.ownerName.split(' ')[0],
-          lastName: business.ownerName.split(' ').slice(1).join(' '),
-          businessName: business.businessName,
-          salonId: business.salonId,
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          businessName: user.businessName,
           role: 'professional'
         },
-        token: `business-token-${business.id}`,
+        token: `business-token-${user.id}`,
         message: 'Connexion professionnelle réussie'
       });
       
