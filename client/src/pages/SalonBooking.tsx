@@ -533,7 +533,10 @@ export default function SalonBooking() {
                     </div>
                     {/* Spécialités du professionnel */}
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {pro.specialties.map((specialty, idx) => (
+                      {(typeof pro.specialties === 'string' 
+                        ? pro.specialties.split(',').map(s => s.trim())
+                        : Array.isArray(pro.specialties) ? pro.specialties : []
+                      ).map((specialty, idx) => (
                         <Badge key={idx} variant="outline" className="text-xs">
                           {specialty}
                         </Badge>
