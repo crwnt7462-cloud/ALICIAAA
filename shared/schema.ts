@@ -609,6 +609,11 @@ export const businessSettings = pgTable("business_settings", {
   showPrices: boolean("show_prices").default(true),
   showDuration: boolean("show_duration").default(true),
   enableInstantBooking: boolean("enable_instant_booking").default(true),
+  // Salon policies for booking confirmation
+  cancellationPolicy: text("cancellation_policy").default("Annulation gratuite jusqu'à 24h avant le rendez-vous"),
+  latenessPolicy: text("lateness_policy").default("Retard de plus de 15min = annulation automatique"),
+  depositPolicy: text("deposit_policy").default("30% d'acompte requis pour valider la réservation"),
+  modificationPolicy: text("modification_policy").default("Modification possible jusqu'à 12h avant"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
