@@ -525,6 +525,34 @@ export class DatabaseStorage implements IStorage {
     await db.delete(staff).where(eq(staff.id, id));
   }
 
+  // Salon Data Management - MÉTHODES MANQUANTES CRITIQUES
+  async getSalonData(salonId: string): Promise<any | undefined> {
+    // Vérifier d'abord le stockage mémoire (pour les salons temporaires)
+    if (this.salons.has(salonId)) {
+      return this.salons.get(salonId);
+    }
+    
+    // Si pas trouvé, retourner null car pas de table salons en PostgreSQL pour l'instant
+    console.log('⚠️ Salon non trouvé en mémoire:', salonId, 'Salons disponibles:', Array.from(this.salons.keys()));
+    return undefined;
+  }
+
+  async saveSalonData(salonId: string, salonData: any): Promise<void> {
+    // Sauvegarder en mémoire pour l'instant
+    this.salons.set(salonId, {
+      ...salonData,
+      id: salonId,
+      updatedAt: new Date()
+    });
+    console.log('✅ Salon sauvegardé en mémoire:', salonId);
+  }
+
+  // Services par Salon ID
+  async getServicesBySalonId(salonId: string): Promise<Service[]> {
+    // Pour l'instant, utiliser le salonId comme userId
+    return await this.getServices(salonId);
+  }
+
   // Appointments
   async getAppointments(userId: string, date?: string): Promise<Appointment[]> {
     let query = db
