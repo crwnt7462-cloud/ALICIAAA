@@ -122,6 +122,28 @@ export const subscriptions = pgTable("subscriptions", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Email verification system for account creation
+export const emailVerifications = pgTable("email_verifications", {
+  id: serial("id").primaryKey(),
+  email: varchar("email").notNull(),
+  verificationCode: varchar("verification_code", { length: 6 }).notNull(),
+  userType: varchar("user_type").notNull(), // "professional" or "client"
+  userData: jsonb("user_data").notNull(), // Stores the registration data temporarily
+  isVerified: boolean("is_verified").default(false),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type EmailVerification = typeof emailVerifications.$inferSelect;
+export type InsertEmailVerification = typeof emailVerifications.$inferInsert;
+
+// Email verification schema
+export const emailVerificationSchema = createInsertSchema(emailVerifications).omit({
+  id: true,
+  isVerified: true,
+  createdAt: true,
+});
+
 // Promotional codes and special offers
 export const promoCodes = pgTable("promo_codes", {
   id: serial("id").primaryKey(),
