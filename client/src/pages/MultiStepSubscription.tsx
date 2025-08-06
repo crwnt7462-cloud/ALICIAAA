@@ -88,27 +88,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
     defaultValues: formData.step3,
   });
 
-  const createAccountMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/business-registration", data);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Compte créé avec succès",
-        description: "Redirection vers le paiement...",
-      });
-      // Rediriger vers la page de paiement Stripe
-      setLocation(`/stripe-payment/${data.registrationId}`);
-    },
-    onError: (error) => {
-      toast({
-        title: "Erreur",
-        description: "Impossible de créer le compte professionnel",
-        variant: "destructive",
-      });
-    },
-  });
+  // ✨ SUPPRIMÉ - Plus besoin de mutation directe car on utilise l'inscription par email
 
   const handleStep1Next = (data: Step1Form) => {
     setFormData(prev => ({ ...prev, step1: data }));

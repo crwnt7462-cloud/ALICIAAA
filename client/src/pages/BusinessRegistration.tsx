@@ -190,7 +190,7 @@ export default function BusinessRegistration() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/business-registration", {
+      const response = await fetch("/api/professional/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, planId }),
@@ -211,7 +211,7 @@ export default function BusinessRegistration() {
         throw new Error("Erreur lors de l'inscription");
       }
     } catch (error) {
-      console.error("❌ Erreur complète:", error);
+      console.error("❌ Erreur inscription BusinessRegistration:", error);
       toast({
         title: "Erreur d'inscription", 
         description: "Une erreur s'est produite lors de l'inscription",
