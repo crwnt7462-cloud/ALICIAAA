@@ -14,12 +14,21 @@ export interface EmailVerificationData {
 }
 
 export class EmailService {
-  private fromEmail = 'noreply@votre-salon.com'; // Remplacez par votre domaine vérifié
+  private fromEmail = 'support@rendly.app'; // Email vérifié SendGrid
 
   async sendVerificationCode(data: EmailVerificationData): Promise<boolean> {
     try {
       const { email, verificationCode, userType, businessName } = data;
       
+      // MODE DÉVELOPPEMENT : Afficher le code dans les logs au lieu d'envoyer par email
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`📧 MODE DÉVELOPPEMENT - Code de vérification pour ${email}:`);
+        console.log(`🔑 CODE: ${verificationCode}`);
+        console.log(`👤 Type: ${userType}`);
+        console.log(`🏢 Business: ${businessName || 'N/A'}`);
+        return true;
+      }
+
       const msg = {
         to: email,
         from: this.fromEmail,
@@ -33,6 +42,11 @@ export class EmailService {
       return true;
     } catch (error) {
       console.error('❌ Erreur envoi email:', error);
+      // En cas d'erreur SendGrid, afficher le code en développement
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`📧 FALLBACK - Code de vérification pour ${data.email}: ${data.verificationCode}`);
+        return true;
+      }
       return false;
     }
   }

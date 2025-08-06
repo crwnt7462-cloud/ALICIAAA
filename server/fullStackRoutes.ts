@@ -2373,9 +2373,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Vérifier le code
       let verification = null;
       try {
-        verification = await storage.getEmailVerification?.(email, verificationCode);
+        verification = await storage.getEmailVerification(email, verificationCode);
+        console.log('🔍 Résultat vérification:', verification ? 'Trouvé' : 'Pas trouvé');
       } catch (error) {
-        console.log('Info: Vérification code (méthode pas encore implémentée)');
+        console.error('Erreur getEmailVerification:', error);
       }
 
       if (!verification) {
@@ -2400,7 +2401,19 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       // Créer le compte selon le type d'utilisateur
       let createdAccount = null;
-      const userData = JSON.parse(verification.userData);
+      console.log('📋 Type userData:', typeof verification.userData);
+      console.log('📋 Contenu userData:', verification.userData);
+      
+      let userData;
+      try {
+        userData = typeof verification.userData === 'string' 
+          ? JSON.parse(verification.userData)
+          : verification.userData;
+        console.log('✅ UserData parsé:', userData);
+      } catch (parseError) {
+        console.error('❌ Erreur parsing userData:', parseError);
+        return res.status(500).json({ error: 'Erreur parsing des données utilisateur' });
+      }
 
       if (verification.userType === 'professional') {
         // Créer compte professionnel
