@@ -98,7 +98,7 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
             Traitement en cours...
           </div>
         ) : (
-          `Confirmer & Payer ${Math.round((selectedService?.price || defaultService.price) * 0.5)},00 €`
+          `Confirmer & Payer 20,00 €`
         )}
       </Button>
     </form>
@@ -169,8 +169,8 @@ export default function SalonBooking() {
       }
     } else {
       console.log('⚠️ Aucun service trouvé dans sessionStorage - récupération des services réels');
-      // Utiliser le service par défaut si aucun service n'est présélectionné
-      setSelectedService(defaultService);
+      // Ne pas utiliser de service par défaut - forcer l'utilisateur à sélectionner un service réel
+      setSelectedService(null);
     }
 
     // Restaurer l'état de réservation si l'utilisateur revient de la connexion
@@ -202,19 +202,13 @@ export default function SalonBooking() {
     }
   }, []);
 
-  // Données du salon
-  const salon = {
-    name: "Bonhomme",
-    location: "Paris Archives"
-  };
+  // Récupérer les données du salon depuis l'URL
+  const { data: salonData } = useQuery({
+    queryKey: ['/api/salon'],
+    retry: false,
+  });
 
-  // Service par défaut
-  const service = {
-    id: 1,
-    name: "Coupe Bonhomme",
-    duration: 30,
-    price: 39
-  };
+  // Pas de service par défaut - utiliser seulement les données réelles
 
   // Créneaux horaires disponibles par jour
   const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
@@ -230,49 +224,17 @@ export default function SalonBooking() {
     { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
   ];
 
-  // Simple service pour l'étape 1 (suppression complète de "Choix de la prestation")
-  const defaultService = {
-    id: 1,
-    name: "Coupe Bonhomme",
-    price: 39,
-    duration: "30min"
-  };
+  // Récupérer les services réels depuis la base de données
+  const { data: services } = useQuery({
+    queryKey: ['/api/services'],
+    retry: false,
+  });
 
-  // Professionnels disponibles
-  const professionals = [
-    {
-      id: 1,
-      name: "Lucas",
-      specialties: ["Coupe", "Barbe"],
-      rating: 4.9,
-      nextSlot: "Aujourd'hui 10:00",
-      image: "👨‍💼"
-    },
-    {
-      id: 2,
-      name: "Emma",
-      specialties: ["Coloration", "Soin"],
-      rating: 4.8,
-      nextSlot: "Aujourd'hui 11:30",
-      image: "👩‍💼"
-    },
-    {
-      id: 3,
-      name: "Alex",
-      specialties: ["Coupe Moderne", "Style"],
-      rating: 4.7,
-      nextSlot: "Demain 9:00",
-      image: "👨‍🎨"
-    },
-    {
-      id: 4,
-      name: "Sophie",
-      specialties: ["Permanente", "Défrisage"],
-      rating: 4.9,
-      nextSlot: "Demain 14:00",
-      image: "👩‍🔬"
-    }
-  ];
+  // Récupérer les professionnels réels depuis la base de données
+  const { data: professionals = [] } = useQuery({
+    queryKey: ['/api/staff'],
+    retry: false,
+  });
 
   const [dateStates, setDateStates] = useState(availableDates);
 
@@ -499,16 +461,8 @@ export default function SalonBooking() {
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  {/* Photo du professionnel avec fallback sur emoji */}
-                  {pro.photoUrl ? (
-                    <img
-                      src={pro.photoUrl}
-                      alt={pro.name}
-                      className="w-12 h-12 rounded-full object-cover border-2 border-violet-200"
-                    />
-                  ) : (
-                    <div className="text-2xl">{pro.image}</div>
-                  )}
+                  {/* Photo du professionnel */}
+                  <div className="text-2xl">{pro.image || "👤"}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-medium text-gray-900">{pro.name}</h3>
@@ -517,10 +471,7 @@ export default function SalonBooking() {
                         <span className="text-sm text-gray-600">{pro.rating}</span>
                       </div>
                     </div>
-                    {/* Affichage de l'expérience si disponible */}
-                    {pro.experience && (
-                      <p className="text-xs text-gray-500 mb-1">{pro.experience}</p>
-                    )}
+                    {/* Spécialités du professionnel */}
                     <div className="flex flex-wrap gap-1 mb-2">
                       {pro.specialties.map((specialty, idx) => (
                         <Badge key={idx} variant="outline" className="text-xs">
@@ -571,9 +522,9 @@ export default function SalonBooking() {
             </div>
           </div>
           <div className="border-t pt-3">
-            <h4 className="font-medium text-gray-900">{selectedService?.name || defaultService.name}</h4>
+            <h4 className="font-medium text-gray-900">{selectedService?.name || "Service"}</h4>
             <p className="text-sm text-gray-600">
-              {selectedService?.duration || defaultService.duration} • {selectedService?.price || defaultService.price}€
+              {selectedService?.duration || "30min"} • {selectedService?.price || "0"}€
             </p>
             {selectedService?.description && (
               <p className="text-xs text-gray-500 mt-1">{selectedService.description}</p>

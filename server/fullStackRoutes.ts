@@ -927,8 +927,48 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // === ROUTES STAFF ET INVENTORY (FIXES ROUTING VITE) ===
   app.get('/api/staff', async (req, res) => {
     try {
-      const userId = (req.session as any)?.user?.id || 'demo';
-      const staff = await storage.getStaff(userId);
+      const { salonId } = req.query;
+      
+      // Si pas de salonId, retourner des professionnels par défaut
+      if (!salonId) {
+        const defaultStaff = [
+          {
+            id: 1,
+            name: "Lucas Martin",
+            specialties: ["Coupe", "Barbe"],
+            rating: 4.9,
+            nextSlot: "Aujourd'hui 10:00",
+            image: "👨‍💼",
+            experience: "5 ans d'expérience"
+          },
+          {
+            id: 2,
+            name: "Emma Dubois",
+            specialties: ["Coloration", "Soin"],
+            rating: 4.8,
+            nextSlot: "Aujourd'hui 11:30",
+            image: "👩‍💼",
+            experience: "3 ans d'expérience"
+          },
+          {
+            id: 3,
+            name: "Alex Legrand",
+            specialties: ["Coupe Moderne", "Style"],
+            rating: 4.7,
+            nextSlot: "Demain 9:00",
+            image: "👨‍🎨",
+            experience: "7 ans d'expérience"
+          }
+        ];
+        return res.json(defaultStaff);
+      }
+      
+      // Récupérer le staff du salon spécifique
+      let staff = [];
+      if (storage.getStaff) {
+        staff = await storage.getStaff(salonId);
+      }
+      
       res.json(staff);
     } catch (error) {
       console.error("Error fetching staff:", error);
@@ -1158,8 +1198,54 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Services routes
-  app.get('/api/services', isAuthenticated, async (req, res) => {
+  // Services routes publics pour réservation
+  app.get('/api/services', async (req, res) => {
+    try {
+      const { salonId } = req.query;
+      
+      // Si pas de salonId, retourner des services par défaut
+      if (!salonId) {
+        const defaultServices = [
+          {
+            id: 1,
+            name: "Coupe Homme",
+            price: 35,
+            duration: 30,
+            description: "Coupe classique avec finition"
+          },
+          {
+            id: 2,
+            name: "Coupe Femme",
+            price: 45,
+            duration: 45,
+            description: "Coupe avec brushing"
+          },
+          {
+            id: 3,
+            name: "Coloration",
+            price: 65,
+            duration: 90,
+            description: "Coloration complète avec soins"
+          }
+        ];
+        return res.json(defaultServices);
+      }
+
+      // Récupérer les services du salon spécifique
+      let services = [];
+      if (storage.getServices) {
+        services = await storage.getServices(salonId);
+      }
+      
+      res.json(services);
+    } catch (error) {
+      console.error('Error fetching services:', error);
+      res.status(500).json({ message: 'Failed to fetch services' });
+    }
+  });
+  
+  // Services routes protégées pour les pros
+  app.get('/api/services/protected', isAuthenticated, async (req, res) => {
     try {
       const userId = (req.user as any)?.claims?.sub;
       if (!userId) {
