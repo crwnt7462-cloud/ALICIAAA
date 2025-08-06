@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import BookingConfirmationPopup from '@/components/BookingConfirmationPopup';
+import BookingConfirmationModal from '@/components/BookingConfirmationModal';
 
 // Configuration Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
@@ -1707,12 +1707,12 @@ export default function SalonBooking() {
           variant: "success" as any
         });
         
-        // 2. Marquer comme connecté puis créer le Payment Intent
+        // 2. Marquer comme connecté puis afficher le popup de confirmation
         setIsUserLoggedIn(true);
         
-        // Créer automatiquement le Payment Intent et ouvrir le shell
+        // Afficher le popup de confirmation après inscription
         setTimeout(() => {
-          createPaymentIntentAndOpenSheet();
+          setShowConfirmationPopup(true);
         }, 500);
       } else {
         toast({
@@ -1941,14 +1941,26 @@ export default function SalonBooking() {
       {/* Modal de connexion */}
       {renderLoginModal()}
       
-      {/* Popup de confirmation AVANT paiement */}
-      <BookingConfirmationPopup
+      {/* Modal de confirmation AVANT paiement */}
+      <BookingConfirmationModal
         isOpen={showConfirmationPopup}
         onClose={handleConfirmationPopupClose}
         onConfirm={handleConfirmationPopupConfirm}
-        bookingDetails={bookingDetails}
-        salonInfo={salonInfo}
-        isLoading={false}
+        bookingData={{
+          serviceName: selectedService?.name || defaultService.name,
+          servicePrice: selectedService?.price || defaultService.price,
+          date: selectedDate || 'lundi 28 juillet 2025',
+          time: selectedSlot?.time || '10:00',
+          professionalName: selectedProfessional?.name || 'Lucas',
+          salonName: salon.name,
+          salonLocation: salon.location,
+          salonPolicies: {
+            cancellation: 'Annulation gratuite jusqu\'à 24h avant le rendez-vous',
+            lateness: 'Retard de plus de 15min = annulation automatique',
+            deposit: '30% d\'acompte requis pour valider la réservation',
+            modification: 'Modification possible jusqu\'à 12h avant'
+          }
+        }}
       />
     </>
   );

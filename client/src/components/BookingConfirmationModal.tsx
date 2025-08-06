@@ -73,21 +73,21 @@ export default function BookingConfirmationModal({
           </div>
 
           {/* Content */}
-          <div className="px-6 pb-6 space-y-6">
+          <div className="px-6 pb-6 space-y-4">
             {/* Service Info */}
             <div className="text-center">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {bookingData.serviceName}
               </h3>
-              <p className="text-gray-600 mb-1">
+              <p className="text-gray-600 text-sm mb-1">
                 {bookingData.date} à {bookingData.time}
               </p>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 text-sm mb-6">
                 avec {bookingData.professionalName}
               </p>
               
-              <div className="text-center mb-4">
-                <span className="text-3xl font-bold text-gray-900">
+              <div className="text-center mb-2">
+                <span className="text-4xl font-bold text-gray-900">
                   {bookingData.servicePrice}€
                 </span>
               </div>
@@ -98,8 +98,8 @@ export default function BookingConfirmationModal({
             </div>
 
             {/* Salon Info */}
-            <div className="text-center bg-gray-50/50 rounded-xl p-4">
-              <h4 className="font-medium text-gray-900 mb-1">
+            <div className="text-center bg-gray-50/50 rounded-lg p-3 mb-4">
+              <h4 className="font-semibold text-gray-900 text-base">
                 {bookingData.salonName}
               </h4>
               <p className="text-sm text-gray-600">
@@ -108,11 +108,11 @@ export default function BookingConfirmationModal({
             </div>
 
             {/* Conditions */}
-            <div className="bg-amber-50/50 rounded-xl p-4">
-              <h4 className="font-medium text-gray-900 mb-3">
+            <div className="bg-amber-50/80 rounded-lg p-4 mb-4">
+              <h4 className="font-semibold text-gray-900 mb-3 text-sm">
                 Conditions du salon
               </h4>
-              <div className="space-y-2 text-sm text-gray-700">
+              <div className="space-y-1 text-xs text-gray-700">
                 <p>• {bookingData.salonPolicies.cancellation}</p>
                 <p>• {bookingData.salonPolicies.lateness}</p>
                 <p>• {bookingData.salonPolicies.deposit}</p>
@@ -121,7 +121,7 @@ export default function BookingConfirmationModal({
             </div>
 
             {/* Acceptance Checkbox */}
-            <div className="flex items-start space-x-3">
+            <div className="flex items-start space-x-3 mb-6">
               <Checkbox
                 id="accept-conditions"
                 checked={acceptConditions}
@@ -141,14 +141,14 @@ export default function BookingConfirmationModal({
               <Button
                 variant="outline"
                 onClick={onClose}
-                className="flex-1 glass-button hover:glass-effect text-gray-700"
+                className="flex-1 glass-button hover:glass-effect text-gray-700 py-3"
               >
                 Modifier
               </Button>
               <Button
                 onClick={handleConfirm}
                 disabled={!acceptConditions}
-                className={`flex-1 font-semibold ${
+                className={`flex-1 font-semibold py-3 ${
                   acceptConditions 
                     ? 'glass-button hover:glass-effect text-black' 
                     : 'bg-gray-200 text-gray-400 cursor-not-allowed'
