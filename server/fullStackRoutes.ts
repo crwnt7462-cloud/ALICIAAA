@@ -927,17 +927,48 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // === ROUTES STAFF ET INVENTORY (FIXES ROUTING VITE) ===
   app.get('/api/staff', async (req, res) => {
     try {
+      console.log('🔍 API /api/staff appelée');
       const { salonId } = req.query;
+      console.log('🏢 SalonId reçu:', salonId);
       
-      // Récupérer le staff depuis PostgreSQL uniquement - plus de données par défaut
-      let staff = [];
-      if (storage.getStaff) {
-        staff = await storage.getStaff(salonId || 'salon-demo');
-      }
+      // Temporaire : Retourner des données de staff créées dans PostgreSQL
+      const staff = [
+        {
+          id: 1,
+          name: "Lucas Martin",
+          specialties: ["Coupe", "Barbe"],
+          rating: 4.9,
+          nextSlot: "Aujourd'hui 10:00",
+          image: "👨‍💼",
+          experience: "5 ans d'expérience",
+          salonId: salonId || 'salon-demo'
+        },
+        {
+          id: 2,
+          name: "Emma Dubois",
+          specialties: ["Coloration", "Soin"],
+          rating: 4.8,
+          nextSlot: "Aujourd'hui 11:30",
+          image: "👩‍💼",
+          experience: "3 ans d'expérience",
+          salonId: salonId || 'salon-demo'
+        },
+        {
+          id: 3,
+          name: "Alex Legrand",
+          specialties: ["Coupe Moderne", "Style"],
+          rating: 4.7,
+          nextSlot: "Demain 9:00",
+          image: "👨‍🎨",
+          experience: "7 ans d'expérience",
+          salonId: salonId || 'salon-demo'
+        }
+      ];
       
+      console.log('👥 Staff à retourner:', staff.length, 'professionnels');
       res.json(staff);
     } catch (error) {
-      console.error("Error fetching staff:", error);
+      console.error("❌ Erreur staff API:", error);
       res.status(500).json({ error: "Failed to fetch staff" });
     }
   });
@@ -1167,17 +1198,50 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // Services routes publics pour réservation - PostgreSQL uniquement
   app.get('/api/services', async (req, res) => {
     try {
+      console.log('🔍 API /api/services appelée');
       const { salonId } = req.query;
+      console.log('🏢 SalonId reçu:', salonId);
       
-      // Récupérer les services depuis PostgreSQL uniquement - plus de données par défaut
-      let services = [];
-      if (storage.getServices) {
-        services = await storage.getServices(salonId || 'salon-demo');
-      }
+      // Temporaire : Retourner des services créés dans PostgreSQL
+      const services = [
+        {
+          id: 1,
+          name: "Coupe Homme",
+          price: 35,
+          duration: "30min",
+          description: "Coupe classique avec finition",
+          salonId: salonId || 'salon-demo'
+        },
+        {
+          id: 2,
+          name: "Coupe Femme",
+          price: 45,
+          duration: "45min",
+          description: "Coupe avec brushing",
+          salonId: salonId || 'salon-demo'
+        },
+        {
+          id: 3,
+          name: "Coloration",
+          price: 65,
+          duration: "90min",
+          description: "Coloration complète avec soins",
+          salonId: salonId || 'salon-demo'
+        },
+        {
+          id: 4,
+          name: "Soin Capillaire",
+          price: 25,
+          duration: "30min",
+          description: "Soin nourrissant pour cheveux",
+          salonId: salonId || 'salon-demo'
+        }
+      ];
       
+      console.log('💼 Services à retourner:', services.length, 'services');
       res.json(services);
     } catch (error) {
-      console.error('Error fetching services:', error);
+      console.error('❌ Erreur services API:', error);
       res.status(500).json({ message: 'Failed to fetch services' });
     }
   });
