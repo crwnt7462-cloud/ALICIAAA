@@ -31,8 +31,10 @@ export default function Services() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: services = [], isLoading } = useQuery({
-    queryKey: ["/api/services"],
+  // Récupérer les services avec salonId obligatoire et typage correct
+  const { data: services = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/services", "demo"], // Ajout du salonId
+    queryFn: () => fetch("/api/services?salonId=demo").then(res => res.json())
   });
 
   const createServiceMutation = useMutation({

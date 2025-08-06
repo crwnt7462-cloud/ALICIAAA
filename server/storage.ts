@@ -1105,6 +1105,86 @@ export class DatabaseStorage implements IStorage {
     return await this.getServices(userId);
   }
 
+  // Staff management  
+  async getStaffBySalonId(salonId: string): Promise<any[]> {
+    try {
+      const rows = await db.select()
+        .from(staff)
+        .where(eq(staff.userId, salonId));
+      return rows || [];
+    } catch (error) {
+      console.error('Erreur récupération staff:', error);
+      return [];
+    }
+  }
+
+  // Business management methods
+  async getBusinessByEmail(email: string): Promise<any> {
+    try {
+      const [business] = await this.db.select()
+        .from(businessRegistrations)
+        .where(eq(businessRegistrations.email, email));
+      return business;
+    } catch (error) {
+      console.error('Erreur récupération business:', error);
+      return null;
+    }
+  }
+
+  async createBusiness(businessData: any): Promise<any> {
+    try {
+      const [business] = await this.db.insert(businessRegistrations)
+        .values(businessData)
+        .returning();
+      return business;
+    } catch (error) {
+      console.error('Erreur création business:', error);
+      throw error;
+    }
+  }
+
+  // Client Account methods
+  async getClientAccount(id: number): Promise<any> {
+    try {
+      const [client] = await this.db.select()
+        .from(clientAccounts)
+        .where(eq(clientAccounts.id, id));
+      return client;
+    } catch (error) {
+      console.error('Erreur récupération client:', error);
+      return null;
+    }
+  }
+
+  async authenticateClient(email: string, password: string): Promise<any> {
+    try {
+      const [client] = await this.db.select()
+        .from(clientAccounts)
+        .where(eq(clientAccounts.email, email));
+      
+      if (client && client.password === password) {
+        return client;
+      }
+      return null;
+    } catch (error) {
+      console.error('Erreur authentification client:', error);
+      return null;
+    }
+  }
+
+  // Service methods fixes
+  async getServiceById(id: number): Promise<any> {
+    try {
+      const [service] = await this.db.select()
+        .from(services)
+        .where(eq(services.id, id));
+      return service;
+    } catch (error) {
+      console.error('Erreur récupération service by ID:', error);
+      return null;
+    }
+  }
+
   // Salon Management methods (in-memory storage)
   async createSalon(salonData: any): Promise<any> {
     const salon = {

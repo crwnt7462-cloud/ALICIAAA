@@ -18,7 +18,7 @@ import { Elements, CardElement, useStripe, useElements } from "@stripe/react-str
 import BookingConfirmationModal from '@/components/BookingConfirmationModal';
 
 // Configuration Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 
 // Composant de paiement Stripe intégré
 function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void, clientSecret: string }) {
