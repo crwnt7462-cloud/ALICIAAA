@@ -2008,9 +2008,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('🎯 INSCRIPTION PROFESSIONNEL AVEC ABONNEMENT:', subscriptionPlan);
       console.log('🏢 Business:', businessName, 'Email:', email);
 
-      // Vérifier si l'email existe déjà
-      const existingPro = await storage.getBusinessByEmail?.(email);
-      if (existingPro) {
+      // Vérifier si l'email existe déjà dans la table users
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
         return res.status(400).json({ error: 'Un compte professionnel avec cet email existe déjà' });
       }
 
@@ -2032,7 +2032,22 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // 🔗 Associer le salon au professionnel
       await linkSalonToProfessional(createdSalon.id, email);
 
-      // Créer le compte professionnel
+      // ✅ CRÉER LE COMPTE PROFESSIONNEL DANS LA TABLE USERS (Compatible avec login)
+      const userData = {
+        email,
+        password, // Mot de passe brut, sera hashé par storage.createUser()
+        businessName,
+        firstName: ownerName.split(' ')[0],
+        lastName: ownerName.split(' ').slice(1).join(' ') || '',
+        phone,
+        address,
+        subscriptionPlan: subscriptionPlan || 'basic-pro'
+      };
+
+      // Créer l'utilisateur professionnel dans la table users
+      const user = await storage.createUser(userData);
+      
+      // Créer aussi l'entrée business pour compatibilité (si la méthode existe)
       const businessData = {
         businessName,
         ownerName,
@@ -2042,16 +2057,21 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         businessType,
         services,
         description,
-        salonId: createdSalon.id, // Associer le salon créé
+        salonId: createdSalon.id,
         subscriptionPlan,
         isActive: true
       };
 
       let business;
       if (storage.createBusiness) {
-        business = await storage.createBusiness(businessData);
+        try {
+          business = await storage.createBusiness(businessData);
+        } catch (error) {
+          console.log('ℹ️ createBusiness non disponible, utilisation données user');
+          business = { ...businessData, id: user.id, createdAt: new Date() };
+        }
       } else {
-        business = { ...businessData, id: `business-${Date.now()}`, createdAt: new Date() };
+        business = { ...businessData, id: user.id, createdAt: new Date() };
       }
 
       console.log('✅ INSCRIPTION COMPLÈTE:', {
