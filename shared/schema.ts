@@ -163,6 +163,25 @@ export const promoCodes = pgTable("promo_codes", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Staff table (matches existing PostgreSQL structure)
+export const staff = pgTable("staff", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  specialties: text("specialties"),
+  isActive: boolean("is_active").default(true),
+  avatar: varchar("avatar"),
+  bio: text("bio"),
+  workingHours: text("working_hours"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type Staff = typeof staff.$inferSelect;
+export type InsertStaff = typeof staff.$inferInsert;
+
 // Client reliability tracking for deposit adjustments
 export const clientReliability = pgTable("client_reliability", {
   id: serial("id").primaryKey(),

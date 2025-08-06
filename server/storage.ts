@@ -3,7 +3,7 @@ import {
   clientAccounts,
   services,
   clients,
-  staffMembers,
+  staff,
   appointments,
   subscriptions,
   clientNotes,
@@ -19,8 +19,8 @@ import {
   type InsertService,
   type Client,
   type InsertClient,
-  type StaffMember,
-  type InsertStaffMember,
+  type Staff,
+  type InsertStaff,
   type Appointment,
   type InsertAppointment,
   type ClientNote,
@@ -1109,12 +1109,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Staff management  
-  async getStaffBySalonId(salonId: string): Promise<StaffMember[]> {
+  async getStaffBySalonId(salonId: string): Promise<Staff[]> {
     try {
-      const rows = await db.select()
-        .from(staffMembers)
-        .where(eq(staffMembers.userId, salonId));
-      return rows || [];
+      const staffRows = await db.select()
+        .from(staff)
+        .where(eq(staff.userId, salonId));
+      return staffRows || [];
     } catch (error) {
       console.error('Erreur récupération staff:', error);
       return [];

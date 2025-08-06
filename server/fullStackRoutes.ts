@@ -910,23 +910,16 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.get('/api/staff', async (req, res) => {
     try {
       console.log('🔍 API /api/staff appelée');
-      const { salonId } = req.query;
-      console.log('🏢 SalonId reçu:', salonId);
-      
-      // AUCUNE DONNÉE FACTICE - POSTGRESQL UNIQUEMENT
-      if (!salonId) {
-        return res.status(400).json({ 
-          error: 'salonId obligatoire - aucune donnée par défaut',
-          message: 'DONNÉES AUTHENTIQUES UNIQUEMENT' 
-        });
-      }
+      const { salonId, userId } = req.query;
+      const finalUserId = userId || salonId || 'demo'; // Flexibilité pour différentes API calls
+      console.log('🏢 UserId final pour staff:', finalUserId);
 
-      const staff = await storage.getStaffBySalonId(salonId as string);
+      const staff = await storage.getStaffBySalonId(finalUserId as string);
       
       if (!staff || staff.length === 0) {
         return res.status(404).json({ 
-          error: 'Aucun staff dans PostgreSQL pour ce salon',
-          salonId,
+          error: 'Aucun staff dans PostgreSQL pour cet utilisateur',
+          userId: finalUserId,
           message: 'AUCUNE DONNÉE FICTIVE - Base de données vide'
         });
       }
@@ -1326,24 +1319,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.get('/api/services', async (req, res) => {
     try {
       console.log('🔍 API /api/services appelée');
-      const { salonId } = req.query;
-      console.log('🏢 SalonId reçu:', salonId);
-      
-      // AUCUNE DONNÉE FACTICE - POSTGRESQL UNIQUEMENT
-      if (!salonId) {
-        return res.status(400).json({ 
-          error: 'salonId obligatoire - aucune donnée par défaut',
-          message: 'DONNÉES AUTHENTIQUES UNIQUEMENT' 
-        });
-      }
+      const { salonId, userId } = req.query;
+      const finalUserId = userId || salonId || 'demo';
+      console.log('🏢 UserId final pour services:', finalUserId);
 
-      // Utiliser 'demo' comme userId pour récupérer les services de test
-      const services = await storage.getServicesBySalonId('demo');
+      // Utiliser le userId final pour récupérer les services PostgreSQL
+      const services = await storage.getServicesBySalonId(finalUserId as string);
       
       if (!services || services.length === 0) {
         return res.status(404).json({ 
-          error: 'Aucun service dans PostgreSQL pour ce salon',
-          salonId,
+          error: 'Aucun service dans PostgreSQL pour cet utilisateur',
+          userId: finalUserId,
           message: 'AUCUNE DONNÉE FICTIVE - Base de données vide'
         });
       }
