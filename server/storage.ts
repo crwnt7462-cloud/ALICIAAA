@@ -83,9 +83,14 @@ export interface IStorage {
 
   // Appointments
   getAppointments(userId: string, date?: string): Promise<Appointment[]>;
+  getAppointmentsByClientId(clientId: string): Promise<Appointment[]>;
   createAppointment(appointment: InsertAppointment): Promise<Appointment>;
   updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment>;
   deleteAppointment(id: number): Promise<void>;
+  
+  // Salon-specific data
+  getServicesBySalonId(salonId: string): Promise<Service[]>;
+  getStaffBySalonId(salonId: string): Promise<StaffMember[]>;
   
   // Dashboard Stats
   getDashboardStats(userId: string): Promise<any>;

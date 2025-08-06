@@ -1006,14 +1006,51 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // API RDV pour CLIENT et PRO - SYNC BIDIRECTIONNEL
   app.get('/api/appointments', async (req, res) => {
     try {
-      const userId = (req.session as any)?.user?.id || 'demo';
-      const appointments = await storage.getAppointments(userId);
-      res.json(appointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      res.status(500).json({ error: "Failed to fetch appointments" });
+      console.log('📋 Récupération RDV PostgreSQL');
+      
+      // Support authentification CLIENT ou PRO
+      const authHeader = req.headers.authorization;
+      let userId = null;
+      let isClient = false;
+
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        if (token.startsWith('demo-token-')) {
+          userId = token.replace('demo-token-', '');
+        } else if (token.startsWith('client-token-')) {
+          userId = token.replace('client-token-', '');
+          isClient = true;
+        }
+      }
+
+      if (!userId) {
+        return res.status(401).json({ 
+          error: 'Token d\'authentification requis'
+        });
+      }
+
+      // POSTGRESQL - Récupération selon le type d'utilisateur
+      let appointments;
+      if (isClient) {
+        // Pour CLIENT : ses propres RDV
+        appointments = await storage.getAppointmentsByClientId(userId);
+        console.log('👤 RDV CLIENT récupérés:', appointments?.length || 0);
+      } else {
+        // Pour PRO : RDV de son salon
+        appointments = await storage.getAppointments(userId);
+        console.log('🏢 RDV PRO récupérés:', appointments?.length || 0);
+      }
+
+      res.json(appointments || []);
+    } catch (error: any) {
+      console.error("❌ Erreur récupération RDV:", error);
+      res.status(500).json({ 
+        error: "Erreur PostgreSQL",
+        message: error.message
+      });
     }
   });
 
@@ -1128,36 +1165,58 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Appointment routes (Firebase ready)
-  app.post('/api/appointments', isAuthenticated, async (req, res) => {
+  // Appointment routes - POSTGRESQL CLIENT/PRO SYNC
+  app.post('/api/appointments', async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub;
+      console.log('📅 Création RDV PostgreSQL:', req.body);
+      
+      // Support authentification CLIENT ou PRO
+      const authHeader = req.headers.authorization;
+      let userId = null;
+      let isClient = false;
+
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7);
+        if (token.startsWith('demo-token-')) {
+          userId = token.replace('demo-token-', '');
+        } else if (token.startsWith('client-token-')) {
+          userId = token.replace('client-token-', '');
+          isClient = true;
+        }
+      }
+
       if (!userId) {
-        return res.status(401).json({ message: 'User not authenticated' });
+        return res.status(401).json({ 
+          error: 'Token d\'authentification requis (CLIENT ou PRO)'
+        });
       }
 
       const appointmentData = {
         ...req.body,
-        userId,
-        status: 'confirmed'
+        clientId: isClient ? userId : req.body.clientId,
+        professionalId: req.body.professionalId || req.body.staffId,
+        salonId: req.body.salonId,
+        status: 'confirmed',
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
 
-      let appointment;
-      if (storage.createAppointment) {
-        appointment = await storage.createAppointment(appointmentData);
-      } else {
-        appointment = { 
-          ...appointmentData, 
-          id: Date.now(), 
-          createdAt: new Date(), 
-          updatedAt: new Date() 
-        };
-      }
+      // UNIQUEMENT PostgreSQL - aucune donnée factice
+      const appointment = await storage.createAppointment(appointmentData);
+      
+      console.log('✅ RDV créé dans PostgreSQL:', 
+        appointment.serviceName, 
+        'Client:', appointment.clientName,
+        'Pro:', appointment.professionalName
+      );
       
       res.json(appointment);
-    } catch (error) {
-      console.error('Error creating appointment:', error);
-      res.status(500).json({ message: 'Failed to create appointment' });
+    } catch (error: any) {
+      console.error('❌ Erreur création RDV PostgreSQL:', error);
+      res.status(500).json({ 
+        error: 'Erreur base de données PostgreSQL',
+        message: error.message
+      });
     }
   });
 
