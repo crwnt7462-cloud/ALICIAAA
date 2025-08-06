@@ -533,28 +533,13 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="businessPhone">Téléphone salon *</Label>
-                    <Input
-                      id="businessPhone"
-                      {...step2Form.register("businessPhone")}
-                      placeholder="01 23 45 67 89"
-                    />
-                    {step2Form.formState.errors.businessPhone && (
-                      <p className="text-sm text-red-600 mt-1">
-                        {step2Form.formState.errors.businessPhone.message}
-                      </p>
-                    )}
-                  </div>
-                  <div>
-                    <Label htmlFor="vatNumber">Numéro TVA (optionnel)</Label>
-                    <Input
-                      id="vatNumber"
-                      {...step2Form.register("vatNumber")}
-                      placeholder="FR12345678901"
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="vatNumber">Numéro TVA (optionnel)</Label>
+                  <Input
+                    id="vatNumber"
+                    {...step2Form.register("vatNumber")}
+                    placeholder="FR12345678901"
+                  />
                 </div>
 
                 <div className="flex gap-4">
