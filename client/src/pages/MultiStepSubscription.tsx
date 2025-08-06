@@ -35,7 +35,6 @@ const step2Schema = z.object({
   businessAddress: z.string().min(10, "L'adresse complète est requise"),
   businessCity: z.string().min(2, "La ville est requise"),
   businessPostalCode: z.string().min(5, "Le code postal est requis"),
-  businessPhone: z.string().min(10, "Le téléphone professionnel est requis"),
   legalForm: z.enum(["SARL", "SAS", "EURL", "Auto-entrepreneur", "Autre"]),
   vatNumber: z.string().optional(),
 });
