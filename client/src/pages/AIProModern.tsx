@@ -17,7 +17,6 @@ interface Message {
 
 export default function AIProModern() {
   const [, setLocation] = useLocation();
-  const { hasBasicAI, hasFullAI, currentPlan, isAdvancedPro, isPremiumPro } = useSubscription();
   
   // Récupérer les infos du compte connecté
   const { data: user } = useQuery({
@@ -26,11 +25,31 @@ export default function AIProModern() {
   });
 
   // Récupérer l'abonnement utilisateur depuis l'API
-  const { data: subscription, isLoading: subscriptionLoading } = useQuery({
+  const { data: subscription, isLoading: subscriptionLoading } = useQuery<{
+    planId: string;
+    planName: string;
+    price: number;
+    status: string;
+    userId: string;
+  }>({
     queryKey: ['/api/user/subscription'],
     retry: 1,
     staleTime: 5000
   });
+
+  // TOUS LES HOOKS DOIVENT ÊTRE ICI AVANT ANY RETURN
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showChatHistory, setShowChatHistory] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [showVoiceInterface, setShowVoiceInterface] = useState(false);
+  const [voiceTranscription, setVoiceTranscription] = useState('');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Historique des chats - maintenant récupéré depuis l'API
+  const chatHistory: any[] = [];
 
   // Accès IA basé sur l'abonnement réel
   const hasAIAccess = subscription && (
@@ -46,6 +65,26 @@ export default function AIProModern() {
     planName: subscription?.planName,
     price: subscription?.price
   });
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Fermer le menu historique quand on clique à l'extérieur
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showChatHistory && !(event.target as Element).closest('.chat-history-menu')) {
+        setShowChatHistory(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showChatHistory]);
 
   // Affichage immédiat si Premium Pro (149€)
   if (subscriptionLoading) {
@@ -89,39 +128,6 @@ export default function AIProModern() {
       </div>
     );
   }
-  
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [showChatHistory, setShowChatHistory] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const [showVoiceInterface, setShowVoiceInterface] = useState(false);
-  const [voiceTranscription, setVoiceTranscription] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Historique des chats - maintenant récupéré depuis l'API
-  const chatHistory: any[] = [];
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Fermer le menu historique quand on clique à l'extérieur
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (showChatHistory && !(event.target as Element).closest('.chat-history-menu')) {
-        setShowChatHistory(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [showChatHistory]);
 
   // Fonctions pour l'enregistrement vocal
   const startRecording = async () => {

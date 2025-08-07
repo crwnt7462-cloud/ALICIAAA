@@ -66,7 +66,7 @@ import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
 import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
-import AIProModern from "@/pages/AIProModern";
+import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
 import MentionTest from "@/pages/MentionTest";
 import SalonPageFixed from "@/pages/SalonPageFixed";
@@ -860,7 +860,7 @@ function Router() {
   if (location === '/ai') {
     return (
       <div className="h-full">
-        <AIProModern />
+        <AIAssistantFixed />
       </div>
     );
   }
@@ -897,7 +897,7 @@ function Router() {
           <Route path="/centre-aide" component={CentreAide} />
           <Route path="/cgu" component={CGU} />
           <Route path="/confidentialite" component={Confidentialite} />
-          <Route path="/ai-pro" component={AIProModern} />
+          <Route path="/ai-pro" component={AIAssistantFixed} />
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
