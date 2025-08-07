@@ -56,21 +56,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Route pour récupérer le salon du professionnel connecté
   app.get('/api/user/salon', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userEmail = req.user.claims.email || req.user.email;
+      console.log(`🔍 Recherche salon pour utilisateur: ${userEmail}`);
       
-      // Mapping des utilisateurs vers leurs salons (à terme ça viendra de la BDD)
-      const userSalonMapping = {
-        'demo': 'barbier-gentleman-marais', // Utilisateur de démo -> Barbier
-        // Ajoutez d'autres mappings selon vos utilisateurs
-      };
+      // Récupérer le professionnel et son salon associé
+      const professional = await storage.getBusinessByEmail(userEmail);
       
-      const salonId = userSalonMapping[userId] || 'barbier-gentleman-marais'; // Fallback
-      const salon = await storage.getSalon(salonId);
+      // Pour l'utilisateur demo, retourner le salon démo par défaut
+      if (!professional && userEmail === 'demo@beautyapp.com') {
+        console.log(`🎯 Utilisateur démo détecté, retour salon démo`);
+        const demoSalon = await storage.getSalon('salon-demo');
+        if (demoSalon) {
+          console.log(`✅ Salon démo trouvé: ${demoSalon.name}`);
+          return res.json(demoSalon);
+        }
+      }
+      
+      if (!professional) {
+        console.log(`❌ Aucun professionnel trouvé pour: ${userEmail}`);
+        return res.status(404).json({ error: 'Aucun professionnel trouvé pour cet utilisateur' });
+      }
+
+      console.log(`🏢 Salon ID associé: ${professional.salonId}`);
+      const salon = await storage.getSalon(professional.salonId);
       
       if (!salon) {
+        console.log(`❌ Salon non trouvé: ${professional.salonId}`);
         return res.status(404).json({ error: 'Aucun salon associé à cet utilisateur' });
       }
       
+      console.log(`✅ Salon trouvé: ${salon.name}`);
       res.json(salon);
     } catch (error) {
       console.error("Error fetching user salon:", error);

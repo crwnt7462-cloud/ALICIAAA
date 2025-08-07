@@ -168,6 +168,8 @@ export default function BusinessRegistration() {
   const searchParams = new URLSearchParams(window.location.search);
   const planId = searchParams.get('plan') || 'professionnel';
   const currentPlan = plans.find(p => p.id === planId) || plans[1];
+  
+  console.log(`🎯 Plan sélectionné dans BusinessRegistration:`, { planId, currentPlan: currentPlan.name, price: currentPlan.price });
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
