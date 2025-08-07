@@ -65,11 +65,20 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
   const [showSuccess, setShowSuccess] = useState(false);
   const [createdAccount, setCreatedAccount] = useState<any>(null);
 
+  // Récupérer le plan depuis l'URL ou localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const planFromUrl = urlParams.get('plan') as "basic-pro" | "advanced-pro" | "premium-pro" | null;
+  const planFromStorage = localStorage.getItem('selectedPlan') as "basic-pro" | "advanced-pro" | "premium-pro" | null;
+  const finalSelectedPlan = planFromUrl || planFromStorage || selectedPlan || "basic-pro";
+
+  // Logging pour débugger
+  console.log('📋 Plan détecté:', { planFromUrl, planFromStorage, selectedPlan, finalSelectedPlan });
+
   // État pour stocker les données de toutes les étapes
   const [formData, setFormData] = useState({
     step1: {} as Step1Form,
     step2: {} as Step2Form,
-    step3: { planType: selectedPlan || "basic-pro", acceptTerms: false } as Step3Form,
+    step3: { planType: finalSelectedPlan, acceptTerms: false } as Step3Form,
   });
 
   // Formulaires pour chaque étape
@@ -203,7 +212,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
       description: "",
       
       // Données étape 3 (plan et conditions)
-      planType: formData.step3.planType || selectedPlan || 'basic-pro',
+      planType: formData.step3.planType || finalSelectedPlan || 'basic-pro',
     };
 
     return (

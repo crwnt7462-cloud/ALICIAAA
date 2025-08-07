@@ -28,8 +28,20 @@ export default function ModernSubscriptionPlans() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
   const handleSelectPlan = (planId: string) => {
-    // Rediriger vers le workflow d'inscription salon avec le plan sélectionné
-    setLocation(`/salon-registration?plan=${planId}`);
+    // Mapper les IDs de plan vers les plans corrects
+    const planMapping = {
+      'starter': 'basic-pro',
+      'professional': 'advanced-pro', 
+      'enterprise': 'premium-pro'
+    };
+    
+    const mappedPlan = planMapping[planId as keyof typeof planMapping] || 'basic-pro';
+    
+    // Sauvegarder le plan sélectionné dans localStorage pour MultiStepSubscription
+    localStorage.setItem('selectedPlan', mappedPlan);
+    
+    // Rediriger vers le workflow d'inscription avec le plan correct
+    setLocation(`/multi-step-subscription?plan=${mappedPlan}`);
   };
 
   const plans = [
