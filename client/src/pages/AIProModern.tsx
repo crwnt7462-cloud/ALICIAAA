@@ -25,8 +25,42 @@ export default function AIProModern() {
     retry: false,
   });
 
-  // Vérifier l'accès à l'IA (Basic ou Full)
-  if (!hasBasicAI) {
+  // Récupérer l'abonnement utilisateur depuis l'API
+  const { data: subscription, isLoading: subscriptionLoading } = useQuery({
+    queryKey: ['/api/user/subscription'],
+    retry: 1,
+    staleTime: 5000
+  });
+
+  // Accès IA basé sur l'abonnement réel
+  const hasAIAccess = subscription && (
+    subscription.planId === 'premium' || 
+    subscription.planName?.includes('Premium Pro') ||
+    subscription.price >= 149
+  );
+
+  console.log('🤖 Vérification accès IA:', {
+    subscription,
+    hasAIAccess,
+    planId: subscription?.planId,
+    planName: subscription?.planName,
+    price: subscription?.price
+  });
+
+  // Affichage immédiat si Premium Pro (149€)
+  if (subscriptionLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-600">Vérification de votre abonnement Premium Pro...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si pas Premium Pro, afficher l'erreur d'accès
+  if (!hasAIAccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 p-4">
         <div className="max-w-2xl mx-auto pt-8">
@@ -42,11 +76,15 @@ export default function AIProModern() {
             <h1 className="text-2xl font-bold text-gray-900">IA Assistant</h1>
           </div>
           
-          <SubscriptionGate 
-            feature="ai-assistant" 
-            featureName="Assistant IA Personnalisé"
-            children={null}
-          />
+          <div className="glass-card p-8 text-center">
+            <h2 className="text-xl font-bold text-red-600 mb-4">Accès restreint</h2>
+            <p className="text-gray-700 mb-4">
+              L'assistant IA avancé nécessite un abonnement Premium Pro (149€/mois).
+            </p>
+            <p className="text-sm text-gray-600">
+              Plan actuel: {subscription?.planName || 'Non défini'} ({subscription?.price || 0}€)
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -286,9 +324,12 @@ export default function AIProModern() {
             <h1 className="text-4xl font-light text-violet-600 mb-4">
               Bonjour, Demo
             </h1>
-            <p className="text-gray-600 text-sm">
-              Votre assistant IA est prêt à vous aider
+            <p className="text-gray-600 text-sm mb-2">
+              Votre assistant IA Premium Pro est prêt à vous aider
             </p>
+            <div className="inline-flex items-center px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-medium">
+              Plan actuel : {subscription?.planName || 'Premium Pro'} ({subscription?.price || 149}€)
+            </div>
           </div>
         ) : (
           <div className="w-full px-4 py-4 space-y-4 overflow-y-auto">
