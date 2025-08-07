@@ -35,8 +35,8 @@ export function BottomNavigation() {
     {
       label: 'IA',
       icon: Sparkles,
-      path: '/ai-assistant',
-      active: location === '/ai-assistant' || location.includes('/ai-')
+      path: '/ai',
+      active: location === '/ai' || location.includes('/ai-')
     }
   ];
 
