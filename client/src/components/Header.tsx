@@ -44,10 +44,10 @@ export function Header() {
             size="sm"
             className="p-0 h-8 w-8"
             onClick={() => {
-              setLocation("/business-features");
+              setLocation("/dashboard");
               toast({
-                title: "Configuration salon",
-                description: "Paramètres généraux du salon"
+                title: "Accueil",
+                description: "Retour au tableau de bord"
               });
             }}
           >

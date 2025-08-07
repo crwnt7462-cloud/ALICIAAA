@@ -79,20 +79,36 @@ export default function App() {
               {/* 💼 PROFESSIONAL DASHBOARD CORE */}
               <Route path="/dashboard" component={DashboardModern} />
               <Route path="/business-features" component={DashboardModern} />
+              <Route path="/business-features-modern" component={DashboardModern} />
               <Route path="/planning" component={PlanningModern} />
               <Route path="/clients" component={ClientsModern} />
               <Route path="/inventory" component={InventoryModern} />
+              <Route path="/services" component={InventoryModern} />
+              <Route path="/staff" component={InventoryModern} />
               <Route path="/settings" component={SalonSettingsModern} />
+              <Route path="/salon-settings" component={SalonSettingsModern} />
+              <Route path="/salon-settings-modern" component={SalonSettingsModern} />
               <Route path="/messaging" component={ProMessagingModern} />
+              <Route path="/pro-messaging" component={ProMessagingModern} />
+              <Route path="/pro-messaging-modern" component={ProMessagingModern} />
               <Route path="/ai-assistant" component={AIAssistantFixed} />
+              <Route path="/ai" component={AIAssistantFixed} />
               <Route path="/analytics" component={AnalyticsDashboard} />
+              <Route path="/booking" component={ClientBooking} />
+              <Route path="/share-booking" component={ClientBooking} />
               
               {/* 👥 CLIENT EXPERIENCE */}
               <Route path="/client/login" component={ClientLogin} />
+              <Route path="/client-login" component={ClientLogin} />
               <Route path="/client/register" component={ClientRegister} />
+              <Route path="/client-register" component={ClientRegister} />
               <Route path="/client/dashboard" component={ClientDashboard} />
+              <Route path="/client-dashboard" component={ClientDashboard} />
               <Route path="/client/booking" component={ClientBooking} />
+              <Route path="/client-booking" component={ClientBooking} />
               <Route path="/search" component={SalonSearchComplete} />
+              <Route path="/salon-search" component={SalonSearchComplete} />
+              <Route path="/salon-search-complete" component={SalonSearchComplete} />
               
               {/* 🏪 SALON SHOWCASE - SEO OPTIMIZED */}
               <Route path="/salon/excellence-hair-paris" component={SalonExcellenceParis} />
@@ -118,8 +134,9 @@ export default function App() {
               <Route path="/centre-aide" component={CentreAide} />
               
               {/* 🏠 HOME & LANDING */}
-              <Route path="/" component={PublicLanding} />
+              <Route path="/" component={DashboardModern} />
               <Route path="/home" component={PublicLanding} />
+              <Route path="/landing" component={PublicLanding} />
               
               {/* 🚫 404 ERROR HANDLING */}
               <Route component={NotFound} />
