@@ -89,19 +89,19 @@ export default function DashboardModern() {
             {/* Stats du jour */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-violet-600 mb-1">{stats?.todayAppointments || 0}</div>
+                <div className="text-2xl font-bold text-violet-600 mb-1">{(stats as any)?.todayAppointments || 0}</div>
                 <div className="text-xs text-gray-500">RDV aujourd'hui</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-green-600 mb-1">€{stats?.todayRevenue || 0}</div>
+                <div className="text-2xl font-bold text-green-600 mb-1">€{(stats as any)?.todayRevenue || 0}</div>
                 <div className="text-xs text-gray-500">CA aujourd'hui</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-blue-600 mb-1">{stats?.weekAppointments || 0}</div>
+                <div className="text-2xl font-bold text-blue-600 mb-1">{(stats as any)?.weekAppointments || 0}</div>
                 <div className="text-xs text-gray-500">Cette semaine</div>
               </div>
               <div className="bg-gray-50 rounded-2xl p-4 text-center">
-                <div className="text-2xl font-bold text-orange-600 mb-1">{stats?.pendingAppointments || 0}</div>
+                <div className="text-2xl font-bold text-orange-600 mb-1">{(stats as any)?.pendingAppointments || 0}</div>
                 <div className="text-xs text-gray-500">En attente</div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function DashboardModern() {
               </div>
               
               <div className="space-y-3">
-                {(!upcomingAppointments || upcomingAppointments.length === 0) ? (
+                {(!upcomingAppointments || (upcomingAppointments as any[]).length === 0) ? (
                   <div className="text-center py-8 text-gray-500">
                     <Calendar className="h-8 w-8 mx-auto mb-2 text-gray-300" />
                     <p>Aucun rendez-vous prévu</p>
@@ -148,7 +148,7 @@ export default function DashboardModern() {
                     </button>
                   </div>
                 ) : (
-                  upcomingAppointments.slice(0, 3).map((appointment) => (
+                  (upcomingAppointments as any[]).slice(0, 3).map((appointment: any) => (
                   <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -185,7 +185,7 @@ export default function DashboardModern() {
                   ))
                 )}
                 
-                {upcomingAppointments && upcomingAppointments.length > 0 && (
+                {upcomingAppointments && (upcomingAppointments as any[]).length > 0 && (
                   <div className="text-center pt-2">
                     <button 
                       onClick={() => setLocation('/planning')}
@@ -207,7 +207,7 @@ export default function DashboardModern() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <div className="text-lg font-bold text-violet-900">€{stats?.monthRevenue || 0}</div>
+                  <div className="text-lg font-bold text-violet-900">€{(stats as any)?.monthRevenue || 0}</div>
                   <div className="text-xs text-violet-600">Chiffre d'affaires</div>
                 </div>
                 <div>
