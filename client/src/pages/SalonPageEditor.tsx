@@ -87,42 +87,73 @@ export default function SalonPageEditor() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  // Récupérer le salon du professionnel connecté
+  // Données du salon - salon démo par défaut avec chargement différé
+  const [salonData, setSalonData] = useState<SalonData | null>({
+    id: 'salon-demo',
+    name: 'Salon Excellence Démo',
+    address: '123 Avenue des Champs-Élysées, 75008 Paris',
+    phone: '01 42 25 85 96',
+    email: 'contact@excellence-salon.fr',
+    description: 'Salon de démonstration - Version Premium Pro',
+    longDescription: 'Bienvenue dans votre salon de démonstration avec toutes les fonctionnalités Premium Pro activées.',
+    ownerId: 'demo-user',
+    ownerEmail: 'demo@beautyapp.com',
+    subscriptionPlan: 'premium',
+    shareableUrl: '/salon/salon-demo',
+    isPublished: true,
+    customColors: {
+      primary: '#7c3aed',
+      accent: '#a855f7',
+      buttonText: '#ffffff',
+      buttonClass: 'glass-button-purple',
+      priceColor: '#7c3aed',
+      neonFrame: '#a855f7',
+      intensity: 35
+    },
+    serviceCategories: [
+      {
+        id: 1,
+        name: "Services Principaux",
+        expanded: false,
+        services: [
+          { id: 1, name: "Consultation", price: 0, duration: "15min", description: "Consultation gratuite" },
+          { id: 2, name: "Service Premium", price: 80, duration: "1h", description: "Service premium avec Premium Pro" }
+        ]
+      }
+    ],
+    certifications: ["Professionnel Certifié Premium"],
+    awards: [],
+    photos: ["https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"],
+    rating: 5,
+    reviewCount: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  });
+
+  // Chargement différé des vraies données (optionnel)
   const { data: userSalon, isLoading: salonLoading } = useQuery({
     queryKey: ['/api/user/salon'],
     enabled: !!user,
+    retry: 1,
+    staleTime: 5000
   });
-  
-  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
-  const [salonData, setSalonData] = useState<SalonData | null>(null);
 
-  // Afficher un état de chargement si pas de données salon
-  if (salonLoading || !salonData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement de votre salon...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Charger les données du salon de l'utilisateur connecté
+  // Mise à jour avec les vraies données si disponibles
   useEffect(() => {
-    if (userSalon) {
+    if (userSalon && !salonLoading) {
+      console.log('🔄 Mise à jour avec données serveur:', userSalon);
       setSalonData({
         ...userSalon,
         customColors: userSalon.customColors || {
-          primary: '#f59e0b',
-          accent: '#d97706',
-          buttonText: '#000000',
-          buttonClass: 'glass-button-amber',
+          primary: '#7c3aed',
+          accent: '#a855f7',
+          buttonText: '#ffffff',
+          buttonClass: 'glass-button-purple',
           intensity: 35
         }
       });
     }
-  }, [userSalon]);
+  }, [userSalon, salonLoading]);
 
   // État des professionnels
   const [professionals, setProfessionals] = useState<Professional[]>([

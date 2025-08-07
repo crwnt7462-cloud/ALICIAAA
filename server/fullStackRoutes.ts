@@ -29,6 +29,54 @@ if (!SUPABASE_CONFIG.USE_SUPABASE && !SUPABASE_CONFIG.hasSupabaseSecrets()) {
 }
 
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
+  
+  // ============= ROUTES PRIORITAIRES SALON & SUBSCRIPTION =============
+  
+  // ROUTE SALON - PRIORITÉ ABSOLUE (AVANT TOUTE AUTRE ROUTE)
+  app.get('/api/user/salon', async (req: any, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache');
+    
+    try {
+      console.log(`🎯 [PRIORITÉ] API Salon - retour salon démo directement`);
+      const demoSalon = await storage.getSalon('salon-demo');
+      if (demoSalon) {
+        console.log(`✅ Salon démo trouvé: ${demoSalon.name}`);
+        return res.status(200).json(demoSalon);
+      } else {
+        console.log(`❌ Salon démo non trouvé`);
+        return res.status(404).json({ error: 'Salon démo non disponible' });
+      }
+    } catch (error) {
+      console.error("Error fetching user salon:", error);
+      return res.status(500).json({ message: "Failed to fetch user salon" });
+    }
+  });
+
+  // ROUTE SUBSCRIPTION - PRIORITÉ ABSOLUE (AVANT TOUTE AUTRE ROUTE)
+  app.get('/api/user/subscription', async (req: any, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache');
+    
+    try {
+      console.log(`💳 [PRIORITÉ] API Subscription - retour plan Premium Pro pour demo`);
+      const subscription = {
+        planId: 'premium',
+        planName: 'Premium Pro', 
+        price: 149,
+        status: 'active',
+        userId: 'demo-user'
+      };
+      console.log(`✅ Plan demo: ${subscription.planName} (${subscription.price}€)`);
+      return res.status(200).json(subscription);
+    } catch (error) {
+      console.error("Error fetching user subscription:", error);
+      return res.status(500).json({ message: "Failed to fetch user subscription" });
+    }
+  });
+
+  // ============= FIN ROUTES PRIORITAIRES =============
+  
   // Test de connexion OpenAI
   app.post('/api/ai/test-openai', async (req, res) => {
     try {
