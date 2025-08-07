@@ -1055,14 +1055,14 @@ export default function SalonPageEditor() {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">Spécialités & Expertise</h3>
                 <div className="space-y-3">
-                  {salonData.certifications.map((cert, index) => (
+                  {(salonData.certifications || []).map((cert, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <Award className="h-4 w-4" style={{ color: salonData.customColors?.primary || '#f59e0b' }} />
                       {isEditing ? (
                         <Input
                           value={cert}
                           onChange={(e) => {
-                            const newCertifications = [...salonData.certifications];
+                            const newCertifications = [...(salonData.certifications || [])];
                             newCertifications[index] = e.target.value;
                             updateField('certifications', newCertifications);
                           }}
@@ -1078,7 +1078,7 @@ export default function SalonPageEditor() {
                 <div className="mt-6">
                   <h4 className="font-medium mb-3">Distinctions</h4>
                   <div className="flex flex-wrap gap-2">
-                    {salonData.awards.map((award, index) => (
+                    {(salonData.awards || []).map((award, index) => (
                       <Badge 
                         key={index} 
                         variant="secondary" 

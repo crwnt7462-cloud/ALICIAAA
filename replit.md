@@ -30,6 +30,7 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **UI/UX**: Tailwind CSS + shadcn/ui pour un design épuré, professionnel et mobile-first. Cohérence visuelle forte avec des designs unifiés (header, navigation à onglets, cartes, typographie).
 - **Navigation**: BottomNavigation pour le menu principal, navigation intuitive avec accès rapide aux fonctionnalités essentielles.
 - **Design Philosophy**: Minimaliste, professionnel, mobile-first, avec des éléments visuels cohérents tels que des dégradés violets/amber, des icônes Lucide et des interactions fluides. Le design est 100% glassmorphism sur toutes les interfaces, incluant les cartes statistiques, les boutons, et les interfaces IA. Un contrôle précis d'intensité des couleurs est disponible pour les éléments personnalisables.
+- **IA Assistant**: Interface chat moderne avec AIAssistantFixed, résolution complète des erreurs React Hooks, accès Premium Pro (149€) fonctionnel.
 
 ### Backend
 - **Framework**: Express.js + TypeScript
