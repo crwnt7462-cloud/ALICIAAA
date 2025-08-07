@@ -1,6 +1,6 @@
 
-/* Import glassmorphism authentique d'abord */
-@import './styles/glassmorphism.css';
+/* Import styles production SaaS */
+@import './styles/production.css';
 
 @tailwind base;
 @tailwind components;

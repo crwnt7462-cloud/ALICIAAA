@@ -5,17 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-// =============================================================================
-// IMPORTS ORGANISÉS - ARCHITECTURE SAAS PROFESSIONNELLE
-// =============================================================================
-
-// 🔐 AUTHENTICATION & ONBOARDING
+// Authentication Pages
 import ProLoginModern from "@/pages/ProLoginModern";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import ForgotPassword from "@/pages/ForgotPassword";
 
-// 💼 PROFESSIONAL CORE DASHBOARD  
+// Professional Dashboard
 import DashboardModern from "@/pages/DashboardModern";
 import PlanningModern from "@/pages/PlanningModern";
 import ClientsModern from "@/pages/ClientsModern";
@@ -25,14 +21,14 @@ import ProMessagingModern from "@/pages/ProMessagingModern";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 
-// 👥 CLIENT INTERFACE
+// Client Interface
 import ClientBooking from "@/pages/ClientBooking";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ClientLogin from "@/pages/ClientLogin";
 import ClientRegister from "@/pages/ClientRegister";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
 
-// 🏪 SALON SHOWCASE PAGES
+// Salon Pages
 import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
@@ -41,44 +37,36 @@ import NailArtOpera from "@/pages/salons/NailArtOpera";
 import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 
-// 💰 BUSINESS & PAYMENTS
-import SubscriptionPaymentPage from "@/pages/SubscriptionPaymentPage";
+// Business & Subscription
+import SubscriptionPayment from "@/pages/SubscriptionPaymentPage";
 import BusinessSuccess from "@/pages/BusinessSuccess";
 import Support from "@/pages/Support";
 
-// 📄 LEGAL & INFO
+// Legal & Info Pages
 import CGU from "@/pages/CGU";
 import Confidentialite from "@/pages/Confidentialite";
 import Contact from "@/pages/Contact";
 import CentreAide from "@/pages/CentreAide";
 
-// 🏠 PUBLIC PAGES
+// Landing & Public
 import PublicLanding from "@/pages/PublicLanding";
 import NotFound from "@/pages/not-found";
-
-// =============================================================================
-// APPLICATION SAAS PRINCIPALE
-// =============================================================================
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <ThemeProvider defaultTheme="light" storageKey="beauty-saas-theme">
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50/20">
-            
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-violet-50/30">
             <Switch>
-              {/* 🔐 AUTHENTICATION FLOW */}
+              {/* Authentication Routes */}
               <Route path="/login" component={ProLoginModern} />
-              <Route path="/pro-login" component={ProLoginModern} />
               <Route path="/subscription-plans" component={ModernSubscriptionPlans} />
-              <Route path="/modern-subscription-plans" component={ModernSubscriptionPlans} />
               <Route path="/multi-step-subscription" component={MultiStepSubscription} />
               <Route path="/forgot-password" component={ForgotPassword} />
               
-              {/* 💼 PROFESSIONAL DASHBOARD CORE */}
+              {/* Professional Dashboard */}
               <Route path="/dashboard" component={DashboardModern} />
-              <Route path="/business-features" component={DashboardModern} />
               <Route path="/planning" component={PlanningModern} />
               <Route path="/clients" component={ClientsModern} />
               <Route path="/inventory" component={InventoryModern} />
@@ -87,47 +75,40 @@ export default function App() {
               <Route path="/ai-assistant" component={AIAssistantFixed} />
               <Route path="/analytics" component={AnalyticsDashboard} />
               
-              {/* 👥 CLIENT EXPERIENCE */}
+              {/* Client Interface */}
               <Route path="/client/login" component={ClientLogin} />
               <Route path="/client/register" component={ClientRegister} />
               <Route path="/client/dashboard" component={ClientDashboard} />
               <Route path="/client/booking" component={ClientBooking} />
               <Route path="/search" component={SalonSearchComplete} />
               
-              {/* 🏪 SALON SHOWCASE - SEO OPTIMIZED */}
+              {/* Salon Public Pages */}
               <Route path="/salon/excellence-hair-paris" component={SalonExcellenceParis} />
-              <Route path="/salon/salon-excellence-paris" component={SalonExcellenceParis} />
               <Route path="/salon/barbier-gentleman-marais" component={BarbierGentlemanMarais} />
-              <Route path="/salon/gentleman-barbier" component={BarbierGentlemanMarais} />
               <Route path="/salon/salon-moderne-republique" component={SalonModerneRepublique} />
               <Route path="/salon/institut-beaute-saint-germain" component={InstitutBeauteSaintGermain} />
               <Route path="/salon/nail-art-opera" component={NailArtOpera} />
               <Route path="/salon/spa-wellness-bastille" component={SpaWellnessBastille} />
               <Route path="/salon/beauty-lounge-montparnasse" component={BeautyLoungeMontparnasse} />
               
-              {/* 💰 BUSINESS OPERATIONS */}
-              <Route path="/subscription-payment" component={SubscriptionPaymentPage} />
+              {/* Business Routes */}
+              <Route path="/subscription-payment" component={SubscriptionPayment} />
               <Route path="/business-success" component={BusinessSuccess} />
               <Route path="/support" component={Support} />
               
-              {/* 📄 LEGAL & COMPLIANCE */}
+              {/* Legal & Info */}
               <Route path="/cgu" component={CGU} />
               <Route path="/confidentialite" component={Confidentialite} />
               <Route path="/contact" component={Contact} />
               <Route path="/aide" component={CentreAide} />
-              <Route path="/centre-aide" component={CentreAide} />
               
-              {/* 🏠 HOME & LANDING */}
+              {/* Landing */}
               <Route path="/" component={PublicLanding} />
-              <Route path="/home" component={PublicLanding} />
               
-              {/* 🚫 404 ERROR HANDLING */}
+              {/* 404 */}
               <Route component={NotFound} />
             </Switch>
-            
           </div>
-          
-          {/* GLOBAL NOTIFICATIONS */}
           <Toaster />
         </ThemeProvider>
       </TooltipProvider>

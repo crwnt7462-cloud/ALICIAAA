@@ -47,11 +47,11 @@ app.use((req, res, next) => {
   // Utiliser les routes Firebase-compatible
   const server = await registerFullStackRoutes(app);
   
-  // Créer les comptes de test au démarrage
-  await createTestAccounts();
-  
-  // Créer les salons de test avec photos
-  await seedSalons();
+  // Configuration automatique des données
+  if (process.env.NODE_ENV === 'development') {
+    await createTestAccounts();
+    await seedSalons();
+  }
   
   // ✅ CRÉATION SALON DEMO MODIFIABLE - NÉCESSAIRE POUR ÉDITEUR
   try {
