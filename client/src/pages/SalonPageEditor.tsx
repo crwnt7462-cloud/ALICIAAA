@@ -93,6 +93,9 @@ export default function SalonPageEditor() {
     enabled: !!user,
   });
   
+  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
+  const [salonData, setSalonData] = useState<SalonData | null>(null);
+
   // Afficher un état de chargement si pas de données salon
   if (salonLoading || !salonData) {
     return (
@@ -104,9 +107,6 @@ export default function SalonPageEditor() {
       </div>
     );
   }
-  
-  // Données du salon - automatiquement déterminées selon l'utilisateur connecté
-  const [salonData, setSalonData] = useState<SalonData | null>(null);
 
   // Charger les données du salon de l'utilisateur connecté
   useEffect(() => {
