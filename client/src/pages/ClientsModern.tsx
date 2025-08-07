@@ -30,78 +30,21 @@ export default function ClientsModern() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
 
-  // Récupérer les clients
+  // Récupérer les clients depuis la BDD
   const { data: clients, isLoading } = useQuery({
     queryKey: ['/api/clients'],
-    initialData: []
+    retry: 1
   });
 
-  // Données de démonstration
-  const mockClients: Client[] = [
-    {
-      id: '1',
-      name: 'Sophie Martin',
-      email: 'sophie.martin@email.com',
-      phone: '06 12 34 56 78',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face',
-      status: 'VIP',
-      lastVisit: '2024-01-20',
-      totalVisits: 15,
-      totalSpent: 890,
-      rating: 5,
-      notes: 'Préfère les couleurs naturelles',
-      birthday: '1985-06-15',
-      preferences: ['Coupe', 'Couleur', 'Soin']
-    },
-    {
-      id: '2',
-      name: 'Emma Dubois',
-      email: 'emma.dubois@email.com',
-      phone: '06 87 65 43 21',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face',
-      status: 'Fidèle',
-      lastVisit: '2024-01-18',
-      totalVisits: 8,
-      totalSpent: 520,
-      rating: 4.5,
-      preferences: ['Soin visage', 'Massage']
-    },
-    {
-      id: '3',
-      name: 'Claire Bernard',
-      email: 'claire.bernard@email.com',
-      phone: '06 11 22 33 44',
-      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face',
-      status: 'Nouvelle',
-      lastVisit: '2024-01-22',
-      totalVisits: 2,
-      totalSpent: 120,
-      rating: 5,
-      notes: 'Première expérience très positive'
-    },
-    {
-      id: '4',
-      name: 'Julie Moreau',
-      email: 'julie.moreau@email.com',
-      phone: '06 55 66 77 88',
-      status: 'Inactive',
-      lastVisit: '2023-11-10',
-      totalVisits: 6,
-      totalSpent: 340,
-      rating: 4,
-      preferences: ['Manucure', 'Pédicure']
-    }
-  ];
-
   const filters = [
-    { id: 'all', label: 'Tous', count: mockClients.length },
-    { id: 'VIP', label: 'VIP', count: mockClients.filter(c => c.status === 'VIP').length },
-    { id: 'Fidèle', label: 'Fidèles', count: mockClients.filter(c => c.status === 'Fidèle').length },
-    { id: 'Nouvelle', label: 'Nouvelles', count: mockClients.filter(c => c.status === 'Nouvelle').length },
-    { id: 'Inactive', label: 'Inactives', count: mockClients.filter(c => c.status === 'Inactive').length }
+    { id: 'all', label: 'Tous', count: clients?.length || 0 },
+    { id: 'VIP', label: 'VIP', count: clients?.filter(c => c.status === 'VIP').length || 0 },
+    { id: 'Fidèle', label: 'Fidèles', count: clients?.filter(c => c.status === 'Fidèle').length || 0 },
+    { id: 'Nouvelle', label: 'Nouvelles', count: clients?.filter(c => c.status === 'Nouvelle').length || 0 },
+    { id: 'Inactive', label: 'Inactives', count: clients?.filter(c => c.status === 'Inactive').length || 0 }
   ];
 
-  const filteredClients = mockClients.filter(client => {
+  const filteredClients = (clients || []).filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchText.toLowerCase()) ||
                          client.email.toLowerCase().includes(searchText.toLowerCase()) ||
                          client.phone.includes(searchText);
@@ -120,7 +63,7 @@ export default function ClientsModern() {
   };
 
   const currentClient = selectedClient 
-    ? mockClients.find(c => c.id === selectedClient)
+    ? (clients || []).find(c => c.id === selectedClient)
     : null;
 
   if (isLoading) {
@@ -166,15 +109,15 @@ export default function ClientsModern() {
               {/* Stats rapides - ✅ GLASSMORPHISM APPLIQUÉ */}
               <div className="grid grid-cols-3 gap-3 mb-6">
                 <div className="glass-stat-card rounded-2xl p-3 text-center">
-                  <div className="text-lg font-bold text-purple-600">{mockClients.filter(c => c.status === 'VIP').length}</div>
+                  <div className="text-lg font-bold text-purple-600">{clients?.filter(c => c.status === 'VIP').length || 0}</div>
                   <div className="text-xs text-gray-700">VIP</div>
                 </div>
                 <div className="glass-stat-card rounded-2xl p-3 text-center">
-                  <div className="text-lg font-bold text-green-600">{mockClients.filter(c => c.status === 'Fidèle').length}</div>
+                  <div className="text-lg font-bold text-green-600">{clients?.filter(c => c.status === 'Fidèle').length || 0}</div>
                   <div className="text-xs text-gray-700">Fidèles</div>
                 </div>
                 <div className="glass-stat-card rounded-2xl p-3 text-center">
-                  <div className="text-lg font-bold text-blue-600">{mockClients.filter(c => c.status === 'Nouvelle').length}</div>
+                  <div className="text-lg font-bold text-blue-600">{clients?.filter(c => c.status === 'Nouvelle').length || 0}</div>
                   <div className="text-xs text-gray-700">Nouvelles</div>
                 </div>
               </div>
@@ -219,7 +162,14 @@ export default function ClientsModern() {
 
               {/* Liste des clients */}
               <div className="space-y-3">
-                {filteredClients.map(client => (
+                {filteredClients.length === 0 ? (
+                  <div className="text-center py-12 text-gray-500">
+                    <User className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="mb-2">Aucun client trouvé</p>
+                    <p className="text-sm">Commencez par ajouter vos premiers clients</p>
+                  </div>
+                ) : (
+                  filteredClients.map(client => (
                   <button
                     key={client.id}
                     onClick={() => setSelectedClient(client.id)}
@@ -275,7 +225,8 @@ export default function ClientsModern() {
                       </div>
                     </div>
                   </button>
-                ))}
+                  ))
+                )}
               </div>
 
             </div>

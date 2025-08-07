@@ -28,64 +28,11 @@ export default function PlanningModern() {
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // Récupérer les rendez-vous
+  // Récupérer les rendez-vous depuis la BDD
   const { data: appointments, isLoading } = useQuery({
-    queryKey: ['/api/appointments', selectedDate.toISOString().split('T')[0]],
-    initialData: []
+    queryKey: ['/api/appointments'],
+    retry: 1
   });
-
-  // Données de démonstration
-  const mockAppointments: Appointment[] = [
-    {
-      id: '1',
-      clientName: 'Sophie Martin',
-      clientPhone: '06 12 34 56 78',
-      service: 'Coupe + Couleur',
-      professional: 'Marie',
-      date: new Date().toISOString().split('T')[0],
-      time: '09:00',
-      duration: 120,
-      status: 'confirmed',
-      price: 85,
-      notes: 'Première visite'
-    },
-    {
-      id: '2',
-      clientName: 'Emma Dubois',
-      clientPhone: '06 87 65 43 21',
-      service: 'Soin Visage',
-      professional: 'Lisa',
-      date: new Date().toISOString().split('T')[0],
-      time: '10:30',
-      duration: 60,
-      status: 'confirmed',
-      price: 65
-    },
-    {
-      id: '3',
-      clientName: 'Claire Bernard',
-      clientPhone: '06 11 22 33 44',
-      service: 'Manucure',
-      professional: 'Anna',
-      date: new Date().toISOString().split('T')[0],
-      time: '14:00',
-      duration: 45,
-      status: 'pending',
-      price: 35
-    },
-    {
-      id: '4',
-      clientName: 'Julie Moreau',
-      clientPhone: '06 55 66 77 88',
-      service: 'Coupe',
-      professional: 'Marie',
-      date: new Date().toISOString().split('T')[0],
-      time: '16:00',
-      duration: 45,
-      status: 'confirmed',
-      price: 45
-    }
-  ];
 
   const timeSlots = Array.from({ length: 20 }, (_, i) => {
     const hour = Math.floor(8 + i * 0.5);
@@ -103,7 +50,7 @@ export default function PlanningModern() {
   };
 
   const getAppointmentForTime = (time: string) => {
-    return mockAppointments.find(apt => apt.time === time);
+    return (appointments || []).find(apt => apt.time === time);
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {

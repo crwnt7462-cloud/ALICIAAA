@@ -39,54 +39,11 @@ export default function InventoryModern() {
     supplier: ''
   });
 
-  // Récupérer l'inventaire
+  // Récupérer l'inventaire depuis la BDD
   const { data: inventory, isLoading } = useQuery({
     queryKey: ['/api/inventory'],
-    initialData: []
+    retry: 1
   });
-
-  // Données de démonstration
-  const mockInventory: InventoryItem[] = [
-    {
-      id: '1',
-      name: 'Shampooing Professionnel',
-      category: 'soins-cheveux',
-      brand: 'L\'Oréal',
-      currentStock: 15,
-      minStock: 10,
-      maxStock: 30,
-      costPrice: 12.50,
-      salePrice: 25.00,
-      supplier: 'Beauty Supply',
-      lastRestocked: '2024-01-15'
-    },
-    {
-      id: '2',
-      name: 'Crème Hydratante',
-      category: 'soins-visage',
-      brand: 'Vichy',
-      currentStock: 3,
-      minStock: 8,
-      maxStock: 20,
-      costPrice: 15.00,
-      salePrice: 32.00,
-      supplier: 'Beauty Supply',
-      lastRestocked: '2024-01-20'
-    },
-    {
-      id: '3',
-      name: 'Vernis Semi-Permanent',
-      category: 'ongles',
-      brand: 'OPI',
-      currentStock: 8,
-      minStock: 10,
-      maxStock: 25,
-      costPrice: 8.50,
-      salePrice: 18.00,
-      supplier: 'Nail Pro',
-      lastRestocked: '2024-01-18'
-    }
-  ];
 
   const categories = [
     { id: 'all', label: 'Tous' },
@@ -140,14 +97,14 @@ export default function InventoryModern() {
     addMutation.mutate(newItem);
   };
 
-  const filteredItems = mockInventory.filter(item => {
+  const filteredItems = (inventory || []).filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase()) ||
                          item.brand.toLowerCase().includes(searchText.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const lowStockItems = mockInventory.filter(item => item.currentStock <= item.minStock);
+  const lowStockItems = (inventory || []).filter(item => item.currentStock <= item.minStock);
 
   if (isLoading) {
     return (
@@ -212,11 +169,11 @@ export default function InventoryModern() {
           {/* Stats rapides */}
           <div className="grid grid-cols-3 gap-3 mb-6">
             <div className="bg-gray-50 rounded-2xl p-3 text-center">
-              <div className="text-lg font-bold text-gray-900">{mockInventory.length}</div>
+              <div className="text-lg font-bold text-gray-900">{inventory?.length || 0}</div>
               <div className="text-xs text-gray-500">Produits</div>
             </div>
             <div className="bg-gray-50 rounded-2xl p-3 text-center">
-              <div className="text-lg font-bold text-green-600">{mockInventory.filter(i => i.currentStock > i.minStock).length}</div>
+              <div className="text-lg font-bold text-green-600">{inventory?.filter(i => i.currentStock > i.minStock).length || 0}</div>
               <div className="text-xs text-gray-500">En stock</div>
             </div>
             <div className="bg-gray-50 rounded-2xl p-3 text-center">
@@ -256,7 +213,14 @@ export default function InventoryModern() {
 
           {/* Liste des produits */}
           <div className="space-y-3">
-            {filteredItems.map(item => (
+            {filteredItems.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p className="mb-2">Aucun produit trouvé</p>
+                <p className="text-sm">Commencez par ajouter vos premiers produits</p>
+              </div>
+            ) : (
+              filteredItems.map(item => (
               <div key={item.id} className="bg-gray-50 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <div>
@@ -292,7 +256,8 @@ export default function InventoryModern() {
                   </button>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Formulaire d'ajout */}

@@ -11,54 +11,16 @@ export default function DashboardModern() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Récupérer les stats du dashboard
+  // Récupérer les stats du dashboard depuis la BDD
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/dashboard/stats'],
-    initialData: {
-      todayAppointments: 8,
-      todayRevenue: 650,
-      weekAppointments: 42,
-      weekRevenue: 2340,
-      monthRevenue: 8750,
-      pendingAppointments: 3
-    }
+    retry: 1
   });
 
   const { data: upcomingAppointments, isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/dashboard/upcoming-appointments'],
-    initialData: []
+    retry: 1
   });
-
-  // Données de démonstration
-  const mockUpcoming = [
-    {
-      id: '1',
-      time: '09:00',
-      clientName: 'Sophie Martin',
-      service: 'Coupe + Couleur',
-      duration: 120,
-      price: 85,
-      status: 'confirmed'
-    },
-    {
-      id: '2',
-      time: '11:30',
-      clientName: 'Emma Dubois',
-      service: 'Soin Visage',
-      duration: 60,
-      price: 65,
-      status: 'confirmed'
-    },
-    {
-      id: '3',
-      time: '14:00',
-      clientName: 'Claire Bernard',
-      service: 'Manucure',
-      duration: 45,
-      price: 35,
-      status: 'pending'
-    }
-  ];
 
   const quickActions = [
     { 
@@ -174,7 +136,19 @@ export default function DashboardModern() {
               </div>
               
               <div className="space-y-3">
-                {mockUpcoming.slice(0, 3).map((appointment) => (
+                {(!upcomingAppointments || upcomingAppointments.length === 0) ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <Calendar className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                    <p>Aucun rendez-vous prévu</p>
+                    <button 
+                      onClick={() => setLocation('/planning')}
+                      className="mt-2 text-violet-600 text-sm hover:underline"
+                    >
+                      Ajouter un rendez-vous
+                    </button>
+                  </div>
+                ) : (
+                  upcomingAppointments.slice(0, 3).map((appointment) => (
                   <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
@@ -208,7 +182,19 @@ export default function DashboardModern() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  ))
+                )}
+                
+                {upcomingAppointments && upcomingAppointments.length > 0 && (
+                  <div className="text-center pt-2">
+                    <button 
+                      onClick={() => setLocation('/planning')}
+                      className="text-violet-600 text-sm hover:underline"
+                    >
+                      Voir tous les rendez-vous
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

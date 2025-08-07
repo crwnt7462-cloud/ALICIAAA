@@ -893,6 +893,28 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // === ROUTES DASHBOARD CRITIQUES (FIXES ROUTING VITE) ===
+  // Routes dashboard sans données factices - utiliser BDD uniquement
+  app.get('/api/dashboard/stats', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      
+      // Statistiques authentiques depuis la BDD
+      const stats = await storage.getDashboardStats?.(userId) || {
+        todayAppointments: 0,
+        todayRevenue: 0,
+        weekAppointments: 0,
+        weekRevenue: 0,
+        monthRevenue: 0,
+        pendingAppointments: 0
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error('❌ Erreur dashboard stats:', error);
+      res.status(500).json({ error: 'Erreur récupération statistiques' });
+    }
+  });
+
   app.get('/api/dashboard/upcoming-appointments', async (req, res) => {
     try {
       const userId = (req.session as any)?.user?.id || 'demo';
@@ -903,10 +925,64 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         appointments = await storage.getUpcomingAppointments(userId);
       }
       
-      res.json(appointments);
+      res.json(appointments || []);
     } catch (error) {
       console.error('❌ Erreur lors de la récupération des RDV à venir:', error);
       res.status(500).json({ error: 'Failed to fetch upcoming appointments' });
+    }
+  });
+
+  // API Clients sans données factices
+  app.get('/api/clients', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      console.log('👥 Récupération clients authentiques pour:', userId);
+      
+      let clients = [];
+      if (storage.getClients) {
+        clients = await storage.getClients(userId);
+      }
+      
+      res.json(clients || []);
+    } catch (error) {
+      console.error('❌ Erreur récupération clients:', error);
+      res.status(500).json({ error: 'Erreur récupération clients' });
+    }
+  });
+
+  // API Rendez-vous sans données factices
+  app.get('/api/appointments', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      console.log('📅 Récupération rendez-vous authentiques pour:', userId);
+      
+      let appointments = [];
+      if (storage.getAppointments) {
+        appointments = await storage.getAppointments(userId);
+      }
+      
+      res.json(appointments || []);
+    } catch (error) {
+      console.error('❌ Erreur récupération rendez-vous:', error);
+      res.status(500).json({ error: 'Erreur récupération rendez-vous' });
+    }
+  });
+
+  // API Inventaire sans données factices
+  app.get('/api/inventory', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      console.log('📦 Récupération inventaire authentique pour:', userId);
+      
+      let inventory = [];
+      if (storage.getInventory) {
+        inventory = await storage.getInventory(userId);
+      }
+      
+      res.json(inventory || []);
+    } catch (error) {
+      console.error('❌ Erreur récupération inventaire:', error);
+      res.status(500).json({ error: 'Erreur récupération inventaire' });
     }
   });
 
