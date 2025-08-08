@@ -20,6 +20,27 @@ import BookingConfirmationModal from '@/components/BookingConfirmationModal';
 // Configuration Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 
+// Fonction utilitaire pour gérer les spécialités de manière robuste
+const getSpecialtiesText = (specialties: any): string => {
+  if (Array.isArray(specialties)) {
+    return specialties.length > 0 ? specialties.join(', ') : 'Spécialiste';
+  }
+  if (typeof specialties === 'string' && specialties.trim()) {
+    return specialties;
+  }
+  return 'Spécialiste';
+};
+
+const getSpecialtiesArray = (specialties: any): string[] => {
+  if (Array.isArray(specialties)) {
+    return specialties.filter(s => s && typeof s === 'string');
+  }
+  if (typeof specialties === 'string' && specialties.trim()) {
+    return specialties.split(',').map(s => s.trim()).filter(s => s);
+  }
+  return ['Spécialiste'];
+};
+
 // Composant de paiement Stripe intégré
 function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void, clientSecret: string }) {
   const stripe = useStripe();
@@ -185,8 +206,8 @@ export default function SalonBooking() {
             setSelectedSlot({ time: bookingState.selectedTime, date: bookingState.selectedDate });
           }
           // Restaurer le professionnel sélectionné
-          if (bookingState.professionalName && professionals) {
-            const prof = professionals.find(p => p.name === bookingState.professionalName);
+          if (bookingState.professionalName && professionals && Array.isArray(professionals)) {
+            const prof = professionals.find((p: any) => p?.name === bookingState.professionalName);
             if (prof) setSelectedProfessional(prof);
           }
         }
@@ -513,7 +534,7 @@ export default function SalonBooking() {
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
         
         <div className="space-y-3">
-          {professionals.map((pro) => (
+          {Array.isArray(professionals) && professionals.map((pro: any) => (
             <Card 
               key={pro.id}
               className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
@@ -533,10 +554,7 @@ export default function SalonBooking() {
                     </div>
                     {/* Spécialités du professionnel */}
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {(typeof pro.specialties === 'string' 
-                        ? pro.specialties.split(',').map(s => s.trim())
-                        : Array.isArray(pro.specialties) ? pro.specialties : []
-                      ).map((specialty, idx) => (
+                      {getSpecialtiesArray(pro.specialties).map((specialty, idx) => (
                         <Badge key={idx} variant="outline" className="text-xs">
                           {specialty}
                         </Badge>
@@ -581,7 +599,7 @@ export default function SalonBooking() {
             <div className="text-xl">{selectedProfessional?.image}</div>
             <div>
               <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
-              <p className="text-sm text-gray-600">{Array.isArray(selectedProfessional?.specialties) ? selectedProfessional.specialties.join(', ') : 'Spécialiste beauté'}</p>
+              <p className="text-sm text-gray-600">{getSpecialtiesText(selectedProfessional?.specialties)}</p>
             </div>
           </div>
           <div className="border-t pt-3">
@@ -659,7 +677,7 @@ export default function SalonBooking() {
                 <div>
                   <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
                   <p className="text-sm text-gray-600">
-                    {Array.isArray(selectedProfessional?.specialties) ? selectedProfessional.specialties.join(', ') : 'Spécialiste'} • ★ {selectedProfessional?.rating}
+                    {getSpecialtiesText(selectedProfessional?.specialties)} • ★ {selectedProfessional?.rating}
                   </p>
                 </div>
               </div>
