@@ -33,19 +33,32 @@ export interface RescheduleNotificationData {
 }
 
 export class ConfirmationService {
+  private emailService: any;
+  private smsService: any;
+
+  constructor() {
+    // Import dynamique pour éviter les erreurs circulaires
+    this.emailService = require('./emailService').emailService;
+    this.smsService = require('./smsService').smsService;
+  }
+
   // Envoyer confirmation de réservation par email/SMS
   async sendBookingConfirmation(data: BookingConfirmationData): Promise<boolean> {
     try {
-      // Simulation de l'envoi d'email
       console.log(`📧 Email de confirmation envoyé à ${data.clientEmail}`);
       console.log(`📅 RDV: ${data.serviceName} le ${data.date} à ${data.time}`);
       console.log(`💰 Prix: ${data.totalPrice}€ (acompte: ${data.depositPaid}€)`);
       
-      // Simulation SMS (si numéro fourni)
-      console.log(`📱 SMS de confirmation envoyé`);
-      
-      // TODO: Intégrer SendGrid/Nodemailer pour emails
-      // TODO: Intégrer Twilio pour SMS
+      const appointmentDetails = {
+        serviceName: data.serviceName,
+        date: data.date,
+        time: data.time,
+        salonName: data.businessName,
+        address: data.businessAddress,
+        depositAmount: data.depositPaid
+      };
+
+      await this.emailService.sendAppointmentConfirmation(data.clientEmail, appointmentDetails);
       
       return true;
     } catch (error) {

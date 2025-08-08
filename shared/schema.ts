@@ -918,6 +918,18 @@ export type User = typeof users.$inferSelect;
 
 // Client account types for authentication - removed duplicate
 
+
+
+// Photos table for image management
+export const photos = pgTable("photos", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  url: text("url").notNull(),
+  caption: text("caption"),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Notes client pour les professionnels
 export const clientNotes = pgTable("client_notes", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

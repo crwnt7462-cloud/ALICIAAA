@@ -1,136 +1,117 @@
-import sgMail from '@sendgrid/mail';
+import { MailService } from '@sendgrid/mail';
 
-if (!process.env.SENDGRID_API_KEY) {
-  throw new Error("SENDGRID_API_KEY environment variable must be set");
+interface EmailParams {
+  to: string;
+  from: string;
+  subject: string;
+  text?: string;
+  html?: string;
 }
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+class EmailService {
+  private mailService: MailService | null = null;
+  private isConfigured: boolean;
 
-export interface EmailVerificationData {
-  email: string;
-  verificationCode: string;
-  userType: 'professional' | 'client';
-  businessName?: string;
-}
+  constructor() {
+    this.isConfigured = !!process.env.SENDGRID_API_KEY;
+    if (this.isConfigured) {
+      this.mailService = new MailService();
+      this.mailService.setApiKey(process.env.SENDGRID_API_KEY!);
+    }
+  }
 
-export class EmailService {
-  private fromEmail = 'support@rendly.app'; // Email vérifié SendGrid
+  async sendEmail(params: EmailParams): Promise<boolean> {
+    if (!this.isConfigured) {
+      console.warn('📧 SendGrid non configuré - email non envoyé:', params.subject);
+      return false;
+    }
 
-  async sendVerificationCode(data: EmailVerificationData): Promise<boolean> {
     try {
-      const { email, verificationCode, userType, businessName } = data;
-      
-      // MODE DÉVELOPPEMENT : Afficher le code dans les logs au lieu d'envoyer par email
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`📧 MODE DÉVELOPPEMENT - Code de vérification pour ${email}:`);
-        console.log(`🔑 CODE: ${verificationCode}`);
-        console.log(`👤 Type: ${userType}`);
-        console.log(`🏢 Business: ${businessName || 'N/A'}`);
-        return true;
-      }
-
-      const msg = {
-        to: email,
-        from: this.fromEmail,
-        subject: 'Code de vérification - Votre Salon',
-        html: this.generateVerificationEmailHTML(verificationCode, userType, businessName),
-        text: this.generateVerificationEmailText(verificationCode, userType, businessName),
-      };
-
-      await sgMail.send(msg);
-      console.log(`✅ Email de vérification envoyé à ${email}`);
+      await this.mailService!.send({
+        to: params.to,
+        from: params.from,
+        subject: params.subject,
+        text: params.text,
+        html: params.html,
+      });
+      console.log('📧 Email envoyé avec succès:', params.subject);
       return true;
     } catch (error) {
       console.error('❌ Erreur envoi email:', error);
-      // En cas d'erreur SendGrid, afficher le code en développement
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`📧 FALLBACK - Code de vérification pour ${data.email}: ${data.verificationCode}`);
-        return true;
-      }
       return false;
     }
   }
 
-  private generateVerificationEmailHTML(code: string, userType: string, businessName?: string): string {
-    const title = userType === 'professional' 
-      ? `Bienvenue ${businessName ? `chez ${businessName}` : 'professionnel'} !` 
-      : 'Bienvenue sur notre plateforme !';
-    
-    return `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Code de vérification</title>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #8B5CF6, #F59E0B); padding: 30px; text-align: center; color: white; }
-          .content { padding: 30px; background: #f9f9f9; }
-          .code-box { background: #8B5CF6; color: white; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 4px; margin: 20px 0; border-radius: 8px; }
-          .footer { padding: 20px; text-align: center; color: #666; font-size: 12px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>🏪 ${title}</h1>
-          </div>
-          <div class="content">
-            <h2>Confirmez votre adresse email</h2>
-            <p>Merci de vous être inscrit sur notre plateforme de gestion de salon. Pour finaliser votre création de compte, veuillez utiliser le code de vérification ci-dessous :</p>
-            
-            <div class="code-box">
-              ${code}
-            </div>
-            
-            <p><strong>Important :</strong></p>
-            <ul>
-              <li>Ce code expire dans 10 minutes</li>
-              <li>Il ne peut être utilisé qu'une seule fois</li>
-              <li>Ne le partagez avec personne</li>
-            </ul>
-            
-            <p>Si vous n'avez pas demandé cette vérification, ignorez cet email.</p>
-          </div>
-          <div class="footer">
-            <p>© 2025 Votre Salon - Plateforme de gestion pour professionnels de la beauté</p>
-          </div>
+  async sendVerificationEmail(email: string, code: string): Promise<boolean> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #8B5CF6;">Vérification de votre compte</h2>
+        <p>Votre code de vérification est :</p>
+        <div style="background: #f8f9fa; padding: 20px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 3px; color: #8B5CF6;">
+          ${code}
         </div>
-      </body>
-      </html>
+        <p>Ce code expire dans 10 minutes.</p>
+        <p>Si vous n'avez pas demandé cette vérification, ignorez cet email.</p>
+      </div>
     `;
+
+    return this.sendEmail({
+      to: email,
+      from: 'noreply@salon-beaute.com',
+      subject: 'Code de vérification - Salon Beauté',
+      html,
+      text: `Votre code de vérification est : ${code}. Ce code expire dans 10 minutes.`
+    });
   }
 
-  private generateVerificationEmailText(code: string, userType: string, businessName?: string): string {
-    const title = userType === 'professional' 
-      ? `Bienvenue ${businessName ? `chez ${businessName}` : 'professionnel'} !` 
-      : 'Bienvenue sur notre plateforme !';
-    
-    return `
-${title}
-
-Confirmez votre adresse email
-
-Merci de vous être inscrit sur notre plateforme de gestion de salon. Pour finaliser votre création de compte, veuillez utiliser le code de vérification ci-dessous :
-
-CODE DE VÉRIFICATION: ${code}
-
-Important :
-- Ce code expire dans 10 minutes
-- Il ne peut être utilisé qu'une seule fois  
-- Ne le partagez avec personne
-
-Si vous n'avez pas demandé cette vérification, ignorez cet email.
-
-© 2025 Votre Salon - Plateforme de gestion pour professionnels de la beauté
+  async sendAppointmentConfirmation(email: string, appointmentDetails: any): Promise<boolean> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #8B5CF6;">Confirmation de rendez-vous</h2>
+        <p>Votre rendez-vous a été confirmé :</p>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+          <p><strong>Service :</strong> ${appointmentDetails.serviceName}</p>
+          <p><strong>Date :</strong> ${appointmentDetails.date}</p>
+          <p><strong>Heure :</strong> ${appointmentDetails.time}</p>
+          <p><strong>Salon :</strong> ${appointmentDetails.salonName}</p>
+          <p><strong>Adresse :</strong> ${appointmentDetails.address}</p>
+        </div>
+        <p>Nous vous rappelons que l'acompte de ${appointmentDetails.depositAmount}€ a été prélevé.</p>
+        <p>À bientôt !</p>
+      </div>
     `;
+
+    return this.sendEmail({
+      to: email,
+      from: 'rendez-vous@salon-beaute.com',
+      subject: 'Confirmation de votre rendez-vous',
+      html,
+      text: `Votre rendez-vous a été confirmé pour le ${appointmentDetails.date} à ${appointmentDetails.time}.`
+    });
   }
 
-  // Générer un code de vérification à 6 chiffres
-  generateVerificationCode(): string {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+  async sendAppointmentReminder(email: string, appointmentDetails: any): Promise<boolean> {
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #F59E0B;">Rappel de rendez-vous</h2>
+        <p>Nous vous rappelons votre rendez-vous de demain :</p>
+        <div style="background: #fef3c7; padding: 20px; border-radius: 8px;">
+          <p><strong>Service :</strong> ${appointmentDetails.serviceName}</p>
+          <p><strong>Date :</strong> ${appointmentDetails.date}</p>
+          <p><strong>Heure :</strong> ${appointmentDetails.time}</p>
+          <p><strong>Salon :</strong> ${appointmentDetails.salonName}</p>
+        </div>
+        <p>Merci de nous prévenir si vous ne pouvez pas venir.</p>
+      </div>
+    `;
+
+    return this.sendEmail({
+      to: email,
+      from: 'rappel@salon-beaute.com',
+      subject: 'Rappel - Rendez-vous demain',
+      html,
+      text: `Rappel : votre rendez-vous est prévu demain ${appointmentDetails.date} à ${appointmentDetails.time}.`
+    });
   }
 }
 
