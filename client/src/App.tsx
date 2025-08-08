@@ -621,10 +621,9 @@ function Router() {
 
   // Page salon client publique avec ID dynamique
   if (location.startsWith('/salon/') && location !== '/salon') {
-    const salonId = location.split('/')[2];
     return (
       <div className="h-full">
-        <SalonDetail params={{ id: salonId }} />
+        <SalonDetail />
       </div>
     );
   }
