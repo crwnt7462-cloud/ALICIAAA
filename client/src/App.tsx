@@ -623,7 +623,7 @@ function Router() {
   if (location.startsWith('/salon/') && location !== '/salon') {
     return (
       <div className="h-full">
-        <SalonDetail />
+        <BarbierGentlemanMarais />
       </div>
     );
   }
