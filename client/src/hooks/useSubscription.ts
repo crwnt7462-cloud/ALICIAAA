@@ -11,9 +11,9 @@ export function useSubscription() {
   });
 
   // Utiliser les données de subscription de l'API si disponibles, sinon utiliser user
-  const currentPlan = subscription?.planId || 'basic-pro';
+  const currentPlan = (subscription as any)?.planId || 'basic-pro';
   const planData = SUBSCRIPTION_PLANS.find(p => p.id === currentPlan);
-  const status = subscription?.status || 'inactive';
+  const status = (subscription as any)?.status || 'inactive';
 
   return {
     subscription,

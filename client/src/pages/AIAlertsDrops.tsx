@@ -57,7 +57,7 @@ export default function AIAlertsDrops() {
   });
 
   // Transformation des conversations en alertes
-  const aiAlerts: AIAlert[] = conversationsData?.conversations
+  const aiAlerts: AIAlert[] = (conversationsData as any)?.conversations
     ?.filter((conv: any) => conv.metadata?.type === 'client_analysis')
     ?.map((conv: any) => ({
       id: conv.id,

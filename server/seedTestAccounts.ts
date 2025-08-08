@@ -1,4 +1,4 @@
-import { firebaseStorage } from './firebaseStorage';
+// Firebase storage removed - using PostgreSQL only
 import { storage as memoryStorage } from './storage';
 import { FIREBASE_CONFIG } from './firebaseSetup';
 

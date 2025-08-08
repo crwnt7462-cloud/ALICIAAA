@@ -81,14 +81,14 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">RDV Aujourd'hui</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {todayAppointments.length}
+                    {(todayAppointments as any).length || 0}
                   </p>
                 </div>
                 <Calendar className="w-8 h-8 text-purple-600" />
               </div>
               <div className="mt-4">
                 <Badge variant="secondary">
-                  {todayAppointments.filter((apt: any) => apt.status === 'confirmed').length} confirmés
+                  {((todayAppointments as any) || []).filter((apt: any) => apt.status === 'confirmed').length} confirmés
                 </Badge>
               </div>
             </CardContent>
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Messages non lus</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {unreadMessages.length}
+                    {(unreadMessages as any).length || 0}
                   </p>
                 </div>
                 <MessageSquare className="w-8 h-8 text-blue-600" />
@@ -119,14 +119,14 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Revenus ce mois</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {monthlyRevenue?.total || 0}€
+                    {(monthlyRevenue as any)?.total || 0}€
                   </p>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-600" />
               </div>
               <div className="mt-4">
                 <Badge className="bg-green-100 text-green-800">
-                  +{monthlyRevenue?.growth || 0}% vs mois dernier
+                  +{(monthlyRevenue as any)?.growth || 0}% vs mois dernier
                 </Badge>
               </div>
             </CardContent>
@@ -138,14 +138,14 @@ export default function AdminDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Note moyenne</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {stats?.averageRating || '5.0'}
+                    {(stats as any)?.averageRating || '5.0'}
                   </p>
                 </div>
                 <Star className="w-8 h-8 text-yellow-500" />
               </div>
               <div className="mt-4">
                 <Badge variant="outline">
-                  {stats?.totalReviews || 0} avis
+                  {(stats as any)?.totalReviews || 0} avis
                 </Badge>
               </div>
             </CardContent>
@@ -172,14 +172,14 @@ export default function AdminDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {todayAppointments.length === 0 ? (
+                  {((todayAppointments as any) || []).length === 0 ? (
                     <div className="text-center py-8">
                       <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                       <p className="text-gray-600">Aucun rendez-vous aujourd'hui</p>
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {todayAppointments.slice(0, 5).map((appointment: any) => (
+                      {((todayAppointments as any) || []).slice(0, 5).map((appointment: any) => (
                         <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div>
                             <p className="font-medium">{appointment.clientName}</p>
@@ -233,14 +233,14 @@ export default function AdminDashboard() {
                 <CardTitle>Messages récents</CardTitle>
               </CardHeader>
               <CardContent>
-                {unreadMessages.length === 0 ? (
+                {((unreadMessages as any) || []).length === 0 ? (
                   <div className="text-center py-8">
                     <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                     <p className="text-gray-600">Aucun nouveau message</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {unreadMessages.map((message: any) => (
+                    {((unreadMessages as any) || []).map((message: any) => (
                       <div key={message.id} className="p-4 border rounded-lg">
                         <div className="flex items-start justify-between">
                           <div>
