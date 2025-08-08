@@ -914,6 +914,25 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 
 // Types
 export type UpsertUser = typeof users.$inferInsert;
+// Salons - Pages publiques des professionnels
+export const salons = pgTable("salons", {
+  id: varchar("id").primaryKey(), // salon-xxxxx format
+  name: varchar("name").notNull(),
+  description: text("description"),
+  address: text("address"),
+  phone: varchar("phone"),
+  email: varchar("email"),
+  customColors: text("custom_colors"), // JSON des couleurs personnalisées
+  serviceCategories: text("service_categories"), // JSON des catégories de services
+  photos: text("photos"), // JSON array des URLs photos
+  isPublished: boolean("is_published").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type Salon = typeof salons.$inferSelect;
+export type InsertSalon = typeof salons.$inferInsert;
+
 export type User = typeof users.$inferSelect;
 
 // Client account types for authentication - removed duplicate

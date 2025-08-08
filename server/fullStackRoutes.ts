@@ -696,8 +696,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { id } = req.params;
       console.log('📖 Récupération données salon pour éditeur:', id);
       
-      // ✅ CORRECTION MAPPING ID : Utiliser getSalonData avec mapping intégré
-      let salon = await storage.getSalonData?.(id);
+      // ✅ CORRECTION : Utiliser getSalon avec la méthode correcte
+      let salon = await storage.getSalon(id);
       
       if (!salon) {
         console.log('❌ ERREUR: Salon inexistant dans PostgreSQL:', id);

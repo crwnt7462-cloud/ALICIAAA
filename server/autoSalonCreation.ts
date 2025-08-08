@@ -141,9 +141,9 @@ export async function createAutomaticSalonPage(
     updatedAt: new Date()
   };
   
-  // Sauvegarder dans le système de stockage
+  // Sauvegarder dans le système de stockage PostgreSQL
   try {
-    await storage.saveSalonData(salonId, salonData);
+    await storage.createSalon(salonData);
     console.log('✅ Page salon créée automatiquement:', salonId);
     console.log('🔗 URL publique:', `/salon/${salonId}`);
     

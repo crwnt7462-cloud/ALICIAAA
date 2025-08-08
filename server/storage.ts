@@ -6,6 +6,7 @@ import {
   inventory,
   businessRegistrations,
   salonRegistrations,
+  salons,
   subscriptions,
   emailVerifications,
   photos,
@@ -101,6 +102,7 @@ export interface IStorage {
   getSalon(salonId: string): Promise<any>;
   getSalons(): Promise<any[]>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
+  saveSalonData(salonId: string, salonData: any): Promise<any>;
 
   // Salon operations
   getSalons(): Promise<any[]>;
@@ -509,24 +511,86 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSalons(): Promise<any[]> {
-    // Retourner tous les salons de la Map
-    return Array.from(this.salons.values());
-  }
-
-  async saveSalonData(salonId: string, salonData: any): Promise<void> {
-    // Sauvegarder les données du salon dans la Map
-    this.salons.set(salonId, salonData);
-    console.log(`✅ Salon sauvegardé: ${salonId}`);
+    // Retourner tous les salons de la Map + PostgreSQL
+    try {
+      const postgresqlSalons = await db.select().from(salons);
+      console.log(`📊 ${postgresqlSalons.length} salons trouvés en PostgreSQL`);
+      return postgresqlSalons;
+    } catch (error) {
+      console.error('❌ Erreur lecture salons PostgreSQL:', error);
+      return Array.from(this.salons.values());
+    }
   }
 
   async getSalon(salonId: string): Promise<any> {
-    return this.salons.get(salonId);
+    console.log(`📖 Récupération données salon: ${salonId}`);
+    
+    // D'abord chercher en base de données PostgreSQL
+    try {
+      console.log(`🔍 Recherche salon PostgreSQL: ${salonId}`);
+      const salonResults = await db.select().from(salons).where(eq(salons.id, salonId));
+      console.log(`🔍 Résultats trouvés: ${salonResults.length}`);
+      
+      if (salonResults.length > 0) {
+        const salon = salonResults[0];
+        console.log(`✅ Salon trouvé en PostgreSQL: ${salon.name}`);
+        return {
+          ...salon,
+          customColors: typeof salon.customColors === 'string' ? JSON.parse(salon.customColors) : salon.customColors || {},
+          serviceCategories: typeof salon.serviceCategories === 'string' ? JSON.parse(salon.serviceCategories) : salon.serviceCategories || [],
+          photos: typeof salon.photos === 'string' ? JSON.parse(salon.photos) : salon.photos || []
+        };
+      } else {
+        console.log(`⚠️ Aucun salon trouvé en PostgreSQL pour ID: ${salonId}`);
+      }
+    } catch (error) {
+      console.error('❌ Erreur lecture PostgreSQL salon:', error);
+    }
+    
+    // Fallback sur mémoire
+    if (this.salons.has(salonId)) {
+      console.log(`📦 Salon trouvé en mémoire: ${salonId}`);
+      return this.salons.get(salonId);
+    }
+    
+    console.log(`❌ Salon non trouvé: ${salonId}`);
+    return null;
   }
 
   async createSalon(salonData: any): Promise<any> {
-    this.salons.set(salonData.id, salonData);
-    return salonData;
+    console.log('📝 Création salon dans PostgreSQL:', salonData.id);
+    
+    try {
+      const [salon] = await db.insert(salons).values({
+        id: salonData.id,
+        name: salonData.name,
+        description: salonData.description,
+        address: salonData.address,
+        phone: salonData.phone,
+        email: salonData.email,
+        customColors: JSON.stringify(salonData.customColors || {}),
+        serviceCategories: JSON.stringify(salonData.serviceCategories || []),
+        photos: JSON.stringify(salonData.photos || []),
+        isPublished: salonData.isPublished || true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }).returning();
+      
+      console.log('✅ Salon sauvegardé en PostgreSQL:', salon.id);
+      
+      // Aussi stocker en mémoire pour l'instant
+      this.salons.set(salonData.id, salonData);
+      
+      return salon;
+    } catch (error) {
+      console.error('❌ Erreur création salon PostgreSQL:', error);
+      // Fallback en mémoire
+      this.salons.set(salonData.id, salonData);
+      return salonData;
+    }
   }
+
+
 
   async updateSalon(salonId: string, updateData: any): Promise<any> {
     const existing = this.salons.get(salonId) || {};
