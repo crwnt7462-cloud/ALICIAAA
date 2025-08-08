@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -32,30 +33,28 @@ interface ServiceCategory {
   services: Service[];
 }
 
-export default function BarbierGentlemanMarais() {
-  const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState('services');
-  
-  // DONNÉES UNIQUES POUR GENTLEMAN BARBIER MARAIS
-  const salonData = {
-    id: 'barbier-gentleman-marais',
-    name: 'Gentleman Barbier',
-    rating: 4.9,
-    reviews: 189,
-    address: '28 Rue des Rosiers, 75004 Paris',
-    phone: '01 48 87 65 43',
-    verified: true,
-    certifications: ['Barbier traditionnel certifié', 'Rasage au coupe-chou', 'Produits artisanaux'],
-    awards: ['Meilleur barbier du Marais 2024', 'Tradition & Modernité', 'Service d\'exception'],
-    longDescription: 'Gentleman Barbier vous propose une expérience unique dans l\'art du barbier traditionnel. Spécialisés dans la coupe masculine et le rasage traditionnel au coupe-chou, nous perpétuons les techniques ancestrales dans un cadre authentique du Marais historique.',
-    coverImageUrl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
-    photos: [
-      'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
-    ]
-  };
+interface SalonData {
+  id: string;
+  name: string;
+  description?: string;
+  longDescription?: string;
+  address?: string;
+  phone?: string;
+  rating?: number;
+  reviews?: number;
+  verified?: boolean;
+  coverImageUrl?: string;
+  photos?: string[];
+  themeColor?: string;
+  certifications?: string[];
+  specialties?: string[];
+  awards?: string[];
+}
 
+export default function BarbierGentlemanMarais() {
+  // TOUS LES HOOKS DOIVENT ÊTRE EN PREMIER, AVANT TOUTE CONDITION
+  const [location, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState('services');
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
     {
       id: 1,
@@ -91,6 +90,34 @@ export default function BarbierGentlemanMarais() {
     }
   ]);
 
+  // Extraire l'ID du salon depuis l'URL
+  const salonId = location.startsWith('/salon/') ? location.substring(7) : 'barbier-gentleman-marais';
+  
+  // Récupérer les données du salon depuis l'API
+  const { data: salonData, isLoading } = useQuery<SalonData>({
+    queryKey: ['/api/salon', salonId],
+    enabled: !!salonId,
+  });
+
+  // Données par défaut pour éviter les erreurs pendant le loading
+  const defaultSalonData: SalonData = {
+    id: salonId,
+    name: 'Salon en cours de chargement...',
+    rating: 5.0,
+    reviews: 0,
+    address: '',
+    phone: '',
+    verified: true,
+    certifications: [],
+    awards: [],
+    longDescription: '',
+    coverImageUrl: 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    photos: [],
+    themeColor: '#f59e0b', // couleur ambre par défaut
+  };
+
+  const salon: SalonData = salonData || defaultSalonData;
+
   const toggleCategory = (categoryId: number) => {
     setServiceCategories(prev => 
       prev.map(cat => 
@@ -101,13 +128,22 @@ export default function BarbierGentlemanMarais() {
     );
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header avec photo de couverture */}
       <div className="relative h-64 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
-          src={salonData.coverImageUrl} 
-          alt={salonData.name}
+          src={salon.coverImageUrl || salon.photos?.[0] || defaultSalonData.coverImageUrl} 
+          alt={salon.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black bg-opacity-30"></div>
@@ -126,20 +162,20 @@ export default function BarbierGentlemanMarais() {
         {/* Informations salon en overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-2xl font-bold">{salonData.name}</h1>
-            {salonData.verified && (
+            <h1 className="text-2xl font-bold">{salon.name}</h1>
+            {salon.verified && (
               <CheckCircle className="h-5 w-5 text-blue-400" />
             )}
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold">{salonData.rating}</span>
-              <span className="opacity-80">({salonData.reviews} avis)</span>
+              <span className="font-semibold">{salon.rating || 5.0}</span>
+              <span className="opacity-80">({salon.reviews || 0} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
-              <span className="opacity-80">Le Marais</span>
+              <span className="opacity-80">{salon.address || 'Paris'}</span>
             </div>
           </div>
         </div>
@@ -228,16 +264,16 @@ export default function BarbierGentlemanMarais() {
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">À propos</h3>
-                <p className="text-gray-700 mb-6">{salonData.longDescription}</p>
+                <p className="text-gray-700 mb-6">{salon.description || salon.longDescription || 'Découvrez notre salon de beauté et nos services personnalisés.'}</p>
                 
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-gray-400" />
-                    <span>{salonData.address}</span>
+                    <span>{salon.address}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-5 w-5 text-gray-400" />
-                    <span>{salonData.phone}</span>
+                    <span>{salon.phone}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="h-5 w-5 text-gray-400" />
@@ -251,7 +287,7 @@ export default function BarbierGentlemanMarais() {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">Spécialités & Expertise</h3>
                 <div className="space-y-3">
-                  {salonData.certifications.map((cert, index) => (
+                  {(salon.certifications || salon.specialties || []).map((cert, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <Award className="h-4 w-4 text-amber-500" />
                       <span className="text-sm">{cert}</span>
@@ -259,16 +295,18 @@ export default function BarbierGentlemanMarais() {
                   ))}
                 </div>
                 
-                <div className="mt-6">
-                  <h4 className="font-medium mb-3">Distinctions</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {salonData.awards.map((award, index) => (
-                      <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
-                        {award}
-                      </Badge>
-                    ))}
+                {(salon.awards || []).length > 0 && (
+                  <div className="mt-6">
+                    <h4 className="font-medium mb-3">Distinctions</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {salon.awards.map((award, index) => (
+                        <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
+                          {award}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -279,10 +317,10 @@ export default function BarbierGentlemanMarais() {
             <div className="text-center py-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">
-                {salonData.rating}/5 étoiles
+                {salon.rating || 5.0}/5 étoiles
               </h3>
               <p className="text-gray-600">
-                Basé sur {salonData.reviews} avis clients
+                Basé sur {salon.reviews || 0} avis clients
               </p>
             </div>
             
