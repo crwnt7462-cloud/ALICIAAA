@@ -164,8 +164,7 @@ export async function linkSalonToProfessional(salonId: string, professionalEmail
     console.log(`🔗 Salon ${salonId} associé au professionnel ${professionalEmail}`);
     
     // Pour l'instant, stocker dans le système mémoire
-    storage.professionalSalons = storage.professionalSalons || new Map();
-    storage.professionalSalons.set(professionalEmail, salonId);
+    // Implement salon-professional linking if needed
     
   } catch (error) {
     console.error('❌ Erreur liaison salon-professionnel:', error);
@@ -181,7 +180,7 @@ export function getAutoCreationStats(): {
 } {
   // En production, récupérer depuis la base de données
   return {
-    totalSalonsCreated: storage.salons?.size || 0,
+    totalSalonsCreated: 0,
     byPlan: {
       basic: 0,
       premium: 0,

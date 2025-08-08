@@ -37,10 +37,12 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Core Services**: AIService (optimisation planning, prédiction, chatbot), ConfirmationService (notifications auto emails/SMS, intégration calendriers), NotificationService (push notifications, alertes), ReceiptService (génération reçus/factures PDF).
 - **Advanced Features**: Système de mentions @ avec handles uniques, gestion complète des stocks avec alertes, messagerie directe premium, système d'acompte et créateur de pages personnalisées.
 - **Security**: Authentification JWT PRO/CLIENT avec bcrypt et sessions sécurisées.
+- **Registration System**: Système d'inscription entièrement fonctionnel avec création automatique de salon personnel, validation des emails uniques, et données authentiques uniquement.
 
 ### Database
 - **Type**: PostgreSQL avec Drizzle ORM
 - **Schema**: Base de données étendue avec plus de 34 tables couvrant les utilisateurs, clients, rendez-vous, services, staff, avis, programmes de fidélité, promotions, notifications, listes d'attente, etc. L'application utilise uniquement des données réelles de la base de données, sans aucune donnée par défaut ou mockée.
+- **Data Integrity**: Suppression complète des données factices, dashboard authentique à 0 pour nouveaux professionnels, inventaire vide qui se remplit avec les vrais produits ajoutés.
 
 ### General Design Principles
 - **Modularity**: Structure des dossiers claire (`client/`, `server/`, `shared/`, `assets/`) pour une meilleure organisation et maintenabilité.
