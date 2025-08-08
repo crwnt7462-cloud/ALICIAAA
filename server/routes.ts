@@ -1247,17 +1247,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/services/:id', isAuthenticated, async (req, res) => {
+  app.put('/api/services/:id', async (req, res) => {
     try {
-      const userId = (req.user as any)?.claims?.sub;
       const id = parseInt(req.params.id);
+      const serviceData = req.body;
       
-      if (!userId) {
-        return res.status(401).json({ 
-          error: "Unauthorized",
-          details: "User authentication required" 
+      console.log('🔧 Modification service ID:', id, 'Données:', serviceData);
+      
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ 
+          error: "Invalid service ID",
+          details: "Service ID must be a number" 
         });
       }
+
+      // Convertir le prix en nombre si nécessaire
+      if (serviceData.price && typeof serviceData.price === 'string') {
+        serviceData.price = parseFloat(serviceData.price).toFixed(2);
+      }
+
+      const updatedService = await storage.updateService(id, serviceData);
+      
+      console.log('✅ Service mis à jour:', updatedService.name);
+      res.json(updatedService);
 
       if (isNaN(id) || id <= 0) {
         return res.status(400).json({
