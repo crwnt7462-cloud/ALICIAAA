@@ -156,6 +156,7 @@ import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
+import SalonDetail from "@/pages/SalonDetail";
 
 
 function Router() {
@@ -614,6 +615,16 @@ function Router() {
     return (
       <div className="h-full">
         <Settings />
+      </div>
+    );
+  }
+
+  // Page salon client publique avec ID dynamique
+  if (location.startsWith('/salon/') && location !== '/salon') {
+    const salonId = location.split('/')[2];
+    return (
+      <div className="h-full">
+        <SalonDetail params={{ id: salonId }} />
       </div>
     );
   }
