@@ -1,14 +1,27 @@
+import { useQuery } from "@tanstack/react-query";
+
 export function useAuth() {
-  // Always return a mock user without authentication
-  return {
-    user: {
-      id: "demo-user",
-      email: "demo@beautyapp.com",
-      firstName: "Demo",
-      lastName: "User",
-      profileImageUrl: null
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
+    queryFn: async () => {
+      const response = await fetch('/api/auth/user', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        if (response.status === 401) {
+          return null;
+        }
+        throw new Error('Failed to fetch user');
+      }
+      return response.json();
     },
-    isLoading: false,
-    isAuthenticated: true,
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  return {
+    user,
+    isLoading,
+    isAuthenticated: !!user,
   };
 }

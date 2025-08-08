@@ -47,7 +47,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         console.log(`❌ Salon démo non trouvé`);
         return res.status(404).json({ error: 'Salon démo non disponible' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching user salon:", error);
       return res.status(500).json({ message: "Failed to fetch user salon" });
     }
@@ -69,7 +69,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       };
       console.log(`✅ Plan demo: ${subscription.planName} (${subscription.price}€)`);
       return res.status(200).json(subscription);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching user subscription:", error);
       return res.status(500).json({ message: "Failed to fetch user subscription" });
     }
@@ -91,7 +91,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         message: "Connexion OpenAI fonctionnelle!",
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur connexion OpenAI:', error);
       res.status(500).json({
         success: false,
@@ -344,7 +344,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           }
         }
         console.log(`💬 ${messagesSaved} analyses client sauvegardées dans l'assistant IA`);
-      } catch (error) {
+      } catch (error: any) {
         console.error('❌ Erreur sauvegarde analyses:', error);
       }
       
@@ -356,7 +356,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         messages_saved: messagesSaved,
         timestamp: new Date().toISOString()
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur analyse clients réels:', error);
       res.status(500).json({
         success: false,
@@ -373,7 +373,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         conversations
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération conversations:', error);
       res.status(500).json({
         success: false,
@@ -390,7 +390,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         message: 'Conversation supprimée avec succès'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur suppression conversation:', error);
       res.status(500).json({
         success: false,
@@ -406,7 +406,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         message: 'Toutes les conversations ont été supprimées'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur nettoyage conversations:', error);
       res.status(500).json({
         success: false,
@@ -424,7 +424,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         messages,
         total: messages.length
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération messages IA:', error);
       res.status(500).json({ 
         success: false, 
@@ -441,7 +441,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         message: 'Message IA supprimé avec succès'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur suppression message IA:', error);
       res.status(500).json({ 
         success: false, 
@@ -457,7 +457,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         success: true,
         message: 'Tous les messages IA ont été supprimés'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur nettoyage messages IA:', error);
       res.status(500).json({ 
         success: false, 
@@ -480,7 +480,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         console.log('❌ Échec de connexion pour:', email);
         res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de la connexion:', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
@@ -499,7 +499,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         console.log('❌ Échec de connexion CLIENT pour:', email);
         res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de la connexion CLIENT:', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
@@ -535,7 +535,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         userId: result.id,
         firebaseStatus: 'WORKING'
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Firebase échec:', error);
       res.json({ 
         success: false, 
@@ -584,7 +584,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         },
         token: 'demo-token-' + user.id 
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de l\'inscription PRO:', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
@@ -598,7 +598,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const client = await storage.createClientAccount(userData);
       console.log('✅ Inscription CLIENT réussie pour:', userData.email);
       res.json({ success: true, client, token: 'demo-client-token-' + client.id });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de l\'inscription CLIENT:', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
@@ -613,7 +613,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
       res.json(user);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
@@ -640,7 +640,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
         
       
-      console.log('📖 Salon trouvé:', salon.name, 'ID:', salon.id);
+      console.log('📖 Salon trouvé:', salon?.name, 'ID:', salon.id);
       
       // ✅ FORCER L'AJOUT DES PHOTOS POUR TOUS LES SALONS - CORRECTION DÉFINITIVE
       if (!salon.photos || salon.photos.length === 0) {
@@ -649,12 +649,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
           "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
         ];
-        console.log(`📸 Photos ajoutées au salon: ${salon.name}`);
+        console.log(`📸 Photos ajoutées au salon: ${salon?.name}`);
       }
       
       if (!salon.coverImageUrl) {
         salon.coverImageUrl = salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
-        console.log(`🖼️ Cover image ajoutée au salon: ${salon.name}`);
+        console.log(`🖼️ Cover image ajoutée au salon: ${salon?.name}`);
       }
 
       // ✅ AJOUTER LES PROPRIÉTÉS MANQUANTES POUR ÉVITER LES ERREURS
@@ -682,9 +682,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         salon.longDescription = "Notre salon vous accueille dans un cadre moderne et chaleureux.";
       }
       
-      console.log(`✅ SALON AVEC PHOTOS GARANTIES: ${salon.name} - Photos: ${salon.photos?.length || 0}`);
+      console.log(`✅ SALON AVEC PHOTOS GARANTIES: ${salon?.name} - Photos: ${salon.photos?.length || 0}`);
       res.json(salon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération salon:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -708,7 +708,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
         
       
-      console.log('📖 Salon trouvé:', salon.name, 'ID:', salon.id);
+      console.log('📖 Salon trouvé:', salon?.name, 'ID:', salon.id);
       
       // ✅ FORCER L'AJOUT DES PHOTOS POUR TOUS LES SALONS - CORRECTION DÉFINITIVE
       if (!salon.photos || salon.photos.length === 0) {
@@ -717,12 +717,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
           "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
         ];
-        console.log(`📸 Photos ajoutées au salon: ${salon.name}`);
+        console.log(`📸 Photos ajoutées au salon: ${salon?.name}`);
       }
       
       if (!salon.coverImageUrl) {
         salon.coverImageUrl = salon.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format";
-        console.log(`🖼️ Cover image ajoutée au salon: ${salon.name}`);
+        console.log(`🖼️ Cover image ajoutée au salon: ${salon?.name}`);
       }
 
       // ✅ AJOUTER LES PROPRIÉTÉS MANQUANTES POUR ÉVITER LES ERREURS
@@ -750,9 +750,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         salon.longDescription = "Notre salon vous accueille dans un cadre moderne et chaleureux.";
       }
       
-      console.log(`✅ DONNÉES SALON POUR ÉDITEUR: ${salon.name} - Photos: ${salon.photos?.length || 0}`);
+      console.log(`✅ DONNÉES SALON POUR ÉDITEUR: ${salon?.name} - Photos: ${salon.photos?.length || 0}`);
       res.json(salon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération salon:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -835,7 +835,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         shareableUrl: `${req.protocol}://${req.get('host')}/salon/${actualId}`,
         publicListing: true
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur sauvegarde salon:', error);
       res.status(500).json({ success: false, message: 'Erreur lors de la sauvegarde' });
     }
@@ -880,13 +880,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       if (q) {
         const queryLower = (q as string).toLowerCase();
         salons = salons.filter(salon => 
-          salon.name.toLowerCase().includes(queryLower) ||
+          salon?.name.toLowerCase().includes(queryLower) ||
           salon.services?.some((service: string) => service.toLowerCase().includes(queryLower))
         );
       }
       
       res.json({ success: true, salons });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur recherche salons:', error);
       res.status(500).json({ success: false, message: 'Erreur de recherche' });
     }
@@ -909,7 +909,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       res.json(stats);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur dashboard stats:', error);
       res.status(500).json({ error: 'Erreur récupération statistiques' });
     }
@@ -920,13 +920,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       console.log('📅 Récupération des RDV à venir pour:', userId);
       
-      let appointments = [];
+      let appointments: any[] = [];
       if (storage.getUpcomingAppointments) {
         appointments = await storage.getUpcomingAppointments(userId);
       }
       
       res.json(appointments || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de la récupération des RDV à venir:', error);
       res.status(500).json({ error: 'Failed to fetch upcoming appointments' });
     }
@@ -938,13 +938,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       console.log('👥 Récupération clients authentiques pour:', userId);
       
-      let clients = [];
+      let clients: any[] = [];
       if (storage.getClients) {
         clients = await storage.getClients(userId);
       }
       
       res.json(clients || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération clients:', error);
       res.status(500).json({ error: 'Erreur récupération clients' });
     }
@@ -956,13 +956,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       console.log('📅 Récupération rendez-vous authentiques pour:', userId);
       
-      let appointments = [];
+      let appointments: any[] = [];
       if (storage.getAppointments) {
         appointments = await storage.getAppointments(userId);
       }
       
       res.json(appointments || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération rendez-vous:', error);
       res.status(500).json({ error: 'Erreur récupération rendez-vous' });
     }
@@ -980,7 +980,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(inventory || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération inventaire:', error);
       res.status(500).json({ error: 'Erreur récupération inventaire' });
     }
@@ -991,7 +991,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const revenueChart = await storage.getRevenueChart(userId);
       res.json(revenueChart);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching revenue chart:", error);
       res.status(500).json({ error: "Failed to fetch revenue chart" });
     }
@@ -1002,7 +1002,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const services = await storage.getTopServices(userId);
       res.json(services);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching top services:", error);
       res.status(500).json({ error: "Failed to fetch top services" });
     }
@@ -1013,7 +1013,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const performance = await storage.getStaffPerformance(userId);
       res.json(performance);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching staff performance:", error);
       res.status(500).json({ error: "Failed to fetch staff performance" });
     }
@@ -1024,7 +1024,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const retention = await storage.getClientRetentionRate(userId);
       res.json(retention);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching client retention:", error);
       res.status(500).json({ error: "Failed to fetch client retention" });
     }
@@ -1050,7 +1050,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       console.log('👥 Staff à retourner:', staff.length, 'professionnels');
       res.json(staff);
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ Erreur staff API:", error);
       res.status(500).json({ error: "Failed to fetch staff" });
     }
@@ -1061,7 +1061,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const inventory = await storage.getInventory(userId);
       res.json(inventory);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching inventory:", error);
       res.status(500).json({ error: "Failed to fetch inventory" });
     }
@@ -1073,7 +1073,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = req.params.userId;
       const inventory = await storage.getInventory(userId);
       res.json(inventory);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching inventory for user:", error);
       res.status(500).json({ error: "Failed to fetch inventory" });
     }
@@ -1084,7 +1084,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const lowStockItems = await storage.getLowStockItems(userId);
       res.json(lowStockItems);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching low stock items:", error);
       res.status(500).json({ error: "Failed to fetch low stock items" });
     }
@@ -1095,7 +1095,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = (req.session as any)?.user?.id || 'demo';
       const item = await storage.createInventoryItem(userId, req.body);
       res.json(item);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating inventory item:", error);
       res.status(500).json({ error: "Failed to create inventory item" });
     }
@@ -1106,7 +1106,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const id = parseInt(req.params.id);
       const item = await storage.updateInventoryItem(id, req.body);
       res.json(item);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating inventory item:", error);
       res.status(500).json({ error: "Failed to update inventory item" });
     }
@@ -1117,7 +1117,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const id = parseInt(req.params.id);
       await storage.deleteInventoryItem(id);
       res.json({ success: true });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting inventory item:", error);
       res.status(500).json({ error: "Failed to delete inventory item" });
     }
@@ -1185,7 +1185,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         console.log('❌ Échec de connexion PRO pour:', email);
         res.status(401).json({ success: false, message: 'Invalid credentials' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur lors de la connexion PRO:', error);
       res.status(500).json({ success: false, message: 'Server error' });
     }
@@ -1205,7 +1205,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(notifications);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching notifications:', error);
       res.status(500).json({ message: 'Failed to fetch notifications' });
     }
@@ -1232,7 +1232,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(notification);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating notification:', error);
       res.status(500).json({ message: 'Failed to create notification' });
     }
@@ -1252,7 +1252,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Utiliser Stripe directement (package installé)
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2025-06-30.basil',
+        apiVersion: '2023-10-16',
       });
       
       // Calcul du montant en centimes
@@ -1283,7 +1283,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         currency: 'eur'
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur création Payment Intent professionnel:', error);
       res.status(500).json({ 
         error: 'Erreur lors de la création du Payment Intent',
@@ -1334,7 +1334,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         message: 'Connexion professionnelle réussie'
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur connexion business:', error);
       res.status(500).json({ error: 'Erreur serveur' });
     }
@@ -1356,7 +1356,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json({ success: true, client });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering client:', error);
       res.status(500).json({ success: false, message: 'Failed to register client' });
     }
@@ -1378,7 +1378,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       res.json(client);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching client:', error);
       res.status(500).json({ message: 'Failed to fetch client' });
     }
@@ -1460,7 +1460,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       console.log('💼 Services à retourner:', services.length, 'services');
       res.json(services);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur services API:', error);
       res.status(500).json({ message: 'Failed to fetch services' });
     }
@@ -1557,7 +1557,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(service);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating service:', error);
       res.status(500).json({ message: 'Failed to update service' });
     }
@@ -1577,7 +1577,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(staff);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating staff:', error);
       res.status(500).json({ message: 'Failed to create staff' });
     }
@@ -1598,7 +1598,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(staff);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating staff:', error);
       res.status(500).json({ message: 'Failed to update staff' });
     }
@@ -1618,7 +1618,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       res.json(salon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching salon:', error);
       res.status(500).json({ message: 'Failed to fetch salon' });
     }
@@ -1634,7 +1634,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       const services = await storage.getServices(userId);
       res.json(services);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching services:', error);
       res.status(500).json({ message: 'Failed to fetch services' });
     }
@@ -1650,7 +1650,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(service);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching service:', error);
       res.status(500).json({ message: 'Failed to fetch service' });
     }
@@ -1666,7 +1666,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       const clients = await storage.getClients(userId);
       res.json(clients);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching clients:', error);
       res.status(500).json({ message: 'Failed to fetch clients' });
     }
@@ -1702,7 +1702,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       } else {
         res.status(401).json({ error: 'Identifiants incorrects' });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Client login error:', error);
       res.status(500).json({ error: 'Erreur serveur' });
     }
@@ -1741,7 +1741,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           token
         }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Client registration error:', error);
       res.status(500).json({ error: 'Erreur lors de la création du compte' });
     }
@@ -1771,7 +1771,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       } else {
         res.status(401).json({ error: 'Token invalide' });
       }
-    } catch (error) {
+    } catch (error: any) {
       res.status(401).json({ error: 'Token invalide' });
     }
   });
@@ -1825,9 +1825,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
       
-      console.log('✅ Salon trouvé:', salon.name);
+      console.log('✅ Salon trouvé:', salon?.name);
       res.json(salon); // Renvoyer directement les données du salon
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération salon:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -1899,7 +1899,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         message: 'Salon demo créé avec force',
         salon: demoSalon 
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur création forcée salon demo:', error);
       res.status(500).json({ error: 'Erreur création salon demo' });
     }
@@ -1979,7 +1979,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('✅ Salon personnel trouvé:', userSalon.name, 'ID:', userSalon.id);
       return res.json(userSalon);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération salon current:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -2071,7 +2071,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
       
       res.json(salon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur récupération salon:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -2093,7 +2093,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       storage.salons?.set(salonId, updatedSalon);
       
       res.json(updatedSalon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur mise à jour salon:', error);
       res.status(500).json({ message: 'Erreur serveur' });
     }
@@ -2190,7 +2190,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       if (storage.createBusiness) {
         try {
           business = await storage.createBusiness(businessData);
-        } catch (error) {
+        } catch (error: any) {
           console.log('ℹ️ createBusiness non disponible, utilisation données user');
           business = { ...businessData, id: user.id, createdAt: new Date() };
         }
@@ -2216,7 +2216,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         subscriptionPlan
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur inscription professionnel:', error);
       res.status(500).json({ 
         success: false, 
@@ -2252,7 +2252,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         editorUrl: `/salon-editor/${testSalon.id}`
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur création salon test:', error);
       res.status(500).json({ error: 'Erreur lors de la création du salon test' });
     }
@@ -2295,7 +2295,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       if (cityStr) {
         const cityLower = cityStr.toLowerCase();
         salons = salons.filter(salon => 
-          salon.address?.toLowerCase().includes(cityLower)
+          salon?.address?.toLowerCase().includes(cityLower)
         );
         console.log(`📍 Filtre ville "${cityStr}": ${salons.length} salons`);
       }
@@ -2304,8 +2304,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       if (searchStr) {
         const searchLower = searchStr.toLowerCase();
         salons = salons.filter(salon =>
-          salon.name?.toLowerCase().includes(searchLower) ||
-          salon.description?.toLowerCase().includes(searchLower) ||
+          salon?.name?.toLowerCase().includes(searchLower) ||
+          salon?.description?.toLowerCase().includes(searchLower) ||
           salon.tags?.some((tag: string) => tag.toLowerCase().includes(searchLower))
         );
         console.log(`🔍 Filtre recherche "${searchStr}": ${salons.length} salons`);
@@ -2314,8 +2314,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Formater les résultats pour l'affichage dans SalonSearchComplete
       const formattedSalons = salons.map(salon => ({
         id: salon.id,
-        name: salon.name,
-        location: extractCity(salon.address),
+        name: salon?.name,
+        location: extractCity(salon?.address),
         rating: salon.rating || 4.5,
         reviews: salon.reviewCount || 0,
         nextSlot: "",
@@ -2329,8 +2329,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         openNow: false,
         promotion: null,
         // Données complètes pour les détails
-        description: salon.description,
-        address: salon.address,
+        description: salon?.description,
+        address: salon?.address,
         phone: salon.phone,
         photos: salon.photos || [],
         serviceCategories: salon.serviceCategories || [],
@@ -2343,7 +2343,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         total: formattedSalons.length,
         filters: { category, city, search }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error fetching salons:', error);
       res.status(500).json({ message: 'Failed to fetch salons' });
     }
@@ -2362,9 +2362,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Formater les données pour l'affichage détaillé
       const formattedSalon = {
         id: salon.id,
-        name: salon.name,
-        description: salon.description,
-        address: salon.address,
+        name: salon?.name,
+        description: salon?.description,
+        address: salon?.address,
         phone: salon.phone,
         email: salon.email,
         website: salon.website,
@@ -2375,7 +2375,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         tags: salon.tags || [],
         openingHours: salon.openingHours,
         category: determineCategory(salon.serviceCategories),
-        city: extractCity(salon.address),
+        city: extractCity(salon?.address),
         services: extractServices(salon.serviceCategories),
         // Ajouter des infos supplémentaires pour la page détail
         verified: false,
@@ -2384,7 +2384,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       res.json(formattedSalon);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching salon details:', error);
       res.status(500).json({ message: 'Failed to fetch salon details' });
     }
@@ -2515,7 +2515,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       res.json(defaultPolicies);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching salon policies:', error);
       res.status(500).json({ message: 'Failed to fetch salon policies' });
     }
@@ -2534,7 +2534,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         message: 'Politiques sauvegardées avec succès',
         data: { policies, settings }
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving salon policies:', error);
       res.status(500).json({ message: 'Failed to save salon policies' });
     }
@@ -2555,7 +2555,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Nettoyer les anciennes vérifications expirées
       try {
         await storage.cleanExpiredEmailVerifications?.();
-      } catch (error) {
+      } catch (error: any) {
         console.log('Info: Nettoyage vérifications (méthode pas encore implémentée)');
       }
 
@@ -2575,7 +2575,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       try {
         await storage.createEmailVerification?.(verificationData);
-      } catch (error) {
+      } catch (error: any) {
         console.log('Info: Stockage vérification (méthode pas encore implémentée)');
       }
 
@@ -2600,7 +2600,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           error: 'Erreur lors de l\'envoi de l\'email' 
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur envoi vérification:', error);
       res.status(500).json({ 
         error: 'Erreur serveur lors de l\'envoi du code' 
@@ -2624,7 +2624,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       try {
         verification = await storage.getEmailVerification(email, verificationCode);
         console.log('🔍 Résultat vérification:', verification ? 'Trouvé' : 'Pas trouvé');
-      } catch (error) {
+      } catch (error: any) {
         console.error('Erreur getEmailVerification:', error);
       }
 
@@ -2644,7 +2644,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Marquer comme utilisé
       try {
         await storage.markEmailVerificationAsUsed?.(verification.id);
-      } catch (error) {
+      } catch (error: any) {
         console.log('Info: Marquage vérification (méthode pas encore implémentée)');
       }
 
@@ -2668,14 +2668,14 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         // Créer compte professionnel
         try {
           createdAccount = await storage.createUser?.(userData);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Erreur création compte pro:', error);
         }
       } else if (verification.userType === 'client') {
         // Créer compte client
         try {
           createdAccount = await storage.createClientAccount?.(userData);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Erreur création compte client:', error);
           // Si le client existe déjà, récupérer le compte existant
           if (error.code === '23505' && error.constraint === 'client_accounts_email_key') {
@@ -2694,7 +2694,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         account: createdAccount
       });
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erreur vérification code:', error);
       res.status(500).json({ 
         error: 'Erreur serveur lors de la vérification' 

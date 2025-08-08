@@ -581,7 +581,7 @@ export default function SalonBooking() {
             <div className="text-xl">{selectedProfessional?.image}</div>
             <div>
               <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
-              <p className="text-sm text-gray-600">{selectedProfessional?.specialties?.join(', ')}</p>
+              <p className="text-sm text-gray-600">{Array.isArray(selectedProfessional?.specialties) ? selectedProfessional.specialties.join(', ') : 'Spécialiste beauté'}</p>
             </div>
           </div>
           <div className="border-t pt-3">
@@ -659,7 +659,7 @@ export default function SalonBooking() {
                 <div>
                   <h3 className="font-semibold text-gray-900">{selectedProfessional?.name}</h3>
                   <p className="text-sm text-gray-600">
-                    {selectedProfessional?.specialties?.join(', ')} • ★ {selectedProfessional?.rating}
+                    {Array.isArray(selectedProfessional?.specialties) ? selectedProfessional.specialties.join(', ') : 'Spécialiste'} • ★ {selectedProfessional?.rating}
                   </p>
                 </div>
               </div>
