@@ -480,6 +480,98 @@ export class DatabaseStorage implements IStorage {
     this.salons.set(salonId, updated);
     return updated;
   }
+
+  // Méthodes pour gestion des photos de salon
+  async getSalonPhotos(salonId: string): Promise<any[]> {
+    return []; // TODO: Implémenter avec base de données
+  }
+
+  async addSalonPhoto(salonId: string, photoData: any): Promise<any> {
+    return { id: Date.now(), ...photoData }; // TODO: Implémenter avec base de données
+  }
+
+  async updateSalonPhoto(photoId: string, updateData: any): Promise<any> {
+    return { id: photoId, ...updateData }; // TODO: Implémenter avec base de données
+  }
+
+  async deleteSalonPhoto(photoId: string): Promise<boolean> {
+    return true; // TODO: Implémenter avec base de données
+  }
+
+  // Méthodes pour gestion des clients
+  async getClientAccountByEmail(email: string): Promise<any> {
+    // Simulation - en réalité, chercher en base de données
+    return null;
+  }
+
+  async getClientsByProfessional(professionalId: string): Promise<any[]> {
+    return []; // TODO: Implémenter avec base de données
+  }
+
+  async createClient(clientData: any): Promise<any> {
+    return { id: Date.now(), ...clientData }; // TODO: Implémenter avec base de données
+  }
+
+  async updateClient(clientId: string, updateData: any): Promise<any> {
+    return { id: clientId, ...updateData }; // TODO: Implémenter avec base de données
+  }
+
+  async deleteClient(clientId: string): Promise<boolean> {
+    return true; // TODO: Implémenter avec base de données
+  }
+
+  // Méthodes pour notes clients et tags
+  async createOrUpdateClientNote(clientId: string, note: string, professionalId: string): Promise<any> {
+    return { clientId, note, professionalId, updatedAt: new Date() }; // TODO: Implémenter avec base de données
+  }
+
+  async getCustomTagsByProfessional(professionalId: string): Promise<any[]> {
+    return []; // TODO: Implémenter avec base de données
+  }
+
+  async createCustomTag(tagData: any): Promise<any> {
+    return { id: Date.now(), ...tagData }; // TODO: Implémenter avec base de données
+  }
+
+  async deleteCustomTag(tagId: string): Promise<boolean> {
+    return true; // TODO: Implémenter avec base de données
+  }
+
+  // Méthodes pour gestion du staff
+  async createStaff(staffData: any): Promise<any> {
+    return { id: Date.now(), ...staffData }; // TODO: Implémenter avec base de données
+  }
+
+  async updateStaff(staffId: string, updateData: any): Promise<any> {
+    return { id: staffId, ...updateData }; // TODO: Implémenter avec base de données
+  }
+
+  async deleteStaff(staffId: string): Promise<boolean> {
+    return true; // TODO: Implémenter avec base de données
+  }
+
+  // Méthodes pour gestion des rendez-vous
+  async createAppointment(appointmentData: any): Promise<any> {
+    return { id: Date.now(), ...appointmentData }; // TODO: Implémenter avec base de données
+  }
+
+  async updateAppointment(appointmentId: string, updateData: any): Promise<any> {
+    return { id: appointmentId, ...updateData }; // TODO: Implémenter avec base de données
+  }
+
+  async deleteAppointment(appointmentId: string): Promise<boolean> {
+    return true; // TODO: Implémenter avec base de données
+  }
+
+  // Méthode pour enregistrement business
+  async getBusinessRegistration(userId: string): Promise<any> {
+    return null; // TODO: Implémenter avec base de données
+  }
+
+  // Méthode pour services par utilisateur
+  async getServicesByUserId(userId: string): Promise<any[]> {
+    return []; // TODO: Implémenter avec base de données
+  }
 }
 
 export const storage = new DatabaseStorage();

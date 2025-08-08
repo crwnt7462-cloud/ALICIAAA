@@ -142,24 +142,40 @@ export class StripeService {
   }
 
   // Créer un remboursement
-  async createRefund(paymentIntentId: string, amount?: number): Promise<boolean> {
+  async createRefund(paymentIntentId: string, amount?: number): Promise<{ success: boolean; refundId?: string; error?: string }> {
     try {
-      console.log(`💰 Remboursement initié pour ${paymentIntentId}`);
-      if (amount) {
-        console.log(`💵 Montant: ${amount}€`);
+      if (!process.env.STRIPE_SECRET_KEY) {
+        return { 
+          success: false, 
+          error: 'Configuration Stripe manquante' 
+        };
       }
+
+      // Vérifier que le payment intent existe et est eligible au remboursement
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
-      // TODO: Intégrer Stripe Refunds
-      // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-      // const refund = await stripe.refunds.create({
-      //   payment_intent: paymentIntentId,
-      //   amount: amount ? amount * 100 : undefined
-      // });
+      if (paymentIntent.status !== 'succeeded') {
+        return { 
+          success: false, 
+          error: 'Paiement non éligible au remboursement' 
+        };
+      }
+
+      // Créer le remboursement avec Stripe
+      const refund = await stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        amount: amount ? Math.round(amount * 100) : undefined // Montant en centimes
+      });
       
-      return true;
-    } catch (error) {
-      console.error("Erreur remboursement:", error);
-      return false;
+      return { 
+        success: true, 
+        refundId: refund.id 
+      };
+    } catch (error: any) {
+      return { 
+        success: false, 
+        error: error.message || 'Erreur lors du remboursement' 
+      };
     }
   }
 }

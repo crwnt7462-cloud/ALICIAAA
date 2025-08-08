@@ -12,7 +12,7 @@ export function configureSession() {
       tableName: 'sessions',
       createTableIfMissing: false, // Table déjà créée par Drizzle
     }),
-    secret: process.env.SESSION_SECRET || 'beauty-salon-secret-key-2025',
+    secret: process.env.SESSION_SECRET || require('crypto').randomBytes(64).toString('hex'),
     resave: false,
     saveUninitialized: false,
     cookie: {
