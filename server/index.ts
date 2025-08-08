@@ -1,8 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { registerFullStackRoutes } from "./fullStackRoutes";
-import { createTestAccounts } from "./seedTestAccounts";
-import { seedSalons } from "./seedSalons";
+// SUPPRIMÉ: Imports pour données de test automatiques
 import { setupVite, serveStatic, log } from "./vite";
 import { configureSession } from "./sessionMiddleware";
 
@@ -47,83 +46,9 @@ app.use((req, res, next) => {
   // Utiliser les routes Firebase-compatible
   const server = await registerFullStackRoutes(app);
   
-  // Créer les comptes de test au démarrage
-  await createTestAccounts();
+  // SUPPRIMÉ: Création automatique de données de test désactivée
   
-  // Créer les salons de test avec photos
-  await seedSalons();
-  
-  // ✅ CRÉATION SALON DEMO MODIFIABLE - NÉCESSAIRE POUR ÉDITEUR
-  try {
-    const { storage } = await import("./storage");
-    
-    // Créer le salon demo modifiable avec ID "salon-demo"
-    const salonDemo = {
-      id: "salon-demo",
-      name: "Salon Démo Modifiable",
-      description: "Salon d'exemple que vous pouvez personnaliser dans l'éditeur",
-      address: "123 Rue de la Beauté, 75001 Paris",
-      city: "Paris",
-      postalCode: "75001",
-      phone: "01 42 34 56 78",
-      email: "contact@salon-demo.fr",
-      website: "https://salon-demo.fr",
-      businessHours: {
-        monday: { open: "09:00", close: "19:00", isOpen: true },
-        tuesday: { open: "09:00", close: "19:00", isOpen: true },
-        wednesday: { open: "09:00", close: "19:00", isOpen: true },
-        thursday: { open: "09:00", close: "19:00", isOpen: true },
-        friday: { open: "09:00", close: "19:00", isOpen: true },
-        saturday: { open: "09:00", close: "18:00", isOpen: true },
-        sunday: { open: "10:00", close: "17:00", isOpen: false }
-      },
-      serviceCategories: [
-        {
-          id: "coiffure",
-          name: "Coiffure",
-          services: [
-            { id: "coupe-shampooing", name: "Coupe + Shampooing", duration: 45, price: 45 },
-            { id: "coupe-brushing", name: "Coupe + Brushing", duration: 60, price: 65 },
-            { id: "coloration", name: "Coloration", duration: 120, price: 85 }
-          ]
-        },
-        {
-          id: "soins",
-          name: "Soins visage",
-          services: [
-            { id: "nettoyage-peau", name: "Nettoyage de peau", duration: 60, price: 70 },
-            { id: "soin-hydratant", name: "Soin hydratant", duration: 45, price: 55 }
-          ]
-        }
-      ],
-      coverImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
-      photos: [
-        "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop",
-        "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop"
-      ],
-      rating: 4.7,
-      reviewCount: 156,
-      features: ["WiFi gratuit", "Climatisation", "Parking"],
-      socialMedia: {
-        instagram: "@salon_demo",
-        facebook: "Salon Démo",
-        twitter: "@salon_demo"
-      },
-      isVerified: true,
-      isActive: true,
-      primaryColor: "#8B5CF6", // Violet par défaut
-      customButtonColor: null,
-      colorIntensity: 50,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-
-    await storage.createSalon(salonDemo);
-    console.log('✅ Salon démo modifiable créé avec ID: salon-demo');
-    
-  } catch (error) {
-    console.log('ℹ️ Salon démo existe déjà ou erreur de création:', error);
-  }
+  // SUPPRIMÉ: Salon démo automatique désactivé
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
