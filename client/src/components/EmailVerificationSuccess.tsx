@@ -78,9 +78,9 @@ export function EmailVerificationSuccess({
                     <p><strong>Email :</strong> {account?.email}</p>
                     <p><strong>Plan :</strong> 
                       <span className="ml-1 px-2 py-1 bg-violet-100 text-violet-700 rounded text-xs">
-                        {account?.subscriptionPlan === 'basic' && 'Basic Pro (€29)'}
-                        {account?.subscriptionPlan === 'premium' && 'Advanced Pro (€79)'}
-                        {account?.subscriptionPlan === 'enterprise' && 'Premium Pro (€149)'}
+                        {account?.subscriptionPlan === 'basic-pro' && 'Basic Pro (€29)'}
+                        {account?.subscriptionPlan === 'advanced-pro' && 'Advanced Pro (€79)'}
+                        {account?.subscriptionPlan === 'premium-pro' && 'Premium Pro (€149)'}
                       </span>
                     </p>
                   </>

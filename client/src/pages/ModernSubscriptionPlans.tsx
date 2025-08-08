@@ -96,7 +96,7 @@ export default function ModernSubscriptionPlans() {
       limits: 'Jusqu\'à 500 clients • 3 salons'
     },
     {
-      id: 'premium' as const,
+      id: 'enterprise' as const,
       name: 'Beauty Empire',
       subtitle: 'La puissance absolue',
       monthlyPrice: 149,

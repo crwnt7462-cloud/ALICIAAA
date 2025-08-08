@@ -232,8 +232,8 @@ export const pricingRules = pgTable("pricing_rules", {
   serviceId: integer("service_id"),
   dayOfWeek: varchar("day_of_week"), // "0"=Sunday, "6"=Saturday
   timeSlot: varchar("time_slot"), // e.g., "09:00-12:00"
-  priceMultiplier: decimal("price_multiplier", { precision: 3, scale: 2 }).default(1.0),
-  fixedSurcharge: decimal("fixed_surcharge", { precision: 10, scale: 2 }).default(0),
+  priceMultiplier: decimal("price_multiplier", { precision: 3, scale: 2 }).default("1.0"),
+  fixedSurcharge: decimal("fixed_surcharge", { precision: 10, scale: 2 }).default("0"),
   isWeekendPremium: boolean("is_weekend_premium").default(false),
   description: text("description"),
   isActive: boolean("is_active").default(true),

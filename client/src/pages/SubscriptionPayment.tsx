@@ -128,13 +128,13 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
 
   const planInfo = {
     basic: {
-      name: "Plan Basic",
+      name: "Basic Pro",
       features: ["Gestion rendez-vous", "Base clients", "Calendrier", "Support email"],
       color: "blue",
       icon: <CheckCircle className="w-5 h-5" />,
     },
     premium: {
-      name: "Plan Premium",
+      name: "Premium Pro",
       features: ["Tout du Basic", "IA avancée", "Messagerie directe", "Analytics", "Support prioritaire"],
       color: "violet",
       icon: <Crown className="w-5 h-5" />,

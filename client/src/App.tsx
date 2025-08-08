@@ -710,7 +710,7 @@ function Router() {
 
   // Page de souscription avec informations d'entreprise
   if (location.startsWith('/subscription/signup')) {
-    const planType = location.split('/')[3] as "basic" | "premium" | undefined;
+    const planType = location.split('/')[3] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
     return (
       <div className="h-full">
         <SubscriptionSignup selectedPlan={planType} />
@@ -720,7 +720,7 @@ function Router() {
 
   // Page de souscription multi-étapes
   if (location.startsWith('/multi-step-subscription')) {
-    const planType = location.split('/')[2] as "basic" | "premium" | undefined;
+    const planType = location.split('/')[2] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
     return (
       <div className="h-full">
         <MultiStepSubscription selectedPlan={planType} />

@@ -323,7 +323,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 ## 📊 Métriques Client
 
 • **Taux d'annulation**: ${insight.client.taux_annulation}%
-• **Score de risque**: ${Math.round(insight.client.score_risque * 100)}/100
+• **Score de risque**: ${Math.round((insight.client?.score_risque || 0) * 100)}/100
 • **Probabilité de récupération**: ${Math.round(insight.probabilite_conversion * 100)}%
 
 ---
@@ -536,12 +536,12 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         firebaseStatus: 'WORKING'
       });
     } catch (error) {
-      console.error('❌ Firebase échec:', error.message);
+      console.error('❌ Firebase échec:', error);
       res.json({ 
         success: false, 
-        message: 'Firebase échec: ' + error.message,
+        message: 'Firebase échec: ' + (error instanceof Error ? error.message : 'Erreur inconnue'),
         firebaseStatus: 'FAILED',
-        errorDetails: error.toString()
+        errorDetails: error instanceof Error ? error.toString() : 'Erreur inconnue'
       });
     }
   });
@@ -1252,7 +1252,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Utiliser Stripe directement (package installé)
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2023-10-16',
+        apiVersion: '2025-06-30.basil',
       });
       
       // Calcul du montant en centimes
@@ -1287,7 +1287,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.error('❌ Erreur création Payment Intent professionnel:', error);
       res.status(500).json({ 
         error: 'Erreur lors de la création du Payment Intent',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Erreur inconnue' 
       });
     }
   });
@@ -2140,7 +2140,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         email,
         phone,
         address,
-        subscriptionPlan: subscriptionPlan as 'basic' | 'premium' | 'enterprise',
+        subscriptionPlan: subscriptionPlan as 'premium' | 'basic' | 'enterprise',
         services,
         description
       };
@@ -2164,7 +2164,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         lastName: nameparts.slice(1).join(' ') || '',
         phone,
         address,
-        subscriptionPlan: subscriptionPlan || 'basic-pro'
+        subscriptionPlan: (subscriptionPlan as 'premium' | 'basic' | 'enterprise') || 'basic',
+        city: address?.split(',').pop()?.trim() || 'Paris'
       };
 
       // Créer l'utilisateur professionnel dans la table users
@@ -2235,7 +2236,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         email: `demo-${Date.now()}@test.com`,
         phone: '01 23 45 67 89',
         address: '123 Rue de Test, 75001 Paris',
-        subscriptionPlan: subscriptionPlan as 'basic' | 'premium' | 'enterprise',
+        subscriptionPlan: subscriptionPlan as 'premium' | 'basic' | 'enterprise',
         services: ['Service Test 1', 'Service Test 2'],
         description: `${businessName} - Salon de démonstration créé automatiquement`
       };
@@ -2261,6 +2262,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.get('/api/search/salons', async (req, res) => {
     try {
       const { category, city, search } = req.query;
+      const categoryStr = typeof category === 'string' ? category : undefined;
+      const cityStr = typeof city === 'string' ? city : undefined;
+      const searchStr = typeof search === 'string' ? search : undefined;
       
       // Récupérer tous les salons
       let salons = Array.from(storage.salons.values());
@@ -2269,11 +2273,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('📋 Noms des salons:', salons.map(s => s.name));
       
       // Filtrer par catégorie si spécifiée
-      if (category && category !== 'all') {
+      if (categoryStr && categoryStr !== 'all') {
         salons = salons.filter(salon => {
           if (!salon.serviceCategories) return false;
           
-          const categoryLower = (category as string).toLowerCase();
+          const categoryLower = categoryStr.toLowerCase();
           return salon.serviceCategories.some((cat: any) => {
             const catName = cat.name?.toLowerCase() || '';
             return (catName.includes('coiffure') && categoryLower === 'coiffure') ||
@@ -2284,27 +2288,27 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
                    (catName.includes('esthétique') && categoryLower === 'esthetique');
           });
         });
-        console.log(`🏷️ Filtre catégorie "${category}": ${salons.length} salons`);
+        console.log(`🏷️ Filtre catégorie "${categoryStr}": ${salons.length} salons`);
       }
       
       // Filtrer par ville si spécifiée
-      if (city) {
-        const cityLower = (city as string).toLowerCase();
+      if (cityStr) {
+        const cityLower = cityStr.toLowerCase();
         salons = salons.filter(salon => 
           salon.address?.toLowerCase().includes(cityLower)
         );
-        console.log(`📍 Filtre ville "${city}": ${salons.length} salons`);
+        console.log(`📍 Filtre ville "${cityStr}": ${salons.length} salons`);
       }
       
       // Filtrer par recherche textuelle si spécifiée
-      if (search) {
-        const searchLower = (search as string).toLowerCase();
+      if (searchStr) {
+        const searchLower = searchStr.toLowerCase();
         salons = salons.filter(salon =>
           salon.name?.toLowerCase().includes(searchLower) ||
           salon.description?.toLowerCase().includes(searchLower) ||
           salon.tags?.some((tag: string) => tag.toLowerCase().includes(searchLower))
         );
-        console.log(`🔍 Filtre recherche "${search}": ${salons.length} salons`);
+        console.log(`🔍 Filtre recherche "${searchStr}": ${salons.length} salons`);
       }
       
       // Formater les résultats pour l'affichage dans SalonSearchComplete

@@ -28,7 +28,7 @@ import {
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 const businessInfoSchema = z.object({
-  planType: z.enum(["basic", "premium"]),
+  planType: z.enum(["basic-pro", "advanced-pro", "premium-pro"]),
   companyName: z.string().min(2, "Le nom de l'entreprise est requis"),
   siret: z.string().min(14, "Le SIRET doit contenir 14 chiffres").max(14, "Le SIRET doit contenir 14 chiffres"),
   businessAddress: z.string().min(10, "L'adresse complète est requise"),
@@ -43,10 +43,10 @@ const businessInfoSchema = z.object({
 type BusinessInfoForm = z.infer<typeof businessInfoSchema>;
 
 interface SubscriptionSignupProps {
-  selectedPlan?: "basic" | "premium";
+  selectedPlan?: "basic-pro" | "advanced-pro" | "premium-pro";
 }
 
-export default function SubscriptionSignup({ selectedPlan = "basic" }: SubscriptionSignupProps) {
+export default function SubscriptionSignup({ selectedPlan = "basic-pro" }: SubscriptionSignupProps) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,9 +95,9 @@ export default function SubscriptionSignup({ selectedPlan = "basic" }: Subscript
   };
 
   const plans = {
-    basic: {
-      name: "Plan Basic",
-      price: "49€",
+    "basic-pro": {
+      name: "Basic Pro",
+      price: "29€",
       features: [
         "Gestion des rendez-vous",
         "Base de données clients",
@@ -107,15 +107,28 @@ export default function SubscriptionSignup({ selectedPlan = "basic" }: Subscript
       color: "blue",
       icon: <CheckCircle className="w-5 h-5" />,
     },
-    premium: {
-      name: "Plan Premium",
+    "advanced-pro": {
+      name: "Advanced Pro",
+      price: "79€",
+      features: [
+        "Tout du Basic Pro",
+        "Analytics avancés",
+        "Messagerie clients",
+        "Notifications personnalisées",
+        "Support prioritaire",
+      ],
+      color: "amber",
+      icon: <Sparkles className="w-5 h-5" />,
+    },
+    "premium-pro": {
+      name: "Premium Pro",
       price: "149€",
       features: [
-        "Tout du plan Basic",
+        "Tout de l'Advanced Pro",
         "Intelligence Artificielle",
         "Messagerie directe clients",
-        "Analytics avancés",
-        "Support prioritaire",
+        "Analytics prédictifs",
+        "Support 24/7",
       ],
       color: "violet",
       icon: <Crown className="w-5 h-5" />,
@@ -195,8 +208,9 @@ export default function SubscriptionSignup({ selectedPlan = "basic" }: Subscript
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="basic">Plan Basic - 49€/mois</SelectItem>
-                    <SelectItem value="premium">Plan Premium - 149€/mois</SelectItem>
+                    <SelectItem value="basic-pro">Basic Pro - 29€/mois</SelectItem>
+                    <SelectItem value="advanced-pro">Advanced Pro - 79€/mois</SelectItem>
+                    <SelectItem value="premium-pro">Premium Pro - 149€/mois</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
