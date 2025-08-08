@@ -431,72 +431,7 @@ function Router() {
   
   // SUPPRIMÉ : Routes prédéfinies remplacées par le système dynamique
   
-  // Page détail générique pour autres salons
-  // Routes dédiées pour chaque salon spécifique
-  if (location === '/salon/salon-excellence-paris') {
-    return (
-      <div className="h-full">
-        <SalonExcellenceParis />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/barbier-gentleman-marais') {
-    return (
-      <div className="h-full">
-        <BarbierGentlemanMarais />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/salon-moderne-republique') {
-    return (
-      <div className="h-full">
-        <SalonModerneRepublique />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/institut-beaute-saint-germain') {
-    return (
-      <div className="h-full">
-        <InstitutBeauteSaintGermain />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/nail-art-opera') {
-    return (
-      <div className="h-full">
-        <NailArtOpera />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/spa-wellness-bastille') {
-    return (
-      <div className="h-full">
-        <SpaWellnessBastille />
-      </div>
-    );
-  }
-  
-  if (location === '/salon/beauty-lounge-montparnasse') {
-    return (
-      <div className="h-full">
-        <BeautyLoungeMontparnasse />
-      </div>
-    );
-  }
-  
-  // Route générique pour tous les autres salons (créés par les utilisateurs)
-  if (location.startsWith('/salon/')) {
-    return (
-      <div className="h-full">
-        <ModernSalonDetail />
-      </div>
-    );
-  }
+  // TOUTES LES ROUTES SALON SPÉCIFIQUES SUPPRIMÉES - UTILISATION DU SYSTÈME DYNAMIQUE UNIQUEMENT
 
   // Page de message plein écran
   if (location.startsWith('/message/')) {
