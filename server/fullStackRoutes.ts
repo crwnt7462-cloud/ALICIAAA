@@ -1640,19 +1640,59 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  app.get('/api/services/:id', async (req, res) => {
+  // Route distincte pour services par salon (string ID)
+  app.get('/api/services/salon/:salonId', async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const service = await storage.getServiceById?.(id);
+      const { salonId } = req.params;
+      console.log('📋 Récupération services pour salon:', salonId);
+      
+      if (!salonId || salonId === 'undefined') {
+        return res.status(400).json({ 
+          error: 'Invalid salon ID',
+          details: 'Salon ID is required and cannot be undefined'
+        });
+      }
+      
+      const services = await storage.getServicesBySalonId(salonId);
+      res.json(services);
+    } catch (error: any) {
+      console.error('Error fetching services by salon:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch services',
+        details: error.message || 'Unknown error'
+      });
+    }
+  });
+
+  // Route distincte pour service individuel (numeric ID)
+  app.get('/api/services/:id(\\d+)', async (req, res) => {
+    try {
+      const serviceId = parseInt(req.params.id);
+      console.log('🔍 Récupération service ID numérique:', serviceId);
+      
+      if (serviceId <= 0) {
+        return res.status(400).json({ 
+          error: 'Invalid service ID',
+          details: 'Service ID must be a positive integer'
+        });
+      }
+      
+      const service = await storage.getServiceById(serviceId);
       
       if (!service) {
-        return res.status(404).json({ message: 'Service not found' });
+        return res.status(404).json({ 
+          error: 'Service not found',
+          details: `No service found with ID ${serviceId}`
+        });
       }
       
       res.json(service);
     } catch (error: any) {
-      console.error('Error fetching service:', error);
-      res.status(500).json({ message: 'Failed to fetch service' });
+      console.error('Error fetching service by ID:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch service',
+        details: error.message || 'Unknown error'
+      });
     }
   });
 

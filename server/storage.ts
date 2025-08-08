@@ -201,7 +201,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getServicesBySalonId(salonId: string): Promise<any[]> {
-    return await db.select().from(services).where(eq(services.userId, salonId));
+    console.log('🔍 Storage: Récupération services pour salon:', salonId);
+    const result = await db.select().from(services).where(eq(services.userId, salonId));
+    console.log(`✅ Storage: ${result.length} services trouvés`);
+    return result;
+  }
+
+  // Alias pour compatibilité
+  async getServicesBySalon(salonId: string): Promise<any[]> {
+    return this.getServicesBySalonId(salonId);
   }
 
   async createService(serviceData: InsertService): Promise<Service> {

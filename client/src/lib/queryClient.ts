@@ -3,7 +3,22 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    
+    // Parsing des erreurs pour plus de détails
+    let errorMessage = `${res.status}: ${res.statusText}`;
+    try {
+      const errorData = JSON.parse(text);
+      if (errorData.error) {
+        errorMessage = errorData.error;
+        if (errorData.details) {
+          errorMessage += ` - ${errorData.details}`;
+        }
+      }
+    } catch {
+      errorMessage = text || errorMessage;
+    }
+    
+    throw new Error(errorMessage);
   }
 }
 
@@ -48,7 +63,16 @@ export const queryClient = new QueryClient({
       refetchInterval: false,
       refetchOnWindowFocus: false,
       staleTime: 5 * 60 * 1000, // 5 minutes
-      retry: false,
+      retry: (failureCount, error) => {
+        // Retry logic améliorée
+        if (error.message.includes('Network error') && failureCount < 2) {
+          return true;
+        }
+        if (error.message.includes('500') && failureCount < 1) {
+          return true;
+        }
+        return false;
+      },
     },
     mutations: {
       retry: false,

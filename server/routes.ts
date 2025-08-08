@@ -1150,35 +1150,158 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/services', async (req, res) => {
+  app.post('/api/services', isAuthenticated, async (req, res) => {
     try {
-      const service = await storage.createService(req.body);
+      const userId = (req.user as any)?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ 
+          error: "Unauthorized",
+          details: "User authentication required to create services" 
+        });
+      }
+
+      // Validation des données requises
+      const { name, price, duration } = req.body;
+      if (!name || !price || !duration) {
+        return res.status(400).json({
+          error: "Missing required fields",
+          details: "Service must have name, price, and duration"
+        });
+      }
+
+      if (typeof price !== 'number' || price <= 0) {
+        return res.status(400).json({
+          error: "Invalid price",
+          details: "Price must be a positive number"
+        });
+      }
+
+      const serviceData = {
+        ...req.body,
+        userId, // Associer au user authentifié
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      console.log('🔧 Création service pour user:', userId, 'Service:', name);
+      const service = await storage.createService(serviceData);
+      
+      console.log('✅ Service créé avec ID:', service.id);
       res.json(service);
     } catch (error) {
       console.error("Error creating service:", error);
-      res.status(500).json({ error: "Failed to create service" });
+      res.status(500).json({ 
+        error: "Failed to create service",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
-  app.put('/api/services/:id', async (req, res) => {
+  app.put('/api/services/:id', isAuthenticated, async (req, res) => {
     try {
+      const userId = (req.user as any)?.claims?.sub;
       const id = parseInt(req.params.id);
-      const service = await storage.updateService(id, req.body);
+      
+      if (!userId) {
+        return res.status(401).json({ 
+          error: "Unauthorized",
+          details: "User authentication required" 
+        });
+      }
+
+      if (isNaN(id) || id <= 0) {
+        return res.status(400).json({
+          error: "Invalid service ID",
+          details: "Service ID must be a positive integer"
+        });
+      }
+
+      // Vérifier que le service appartient à l'utilisateur
+      const existingService = await storage.getServiceById(id);
+      if (!existingService) {
+        return res.status(404).json({
+          error: "Service not found",
+          details: `No service found with ID ${id}`
+        });
+      }
+
+      if (existingService.userId !== userId) {
+        return res.status(403).json({
+          error: "Forbidden",
+          details: "You can only update your own services"
+        });
+      }
+
+      const updateData = {
+        ...req.body,
+        updatedAt: new Date()
+      };
+
+      console.log('🔧 Mise à jour service ID:', id, 'par user:', userId);
+      const service = await storage.updateService(id, updateData);
+      
+      console.log('✅ Service mis à jour:', service.name);
       res.json(service);
     } catch (error) {
       console.error("Error updating service:", error);
-      res.status(500).json({ error: "Failed to update service" });
+      res.status(500).json({ 
+        error: "Failed to update service",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
-  app.delete('/api/services/:id', async (req, res) => {
+  app.delete('/api/services/:id', isAuthenticated, async (req, res) => {
     try {
+      const userId = (req.user as any)?.claims?.sub;
       const id = parseInt(req.params.id);
+      
+      if (!userId) {
+        return res.status(401).json({ 
+          error: "Unauthorized",
+          details: "User authentication required" 
+        });
+      }
+
+      if (isNaN(id) || id <= 0) {
+        return res.status(400).json({
+          error: "Invalid service ID",
+          details: "Service ID must be a positive integer"
+        });
+      }
+
+      // Vérifier que le service appartient à l'utilisateur
+      const existingService = await storage.getServiceById(id);
+      if (!existingService) {
+        return res.status(404).json({
+          error: "Service not found",
+          details: `No service found with ID ${id}`
+        });
+      }
+
+      if (existingService.userId !== userId) {
+        return res.status(403).json({
+          error: "Forbidden",
+          details: "You can only delete your own services"
+        });
+      }
+
+      console.log('🗑️ Suppression service ID:', id, 'par user:', userId);
       await storage.deleteService(id);
-      res.json({ success: true });
+      
+      console.log('✅ Service supprimé avec succès');
+      res.json({ 
+        success: true,
+        message: `Service ${existingService.name} deleted successfully`,
+        deletedServiceId: id
+      });
     } catch (error) {
       console.error("Error deleting service:", error);
-      res.status(500).json({ error: "Failed to delete service" });
+      res.status(500).json({ 
+        error: "Failed to delete service",
+        details: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
