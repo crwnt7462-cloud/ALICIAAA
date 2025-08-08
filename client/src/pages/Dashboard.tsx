@@ -35,13 +35,15 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/client-retention"],
   });
 
-  const webSocketData = useWebSocket({ url: "" });
+  // Removed WebSocket for now - will be re-implemented with proper config
+  const webSocketData = null;
 
-  useEffect(() => {
-    if (webSocketData?.notifications?.length > 0) {
-      // Could refetch all dashboard data here
-    }
-  }, [webSocketData?.notifications]);
+  // WebSocket effect removed for now
+  // useEffect(() => {
+  //   if (webSocketData?.notifications?.length > 0) {
+  //     // Could refetch all dashboard data here
+  //   }
+  // }, [webSocketData?.notifications]);
 
   const COLORS = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
 
