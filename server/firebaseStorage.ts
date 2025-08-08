@@ -448,7 +448,18 @@ export class FirebaseStorage implements IStorage {
     }
   }
 
-  // Méthodes supplémentaires selon les besoins...
+  async getSalonPhotos(salonId: string): Promise<any[]> {
+    try {
+      const photos = await this.db
+        .select()
+        .from(this.schema.salonPhotos)
+        .where(eq(this.schema.salonPhotos.salonId, parseInt(salonId)));
+      return photos;
+    } catch (error) {
+      console.error('Erreur récupération photos salon:', error);
+      return [];
+    }
+  }
   // TODO: Implémenter toutes les autres méthodes de l'interface IStorage
 }
 
