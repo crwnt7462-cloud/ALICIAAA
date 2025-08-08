@@ -313,51 +313,81 @@ export class DatabaseStorage implements IStorage {
   // =============================================
 
   async getDashboardStats(userId: string): Promise<any> {
-    return {
-      totalClients: 156,
-      monthlyRevenue: 12450,
-      appointmentsToday: 8,
-      satisfactionRate: 4.7
-    };
+    console.log(`📊 Récupération stats dashboard pour: ${userId}`);
+    
+    try {
+      // Compter les vrais clients pour ce professionnel (pour l'instant retourner 0 car nouvelle pro)
+      const totalClients = 0; // TODO: COUNT from clientAccounts WHERE professionalId = userId
+      
+      // Calculer les revenus du mois (pour l'instant 0 car nouvelle pro)
+      const monthlyRevenue = 0; // TODO: SUM payments WHERE professionalId = userId AND month = current
+      
+      // Compter les RDV d'aujourd'hui (pour l'instant 0 car nouvelle pro)
+      const appointmentsToday = 0; // TODO: COUNT appointments WHERE professionalId = userId AND date = today
+      
+      // Note de satisfaction moyenne (pour l'instant 0 car nouvelle pro)
+      const satisfactionRate = 0; // TODO: AVG ratings WHERE professionalId = userId
+      
+      const stats = {
+        totalClients,
+        monthlyRevenue,
+        appointmentsToday,
+        satisfactionRate
+      };
+      
+      console.log(`📈 Stats calculées pour ${userId}:`, stats);
+      return stats;
+    } catch (error) {
+      console.error("❌ Erreur récupération stats dashboard:", error);
+      // Retourner stats à 0 pour nouvelle pro en cas d'erreur
+      return {
+        totalClients: 0,
+        monthlyRevenue: 0,
+        appointmentsToday: 0,
+        satisfactionRate: 0
+      };
+    }
   }
 
   async getUpcomingAppointments(userId: string, salonId?: string): Promise<any[]> {
-    const appointments = [
-      { id: 1, clientName: 'Marie Dubois', service: 'Coupe & Couleur', time: '09:00', date: new Date() },
-      { id: 2, clientName: 'Pierre Martin', service: 'Barbe', time: '10:30', date: new Date() },
-      { id: 3, clientName: 'Sophie Laurent', service: 'Manucure', time: '14:00', date: new Date() }
-    ];
-    return salonId ? appointments.filter(apt => apt.id % 2 === 0) : appointments;
+    console.log(`📅 Récupération RDV à venir pour: ${userId}`);
+    
+    // Pour une nouvelle professionnelle, pas de RDV encore
+    return []; // Nouveau salon = pas de rendez-vous encore
   }
 
   async getRevenueChart(userId: string): Promise<any> {
+    console.log(`📈 Récupération graphique revenus pour: ${userId}`);
+    
+    // Pour une nouvelle professionnelle, pas de revenus historiques
     return {
       labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
-      data: [8500, 9200, 8800, 10500, 11200, 12450]
+      data: [0, 0, 0, 0, 0, 0] // Nouveau salon = pas de revenus encore
     };
   }
 
   async getTopServices(userId: string): Promise<any[]> {
-    return [
-      { name: 'Coupe Femme', revenue: 3200, bookings: 45 },
-      { name: 'Couleur', revenue: 2800, bookings: 32 },
-      { name: 'Manucure', revenue: 1850, bookings: 38 }
-    ];
+    console.log(`🔝 Récupération top services pour: ${userId}`);
+    
+    // Pour une nouvelle professionnelle, pas de services top encore
+    return []; // Nouveau salon = pas de services populaires encore
   }
 
   async getStaffPerformance(userId: string): Promise<any> {
-    return [
-      { name: 'Marie', revenue: 4200, satisfaction: 4.8 },
-      { name: 'Paul', revenue: 3800, satisfaction: 4.6 },
-      { name: 'Julie', revenue: 4600, satisfaction: 4.9 }
-    ];
+    console.log(`👥 Récupération performance staff pour: ${userId}`);
+    
+    // Pour une nouvelle professionnelle, pas d'équipe encore
+    return []; // Nouveau salon = pas d'employés encore
   }
 
   async getClientRetentionRate(userId: string): Promise<any> {
+    console.log(`📊 Récupération rétention client pour: ${userId}`);
+    
+    // Pour une nouvelle professionnelle, pas de rétention encore
     return {
-      currentMonth: 85,
-      previousMonth: 82,
-      trend: 'up'
+      currentMonth: 0,
+      previousMonth: 0,
+      trend: 'stable' // Nouveau salon = pas de données de rétention
     };
   }
 
