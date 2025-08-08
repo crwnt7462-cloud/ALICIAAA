@@ -503,6 +503,12 @@ export class DatabaseStorage implements IStorage {
     return Array.from(this.salons.values());
   }
 
+  async saveSalonData(salonId: string, salonData: any): Promise<void> {
+    // Sauvegarder les données du salon dans la Map
+    this.salons.set(salonId, salonData);
+    console.log(`✅ Salon sauvegardé: ${salonId}`);
+  }
+
   async getSalon(salonId: string): Promise<any> {
     return this.salons.get(salonId);
   }

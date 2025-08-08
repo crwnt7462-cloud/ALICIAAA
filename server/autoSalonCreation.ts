@@ -1,4 +1,4 @@
-import { storage as memoryStorage } from './storage';
+import { storage } from './storage';
 import { nanoid } from 'nanoid';
 
 interface ProfessionalRegistrationData {
@@ -143,7 +143,7 @@ export async function createAutomaticSalonPage(
   
   // Sauvegarder dans le système de stockage
   try {
-    await memoryStorage.saveSalonData(salonId, salonData);
+    await storage.saveSalonData(salonId, salonData);
     console.log('✅ Page salon créée automatiquement:', salonId);
     console.log('🔗 URL publique:', `/salon/${salonId}`);
     
@@ -164,8 +164,8 @@ export async function linkSalonToProfessional(salonId: string, professionalEmail
     console.log(`🔗 Salon ${salonId} associé au professionnel ${professionalEmail}`);
     
     // Pour l'instant, stocker dans le système mémoire
-    memoryStorage.professionalSalons = memoryStorage.professionalSalons || new Map();
-    memoryStorage.professionalSalons.set(professionalEmail, salonId);
+    storage.professionalSalons = storage.professionalSalons || new Map();
+    storage.professionalSalons.set(professionalEmail, salonId);
     
   } catch (error) {
     console.error('❌ Erreur liaison salon-professionnel:', error);
@@ -181,7 +181,7 @@ export function getAutoCreationStats(): {
 } {
   // En production, récupérer depuis la base de données
   return {
-    totalSalonsCreated: memoryStorage.salons?.size || 0,
+    totalSalonsCreated: storage.salons?.size || 0,
     byPlan: {
       basic: 0,
       premium: 0,
