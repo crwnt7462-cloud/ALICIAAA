@@ -115,7 +115,7 @@ export default function BookingConfirmationPopup({
             <Checkbox
               id="accept-policies"
               checked={acceptedPolicies}
-              onCheckedChange={setAcceptedPolicies}
+              onCheckedChange={(checked) => setAcceptedPolicies(checked === true)}
             />
             <label
               htmlFor="accept-policies"

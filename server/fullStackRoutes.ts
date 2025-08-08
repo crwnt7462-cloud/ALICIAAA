@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { firebaseStorage } from "./firebaseStorage";
+// Firebase storage removed - using PostgreSQL only
 import { storage as memoryStorage } from "./storage";
 import { createAutomaticSalonPage, linkSalonToProfessional } from './autoSalonCreation';
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -11,7 +11,7 @@ import { clientAnalyticsService, type ClientProfile } from "./clientAnalyticsSer
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
-const storage = USE_FIREBASE ? firebaseStorage : memoryStorage;
+const storage = memoryStorage; // Using PostgreSQL storage only
 
 // 🔥 STOCKAGE EN MÉMOIRE POUR LES SALONS PUBLICS
 const publicSalonsStorage = new Map<string, any>();
@@ -514,8 +514,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('USE_FIREBASE final:', USE_FIREBASE);
       
       // Test direct avec FirebaseStorage
-      const { FirebaseStorage } = await import('./firebaseStorage');
-      const fbStorage = new FirebaseStorage();
+      // Firebase storage removed - using PostgreSQL only
+      console.log('PostgreSQL storage actif');
       
       const testUser = {
         email: 'test-firebase-direct@test.com',
