@@ -1138,6 +1138,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== ROUTES COMPLÈTES POUR SYSTÈME COMPLET =====
 
+  // SUPPRIMÉ: Route dupliquée avec celle ligne 655
+
   // Services Management Routes
   app.get('/api/services/:userId', async (req, res) => {
     try {
@@ -1161,16 +1163,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Validation des données requises
+      // Validation des données requises avec conversion des types
       const { name, price, duration } = req.body;
-      if (!name || !price || !duration) {
+      if (!name || price === undefined || price === null || !duration) {
         return res.status(400).json({
           error: "Missing required fields",
           details: "Service must have name, price, and duration"
         });
       }
 
-      if (typeof price !== 'number' || price <= 0) {
+      // Conversion et validation du prix robuste
+      const numericPrice = typeof price === 'string' ? parseFloat(price) : Number(price);
+      if (!numericPrice || isNaN(numericPrice) || numericPrice <= 0) {
         return res.status(400).json({
           error: "Invalid price",
           details: "Price must be a positive number"
@@ -1179,6 +1183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const serviceData = {
         ...req.body,
+        price: numericPrice, // Utiliser le prix numérique validé
         userId, // Associer au user authentifié
         createdAt: new Date(),
         updatedAt: new Date()
@@ -1594,16 +1599,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const { amount, currency = 'eur', metadata = {} } = req.body;
       
-      if (!amount || amount <= 0) {
-        console.error('❌ Montant invalide:', amount);
-        return res.status(400).json({ error: "Invalid amount" });
+      // Conversion robuste du montant
+      const numericAmount = typeof amount === 'string' ? parseFloat(amount) : Number(amount);
+      
+      if (!numericAmount || isNaN(numericAmount) || numericAmount <= 0) {
+        console.error('❌ Montant invalide:', { received: amount, converted: numericAmount });
+        return res.status(400).json({ 
+          error: "Invalid amount",
+          details: "Amount must be a positive number",
+          received: amount
+        });
       }
 
       console.log('🔧 Création Payment Intent Stripe...');
       
       // Créer un Payment Intent avec Stripe
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convertir en centimes
+        amount: Math.round(numericAmount * 100), // Convertir en centimes avec montant validé
         currency,
         metadata,
         automatic_payment_methods: {
@@ -1617,7 +1629,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         success: true,
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
-        amount: amount,
+        amount: numericAmount,
         currency: currency
       });
     } catch (error: any) {

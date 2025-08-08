@@ -99,8 +99,12 @@ export interface IStorage {
   salons: Map<string, any>;
   createSalon(salonData: any): Promise<any>;
   getSalon(salonId: string): Promise<any>;
+  getSalons(): Promise<any[]>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
 
+  // Salon operations
+  getSalons(): Promise<any[]>;
+  
   // Other operations
   getAppointmentsByClientId(clientId: string): Promise<any[]>;
   getAppointments(userId: string): Promise<any[]>;
@@ -201,9 +205,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getServicesBySalonId(salonId: string): Promise<any[]> {
-    console.log('🔍 Storage: Récupération services pour salon:', salonId);
     const result = await db.select().from(services).where(eq(services.userId, salonId));
-    console.log(`✅ Storage: ${result.length} services trouvés`);
     return result;
   }
 
@@ -456,6 +458,11 @@ export class DatabaseStorage implements IStorage {
 
   async getSubscriptionsByUserId(userId: string): Promise<any[]> {
     return await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
+  }
+
+  async getSalons(): Promise<any[]> {
+    // Retourner tous les salons de la Map
+    return Array.from(this.salons.values());
   }
 
   async getSalon(salonId: string): Promise<any> {

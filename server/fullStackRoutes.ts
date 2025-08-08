@@ -2474,10 +2474,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // Route Payment Intent pour éviter interception Vite
   app.post('/api/create-payment-intent', async (req, res) => {
     try {
-      console.log('💳 Payment Intent fullStack - Données reçues:', req.body);
+      // Validation silencieuse en production
       
       if (!process.env.STRIPE_SECRET_KEY) {
-        console.error('❌ STRIPE_SECRET_KEY manquant');
+        // STRIPE_SECRET_KEY manquant
         return res.status(500).json({ 
           success: false,
           error: "Stripe not configured. Please set STRIPE_SECRET_KEY." 
@@ -2492,19 +2492,24 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       const { amount, currency = 'eur', metadata = {} } = req.body;
       
-      if (!amount || amount <= 0) {
-        console.error('❌ Montant invalide:', amount);
+      // Conversion robuste du montant
+      const numericAmount = typeof amount === 'string' ? parseFloat(amount) : Number(amount);
+      
+      if (!numericAmount || isNaN(numericAmount) || numericAmount <= 0) {
+        // Montant invalide: conversion échouée
         return res.status(400).json({ 
           success: false,
-          error: "Invalid amount" 
+          error: "Invalid amount",
+          details: "Amount must be a positive number",
+          received: amount
         });
       }
 
-      console.log('🔧 Création Payment Intent Stripe (fullStack)...');
+      // Création Payment Intent avec Stripe
       
       // Créer un Payment Intent avec Stripe
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convertir en centimes
+        amount: Math.round(numericAmount * 100), // Convertir en centimes avec montant validé
         currency,
         metadata,
         automatic_payment_methods: {
@@ -2512,17 +2517,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         },
       });
       
-      console.log('✅ Payment Intent créé (fullStack):', paymentIntent.id);
+      // Payment Intent créé avec succès
       
       res.json({
         success: true,
         clientSecret: paymentIntent.client_secret,
         paymentIntentId: paymentIntent.id,
-        amount: amount,
+        amount: numericAmount,
         currency: currency
       });
     } catch (error: any) {
-      console.error("❌ Erreur création Payment Intent (fullStack):", error);
+      console.error("Erreur création Payment Intent:", error.message || error);
       res.status(500).json({ 
         success: false,
         error: error?.message || "Failed to create payment intent",
