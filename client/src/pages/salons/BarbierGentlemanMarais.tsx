@@ -49,6 +49,7 @@ interface SalonData {
   certifications?: string[];
   specialties?: string[];
   awards?: string[];
+  serviceCategories?: ServiceCategory[];
 }
 
 export default function BarbierGentlemanMarais() {
@@ -95,7 +96,7 @@ export default function BarbierGentlemanMarais() {
   
   // Récupérer les données du salon depuis l'API
   const { data: salonData, isLoading } = useQuery<SalonData>({
-    queryKey: ['/api/salon', salonId],
+    queryKey: [`/api/salon/${salonId}`],
     enabled: !!salonId,
   });
 
@@ -117,6 +118,10 @@ export default function BarbierGentlemanMarais() {
   };
 
   const salon: SalonData = salonData || defaultSalonData;
+
+  // Utiliser les services de l'API si disponibles, sinon les services par défaut
+  const apiServiceCategories = salonData?.serviceCategories || [];
+  const displayServiceCategories = apiServiceCategories.length > 0 ? apiServiceCategories : serviceCategories;
 
   const toggleCategory = (categoryId: number) => {
     setServiceCategories(prev => 
@@ -209,7 +214,7 @@ export default function BarbierGentlemanMarais() {
       <div className="p-4">
         {activeTab === 'services' && (
           <div className="space-y-4">
-            {serviceCategories.map(category => (
+            {displayServiceCategories.map((category: ServiceCategory) => (
               <Card key={category.id} className="overflow-hidden">
                 <button
                   onClick={() => toggleCategory(category.id)}
@@ -225,7 +230,7 @@ export default function BarbierGentlemanMarais() {
                 {category.expanded && (
                   <CardContent className="pt-0">
                     <div className="space-y-3">
-                      {category.services.map(service => (
+                      {category.services.map((service: Service) => (
                         <div key={service.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                           <div className="flex-1">
                             <h4 className="font-medium">{service.name}</h4>
@@ -299,7 +304,7 @@ export default function BarbierGentlemanMarais() {
                   <div className="mt-6">
                     <h4 className="font-medium mb-3">Distinctions</h4>
                     <div className="flex flex-wrap gap-2">
-                      {salon.awards.map((award, index) => (
+                      {(salon.awards || []).map((award, index) => (
                         <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
                           {award}
                         </Badge>
