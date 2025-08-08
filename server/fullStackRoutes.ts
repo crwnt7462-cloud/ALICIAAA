@@ -841,6 +841,58 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // ✅ NOUVELLE ROUTE: Liste des salons PostgreSQL pour la recherche
+  app.get('/api/salons', async (req, res) => {
+    try {
+      const { category } = req.query;
+      console.log('🔍 RECHERCHE SALONS PostgreSQL - Catégorie:', category);
+      
+      // Récupérer les vrais salons PostgreSQL créés par les pros
+      let realSalons = [];
+      try {
+        realSalons = await storage.getSalons();
+        console.log(`📊 ${realSalons.length} salons réels trouvés en PostgreSQL`);
+      } catch (error) {
+        console.error('❌ Erreur récupération salons PostgreSQL:', error);
+      }
+      
+      // Transformer les salons PostgreSQL au format attendu par l'interface
+      const formattedSalons = realSalons.map(salon => ({
+        id: salon.id,
+        name: salon.name,
+        category: 'coiffure', // Peut être déterminé depuis serviceCategories
+        address: salon.address,
+        rating: salon.rating || 4.8,
+        reviews: salon.reviewCount || 0,
+        price: '€€€',
+        image: salon.photos?.[0] || salon.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+        services: salon.serviceCategories?.[0]?.services?.map(s => s.name) || ['Service professionnel'],
+        openNow: salon.isPublished || true,
+        description: salon.description,
+        phone: salon.phone,
+        email: salon.email
+      }));
+      
+      console.log(`✅ ${formattedSalons.length} salons formatés pour recherche`);
+      
+      // Filtrer par catégorie si spécifiée
+      const filteredSalons = category 
+        ? formattedSalons.filter(salon => salon.category === category)
+        : formattedSalons;
+      
+      console.log(`🎯 ${filteredSalons.length} salons après filtrage catégorie`);
+      
+      res.json({
+        success: true,
+        salons: filteredSalons,
+        total: filteredSalons.length
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur API /api/salons:', error);
+      res.status(500).json({ success: false, message: 'Erreur de recherche salons' });
+    }
+  });
+
   // Route pour rechercher les salons publics par catégorie et ville
   app.get('/api/public/salons', async (req, res) => {
     try {

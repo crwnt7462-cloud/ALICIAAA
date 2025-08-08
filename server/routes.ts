@@ -707,85 +707,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/salons', async (req, res) => {
     try {
       const { category } = req.query;
+      console.log('🔍 RECHERCHE SALONS - Catégorie:', category);
       
-      const allSalons = [
-        {
-          id: 'salon-1',
-          name: 'Salon Excellence Paris',
-          category: 'coiffure',
-          address: '15 Avenue des Champs-Élysées, 75008 Paris',
-          rating: 4.8,
-          reviews: 245,
-          price: '€€€',
-          image: '/salon-1.jpg',
-          services: ['Coupe', 'Coloration', 'Brushing', 'Balayage'],
-          openNow: true
-        },
-        {
-          id: 'salon-2', 
-          name: 'Beauty & Spa Marais',
-          category: 'esthetique',
-          address: '8 Rue du Marais, 75004 Paris',
-          rating: 4.9,
-          reviews: 189,
-          price: '€€',
-          image: '/salon-2.jpg',
-          services: ['Soin du visage', 'Épilation', 'Massage', 'Microdermabrasion'],
-          openNow: true
-        },
-        {
-          id: 'salon-3',
-          name: 'Zen Massage Studio',
-          category: 'massage',
-          address: '25 Boulevard Saint-Germain, 75005 Paris',
-          rating: 4.7,
-          reviews: 156,
-          price: '€€€',
-          image: '/salon-3.jpg',
-          services: ['Massage relaxant', 'Massage deep tissue', 'Massage aux pierres chaudes'],
-          openNow: false
-        },
-        {
-          id: 'salon-4',
-          name: 'Nail Art Gallery',
-          category: 'onglerie',
-          address: '12 Rue de Rivoli, 75001 Paris',
-          rating: 4.6,
-          reviews: 203,
-          price: '€€',
-          image: '/salon-4.jpg',
-          services: ['Manucure', 'Pédicure', 'Nail art', 'Pose gel'],
-          openNow: true
-        },
-        {
-          id: 'salon-5',
-          name: 'Coiffure Moderne',
-          category: 'coiffure',
-          address: '30 Rue de la Paix, 75002 Paris',
-          rating: 4.5,
-          reviews: 167,
-          price: '€€',
-          image: '/salon-5.jpg',
-          services: ['Coupe homme', 'Coupe femme', 'Coloration', 'Permanente'],
-          openNow: true
-        },
-        {
-          id: 'salon-6',
-          name: 'Institut Beauté Luxury',
-          category: 'esthetique',
-          address: '18 Avenue Montaigne, 75008 Paris',
-          rating: 4.9,
-          reviews: 298,
-          price: '€€€€',
-          image: '/salon-6.jpg',
-          services: ['Soin anti-âge', 'Peeling', 'Lifting', 'Botox'],
-          openNow: true
-        }
-      ];
+      // ✅ CORRECTION MAJEURE: Utiliser les vrais salons PostgreSQL créés par les pros
+      let realSalons = [];
+      try {
+        realSalons = await storage.getSalons();
+        console.log(`📊 ${realSalons.length} salons réels trouvés en PostgreSQL`);
+      } catch (error) {
+        console.error('❌ Erreur récupération salons PostgreSQL:', error);
+      }
       
+      // Transformer les salons PostgreSQL au format attendu par l'interface
+      const formattedSalons = realSalons.map(salon => ({
+        id: salon.id,
+        name: salon.name,
+        category: 'coiffure', // Peut être déterminé depuis serviceCategories
+        address: salon.address,
+        rating: salon.rating || 4.8,
+        reviews: salon.reviewCount || 0,
+        price: '€€€',
+        image: salon.photos?.[0] || salon.coverImageUrl || '/salon-default.jpg',
+        services: salon.serviceCategories?.[0]?.services?.map(s => s.name) || ['Service professionnel'],
+        openNow: salon.isPublished || true,
+        description: salon.description,
+        phone: salon.phone,
+        email: salon.email
+      }));
+      
+      console.log(`✅ ${formattedSalons.length} salons formatés pour recherche`);
+      
+      // Filtrer par catégorie si spécifiée
       const filteredSalons = category 
-        ? allSalons.filter(salon => salon.category === category)
-        : allSalons;
+        ? formattedSalons.filter(salon => salon.category === category)
+        : formattedSalons;
+      
+      console.log(`🎯 ${filteredSalons.length} salons après filtrage catégorie`);
       
       res.json({
         success: true,
