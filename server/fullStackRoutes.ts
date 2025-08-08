@@ -1285,8 +1285,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           customerName,
           type: 'subscription'
         },
-        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/cancel`,
+        success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://example.com/cancel',
         subscription_data: {
           trial_period_days: 14,
         },
@@ -1344,8 +1344,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           salonName: salonName || 'Salon Demo',
           type: 'booking_deposit'
         },
-        success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/cancel`,
+        success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: 'https://example.com/cancel',
       });
       
       console.log('✅ Session paiement Stripe créée:', session.id);
