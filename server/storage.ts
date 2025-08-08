@@ -131,12 +131,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-
+    // Hasher le mot de passe avant de l'enregistrer
+    const bcrypt = await import('bcrypt');
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
 
     const [user] = await db.insert(users).values({
       id: crypto.randomUUID(),
       email: userData.email,
-      password: userData.password,
+      password: hashedPassword,
       firstName: userData.firstName,
       lastName: userData.lastName,
       profileImageUrl: userData.profileImageUrl,
@@ -160,11 +162,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async authenticateUser(email: string, password: string): Promise<User | null> {
+    console.log(`🔐 Tentative de connexion: ${email}`);
     const user = await this.getUserByEmail(email);
     if (!user || !user.password) return null;
     
     const bcrypt = await import('bcrypt');
     const isValid = await bcrypt.compare(password, user.password);
+    
+    if (isValid) {
+      console.log(`✅ Connexion réussie pour: ${email}`);
+    } else {
+      console.log(`❌ Échec de connexion pour: ${email}`);
+    }
+    
     return isValid ? user : null;
   }
 

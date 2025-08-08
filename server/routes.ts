@@ -203,6 +203,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`✅ Salon personnel créé pour ${email}: /salon/${automaticSalon.id}`);
 
+      // Générer un token pour la connexion automatique
+      const token = `demo-token-${newUser.id}`;
+      
       res.json({
         success: true,
         user: {
@@ -219,6 +222,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: automaticSalon.name,
           url: automaticSalon.shareableUrl
         },
+        token: token,
         message: `Compte PRO créé avec succès ! Votre salon est accessible sur /salon/${automaticSalon.id}`
       });
     } catch (error) {
@@ -259,6 +263,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Authentification réelle
       const user = await storage.authenticateUser(email, password);
       if (user) {
+        // Générer un token pour la connexion
+        const token = `demo-token-${user.id}`;
+        
         (req.session as any).user = {
           id: user.id,
           email: user.email,
@@ -272,11 +279,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           success: true,
           user: (req.session as any).user,
+          token: token,
           message: 'Connexion PRO réussie'
         });
       } else {
+        console.log(`❌ Échec de connexion pour: ${email}`);
         res.status(401).json({
-          error: 'Identifiants incorrects'
+          success: false,
+          message: 'Invalid credentials'
         });
       }
     } catch (error) {
