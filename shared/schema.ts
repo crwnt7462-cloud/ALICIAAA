@@ -172,6 +172,7 @@ export const staff = pgTable("staff", {
   email: varchar("email"),
   phone: varchar("phone"),
   specialties: text("specialties"),
+  serviceIds: text("service_ids").array(), // Array of specific service IDs this staff can perform
   isActive: boolean("is_active").default(true),
   avatar: varchar("avatar"),
   bio: text("bio"),
@@ -308,7 +309,7 @@ export const appointments = pgTable("appointments", {
   clientId: integer("client_id").references(() => clients.id),
   clientAccountId: varchar("client_account_id").references(() => clientAccounts.id), // Lien vers compte client si connecté
   serviceId: integer("service_id").references(() => services.id),
-  staffId: integer("staff_id").references(() => staffMembers.id),
+  staffId: integer("staff_id").references(() => staff.id),
   clientName: varchar("client_name"), // for walk-in clients
   clientEmail: varchar("client_email"),
   clientPhone: varchar("client_phone"),

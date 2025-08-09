@@ -470,9 +470,19 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.get('/api/salon/:salonId/staff', async (req, res) => {
     try {
       const { salonId } = req.params;
-      console.log('👥 Récupération équipe salon:', salonId);
+      const { serviceId } = req.query;
       
-      const staffMembers = await storage.getStaffBySalon(salonId);
+      console.log('👥 Récupération équipe salon:', salonId, serviceId ? `pour service ${serviceId}` : '(tous)');
+      
+      let staffMembers;
+      if (serviceId) {
+        // Récupérer seulement les professionnels qui peuvent faire ce service
+        staffMembers = await storage.getStaffByService(salonId, serviceId as string);
+      } else {
+        // Récupérer tous les professionnels du salon
+        staffMembers = await storage.getStaffBySalon(salonId);
+      }
+      
       console.log('👥 Équipe trouvée:', staffMembers?.length || 0, 'membres');
       
       res.json({
@@ -482,6 +492,60 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       });
     } catch (error: any) {
       console.error('❌ Erreur récupération équipe:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // API pour créer un professionnel
+  app.post('/api/salon/:salonId/staff', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const { firstName, lastName, email, phone, serviceIds } = req.body;
+      
+      console.log('👤 Création professionnel pour salon:', salonId);
+      
+      const newStaff = await storage.createStaffMember({
+        userId: salonId,
+        firstName,
+        lastName,
+        email,
+        phone,
+        serviceIds: serviceIds || [],
+        isActive: true
+      });
+      
+      res.json({
+        success: true,
+        staff: newStaff
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur création professionnel:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // API pour modifier un professionnel
+  app.put('/api/salon/:salonId/staff/:staffId', async (req, res) => {
+    try {
+      const { staffId } = req.params;
+      const updateData = req.body;
+      
+      console.log('✏️ Modification professionnel:', staffId);
+      
+      const updatedStaff = await storage.updateStaffMember(parseInt(staffId), updateData);
+      
+      res.json({
+        success: true,
+        staff: updatedStaff
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur modification professionnel:', error);
       res.status(500).json({
         success: false,
         error: error.message

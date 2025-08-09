@@ -2,7 +2,7 @@ import {
   users,
   clientAccounts,
   services,
-  staffMembers,
+  staff,
   inventory,
   businessRegistrations,
   salonRegistrations,
@@ -13,7 +13,7 @@ import {
   type User,
   type ClientAccount,
   type Service,
-  type StaffMember,
+  type Staff,
 
   type BusinessRegistration,
   type SalonRegistration,
@@ -21,7 +21,7 @@ import {
   type InsertUser,
   type InsertClientAccount,
   type InsertService,
-  type InsertStaffMember,
+  type InsertStaff,
 
   type InsertBusinessRegistration,
   type InsertSalonRegistration,
@@ -55,9 +55,10 @@ export interface IStorage {
   deleteService(id: number): Promise<void>;
 
   // Staff operations
-  getStaff(userId: string): Promise<StaffMember[]>;
+  getStaff(userId: string): Promise<Staff[]>;
   getStaffBySalonId(salonId: string): Promise<any[]>;
-  createStaffMember(staff: InsertStaffMember): Promise<StaffMember>;
+  createStaffMember(staff: InsertStaff): Promise<Staff>;
+  updateStaffMember(id: number, data: Partial<Staff>): Promise<Staff>;
 
   // Inventory operations
   getInventory(userId: string): Promise<any[]>;
@@ -659,10 +660,10 @@ export class DatabaseStorage implements IStorage {
   async getStaffBySalon(salonId: string): Promise<any[]> {
     try {
       const staffList = await db.select()
-        .from(staffMembers)
+        .from(staff)
         .where(and(
-          eq(staffMembers.salonId, salonId),
-          eq(staffMembers.isActive, true)
+          eq(staff.userId, salonId),
+          eq(staff.isActive, true)
         ));
       
       console.log('👥 Staff trouvé en PostgreSQL:', salonId, '->', staffList.length, 'membres');
@@ -670,6 +671,57 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('❌ Erreur récupération staff PostgreSQL:', error);
       return [];
+    }
+  }
+
+  // Nouvelle méthode pour récupérer les professionnels par service
+  async getStaffByService(salonId: string, serviceId: string): Promise<any[]> {
+    try {
+      const staffList = await db.select()
+        .from(staff)
+        .where(and(
+          eq(staff.userId, salonId),
+          eq(staff.isActive, true)
+        ));
+      
+      // Filtrer les professionnels qui peuvent effectuer ce service
+      const filteredStaff = staffList.filter(member => 
+        member.serviceIds && member.serviceIds.includes(serviceId)
+      );
+      
+      console.log('👥 Staff pour service', serviceId, ':', filteredStaff.length, 'membres');
+      return filteredStaff;
+    } catch (error) {
+      console.error('❌ Erreur récupération staff par service PostgreSQL:', error);
+      return [];
+    }
+  }
+
+  // Créer un professionnel
+  async createStaffMember(staffData: InsertStaff): Promise<Staff> {
+    try {
+      const [newStaff] = await db.insert(staff).values(staffData).returning();
+      console.log('✅ Professionnel créé:', newStaff.firstName, newStaff.lastName);
+      return newStaff;
+    } catch (error) {
+      console.error('❌ Erreur création professionnel PostgreSQL:', error);
+      throw error;
+    }
+  }
+
+  // Modifier un professionnel
+  async updateStaffMember(id: number, data: Partial<Staff>): Promise<Staff> {
+    try {
+      const [updatedStaff] = await db.update(staff)
+        .set(data)
+        .where(eq(staff.id, id))
+        .returning();
+      
+      console.log('✅ Professionnel modifié:', updatedStaff.firstName, updatedStaff.lastName);
+      return updatedStaff;
+    } catch (error) {
+      console.error('❌ Erreur modification professionnel PostgreSQL:', error);
+      throw error;
     }
   }
 

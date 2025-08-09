@@ -22,7 +22,8 @@ interface StaffMember {
   lastName: string;
   email?: string;
   phone?: string;
-  specialties?: string[];
+  specialties?: string;
+  serviceIds?: string[];
   isActive: boolean;
 }
 
@@ -55,10 +56,20 @@ export default function BookingPage() {
     clientEmail: ''
   });
 
-  // Récupération des vrais membres de l'équipe depuis l'API
+  // Récupération des vrais membres de l'équipe depuis l'API (filtrée par service si sélectionné)
   const salonId = "salon-cacacaxaaxax-1754092428868-vr7b3j"; // TODO: récupérer dynamiquement
   const { data: staffData, isLoading: staffLoading } = useQuery({
-    queryKey: [`/api/salon/${salonId}/staff`],
+    queryKey: [`/api/salon/${salonId}/staff`, bookingData.selectedService?.id],
+    queryFn: async () => {
+      const url = bookingData.selectedService?.id 
+        ? `/api/salon/${salonId}/staff?serviceId=${bookingData.selectedService.id}`
+        : `/api/salon/${salonId}/staff`;
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Erreur lors de la récupération de l\'équipe');
+      return response.json();
+    },
+    enabled: !!salonId
   });
 
   // Services (pour l'instant statiques, plus tard depuis l'API)
