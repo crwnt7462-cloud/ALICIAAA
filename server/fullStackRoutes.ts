@@ -85,21 +85,92 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ROUTE SUBSCRIPTION - PRIORITÉ ABSOLUE (AVANT TOUTE AUTRE ROUTE)
+  // ROUTE SUBSCRIPTION - SUPPORT DES 3 PLANS COMPLETS
   app.get('/api/user/subscription', async (req: any, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'no-cache');
     
     try {
-      console.log(`💳 [PRIORITÉ] API Subscription - retour plan Premium Pro pour demo`);
-      const subscription = {
-        planId: 'premium',
-        planName: 'Premium Pro', 
-        price: 149,
-        status: 'active',
-        userId: 'demo-user'
+      const userId = req.query.userId || req.query.user || 'demo';
+      const planType = req.query.plan || req.query.planType || 'premium'; // Permet de tester différents plans
+      
+      console.log(`💳 API Subscription - Plan demandé: ${planType} pour userId: ${userId}`, req.query);
+      
+      // Définition complète des 3 plans
+      const plans = {
+        'basic': {
+          planId: 'basic',
+          planName: 'Basic Pro',
+          price: 29,
+          priceFormatted: '29€/mois',
+          status: 'active',
+          userId: userId,
+          features: {
+            hasAI: false,
+            hasAdvancedAnalytics: false,
+            hasUnlimitedClients: false,
+            maxClients: 200,
+            hasCustomBranding: false,
+            hasPrioritySupport: false,
+            hasBasicReports: true,
+            storageGB: 1
+          },
+          limits: 'Jusqu\'à 200 clients',
+          billingCycle: 'monthly',
+          nextBillingDate: '2024-02-15',
+          cancelAtPeriodEnd: false
+        },
+        'advanced': {
+          planId: 'advanced',
+          planName: 'Advanced Pro',
+          price: 79,
+          priceFormatted: '79€/mois',
+          status: 'active',
+          userId: userId,
+          features: {
+            hasAI: true,
+            hasAdvancedAnalytics: true,
+            hasUnlimitedClients: false,
+            maxClients: 1000,
+            hasCustomBranding: true,
+            hasPrioritySupport: true,
+            hasBasicReports: true,
+            hasAdvancedReports: true,
+            storageGB: 10
+          },
+          limits: 'Jusqu\'à 1000 clients',
+          billingCycle: 'monthly',
+          nextBillingDate: '2024-02-15',
+          cancelAtPeriodEnd: false
+        },
+        'premium': {
+          planId: 'premium',
+          planName: 'Premium Pro',
+          price: 149,
+          priceFormatted: '149€/mois',
+          status: 'active',
+          userId: userId,
+          features: {
+            hasAI: true,
+            hasAdvancedAnalytics: true,
+            hasUnlimitedClients: true,
+            maxClients: -1,
+            hasCustomBranding: true,
+            hasPrioritySupport: true,
+            hasBasicReports: true,
+            hasAdvancedReports: true,
+            hasVIPSupport: true,
+            storageGB: -1
+          },
+          limits: 'Clients illimités',
+          billingCycle: 'monthly',
+          nextBillingDate: '2024-02-15',
+          cancelAtPeriodEnd: false
+        }
       };
-      console.log(`✅ Plan demo: ${subscription.planName} (${subscription.price}€)`);
+      
+      const subscription = plans[planType as keyof typeof plans] || plans.premium;
+      console.log(`✅ Plan retourné: ${subscription.planName} (${subscription.price}€)`);
       return res.status(200).json(subscription);
     } catch (error: any) {
       console.error("Error fetching user subscription:", error);
@@ -108,6 +179,31 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   });
 
   // ============= FIN ROUTES PRIORITAIRES =============
+  
+  // 🔧 ROUTE TEST - PERMET DE TESTER LES 3 PLANS DIRECTEMENT
+  app.get('/api/test/plans/:planType', async (req: any, res) => {
+    try {
+      const { planType } = req.params;
+      console.log(`🧪 Test plan: ${planType}`);
+      
+      // Rediriger vers l'API subscription avec le plan spécifique
+      const url = `/api/user/subscription?plan=${planType}&userId=test-${planType}`;
+      
+      // Simuler un appel interne
+      const planResponse = await fetch(`http://localhost:5000${url}`);
+      const planData = await planResponse.json();
+      
+      res.json({
+        success: true,
+        tested_plan: planType,
+        plan_data: planData,
+        message: `Plan ${planType} testé avec succès !`
+      });
+    } catch (error: any) {
+      console.error(`❌ Erreur test plan ${req.params.planType}:`, error);
+      res.status(500).json({ error: 'Erreur test plan' });
+    }
+  });
   
   // Test de connexion OpenAI
   app.post('/api/ai/test-openai', async (req, res) => {
@@ -1461,7 +1557,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // 💳 ROUTES STRIPE CHECKOUT MANQUANTES - CORRECTION URGENTE
+  // 💳 ROUTES STRIPE CHECKOUT - SUPPORT COMPLET DES 3 PLANS
   app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
     try {
       const { planType, customerEmail, customerName } = req.body;
@@ -1469,7 +1565,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💳 Création session abonnement Stripe:', { planType, customerEmail });
       
       if (!process.env.STRIPE_SECRET_KEY) {
-        return res.status(500).json({ error: 'Clé Stripe non configurée' });
+        return res.status(500).json({ error: 'Clé Stripe non configurée. Demandez à l\'utilisateur de configurer STRIPE_SECRET_KEY.' });
       }
       
       const { default: Stripe } = await import('stripe');
