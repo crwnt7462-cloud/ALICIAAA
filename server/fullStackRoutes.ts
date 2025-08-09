@@ -3096,6 +3096,62 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // ============= BOOKING DETAILS API =============
+  
+  // Route pour récupérer les détails d'une réservation
+  app.get('/api/bookings/:bookingId', async (req, res) => {
+    console.log('🔥🔥🔥 ROUTE API BOOKINGS APPELÉE - ID:', req.params.bookingId);
+    
+    // Forcer JSON absolument
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache');
+    
+    try {
+      const { bookingId } = req.params;
+      console.log('🔍 Recherche réservation ID:', bookingId);
+      
+      // Récupérer les détails du rendez-vous depuis la base de données
+      const booking = await storage.getAppointmentById(parseInt(bookingId));
+      console.log('📋 Réservation trouvée:', booking);
+      
+      if (!booking) {
+        console.log('❌ Réservation non trouvée pour ID:', bookingId);
+        return res.status(404).json({ error: 'Réservation non trouvée' });
+      }
+
+      // Récupérer les informations du service et du salon
+      const service = booking.serviceId ? await storage.getServiceById(booking.serviceId) : null;
+      const salon = await storage.getSalonByUserId(booking.userId);
+      console.log('🏪 Service:', service?.name, 'Salon:', salon?.name);
+
+      const response = {
+        id: booking.id,
+        professional: `${booking.clientName || 'Professionnel'}`,
+        service: service?.name || 'Service non spécifié',
+        salon: salon?.name || 'Salon de beauté',
+        date: booking.appointmentDate,
+        time: booking.startTime,
+        duration: service?.duration ? `${service.duration} min` : '60 min',
+        price: booking.totalPrice ? `${booking.totalPrice}€` : service?.price ? `${service.price}€` : '0€',
+        address: salon?.address || 'Adresse non spécifiée',
+        phone: salon?.phone || 'Numéro non spécifié',
+        status: booking.status,
+        paymentStatus: booking.paymentStatus,
+        depositPaid: booking.depositPaid
+      };
+
+      console.log('✅ Réponse API préparée:', response);
+      return res.status(200).json(response);
+      
+    } catch (error) {
+      console.error("❌ Erreur API bookings:", error);
+      return res.status(500).json({ 
+        error: 'Erreur test',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -1868,19 +1868,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Route pour récupérer les détails d'une réservation
   app.get('/api/bookings/:bookingId', async (req, res) => {
+    console.log('🎯 API /api/bookings/:bookingId appelée avec ID:', req.params.bookingId);
+    
     try {
       const { bookingId } = req.params;
+      console.log('🔍 Recherche réservation ID:', bookingId);
+      
+      // Définir explicitement le content-type
+      res.setHeader('Content-Type', 'application/json');
       
       // Récupérer les détails du rendez-vous depuis la base de données
-      const booking = await storage.getAppointmentById?.(parseInt(bookingId));
+      const booking = await storage.getAppointmentById(parseInt(bookingId));
+      console.log('📋 Réservation trouvée:', booking);
       
       if (!booking) {
+        console.log('❌ Réservation non trouvée pour ID:', bookingId);
         return res.status(404).json({ error: 'Réservation non trouvée' });
       }
 
       // Récupérer les informations du service et du salon
-      const service = booking.serviceId ? await storage.getServiceById?.(booking.serviceId) : null;
-      const salon = await storage.getSalonByUserId?.(booking.userId);
+      const service = booking.serviceId ? await storage.getServiceById(booking.serviceId) : null;
+      const salon = await storage.getSalonByUserId(booking.userId);
+      console.log('🏪 Service:', service?.name, 'Salon:', salon?.name);
 
       const response = {
         id: booking.id,
@@ -1898,10 +1907,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         depositPaid: booking.depositPaid
       };
 
-      res.json(response);
+      console.log('✅ Réponse API préparée:', response);
+      return res.json(response);
     } catch (error) {
-      console.error("Erreur récupération détails réservation:", error);
-      res.status(500).json({ 
+      console.error("❌ Erreur récupération détails réservation:", error);
+      res.setHeader('Content-Type', 'application/json');
+      return res.status(500).json({ 
         error: 'Erreur lors de la récupération des détails',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
