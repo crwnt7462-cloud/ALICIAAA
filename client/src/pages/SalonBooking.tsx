@@ -790,7 +790,7 @@ export default function SalonBooking() {
               <div>
                 <h3 className="font-semibold text-gray-900">{selectedService?.name || service.name}</h3>
                 <p className="text-sm text-gray-600">
-                  {selectedService?.duration || service.duration}min • {selectedService?.price || service.price} €
+                  {selectedService?.duration || service.duration}min • {selectedService?.price || service.price}€
                 </p>
                 {selectedService?.description && (
                   <p className="text-xs text-gray-500 mt-1">{selectedService.description}</p>
@@ -1018,11 +1018,11 @@ export default function SalonBooking() {
             </div>
             <div className="flex justify-between items-center mb-2">
               <span className="text-gray-600">Prix total</span>
-              <span className="font-medium">{selectedService?.price || 0},00 €</span>
+              <span className="font-medium">{selectedService?.price || 0}€</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="font-semibold text-gray-900">Acompte</span>
-              <span className="font-bold text-gray-900 text-lg">{Math.round((selectedService?.price || 0) * 0.5)},00 €</span>
+              <span className="font-bold text-gray-900 text-lg">{Math.round((selectedService?.price || 0) * 0.5)}€</span>
             </div>
           </div>
 
@@ -1206,7 +1206,7 @@ export default function SalonBooking() {
                 <div>
                   <div className="font-medium text-gray-900">Payer la totalité</div>
                   <div className="text-sm text-gray-600">
-                    Payer maintenant le montant total {selectedService?.price || service.price},00 € de votre réservation.
+                    Payer maintenant le montant total {selectedService?.price || service.price}€ de votre réservation.
                   </div>
                 </div>
               </label>
@@ -1232,20 +1232,20 @@ export default function SalonBooking() {
           <div className="bg-white rounded-lg p-4 space-y-3">
             <div className="flex justify-between">
               <span className="text-gray-900">{selectedService?.name || service.name}</span>
-              <span className="text-gray-900">{selectedService?.price || service.price},00 €</span>
+              <span className="text-gray-900">{selectedService?.price || service.price}€</span>
             </div>
             <div className="flex justify-between font-semibold">
               <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">{selectedService?.price || service.price},00 €</span>
+              <span className="text-gray-900">{selectedService?.price || service.price}€</span>
             </div>
             <div className="border-t border-gray-200 pt-3">
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler maintenant</span>
-                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)}€</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-900">À régler sur place</span>
-                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)},50 €</span>
+                <span className="text-gray-900">{Math.round((selectedService?.price || service.price) * 0.5)}€</span>
               </div>
             </div>
           </div>
@@ -1416,7 +1416,7 @@ export default function SalonBooking() {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-gray-900">{selectedService?.name || "Service"}</h3>
-                <p className="text-sm text-gray-600">{selectedService?.duration || "30min"} • {selectedService?.price || 0} €</p>
+                <p className="text-sm text-gray-600">{selectedService?.duration || "30min"} • {selectedService?.price || 0}€</p>
               </div>
               <Button variant="link" className="glass-button hover:glass-effect text-black text-sm transition-all duration-300">
                 Supprimer

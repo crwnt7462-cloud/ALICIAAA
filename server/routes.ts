@@ -728,7 +728,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         reviews: salon.reviewCount || 0,
         price: '€€€',
         image: salon.photos?.[0] || salon.coverImageUrl || '/salon-default.jpg',
-        services: salon.serviceCategories?.[0]?.services?.map(s => s.name) || ['Service professionnel'],
+        services: salon.serviceCategories?.[0]?.services?.map((s: any) => s.name) || ['Service professionnel'],
         openNow: salon.isPublished || true,
         description: salon.description,
         phone: salon.phone,
@@ -1863,6 +1863,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching staff:', error);
       res.status(500).json({ message: 'Failed to fetch staff' });
+    }
+  });
+
+  // Route pour récupérer les détails d'une réservation
+  app.get('/api/bookings/:bookingId', async (req, res) => {
+    try {
+      const { bookingId } = req.params;
+      
+      // Récupérer les détails du rendez-vous depuis la base de données
+      const booking = await storage.getAppointmentById?.(parseInt(bookingId));
+      
+      if (!booking) {
+        return res.status(404).json({ error: 'Réservation non trouvée' });
+      }
+
+      // Récupérer les informations du service et du salon
+      const service = booking.serviceId ? await storage.getServiceById?.(booking.serviceId) : null;
+      const salon = await storage.getSalonByUserId?.(booking.userId);
+
+      const response = {
+        id: booking.id,
+        professional: `${booking.clientName || 'Professionnel'}`,
+        service: service?.name || 'Service non spécifié',
+        salon: salon?.name || 'Salon de beauté',
+        date: booking.appointmentDate,
+        time: booking.startTime,
+        duration: service?.duration ? `${service.duration} min` : '60 min',
+        price: booking.totalPrice ? `${booking.totalPrice}€` : service?.price ? `${service.price}€` : '0€',
+        address: salon?.address || 'Adresse non spécifiée',
+        phone: salon?.phone || 'Numéro non spécifié',
+        status: booking.status,
+        paymentStatus: booking.paymentStatus,
+        depositPaid: booking.depositPaid
+      };
+
+      res.json(response);
+    } catch (error) {
+      console.error("Erreur récupération détails réservation:", error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la récupération des détails',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
     }
   });
 

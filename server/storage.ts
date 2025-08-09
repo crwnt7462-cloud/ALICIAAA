@@ -104,6 +104,8 @@ export interface IStorage {
   createSalon(salonData: any): Promise<any>;
   getSalon(salonId: string): Promise<any>;
   getSalons(): Promise<any[]>;
+  getSalonsByUserId(userId: string): Promise<any[]>;
+  getSalonByUserId(userId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
   saveSalonData(salonId: string, salonData: any): Promise<any>;
 
@@ -114,10 +116,22 @@ export interface IStorage {
   getProfessionalSettings(userId: string): Promise<any>;
   saveProfessionalSettings(userId: string, settings: any): Promise<any>;
   
-  // Other operations
+  // Appointment operations
   getAppointmentsByClientId(clientId: string): Promise<any[]>;
   getAppointments(userId: string): Promise<any[]>;
+  getAppointmentById(appointmentId: number): Promise<any>;
+  createAppointment(appointmentData: any): Promise<any>;
+  updateAppointment(appointmentId: string, data: any): Promise<any>;
+  deleteAppointment(appointmentId: string): Promise<void>;
+  
+  // Other operations  
   getClients(userId: string): Promise<any[]>;
+  createClient(clientData: any): Promise<any>;
+  updateClient(clientId: string, data: any): Promise<any>;
+  deleteClient(clientId: string): Promise<void>;
+  createStaff(staffData: any): Promise<any>;
+  updateStaff(staffId: string, data: any): Promise<any>;
+  deleteStaff(staffId: string): Promise<void>;
   createSubscription(subscriptionData: any): Promise<any>;
   getSubscriptionsByUserId(userId: string): Promise<any[]>;
 }
@@ -507,9 +521,101 @@ export class DatabaseStorage implements IStorage {
     return [];
   }
 
+  async getAppointmentById(appointmentId: number): Promise<any> {
+    try {
+      // Importer le schema appointments ici pour éviter les problèmes de référence circulaire
+      const { appointments } = await import('@shared/schema');
+      
+      const [appointment] = await db
+        .select()
+        .from(appointments)
+        .where(eq(appointments.id, appointmentId));
+        
+      return appointment || null;
+    } catch (error) {
+      console.error('Erreur lors de la récupération du rendez-vous:', error);
+      return null;
+    }
+  }
+
+  async createAppointment(appointmentData: any): Promise<any> {
+    try {
+      const { appointments } = await import('@shared/schema');
+      
+      const [appointment] = await db
+        .insert(appointments)
+        .values(appointmentData)
+        .returning();
+        
+      return appointment;
+    } catch (error) {
+      console.error('Erreur lors de la création du rendez-vous:', error);
+      throw error;
+    }
+  }
+
+  async updateAppointment(appointmentId: string, data: any): Promise<any> {
+    try {
+      const { appointments } = await import('@shared/schema');
+      
+      const [appointment] = await db
+        .update(appointments)
+        .set(data)
+        .where(eq(appointments.id, parseInt(appointmentId)))
+        .returning();
+        
+      return appointment;
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du rendez-vous:', error);
+      throw error;
+    }
+  }
+
+  async deleteAppointment(appointmentId: string): Promise<void> {
+    try {
+      const { appointments } = await import('@shared/schema');
+      
+      await db
+        .delete(appointments)
+        .where(eq(appointments.id, parseInt(appointmentId)));
+        
+    } catch (error) {
+      console.error('Erreur lors de la suppression du rendez-vous:', error);
+      throw error;
+    }
+  }
+
   async getClients(userId: string): Promise<any[]> {
     // Implementation for getting clients
     return [];
+  }
+
+  async createClient(clientData: any): Promise<any> {
+    // Implementation for creating client
+    return clientData;
+  }
+
+  async updateClient(clientId: string, data: any): Promise<any> {
+    // Implementation for updating client
+    return data;
+  }
+
+  async deleteClient(clientId: string): Promise<void> {
+    // Implementation for deleting client
+  }
+
+  async createStaff(staffData: any): Promise<any> {
+    // Implementation for creating staff
+    return staffData;
+  }
+
+  async updateStaff(staffId: string, data: any): Promise<any> {
+    // Implementation for updating staff
+    return data;
+  }
+
+  async deleteStaff(staffId: string): Promise<void> {
+    // Implementation for deleting staff
   }
 
   async createSubscription(subscriptionData: any): Promise<any> {
@@ -530,6 +636,30 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('❌ Erreur lecture salons PostgreSQL:', error);
       return Array.from(this.salons.values());
+    }
+  }
+
+  async getSalonsByUserId(userId: string): Promise<any[]> {
+    try {
+      // Récupérer tous les salons appartenant à un utilisateur
+      const userSalons = await db.select().from(salons).where(eq(salons.userId, userId));
+      console.log(`📊 ${userSalons.length} salons trouvés pour user ${userId}`);
+      return userSalons;
+    } catch (error) {
+      console.error('❌ Erreur récupération salons utilisateur:', error);
+      return [];
+    }
+  }
+
+  async getSalonByUserId(userId: string): Promise<any> {
+    try {
+      // Récupérer le premier salon d'un utilisateur (ou le principal)
+      const [salon] = await db.select().from(salons).where(eq(salons.userId, userId)).limit(1);
+      console.log(`📊 Salon principal trouvé pour user ${userId}:`, salon?.name || 'aucun');
+      return salon || null;
+    } catch (error) {
+      console.error('❌ Erreur récupération salon principal utilisateur:', error);
+      return null;
     }
   }
 
@@ -574,6 +704,7 @@ export class DatabaseStorage implements IStorage {
     try {
       const [salon] = await db.insert(salons).values({
         id: salonData.id,
+        userId: salonData.userId, // Ajouter l'userId pour associer le salon au propriétaire
         name: salonData.name,
         description: salonData.description,
         address: salonData.address,

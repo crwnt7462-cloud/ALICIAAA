@@ -92,11 +92,11 @@ export default function BookingConfirmationModal({
             <div className="border-t border-white/20 pt-2">
               <div className="flex justify-between items-center text-sm mb-1">
                 <span className="text-gray-600">Prix total</span>
-                <span className="font-medium text-gray-900">{bookingData.servicePrice},00 €</span>
+                <span className="font-medium text-gray-900">{bookingData.servicePrice}€</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="font-semibold text-gray-900">Acompte</span>
-                <span className="font-bold text-gray-900 text-lg">{depositAmount},00 €</span>
+                <span className="font-bold text-gray-900 text-lg">{depositAmount}€</span>
               </div>
             </div>
 
@@ -132,7 +132,7 @@ export default function BookingConfirmationModal({
               disabled={!acceptConditions}
               className="w-full mt-4 glass-button hover:glass-effect text-black font-medium py-2.5 rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Confirmer & Payer {depositAmount},00 €
+              Confirmer & Payer {depositAmount}€
             </Button>
           </div>
         </div>
