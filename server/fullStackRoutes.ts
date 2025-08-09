@@ -1133,7 +1133,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         reviews: salon.reviewCount || 0,
         price: '€€€',
         image: salon.photos?.[0] || salon.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
-        services: salon.serviceCategories?.[0]?.services?.map(s => s.name) || ['Service professionnel'],
+        services: salon.serviceCategories?.[0]?.services?.map((s: any) => s.name) || ['Service professionnel'],
         openNow: salon.isPublished || true,
         description: salon.description,
         phone: salon.phone,
@@ -1423,7 +1423,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.put('/api/inventory/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      const item = await storage.updateInventoryItem(id, req.body);
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const item = await storage.updateInventoryItem(userId, id.toString(), req.body);
       res.json(item);
     } catch (error: any) {
       console.error("Error updating inventory item:", error);
@@ -1434,7 +1435,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   app.delete('/api/inventory/:id', async (req, res) => {
     try {
       const id = parseInt(req.params.id);
-      await storage.deleteInventoryItem(id);
+      const userId = (req.session as any)?.user?.id || 'demo';
+      await storage.deleteInventoryItem(userId, id.toString());
       res.json({ success: true });
     } catch (error: any) {
       console.error("Error deleting inventory item:", error);
@@ -1570,7 +1572,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2023-10-16',
+        apiVersion: '2025-06-30.basil',
       });
       
       const planPrices = {
@@ -1639,7 +1641,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2023-10-16',
+        apiVersion: '2025-06-30.basil',
       });
       
       const session = await stripe.checkout.sessions.create({
@@ -1697,7 +1699,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Utiliser Stripe directement (package installé)
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2023-10-16',
+        apiVersion: '2025-06-30.basil',
       });
       
       // Calcul du montant en centimes
@@ -1756,7 +1758,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       // Vérifier le mot de passe avec bcrypt
       const bcrypt = await import('bcrypt');
-      const isValidPassword = await bcrypt.compare(password, user.password);
+      const isValidPassword = await bcrypt.compare(password, user.password || '');
       
       if (!isValidPassword) {
         console.log('❌ Mot de passe incorrect pour:', email);
@@ -1966,11 +1968,13 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userId = token.replace('demo-token-', '');
 
       // Mise à jour dans PostgreSQL via storage
-      await storage.saveSalonData(salonId, {
-        ...salonData,
-        ownerId: userId,
-        updatedAt: new Date()
-      });
+      if (storage.saveSalonData) {
+        await storage.saveSalonData(salonId, {
+          ...salonData,
+          ownerId: userId,
+          updatedAt: new Date()
+        });
+      }
 
       console.log('✅ Salon modifié dans PostgreSQL:', salonData.name);
       res.json({ 
@@ -1996,7 +2000,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       let service;
       if (storage.updateService) {
-        service = await storage.updateService(id, serviceData);
+        service = await storage.updateService(parseInt(id), serviceData);
       } else {
         service = { ...serviceData, id };
       }
@@ -2037,7 +2041,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       let staff;
       if (storage.updateStaff) {
-        staff = await storage.updateStaff(id, staffData);
+        staff = await storage.updateStaff(parseInt(id), staffData);
       } else {
         staff = { ...staffData, id };
       }
@@ -2267,13 +2271,18 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { id } = req.params;
       console.log('📖 Récupération salon par ID:', id);
       
-      let salon = await storage.getSalonData(id);
+      let salon;
+      if (storage.getSalonData) {
+        salon = await storage.getSalonData(id);
+      }
       
       // SOLUTION TEMPORAIRE : Chercher dans les salons créés au démarrage
       if (!salon && (id === 'excellence' || id === 'excellence-hair-paris')) {
         console.log('🔍 Recherche salon Excellence dans Map');
         // Le salon est créé au démarrage avec l'ID 'excellence-hair-paris'
-        salon = await storage.getSalonData('excellence-hair-paris');
+        if (storage.getSalonData) {
+          salon = await storage.getSalonData('excellence-hair-paris');
+        }
         
         if (!salon) {
           // Créer si vraiment pas trouvé
@@ -2296,8 +2305,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
             rating: 4.8,
             reviewCount: 127
           };
-          await storage.saveSalonData('excellence-hair-paris', excellenceSalon);
-          await storage.saveSalonData('excellence', excellenceSalon); // Alias
+          if (storage.saveSalonData) {
+            await storage.saveSalonData('excellence-hair-paris', excellenceSalon);
+            await storage.saveSalonData('excellence', excellenceSalon); // Alias
+          }
           salon = excellenceSalon;
         }
       }
@@ -3064,14 +3075,14 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
 
       try {
-        await storage.createEmailVerification?.(verificationData);
+        await storage.createEmailVerification(email);
       } catch (error: any) {
         console.log('Info: Stockage vérification (méthode pas encore implémentée)');
       }
 
       // Envoyer l'email via SendGrid
       const { emailService } = await import('./emailService');
-      const emailSent = await emailService.sendVerificationCode({
+      const emailSent = await emailService.sendVerificationEmail({
         email,
         verificationCode,
         userType: userType as 'professional' | 'client',
@@ -3133,7 +3144,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       // Marquer comme utilisé
       try {
-        await storage.markEmailVerificationAsUsed?.(verification.id);
+        await storage.markEmailVerificationAsUsed(email, verificationCode);
       } catch (error: any) {
         console.log('Info: Marquage vérification (méthode pas encore implémentée)');
       }

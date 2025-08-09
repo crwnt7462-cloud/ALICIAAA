@@ -73,6 +73,18 @@ export interface IStorage {
   createBusiness(businessData: any): Promise<any>;
   createBusinessRegistration(registration: InsertBusinessRegistration): Promise<BusinessRegistration>;
 
+  // Notification operations
+  getNotifications?(userId: string): Promise<any[]>;
+  createNotification?(notification: any): Promise<any>;
+  
+  // Staff operations extended
+  createStaff?(staff: any): Promise<any>;
+  updateStaff?(id: number, data: any): Promise<any>;
+  
+  // Salon operations extended  
+  getSalonData?(salonId: string): Promise<any>;
+  saveSalonData?(salonId: string, data: any): Promise<any>;
+
   // Booking Pages
   updateBookingPage(userId: string, data: any): Promise<any>;
 
@@ -107,10 +119,6 @@ export interface IStorage {
   getSalonsByUserId(userId: string): Promise<any[]>;
   getSalonByUserId(userId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
-  saveSalonData(salonId: string, salonData: any): Promise<any>;
-
-  // Salon operations
-  getSalons(): Promise<any[]>;
   
   // Professional Settings - PERSISTENT STORAGE
   getProfessionalSettings(userId: string): Promise<any>;
@@ -129,8 +137,6 @@ export interface IStorage {
   createClient(clientData: any): Promise<any>;
   updateClient(clientId: string, data: any): Promise<any>;
   deleteClient(clientId: string): Promise<void>;
-  createStaff(staffData: any): Promise<any>;
-  updateStaff(staffId: string, data: any): Promise<any>;
   deleteStaff(staffId: string): Promise<void>;
   createSubscription(subscriptionData: any): Promise<any>;
   getSubscriptionsByUserId(userId: string): Promise<any[]>;
@@ -601,6 +607,11 @@ export class DatabaseStorage implements IStorage {
 
   async deleteClient(clientId: string): Promise<void> {
     await db.delete(clients).where(eq(clients.id, parseInt(clientId)));
+  }
+
+  async deleteStaff(staffId: string): Promise<void> {
+    const [deletedStaff] = await db.delete(staff).where(eq(staff.id, parseInt(staffId))).returning();
+    return;
   }
 
   async createSubscription(subscriptionData: any): Promise<any> {
