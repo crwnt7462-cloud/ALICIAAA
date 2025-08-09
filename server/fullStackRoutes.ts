@@ -553,6 +553,58 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // API pour créer un service personnalisé
+  app.post('/api/salon/:salonId/services', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      const { name, price, duration, description } = req.body;
+      
+      console.log('🛍️ Création service pour salon:', salonId);
+      
+      const newService = await storage.createService({
+        userId: salonId,
+        name,
+        price,
+        duration,
+        description
+      });
+      
+      res.json({
+        success: true,
+        service: newService
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur création service:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  // API pour modifier un service
+  app.put('/api/salon/:salonId/services/:serviceId', async (req, res) => {
+    try {
+      const { serviceId } = req.params;
+      const updateData = req.body;
+      
+      console.log('✏️ Modification service:', serviceId);
+      
+      const updatedService = await storage.updateService(parseInt(serviceId), updateData);
+      
+      res.json({
+        success: true,
+        service: updatedService
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur modification service:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
   // Routes d'authentification personnalisées (contournement Replit Auth à cause de Vite)
   app.post('/api/auth/login', async (req, res) => {
     try {
