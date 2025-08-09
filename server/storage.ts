@@ -163,9 +163,11 @@ export class DatabaseStorage implements IStorage {
   async createUser(userData: InsertUser): Promise<User> {
     // Hasher le mot de passe avant de l'enregistrer
     const bcrypt = await import('bcrypt');
+    const crypto = await import('crypto');
     const hashedPassword = userData.password ? await bcrypt.hash(userData.password, 10) : null;
 
     const [user] = await db.insert(users).values({
+      id: crypto.randomUUID(),
       email: userData.email,
       password: hashedPassword,
       firstName: userData.firstName,
@@ -601,8 +603,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getClients(userId: string): Promise<any[]> {
-    const { clientAccounts } = await import('@shared/schema');
-    return await db.select().from(clientAccounts).where(eq(clientAccounts.userId, userId));
+    try {
+      const { clientAccounts } = await import('@shared/schema');
+      return await db.select().from(clientAccounts).where(eq(clientAccounts.userId, userId));
+    } catch (error) {
+      console.error('❌ Erreur récupération clients:', error);
+      // Fallback: retourner liste vide plutôt que d'échouer
+      return [];
+    }
   }
 
   async createClient(clientData: any): Promise<any> {
