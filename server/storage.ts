@@ -84,6 +84,7 @@ export interface IStorage {
   // Salon operations extended  
   getSalonData?(salonId: string): Promise<any>;
   saveSalonData?(salonId: string, data: any): Promise<any>;
+  upsertUser?(userData: any): Promise<User>;
 
   // Booking Pages
   updateBookingPage(userId: string, data: any): Promise<any>;
@@ -162,10 +163,9 @@ export class DatabaseStorage implements IStorage {
   async createUser(userData: InsertUser): Promise<User> {
     // Hasher le mot de passe avant de l'enregistrer
     const bcrypt = await import('bcrypt');
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    const hashedPassword = userData.password ? await bcrypt.hash(userData.password, 10) : null;
 
     const [user] = await db.insert(users).values({
-      id: crypto.randomUUID(),
       email: userData.email,
       password: hashedPassword,
       firstName: userData.firstName,
@@ -183,6 +183,15 @@ export class DatabaseStorage implements IStorage {
       mentionHandle: userData.mentionHandle,
     }).returning();
     return user;
+  }
+
+  async upsertUser(userData: any): Promise<User> {
+    const existingUser = await this.getUserByEmail(userData.email);
+    if (existingUser) {
+      return await this.updateUser(existingUser.id, userData);
+    } else {
+      return await this.createUser(userData);
+    }
   }
 
   async updateUser(id: string, data: Partial<User>): Promise<User> {
@@ -592,26 +601,54 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getClients(userId: string): Promise<any[]> {
-    return await db.select().from(clients).where(eq(clients.userId, userId));
+    const { clientAccounts } = await import('@shared/schema');
+    return await db.select().from(clientAccounts).where(eq(clientAccounts.userId, userId));
   }
 
   async createClient(clientData: any): Promise<any> {
-    const [client] = await db.insert(clients).values(clientData).returning();
+    const { clientAccounts } = await import('@shared/schema');
+    const [client] = await db.insert(clientAccounts).values(clientData).returning();
     return client;
   }
 
   async updateClient(clientId: string, data: any): Promise<any> {
-    const [client] = await db.update(clients).set(data).where(eq(clients.id, parseInt(clientId))).returning();
+    const { clientAccounts } = await import('@shared/schema');
+    const [client] = await db.update(clientAccounts).set(data).where(eq(clientAccounts.id, parseInt(clientId))).returning();
     return client;
   }
 
   async deleteClient(clientId: string): Promise<void> {
-    await db.delete(clients).where(eq(clients.id, parseInt(clientId)));
+    const { clientAccounts } = await import('@shared/schema');
+    await db.delete(clientAccounts).where(eq(clientAccounts.id, parseInt(clientId)));
   }
 
   async deleteStaff(staffId: string): Promise<void> {
     const [deletedStaff] = await db.delete(staff).where(eq(staff.id, parseInt(staffId))).returning();
     return;
+  }
+
+  async createStaff(staffData: any): Promise<any> {
+    const { staff } = await import('@shared/schema');
+    const [newStaff] = await db.insert(staff).values({
+      ...staffData,
+      id: undefined // Auto-generated
+    }).returning();
+    return newStaff;
+  }
+
+  async updateStaff(id: number, staffData: any): Promise<any> {
+    const { staff } = await import('@shared/schema');
+    const [updatedStaff] = await db.update(staff).set(staffData).where(eq(staff.id, id)).returning();
+    return updatedStaff;
+  }
+
+  async getSalonData(salonId: string): Promise<any> {
+    return await this.getSalon(salonId);
+  }
+
+  async saveSalonData(salonId: string, salonData: any): Promise<any> {
+    this.salons.set(salonId, salonData);
+    return salonData;
   }
 
   async createSubscription(subscriptionData: any): Promise<any> {

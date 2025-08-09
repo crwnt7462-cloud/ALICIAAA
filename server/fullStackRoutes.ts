@@ -2273,16 +2273,14 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       let salon;
       if (storage.getSalonData) {
-        salon = await storage.getSalonData(id);
+        salon = await storage.getSalon(id);
       }
       
       // SOLUTION TEMPORAIRE : Chercher dans les salons créés au démarrage
       if (!salon && (id === 'excellence' || id === 'excellence-hair-paris')) {
         console.log('🔍 Recherche salon Excellence dans Map');
         // Le salon est créé au démarrage avec l'ID 'excellence-hair-paris'
-        if (storage.getSalonData) {
-          salon = await storage.getSalonData('excellence-hair-paris');
-        }
+        salon = await storage.getSalon('excellence-hair-paris');
         
         if (!salon) {
           // Créer si vraiment pas trouvé
@@ -2305,10 +2303,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
             rating: 4.8,
             reviewCount: 127
           };
-          if (storage.saveSalonData) {
-            await storage.saveSalonData('excellence-hair-paris', excellenceSalon);
-            await storage.saveSalonData('excellence', excellenceSalon); // Alias
-          }
+          await storage.saveSalonData('excellence-hair-paris', excellenceSalon);
+          await storage.saveSalonData('excellence', excellenceSalon); // Alias
           salon = excellenceSalon;
         }
       }
@@ -3082,12 +3078,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
       // Envoyer l'email via SendGrid
       const { emailService } = await import('./emailService');
-      const emailSent = await emailService.sendVerificationEmail({
-        email,
-        verificationCode,
-        userType: userType as 'professional' | 'client',
-        businessName: userData.businessName
-      });
+      const emailSent = await emailService.sendVerificationEmail(email, verificationCode);
 
       if (emailSent) {
         console.log('✅ Code envoyé avec succès à:', email);
