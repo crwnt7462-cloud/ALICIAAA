@@ -226,6 +226,28 @@ export const servicePhotos = pgTable("service_photos", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Professional settings and configurations - PERSISTENT STORAGE
+export const professionalSettings = pgTable("professional_settings", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  salonName: varchar("salon_name"),
+  salonDescription: text("salon_description"),
+  salonColors: jsonb("salon_colors"), // Theme colors
+  workingHours: jsonb("working_hours"), // Weekly schedule
+  bookingSettings: jsonb("booking_settings"), // Deposit %, advance booking rules
+  notificationSettings: jsonb("notification_settings"), // Email/SMS preferences
+  paymentSettings: jsonb("payment_settings"), // Stripe config
+  salonPhotos: jsonb("salon_photos"), // Array of photo URLs
+  socialLinks: jsonb("social_links"), // Instagram, Facebook, etc.
+  businessInfo: jsonb("business_info"), // SIRET, address, etc.
+  customFields: jsonb("custom_fields"), // Any additional professional data
+  lastModified: timestamp("last_modified").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type ProfessionalSettings = typeof professionalSettings.$inferSelect;
+export type InsertProfessionalSettings = typeof professionalSettings.$inferInsert;
+
 // Weekend and premium pricing
 export const pricingRules = pgTable("pricing_rules", {
   id: serial("id").primaryKey(),

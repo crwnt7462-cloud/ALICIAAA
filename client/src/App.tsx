@@ -55,6 +55,7 @@ import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
 import StaffManagement from "@/pages/StaffManagement";
 import ServicesManagement from "@/pages/ServicesManagement";
+import ProfessionalSettingsDemo from "@/pages/ProfessionalSettingsDemo";
 import ClientAnalytics from "@/pages/ClientAnalytics";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
@@ -825,6 +826,7 @@ function Router() {
           <Route path="/clients" component={ClientsModern} />
           <Route path="/staff-management" component={StaffManagement} />
           <Route path="/services-management" component={ServicesManagement} />
+          <Route path="/professional-settings-demo" component={ProfessionalSettingsDemo} />
           <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />

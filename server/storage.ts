@@ -10,11 +10,12 @@ import {
   subscriptions,
   emailVerifications,
   photos,
+  professionalSettings,
+  staffMembers,
   type User,
   type ClientAccount,
   type Service,
   type Staff,
-
   type BusinessRegistration,
   type SalonRegistration,
   type Subscription,
@@ -22,10 +23,11 @@ import {
   type InsertClientAccount,
   type InsertService,
   type InsertStaff,
-
   type InsertBusinessRegistration,
   type InsertSalonRegistration,
-  type InsertSubscription
+  type InsertSubscription,
+  type ProfessionalSettings,
+  type InsertProfessionalSettings
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -107,6 +109,10 @@ export interface IStorage {
 
   // Salon operations
   getSalons(): Promise<any[]>;
+  
+  // Professional Settings - PERSISTENT STORAGE
+  getProfessionalSettings(userId: string): Promise<any>;
+  saveProfessionalSettings(userId: string, settings: any): Promise<any>;
   
   // Other operations
   getAppointmentsByClientId(clientId: string): Promise<any[]>;
@@ -263,17 +269,21 @@ export class DatabaseStorage implements IStorage {
   // STAFF OPERATIONS
   // =============================================
 
-  async getStaff(userId: string): Promise<StaffMember[]> {
-    return await db.select().from(staffMembers).where(eq(staffMembers.salonId, userId));
+  async getStaff(userId: string): Promise<Staff[]> {
+    return await db.select().from(staff).where(eq(staff.userId, userId));
   }
 
   async getStaffBySalonId(salonId: string): Promise<any[]> {
+    return this.getStaffBySalon(salonId);
+  }
+
+  async getStaffBySalonIdReal(salonId: string): Promise<any[]> {
     return await db.select().from(staffMembers).where(eq(staffMembers.salonId, salonId));
   }
 
-  async createStaffMember(staffData: InsertStaffMember): Promise<StaffMember> {
-    const [staff] = await db.insert(staffMembers).values(staffData).returning();
-    return staff;
+  async createStaffMember(staffData: InsertStaff): Promise<Staff> {
+    const [staffMember] = await db.insert(staff).values(staffData).returning();
+    return staffMember;
   }
 
   // =============================================
@@ -654,6 +664,89 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCustomTag(tagId: string): Promise<boolean> {
     return true; // TODO: Implémenter avec base de données
+  }
+
+  // =============================================
+  // PROFESSIONAL SETTINGS - PERSISTENT STORAGE
+  // =============================================
+
+  async getProfessionalSettings(userId: string): Promise<any> {
+    try {
+      const [settings] = await db.select()
+        .from(professionalSettings)
+        .where(eq(professionalSettings.userId, userId));
+      
+      console.log('⚙️ Paramètres professionnels récupérés pour:', userId);
+      return settings || {
+        userId,
+        salonName: null,
+        salonDescription: null,
+        salonColors: {},
+        workingHours: {},
+        bookingSettings: {},
+        notificationSettings: {},
+        paymentSettings: {},
+        salonPhotos: [],
+        socialLinks: {},
+        businessInfo: {},
+        customFields: {}
+      };
+    } catch (error) {
+      console.error('❌ Erreur récupération paramètres professionnels:', error);
+      return {
+        userId,
+        salonName: null,
+        salonDescription: null,
+        salonColors: {},
+        workingHours: {},
+        bookingSettings: {},
+        notificationSettings: {},
+        paymentSettings: {},
+        salonPhotos: [],
+        socialLinks: {},
+        businessInfo: {},
+        customFields: {}
+      };
+    }
+  }
+
+  async saveProfessionalSettings(userId: string, settings: any): Promise<any> {
+    try {
+      console.log('💾 Sauvegarde paramètres professionnels pour:', userId);
+      
+      const settingsData = {
+        userId,
+        salonName: settings.salonName,
+        salonDescription: settings.salonDescription,
+        salonColors: JSON.stringify(settings.salonColors || {}),
+        workingHours: JSON.stringify(settings.workingHours || {}),
+        bookingSettings: JSON.stringify(settings.bookingSettings || {}),
+        notificationSettings: JSON.stringify(settings.notificationSettings || {}),
+        paymentSettings: JSON.stringify(settings.paymentSettings || {}),
+        salonPhotos: JSON.stringify(settings.salonPhotos || []),
+        socialLinks: JSON.stringify(settings.socialLinks || {}),
+        businessInfo: JSON.stringify(settings.businessInfo || {}),
+        customFields: JSON.stringify(settings.customFields || {}),
+        lastModified: new Date()
+      };
+
+      const [savedSettings] = await db.insert(professionalSettings)
+        .values(settingsData)
+        .onConflictDoUpdate({
+          target: professionalSettings.userId,
+          set: {
+            ...settingsData,
+            lastModified: new Date()
+          }
+        })
+        .returning();
+      
+      console.log('✅ Paramètres professionnels sauvegardés avec succès');
+      return savedSettings;
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde paramètres professionnels:', error);
+      throw error;
+    }
   }
 
   // Méthodes pour gestion du staff

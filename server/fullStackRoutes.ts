@@ -32,6 +32,38 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   
   // ============= ROUTES PRIORITAIRES SALON & SUBSCRIPTION =============
   
+  // ============= ROUTES PROFESSIONAL SETTINGS - SAUVEGARDE PERSISTANTE =============
+  
+  // Récupérer les paramètres professionnels
+  app.get('/api/professional/settings', async (req: any, res) => {
+    try {
+      const userId = req.user?.id || 'demo-user'; // Use demo for now
+      console.log('⚙️ Récupération paramètres professionnels pour:', userId);
+      
+      const settings = await storage.getProfessionalSettings(userId);
+      res.json(settings);
+    } catch (error: any) {
+      console.error('❌ Erreur récupération paramètres:', error);
+      res.status(500).json({ error: 'Failed to fetch professional settings' });
+    }
+  });
+  
+  // Sauvegarder les paramètres professionnels
+  app.post('/api/professional/settings', async (req: any, res) => {
+    try {
+      const userId = req.user?.id || 'demo-user'; // Use demo for now
+      const settings = req.body;
+      
+      console.log('💾 Sauvegarde paramètres professionnels pour:', userId);
+      
+      const savedSettings = await storage.saveProfessionalSettings(userId, settings);
+      res.json(savedSettings);
+    } catch (error: any) {
+      console.error('❌ Erreur sauvegarde paramètres:', error);
+      res.status(500).json({ error: 'Failed to save professional settings' });
+    }
+  });
+  
   // ROUTE SALON - PRIORITÉ ABSOLUE (AVANT TOUTE AUTRE ROUTE)
   app.get('/api/user/salon', async (req: any, res) => {
     res.setHeader('Content-Type', 'application/json');

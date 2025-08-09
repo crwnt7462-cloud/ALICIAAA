@@ -55,21 +55,21 @@ export default function BusinessFeaturesModern() {
       icon: BarChart3,
       title: "Analytics",
       description: "Statistiques et insights",
-      action: () => setLocation('/analytics-dashboard'),
+      action: () => setLocation('/professional-settings-demo'),
       color: "bg-purple-500"
     },
     {
       icon: MessageCircle,
       title: "Messagerie",
       description: "Communication directe",
-      action: () => setLocation('/messaging-system'),
+      action: () => setLocation('/professional-settings-demo'),
       color: "bg-orange-500"
     },
     {
       icon: CreditCard,
       title: "Paiements",
       description: "Terminal et facturation",
-      action: () => setLocation('/payment-methods-simple'),
+      action: () => setLocation('/professional-settings-demo'),
       color: "bg-indigo-500"
     },
     {
@@ -83,14 +83,14 @@ export default function BusinessFeaturesModern() {
       icon: Globe,
       title: "Page salon",
       description: "Site web personnalisé",
-      action: () => setLocation('/salon-page-editor'),
+      action: () => setLocation('/professional-settings-demo'),
       color: "bg-teal-500"
     },
     {
       icon: Settings,
       title: "Paramètres",
       description: "Configuration salon",
-      action: () => setLocation('/salon-settings'),
+      action: () => setLocation('/professional-settings-demo'),
       color: "bg-gray-500"
     }
   ];
