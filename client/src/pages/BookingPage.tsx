@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft, Check, User, Clock } from 'lucide-react';
 import { useLocation } from 'wouter';
+import { useQuery } from '@tanstack/react-query';
 
 interface Service {
   id: string;
@@ -13,6 +14,16 @@ interface Service {
   price: number;
   duration: number;
   specialist: string;
+}
+
+interface StaffMember {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  specialties?: string[];
+  isActive: boolean;
 }
 
 interface TimeSlot {
@@ -33,6 +44,7 @@ export default function BookingPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
+  const [selectedStaffMember, setSelectedStaffMember] = useState<StaffMember | null>(null);
   
   const [bookingData, setBookingData] = useState<BookingData>({
     selectedService: null,
@@ -43,12 +55,22 @@ export default function BookingPage() {
     clientEmail: ''
   });
 
+  // Récupération des vrais membres de l'équipe depuis l'API
+  const salonId = "salon-cacacaxaaxax-1754092428868-vr7b3j"; // TODO: récupérer dynamiquement
+  const { data: staffData, isLoading: staffLoading } = useQuery({
+    queryKey: [`/api/salon/${salonId}/staff`],
+  });
+
+  // Services (pour l'instant statiques, plus tard depuis l'API)
   const services: Service[] = [
-    { id: '1', name: 'Coupe + Brushing', price: 65, duration: 90, specialist: 'Sarah' },
-    { id: '2', name: 'Coloration + Coupe', price: 120, duration: 180, specialist: 'Marie' },
-    { id: '3', name: 'Soin Hydratant', price: 45, duration: 60, specialist: 'Emma' },
-    { id: '4', name: 'Highlights', price: 85, duration: 120, specialist: 'Julie' }
+    { id: '1', name: 'Coupe + Brushing', price: 65, duration: 90, specialist: 'À sélectionner' },
+    { id: '2', name: 'Coloration + Coupe', price: 120, duration: 180, specialist: 'À sélectionner' },
+    { id: '3', name: 'Soin Hydratant', price: 45, duration: 60, specialist: 'À sélectionner' },
+    { id: '4', name: 'Highlights', price: 85, duration: 120, specialist: 'À sélectionner' }
   ];
+
+  // Récupération des vrais membres de l'équipe 
+  const staffMembers: StaffMember[] = staffData?.staff || [];
 
   const timeSlots: TimeSlot[] = [
     { time: '09:00', available: true },
@@ -61,12 +83,17 @@ export default function BookingPage() {
 
   const handleServiceSelect = (service: Service) => {
     setBookingData(prev => ({ ...prev, selectedService: service }));
-    setStep(2);
+    setStep(2); // Aller à l'étape sélection du professionnel
+  };
+
+  const handleStaffSelect = (staff: StaffMember) => {
+    setSelectedStaffMember(staff);
+    setStep(3); // Aller à l'étape sélection du créneau
   };
 
   const handleTimeSelect = (date: string, time: string) => {
     setBookingData(prev => ({ ...prev, selectedDate: date, selectedTime: time }));
-    setStep(3);
+    setStep(4); // Aller à l'étape informations client
   };
 
   const handleBookingSubmit = () => {
@@ -86,7 +113,7 @@ export default function BookingPage() {
     });
     
     setTimeout(() => {
-      setStep(4);
+      setStep(5); // Étape de confirmation finale
     }, 2000);
   };
 
@@ -162,8 +189,73 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Étape 2: Date & Heure */}
+        {/* Étape 2: Sélection du professionnel */}
         {step === 2 && (
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Choisissez votre professionnel
+            </h2>
+            
+            {staffLoading ? (
+              <div className="space-y-3">
+                <div className="h-16 bg-gray-200 rounded animate-pulse" />
+                <div className="h-16 bg-gray-200 rounded animate-pulse" />
+              </div>
+            ) : staffMembers.length > 0 ? (
+              <div className="space-y-3">
+                {staffMembers.map((staff) => (
+                  <Card
+                    key={staff.id}
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => handleStaffSelect(staff)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-violet-600" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {staff.firstName} {staff.lastName}
+                            </h3>
+                            {staff.specialties && (
+                              <p className="text-sm text-gray-600">
+                                Spécialités: {Array.isArray(staff.specialties) ? staff.specialties.join(', ') : staff.specialties}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <ArrowLeft className="w-5 h-5 text-violet-600 rotate-180" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Aucun professionnel disponible
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Le salon n'a pas encore configuré son équipe.
+                  </p>
+                  <Button 
+                    onClick={() => setStep(3)}
+                    className="bg-violet-600 hover:bg-violet-700"
+                  >
+                    Continuer sans sélection
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        )}
+
+        {/* Étape 3: Date & Heure */}
+        {step === 3 && (
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Choisissez une date
@@ -192,8 +284,8 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Étape 3: Informations client */}
-        {step === 3 && (
+        {/* Étape 4: Informations client */}
+        {step === 4 && (
           <div className="space-y-4">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
               Vos informations
@@ -208,6 +300,12 @@ export default function BookingPage() {
                   <span className="text-sm text-gray-600">Service:</span>
                   <span className="text-sm font-medium">{bookingData.selectedService?.name}</span>
                 </div>
+                {selectedStaffMember && (
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">Professionnel:</span>
+                    <span className="text-sm font-medium">{selectedStaffMember.firstName} {selectedStaffMember.lastName}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-sm text-gray-600">Date:</span>
                   <span className="text-sm font-medium">{bookingData.selectedDate} à {bookingData.selectedTime}</span>
@@ -261,8 +359,8 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Étape 4: Confirmation */}
-        {step === 4 && (
+        {/* Étape 5: Confirmation */}
+        {step === 5 && (
           <div className="text-center py-8">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-green-600" />

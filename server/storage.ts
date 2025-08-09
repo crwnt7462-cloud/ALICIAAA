@@ -28,7 +28,7 @@ import {
   type InsertSubscription
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
 // Interface for storage operations - CLEAN VERSION
 export interface IStorage {
@@ -656,6 +656,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Méthodes pour gestion du staff
+  async getStaffBySalon(salonId: string): Promise<any[]> {
+    try {
+      const staffList = await db.select()
+        .from(staffMembers)
+        .where(and(
+          eq(staffMembers.salonId, salonId),
+          eq(staffMembers.isActive, true)
+        ));
+      
+      console.log('👥 Staff trouvé en PostgreSQL:', salonId, '->', staffList.length, 'membres');
+      return staffList;
+    } catch (error) {
+      console.error('❌ Erreur récupération staff PostgreSQL:', error);
+      return [];
+    }
+  }
+
   async createStaff(staffData: any): Promise<any> {
     return { id: Date.now(), ...staffData }; // TODO: Implémenter avec base de données
   }

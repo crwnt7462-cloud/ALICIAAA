@@ -466,6 +466,29 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Endpoint pour récupérer les membres de l'équipe d'un salon
+  app.get('/api/salon/:salonId/staff', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      console.log('👥 Récupération équipe salon:', salonId);
+      
+      const staffMembers = await storage.getStaffBySalon(salonId);
+      console.log('👥 Équipe trouvée:', staffMembers?.length || 0, 'membres');
+      
+      res.json({
+        success: true,
+        staff: staffMembers || [],
+        total: staffMembers?.length || 0
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur récupération équipe:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
   // Routes d'authentification personnalisées (contournement Replit Auth à cause de Vite)
   app.post('/api/auth/login', async (req, res) => {
     try {
