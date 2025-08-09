@@ -187,6 +187,11 @@ class AIService {
       return { analysis: "Erreur analyse", recommendations: [] };
     }
   }
+
+  // MÉTHODE MANQUANTE - generateResponse pour compatibility avec routes
+  async generateResponse(message: string): Promise<string> {
+    return await this.chatAssistant(message, {});
+  }
 }
 
 export const aiService = new AIService();
