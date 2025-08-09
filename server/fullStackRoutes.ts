@@ -115,7 +115,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       console.log('🤖 Test de connexion OpenAI...');
       const { message } = req.body;
       
-      const response = await aiService.getChatResponse(message || "Bonjour, peux-tu confirmer que la connexion OpenAI fonctionne?");
+      const response = await aiService.generateResponse(message || "Bonjour, peux-tu confirmer que la connexion OpenAI fonctionne?");
       
       res.json({
         success: true,
@@ -139,7 +139,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
       const { message, conversationHistory } = req.body;
       console.log('💬 Message IA reçu:', message);
       
-      const response = await aiService.getChatResponse(message);
+      const response = await aiService.generateResponse(message);
       
       // Enregistrement automatique de la conversation
       const conversationId = `chat-${Date.now()}`;
@@ -662,7 +662,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { email, password } = req.body;
       console.log('🔐 Tentative de connexion CLIENT:', email);
       
-      const client = await storage.authenticateClientAccount(email, password);
+      const client = await storage.authenticateClient(email, password);
       if (client) {
         console.log('✅ Connexion CLIENT réussie pour:', email);
         res.json({ success: true, client, token: 'demo-client-token-' + client.id });
@@ -697,7 +697,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       };
       
       console.log('🔄 Tentative d\'inscription Firebase directe...');
-      const result = await fbStorage.createUser(testUser);
+      const result = await storage.createUser(testUser);
       console.log('✅ Firebase fonctionne !', result.id);
       
       res.json({ 
@@ -986,11 +986,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         };
         
         // ✅ S'ASSURER QUE LE SALON DANS LA RECHERCHE A DES PHOTOS
-        publicSalonData.photos = salonData.photos || [
+        (publicSalonData as any).photos = salonData.photos || [
           "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
           "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format"
         ];
-        publicSalonData.coverImageUrl = salonData.coverImageUrl || publicSalonData.photos[0];
+        (publicSalonData as any).coverImageUrl = salonData.coverImageUrl || (publicSalonData as any).photos[0];
         
         // ✅ SAUVEGARDE COHÉRENTE : Même ID partout (actualId)
         if (storage.salons) {
@@ -1094,10 +1094,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       // Filtrer par catégorie et ville
       let salons = allSalons;
-      if (category) {
+      if (category && typeof category === 'string') {
         salons = salons.filter(salon => salon.category === category.toLowerCase());
       }
-      if (city) {
+      if (city && typeof city === 'string') {
         salons = salons.filter(salon => salon.city === city.toLowerCase() || salon.location?.toLowerCase().includes(city.toLowerCase()));
       }
       if (q) {

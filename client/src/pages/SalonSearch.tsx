@@ -19,7 +19,7 @@ import rendlyLogo from "@assets/3_1753714421825.png";
 
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
 const getSalonButtonClass = (salonId: string) => {
-  const salonColors = {
+  const salonColors: Record<string, string> = {
     'salon-1': 'glass-button-pink',        // Salon Excellence Paris
     'salon-2': 'glass-button-rose',        // Institut Beauté Marais  
     'salon-3': 'glass-button-emerald',     // Spa Wellness

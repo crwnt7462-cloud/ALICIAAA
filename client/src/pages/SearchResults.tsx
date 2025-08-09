@@ -15,7 +15,7 @@ import { Separator } from "@/components/ui/separator";
 
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
 const getSalonButtonClass = (salonId: string) => {
-  const salonColors = {
+  const salonColors: Record<string, string> = {
     'salon-excellence-paris': 'glass-button-pink',
     'salon-moderne-republique': 'glass-button-indigo', 
     'barbier-gentleman-marais': 'glass-button-amber',
@@ -128,11 +128,11 @@ export default function SearchResults() {
   };
 
   const filteredAndSortedResults = (searchResults || [])
-    .filter(salon => {
+    .filter((salon: any) => {
       if (priceRange !== 'all' && salon.priceRange !== priceRange) return false;
       return true;
     })
-    .sort((a, b) => {
+    .sort((a: any, b: any) => {
       switch (sortBy) {
         case 'rating':
           return b.rating - a.rating;
@@ -255,7 +255,7 @@ export default function SearchResults() {
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredAndSortedResults.map((salon) => (
+          {filteredAndSortedResults.map((salon: any) => (
             <Card 
               key={salon.id}
               className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
@@ -293,7 +293,7 @@ export default function SearchResults() {
                   </div>
 
                   <div className="flex flex-wrap gap-1 mb-3">
-                    {salon.specialties.map((specialty) => (
+                    {salon.specialties?.map((specialty: any) => (
                       <span 
                         key={specialty}
                         className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium"
@@ -301,7 +301,7 @@ export default function SearchResults() {
                         {specialty}
                       </span>
                     ))}
-                    {salon.services.slice(0, 2).map((service) => (
+                    {salon.services?.slice(0, 2).map((service: any) => (
                       <span 
                         key={service}
                         className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
