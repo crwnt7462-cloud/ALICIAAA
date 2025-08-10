@@ -669,10 +669,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSalons(): Promise<any[]> {
-    // Retourner tous les salons de la Map + PostgreSQL
+    // Retourner tous les salons depuis businessRegistrations PostgreSQL
     try {
-      const postgresqlSalons = await db.select().from(salons);
-      console.log(`📊 ${postgresqlSalons.length} salons trouvés en PostgreSQL`);
+      const postgresqlSalons = await db.select().from(businessRegistrations);
+      console.log(`📊 ${postgresqlSalons.length} salons trouvés en PostgreSQL businessRegistrations`);
+      
+      // Si aucun dans businessRegistrations, essayer salons
+      if (postgresqlSalons.length === 0) {
+        const salonTable = await db.select().from(salons);
+        console.log(`📊 ${salonTable.length} salons trouvés en PostgreSQL table salons`);
+        return salonTable;
+      }
+      
       return postgresqlSalons;
     } catch (error) {
       console.error('❌ Erreur lecture salons PostgreSQL:', error);
