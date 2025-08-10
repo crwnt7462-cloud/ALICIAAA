@@ -53,7 +53,31 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Client accounts table for customer authentication - moved below
+// Client accounts table for customer authentication
+export const clientAccounts = pgTable("client_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(), // Which professional owns this client
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  email: varchar("email"),
+  password: varchar("password"),
+  phone: varchar("phone"),
+  address: text("address"),
+  city: varchar("city"),
+  postalCode: varchar("postal_code"),
+  dateOfBirth: date("date_of_birth"),
+  profileImageUrl: varchar("profile_image_url"),
+  loyaltyPoints: integer("loyalty_points").default(0),
+  clientStatus: varchar("client_status").default("active"), // active, inactive, blocked
+  isVerified: boolean("is_verified").default(false),
+  isActive: boolean("is_active").default(true),
+  lastLoginAt: timestamp("last_login_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type ClientAccount = typeof clientAccounts.$inferSelect;
+export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 
 // Business registrations table for professional signups
 export const businessRegistrations = pgTable("business_registrations", {
@@ -285,27 +309,7 @@ export const services = pgTable("services", {
 // Staff members (removed duplicate - already defined above as staff)
 // Using the staff table defined above in the new advanced features section
 
-// Client accounts (for customer login and authentication)
-export const clientAccounts = pgTable("client_accounts", {
-  id: serial("id").primaryKey(),
-  email: varchar("email").notNull().unique(),
-  password: varchar("password").notNull(), // hashed password
-  firstName: varchar("first_name").notNull(),
-  lastName: varchar("last_name").notNull(),
-  phone: varchar("phone"),
-  dateOfBirth: date("date_of_birth"),
-  address: text("address"),
-  city: varchar("city"),
-  postalCode: varchar("postal_code"),
-  profileImageUrl: varchar("profile_image_url"),
-  loyaltyPoints: integer("loyalty_points").default(0),
-  clientStatus: varchar("client_status").default("regular"), // regular, vip, premium
-  isActive: boolean("is_active").default(true),
-  lastLoginAt: timestamp("last_login_at"),
-  isVerified: boolean("is_verified").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+// Client accounts (for customer login and authentication) - REMOVED DUPLICATE - Using definition above
 
 // Clients (managed by professionals)
 export const clients = pgTable("clients", {
