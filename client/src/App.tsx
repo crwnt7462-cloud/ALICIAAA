@@ -463,6 +463,15 @@ function Router() {
     );
   }
 
+  // ✅ ROUTE DYNAMIQUE POUR TOUS LES SALONS - /salon/:id
+  if (location.startsWith('/salon/') && location !== '/salon') {
+    return (
+      <div className="h-full">
+        <SalonBooking />
+      </div>
+    );
+  }
+
   // Routes spécifiques pour chaque salon - détection automatique
   if (location.includes('/excellence-hair-paris/') || location.includes('/salon-moderne-republique/') || location.includes('/gentleman-barbier/')) {
     return (
