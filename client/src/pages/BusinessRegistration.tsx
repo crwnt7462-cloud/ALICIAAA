@@ -216,15 +216,26 @@ export default function BusinessRegistration() {
           createBusinessPaymentIntent(data.salon?.id || data.business?.salonId || 'demo-business');
         }, 800);
       } else {
-        throw new Error(data.message || "Erreur lors de l'inscription");
+        throw new Error(data.error || data.message || "Erreur lors de l'inscription");
       }
     } catch (error: any) {
       console.error("❌ Erreur inscription BusinessRegistration:", error);
-      toast({
-        title: "Erreur d'inscription", 
-        description: error.message || "Une erreur s'est produite lors de l'inscription",
-        variant: "destructive"
-      });
+      const errorMessage = error.message || "Une erreur s'est produite lors de l'inscription";
+      
+      // Message spécifique pour email déjà utilisé
+      if (errorMessage.includes("email existe déjà")) {
+        toast({
+          title: "Email déjà utilisé", 
+          description: "Cet email est déjà associé à un compte professionnel. Utilisez un autre email ou connectez-vous.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Erreur d'inscription", 
+          description: errorMessage,
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
