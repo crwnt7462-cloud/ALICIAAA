@@ -2623,29 +2623,34 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   // 🚀 API D'INSCRIPTION PROFESSIONNEL AVEC CRÉATION AUTOMATIQUE DE PAGE SALON
   app.post('/api/professional/register', async (req, res) => {
     try {
-      const { 
-        businessName, 
-        ownerName, 
-        email, 
-        phone, 
-        address, 
-        businessType, 
-        services, 
+      const {
+        businessName,
+        businessType,
+        siret,
+        address,
+        city,
+        postalCode,
+        phone,
+        email,
+        ownerFirstName,
+        ownerLastName,
+        legalForm,
+        vatNumber,
         description,
-        password = 'defaultpass123', // Mot de passe par défaut si non fourni
-        subscriptionPlan = 'basic' // Plan par défaut
+        planType,
+        password
       } = req.body;
 
-      console.log('🎯 INSCRIPTION PROFESSIONNEL AVEC ABONNEMENT:', subscriptionPlan);
+      console.log('🎯 INSCRIPTION PROFESSIONNEL AVEC ABONNEMENT:', planType);
       console.log('🏢 Business:', businessName, 'Email:', email);
       
       // Validation des données requises
-      if (!password || password.length < 3) {
-        return res.status(400).json({ error: 'Mot de passe requis (minimum 3 caractères)' });
+      if (!password || password.length < 6) {
+        return res.status(400).json({ error: 'Mot de passe requis (minimum 6 caractères)' });
       }
       
-      if (!email || !businessName) {
-        return res.status(400).json({ error: 'Email et nom d\'entreprise requis' });
+      if (!email || !businessName || !ownerFirstName || !ownerLastName) {
+        return res.status(400).json({ error: 'Tous les champs requis doivent être remplis' });
       }
 
       // Vérifier si l'email existe déjà dans la table users
@@ -2655,15 +2660,19 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       }
 
       // 🚀 CRÉATION AUTOMATIQUE DE PAGE SALON PERSONNALISÉE
+      const ownerName = `${ownerFirstName} ${ownerLastName}`;
+      const fullAddress = `${address}, ${city} ${postalCode}`;
+      const subscriptionPlan = planType || 'basic';
+      
       const professionalData = {
         ownerName,
         businessName,
         email,
         phone,
-        address,
+        address: fullAddress,
         subscriptionPlan: subscriptionPlan as 'premium' | 'basic' | 'enterprise',
-        services,
-        description
+        services: [],
+        description: description || `Salon professionnel ${businessName}`
       };
 
       console.log('🏗️ Création automatique page salon pour:', businessName);
