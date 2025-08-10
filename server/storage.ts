@@ -604,8 +604,8 @@ export class DatabaseStorage implements IStorage {
 
   async getClients(userId: string): Promise<any[]> {
     try {
-      const { clientAccounts } = await import('@shared/schema');
-      return await db.select().from(clientAccounts).where(eq(clientAccounts.userId, userId));
+      const { clients } = await import('@shared/schema');
+      return await db.select().from(clients).where(eq(clients.userId, userId));
     } catch (error) {
       console.error('❌ Erreur récupération clients:', error);
       // Fallback: retourner liste vide plutôt que d'échouer
@@ -614,8 +614,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createClient(clientData: any): Promise<any> {
-    const { clientAccounts } = await import('@shared/schema');
-    const [client] = await db.insert(clientAccounts).values(clientData).returning();
+    const { clients } = await import('@shared/schema');
+    const [client] = await db.insert(clients).values(clientData).returning();
     return client;
   }
 
