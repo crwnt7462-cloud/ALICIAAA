@@ -356,11 +356,13 @@ export default function SalonBooking() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: 20.50, // Montant de l'acompte
+          amount: selectedService?.depositAmount || (selectedService?.price * 0.3) || selectedService?.price || 20.50,
           currency: 'eur',
           metadata: {
             salonName: salon.name,
             serviceName: selectedService?.name || "Service",
+            servicePrice: selectedService?.price || 0,
+            depositAmount: selectedService?.depositAmount || (selectedService?.price * 0.3) || 0,
             clientEmail: formData.email,
             appointmentDate: selectedDate,
             appointmentTime: selectedSlot?.time
@@ -1021,8 +1023,8 @@ export default function SalonBooking() {
               <span className="font-medium">{selectedService?.price || 0}€</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-gray-900">Acompte</span>
-              <span className="font-bold text-gray-900 text-lg">{Math.round((selectedService?.price || 0) * 0.5)}€</span>
+              <span className="font-semibold text-gray-900">Acompte ({selectedService?.depositPercentage || 30}%)</span>
+              <span className="font-bold text-gray-900 text-lg">{selectedService?.depositAmount || Math.round((selectedService?.price || 0) * 0.3)}€</span>
             </div>
           </div>
 
