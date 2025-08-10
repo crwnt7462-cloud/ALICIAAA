@@ -194,14 +194,18 @@ export default function BusinessRegistration() {
   const onSubmit = async (values: FormValues) => {
     setIsLoading(true);
     try {
+      console.log("📝 Données envoyées pour inscription pro:", { ...values, planType: planId });
+      
       const response = await fetch("/api/professional/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, planId }),
+        body: JSON.stringify({ ...values, planType: planId }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
+      console.log("📋 Réponse inscription pro:", data);
+
+      if (response.ok && data.success) {
         toast({
           title: "Inscription réussie",
           description: "Ouverture du paiement..."
@@ -209,16 +213,16 @@ export default function BusinessRegistration() {
         
         // Créer le Payment Intent et ouvrir le shell
         setTimeout(() => {
-          createBusinessPaymentIntent(data.businessId || 'demo-business');
+          createBusinessPaymentIntent(data.salon?.id || data.business?.salonId || 'demo-business');
         }, 800);
       } else {
-        throw new Error("Erreur lors de l'inscription");
+        throw new Error(data.message || "Erreur lors de l'inscription");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("❌ Erreur inscription BusinessRegistration:", error);
       toast({
         title: "Erreur d'inscription", 
-        description: "Une erreur s'est produite lors de l'inscription",
+        description: error.message || "Une erreur s'est produite lors de l'inscription",
         variant: "destructive"
       });
     } finally {
