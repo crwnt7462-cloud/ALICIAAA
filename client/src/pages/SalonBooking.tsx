@@ -274,19 +274,35 @@ export default function SalonBooking() {
     return 'salon-demo';
   };
 
-  const salonId = getSalonId();
+  // ✅ RÉCUPÉRATION AUTOMATIQUE depuis URL /salon/:id
+  const dynamicSalonId = window.location.pathname.split('/salon/')[1];
+  const finalSalonId = dynamicSalonId || getSalonId();
   
-  // Récupérer les données du salon spécifique
-  const { data: salonData } = useQuery({
-    queryKey: ['/api/salon/public', salonId],
-    retry: false,
+  console.log('🎯 SALON ID FINAL:', {
+    dynamicSalonId,
+    fallbackSalonId: getSalonId(),
+    finalSalonId,
+    url: window.location.pathname
+  });
+  
+  // Récupérer les vraies données du salon depuis PostgreSQL
+  const { data: realSalonData, isLoading: salonLoading } = useQuery({
+    queryKey: [`/api/salon-booking/${finalSalonId}`],
+    enabled: !!finalSalonId,
+    retry: 2
   });
 
-  // Utiliser salonData avec des valeurs par défaut
-  const salon = salonData || { 
-    id: salonId,
-    name: 'Salon Demo', 
-    location: 'Paris 75001' 
+  console.log('🏢 DONNÉES SALON RÉELLES:', {
+    finalSalonId,
+    realSalonData,
+    salonLoading
+  });
+
+  // Utiliser les vraies données PostgreSQL
+  const salon = realSalonData || { 
+    id: finalSalonId,
+    name: salonLoading ? 'Chargement...' : 'Salon Demo', 
+    location: salonLoading ? 'Chargement...' : 'Paris 75001' 
   };
 
   // Pas de service par défaut - utiliser seulement les données réelles
@@ -305,16 +321,26 @@ export default function SalonBooking() {
     { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
   ];
 
-  // Récupérer les services réels depuis la base de données
+  // Récupérer les services spécifiques du salon depuis PostgreSQL
   const { data: services } = useQuery({
-    queryKey: ['/api/services'],
+    queryKey: [`/api/salon-booking/${finalSalonId}/services`],
+    enabled: !!finalSalonId && !!realSalonData,
     retry: false,
   });
 
-  // Récupérer les professionnels réels depuis la base de données
+  // Récupérer les professionnels spécifiques du salon depuis PostgreSQL
   const { data: professionals = [] } = useQuery({
-    queryKey: ['/api/staff'],
+    queryKey: [`/api/salon-booking/${finalSalonId}/staff`],
+    enabled: !!finalSalonId && !!realSalonData,
     retry: false,
+  });
+
+  console.log('🎯 SERVICES ET STAFF DU SALON:', {
+    finalSalonId,
+    services,
+    professionals,
+    servicesCount: services?.length || 0,
+    profCount: professionals?.length || 0
   });
 
   const [dateStates, setDateStates] = useState(availableDates);
