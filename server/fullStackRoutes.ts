@@ -862,9 +862,38 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const userData = req.body;
       console.log('📝 Tentative d\'inscription CLIENT:', userData.email);
       
-      const client = await storage.createClientAccount(userData);
+      // Vérifier si l'email existe déjà
+      const existingClient = await storage.getClientByEmail(userData.email);
+      if (existingClient) {
+        return res.status(400).json({ success: false, message: 'Email already exists' });
+      }
+      
+      // Hacher le mot de passe
+      const bcrypt = await import('bcrypt');
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+      
+      // Préparer les données client (sans user_id)
+      const clientData = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: hashedPassword,
+        phone: userData.phone,
+        address: userData.address || null,
+        city: userData.city || null,
+        postalCode: userData.postalCode || null,
+        isVerified: false,
+        isActive: true,
+        loyaltyPoints: 0,
+        clientStatus: 'active'
+      };
+      
+      const client = await storage.createClientAccount(clientData);
       console.log('✅ Inscription CLIENT réussie pour:', userData.email);
-      res.json({ success: true, client, token: 'demo-client-token-' + client.id });
+      
+      // Retourner les données sans le mot de passe
+      const { password, ...clientResponse } = client;
+      res.json({ success: true, client: clientResponse, token: 'demo-client-token-' + client.id });
     } catch (error: any) {
       console.error('❌ Erreur lors de l\'inscription CLIENT:', error);
       res.status(500).json({ success: false, message: 'Server error' });
