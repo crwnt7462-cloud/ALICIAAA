@@ -1601,7 +1601,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2025-06-30.basil',
+        apiVersion: '2024-06-20',
       });
       
       const planPrices = {
@@ -1670,7 +1670,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-        apiVersion: '2025-06-30.basil',
+        apiVersion: '2024-06-20',
       });
       
       const session = await stripe.checkout.sessions.create({
