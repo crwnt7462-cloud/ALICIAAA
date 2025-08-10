@@ -56,7 +56,6 @@ export const users = pgTable("users", {
 // Client accounts table for customer authentication
 export const clientAccounts = pgTable("client_accounts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull(), // Which professional owns this client
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   email: varchar("email"),
