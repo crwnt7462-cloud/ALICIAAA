@@ -562,20 +562,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ✅ ROUTE STANDARDISÉE UNIQUE POUR SALON BY ID
   app.get('/api/salon/:salonId', async (req, res) => {
     try {
       const { salonId } = req.params;
+      console.log(`🔍 API: Récupération salon ID: ${salonId}`);
+      
       const salon = await storage.getSalon(salonId);
       
       if (!salon) {
-        return res.status(404).json({ error: 'Salon non trouvé' });
+        console.log(`❌ API: Salon non trouvé: ${salonId}`);
+        return res.status(404).json({ 
+          error: 'Salon non trouvé',
+          salonId,
+          message: `Aucun salon trouvé avec l'identifiant: ${salonId}`
+        });
       }
       
-      res.json({ salon });
+      console.log(`✅ API: Salon trouvé: ${salon.name} (${salonId})`);
+      
+      // Réponse normalisée avec structure cohérente
+      const normalizedSalon = {
+        id: salon.id,
+        name: salon.name,
+        description: salon.description,
+        address: salon.address,
+        phone: salon.phone,
+        email: salon.email,
+        customColors: salon.customColors || {},
+        serviceCategories: salon.serviceCategories || [],
+        photos: salon.photos || [],
+        isPublished: salon.isPublished,
+        createdAt: salon.createdAt,
+        updatedAt: salon.updatedAt
+      };
+      
+      res.json(normalizedSalon);
     } catch (error) {
-      console.error("Erreur récupération salon:", error);
+      console.error("❌ API: Erreur récupération salon:", error);
       res.status(500).json({ 
-        error: 'Erreur lors de la récupération du salon',
+        error: 'Erreur serveur lors de la récupération du salon',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
@@ -1528,17 +1554,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Business & Salon Management Routes
-  app.get('/api/salon/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
-      const salon = await storage.getSalon(id);
-      res.json(salon);
-    } catch (error) {
-      console.error("Error fetching salon:", error);
-      res.status(500).json({ error: "Failed to fetch salon" });
-    }
-  });
+  // ❌ ROUTE SUPPRIMÉE - Utiliser /api/salon/:salonId à la place
 
   app.post('/api/salon/register', async (req, res) => {
     try {

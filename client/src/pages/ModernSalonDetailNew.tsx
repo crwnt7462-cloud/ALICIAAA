@@ -30,16 +30,54 @@ export default function ModernSalonDetail() {
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
   
-  // Extraire l'ID du salon depuis l'URL
+  // ✅ STANDARDISATION: Extraction ID salon depuis route param
   const salonId = location.split('/salon/')[1];
   
-  // Récupérer les données réelles du salon depuis l'API
-  const { data: salonData, isLoading } = useQuery({
+  console.log('🎯 SALON DETAIL: Extraction ID depuis URL:', {
+    fullLocation: location,
+    extractedSalonId: salonId,
+    apiUrl: `/api/salon/${salonId}`
+  });
+  
+  // ✅ SUPPRESSION FALLBACK: Uniquement données depuis API
+  const { data: salonData, isLoading, error } = useQuery({
     queryKey: [`/api/salon/${salonId}`],
     enabled: !!salonId,
+    retry: false, // Pas de retry pour éviter les boucles
+    staleTime: 0,
+    refetchOnMount: true
   });
+  
+  // ✅ LOGGING POUR DEBUG
+  useEffect(() => {
+    console.log('🔄 SALON DETAIL: Données reçues:', {
+      salonId,
+      salonFound: !!salonData,
+      isLoading,
+      error: error?.message,
+      salonName: salonData?.name
+    });
+  }, [salonData, isLoading, error, salonId]);
 
-  // Mettre à jour les catégories de services quand les données du salon sont chargées
+  // ✅ GESTION ERREURS: Affichage 404 si salon non trouvé
+  if (!isLoading && error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
+          <p className="text-gray-400 mb-4">Le salon avec l'ID "{salonId}" n'existe pas.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg"
+          >
+            Retour à la recherche
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ SUPPRESSION DONNÉES FALLBACK: Utilisation exclusive des données API
   useEffect(() => {
     if (salonData?.serviceCategories) {
       setServiceCategories(salonData.serviceCategories);
@@ -135,28 +173,34 @@ export default function ModernSalonDetail() {
     }
   ]);
 
-  // Utiliser les données réelles du salon ou fallback
-  const salon = salonData || {
-    id: salonId || "salon-demo",
-    name: "Salon non trouvé",
-    subtitle: "Chargement...",
-    rating: 0,
-    reviews: 0,
-    verified: false,
-    address: "Adresse non disponible",
-    phone: "Téléphone non disponible",
-    story: "Chargement des informations...",
-    awards: [],
-    certifications: []
-  };
+  // ✅ SUPPRESSION FALLBACK: Utilisation exclusive des données API réelles
+  const salon = salonData;
 
-  // Afficher un état de chargement
+  // ✅ GESTION CHARGEMENT: Interface cohérente avec design de l'app
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Chargement du salon...</p>
+          <p className="text-gray-400">Chargement du salon {salonId}...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ✅ GESTION ERREURS: Pas de salon trouvé (données authentiques uniquement)
+  if (!salon) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
+          <p className="text-gray-400 mb-4">Le salon "{salonId}" n'existe pas dans nos données.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
+          >
+            Retour à la recherche
+          </button>
         </div>
       </div>
     );
@@ -394,7 +438,10 @@ export default function ModernSalonDetail() {
                               <p className="text-xs text-gray-500">{service.price}€ • {service.duration}</p>
                             </div>
                             <Button 
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                console.log('🎯 NAVIGATION BOOKING: Redirection avec salon ID:', salonId);
+                setLocation(`/salon-booking?salon=${salonId}`);
+              }}
                               className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300"
                             >
                               Choisir
@@ -548,7 +595,10 @@ export default function ModernSalonDetail() {
         {/* Bouton de réservation avec violet */}
         <div className="bg-white border-t border-gray-100 p-3">
           <Button 
-            onClick={() => setLocation('/booking')}
+            onClick={() => {
+              console.log('🎯 NAVIGATION BOOKING PRINCIPALE: Redirection avec salon ID:', salonId);
+              setLocation(`/salon-booking?salon=${salonId}`);
+            }}
             className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
           >
             Réserver maintenant

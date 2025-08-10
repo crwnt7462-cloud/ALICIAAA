@@ -126,8 +126,21 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
   );
 }
 
-export default function SalonBooking() {
-  const [, setLocation] = useLocation();
+function SalonBooking() {
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // ✅ STANDARDISATION: Récupération salon ID depuis URL params uniquement
+  const urlParams = new URLSearchParams(location.split('?')[1] || '');
+  const salonId = urlParams.get('salon');
+  
+  console.log('🎯 SALON BOOKING: Extraction salon ID depuis URL:', {
+    fullLocation: location,
+    urlParams: location.split('?')[1],
+    extractedSalonId: salonId
+  });
+
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
@@ -168,9 +181,6 @@ export default function SalonBooking() {
     acceptCGU: false,
     saveCard: false
   });
-
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
 
   // Récupérer le service sélectionné depuis sessionStorage au chargement
   useEffect(() => {
@@ -223,125 +233,69 @@ export default function SalonBooking() {
     }
   }, []);
 
-  // Récupérer automatiquement l'ID du salon depuis l'URL
-  const [, params] = useLocation();
-  const urlParts = window.location.pathname.split('/');
-  const potentialSalonId = urlParts[urlParts.length - 1];
-  
-  const getSalonId = () => {
-    const currentPath = window.location.pathname;
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Paramètre d'URL direct (?salonId=excellence)
-    const queryParam = urlParams.get('salonId');
-    if (queryParam) {
-      console.log('🔗 Salon détecté depuis paramètre URL:', queryParam);
-      return queryParam;
-    }
-    
-    // URL type /salon-booking/excellence
-    if (potentialSalonId && potentialSalonId !== 'salon-booking') {
-      console.log('🔗 Salon détecté depuis path:', potentialSalonId);
-      return potentialSalonId;
-    }
-    
-    // URL avec nom de salon (ex: /excellence-hair-paris/booking)
-    const salonMappings = {
-      'excellence-hair-paris': 'excellence',
-      'salon-moderne-republique': 'moderne',
-      'gentleman-barbier': 'gentleman'
-    };
-    
-    for (const [pathName, salonId] of Object.entries(salonMappings)) {
-      if (currentPath.includes(pathName)) {
-        console.log('🔗 Salon détecté depuis mapping URL:', pathName, '→', salonId);
-        return salonId;
-      }
-    }
-    
-    // Vérifier depuis le référent
-    const referrer = document.referrer;
-    if (referrer.includes('/salon/')) {
-      const match = referrer.match(/\/salon\/([^\/\?]+)/);
-      if (match) {
-        console.log('🔗 Salon détecté depuis referrer:', match[1]);
-        return match[1];
-      }
-    }
-    
-    // Salon par défaut
-    console.log('🔗 Utilisation salon par défaut: salon-demo');
-    return 'salon-demo';
-  };
+  // ✅ GESTION ERREUR: Redirection si salon ID manquant
+  if (!salonId) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Salon non spécifié</h1>
+          <p className="text-gray-400 mb-4">Veuillez sélectionner un salon pour continuer la réservation.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
+          >
+            Rechercher un salon
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  // ✅ RÉCUPÉRATION AUTOMATIQUE depuis URL /salon/:id
-  const dynamicSalonId = window.location.pathname.split('/salon/')[1];
-  const finalSalonId = dynamicSalonId || getSalonId();
-  
-  console.log('🎯 SALON ID FINAL:', {
-    dynamicSalonId,
-    fallbackSalonId: getSalonId(),
-    finalSalonId,
-    url: window.location.pathname
-  });
-  
-  // Récupérer les vraies données du salon depuis PostgreSQL
-  const { data: realSalonData, isLoading: salonLoading } = useQuery({
-    queryKey: [`/api/salon-booking/${finalSalonId}`],
-    enabled: !!finalSalonId,
-    retry: 2
+  // ✅ SUPPRESSION SYSTÈME FALLBACK COMPLEXE TERMINÉE
+
+  // ✅ UTILISATION API STANDARDISÉE - utilise salonId depuis URL params
+  const { data: realSalonData, isLoading: salonLoading, error: salonError } = useQuery({
+    queryKey: [`/api/salon/${salonId}`],
+    enabled: !!salonId,
+    retry: false
   });
 
   console.log('🏢 DONNÉES SALON RÉELLES:', {
-    finalSalonId,
+    salonId,
     realSalonData,
     salonLoading
   });
 
-  // Utiliser les vraies données PostgreSQL
-  const salon = realSalonData || { 
-    id: finalSalonId,
-    name: salonLoading ? 'Chargement...' : 'Salon Demo', 
-    location: salonLoading ? 'Chargement...' : 'Paris 75001' 
-  };
+  // ✅ GESTION SALON DATA: Utilisation exclusive des données PostgreSQL
+  if (salonLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-gray-400">Chargement du salon {salonId}...</p>
+        </div>
+      </div>
+    );
+  }
 
-  // Pas de service par défaut - utiliser seulement les données réelles
+  if (!realSalonData) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
+          <p className="text-gray-400 mb-4">Le salon {salonId} n'existe pas dans nos données.</p>
+          <button 
+            onClick={() => setLocation('/search')}
+            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
+          >
+            Rechercher un salon
+          </button>
+        </div>
+      </div>
+    );
+  }
 
-  // Créneaux horaires disponibles par jour
-  const timeSlots = ['10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00'];
-  
-  // Dates disponibles
-  const availableDates = [
-    { date: 'lundi 28 juillet', full: 'lundi 28 juillet 2025', expanded: false },
-    { date: 'mardi 29 juillet', full: 'mardi 29 juillet 2025', expanded: false },
-    { date: 'mercredi 30 juillet', full: 'mercredi 30 juillet 2025', expanded: false },
-    { date: 'jeudi 31 juillet', full: 'jeudi 31 juillet 2025', expanded: false },
-    { date: 'vendredi 1 août', full: 'vendredi 1 août 2025', expanded: false },
-    { date: 'samedi 2 août', full: 'samedi 2 août 2025', expanded: false },
-    { date: 'lundi 4 août', full: 'lundi 4 août 2025', expanded: false }
-  ];
-
-  // Récupérer les services spécifiques du salon depuis PostgreSQL
-  const { data: services } = useQuery({
-    queryKey: [`/api/salon-booking/${finalSalonId}/services`],
-    enabled: !!finalSalonId && !!realSalonData,
-    retry: false,
-  });
-
-  // Récupérer les professionnels spécifiques du salon depuis PostgreSQL
-  const { data: professionals = [] } = useQuery({
-    queryKey: [`/api/salon-booking/${finalSalonId}/staff`],
-    enabled: !!finalSalonId && !!realSalonData,
-    retry: false,
-  });
-
-  console.log('🎯 SERVICES ET STAFF DU SALON:', {
-    finalSalonId,
-    services,
-    professionals,
-    servicesCount: services?.length || 0,
-    profCount: professionals?.length || 0
-  });
+  const salon = realSalonData;
 
   const [dateStates, setDateStates] = useState(availableDates);
 
@@ -2026,3 +1980,5 @@ export default function SalonBooking() {
     </>
   );
 }
+
+export default SalonBooking;
