@@ -380,10 +380,11 @@ export default function SalonSearchComplete() {
                       className={`${getSalonButtonClass(salon.id)} px-4 py-2 rounded-xl text-sm font-medium`}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLocation('/salon-booking');
+                        console.log('🔗 BOUTON RÉSERVER - Redirection vers page salon:', `/salon/${salon.id}`);
+                        setLocation(`/salon/${salon.id}`);
                       }}
                     >
-                      Réserver
+                      Voir le salon
                     </motion.button>
                   </div>
                 </div>

@@ -572,7 +572,14 @@ export default function ModernSalonDetail() {
         {/* Bouton de réservation fixe - plus compact */}
         <div className="sticky bottom-0 bg-black border-t border-gray-800 p-3">
           <button 
-            onClick={() => setLocation('/salon-booking')}
+            onClick={() => {
+              console.log('🎯 RÉSERVATION DEPUIS DÉTAIL SALON:', {
+                salonId,
+                salonName: salonData?.name,
+                redirectTo: `/salon-booking?salon=${salonId}`
+              });
+              setLocation(`/salon-booking?salon=${salonId}`);
+            }}
             className="reservation-btn reservation-button w-full h-10 text-sm font-medium rounded-lg cursor-pointer flex items-center justify-center"
           >
             <Calendar className="w-3 h-3 mr-2" />

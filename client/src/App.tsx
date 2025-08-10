@@ -467,7 +467,7 @@ function Router() {
   if (location.startsWith('/salon/') && location !== '/salon') {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <ModernSalonDetailNew />
       </div>
     );
   }
@@ -566,14 +566,7 @@ function Router() {
     );
   }
 
-  // Page salon client publique avec ID dynamique
-  if (location.startsWith('/salon/') && location !== '/salon') {
-    return (
-      <div className="h-full">
-        <BarbierGentlemanMarais />
-      </div>
-    );
-  }
+  // PAGE SUPPRIMÉE - Redondance avec la route dynamique principale
 
   // Page salon professionnelle - modification existante
   if (location === '/salon') {
