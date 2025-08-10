@@ -3079,159 +3079,88 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // 📧 **SYSTÈME DE VALIDATION EMAIL** - Routes pour vérification par code
-  app.post('/api/email/send-verification', async (req, res) => {
+  // INSCRIPTION DIRECTE SANS VERIFICATION PAR CODE
+
+  // ROUTE D'INSCRIPTION DIRECTE POUR PROFESSIONNELS
+  app.post('/api/register/professional', async (req, res) => {
     try {
-      const { email, userData, userType } = req.body;
-      console.log('📧 Envoi code vérification à:', email, 'Type:', userType);
+      const userData = req.body;
+      console.log('✅ Inscription professionnelle directe pour:', userData.email);
       
-      if (!email || !userData || !userType) {
+      if (!userData.email || !userData.firstName || !userData.businessName) {
         return res.status(400).json({ 
-          error: 'Email, données utilisateur et type requis' 
+          error: 'Email, prénom et nom du salon requis' 
         });
       }
 
-      // Nettoyer les anciennes vérifications expirées
-      try {
-        await storage.cleanExpiredEmailVerifications?.();
-      } catch (error: any) {
-        console.log('Info: Nettoyage vérifications (méthode pas encore implémentée)');
-      }
-
-      // Générer un code à 6 chiffres
-      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-      // Sauvegarder la demande de vérification
-      const verificationData = {
-        email,
-        verificationCode,
-        userType,
-        userData: JSON.stringify(userData),
-        expiresAt,
-        isVerified: false
-      };
-
-      try {
-        await storage.createEmailVerification(email);
-      } catch (error: any) {
-        console.log('Info: Stockage vérification (méthode pas encore implémentée)');
-      }
-
-      // Envoyer l'email via SendGrid
-      const { emailService } = await import('./emailService');
-      const emailSent = await emailService.sendVerificationEmail(email, verificationCode);
-
-      if (emailSent) {
-        console.log('✅ Code envoyé avec succès à:', email);
-        res.json({ 
-          success: true, 
-          message: 'Code de vérification envoyé par email',
-          expiresIn: 600 // 10 minutes en secondes
-        });
-      } else {
-        res.status(500).json({ 
-          error: 'Erreur lors de l\'envoi de l\'email' 
-        });
-      }
-    } catch (error: any) {
-      console.error('❌ Erreur envoi vérification:', error);
-      res.status(500).json({ 
-        error: 'Erreur serveur lors de l\'envoi du code' 
-      });
-    }
-  });
-
-  app.post('/api/email/verify-code', async (req, res) => {
-    try {
-      const { email, verificationCode } = req.body;
-      console.log('🔍 Vérification code pour:', email);
-      
-      if (!email || !verificationCode) {
-        return res.status(400).json({ 
-          error: 'Email et code de vérification requis' 
-        });
-      }
-
-      // Vérifier le code
-      let verification = null;
-      try {
-        verification = await storage.getEmailVerification(email, verificationCode);
-        console.log('🔍 Résultat vérification:', verification ? 'Trouvé' : 'Pas trouvé');
-      } catch (error: any) {
-        console.error('Erreur getEmailVerification:', error);
-      }
-
-      if (!verification) {
-        return res.status(400).json({ 
-          error: 'Code de vérification invalide ou expiré' 
-        });
-      }
-
-      // Vérifier l'expiration
-      if (new Date() > new Date(verification.expiresAt)) {
-        return res.status(400).json({ 
-          error: 'Code de vérification expiré' 
-        });
-      }
-
-      // Marquer comme utilisé
-      try {
-        await storage.markEmailVerificationAsUsed(email, verificationCode);
-      } catch (error: any) {
-        console.log('Info: Marquage vérification (méthode pas encore implémentée)');
-      }
-
-      // Créer le compte selon le type d'utilisateur
+      // Créer directement le compte professionnel
       let createdAccount = null;
-      console.log('📋 Type userData:', typeof verification.userData);
-      console.log('📋 Contenu userData:', verification.userData);
-      
-      let userData;
       try {
-        userData = typeof verification.userData === 'string' 
-          ? JSON.parse(verification.userData)
-          : verification.userData;
-        console.log('✅ UserData parsé:', userData);
-      } catch (parseError) {
-        console.error('❌ Erreur parsing userData:', parseError);
-        return res.status(500).json({ error: 'Erreur parsing des données utilisateur' });
+        createdAccount = await storage.createUser(userData);
+        console.log('✅ Compte professionnel créé avec succès:', userData.email);
+      } catch (error: any) {
+        console.error('❌ Erreur création compte pro:', error);
+        if (error.code === '23505') {
+          return res.status(400).json({ 
+            error: 'Un compte avec cet email existe déjà' 
+          });
+        }
+        throw error;
       }
 
-      if (verification.userType === 'professional') {
-        // Créer compte professionnel
-        try {
-          createdAccount = await storage.createUser?.(userData);
-        } catch (error: any) {
-          console.error('Erreur création compte pro:', error);
-        }
-      } else if (verification.userType === 'client') {
-        // Créer compte client
-        try {
-          createdAccount = await storage.createClientAccount?.(userData);
-        } catch (error: any) {
-          console.error('Erreur création compte client:', error);
-          // Si le client existe déjà, récupérer le compte existant
-          if (error.code === '23505' && error.constraint === 'client_accounts_email_key') {
-            console.log('Client déjà existant, récupération...');
-            createdAccount = await storage.getClientAccountByEmail(userData.email);
-            console.log('Compte existant récupéré:', createdAccount ? 'Trouvé' : 'Non trouvé');
-          }
-        }
-      }
-
-      console.log('✅ Compte créé avec succès pour:', email);
       res.json({ 
         success: true, 
-        message: 'Code vérifié et compte créé avec succès',
-        userType: verification.userType,
+        message: 'Compte professionnel créé avec succès',
+        userType: 'professional',
         account: createdAccount
       });
 
     } catch (error: any) {
-      console.error('❌ Erreur vérification code:', error);
+      console.error('❌ Erreur inscription professionnelle:', error);
       res.status(500).json({ 
-        error: 'Erreur serveur lors de la vérification' 
+        error: 'Erreur serveur lors de l\'inscription' 
+      });
+    }
+  });
+
+  // ROUTE D'INSCRIPTION DIRECTE POUR CLIENTS
+  app.post('/api/register/client', async (req, res) => {
+    try {
+      const userData = req.body;
+      console.log('✅ Inscription client directe pour:', userData.email);
+      
+      if (!userData.email || !userData.firstName || !userData.lastName) {
+        return res.status(400).json({ 
+          error: 'Email, prénom et nom requis' 
+        });
+      }
+
+      // Créer directement le compte client
+      let createdAccount = null;
+      try {
+        createdAccount = await storage.createClientAccount(userData);
+        console.log('✅ Compte client créé avec succès:', userData.email);
+      } catch (error: any) {
+        console.error('❌ Erreur création compte client:', error);
+        if (error.code === '23505') {
+          return res.status(400).json({ 
+            error: 'Un compte avec cet email existe déjà' 
+          });
+        }
+        throw error;
+      }
+
+      res.json({ 
+        success: true, 
+        message: 'Compte client créé avec succès',
+        userType: 'client',
+        account: createdAccount
+      });
+
+    } catch (error: any) {
+      console.error('❌ Erreur inscription client:', error);
+      res.status(500).json({ 
+        error: 'Erreur serveur lors de l\'inscription' 
       });
     }
   });

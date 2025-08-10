@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { getGenericGlassButton } from '@/lib/salonColors';
 import { apiRequest } from "@/lib/queryClient";
-import { EmailVerificationForm } from "@/components/EmailVerificationForm";
 import { EmailVerificationSuccess } from "@/components/EmailVerificationSuccess";
 
 // Schémas de validation pour chaque étape
@@ -215,14 +214,37 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
       planType: formData.step3.planType || finalSelectedPlan || 'basic-pro',
     };
 
+    // Inscription directe sans vérification email
+    const registerAccount = async () => {
+      try {
+        const response = await fetch('/api/register/professional', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(completeUserData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          handleEmailVerificationSuccess({ account: data.account });
+        } else {
+          throw new Error(data.error || "Erreur lors de la création du compte");
+        }
+      } catch (error: any) {
+        console.error('Erreur inscription:', error);
+        setShowEmailVerification(false);
+      }
+    };
+
+    registerAccount();
+    
     return (
-      <EmailVerificationForm
-        email={formData.step1.email}
-        userType="professional"
-        userData={completeUserData}
-        onSuccess={handleEmailVerificationSuccess}
-        onBack={handleBackFromVerification}
-      />
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-violet-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Création de votre compte en cours...</p>
+        </div>
+      </div>
     );
   }
 

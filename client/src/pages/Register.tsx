@@ -40,17 +40,19 @@ export default function Register() {
 
     try {
       const { confirmPassword, ...registerData } = formData;
-      const response = await apiRequest("POST", "/api/auth/register", registerData);
+      
+      // Inscription directe sans vérification par code
+      const response = await apiRequest("POST", "/api/register/professional", registerData);
       const data = await response.json();
 
       if (response.ok) {
         toast({
-          title: "Compte créé avec succès !",
-          description: "Vous pouvez maintenant vous connecter"
+          title: "Salon créé avec succès !",
+          description: "Vous pouvez maintenant vous connecter et gérer votre salon"
         });
         setLocation("/pro-login");
       } else {
-        throw new Error(data.message || "Erreur lors de la création du compte");
+        throw new Error(data.error || "Erreur lors de la création du salon");
       }
     } catch (error: any) {
       toast({

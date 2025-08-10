@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import rendlyLogo from "@assets/3_1753714421825.png";
-import { EmailVerificationForm } from "@/components/EmailVerificationForm";
 import { EmailVerificationSuccess } from "@/components/EmailVerificationSuccess";
 
 export default function ClientRegister() {
@@ -18,13 +17,13 @@ export default function ClientRegister() {
     phone: ''
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [createdAccount, setCreatedAccount] = useState<any>(null);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword) {
       toast({
@@ -32,6 +31,7 @@ export default function ClientRegister() {
         description: "Veuillez remplir tous les champs obligatoires",
         variant: "destructive"
       });
+      setIsLoading(false);
       return;
     }
 
@@ -41,6 +41,7 @@ export default function ClientRegister() {
         description: "Les mots de passe ne correspondent pas",
         variant: "destructive"
       });
+      setIsLoading(false);
       return;
     }
 
@@ -50,29 +51,46 @@ export default function ClientRegister() {
         description: "Le mot de passe doit contenir au moins 6 caractères",
         variant: "destructive"
       });
+      setIsLoading(false);
       return;
     }
     
-    // ✨ NOUVELLE LOGIQUE : Passer à l'étape de validation email
-    setShowEmailVerification(true);
+    try {
+      // Inscription directe client sans vérification par code
+      const { confirmPassword, ...registerData } = formData;
+      const response = await fetch('/api/register/client', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registerData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setCreatedAccount(data.account);
+        setShowSuccess(true);
+        
+        toast({
+          title: "Compte créé avec succès !",
+          description: "Vous pouvez maintenant accéder à votre espace client",
+        });
+      } else {
+        throw new Error(data.error || "Erreur lors de la création du compte");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Erreur de création",
+        description: error.message || "Une erreur est survenue",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Gestion du succès de la vérification email
-  const handleEmailVerificationSuccess = (result: any) => {
-    console.log('✅ Email vérifié avec succès:', result);
-    setCreatedAccount(result.account);
-    setShowSuccess(true);
-    
-    toast({
-      title: "Compte créé avec succès !",
-      description: "Votre compte client a été créé et vérifié.",
-    });
-  };
 
-  // Gestion du retour depuis la vérification email
-  const handleBackFromVerification = () => {
-    setShowEmailVerification(false);
-  };
 
   // Gestion de la continuation après le succès
   const handleContinue = () => {
@@ -87,24 +105,7 @@ export default function ClientRegister() {
     window.location.href = '/client-dashboard';
   };
 
-  // Si on est en phase de vérification email
-  if (showEmailVerification && !showSuccess) {
-    return (
-      <EmailVerificationForm
-        email={formData.email}
-        userType="client"
-        userData={{
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone
-        }}
-        onSuccess={handleEmailVerificationSuccess}
-        onBack={handleBackFromVerification}
-      />
-    );
-  }
+
 
   // Si on est en phase de succès
   if (showSuccess && createdAccount) {

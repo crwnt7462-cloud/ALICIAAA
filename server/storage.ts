@@ -497,32 +497,7 @@ export class DatabaseStorage implements IStorage {
   // EMAIL VERIFICATION
   // =============================================
 
-  async cleanExpiredEmailVerifications(): Promise<void> {
-    // Implementation for cleaning expired verifications
-  }
-
-  async createEmailVerification(email: string): Promise<any> {
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    // Implementation temporaire - nécessite configuration email
-    return {
-      email,
-      verificationCode,
-      userType: 'professional',
-      isUsed: false,
-      createdAt: new Date(),
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000)
-    };
-  }
-
-  async getEmailVerification(email: string, code: string): Promise<any> {
-    // Implementation temporaire
-    return null;
-  }
-
-  async markEmailVerificationAsUsed(email: string, code: string): Promise<boolean> {
-    // Implementation temporaire
-    return true;
-  }
+  // Méthodes de vérification email supprimées - inscription directe
 
   // =============================================
   // OTHER OPERATIONS
