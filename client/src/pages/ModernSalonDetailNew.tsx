@@ -20,6 +20,31 @@ function ModernSalonDetailNew() {
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
   
+  // ✅ TOUS LES HOOKS DÉCLARÉS EN PREMIER pour éviter l'erreur "more hooks"
+  const defaultServices = [
+    {
+      id: 1,
+      name: 'Cheveux',
+      expanded: false,
+      services: [
+        { id: 1, name: 'Coupe Bonhomme', price: 39, duration: '30min' },
+        { id: 2, name: 'Coupe Dégradée', price: 46, duration: '45min' },
+        { id: 3, name: 'Coupe Transformation', price: 45, duration: '45min' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'Barbe',
+      expanded: false,
+      services: [
+        { id: 7, name: 'Taille de barbe classique', price: 25, duration: '30min' },
+        { id: 8, name: 'Rasage traditionnel', price: 35, duration: '45min' }
+      ]
+    }
+  ];
+
+  const [serviceCategories, setServiceCategories] = useState(defaultServices);
+  
   // ✅ STANDARDISATION: Extraction ID salon depuis route param
   const salonId = location.split('/salon/')[1];
   
@@ -78,30 +103,6 @@ function ModernSalonDetailNew() {
   }
 
   const salon = salonData;
-
-  const defaultServices = [
-    {
-      id: 1,
-      name: 'Cheveux',
-      expanded: false,
-      services: [
-        { id: 1, name: 'Coupe Bonhomme', price: 39, duration: '30min' },
-        { id: 2, name: 'Coupe Dégradée', price: 46, duration: '45min' },
-        { id: 3, name: 'Coupe Transformation', price: 45, duration: '45min' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Barbe',
-      expanded: false,
-      services: [
-        { id: 7, name: 'Taille de barbe classique', price: 25, duration: '30min' },
-        { id: 8, name: 'Rasage traditionnel', price: 35, duration: '45min' }
-      ]
-    }
-  ];
-
-  const [serviceCategories, setServiceCategories] = useState(defaultServices);
 
   const toggleServiceCategory = (index: number) => {
     setServiceCategories(prev => prev.map((category, i) => 
