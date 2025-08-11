@@ -26,7 +26,7 @@ import BookingTest from "@/pages/BookingTest";
 import NotFound from "@/pages/not-found";
 import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
-import ModernSalonDetail from "@/pages/ModernSalonDetailNew";
+import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
 import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
