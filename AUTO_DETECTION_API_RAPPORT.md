@@ -3,9 +3,10 @@
 ## ✅ FONCTIONNALITÉS AJOUTÉES
 
 ### 1. Endpoint de santé API
-- **Route** : `GET /api/health`
+- **Route** : `GET /health`
 - **Réponse** : Status, timestamp, service, version
 - **Utilisation** : Vérification automatique de connectivité
+- **Amélioration** : Endpoint plus court, validation JSON renforcée
 
 ### 2. Bibliothèque de vérification de santé
 - **Fichier** : `client/src/lib/apiHealth.ts`

@@ -21,7 +21,7 @@ if (process.env.STRIPE_SECRET_KEY) {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // ✅ API HEALTH CHECK - Auto-détection URL API
-  app.get('/api/health', (req, res) => {
+  app.get('/health', (req, res) => {
     res.json({ 
       status: 'ok', 
       timestamp: new Date().toISOString(),
