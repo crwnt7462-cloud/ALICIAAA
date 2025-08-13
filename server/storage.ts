@@ -649,14 +649,23 @@ export class DatabaseStorage implements IStorage {
       const postgresqlSalons = await db.select().from(businessRegistrations);
       console.log(`📊 ${postgresqlSalons.length} salons trouvés en PostgreSQL businessRegistrations`);
       
-      // Si aucun dans businessRegistrations, essayer salons
-      if (postgresqlSalons.length === 0) {
-        const salonTable = await db.select().from(salons);
-        console.log(`📊 ${salonTable.length} salons trouvés en PostgreSQL table salons`);
-        return salonTable;
-      }
+      // Transformer le format pour compatibilité
+      const formattedSalons = postgresqlSalons.map(salon => ({
+        id: salon.id,
+        name: salon.businessName,
+        slug: salon.slug,
+        address: salon.address,
+        city: salon.city,
+        phone: salon.phone,
+        email: salon.email,
+        description: salon.description,
+        businessType: salon.businessType,
+        customColors: {},
+        serviceCategories: [],
+        photos: []
+      }));
       
-      return postgresqlSalons;
+      return formattedSalons;
     } catch (error) {
       console.error('❌ Erreur lecture salons PostgreSQL:', error);
       return Array.from(this.salons.values());
@@ -690,24 +699,53 @@ export class DatabaseStorage implements IStorage {
   async getSalon(salonId: string): Promise<any> {
     console.log(`📖 Récupération données salon: ${salonId}`);
     
-    // D'abord chercher en base de données PostgreSQL
+    // D'abord chercher en base de données PostgreSQL dans business_registrations
     try {
       console.log(`🔍 Recherche salon PostgreSQL: ${salonId}`);
-      const salonResults = await db.select().from(salons).where(eq(salons.id, salonId));
-      console.log(`🔍 Résultats trouvés: ${salonResults.length}`);
       
-      if (salonResults.length > 0) {
-        const salon = salonResults[0];
-        console.log(`✅ Salon trouvé en PostgreSQL: ${salon.name}`);
+      // Recherche par slug dans business_registrations
+      const [salonResult] = await db.select().from(businessRegistrations).where(eq(businessRegistrations.slug, salonId));
+      
+      if (salonResult) {
+        console.log(`✅ Salon trouvé PostgreSQL: ${salonResult.businessName}`);
         return {
-          ...salon,
-          customColors: typeof salon.customColors === 'string' ? JSON.parse(salon.customColors) : salon.customColors || {},
-          serviceCategories: typeof salon.serviceCategories === 'string' ? JSON.parse(salon.serviceCategories) : salon.serviceCategories || [],
-          photos: typeof salon.photos === 'string' ? JSON.parse(salon.photos) : salon.photos || []
+          id: salonResult.id,
+          name: salonResult.businessName,
+          slug: salonResult.slug,
+          address: salonResult.address,
+          city: salonResult.city,
+          phone: salonResult.phone,
+          email: salonResult.email,
+          description: salonResult.description,
+          businessType: salonResult.businessType,
+          customColors: {},
+          serviceCategories: [],
+          photos: []
         };
-      } else {
-        console.log(`⚠️ Aucun salon trouvé en PostgreSQL pour ID: ${salonId}`);
       }
+      
+      // Si pas trouvé par slug, essayer par ID
+      const [salonById] = await db.select().from(businessRegistrations).where(eq(businessRegistrations.id, parseInt(salonId) || 0));
+      
+      if (salonById) {
+        console.log(`✅ Salon trouvé PostgreSQL par ID: ${salonById.businessName}`);
+        return {
+          id: salonById.id,
+          name: salonById.businessName,
+          slug: salonById.slug,
+          address: salonById.address,
+          city: salonById.city,
+          phone: salonById.phone,
+          email: salonById.email,
+          description: salonById.description,
+          businessType: salonById.businessType,
+          customColors: {},
+          serviceCategories: [],
+          photos: []
+        };
+      }
+      
+      console.log(`❌ Salon non trouvé: ${salonId}`);
     } catch (error) {
       console.error('❌ Erreur lecture PostgreSQL salon:', error);
     }
