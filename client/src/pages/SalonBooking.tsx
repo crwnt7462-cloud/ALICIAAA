@@ -198,7 +198,7 @@ function SalonBooking() {
     if (preBooking === null) return;
     
     // Vérifier d'abord s'il y a des données de pré-réservation
-    if (preBooking?.serviceId) {
+    if (preBooking && typeof preBooking === 'object' && preBooking.serviceId) {
       console.log('✅ Service trouvé dans pré-réservation:', preBooking.serviceName);
       const serviceData = {
         id: preBooking.serviceId,
@@ -250,10 +250,10 @@ function SalonBooking() {
           if (bookingState.selectedTime) {
             setSelectedSlot({ time: bookingState.selectedTime, date: bookingState.selectedDate });
           }
-          // Restaurer le professionnel sélectionné
-          if (bookingState.professionalName && professionals && Array.isArray(professionals)) {
-            const prof = professionals.find((p: any) => p?.name === bookingState.professionalName);
-            if (prof) setSelectedProfessional(prof);
+          // Restaurer le professionnel sélectionné (sera fait quand professionals sera chargé)
+          if (bookingState.professionalName) {
+            // Stocker le nom pour le restaurer plus tard
+            sessionStorage.setItem('pendingProfessionalName', bookingState.professionalName);
           }
         }
       } catch (error) {
@@ -266,7 +266,21 @@ function SalonBooking() {
     if (userToken) {
       setIsUserLoggedIn(true);
     }
-  }, [preBooking, professionals]);
+  }, [preBooking]);
+
+  // ✅ EFFET SÉPARÉ POUR RESTAURER LE PROFESSIONNEL
+  useEffect(() => {
+    if (Array.isArray(professionals) && professionals.length > 0) {
+      const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
+      if (pendingProfName) {
+        const prof = professionals.find((p: any) => p?.name === pendingProfName);
+        if (prof) {
+          setSelectedProfessional(prof);
+          sessionStorage.removeItem('pendingProfessionalName');
+        }
+      }
+    }
+  }, [professionals]);
 
   // ✅ GESTION ERREUR: Redirection si salon ID manquant
   if (!salonId) {
@@ -332,10 +346,40 @@ function SalonBooking() {
 
   const salon = realSalonData;
 
+  // ✅ RÉCUPÉRATION DES PROFESSIONNELS
+  const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
+    queryKey: ["/api/professionals"],
+    retry: false
+  });
+
+  console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
+    professionals,
+    professionalsLoading,
+    count: Array.isArray(professionals) ? professionals.length : 0
+  });
+
+  // ✅ DÉFINITION DES VARIABLES MANQUANTES
+  const availableDates = [
+    { date: '2024-01-15', day: 'Lun', expanded: false },
+    { date: '2024-01-16', day: 'Mar', expanded: false },
+    { date: '2024-01-17', day: 'Mer', expanded: false }
+  ];
+  
+  const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+  
+  // Service par défaut si aucun service sélectionné
+  const service = selectedService || {
+    id: 1,
+    name: 'Service par défaut',
+    price: 50,
+    duration: 60,
+    depositAmount: 15
+  };
+
   const [dateStates, setDateStates] = useState(availableDates);
 
   const toggleDateExpansion = (index: number) => {
-    setDateStates(prev => prev.map((date, i) => 
+    setDateStates((prev: any[]) => prev.map((date: any, i: number) => 
       i === index ? { ...date, expanded: !date.expanded } : date
     ));
   };
@@ -540,8 +584,8 @@ function SalonBooking() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="font-semibold text-gray-900">{salon.name}</h1>
-              <p className="text-sm text-gray-700">{salon.location}</p>
+              <h1 className="font-semibold text-gray-900">{salon?.name || 'Salon'}</h1>
+              <p className="text-sm text-gray-700">{salon?.location || 'Adresse'}</p>
             </div>
           </div>
         </div>
@@ -551,7 +595,12 @@ function SalonBooking() {
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
         
         <div className="space-y-3">
-          {Array.isArray(professionals) && professionals.map((pro: any) => (
+          {professionalsLoading ? (
+            <div className="text-center py-4">
+              <div className="animate-spin w-6 h-6 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+              <p className="text-gray-400">Chargement des professionnels...</p>
+            </div>
+          ) : Array.isArray(professionals) && professionals.length > 0 ? professionals.map((pro: any) => (
             <Card 
               key={pro.id}
               className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
@@ -582,7 +631,11 @@ function SalonBooking() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )) : (
+            <div className="text-center py-8">
+              <p className="text-gray-400">Aucun professionnel disponible</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -746,23 +799,23 @@ function SalonBooking() {
                   className="p-4 flex items-center justify-between cursor-pointer"
                   onClick={() => toggleDateExpansion(index + 1)}
                 >
-                  <span className="font-medium text-gray-900 capitalize">{dateInfo.date}</span>
-                  {dateInfo.expanded ? (
+                  <span className="font-medium text-gray-900 capitalize">{(dateInfo as any).date}</span>
+                  {(dateInfo as any).expanded ? (
                     <ChevronUp className="h-5 w-5 text-gray-400" />
                   ) : (
                     <ChevronDown className="h-5 w-5 text-gray-400" />
                   )}
                 </div>
-                {dateInfo.expanded && (
+                {(dateInfo as any).expanded && (
                   <div className="p-4 border-t border-gray-100">
                     <div className="grid grid-cols-3 gap-3">
-                      {timeSlots.map((time) => (
+                      {timeSlots.map((time: string) => (
                         <Button
                           key={time}
                           variant="outline"
                           className="py-2 text-sm border-gray-200 hover:border-violet-600 hover:text-violet-600 rounded-full hover:bg-violet-50 transition-all"
                           onClick={() => {
-                            setSelectedDate(dateInfo.full);
+                            setSelectedDate((dateInfo as any).full);
                             handleTimeSlotSelect(time);
                           }}
                         >
@@ -1955,8 +2008,8 @@ function SalonBooking() {
   };
 
   const salonInfo = {
-    name: salon.name,
-    address: salon.location,
+    name: salon?.name || 'Salon',
+    address: salon?.location || 'Adresse',
     phone: '01 42 25 76 89', 
     email: 'contact@salon.com',
     rating: 4.8,
@@ -2002,8 +2055,8 @@ function SalonBooking() {
           date: selectedDate || 'lundi 28 juillet 2025',
           time: selectedSlot?.time || '10:00',
           professionalName: selectedProfessional?.name || 'Lucas',
-          salonName: salon.name,
-          salonLocation: salon.location,
+          salonName: salon?.name || 'Salon',
+          salonLocation: salon?.location || 'Adresse',
           salonPolicies: {
             cancellation: 'Annulation gratuite jusqu\'à 24h avant le rendez-vous',
             lateness: 'Retard de plus de 15min = annulation automatique',

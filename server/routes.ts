@@ -1401,6 +1401,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Staff Management Routes
+  // Route pour récupérer les professionnels (alias pour staff)
+  app.get('/api/professionals', async (req, res) => {
+    try {
+      const professionals = await storage.getAllStaff();
+      console.log('👥 API PROFESSIONALS CALLED:', professionals?.length || 0, 'professionals found');
+      res.json(professionals || []);
+    } catch (error) {
+      console.error("Error fetching professionals:", error);
+      res.status(500).json({ error: "Failed to fetch professionals" });
+    }
+  });
+
   app.get('/api/staff/:userId', async (req, res) => {
     try {
       const { userId } = req.params;
