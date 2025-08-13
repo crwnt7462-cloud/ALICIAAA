@@ -22,17 +22,25 @@ export function useSalonLoader() {
     setLoading(true);
     setError(null);
     try {
-      const s = await getSalonResolvedBySlug(requestedSlug ?? 'salon-default');
+      console.log(`[SalonLoader] Chargement salon: ${requestedSlug}`);
+      
+      const s = await getSalonResolvedBySlug(requestedSlug ?? 'barbier-gentleman-marais');
+      console.log(`[SalonLoader] Salon récupéré:`, s);
+      
       // si le backend a résolu un autre salon (fallback), rediriger vers l'ID canonique
       if (requestedSlug && s.id && requestedSlug !== s.id) {
         const url = location.pathname.replace(requestedSlug, s.id);
         history.replaceState(null, '', url + location.search);
       }
       setSalon(s);
+      
+      console.log(`[SalonLoader] Chargement services pour salon: ${s.id}`);
       const svc = await getServicesForSalon(s.id);
+      console.log(`[SalonLoader] Services récupérés:`, svc);
       setServices(svc);
     } catch (e: any) {
-      setError(e?.message ?? 'Erreur');
+      console.error(`[SalonLoader] Erreur:`, e);
+      setError(`Erreur de chargement: ${e?.message ?? 'Problème de connexion'}`);
     } finally {
       setLoading(false);
     }

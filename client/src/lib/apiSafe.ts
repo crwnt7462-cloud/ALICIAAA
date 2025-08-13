@@ -2,11 +2,26 @@ import { safeFetch } from './safeFetch';
 import type { Salon, Service } from '../types';
 
 // Configuration API avec auto-détection ou URL manuelle
-const BASE = ((window as any).__API_URL__ ?? import.meta.env.VITE_API_URL ?? 'http://localhost:5000').replace(/\/+$/, '');
+function getApiBase(): string {
+  // Essayer les sources dans l'ordre de priorité
+  const sources = [
+    (window as any).__API_URL__,
+    import.meta.env.VITE_API_URL,
+    window.location.origin, // Fallback sur l'origine actuelle
+    'http://localhost:5000'  // Dernier recours
+  ];
+  
+  for (const source of sources) {
+    if (source && typeof source === 'string') {
+      return source.replace(/\/+$/, '');
+    }
+  }
+  
+  return window.location.origin;
+}
 
 function assertBase() {
-  // Plus d'erreur, on utilise toujours l'URL par défaut si pas définie
-  return BASE;
+  return getApiBase();
 }
 
 export async function getSalonResolvedBySlug(slugOrId: string): Promise<Salon> {
