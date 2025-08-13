@@ -165,7 +165,7 @@ import SalonDetail from "@/pages/SalonDetail";
 
 
 function Router() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   
   // Pages qui ne doivent pas avoir la barre violette en bas
   const hideBottomNavPages = ['/salon-page-editor'];
@@ -467,6 +467,7 @@ function Router() {
 
   // Redirection si pas de slug dans la route booking
   if (location === '/salon-booking') {
+    console.log('[NAV] router=wouter, action=redirect, from=/salon-booking, to=/search, reason=missing-slug');
     setLocation('/search');
     return null;
   }

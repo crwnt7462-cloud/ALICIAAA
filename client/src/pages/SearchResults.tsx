@@ -321,7 +321,7 @@ export default function SearchResults() {
                       className={getSalonButtonClass(salon.id)}
                       onClick={(e) => {
                         e.stopPropagation();
-                        console.log('🎯 NAVIGATION BOOKING: Redirection avec salon slug:', salon.slug);
+                        console.log('[NAV] router=wouter, action=navigate, from=/search, to=/salon-booking/' + salon.slug, 'salon=' + salon.name);
                         setLocation(`/salon-booking/${salon.slug}`);
                       }}
                     >

@@ -135,6 +135,7 @@ function SalonBooking() {
   const pathSegments = location.split('/');
   const salonSlug = pathSegments[2]; // /salon-booking/{slug}
   
+  console.log('[NAV] router=wouter, action=extract-params, route=/salon-booking/' + salonSlug, 'pathSegments=' + pathSegments.join('/'));
   console.log('🎯 SALON BOOKING: Extraction salon slug depuis route:', {
     fullLocation: location,
     pathSegments,
