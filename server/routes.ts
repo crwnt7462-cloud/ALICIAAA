@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import jwt from 'jsonwebtoken';
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
-import { messagingService, type Message } from "./messagingService";
+import { messagingService } from "./messagingService";
 import { registerFullStackRoutes } from "./fullStackRoutes";
 import { overlapService } from "./overlapService";
 import { clientNotesService } from "./clientNotesService";
@@ -20,6 +20,16 @@ if (process.env.STRIPE_SECRET_KEY) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // ✅ API HEALTH CHECK - Auto-détection URL API
+  app.get('/api/health', (req, res) => {
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      service: 'Avyento API',
+      version: '1.0.0'
+    });
+  });
+
   // Auth middleware
   await setupAuth(app);
   

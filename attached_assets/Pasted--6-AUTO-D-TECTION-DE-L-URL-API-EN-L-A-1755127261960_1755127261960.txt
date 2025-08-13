@@ -1,0 +1,90 @@
+──────────────────────────────────────────────────────────────
+6) AUTO-DÉTECTION DE L’URL API EN L’ABSENCE DE VITE_API_URL
+
+But :  
+Si `VITE_API_URL` est vide, ou ne répond pas au test `/health`,  
+→ Détecter l’URL publique Replit et la définir automatiquement dans `window.__API_URL__` pour le reste de la session front.
+
+Dans `client/src/lib/apiHealth.ts` (après la fonction checkApiHealth) ajouter :
+
+export async function autoDetectApiUrl(): Promise<string | null> {
+  // Heuristique simple : si on est sur Replit, l’API est souvent à la même base avec un port différent
+  try {
+    const host = location.hostname;
+    // Si on est sur une preview Replit (ex: myapp.username.repl.co)
+    if (host.includes('repl.co')) {
+      // On suppose que l’API est sur la même base
+      const candidate = `${location.protocol}//${host}`;
+      const ok = await checkApiHealth(candidate);
+      if (ok) return candidate;
+    }
+    // Sinon : essayer localhost en dev
+    const localhostUrl = 'http://localhost:3000';
+    const okLocal = await checkApiHealth(localhostUrl);
+    if (okLocal) return localhostUrl;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+──────────────────────────────────────────────────────────────
+7) INTÉGRATION DANS LE MAIN DU FRONT
+
+Dans `client/src/main.tsx` (ou entry point front), remplacer l’IIFE ajoutée plus haut par :
+
+import { checkApiHealth, autoDetectApiUrl } from './lib/apiHealth';
+
+(async () => {
+  let apiUrl = import.meta.env.VITE_API_URL;
+
+  if (!apiUrl) {
+    console.warn('[Startup] VITE_API_URL manquant, tentative d’auto-détection…');
+    const detected = await autoDetectApiUrl();
+    if (detected) {
+      apiUrl = detected;
+      (window as any).__API_URL__ = apiUrl;
+      console.log(`[Startup] API détectée automatiquement : ${apiUrl}`);
+    }
+  }
+
+  if (!apiUrl) {
+    alert('Configuration invalide : URL API manquante et auto-détection impossible.');
+    return;
+  }
+
+  const ok = await checkApiHealth(apiUrl);
+  if (!ok) {
+    console.warn(`[Startup] API inaccessible à ${apiUrl}, tentative d’auto-détection…`);
+    const detected = await autoDetectApiUrl();
+    if (detected && detected !== apiUrl) {
+      apiUrl = detected;
+      (window as any).__API_URL__ = apiUrl;
+      console.log(`[Startup] API re-détectée : ${apiUrl}`);
+      const ok2 = await checkApiHealth(apiUrl);
+      if (!ok2) {
+        alert(`Impossible de contacter l’API à ${apiUrl} (auto-détection échouée).`);
+      }
+    } else {
+      alert(`Impossible de contacter l’API à ${apiUrl}`);
+    }
+  } else {
+    console.log('[Startup] API connectée avec succès.');
+  }
+})();
+
+──────────────────────────────────────────────────────────────
+8) UTILISATION UNIVERSELLE DE L’API_URL
+
+Dans tous les fichiers front où tu utilises `import.meta.env.VITE_API_URL` :  
+→ Remplacer par :
+
+const API_BASE = (window as any).__API_URL__ ?? import.meta.env.VITE_API_URL;
+
+Ça garantit qu’en cas d’auto-détection, c’est bien l’URL trouvée qui est utilisée.
+
+──────────────────────────────────────────────────────────────
+✅ RÉSULTAT ATTENDU
+- Si `.env` front est correct → comportement inchangé
+- Si `.env` front est vide/mauvais → auto-détection de l’URL Replit ou localhost
+- Plus de “Failed to fetch” silencieux : message clair ou détection auto

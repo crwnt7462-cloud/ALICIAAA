@@ -1,8 +1,8 @@
 import { safeFetch } from './safeFetch';
 import type { Salon, Service } from '../types';
 
-// En mode développement, utiliser l'URL par défaut du serveur local
-const BASE = import.meta.env.VITE_API_URL?.replace(/\/+$/, '') || 'http://localhost:5000';
+// Configuration API avec auto-détection ou URL manuelle
+const BASE = ((window as any).__API_URL__ ?? import.meta.env.VITE_API_URL ?? 'http://localhost:5000').replace(/\/+$/, '');
 
 function assertBase() {
   // Plus d'erreur, on utilise toujours l'URL par défaut si pas définie
