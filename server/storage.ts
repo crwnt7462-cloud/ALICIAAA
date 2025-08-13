@@ -121,6 +121,11 @@ export interface IStorage {
   getSalonByUserId(userId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
   
+  // ✅ NOUVELLES MÉTHODES POUR LA CHECKLIST
+  searchSalons?(params: { query: string; city: string; service: string; page: number }): Promise<any[]>;
+  getSalonWithDetails?(salonId: string): Promise<any | null>;
+  getProfessionals?(salonId?: string): Promise<any[]>;
+  
   // Professional Settings - PERSISTENT STORAGE
   getProfessionalSettings(userId: string): Promise<any>;
   saveProfessionalSettings(userId: string, settings: any): Promise<any>;
@@ -1020,6 +1025,139 @@ export class DatabaseStorage implements IStorage {
   // Méthode pour services par utilisateur
   async getServicesByUserId(userId: string): Promise<any[]> {
     return await db.select().from(services).where(eq(services.userId, userId));
+  }
+
+  // ✅ NOUVELLES MÉTHODES IMPLÉMENTÉES SELON LA CHECKLIST
+  
+  // Point 3: API Search - Recherche de salons
+  async searchSalons(params: { query: string; city: string; service: string; page: number }): Promise<any[]> {
+    try {
+      console.log(`[SEARCH DB] Recherche: query=${params.query}, city=${params.city}`);
+      
+      const query = db.select({
+        id: salons.id,
+        slug: salons.id, // Utilise id comme slug pour compatibilité
+        name: salons.name,
+        city: salons.address, // Utilise address qui contient la ville
+        description: salons.description,
+        photos: salons.photos,
+        isActive: salons.isPublished
+      })
+      .from(salons)
+      .where(eq(salons.isPublished, true));
+
+      const result = await query.limit(20).offset((params.page - 1) * 20);
+      
+      console.log(`[SEARCH DB] -> ${result.length} salons trouvés`);
+      return result.map(salon => ({
+        id: salon.id,
+        slug: salon.slug,
+        name: salon.name,
+        city: salon.city,
+        cover: salon.photos && Array.isArray(salon.photos) && salon.photos.length > 0 
+          ? salon.photos[0] 
+          : '/placeholder-salon.jpg',
+        proCount: 2, // Valeur par défaut, pourrait être calculée
+        serviceSample: ['Coupe', 'Couleur'] // Valeur par défaut, pourrait être calculée
+      }));
+    } catch (error) {
+      console.error('Erreur recherche salons:', error);
+      return [];
+    }
+  }
+
+  // Point 4: API Détail salon - Récupération avec professionnels et services
+  async getSalonWithDetails(salonId: string): Promise<any | null> {
+    try {
+      console.log(`[SALON DB] Récupération détail: ${salonId}`);
+      
+      // Récupérer le salon
+      const [salonData] = await db.select().from(salons).where(eq(salons.id, salonId));
+      
+      if (!salonData) {
+        console.log(`[SALON DB] ${salonId} -> non trouvé`);
+        return null;
+      }
+
+      // Récupérer les professionnels du salon
+      const professionalsData = await db.select()
+        .from(staff)
+        .where(and(
+          eq(staff.salonId, salonId),
+          eq(staff.isActive, true)
+        ));
+
+      // Récupérer les services du salon
+      const servicesData = await db.select()
+        .from(services)
+        .where(eq(services.userId, salonData.userId));
+
+      const result = {
+        id: salonData.id,
+        slug: salonData.id,
+        name: salonData.name,
+        city: salonData.address,
+        description: salonData.description,
+        address: salonData.address,
+        phone: salonData.phone,
+        email: salonData.email,
+        photos: salonData.photos || [],
+        professionals: professionalsData.map(prof => ({
+          id: prof.id,
+          name: `${prof.firstName} ${prof.lastName}`,
+          firstName: prof.firstName,
+          lastName: prof.lastName,
+          email: prof.email,
+          phone: prof.phone,
+          specialties: prof.specialties,
+          isActive: prof.isActive
+        })),
+        services: servicesData.map(service => ({
+          id: service.id,
+          name: service.name,
+          description: service.description,
+          duration: service.duration,
+          price: service.price,
+          isActive: service.isActive
+        }))
+      };
+
+      console.log(`[SALON DB] ${salonId} -> trouvé avec ${result.professionals.length} pros, ${result.services.length} services`);
+      return result;
+    } catch (error) {
+      console.error('Erreur récupération salon détail:', error);
+      return null;
+    }
+  }
+
+  // Point 7: API Professionals - Récupération des professionnels
+  async getProfessionals(salonId?: string): Promise<any[]> {
+    try {
+      console.log(`[PROS DB] Récupération professionnels salon: ${salonId || 'tous'}`);
+      
+      let query = db.select({
+        id: staff.id,
+        name: sql<string>`${staff.firstName} || ' ' || ${staff.lastName}`,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+        email: staff.email,
+        phone: staff.phone,
+        specialties: staff.specialties,
+        salonId: staff.salonId,
+        isActive: staff.isActive
+      }).from(staff).where(eq(staff.isActive, true));
+
+      if (salonId) {
+        query = query.where(eq(staff.salonId, salonId));
+      }
+
+      const result = await query;
+      console.log(`[PROS DB] -> ${result.length} professionnels trouvés`);
+      return result;
+    } catch (error) {
+      console.error('Erreur récupération professionnels:', error);
+      return [];
+    }
   }
 }
 

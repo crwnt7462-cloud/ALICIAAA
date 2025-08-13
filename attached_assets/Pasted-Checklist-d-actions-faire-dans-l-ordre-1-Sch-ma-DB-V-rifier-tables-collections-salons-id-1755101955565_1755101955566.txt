@@ -1,0 +1,60 @@
+Checklist d’actions (faire dans l’ordre) :
+	1.	Schéma DB
+
+	•	Vérifier tables/collections: salons (id, slug unique, name, address/city, geoloc, isActive, updatedAt), professionals (id, salonId FK, name, role, isActive), services (id, salonId, name, duration, price).
+	•	Créer index: salons.slug unique, professionals.salonId, éventuellement index texte (name, city).
+	•	S’assurer que tous les salons actifs ont au moins 1 professional actif.
+
+	2.	Données/seed
+
+	•	Lister 3 salons de test avec pros/services réels (pas mocks). Si manquants → insérer seed.
+	•	Vérifier cohérence: types (string vs number), salonId présent côté pros/services.
+
+	3.	API search
+
+	•	Confirmer route: GET /api/search?q=&city=&service=&page= → renvoie liste de salons avec champs minimal: {id, slug, name, city, cover, proCount, serviceSample}.
+	•	Pas de fallback “salon par défaut”. Si 0 résultat → tableau vide.
+	•	Logguer requête et nb de résultats.
+
+	4.	API détail salon
+
+	•	Route unique alignée avec l’identifiant choisi: slug OU id, pas les deux. Ex: GET /api/salons/by-slug/:slug ou GET /api/salons/:id.
+	•	Réponse normalisée: {id, slug, name, city, description, services[], professionals[]}.
+	•	Si non trouvé → 404 (pas de valeur par défaut).
+	•	Vérifier que professionals[] est bien rempli pour le salon demandé.
+
+	5.	Lien /search → détail
+
+	•	Dans le listing, construire l’URL uniquement avec l’identifiant standardisé (/salon/:slug OU /salon/:id).
+	•	Log au clic: identifiant, URL générée.
+
+	6.	Page détail (front)
+
+	•	Lire EXCLUSIVEMENT le param de route (slug/id). Ne pas utiliser d’état global/localStorage pour déterminer le salon.
+	•	useEffect dépend de ce param → fetch détail à chaque changement.
+	•	States init: professionals = [], services = [] pour éviter “variable undefined”.
+	•	Si 404 → afficher “salon introuvable”, pas de fallback.
+	•	Supprimer toute redirection vers une “nouvelle page” de réservation: utiliser l’ANCIENNE page/UX.
+
+	7.	Pro list/display
+
+	•	S’assurer que le composant attend un tableau (pas une variable globale). Gérer loading/empty state.
+	•	Vérifier mapping des champs (pro.name vs professional_name). Normaliser si besoin.
+
+	8.	Caches/HMR
+
+	•	Désactiver tout cache front/back pendant le test (no stale). Vérifier que l’URL base API est correcte (même origine). CORS ok si domaines différents.
+
+	9.	Journalisation ciblée
+
+	•	Ajouter logs côté serveur: [SEARCH] q=… -> N salons, [SALON] ident=… -> 200/404, [PROS] salonId=… -> count.
+	•	Côté client: [search click] ident, url, [detail] param route, [fetch] url, status.
+
+	10.	Tests d’acceptation
+
+	•	Insérer/valider 3 salons (A/B/C) avec pros/services. Depuis /search, cliquer A/B/C → la page ancienne de réservation du bon salon s’ouvre, pros listés, pas de crash.
+	•	Accès direct par URL (/salon/:ident) fonctionne pareil.
+	•	Modifier un salon (nom/service/photo) → mise à jour visible dans /search ET sur la page détail au clic.
+	•	Aucun message “salon non trouvé” sauf vrai 404. Plus de “Can’t find variable: professionals”.
+
+Si un point échoue, fournir: URL appelée, statut, payload JSON, logs serveur/console correspondants, et corriger jusqu’à passer tous les tests.

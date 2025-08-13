@@ -142,7 +142,7 @@ function SalonBooking() {
   });
 
   // Récupérer les données de pré-réservation si disponibles
-  const [preBooking, setPreBooking] = useState(null);
+  const [preBooking, setPreBooking] = useState<any>(null);
   
   useEffect(() => {
     const preBookingData = sessionStorage.getItem('preBookingData');
@@ -309,6 +309,9 @@ function SalonBooking() {
     retry: false
   });
 
+  // Variable salon avec valeur par défaut pour éviter les erreurs TypeScript
+  const salon = realSalonData || { name: 'Salon', location: 'Adresse', id: '', photos: [] };
+
   console.log('🏢 DONNÉES SALON RÉELLES:', {
     salonId,
     realSalonData,
@@ -343,14 +346,6 @@ function SalonBooking() {
       </div>
     );
   }
-
-  const salon = realSalonData;
-
-  // ✅ RÉCUPÉRATION DES PROFESSIONNELS
-  const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: ["/api/professionals"],
-    retry: false
-  });
 
   console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
     professionals,

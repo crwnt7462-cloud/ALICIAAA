@@ -43,6 +43,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })
   };
 
+  // ✅ API SEARCH - Point 3 de la checklist
+  app.get('/api/search', async (req, res) => {
+    const { q = '', city = '', service = '', page = '1' } = req.query;
+    console.log(`[SEARCH] q=${q}, city=${city}, service=${service}, page=${page}`);
+    
+    try {
+      // Récupérer les salons actifs avec leurs professionnels
+      const result = await storage.searchSalons({
+        query: q as string,
+        city: city as string,
+        service: service as string,
+        page: parseInt(page as string) || 1
+      });
+      
+      console.log(`[SEARCH] -> ${result.length} salons trouvés`);
+      res.json(result);
+    } catch (error) {
+      console.error('Erreur lors de la recherche:', error);
+      res.status(500).json({ error: 'Erreur lors de la recherche' });
+    }
+  });
+
+  // ✅ API DÉTAIL SALON - Point 4 de la checklist
+  app.get('/api/salon/:salonId', async (req, res) => {
+    const { salonId } = req.params;
+    console.log(`[SALON] ident=${salonId}`);
+    
+    try {
+      const salon = await storage.getSalonWithDetails(salonId);
+      if (!salon) {
+        console.log(`[SALON] ${salonId} -> 404`);
+        return res.status(404).json({ error: 'Salon non trouvé' });
+      }
+      
+      console.log(`[SALON] ${salonId} -> 200`);
+      res.json(salon);
+    } catch (error) {
+      console.error('Erreur lors de la récupération du salon:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // ✅ API PROFESSIONALS - Point 7 de la checklist
+  app.get('/api/professionals', async (req, res) => {
+    const { salonId } = req.query;
+    console.log(`[PROS] salonId=${salonId || 'all'}`);
+    
+    try {
+      const professionals = await storage.getProfessionals(salonId as string);
+      console.log(`[PROS] -> ${professionals.length} professionnels`);
+      res.json(professionals);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des professionnels:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
   // Routes existantes (API d'authentification, etc.)
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
