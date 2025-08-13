@@ -141,6 +141,12 @@ function SalonBooking() {
     extractedSalonId: salonId
   });
 
+  // Récupérer les données de pré-réservation si disponibles
+  const preBookingData = sessionStorage.getItem('preBookingData');
+  const preBooking = preBookingData ? JSON.parse(preBookingData) : null;
+  
+  console.log('🔍 Données de pré-réservation:', preBooking);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
   const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
@@ -184,7 +190,29 @@ function SalonBooking() {
 
   // Récupérer le service sélectionné depuis sessionStorage au chargement
   useEffect(() => {
-    // Vérifier s'il y a un service présélectionné
+    // Vérifier d'abord s'il y a des données de pré-réservation
+    if (preBooking?.serviceId) {
+      console.log('✅ Service trouvé dans pré-réservation:', preBooking.serviceName);
+      const serviceData = {
+        id: preBooking.serviceId,
+        name: preBooking.serviceName,
+        price: preBooking.servicePrice,
+        duration: preBooking.serviceDuration
+      };
+      setSelectedService(serviceData);
+      
+      // Pré-remplir la date et l'heure si disponibles
+      if (preBooking.selectedDate) setSelectedDate(preBooking.selectedDate);
+      if (preBooking.selectedTime) {
+        setSelectedSlot({ time: preBooking.selectedTime, date: preBooking.selectedDate });
+      }
+      
+      // Aller directement à l'étape de sélection du professionnel
+      setCurrentStep(2);
+      return;
+    }
+    
+    // Fallback sur sessionStorage
     const savedService = sessionStorage.getItem('selectedService');
     console.log('🔍 Service dans sessionStorage:', savedService);
     

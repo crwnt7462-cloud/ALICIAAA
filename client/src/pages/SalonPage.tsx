@@ -123,32 +123,33 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedService || !formData.date || !formData.time || !formData.firstName) {
+    if (!selectedService) {
       toast({
-        title: "Informations manquantes",
-        description: "Veuillez remplir tous les champs obligatoires.",
+        title: "Service requis",
+        description: "Veuillez sélectionner un service pour continuer.",
         variant: "destructive",
       });
       return;
     }
 
-    const [hours, minutes] = formData.time.split(':').map(Number);
-    const endTime = new Date();
-    endTime.setHours(hours, minutes + selectedService.duration);
-    const endTimeStr = endTime.toTimeString().slice(0, 5);
-
-    createBookingMutation.mutate({
-      serviceId: parseInt(formData.serviceId),
-      appointmentDate: formData.date,
-      startTime: formData.time,
-      endTime: endTimeStr,
-      clientName: `${formData.firstName} ${formData.lastName}`,
-      clientEmail: formData.email,
-      clientPhone: formData.phone,
-      totalPrice: selectedService.price,
-      depositPaid: formData.depositAmount,
-      status: "confirmed"
-    });
+    // Sauvegarder les données de pré-sélection dans sessionStorage
+    const preBookingData = {
+      salonId: currentPageUrl, // Utiliser l'URL comme ID du salon
+      serviceId: formData.serviceId,
+      serviceName: selectedService.name,
+      servicePrice: selectedService.price,
+      serviceDuration: selectedService.duration,
+      selectedDate: formData.date,
+      selectedTime: formData.time,
+      depositAmount: formData.depositAmount,
+      requireDeposit: pageData?.requireDeposit || false
+    };
+    
+    sessionStorage.setItem('preBookingData', JSON.stringify(preBookingData));
+    
+    // Rediriger vers la page de réservation avec l'ID du salon
+    console.log('🎯 NAVIGATION BOOKING: Redirection avec salon ID:', currentPageUrl);
+    setLocation(`/salon-booking?salon=${currentPageUrl}`);
   };
 
   if (pageLoading) {
