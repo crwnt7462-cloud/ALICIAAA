@@ -1485,6 +1485,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Clients Management Routes
+  // GET /api/clients - Récupérer tous les clients du professionnel
+  app.get('/api/clients', async (req: any, res) => {
+    try {
+      console.log('👥 Récupération clients authentiques pour: demo');
+      const userId = req.query.userId || 'demo'; // Utilise demo par défaut pour les tests
+      const clients = await storage.getClients(userId);
+      
+      // Normaliser le format de réponse pour correspondre aux attentes du frontend
+      const normalizedClients = (clients || []).map((client: any) => ({
+        id: client.id?.toString(),
+        name: client.firstName ? `${client.firstName} ${client.lastName || ''}`.trim() : client.email?.split('@')[0] || 'Client',
+        firstName: client.firstName || '',
+        lastName: client.lastName || '',
+        email: client.email || '',
+        phone: client.phone || '',
+        avatar: client.avatar || '',
+        status: client.status || 'Nouvelle',
+        lastVisit: client.lastVisitAt || new Date().toISOString().split('T')[0],
+        lastVisitAt: client.lastVisitAt || new Date().toISOString(),
+        totalVisits: client.totalVisits || 0,
+        totalSpent: client.totalSpend || client.totalSpent || 0,
+        rating: client.rating || 4.5,
+        notes: client.notes || '',
+        birthday: client.birthday || client.dateOfBirth || '',
+        preferences: client.preferences || []
+      }));
+      
+      res.json(normalizedClients);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      res.status(500).json({ error: "Failed to fetch clients" });
+    }
+  });
+
   app.get('/api/clients/:userId', async (req, res) => {
     try {
       const { userId } = req.params;

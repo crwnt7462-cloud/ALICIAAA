@@ -68,7 +68,7 @@ export default function ClientsModern() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Chargement...</p>
@@ -78,7 +78,7 @@ export default function ClientsModern() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50">
       
       {!selectedClient ? (
         // Vue liste des clients
@@ -103,7 +103,7 @@ export default function ClientsModern() {
               {/* Titre et stats */}
               <div className="text-center mb-8">
                 <h2 className="text-xl text-gray-500 font-normal">Manage your clientele</h2>
-                <p className="text-sm text-gray-400 mt-1">{mockClients.length} clients total</p>
+                <p className="text-sm text-gray-400 mt-1">{(clients || []).length} clients total</p>
               </div>
 
               {/* Stats rapides - ✅ GLASSMORPHISM APPLIQUÉ */}
@@ -130,7 +130,7 @@ export default function ClientsModern() {
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
                   placeholder="Rechercher une cliente..."
-                  className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-gray-300"
+                  className="w-full h-12 pl-12 pr-4 glass-effect border border-white/20 rounded-2xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 focus:border-violet-300"
                 />
               </div>
 
@@ -142,8 +142,8 @@ export default function ClientsModern() {
                     onClick={() => setSelectedFilter(filter.id)}
                     className={`px-4 py-2 rounded-2xl text-sm font-medium whitespace-nowrap transition-colors ${
                       selectedFilter === filter.id
-                        ? 'bg-violet-600 text-white'
-                        : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                        ? 'glass-button-pink text-black'
+                        : 'glass-effect text-gray-600 hover:bg-white/30'
                     }`}
                   >
                     {filter.label} ({filter.count})
@@ -154,7 +154,7 @@ export default function ClientsModern() {
               {/* Bouton nouvelle cliente */}
               <button
                 onClick={() => toast({ title: "Nouvelle cliente", description: "Fonctionnalité à venir" })}
-                className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
+                className="w-full h-12 glass-button-pink rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
               >
                 <Plus className="h-4 w-4" />
                 Nouvelle cliente
@@ -173,7 +173,7 @@ export default function ClientsModern() {
                   <button
                     key={client.id}
                     onClick={() => setSelectedClient(client.id)}
-                    className="w-full bg-gray-50 hover:bg-gray-100 rounded-2xl p-4 transition-colors text-left"
+                    className="w-full glass-effect hover:bg-white/30 rounded-2xl p-4 transition-colors text-left"
                   >
                     <div className="flex items-center gap-3">
                       <div className="relative">

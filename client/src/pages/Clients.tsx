@@ -147,7 +147,7 @@ export default function Clients() {
   };
 
   return (
-    <div className="p-4 space-y-6 bg-gradient-to-br from-gray-50/50 to-blue-50/30 min-h-full">
+    <div className="p-4 space-y-6 bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -159,7 +159,7 @@ export default function Clients() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button 
-              className="gradient-bg text-white shadow-md hover:scale-105 transition-all duration-200 rounded-lg"
+              className="glass-button-pink shadow-md hover:scale-105 transition-all duration-200 rounded-lg"
               onClick={handleNewClient}
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -269,7 +269,7 @@ export default function Clients() {
           placeholder="Rechercher un client..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 bg-white/80 backdrop-blur-sm border-gray-200"
+          className="pl-10 glass-effect border-white/20"
         />
       </div>
 
@@ -278,7 +278,7 @@ export default function Clients() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+              <Card key={i} className="glass-card border-0 shadow-md rounded-xl">
                 <CardContent className="p-4">
                   <div className="animate-pulse">
                     <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
@@ -289,7 +289,7 @@ export default function Clients() {
             ))}
           </div>
         ) : filteredClients.length === 0 ? (
-          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <Card className="glass-card border-0 shadow-md rounded-xl">
             <CardContent className="p-8 text-center">
               <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -305,7 +305,7 @@ export default function Clients() {
           </Card>
         ) : (
           filteredClients.map((client: Client) => (
-            <Card key={client.id} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
+            <Card key={client.id} className="glass-card border-0 shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
