@@ -743,6 +743,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API Endpoints pour les rendez-vous
+  app.get('/api/appointments', async (req, res) => {
+    try {
+      const { salonId, proId, from, to } = req.query;
+      
+      // Pour l'instant retour tableau vide - sera implémenté avec vraies données
+      const appointments: any[] = [];
+      
+      res.json(appointments);
+    } catch (error) {
+      console.error("Erreur récupération appointments:", error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  app.get('/api/appointments/monthly/:year/:month', async (req, res) => {
+    try {
+      const { year, month } = req.params;
+      
+      // Pour l'instant retour tableau vide - sera implémenté avec vraies données  
+      const monthlyAppointments: any[] = [];
+      
+      res.json(monthlyAppointments);
+    } catch (error) {
+      console.error("Erreur récupération appointments mensuels:", error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  app.post('/api/appointments', async (req, res) => {
+    try {
+      const appointmentData = req.body;
+      
+      // Pour l'instant confirmation simple - sera implémenté avec vraie DB
+      const newAppointment = {
+        id: Date.now().toString(),
+        ...appointmentData,
+        status: 'confirmed',
+        createdAt: new Date().toISOString()
+      };
+      
+      res.json(newAppointment);
+    } catch (error) {
+      console.error("Erreur création appointment:", error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
   // Routes d'authentification client
   app.post('/api/client/login', async (req, res) => {
     try {

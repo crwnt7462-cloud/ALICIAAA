@@ -108,7 +108,7 @@ export default function Planning() {
     },
   });
 
-  const filteredAppointments = (appointments as any[]).filter((appointment: any) => {
+  const filteredAppointments = (appointments || []).filter((appointment: any) => {
     if (statusFilter === "all") return true;
     return appointment.status === statusFilter;
   });
@@ -162,7 +162,7 @@ export default function Planning() {
     // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
       const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayAppointments = (monthlyAppointments as any[]).filter((apt: any) => 
+      const dayAppointments = (monthlyAppointments || []).filter((apt: any) => 
         apt.appointmentDate === dateStr
       );
       days.push({ day, dateStr, appointments: dayAppointments });
@@ -174,9 +174,9 @@ export default function Planning() {
   const calendarDays = generateCalendarDays();
 
   return (
-    <div className="p-4 max-w-md mx-auto space-y-4">
+    <div className="p-4 max-w-md mx-auto space-y-4 min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50">
       {/* Header avec navigation de date et toggle vue */}
-      <div className="bg-white rounded-lg p-4 shadow-sm space-y-4">
+      <div className="glass-card rounded-lg p-4 space-y-4">
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
@@ -351,7 +351,7 @@ export default function Planning() {
 
       {/* Vue mois - Calendrier */}
       {viewMode === 'month' && (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="glass-card rounded-lg overflow-hidden">
           {/* En-têtes des jours */}
           <div className="grid grid-cols-7 bg-gray-50 border-b">
             {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (

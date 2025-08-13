@@ -70,8 +70,8 @@ export default function PlanningModern() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
+      <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50 flex items-center justify-center">
+        <div className="glass-card p-8 rounded-2xl text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Chargement...</p>
         </div>
@@ -80,7 +80,7 @@ export default function PlanningModern() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50">
       {/* Header violet moderne - Style iPhone identique client */}
       <div className="bg-gradient-to-r from-violet-600 to-purple-600 border-b border-violet-700 sticky top-0 z-10 shadow-lg">
         <div className="max-w-lg mx-auto px-4 py-4">
@@ -108,11 +108,11 @@ export default function PlanningModern() {
       </div>
 
       <div className="max-w-lg mx-auto p-4 space-y-4">
-        <div className="bg-white rounded-xl p-4 shadow-sm">
+        <div className="glass-card rounded-xl p-4">
           <h2 className="text-xl font-bold text-violet-600 text-center mb-6">Planning du Jour</h2>
 
           {/* Navigation date */}
-          <div className="bg-gray-50 rounded-2xl p-4 mb-6">
+          <div className="glass-effect rounded-2xl p-4 mb-6">
               <div className="flex items-center justify-between mb-3">
                 <button onClick={() => navigateDate('prev')} className="p-2 hover:bg-gray-200 rounded-full">
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
@@ -123,7 +123,7 @@ export default function PlanningModern() {
                     {formatDate(selectedDate)}
                   </h2>
                   <p className="text-xs text-gray-500">
-                    {mockAppointments.length} rendez-vous
+                    {(appointments || []).length} rendez-vous
                   </p>
                 </div>
                 
@@ -135,15 +135,15 @@ export default function PlanningModern() {
               {/* Stats du jour */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center">
-                  <div className="text-lg font-bold text-violet-600">{mockAppointments.filter(a => a.status === 'confirmed').length}</div>
+                  <div className="text-lg font-bold text-violet-600">{(appointments || []).filter(a => a.status === 'confirmed').length}</div>
                   <div className="text-xs text-gray-500">Confirmés</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-yellow-600">{mockAppointments.filter(a => a.status === 'pending').length}</div>
+                  <div className="text-lg font-bold text-yellow-600">{(appointments || []).filter(a => a.status === 'pending').length}</div>
                   <div className="text-xs text-gray-500">En attente</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-lg font-bold text-green-600">€{mockAppointments.reduce((sum, a) => sum + a.price, 0)}</div>
+                  <div className="text-lg font-bold text-green-600">€{(appointments || []).reduce((sum, a) => sum + (a.price || 0), 0)}</div>
                   <div className="text-xs text-gray-500">CA prévu</div>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function PlanningModern() {
           {/* Bouton nouveau RDV */}
           <button
             onClick={() => setShowAddForm(true)}
-            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
+            className="w-full h-12 glass-button-pink rounded-2xl text-base font-medium transition-colors flex items-center justify-center gap-2 mb-6"
           >
             <Plus className="h-4 w-4" />
             Nouveau rendez-vous
@@ -211,8 +211,8 @@ export default function PlanningModern() {
             <div className="mt-8">
               <h3 className="font-medium text-gray-900 mb-4">Rendez-vous du jour</h3>
               <div className="space-y-3">
-                {mockAppointments.map(appointment => (
-                  <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
+                {(appointments || []).map(appointment => (
+                  <div key={appointment.id} className="glass-effect rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-sm">{appointment.time}</span>

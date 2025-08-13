@@ -1,0 +1,20 @@
+ reprends le projet sur la dernière version stable avec interface glass (styles, effets et UI inclus), et garde absolument tous les réglages déjà faits juste avant concernant les redirections, navigation, salons, slug, API, etc. — ne touche à rien de ce côté, tout doit rester fonctionnel comme actuellement.
+	1.	Erreur “Can’t find variable: mockAppointments” (page /planning)
+	•	Rechercher dans tout le projet (mockAppointments, mocks, fixtures, sampleAppointments) et supprimer tout import ou usage non défini côté front.
+	•	Si besoin d’exemples pour tests, déplacer ces données dans un seed backend, pas en variable globale front.
+	•	Initialiser un state appointments = [] et loading = true par défaut.
+	•	Côté backend, ajouter GET /api/appointments?salonId=&proId=&from=&to= qui retourne un tableau normalisé { id, salonId, proId, serviceId, start, end, status }.
+	•	Indexer proId, start pour optimiser les requêtes.
+	•	Côté front, au mount, récupérer salonId et proId depuis le contexte/session, appeler l’API, remplir appointments, gérer loading et error.
+	•	Supprimer tout accès direct à des variables non initialisées.
+	2.	Restauration de l’interface glass
+	•	Restaurer la version précédente de l’application avec le design “glass” déjà validé (fond flou, transparences, bordures glassmorphism).
+	•	Appliquer le thème glass sur toutes les pages, y compris le planning pro, les pages de réservation et la recherche de salons.
+	•	Vérifier que tous les composants utilisent les bons styles et que la cohérence visuelle est maintenue.
+	3.	Tests à faire après correction
+	•	Navigation /search → salon → prestation → réservation fonctionne toujours comme avant, sans régression.
+	•	Navigation espace pro /planning affiche bien les rendez-vous réels depuis l’API.
+	•	Aucun overlay d’erreur au clic.
+	•	Interface glass visible et cohérente sur desktop et mobile.
+
+⚠️ Important : Tu ne modifies pas la logique, les routes, ni les corrections faites sur la partie salons et redirections. Tu ne touches qu’à la partie planning pro et à la restauration de l’UI glass.
