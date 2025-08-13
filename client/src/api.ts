@@ -17,15 +17,18 @@ import type {
 
 // Schémas de validation Zod
 const SalonSchema = z.object({
-  id: z.string(),
+  id: z.union([z.string(), z.number()]).transform(val => String(val)),
   slug: z.string(),
   name: z.string(),
   address: z.string(),
+  city: z.string().optional(),
   location: z.string().optional(),
   phone: z.string().optional(),
   email: z.string().email().optional(),
   description: z.string().optional(),
   photos: z.array(z.string()).optional(),
+  professionals: z.array(z.any()).optional(),
+  services: z.array(z.any()).optional(),
   amenities: z.array(z.string()).optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),

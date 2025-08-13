@@ -85,19 +85,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ✅ API SALON BY SLUG - Frontend compatibility route
+  // ✅ API SALON BY SLUG - Frontend compatibility route with fallback
   app.get('/api/salons/by-slug/:slug', async (req, res) => {
     const { slug } = req.params;
     console.log(`📖 Récupération données salon: ${slug}`);
     
     try {
-      const salon = await storage.getSalonWithDetails(slug);
+      // Import du système de fallback
+      const { resolveSalonSlugOrDefault, ensureDefaultSalonExists } = await import('./utils/salon');
+      
+      // Assurer l'existence du salon par défaut
+      await ensureDefaultSalonExists();
+      
+      // Résoudre le slug avec fallback
+      const resolvedSlug = await resolveSalonSlugOrDefault(slug);
+      
+      const salon = await storage.getSalonWithDetails(resolvedSlug);
       if (!salon) {
-        console.log(`📖 Salon non trouvé: ${slug}`);
+        console.log(`📖 Salon non trouvé même avec fallback: ${slug}`);
         return res.status(404).json({ error: 'Salon non trouvé' });
       }
       
-      console.log(`📖 Salon trouvé: ${salon.name} ID: ${salon.id}`);
+      console.log(`📖 Salon trouvé: ${salon.name} ID: ${salon.id} (résolu: ${resolvedSlug})`);
       res.json(salon);
     } catch (error) {
       console.error('Erreur lors de la récupération du salon par slug:', error);

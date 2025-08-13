@@ -1,0 +1,220 @@
+🎯 OBJECTIF
+Éradiquer “Salon not found” sur TOUT le parcours :
+- Seed auto d’un salon & service par défaut si DB vide
+- Fallback `salon-default` sur TOUTES les routes dépendantes du salon
+- Endpoints services & salons tolérants (dev/staging), stricts en prod si tu le décides
+
+PRÉ-REQUIS
+- Le prompt précédent (seed + /bookings avec fallback) est déjà appliqué
+- Stack: Supabase + Neon + Drizzle
+- Schéma dans server/src/schema.ts contient: salons, services, bookings
+
+────────────────────────────────────────────────────────────────────────
+1) AJOUTER OUTILS COMMUNS (fallback salon) 
+Créer/écraser `server/src/utils/salon.ts` :
+────────────────────────────────────────────────────────────────────────
+import { db } from '../db';
+import { salons, services } from '../schema';
+import { eq } from 'drizzle-orm';
+import { DEFAULT_SALON_ID, DEFAULT_SERVICE_ID } from '../seed';
+
+export async function ensureDefaultSalonExists() {
+  const rows = await db.select().from(salons).where(eq(salons.id, DEFAULT_SALON_ID)).limit(1);
+  if (rows.length === 0) {
+    await db.insert(salons).values({
+      id: DEFAULT_SALON_ID,
+      name: 'Salon Démo',
+      description: 'Salon créé automatiquement (fallback)',
+      address: 'Paris',
+    });
+  }
+  const svc = await db.select().from(services).where(eq(services.id, DEFAULT_SERVICE_ID)).limit(1);
+  if (svc.length === 0) {
+    await db.insert(services).values({
+      id: DEFAULT_SERVICE_ID,
+      salonId: DEFAULT_SALON_ID,
+      name: 'Coupe simple',
+      price: 20,
+    });
+  }
+}
+
+export async function resolveSalonIdOrDefault(salonId?: string) {
+  const wanted = salonId ?? DEFAULT_SALON_ID;
+  const rows = await db.select().from(salons).where(eq(salons.id, wanted)).limit(1);
+  if (rows.length > 0) return wanted;
+  // sinon fallback
+  const def = await db.select().from(salons).where(eq(salons.id, DEFAULT_SALON_ID)).limit(1);
+  if (def.length === 0) {
+    // environnement corrompu -> on garantit l'existence
+    await ensureDefaultSalonExists();
+  }
+  return DEFAULT_SALON_ID;
+}
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+2) ÉTENDRE LES ROUTES V1 (salons & services + fallback)
+Remplacer/mettre à jour `server/src/routes/v1.ts` pour inclure ces routes :
+────────────────────────────────────────────────────────────────────────
+import { Router } from 'express';
+import { z } from 'zod';
+import { db } from '../db';
+import { bookings, salons, services } from '../schema';
+import { eq } from 'drizzle-orm';
+import { DEFAULT_SALON_ID } from '../seed';
+import { resolveSalonIdOrDefault } from '../utils/salon';
+
+export const routerV1 = Router();
+
+/** BOOKINGS (déjà présents dans le prompt précédent, on les laisse en place) */
+const createBookingSchema = z.object({
+  userId: z.string().min(1),
+  serviceId: z.string().min(1),
+  date: z.string().datetime(),
+  notes: z.string().optional(),
+  salonId: z.string().min(1).optional()
+});
+
+routerV1.post('/bookings', async (req, res, next) => {
+  const parsed = createBookingSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+
+  try {
+    const validSalonId = await resolveSalonIdOrDefault(parsed.data.salonId);
+    const payload = {
+      id: crypto.randomUUID(),
+      userId: parsed.data.userId,
+      serviceId: parsed.data.serviceId,
+      date: new Date(parsed.data.date),
+      notes: parsed.data.notes ?? undefined
+    };
+    await db.insert(bookings).values(payload);
+    res.status(201).json({ booking: { ...payload, salonId: validSalonId } });
+  } catch (err) {
+    next(err);
+  }
+});
+
+routerV1.get('/bookings/:id', async (req, res, next) => {
+  try {
+    const rows = await db.select().from(bookings).where(eq(bookings.id, req.params.id)).limit(1);
+    if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+    res.json({ booking: rows[0] });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/** SALONS (ajouts) */
+// GET /api/v1/salons -> liste, au moins le default
+routerV1.get('/salons', async (_req, res, next) => {
+  try {
+    const rows = await db.select().from(salons);
+    if (rows.length === 0) {
+      // on garantit un minimum
+      res.json([{ id: DEFAULT_SALON_ID, name: 'Salon Démo' }]);
+      return;
+    }
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/salons/:id -> détail (fallback si inconnu en dev/staging)
+routerV1.get('/salons/:id', async (req, res, next) => {
+  try {
+    const validSalonId = await resolveSalonIdOrDefault(req.params.id);
+    const rows = await db.select().from(salons).where(eq(salons.id, validSalonId)).limit(1);
+    if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    next(err);
+  }
+});
+
+/** SERVICES (ajouts) */
+// GET /api/v1/services?salonId=... -> liste des services du salon (fallback si salonId manquant/invalide)
+routerV1.get('/services', async (req, res, next) => {
+  try {
+    const validSalonId = await resolveSalonIdOrDefault(
+      typeof req.query.salonId === 'string' ? req.query.salonId : undefined
+    );
+    const rows = await db.select().from(services).where(eq(services.salonId, validSalonId));
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/services/salon/:salonId -> idem, via param
+routerV1.get('/services/salon/:salonId', async (req, res, next) => {
+  try {
+    const validSalonId = await resolveSalonIdOrDefault(req.params.salonId);
+    const rows = await db.select().from(services).where(eq(services.salonId, validSalonId));
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+3) TESTS DE FUMÉE SUPPLÉMENTAIRES (services & salons)
+Créer/écraser `server/test/services-salons.test.ts` :
+────────────────────────────────────────────────────────────────────────
+import { describe, it, expect } from 'vitest';
+import request from 'supertest';
+
+const baseURL = `http://localhost:${process.env.PORT ?? 3000}`;
+
+describe('salons & services (fallback)', () => {
+  it('GET /api/v1/salons should return at least default salon', async () => {
+    const r = await request(baseURL).get('/api/v1/salons');
+    expect(r.status).toBe(200);
+    expect(Array.isArray(r.body)).toBe(true);
+    expect(r.body.length).toBeGreaterThan(0);
+  });
+
+  it('GET /api/v1/salons/:id with unknown id should fallback to default and return 200', async () => {
+    const r = await request(baseURL).get('/api/v1/salons/UNKNOWN_SALON');
+    expect([200]).toContain(r.status);
+    expect(r.body?.id).toBeDefined();
+  });
+
+  it('GET /api/v1/services without salonId should return default salon services', async () => {
+    const r = await request(baseURL).get('/api/v1/services');
+    expect(r.status).toBe(200);
+    expect(Array.isArray(r.body)).toBe(true);
+  });
+
+  it('GET /api/v1/services?salonId=UNKNOWN should still return 200 via fallback', async () => {
+    const r = await request(baseURL).get('/api/v1/services?salonId=UNKNOWN');
+    expect(r.status).toBe(200);
+  });
+
+  it('GET /api/v1/services/salon/UNKNOWN should still return 200 via fallback', async () => {
+    const r = await request(baseURL).get('/api/v1/services/salon/UNKNOWN');
+    expect(r.status).toBe(200);
+  });
+});
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+4) RELANCE & VÉRIFS
+- Regénérer les migrations si le schéma a changé depuis ta dernière exécution :
+  npx drizzle-kit generate
+  # Appliquer la migration dans Neon/Supabase si besoin
+
+- Relancer le serveur (le seed s’assure que default salon/service existent) :
+  npm --prefix server run dev
+
+- Exécuter les tests :
+  npm --prefix server test
+
+✅ Résultat attendu :
+- `/api/v1/salons` répond toujours avec au moins 1 salon (default)
+- `/api/v1/services` répond toujours (même sans salonId) avec les services du salon par défaut
+- Les variantes avec salonId inconnu ne cassent plus (fallback → 200)
+- Le parcours de prise de RDV ne bloque plus sur “Salon not found”
