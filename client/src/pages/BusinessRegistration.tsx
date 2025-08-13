@@ -14,7 +14,7 @@ import { X, CreditCard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 // Configuration Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || "pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo");
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 
 // Composant de paiement Stripe pour business
 function BusinessStripePaymentForm({ onSuccess, clientSecret, planName, planPrice }: { 

@@ -11,8 +11,8 @@ import { ArrowLeft, CreditCard, Check, AlertCircle, Loader2, Shield, Lock } from
 import { apiRequest } from '@/lib/queryClient';
 import logoImage from "@assets/3_1753714421825.png";
 
-// Initialize Stripe with fallback key
-const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY || 'pk_test_51Rn0zHQbSa7XrNpDpM6MD9LPmkUAPzClEdnFW34j3evKDrUxMud0I0p6vk3ESOBwxjAwmj1cKU5VrKGa7pef6onE00eC66JjRo';
+// Initialize Stripe with production key
+const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
 let stripePromise: any = null;
 try {
