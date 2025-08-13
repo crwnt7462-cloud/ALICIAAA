@@ -8,7 +8,7 @@ import { ArrowLeft, Check, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 // Stripe public key (à remplacer par votre vraie clé)
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 
 interface CheckoutFormProps {
   clientSecret: string;
