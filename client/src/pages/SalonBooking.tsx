@@ -347,6 +347,12 @@ function SalonBooking() {
     );
   }
 
+  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - SOURCE UNIQUE DE VÉRITÉ
+  const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
+    queryKey: ["/api/professionals"],
+    retry: false
+  });
+
   console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
     professionals,
     professionalsLoading,
@@ -579,8 +585,8 @@ function SalonBooking() {
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="font-semibold text-gray-900">{salon?.name || 'Salon'}</h1>
-              <p className="text-sm text-gray-700">{salon?.location || 'Adresse'}</p>
+              <h1 className="font-semibold text-gray-900">{realSalonData?.name || 'Salon'}</h1>
+              <p className="text-sm text-gray-700">{realSalonData?.address || 'Adresse'}</p>
             </div>
           </div>
         </div>

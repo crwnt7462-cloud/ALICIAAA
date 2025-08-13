@@ -1,0 +1,18 @@
+Bug critique: sur /salon-booking, au choix d’une prestation → overlay Vite: “Can’t find variable: professionals”. Trouve et corrige la source exacte.
+	1.	Localiser l’usage fautif: cherche toutes les occurrences de l’identifiant nu professionals dans le client, surtout dans le flow booking (SalonBooking*, ServicePicker*, ProfessionalPicker*, BookingConfirmationModal*, hooks). Repère celles non déclarées dans le scope (pas venant de props, useState, useContext ou import).
+	2.	Corriger l’architecture données: une unique source de vérité dans la page SalonBooking:
+	•	récupérer les pros via l’API du salon courant (slug/id depuis la route),
+	•	stocker dans const [professionals, setProfessionals] = useState<...>([]),
+	•	passer en props aux sous‑composants.
+Interdiction d’utiliser un global (window.professionals), variables implicites ou un import de mock.
+	3.	Handlers: vérifie onServiceSelect/onTimeSelect/... ; s’ils accèdent à professionals[...] via une closure sans variable locale, brancher sur l’état/props. Valider que l’index/ID existe (find by id, pas par index magique).
+	4.	Sécurité d’exécution: avant rendu, garde‑fous Array.isArray(professionals) et états loading/empty. Pas d’accès direct si vide.
+	5.	Alignement API↔UI: l’API renvoie bien un tableau professionals pour le salon demandé; mappe correctement les champs (name vs full_name, id vs _id).
+	6.	Anti‑régression outillage: active ESLint no-undef et TS noImplicitAny, noUncheckedIndexedAccess pour casser la build si un identifiant non déclaré est utilisé.
+	7.	Logs ciblés: au mount et au clic prestation, log salonId/slug, professionals.length, serviceId sélectionné.
+	8.	Tests:
+	•	accès via /search → salon → choisir une prestation → aucune erreur,
+	•	accès direct par URL du même salon → idem,
+	•	si pas de pros → message “Aucun pro disponible”, pas de crash.
+
+Livrables: fichier(s) modifiés, emplacement exact(s) où l’identifiant nu était utilisé, capture console montrant professionals.length non nul et sélection de prestation sans overlay.
