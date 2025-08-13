@@ -465,12 +465,7 @@ function Router() {
     );
   }
 
-  // Redirection si pas de slug dans la route booking
-  if (location === '/salon-booking') {
-    console.log('[NAV] router=wouter, action=redirect, from=/salon-booking, to=/search, reason=missing-slug');
-    setLocation('/search');
-    return null;
-  }
+  // ✅ SUPPRIMÉ: Redirection parasite vers /search - cause du bug critique
 
   // ✅ ROUTE DYNAMIQUE POUR TOUS LES SALONS - /salon/:id
   if (location.startsWith('/salon/') && location !== '/salon') {

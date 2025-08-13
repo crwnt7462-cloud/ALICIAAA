@@ -142,6 +142,14 @@ function SalonBooking() {
     extractedSalonSlug: salonSlug
   });
 
+  // ✅ SAUVEGARDE SLUG: Pour préserver la navigation dans d'autres pages
+  useEffect(() => {
+    if (salonSlug) {
+      sessionStorage.setItem('currentSalonSlug', salonSlug);
+      console.log('[SLUG] saved to sessionStorage:', salonSlug);
+    }
+  }, [salonSlug]);
+
   // Récupérer les données de pré-réservation si disponibles
   const [preBooking, setPreBooking] = useState<any>(null);
   
@@ -269,13 +277,7 @@ function SalonBooking() {
     }
   }, [preBooking]);
 
-  // ✅ GESTION ERREUR: Redirection si salon slug manquant - DANS useEffect UNIQUEMENT
-  useEffect(() => {
-    if (!salonLoading && !salonSlug) {
-      console.log('[REDIRECT] reason=missing-slug slug=' + salonSlug + ' loading=' + salonLoading);
-      setLocation('/search');
-    }
-  }, [salonLoading, salonSlug, setLocation]);
+  // ✅ SUPPRIMÉ: Redirection problématique vers /search éliminée pour LUNDI LAUNCH
 
   // ✅ SUPPRESSION SYSTÈME FALLBACK COMPLEXE TERMINÉE
 

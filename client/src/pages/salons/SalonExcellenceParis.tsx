@@ -222,7 +222,10 @@ export default function SalonExcellenceParis() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-pink"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=salon-excellence-paris, service=' + service.name);
+                                setLocation('/salon-booking/salon-excellence-paris');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -330,7 +333,10 @@ export default function SalonExcellenceParis() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=salon-excellence-paris');
+            setLocation('/salon-booking/salon-excellence-paris');
+          }}
         >
           Réserver maintenant
         </Button>

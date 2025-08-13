@@ -229,7 +229,10 @@ export default function NailArtOpera() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-rose"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=nail-art-opera, service=' + service.name);
+                                setLocation('/salon-booking/nail-art-opera');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -337,7 +340,10 @@ export default function NailArtOpera() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=nail-art-opera');
+            setLocation('/salon-booking/nail-art-opera');
+          }}
         >
           Réserver maintenant
         </Button>

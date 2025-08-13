@@ -249,7 +249,10 @@ export default function BarbierGentlemanMarais() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-amber"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
+                                setLocation('/salon-booking/barbier-gentleman-marais');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -359,7 +362,10 @@ export default function BarbierGentlemanMarais() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3 text-lg font-semibold"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=barbier-gentleman-marais');
+            setLocation('/salon-booking/barbier-gentleman-marais');
+          }}
         >
           Réserver maintenant
         </Button>

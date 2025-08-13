@@ -229,7 +229,10 @@ export default function SpaWellnessBastille() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-emerald"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=spa-wellness-bastille, service=' + service.name);
+                                setLocation('/salon-booking/spa-wellness-bastille');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -337,7 +340,10 @@ export default function SpaWellnessBastille() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=spa-wellness-bastille');
+            setLocation('/salon-booking/spa-wellness-bastille');
+          }}
         >
           Réserver maintenant
         </Button>

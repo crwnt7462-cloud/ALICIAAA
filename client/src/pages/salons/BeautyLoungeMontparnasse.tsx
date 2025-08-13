@@ -247,7 +247,10 @@ export default function BeautyLoungeMontparnasse() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-indigo"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=beauty-lounge-montparnasse, service=' + service.name);
+                                setLocation('/salon-booking/beauty-lounge-montparnasse');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -355,7 +358,10 @@ export default function BeautyLoungeMontparnasse() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3 text-lg font-semibold"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=beauty-lounge-montparnasse');
+            setLocation('/salon-booking/beauty-lounge-montparnasse');
+          }}
         >
           Réserver maintenant
         </Button>

@@ -40,9 +40,11 @@ export default function ClientLoginBooking() {
           description: "Redirection vers la réservation..."
         });
         
-        // Rediriger vers la page de réservation où le shell s'ouvrira automatiquement
+        // Rediriger vers la page de réservation en conservant le slug du salon
+        const salonSlug = sessionStorage.getItem('currentSalonSlug') || 'barbier-gentleman-marais';
+        console.log('[REDIRECT] reason=login-success, preserving-slug=' + salonSlug);
         setTimeout(() => {
-          setLocation('/salon-booking');
+          setLocation('/salon-booking/' + salonSlug);
         }, 800);
       } else {
         toast({
@@ -66,7 +68,11 @@ export default function ClientLoginBooking() {
       <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            <Button variant="ghost" size="icon" onClick={() => setLocation('/salon-booking')}>
+            <Button variant="ghost" size="icon" onClick={() => {
+              const salonSlug = sessionStorage.getItem('currentSalonSlug') || 'barbier-gentleman-marais';
+              console.log('[REDIRECT] reason=back-button, preserving-slug=' + salonSlug);
+              setLocation('/salon-booking/' + salonSlug);
+            }}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-lg font-semibold text-gray-900">Se connecter</h1>
@@ -140,7 +146,11 @@ export default function ClientLoginBooking() {
                 <Button 
                   variant="link" 
                   className="text-violet-600 p-0 h-auto"
-                  onClick={() => setLocation('/salon-booking')}
+                  onClick={() => {
+                    const salonSlug = sessionStorage.getItem('currentSalonSlug') || 'barbier-gentleman-marais';
+                    console.log('[REDIRECT] reason=signup-link, preserving-slug=' + salonSlug);
+                    setLocation('/salon-booking/' + salonSlug);
+                  }}
                 >
                   Créer un compte
                 </Button>

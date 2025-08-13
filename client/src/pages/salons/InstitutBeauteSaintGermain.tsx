@@ -209,7 +209,10 @@ export default function InstitutBeauteSaintGermain() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-rose"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=institut-beaute-saint-germain, service=' + service.name);
+                                setLocation('/salon-booking/institut-beaute-saint-germain');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -317,7 +320,10 @@ export default function InstitutBeauteSaintGermain() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button-rose py-3"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=institut-beaute-saint-germain');
+            setLocation('/salon-booking/institut-beaute-saint-germain');
+          }}
         >
           Réserver maintenant
         </Button>

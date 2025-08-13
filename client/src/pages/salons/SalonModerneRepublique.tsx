@@ -208,7 +208,10 @@ export default function SalonModerneRepublique() {
                             <Button 
                               size="sm" 
                               className="mt-2 glass-button-neutral"
-                              onClick={() => setLocation('/salon-booking')}
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=salon-moderne-republique, service=' + service.name);
+                                setLocation('/salon-booking/salon-moderne-republique');
+                              }}
                             >
                               Réserver
                             </Button>
@@ -316,7 +319,10 @@ export default function SalonModerneRepublique() {
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
         <Button 
           className="w-full glass-button py-3"
-          onClick={() => setLocation('/salon-booking')}
+          onClick={() => {
+            console.log('[CLICK] type=main-booking, salon=salon-moderne-republique');
+            setLocation('/salon-booking/salon-moderne-republique');
+          }}
         >
           Réserver maintenant
         </Button>
