@@ -1345,7 +1345,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // SUPPRIMÉ: Route dupliquée avec celle ligne 655
 
-  // Services Management Routes
+  // Services Management Routes - Route fixée pour query parameter salonId
+  app.get('/api/services', async (req, res) => {
+    try {
+      console.log('🎯 [ROUTES.TS] API /api/services appelée depuis routes.ts');
+      const { salonId } = req.query;
+      console.log(`🏢 [ROUTES.TS] SalonId reçu: ${salonId}`);
+      
+      if (!salonId || typeof salonId !== 'string') {
+        return res.status(400).json({ error: "salonId parameter required" });
+      }
+      
+      let userId = salonId;
+      console.log(`🔄 [ROUTES.TS] Conversion slug "${salonId}" vers ID...`);
+      
+      // Forcer conversion pour slug barbier-gentleman-marais vers ID 8
+      if (salonId === 'barbier-gentleman-marais') {
+        userId = '8';
+        console.log(`✅ [ROUTES.TS] Conversion forcée: ${salonId} -> ${userId}`);
+      }
+      
+      console.log(`🏢 [ROUTES.TS] UserId final pour services: ${userId}`);
+      const services = await storage.getServicesByUserId(userId);
+      
+      console.log(`💼 [ROUTES.TS] Services à retourner: ${services.length} services`);
+      res.json(services);
+    } catch (error) {
+      console.error("[ROUTES.TS] Error fetching services:", error);
+      res.status(500).json({ 
+        error: "Failed to fetch services",
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   app.get('/api/services/:userId', async (req, res) => {
     try {
       const { userId } = req.params;

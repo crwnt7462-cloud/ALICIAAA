@@ -287,6 +287,17 @@ export class DatabaseStorage implements IStorage {
     return this.getServicesBySalonId(salonId);
   }
 
+  async getServicesByUserId(userId: string): Promise<any[]> {
+    try {
+      const result = await db.select().from(services).where(eq(services.userId, userId));
+      console.log(`📋 getServicesByUserId(${userId}) -> ${result.length} services`);
+      return result;
+    } catch (error) {
+      console.error(`❌ Erreur getServicesByUserId(${userId}):`, error);
+      return [];
+    }
+  }
+
   async createService(serviceData: InsertService): Promise<Service> {
     // Add missing depositPercentage if not provided
     const serviceWithDefaults = {

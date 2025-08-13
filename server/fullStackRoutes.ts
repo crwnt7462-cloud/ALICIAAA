@@ -1915,12 +1915,20 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Services routes publics pour réservation - PostgreSQL uniquement
+  // Services routes publics pour réservation - PostgreSQL uniquement avec conversion slug
   app.get('/api/services', async (req, res) => {
     try {
       console.log('🔍 API /api/services appelée');
       const { salonId, userId } = req.query;
-      const finalUserId = userId || salonId || 'demo';
+      let finalUserId = userId || salonId || 'demo';
+      console.log('🏢 SalonId/UserId reçu:', finalUserId);
+
+      // Conversion forcée slug vers ID pour barbier-gentleman-marais
+      if (finalUserId === 'barbier-gentleman-marais') {
+        finalUserId = '8';
+        console.log('✅ Conversion slug vers ID:', 'barbier-gentleman-marais -> 8');
+      }
+      
       console.log('🏢 UserId final pour services:', finalUserId);
 
       // Utiliser le userId final pour récupérer les services PostgreSQL
