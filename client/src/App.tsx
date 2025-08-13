@@ -456,13 +456,19 @@ function Router() {
     );
   }
 
-  // Page de réservation salon avec détection automatique
-  if (location === '/salon-booking' || location.startsWith('/salon-booking/')) {
+  // Page de réservation salon avec slug obligatoire
+  if (location.startsWith('/salon-booking/')) {
     return (
       <div className="h-full">
         <SalonBooking />
       </div>
     );
+  }
+
+  // Redirection si pas de slug dans la route booking
+  if (location === '/salon-booking') {
+    setLocation('/search');
+    return null;
   }
 
   // ✅ ROUTE DYNAMIQUE POUR TOUS LES SALONS - /salon/:id

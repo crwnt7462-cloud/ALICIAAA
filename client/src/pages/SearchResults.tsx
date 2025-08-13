@@ -321,7 +321,8 @@ export default function SearchResults() {
                       className={getSalonButtonClass(salon.id)}
                       onClick={(e) => {
                         e.stopPropagation();
-                        setLocation('/salon-booking');
+                        console.log('🎯 NAVIGATION BOOKING: Redirection avec salon slug:', salon.slug);
+                        setLocation(`/salon-booking/${salon.slug}`);
                       }}
                     >
                       Réserver

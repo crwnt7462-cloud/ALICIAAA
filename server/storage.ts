@@ -126,6 +126,11 @@ export interface IStorage {
   getSalonWithDetails?(salonId: string): Promise<any | null>;
   getProfessionals?(salonId?: string): Promise<any[]>;
   
+  // ✅ NOUVELLES MÉTHODES SPÉCIFIQUES SALONS
+  getSalonBySlug(slug: string): Promise<any | null>;
+  getProfessionalsBySalonId(salonId: number): Promise<any[]>;
+  getAllProfessionals(): Promise<any[]>;
+  
   // Professional Settings - PERSISTENT STORAGE
   getProfessionalSettings(userId: string): Promise<any>;
   saveProfessionalSettings(userId: string, settings: any): Promise<any>;
@@ -1156,6 +1161,55 @@ export class DatabaseStorage implements IStorage {
       return result;
     } catch (error) {
       console.error('Erreur récupération professionnels:', error);
+      return [];
+    }
+  }
+
+  // =============================================
+  // NOUVELLES MÉTHODES SALON BOOKING SPÉCIFIQUES 
+  // =============================================
+
+  async getSalonBySlug(slug: string): Promise<any | null> {
+    try {
+      const [salon] = await db.select()
+        .from(businessRegistrations)
+        .where(eq(businessRegistrations.slug, slug));
+      
+      if (!salon) {
+        console.log(`❌ Salon non trouvé par slug: ${slug}`);
+        return null;
+      }
+      
+      console.log(`✅ Salon trouvé par slug: ${salon.businessName} (ID: ${salon.id})`);
+      return salon;
+    } catch (error) {
+      console.error('Erreur getSalonBySlug:', error);
+      return null;
+    }
+  }
+
+  async getProfessionalsBySalonId(salonId: number): Promise<any[]> {
+    try {
+      // Rechercher dans la table staff pour les professionnels de ce salon
+      const staffMembers = await db.select()
+        .from(staff)
+        .where(eq(staff.salonId, salonId));
+      
+      console.log(`👥 ${staffMembers.length} professionnels trouvés pour salon ID: ${salonId}`);
+      return staffMembers;
+    } catch (error) {
+      console.error('Erreur getProfessionalsBySalonId:', error);
+      return [];
+    }
+  }
+
+  async getAllProfessionals(): Promise<any[]> {
+    try {
+      const allProfessionals = await db.select().from(staff);
+      console.log(`👥 ${allProfessionals.length} professionnels au total dans la base`);
+      return allProfessionals;
+    } catch (error) {
+      console.error('Erreur getAllProfessionals:', error);
       return [];
     }
   }

@@ -720,6 +720,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour récupérer les professionnels d'un salon spécifique
+  app.get("/api/salon/:salonSlug/professionals", async (req, res) => {
+    try {
+      const { salonSlug } = req.params;
+      console.log(`🔍 Récupération professionnels pour salon: ${salonSlug}`);
+      
+      // Récupérer d'abord le salon
+      const salon = await storage.getSalonBySlug(salonSlug);
+      if (!salon) {
+        return res.status(404).json({ error: "Salon non trouvé" });
+      }
+      
+      // Récupérer les professionnels du salon
+      const professionals = await storage.getProfessionalsBySalonId(salon.id);
+      console.log(`👥 ${professionals.length} professionnels trouvés pour salon ${salon.name}`);
+      
+      res.json(professionals);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des professionnels du salon:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   // Routes d'authentification client
   app.post('/api/client/login', async (req, res) => {
     try {

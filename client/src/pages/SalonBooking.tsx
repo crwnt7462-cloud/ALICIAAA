@@ -131,14 +131,14 @@ function SalonBooking() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // ✅ STANDARDISATION: Récupération salon ID depuis URL params uniquement
-  const urlParams = new URLSearchParams(location.split('?')[1] || '');
-  const salonId = urlParams.get('salon');
+  // ✅ STANDARDISATION: Récupération salon slug depuis route params uniquement
+  const pathSegments = location.split('/');
+  const salonSlug = pathSegments[2]; // /salon-booking/{slug}
   
-  console.log('🎯 SALON BOOKING: Extraction salon ID depuis URL:', {
+  console.log('🎯 SALON BOOKING: Extraction salon slug depuis route:', {
     fullLocation: location,
-    urlParams: location.split('?')[1],
-    extractedSalonId: salonId
+    pathSegments,
+    extractedSalonSlug: salonSlug
   });
 
   // Récupérer les données de pré-réservation si disponibles
@@ -268,30 +268,18 @@ function SalonBooking() {
     }
   }, [preBooking]);
 
-  // ✅ GESTION ERREUR: Redirection si salon ID manquant
-  if (!salonId) {
-    return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Salon non spécifié</h1>
-          <p className="text-gray-400 mb-4">Veuillez sélectionner un salon pour continuer la réservation.</p>
-          <button 
-            onClick={() => setLocation('/search')}
-            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
-          >
-            Rechercher un salon
-          </button>
-        </div>
-      </div>
-    );
+  // ✅ GESTION ERREUR: Redirection si salon slug manquant
+  if (!salonSlug) {
+    setLocation('/search');
+    return null;
   }
 
   // ✅ SUPPRESSION SYSTÈME FALLBACK COMPLEXE TERMINÉE
 
-  // ✅ UTILISATION API STANDARDISÉE - utilise salonId depuis URL params
+  // ✅ UTILISATION API STANDARDISÉE - utilise salonSlug depuis route params
   const { data: realSalonData, isLoading: salonLoading, error: salonError } = useQuery({
-    queryKey: [`/api/salon/${salonId}`],
-    enabled: !!salonId,
+    queryKey: [`/api/salon/${salonSlug}`],
+    enabled: !!salonSlug,
     retry: false
   });
 
@@ -333,9 +321,10 @@ function SalonBooking() {
     );
   }
 
-  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - SOURCE UNIQUE DE VÉRITÉ
+  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - FILTRÉS PAR SALON
   const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: ["/api/professionals"],
+    queryKey: [`/api/salon/${salonSlug}/professionals`],
+    enabled: !!salonSlug && !!realSalonData,
     retry: false
   });
 
