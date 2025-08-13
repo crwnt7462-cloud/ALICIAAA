@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, CreditCard, Shield, Calendar, Clock, MapPin } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import logoImage from "@assets/3_1753714984824.png";
+import logoImage from "@assets/3_1753714421825.png";
 
 export default function BookingDepositPage() {
   const [, setLocation] = useLocation();

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Check, ArrowLeft, CreditCard, Shield, Clock, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import logoImage from "@assets/3_1753714984824.png";
+import logoImage from "@assets/3_1753714421825.png";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";

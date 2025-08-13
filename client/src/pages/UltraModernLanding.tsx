@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import logoImage from "@assets/3_1753714984824.png";
+import logoImage from "@assets/3_1753714421825.png";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   Search, Star, MapPin, Clock, Award, Shield, CheckCircle2, 
