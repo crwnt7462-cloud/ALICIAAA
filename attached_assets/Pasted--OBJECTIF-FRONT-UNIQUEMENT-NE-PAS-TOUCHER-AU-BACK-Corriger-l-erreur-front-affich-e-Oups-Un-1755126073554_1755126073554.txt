@@ -1,0 +1,294 @@
+🎯 OBJECTIF (FRONT UNIQUEMENT — NE PAS TOUCHER AU BACK)
+Corriger l’erreur front affichée (“Oups ! Une erreur s’est produite”) en rendant la page de réservation tolérante :
+- fetch sécurisé avec timeout + gestion d’erreur claire,
+- normalisation de la réponse API (valeurs par défaut si champs manquants),
+- redirection automatique vers le slug valide si le backend renvoie un salon différent (fallback),
+- composants de repli (ErrorBoundary + panneau de réessai),
+- SANS modifier le serveur ni les configs déjà en place.
+
+SCOPE : **NE MODIFIER QUE `client/**`**
+- Interdit de modifier `server/**`, `tsconfig.base.json`, `.eslintrc.cjs`, `.prettierrc`, `drizzle.config.ts`, etc.
+- On corrige exclusivement le code de la page de réservation et l’accès API côté client.
+
+────────────────────────────────────────────────────────────────────────
+1) LIBS FRONT : FETCH SÉCURISÉ + TYPES
+Créer/écraser `client/src/types.ts` :
+────────────────────────────────────────────────────────────────────────
+export type Salon = {
+  id: string;          // peut servir de slug
+  name: string;
+  description?: string | null;
+  address?: string | null;
+};
+
+export type Service = {
+  id: string;
+  salonId: string;
+  name: string;
+  price: number;
+};
+
+export type ApiError = { message: string; status?: number };
+────────────────────────────────────────────────────────────────────────
+
+Créer/écraser `client/src/lib/safeFetch.ts` :
+────────────────────────────────────────────────────────────────────────
+export class HttpError extends Error {
+  status?: number;
+  constructor(message: string, status?: number) {
+    super(message);
+    this.name = 'HttpError';
+    this.status = status;
+  }
+}
+
+// fetch avec timeout + parse JSON + erreurs propres
+export async function safeFetch<T>(
+  url: string,
+  init?: RequestInit,
+  timeoutMs = 15000
+): Promise<T> {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(url, { ...init, signal: ctrl.signal });
+    const ct = res.headers.get('content-type') || '';
+    const isJson = ct.includes('application/json');
+
+    if (!res.ok) {
+      const msg = isJson ? (await res.json())?.error ?? res.statusText : res.statusText;
+      throw new HttpError(
+        typeof msg === 'string' ? msg : JSON.stringify(msg),
+        res.status
+      );
+    }
+
+    return (isJson ? await res.json() : (null as any)) as T;
+  } catch (e: any) {
+    if (e?.name === 'AbortError') {
+      throw new HttpError('Timeout réseau', 408);
+    }
+    if (e instanceof HttpError) throw e;
+    throw new HttpError(e?.message ?? 'Erreur réseau');
+  } finally {
+    clearTimeout(id);
+  }
+}
+────────────────────────────────────────────────────────────────────────
+
+Créer/écraser `client/src/lib/api.ts` :
+────────────────────────────────────────────────────────────────────────
+import { safeFetch } from './safeFetch';
+import type { Salon, Service } from '../types';
+
+const BASE = import.meta.env.VITE_API_URL?.replace(/\/+$/, '') ?? '';
+
+function assertBase() {
+  if (!BASE) {
+    // on lève une erreur claire pour éviter les plantages silencieux
+    throw new Error('VITE_API_URL manquant côté client');
+  }
+}
+
+export async function getSalonResolvedBySlug(slugOrId: string): Promise<Salon> {
+  assertBase();
+  // côté serveur, /api/v1/salons/:id renvoie le salon correspondant ou le salon par défaut (fallback)
+  const data = await safeFetch<Salon>(`${BASE}/api/v1/salons/${encodeURIComponent(slugOrId)}`);
+  // Normalisation minimale
+  return {
+    id: String((data as any)?.id ?? 'salon-default'),
+    name: String((data as any)?.name ?? 'Salon Démo'),
+    description: (data as any)?.description ?? null,
+    address: (data as any)?.address ?? null,
+  };
+}
+
+export async function getServicesForSalon(salonId: string): Promise<Service[]> {
+  assertBase();
+  const list = await safeFetch<any[]>(`${BASE}/api/v1/services?salonId=${encodeURIComponent(salonId)}`);
+  return Array.isArray(list)
+    ? list.map((s) => ({
+        id: String(s?.id ?? crypto.randomUUID()),
+        salonId: String(s?.salonId ?? salonId),
+        name: String(s?.name ?? 'Service'),
+        price: Number.isFinite(+s?.price) ? +s.price : 0,
+      }))
+    : [];
+}
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+2) GARDES D’ERREUR UI (MATCH L’ÉCRAN QUE TU VOIS)
+Créer/écraser `client/src/components/ErrorBoundary.tsx` :
+────────────────────────────────────────────────────────────────────────
+import { Component, ReactNode } from 'react';
+
+type Props = { children: ReactNode };
+type State = { hasError: boolean; error?: any };
+
+export class ErrorBoundary extends Component<Props, State> {
+  state: State = { hasError: false };
+
+  static getDerivedStateFromError(error: any): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.error('[ErrorBoundary]', error, errorInfo);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ maxWidth: 520, margin: '48px auto', padding: 24, background: '#fff', borderRadius: 12, boxShadow: '0 8px 30px rgba(0,0,0,.08)', textAlign: 'center' }}>
+          <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Oups ! Une erreur s'est produite</div>
+          <p style={{ color: '#444', marginBottom: 16 }}>
+            Nous avons rencontré un problème inattendu. Réessaie.
+          </p>
+          <button onClick={() => location.reload()} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#6c4df6', color: '#fff', cursor: 'pointer' }}>
+            Réessayer
+          </button>
+          <details style={{ marginTop: 12, color: '#666' }}>
+            <summary>Détails techniques (développement uniquement)</summary>
+            <pre style={{ textAlign: 'left', overflowX: 'auto' }}>{String(this.state.error?.stack ?? this.state.error ?? '')}</pre>
+          </details>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+────────────────────────────────────────────────────────────────────────
+
+Créer/écraser `client/src/components/RetryPanel.tsx` :
+────────────────────────────────────────────────────────────────────────
+type Props = { onRetry?: () => void; message?: string };
+export function RetryPanel({ onRetry, message }: Props) {
+  return (
+    <div style={{ maxWidth: 520, margin: '48px auto', padding: 24, background: '#fff', borderRadius: 12, boxShadow: '0 8px 30px rgba(0,0,0,.08)', textAlign: 'center' }}>
+      <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Oups ! Une erreur s'est produite</div>
+      <p style={{ color: '#444', marginBottom: 16 }}>
+        {message ?? "Nous avons rencontré un problème inattendu. L'équipe technique a été notifiée."}
+      </p>
+      <button onClick={onRetry} style={{ padding: '10px 16px', borderRadius: 8, border: 'none', background: '#6c4df6', color: '#fff', cursor: 'pointer' }}>
+        Réessayer
+      </button>
+    </div>
+  );
+}
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+3) HOOK DE CHARGEMENT SALON + REDIRECTION SI SLUG INVALIDE
+Créer/écraser `client/src/hooks/useSalonLoader.ts` :
+────────────────────────────────────────────────────────────────────────
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getSalonResolvedBySlug, getServicesForSalon } from '../lib/api';
+import type { Salon, Service } from '../types';
+
+function extractSlugFromPath(): string | undefined {
+  // essaie de trouver un segment /salon-booking/:slug ou dernier segment non vide
+  const path = location.pathname.replace(/\/+$/, '');
+  const parts = path.split('/').filter(Boolean);
+  const idx = Math.max(parts.lastIndexOf('salon-booking'), parts.lastIndexOf('booking'));
+  if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
+  return parts[parts.length - 1];
+}
+
+export function useSalonLoader() {
+  const requestedSlug = useMemo(() => extractSlugFromPath(), []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [salon, setSalon] = useState<Salon | null>(null);
+  const [services, setServices] = useState<Service[]>([]);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const s = await getSalonResolvedBySlug(requestedSlug ?? 'salon-default');
+      // si le backend a résolu un autre salon (fallback), rediriger vers l'ID canonique
+      if (requestedSlug && s.id && requestedSlug !== s.id) {
+        const url = location.pathname.replace(requestedSlug, s.id);
+        history.replaceState(null, '', url + location.search);
+      }
+      setSalon(s);
+      const svc = await getServicesForSalon(s.id);
+      setServices(svc);
+    } catch (e: any) {
+      setError(e?.message ?? 'Erreur');
+    } finally {
+      setLoading(false);
+    }
+  }, [requestedSlug]);
+
+  useEffect(() => { load(); }, [load]);
+
+  return { loading, error, salon, services, retry: load };
+}
+────────────────────────────────────────────────────────────────────────
+
+────────────────────────────────────────────────────────────────────────
+4) PAGE DE RÉSERVATION : INTÉGRATION SANS CASSER L’EXISTANT
+→ Trouver le composant/page qui affiche la réservation (nom probable : `SalonBooking`, `BookingPage`, `Reservation`, etc.).  
+→ S’il existe déjà, NE PAS réécrire la UI : **envelopper** son contenu avec la logique ci-dessous.  
+→ Sinon, créer un nouveau composant `client/src/pages/SalonBookingPage.tsx` et l’utiliser dans la route existante.
+
+Créer/écraser `client/src/pages/SalonBookingPage.tsx` :
+────────────────────────────────────────────────────────────────────────
+import { ErrorBoundary } from '../components/ErrorBoundary';
+import { RetryPanel } from '../components/RetryPanel';
+import { useSalonLoader } from '../hooks/useSalonLoader';
+
+export default function SalonBookingPage() {
+  const { loading, error, salon, services, retry } = useSalonLoader();
+
+  if (loading) return <div style={{ padding: 24 }}>Chargement…</div>;
+  if (error) return <RetryPanel onRetry={retry} message={error} />;
+  if (!salon) return <RetryPanel onRetry={retry} message="Salon introuvable (fallback non disponible)" />;
+
+  // ⚠️ ICI : NE PAS casser la UI existante.
+  // Si tu as déjà un composant de rendu (ex: <BookingFlow salon={salon} services={services}/>),
+  // monte-le à la place du placeholder ci-dessous.
+  return (
+    <ErrorBoundary>
+      <div style={{ padding: 24 }}>
+        <h1>{salon.name}</h1>
+        <p style={{ color: '#666' }}>{salon.address ?? 'Adresse non renseignée'}</p>
+        <h3 style={{ marginTop: 16 }}>Services</h3>
+        <ul>
+          {services.length ? services.map(s => (
+            <li key={s.id}>{s.name} — {s.price} €</li>
+          )) : <li>Aucun service disponible pour le moment.</li>}
+        </ul>
+      </div>
+    </ErrorBoundary>
+  );
+}
+────────────────────────────────────────────────────────────────────────
+
+🔧 Intégration :
+- Rechercher la route qui rend actuellement la page de réservation (fichiers contenant `salon-booking` ou `booking` dans `client/src`).
+- Remplacer le composant rendu par défaut par `SalonBookingPage` (sans supprimer les anciens composants métiers ; on les réutilise si besoin à l’intérieur).
+- NE PAS supprimer les styles ou la navigation existants.
+
+────────────────────────────────────────────────────────────────────────
+5) FILETS DE SÉCURITÉ GLOBAUX
+- Vérifier que `VITE_API_URL` est bien défini (sinon `api.ts` lève une erreur claire).
+- En DEV, laisser `console.error` ; en PROD, ne pas spammer.
+- S’assurer que tous les appels réseau de la page de réservation passent par `safeFetch` (remplacer les fetch bruts locaux à ce scope, pas ailleurs).
+
+────────────────────────────────────────────────────────────────────────
+6) TESTS MANUELS RAPIDES
+1. Ouvrir `/salon-booking/<un-slug-qui-n-existe-pas>`
+   - Attendu : **pas** d’écran d’erreur fatal ; UI s’affiche
+   - L’URL se remplace automatiquement par `/salon-booking/salon-default` (ou par l’ID réel renvoyé)
+2. Ouvrir `/salon-booking/salon-default`
+   - Attendu : chargement OK ; liste de services (éventuellement 1 service par défaut)
+3. Simuler une panne réseau (couper le serveur)
+   - Attendu : panneau “Réessayer” avec bouton qui relance l’appel quand le serveur revient
+
+✅ Si ces 3 checks passent, l’erreur “Oups ! Une erreur s’est produite” ne réapparaîtra plus sur ce flux.

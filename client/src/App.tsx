@@ -151,7 +151,7 @@ import StripeCheckout from "@/pages/StripeCheckout";
 import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
 import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword";
 import BookingSuccess from "@/pages/BookingSuccess";
-import SalonBooking from "@/pages/SalonBooking";
+import SalonBookingFixed from "@/pages/SalonBookingFixed";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
@@ -455,7 +455,7 @@ function Router() {
   if (location.startsWith('/salon-booking/')) {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <SalonBookingFixed />
       </div>
     );
   }
@@ -484,7 +484,7 @@ function Router() {
   if (location.includes('/excellence-hair-paris/') || location.includes('/salon-moderne-republique/') || location.includes('/gentleman-barbier/')) {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <SalonBookingFixed />
       </div>
     );
   }
