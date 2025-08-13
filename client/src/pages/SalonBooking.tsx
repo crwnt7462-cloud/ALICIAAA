@@ -268,20 +268,6 @@ function SalonBooking() {
     }
   }, [preBooking]);
 
-  // ✅ EFFET SÉPARÉ POUR RESTAURER LE PROFESSIONNEL
-  useEffect(() => {
-    if (Array.isArray(professionals) && professionals.length > 0) {
-      const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
-      if (pendingProfName) {
-        const prof = professionals.find((p: any) => p?.name === pendingProfName);
-        if (prof) {
-          setSelectedProfessional(prof);
-          sessionStorage.removeItem('pendingProfessionalName');
-        }
-      }
-    }
-  }, [professionals]);
-
   // ✅ GESTION ERREUR: Redirection si salon ID manquant
   if (!salonId) {
     return (
@@ -353,6 +339,20 @@ function SalonBooking() {
     retry: false
   });
 
+  // ✅ EFFET POUR RESTAURER LE PROFESSIONNEL APRÈS CHARGEMENT DES DONNÉES
+  useEffect(() => {
+    if (Array.isArray(professionals) && professionals.length > 0) {
+      const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
+      if (pendingProfName) {
+        const prof = professionals.find((p: any) => p?.name === pendingProfName);
+        if (prof) {
+          setSelectedProfessional(prof);
+          sessionStorage.removeItem('pendingProfessionalName');
+        }
+      }
+    }
+  }, [professionals]);
+
   console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
     professionals,
     professionalsLoading,
@@ -386,11 +386,27 @@ function SalonBooking() {
   };
 
   const handleServiceSelect = (service: any) => {
+    console.log('🎯 SERVICE SÉLECTIONNÉ:', {
+      service,
+      professionalsStatus: {
+        loaded: Array.isArray(professionals),
+        count: professionals?.length || 0,
+        loading: professionalsLoading
+      }
+    });
     setSelectedService(service);
     setCurrentStep(3);
   };
 
   const handleProfessionalSelect = (professional: any) => {
+    console.log('👤 PROFESSIONNEL SÉLECTIONNÉ:', {
+      professional,
+      professionalsStatus: {
+        loaded: Array.isArray(professionals),
+        count: professionals?.length || 0,
+        loading: professionalsLoading
+      }
+    });
     setSelectedProfessional(professional);
     setCurrentStep(2);
   };
