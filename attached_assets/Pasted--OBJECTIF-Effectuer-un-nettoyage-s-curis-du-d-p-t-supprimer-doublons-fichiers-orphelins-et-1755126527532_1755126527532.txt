@@ -1,0 +1,142 @@
+🎯 OBJECTIF
+Effectuer un **nettoyage sécurisé** du dépôt : supprimer doublons, fichiers orphelins et dépendances inutilisées **sans casser** l’application.
+➡️ L’opération DOIT être réversible (quarantaine + commit), et DOIT finir avec build + tests OK.
+
+⚠️ ZONES INTANGIBLES — NE RIEN MODIFIER / SUPPRIMER
+- Récents ajouts Supabase/Neon/Drizzle :
+  - server/src/db.ts
+  - server/src/schema.ts
+  - server/src/seed.ts
+  - server/src/utils/salon.ts
+  - server/src/routes/v1.ts
+  - server/src/middlewares/errorHandler.ts
+  - server/src/index.ts
+  - server/src/server.ts
+  - drizzle.config.ts
+- Fichiers de config racine : tsconfig.base.json, .eslintrc.cjs, .prettierrc, .gitignore
+- Front : client/src/lib/**/*, client/src/hooks/useSalonLoader.ts, client/src/components/ErrorBoundary.tsx, client/src/components/RetryPanel.tsx, client/src/pages/SalonBookingPage.tsx
+- Dossiers tests : server/test/**, client/src/**/*.test.ts, client/vite.config.ts, server/vitest.config.ts
+- .env* (ne pas committer/supprimer)
+
+🧭 CHAMP D’ACTION (AUTORISÉ)
+- client/src/components/** : composants non utilisés / doublons visuels
+- client/src/assets/** : images/icônes non référencées
+- client/src/styles/** : fichiers de styles non importés
+- server/src/** : tout fichier **non importé** (hors zones intangibles listées)
+- racine : artefacts/dossiers temporaires (tmp, __MACOSX, *.zip, rapports obsolètes, etc.)
+- package.json (client/server) : dépendances manifestement non utilisées (après rapport)
+
+────────────────────────────────────────────────────────────────────────
+1) SÉCURITÉ & PRÉPARATION
+Exécuter en racine du repo :
+
+git add -A && git commit -m "chore: checkpoint avant nettoyage" || true
+git switch -c chore/safe-cleanup || git checkout -b chore/safe-cleanup || true
+
+# Dossier de quarantaine
+mkdir -p .attic && touch .attic/.gitkeep
+
+# Installer des outils d’audit (temporairement en devDependencies racine ou localement au besoin)
+npm i -D knip depcheck ts-prune @typescript-eslint/parser @typescript-eslint/typescript-estree typescript
+
+────────────────────────────────────────────────────────────────────────
+2) AUDIT DES FICHIERS NON RÉFÉRENCÉS
+# 2.1 — KNIP (fichiers/exports non utilisés)
+npx knip --ignore "server/src/db.ts" --ignore "server/src/schema.ts" --ignore "server/src/seed.ts" --ignore "server/src/utils/**" --ignore "server/src/routes/v1.ts" --ignore "server/src/index.ts" --ignore "server/src/server.ts" --ignore "client/src/lib/**" --ignore "client/src/hooks/useSalonLoader.ts" --ignore "client/src/components/ErrorBoundary.tsx" --ignore "client/src/components/RetryPanel.tsx" --ignore "client/src/pages/SalonBookingPage.tsx" --reporter json > .knip-report.json || true
+
+# 2.2 — TS-PRUNE (exports morts côté TS/TSX)
+npx ts-prune -p tsconfig.base.json --ignore "server/src/(db|schema|seed|utils|routes|index|server).ts" --ignore "client/src/(lib|hooks|components/ErrorBoundary|components/RetryPanel|pages/SalonBookingPage).tsx" > .tsprune-report.txt || true
+
+# 2.3 — DEPHECK (dépendances non utilisées par package.json courant)
+npx depcheck --json > .depcheck-report.json || true
+
+# 2.4 — Recherche de doublons exacts (hash) pour assets/components
+# (l’agent peut implémenter un petit script Node pour lister fichiers identiques par sha256)
+
+────────────────────────────────────────────────────────────────────────
+3) GÉNÉRER UN RAPPORT LISIBLE
+Créer un fichier .cleanup-plan.md avec :
+- Liste **proposée** des fichiers candidats à déplacer en quarantaine (.attic/), groupés par catégorie :
+  - client/components non importés
+  - client/assets non référencés
+  - styles non importés
+  - server/src fichiers non importés (hors zones intangibles)
+- Liste **proposée** des dépendances à supprimer (client/server), avec la raison (depcheck/knip)
+- ⚠️ Exclure tout ce qui matche les **zones intangibles** ci-dessus.
+- Écrire “DRY‑RUN ONLY” en tête : aucune suppression réelle à cette étape.
+
+────────────────────────────────────────────────────────────────────────
+4) DÉPLACEMENT EN QUARANTAINE (PAS DE SUPPRESSION DIRECTE)
+Pour chaque fichier listé dans .cleanup-plan.md :
+- Vérifier une dernière fois qu’il n’est importé nulle part (recherche `import` / `require` dans le repo).
+- Le **déplacer** vers `.attic/<même-chemin>` (conserver l’arborescence).
+- Ajouter une ligne dans `.attic/INDEX.md` avec la date/heure et la raison (ex: “non référencé selon knip + ts-prune”).
+
+Commandes (pseudocode bash) :
+# exemple
+mkdir -p ".attic/client/src/components/legacy"
+git mv "client/src/components/legacy/OldWidget.tsx" ".attic/client/src/components/legacy/OldWidget.tsx" || true
+
+────────────────────────────────────────────────────────────────────────
+5) MISE À JOUR DES IMPORTS ÉVIDENTS (DÉDOUBLONNAGE)
+- Si des composants en double existent (ex: BottomNavigationLegacy.tsx vs BottomNavigation.tsx) :
+  - **Garder** la version utilisée par la page active (SalonBookingPage / App).
+  - **Déplacer** l’autre en quarantaine.
+- Remplacer d’éventuels imports résiduels qui pointent vers l’ancienne version par la version gardée.
+
+────────────────────────────────────────────────────────────────────────
+6) DÉPENDANCES INUTILISÉES (PRUDENCE)
+- Lire `.depcheck-report.json`.
+- **Ne désinstaller** que les paquets clairement non utilisés ET non nécessaires aux scripts.
+- Exclusions (ne jamais retirer si présents) : typescript, eslint, prettier, vitest, supertest, @types/*, @typescript-eslint/*, @vitejs/plugin-react, tsx, tsup, drizzle-orm, drizzle-kit, @neondatabase/serverless, @supabase/supabase-js, react, react-dom, zod.
+
+Exemple :
+# client
+cd client && npm remove <pkg1> <pkg2> || true && cd ..
+# server
+cd server && npm remove <pkg1> <pkg2> || true && cd ..
+
+Puis :
+npm prune --workspaces || true
+
+────────────────────────────────────────────────────────────────────────
+7) VÉRIFICATIONS BLOQUANTES (NE PAS SKIPPER)
+# Lint + Types (client puis server)
+cd client && npm run lint && npm run typecheck || exit 1
+cd ../server && npm run lint && npm run typecheck || exit 1
+cd ..
+
+# Tests
+npm --prefix server test || exit 1
+npm --prefix client test || true  # OK si tu n’as que peu de tests front
+
+# Build (optionnel mais conseillé)
+npm --prefix client run build || exit 1
+npm --prefix server run build || exit 1
+
+Si une étape échoue :
+- **Annuler le dernier déplacement problématique** (ramener le/les fichier(s) depuis `.attic/` à leur place d’origine).
+- Relancer la vérification.
+- Mettre à jour `.cleanup-plan.md` en conséquence.
+
+────────────────────────────────────────────────────────────────────────
+8) COMMIT & TRACE
+git add -A
+git commit -m "chore(cleanup): déplacer en quarantaine le code orphelin + prune deps (build/tests OK)"
+
+# Optionnel : ouvrir une PR interne ou noter la liste des fichiers en .attic/INDEX.md
+# Après quelques jours sans régression, on pourra supprimer définitivement le contenu de .attic/
+
+────────────────────────────────────────────────────────────────────────
+RÈGLES DE SÉCURITÉ (À RESPECTER STRICTEMENT)
+- JAMAIS de suppression définitive dans `server/src` sans passage par `.attic/` + vérifications réussies.
+- NE PAS toucher aux fichiers/dirs listés en zone intangible.
+- NE PAS modifier la logique seed/fallback ni les routes `/api/v1` déjà stabilisées.
+- SI doute sur un fichier, le laisser tel quel (ou juste le déplacer en .attic/).
+- Toujours finir par : lint 0 warning, typecheck 0 erreur, tests OK, build OK.
+
+✅ RÉSULTAT ATTENDU
+- Réduction nette du bruit (composants/actifs/styles orphelins mis en quarantaine)
+- package.json (client/server) allégés des dépendances réellement inutiles
+- L’application démarre, passe lint/type/tests/build sans erreur
+- Capacité à **revenir en arrière** grâce à `.attic/` + commit dédié

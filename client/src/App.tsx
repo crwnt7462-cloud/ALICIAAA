@@ -16,13 +16,13 @@ import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
-import AIAutomation from "@/pages/AIAutomationNew";
-import AIAssistant from "@/pages/ChatGPTInterface";
+import AIAutomationNew from "@/pages/AIAutomationNew";
+
 import ChatGPTInterface from "@/pages/ChatGPTInterface";
-import NotificationTest from "@/pages/NotificationTest";
+
 import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
-import BookingTest from "@/pages/BookingTest";
+
 import NotFound from "@/pages/not-found";
 import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
@@ -36,7 +36,7 @@ import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermai
 import NailArtOpera from "@/pages/salons/NailArtOpera";
 import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
-import PerfectBookingCreator from "@/pages/PerfectBookingCreator";
+
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
@@ -48,10 +48,10 @@ import ProMessagingModern from "@/pages/ProMessagingModern";
 import InventoryModern from "@/pages/InventoryModern";
 import PlanningModern from "@/pages/PlanningModern";
 import ClientsModern from "@/pages/ClientsModern";
-import PageBuilder from "@/pages/PageBuilder";
+
 import QuickBooking from "@/pages/QuickBooking";
 import ModernBooking from "@/pages/ModernBooking";
-import OriginalBooking from "@/pages/OriginalBooking";
+
 import AdvancedBookingManager from "@/pages/AdvancedBookingManager";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
@@ -74,7 +74,7 @@ import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
-import MentionTest from "@/pages/MentionTest";
+
 import SalonPageFixed from "@/pages/SalonPageFixed";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
@@ -143,7 +143,8 @@ import BookingPage from "@/pages/BookingPage";
 import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
-import MessagingTest from "@/pages/MessagingTest";
+import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
+
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
 import SalonBookingFlow from "@/pages/SalonBookingFlow";
@@ -153,9 +154,9 @@ import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBookingFixed from "@/pages/SalonBookingFixed";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
-import SystemTest from "@/pages/SystemTest";
+
 import StripePayment from "@/pages/StripePayment";
-import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
+
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 
@@ -221,7 +222,7 @@ function Router() {
   if (location === '/test-subscription-accounts') {
     return (
       <div className="h-full">
-        <SubscriptionTestLogin />
+        <ModernSubscriptionPlans />
       </div>
     );
   }
@@ -442,14 +443,7 @@ function Router() {
     );
   }
 
-  // Créateur de page de réservation parfaite
-  if (location === '/perfect-booking-creator') {
-    return (
-      <div className="h-full">
-        <PerfectBookingCreator />
-      </div>
-    );
-  }
+
 
   // Page de réservation salon avec slug obligatoire
   if (location.startsWith('/salon-booking/')) {
@@ -589,7 +583,7 @@ function Router() {
   if (location === '/system-test') {
     return (
       <div className="h-full">
-        <SystemTest />
+        <Settings />
       </div>
     );
   }
@@ -729,7 +723,7 @@ function Router() {
   if (location === '/mention-test') {
     return (
       <div className="h-full">
-        <MentionTest />
+        <MessagingHub />
       </div>
     );
   }
@@ -738,7 +732,7 @@ function Router() {
   if (location === '/page-builder') {
     return (
       <div className="h-screen w-full">
-        <PageBuilder />
+        <PageCreator />
       </div>
     );
   }
@@ -850,9 +844,9 @@ function Router() {
           <Route path="/promo-codes" component={PromoCodeManagement} />
           <Route path="/client-reliability" component={ClientReliabilityDashboard} />
 
-          <Route path="/notifications" component={NotificationTest} />
+          <Route path="/notifications" component={NotificationCenter} />
           <Route path="/share" component={ShareBooking} />
-          <Route path="/test-booking" component={BookingTest} />
+          <Route path="/test-booking" component={SimpleBooking} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
           <Route path="/centre-aide" component={CentreAide} />
@@ -862,7 +856,7 @@ function Router() {
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
-          <Route path="/messaging-test" component={MessagingTest} />
+          <Route path="/messaging-test" component={RealTimeMessaging} />
           <Route path="/pro-messaging-search" component={ProMessagingMobile} />
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />
@@ -892,7 +886,7 @@ function Router() {
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
-          <Route path="/original-booking" component={OriginalBooking} />
+          <Route path="/original-booking" component={ModernBooking} />
           <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           
