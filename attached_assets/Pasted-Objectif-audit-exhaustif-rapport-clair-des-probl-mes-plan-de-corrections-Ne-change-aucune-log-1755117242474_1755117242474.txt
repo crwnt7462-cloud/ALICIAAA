@@ -1,0 +1,103 @@
+Objectif : audit exhaustif + rapport clair des problèmes + plan de corrections. Ne change aucune logique métier pour l’instant ; on corrige après validation du rapport.
+
+Census & versions
+
+Imprime node, npm, vite, react, typescript versions, et l’arborescence client/src et server (1 niveau).
+
+Liste des deps avec versions (prod/dev).
+
+Routing audit (UN SEUL routeur par page)
+
+Dresse la carte des routes réelles côté front : chemin exact, lib (wouter ou react-router), composant, params (ex: :slug).
+
+Grep et liste : useLocation|useRoute|useNavigate, setLocation|navigate, pathSegments\[, usages de window.location.
+
+Détecte mix Wouter/React-Router dans une même page.
+
+Vérifie cohérence des URL : /search → /salon/:slug (ou /salon-booking/:slug si c’est la norme) ; signale toute page qui redirige vers /search sans raison explicite.
+
+API & données
+
+Liste toutes les routes backend dispos : GET/POST ... avec schémas JSON (salons, pros, services, appointments, clients).
+
+Vérifie qu’il existe UNE route détail salon “by slug” (/api/salons/by-slug/:slug) et qu’elle renvoie {id,slug,name,city,services[],professionals[]}.
+
+Teste 3 slugs (dont salon-excellence-paris) et imprime le statut (200/404) + body résumé (tailles des tableaux).
+
+Vérifie que les pages front consomment ces routes (pas d’URL orphelines).
+
+Recherche de fragilités
+
+Grep global côté client :
+
+variables non sûres : salonId\b, professionals\b, services\b utilisés sans déclaration (no-undef) ;
+
+mocks oubliés : mock|fixture|sample|seeds? ;
+
+parse à la main : pathSegments\[, .match( sur location ;
+
+redirections : navigate('/search'|setLocation('/search'.
+
+Pour chaque occurrence, donne : fichier:ligne + extrait + raison du risque.
+
+TypeScript/ESLint
+
+Affiche tsconfig.json; indique si "strict": true. Lance tsc --noEmit et imprime les erreurs.
+
+ESLint : exécute eslint client --ext .ts,.tsx ; imprime le top 15 erreurs/règles (no-undef, no-use-before-define, react-hooks/exhaustive-deps…).
+
+Compte des any implicites, // @ts-ignore, eslint-disable.
+
+Imports circulaires & accès top-level
+
+npx madge client/src --circular → liste des cycles.
+
+Grep .map(, .find(, await au top-level dans des modules hors composant → liste suspects.
+
+Env/secrets
+
+Mappe l’usage des variables : VITE_*, STRIPE_*, SENDGRID_*, EMAIL_FROM.
+
+Pour chacune : où lue ? côté client/serveur ? valeur définie ? fallback ? signaler toute clé manquante ou lue côté client alors qu’elle doit rester serveur.
+
+Rapport final (obligatoire)
+
+Rends un résumé structuré :
+
+A. Routing : incohérences + pages impactées
+
+B. API/données : endpoints manquants/incohérents, slugs absents en DB (notamment salon-excellence-paris)
+
+C. Code smells : variables non définies, mocks restants, cycles, parse de routes à la main
+
+D. TS/ESLint : règles à activer et erreurs bloquantes
+
+E. Env : clés manquantes/mal placées
+
+Pour chaque point, fournis 1 action concrète + fichiers précis à modifier.
+
+Plan de corrections (proposé, ne pas exécuter sans mon OK)
+
+Unifier route /salon/:slug (ou norme décidée) et remplacer tout pathSegments par useParams/useRoute.
+
+Créer client/src/api.ts typé (getSalonBySlug, getProfessionals, getServices, getAppointments/getClients) + client/src/types.ts (Salon, Professional, Service, Appointment, Client).
+
+Passer salonId via props/contexte, interdire les variables nues ; activer ESLint no-undef, no-use-before-define.
+
+Supprimer mocks front et déplacer en seed backend.
+
+Activer TS strict ; fixer erreurs top 15 ESLint ; casser build si no-undef.
+
+Wrapper de navigation (navigation.ts) qui log [NAV] from,to,reason,slug,salonId ; interdire redirections tant que loading===true.
+
+Ajouter Smoke tests rapides : /search, /salon/:slug, flow prestation, /planning, /clients (status 200, pas d’erreur console).
+
+Livrables à produire maintenant :
+
+REPORT.md avec toutes les sections (A→E) + liens fichiers/ligne ;
+
+routes.json (carte des routes) ;
+
+sortie tsc, eslint, madge ;
+
+tests API pour 3 slugs (dont salon-excellence-paris) avec statuts.

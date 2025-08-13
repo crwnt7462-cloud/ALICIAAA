@@ -1,0 +1,25 @@
+Bug “Salon non trouvé” sur /salon/salon-excellence-paris. Objectif: unifier UNE route détail et un seul slug, et garantir le 200 si le salon existe.
+	1.	Route unique détail: choisir /salon/:slug (pas /salon-booking) pour l’URL publique.
+	•	Router front: récupérer slug via le hook officiel (Wouter useRoute('/salon/:slug') ou React Router useParams()), pas pathSegments.
+	•	Tous les liens (search/cards) doivent pointer vers /salon/${slug}.
+	2.	API unique par slug: exposer/valider GET /api/salons/by-slug/:slug → 200: {id,slug,name,city,services[],professionals[]}, 404 sinon.
+	•	Logs serveur: [SALON] slug=<slug> -> 200/404.
+	•	Normalisation serveur: slug = slug.trim().toLowerCase(); comparer sans accents (remove diacritics).
+	•	Index unique DB: salons.slug (lowercase). Seed: vérifier que salon-excellence-paris existe.
+	3.	Front détail:
+	•	au mount: log [DETAIL] slug=..., fetch /api/salons/by-slug/${slug}; si 200, afficher; si 404, message; aucune redirection automatique.
+	•	pas d’état global/fallback; states init { salon:null, loading:true }.
+	•	pas de mélange /salon et /salon-booking: supprimer toute navigation interne qui renvoie ailleurs.
+	4.	Alignement /search → /salon/:slug :
+	•	la card Salon construit l’URL avec le champ slug renvoyé par /api/search;
+	•	logs clic: [SEARCH→DETAIL] slug=<slug> url=/salon/<slug>.
+	5.	Vérifications ciblées sur le cas:
+	•	Exécuter manuellement: GET /api/salons/by-slug/salon-excellence-paris → doit retourner 200 + JSON salon.
+	•	Si 404: inspecter DB/seed: SELECT slug FROM salons WHERE slug ILIKE '%excellence%'; insérer/mettre à jour si manquant; éviter les doublons (salon-salon-…).
+	•	Corriger toute génération de slug qui préfixe “salon-” deux fois, et stocker en lowercase sans accents.
+	6.	Tests d’acceptation (3 salons A/B/C):
+	•	/search → clic A/B/C ⇒ arrive sur /salon/<slug> correspondant, 200 et contenu chargé;
+	•	accès direct /salon/salon-excellence-paris ⇒ 200 si présent en DB;
+	•	logs affichent [SEARCH→DETAIL] puis [SALON] slug=... -> 200.
+
+Livrer: fichiers modifiés, logs serveur [SALON] pour salon-excellence-paris, réponse brute de l’API, capture montrant la page détail affichée.

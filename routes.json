@@ -1,0 +1,245 @@
+{
+  "frontend_routes": {
+    "wouter_routes": [
+      {
+        "path": "/",
+        "component": "Landing | Dashboard",
+        "condition": "isAuthenticated",
+        "library": "wouter"
+      },
+      {
+        "path": "/dashboard",
+        "component": "Dashboard",
+        "library": "wouter"
+      },
+      {
+        "path": "/planning",
+        "component": "Planning | PlanningModern",
+        "library": "wouter"
+      },
+      {
+        "path": "/clients",
+        "component": "Clients",
+        "library": "wouter"
+      },
+      {
+        "path": "/ai",
+        "component": "AIProModern | AIAssistantFixed",
+        "library": "wouter"
+      },
+      {
+        "path": "/business-features",
+        "component": "BusinessFeatures",
+        "library": "wouter"
+      },
+      {
+        "path": "/search",
+        "component": "Search",
+        "library": "wouter",
+        "notes": "TARGET of 10+ salon redirections"
+      },
+      {
+        "path": "/salon-booking/:slug",
+        "component": "SalonBooking",
+        "params": ["slug"],
+        "library": "wouter",
+        "status": "CRITICAL - needs by-slug API"
+      },
+      {
+        "path": "/client-login",
+        "component": "ClientLogin",
+        "library": "wouter"
+      },
+      {
+        "path": "/pro-login", 
+        "component": "ProLogin",
+        "library": "wouter"
+      },
+      {
+        "path": "/subscription-plans",
+        "component": "SubscriptionPlans",
+        "library": "wouter"
+      }
+    ],
+    "routing_hooks_usage": [
+      {
+        "hook": "useLocation",
+        "files": [
+          "BottomNavigation.tsx",
+          "BottomNavigationFloating.tsx", 
+          "AuthGuard.tsx",
+          "useClientAuth.ts",
+          "useProAuth.ts",
+          "AIProModern.tsx",
+          "AIAssistantFixed.tsx",
+          "Landing.tsx",
+          "BusinessFeatures.tsx"
+        ],
+        "pattern": "const [location, setLocation] = useLocation();"
+      },
+      {
+        "hook": "useNavigation (custom)",
+        "files": [
+          "useNavigation.ts",
+          "SalonBooking.tsx"
+        ],
+        "pattern": "navigate(destination, reason, metadata)",
+        "status": "NEW - Framework robustesse"
+      }
+    ],
+    "problematic_redirections": [
+      {
+        "pattern": "setLocation('/search')",
+        "files": [
+          "BeautyLoungeMontparnasse.tsx",
+          "InstitutBeauteSaintGermain.tsx",
+          "NailArtOpera.tsx", 
+          "SalonExcellenceParis.tsx",
+          "SalonModerneRepublique.tsx",
+          "SpaWellnessBastille.tsx",
+          "SalonExcellenceDemoMobile.tsx",
+          "BarbierGentlemanMarais.tsx",
+          "ClientAccueil.tsx"
+        ],
+        "issue": "No explicit reason for redirections to /search",
+        "impact": "10+ components affected"
+      }
+    ]
+  },
+  "backend_routes": {
+    "main_api_routes": [
+      {
+        "method": "GET",
+        "path": "/api/search",
+        "params": ["q", "city", "service", "page"],
+        "description": "Search salons",
+        "status": "WORKING"
+      },
+      {
+        "method": "GET", 
+        "path": "/api/salon/:salonId",
+        "params": ["salonId"],
+        "description": "Get salon details",
+        "status": "WORKING"
+      },
+      {
+        "method": "GET",
+        "path": "/api/professionals",
+        "description": "Get professionals list",
+        "status": "WORKING"
+      },
+      {
+        "method": "GET",
+        "path": "/api/salons/by-slug/:slug",
+        "params": ["slug"],
+        "description": "Get salon by slug",
+        "status": "WORKING - Implemented via getSalon()",
+        "implementation": "server/storage.ts:717 + PostgreSQL businessRegistrations",
+        "tested_slugs": ["salon-excellence-paris", "barbier-gentleman-marais", "nail-art-opera"],
+        "test_results": "All 200 OK",
+        "needed_by": "SalonBooking.tsx"
+      }
+    ],
+    "auth_routes": [
+      {
+        "method": "POST",
+        "path": "/api/auth/register",
+        "description": "User registration"
+      },
+      {
+        "method": "POST", 
+        "path": "/api/auth/login",
+        "description": "User login"
+      },
+      {
+        "method": "GET",
+        "path": "/api/auth/user",
+        "description": "Get current user",
+        "middleware": "isAuthenticated"
+      },
+      {
+        "method": "POST",
+        "path": "/api/client/login",
+        "description": "Client login"
+      },
+      {
+        "method": "POST",
+        "path": "/api/client/register", 
+        "description": "Client registration"
+      }
+    ],
+    "salon_routes": [
+      {
+        "method": "GET",
+        "path": "/api/user/salon",
+        "description": "Get user salon"
+      },
+      {
+        "method": "GET",
+        "path": "/api/salon-photos/:userId",
+        "description": "Get salon photos"
+      },
+      {
+        "method": "POST",
+        "path": "/api/salon-photos",
+        "description": "Upload salon photos"
+      }
+    ],
+    "subscription_routes": [
+      {
+        "method": "GET",
+        "path": "/api/user/subscription",
+        "description": "Get user subscription"
+      }
+    ],
+    "appointment_routes": [
+      {
+        "method": "GET",
+        "path": "/api/client-appointments/:clientAccountId",
+        "description": "Get client appointments"
+      },
+      {
+        "method": "POST", 
+        "path": "/api/appointments/:id/link-client",
+        "description": "Link appointment to client"
+      }
+    ]
+  },
+  "api_testing_status": {
+    "test_slugs": [
+      {
+        "slug": "salon-excellence-paris",
+        "expected_route": "/api/salons/by-slug/salon-excellence-paris",
+        "status": "SUCCESS - 200 OK",
+        "response_time": "4446ms (first) / 19ms (cached)",
+        "test_time": "2025-01-13 20:42:31"
+      },
+      {
+        "slug": "barbier-gentleman-marais", 
+        "expected_route": "/api/salons/by-slug/barbier-gentleman-marais",
+        "status": "SUCCESS - 200 OK", 
+        "response_time": "3301ms (first) / 49ms (cached)",
+        "test_time": "2025-01-13 20:42:31"
+      },
+      {
+        "slug": "nail-art-opera",
+        "expected_route": "/api/salons/by-slug/nail-art-opera", 
+        "status": "SUCCESS - 200 OK",
+        "response_time": "2359ms (first) / 56ms (cached)", 
+        "test_time": "2025-01-13 20:42:38"
+      }
+    ]
+  },
+  "centralized_api": {
+    "file": "client/src/api.ts",
+    "status": "IMPLEMENTED",
+    "functions": [
+      "getSalonBySlug(slug: string): Promise<Salon>",
+      "getProfessionals(salonId: string): Promise<Professional[]>",
+      "getServices(salonId: string): Promise<Service[]>",
+      "createPaymentIntent(data: any): Promise<any>"
+    ],
+    "validation": "Zod schemas",
+    "error_handling": "ApiRequestError"
+  }
+}
