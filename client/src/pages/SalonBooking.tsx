@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -131,14 +131,14 @@ function SalonBooking() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // ✅ STANDARDISATION: Récupération salon slug depuis route params uniquement
-  const pathSegments = location.split('/');
-  const salonSlug = pathSegments[2]; // /salon-booking/{slug}
+  // ✅ STANDARDISATION: Utilisation hook officiel Wouter
+  const [match, params] = useRoute('/salon-booking/:slug');
+  const salonSlug = params?.slug;
   
-  console.log('[NAV] router=wouter, action=extract-params, route=/salon-booking/' + salonSlug, 'pathSegments=' + pathSegments.join('/'));
+  console.log('[NAV] router=wouter, action=extract-params, route=/salon-booking/' + salonSlug, 'match=' + match);
   console.log('🎯 SALON BOOKING: Extraction salon slug depuis route:', {
     fullLocation: location,
-    pathSegments,
+    match,
     extractedSalonSlug: salonSlug
   });
 
@@ -269,11 +269,13 @@ function SalonBooking() {
     }
   }, [preBooking]);
 
-  // ✅ GESTION ERREUR: Redirection si salon slug manquant
-  if (!salonSlug) {
-    setLocation('/search');
-    return null;
-  }
+  // ✅ GESTION ERREUR: Redirection si salon slug manquant - DANS useEffect UNIQUEMENT
+  useEffect(() => {
+    if (!salonLoading && !salonSlug) {
+      console.log('[REDIRECT] reason=missing-slug slug=' + salonSlug + ' loading=' + salonLoading);
+      setLocation('/search');
+    }
+  }, [salonLoading, salonSlug, setLocation]);
 
   // ✅ SUPPRESSION SYSTÈME FALLBACK COMPLEXE TERMINÉE
 
@@ -312,7 +314,10 @@ function SalonBooking() {
           <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
           <p className="text-gray-400 mb-4">Le salon {salonId} n'existe pas dans nos données.</p>
           <button 
-            onClick={() => setLocation('/search')}
+            onClick={() => {
+              console.log('[REDIRECT] reason=salon-not-found slug=' + salonSlug);
+              setLocation('/search');
+            }}
             className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
           >
             Rechercher un salon
@@ -389,6 +394,7 @@ function SalonBooking() {
   };
 
   const handleProfessionalSelect = (professional: any) => {
+    console.log('[CLICK] type=professional, professionalId=' + professional.id + ', slug=' + salonSlug + ', prosLen=' + professionals.length);
     console.log('👤 PROFESSIONNEL SÉLECTIONNÉ:', {
       professional,
       professionalsStatus: {
