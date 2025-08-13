@@ -1,0 +1,22 @@
+Objectif: rendre le codebase robuste et harmonisé pour éviter les bugs “variable non déclarée/initialisée”, mocks, redirections intempestives. Ne pas modifier la logique routes/slug/booking déjà fixée.
+	1.	TypeScript strict: activer dans tsconfig "strict": true, "noImplicitAny": true, "noUnusedLocals": true, "noUnusedParameters": true, "noFallthroughCasesInSwitch": true, "noUncheckedIndexedAccess": true, "useUnknownInCatchVariables": true, "exactOptionalPropertyTypes": true. Ajouter script typecheck: "tsc --noEmit".
+	2.	ESLint durci (TS + React + Import): règles obligatoires no-undef, no-use-before-define, @typescript-eslint/consistent-type-imports, import/no-cycle, import/no-default-export, react-hooks/exhaustive-deps, eqeqeq, no-var, prefer-const. Scripts: lint, lint:fix.
+	3.	Interdiction mocks front: grep mock*, fixtures, sample* → supprimer/isoler. Si besoin de données → seed backend. Vérifier 0 occurrence.
+	4.	Types centralisés: créer client/src/types.ts avec Salon {id,slug,...}, Professional {id,salonId,...}, Service {id,salonId,...}, Appointment {id,salonId,proId,serviceId,start,end,status}. Remplacer tous les any.
+	5.	Client API unique: client/src/api.ts avec fonctions typées (getSalonBySlug(slug), getProfessionals(salonId), getServices(salonId), getAppointments(params)). Zod (ou valibot) pour valider les réponses; throw si invalides.
+	6.	Routeur unique & param stable: pour booking utiliser UN seul routeur (Wouter OU React Router). Utiliser le hook officiel (useRoute('/salon-booking/:slug') ou useParams()). Supprimer tout pathSegments[...]. Ajouter un test unitaire simple du parse de route.
+	7.	Invariants booking: sur /salon-booking/:slug, dériver salonId via getSalonBySlug, stocker salon en state; passer salonId en props aux enfants. Interdire toute variable globale salonId. Lint: no-undef doit casser la build si utilisé hors scope.
+	8.	Garde‑fous de rendu: tous les tableaux init [], objets init null, booleans false. Pas d’accès tant que loading===true. Aucun redirect basé sur “vide provisoire”. Les redirects se font dans useEffect([loading, slug]) seulement une fois loading=false.
+	9.	Logs ciblés + anti‑redirect sauvage: wrapper navigate/setLocation pour log [NAV] from,to,reason,slug,salonId,prosLen,servicesLen. Grep tout navigate('/search')|setLocation('/search') → exiger un reason explicite.
+	10.	Détecter cycles: npx madge client/src --circular en script check:cycles. Corriger si présents (extraire constantes/types dans fichiers neutres).
+	11.	Husky (ou simple pre-commit npm-script si Husky indisponible): avant commit/exécution CI locale, lancer typecheck, lint, check:cycles. Refuser si échec.
+	12.	ErrorBoundary global + toasts: ajouter un ErrorBoundary au root; reporter erreurs runtime avec un toast non bloquant (désactiver overlay Vite en prod).
+	13.	Nettoyage: supprimer window.* usages, variables non déclarées, imports morts; activer no-console sauf logger.ts central (info/warn/error).
+	14.	Tests manuels obligatoires:
+
+	•	/search → /salon-booking/:slug → choisir prestation reste sur la page, salonId logué.
+	•	/planning et /clients lisent l’API réelle (pas de mocks).
+	•	Grep mock* = 0; salonId jamais “nu”; navigate('/search') accompagné d’un reason.
+	•	npm run typecheck && npm run lint && npm run check:cycles passent.
+
+Livrer: diff tsconfig/eslint, nouveaux fichiers types.ts, api.ts, logger.ts, ErrorBoundary, scripts npm; preuve exécution des 3 scripts ok; capture logs [NAV] lors d’un flux de réservation.

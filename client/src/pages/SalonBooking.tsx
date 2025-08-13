@@ -283,15 +283,19 @@ function SalonBooking() {
 
   // ✅ UTILISATION API STANDARDISÉE - utilise salonSlug depuis route params
   const { data: realSalonData, isLoading: salonLoading, error: salonError } = useQuery({
-    queryKey: [`/api/salon/${salonSlug}`],
+    queryKey: [`/api/salons/by-slug/${salonSlug}`],
     enabled: !!salonSlug,
     retry: false
   });
 
   // Variable salon avec valeur par défaut pour éviter les erreurs TypeScript
-  const salon = realSalonData || { name: 'Salon', location: 'Adresse', id: '', photos: [] };
+  const salon = realSalonData || { name: 'Salon', location: 'Adresse', address: 'Adresse', id: '', photos: [] };
 
+  // Récupérer salonId depuis les données réelles du salon
+  const salonId = realSalonData?.id || salonSlug;
+  
   console.log('🏢 DONNÉES SALON RÉELLES:', {
+    salonSlug,
     salonId,
     realSalonData,
     salonLoading
@@ -303,7 +307,7 @@ function SalonBooking() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-400">Chargement du salon {salonId}...</p>
+          <p className="text-gray-400">Chargement du salon {salonSlug}...</p>
         </div>
       </div>
     );
@@ -314,7 +318,7 @@ function SalonBooking() {
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
-          <p className="text-gray-400 mb-4">Le salon {salonId} n'existe pas dans nos données.</p>
+          <p className="text-gray-400 mb-4">Le salon {salonSlug} n'existe pas dans nos données.</p>
           <button 
             onClick={() => {
               console.log('[REDIRECT] reason=salon-not-found slug=' + salonSlug);
@@ -329,31 +333,35 @@ function SalonBooking() {
     );
   }
 
-  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - FILTRÉS PAR SALON
+  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - FILTRÉS PAR SALON ID
   const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: [`/api/salon/${salonSlug}/professionals`],
-    enabled: !!salonSlug && !!realSalonData,
+    queryKey: [`/api/salon/${salonId}/professionals`],
+    enabled: !!salonId && !!realSalonData,
     retry: false
   });
 
+  // Types pour les données du salon et des professionnels
+  const professionalsArray = Array.isArray(professionals) ? professionals : [];
+  const professionalsCount = professionalsArray.length;
+
   // ✅ EFFET POUR RESTAURER LE PROFESSIONNEL APRÈS CHARGEMENT DES DONNÉES
   useEffect(() => {
-    if (Array.isArray(professionals) && professionals.length > 0) {
+    if (professionalsArray.length > 0) {
       const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
       if (pendingProfName) {
-        const prof = professionals.find((p: any) => p?.name === pendingProfName);
+        const prof = professionalsArray.find((p: any) => p?.name === pendingProfName);
         if (prof) {
           setSelectedProfessional(prof);
           sessionStorage.removeItem('pendingProfessionalName');
         }
       }
     }
-  }, [professionals]);
+  }, [professionalsArray]);
 
   console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
-    professionals,
+    professionals: professionalsArray,
     professionalsLoading,
-    count: Array.isArray(professionals) ? professionals.length : 0
+    count: professionalsCount
   });
 
   // ✅ DÉFINITION DES VARIABLES MANQUANTES
@@ -386,8 +394,8 @@ function SalonBooking() {
     console.log('🎯 SERVICE SÉLECTIONNÉ:', {
       service,
       professionalsStatus: {
-        loaded: Array.isArray(professionals),
-        count: professionals?.length || 0,
+        loaded: Array.isArray(professionalsArray),
+        count: professionalsCount,
         loading: professionalsLoading
       }
     });
@@ -396,12 +404,12 @@ function SalonBooking() {
   };
 
   const handleProfessionalSelect = (professional: any) => {
-    console.log('[CLICK] type=professional, professionalId=' + professional.id + ', slug=' + salonSlug + ', prosLen=' + professionals.length);
+    console.log('[BOOKING] slug=' + salonSlug + ', salonId=' + salonId + ', professionalId=' + professional.id + ', prosLen=' + professionalsCount);
     console.log('👤 PROFESSIONNEL SÉLECTIONNÉ:', {
       professional,
       professionalsStatus: {
-        loaded: Array.isArray(professionals),
-        count: professionals?.length || 0,
+        loaded: Array.isArray(professionalsArray),
+        count: professionalsCount,
         loading: professionalsLoading
       }
     });
@@ -433,7 +441,7 @@ function SalonBooking() {
           amount: selectedService?.depositAmount || (selectedService?.price * 0.3) || selectedService?.price || 20.50,
           currency: 'eur',
           metadata: {
-            salonName: salon.name,
+            salonName: salon?.name || "Salon",
             serviceName: selectedService?.name || "Service",
             servicePrice: selectedService?.price || 0,
             depositAmount: selectedService?.depositAmount || (selectedService?.price * 0.3) || 0,
@@ -503,8 +511,8 @@ function SalonBooking() {
         // Sauvegarder les données de réservation pour la confirmation
         const bookingData = {
           salonId: 'bonhomme-paris-archives',
-          salonName: salon.name,
-          salonLocation: salon.location,
+          salonName: salon?.name || "Salon",
+          salonLocation: salon?.address || salon?.location || "Adresse",
           serviceName: service.name,
           servicePrice: service.price,
           serviceDuration: service.duration,
@@ -615,7 +623,7 @@ function SalonBooking() {
               <div className="animate-spin w-6 h-6 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-2"></div>
               <p className="text-gray-400">Chargement des professionnels...</p>
             </div>
-          ) : Array.isArray(professionals) && professionals.length > 0 ? professionals.map((pro: any) => (
+          ) : professionalsArray.length > 0 ? professionalsArray.map((pro: any) => (
             <Card 
               key={pro.id}
               className="glass-card hover:border-violet-300/50 hover:shadow-lg hover:glass-effect transition-all duration-300 cursor-pointer"
@@ -861,7 +869,7 @@ function SalonBooking() {
             <Button variant="ghost" size="icon" onClick={() => setCurrentStep(2)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{salon?.name || "Salon"} - {salon?.address || salon?.location || "Adresse"}</h1>
             <div></div>
           </div>
         </div>
@@ -1184,7 +1192,7 @@ function SalonBooking() {
             <Button variant="ghost" size="icon" onClick={() => setCurrentStep(3)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{salon?.name || "Salon"} - {salon?.address || salon?.location || "Adresse"}</h1>
             <div></div>
           </div>
         </div>
@@ -1249,7 +1257,7 @@ function SalonBooking() {
             <Button variant="ghost" size="icon" onClick={() => setCurrentStep(4)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{salon?.name || "Salon"} - {salon?.address || salon?.location || "Adresse"}</h1>
             <div></div>
           </div>
         </div>
@@ -1355,7 +1363,7 @@ function SalonBooking() {
             <Button variant="ghost" size="icon" onClick={() => setCurrentStep(5)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{salon?.name || "Salon"} - {salon?.address || salon?.location || "Adresse"}</h1>
             <div></div>
           </div>
         </div>
@@ -1487,7 +1495,7 @@ function SalonBooking() {
             <Button variant="ghost" size="icon" onClick={() => setCurrentStep(2)}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-lg font-semibold text-gray-900">{salon.name} - {salon.location}</h1>
+            <h1 className="text-lg font-semibold text-gray-900">{salon?.name || "Salon"} - {salon?.address || salon?.location || "Adresse"}</h1>
             <div></div>
           </div>
         </div>
@@ -1675,7 +1683,7 @@ function SalonBooking() {
           amount: Math.round((selectedService?.price || 0) * 0.5),
           currency: 'eur',
           metadata: {
-            salon: salon.name,
+            salon: salon?.name || "Salon",
             professional: selectedProfessional?.name,
             service: selectedService?.name || "Service",
             time: selectedSlot?.time,
