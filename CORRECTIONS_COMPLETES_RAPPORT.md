@@ -7,10 +7,10 @@
 - **Auto-détection** : Replit (.repl.co) puis localhost:3000
 - **Fallback** : URL origin actuelle si aucune détection
 
-### 2. Système de retry intelligent
-- **Fonction** : `showRetryAlert()` avec bouton "Réessayer"
-- **Bénéfice** : Plus d'erreurs silencieuses, UX claire
-- **Comportement** : Retry sans recharger la page
+### 2. Auto-détection silencieuse optimisée
+- **Ordre de test** : Origine actuelle → Replit → localhost:5000
+- **Mode silencieux** : Logs console uniquement, pas de popups
+- **Fallback** : Utilise origine actuelle si aucune détection
 
 ### 3. Messages d'erreur explicites
 ```javascript

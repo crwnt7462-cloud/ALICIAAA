@@ -28,11 +28,10 @@ import { checkApiHealth, autoDetectApiUrl, showRetryAlert } from './lib/apiHealt
   }
 
   if (!apiUrl) {
-    showRetryAlert(
-      '⚠ Impossible de trouver l\'URL API.\nVérifie VITE_API_URL ou démarre le serveur.',
-      () => initApiUrl()
-    );
-    return;
+    // En dernier recours, utiliser l'origine actuelle
+    apiUrl = window.location.origin;
+    (window as any).__API_URL__ = apiUrl;
+    console.log('[Startup] Utilisation de l\'origine actuelle comme fallback API.');
   }
 
   const connected = await tryConnect(apiUrl);
@@ -43,16 +42,10 @@ import { checkApiHealth, autoDetectApiUrl, showRetryAlert } from './lib/apiHealt
       apiUrl = detected;
       const connected2 = await tryConnect(apiUrl);
       if (!connected2) {
-        showRetryAlert(
-          `⚠ Impossible de contacter l'API à ${apiUrl} (même après détection).\nVérifie que le serveur est démarré.`,
-          () => initApiUrl()
-        );
+        console.warn(`⚠ API inaccessible à ${apiUrl} - Mode dégradé activé`);
       }
     } else {
-      showRetryAlert(
-        `⚠ Impossible de contacter l'API à ${apiUrl}.\nVérifie que le serveur est démarré et accessible.`,
-        () => initApiUrl()
-      );
+      console.warn(`⚠ API inaccessible à ${apiUrl} - Mode dégradé activé`);
     }
   }
 })();

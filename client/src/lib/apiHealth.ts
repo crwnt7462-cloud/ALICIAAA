@@ -17,16 +17,25 @@ export async function checkApiHealth(apiUrl: string): Promise<boolean> {
 export async function autoDetectApiUrl(): Promise<string | null> {
   try {
     const host = location.hostname;
-    // Cas Replit
+    
+    // Essayer d'abord l'origine actuelle (cas Replit/Vite qui sert tout sur même port)
+    const currentOrigin = window.location.origin;
+    const okCurrent = await checkApiHealth(currentOrigin);
+    if (okCurrent) return currentOrigin;
+    
+    // Cas Replit avec host spécifique
     if (host.includes('repl.co')) {
       const candidate = `${location.protocol}//${host}`;
       const ok = await checkApiHealth(candidate);
       if (ok) return candidate;
     }
+    
     // Cas localhost (port 5000 pour Express)
-    const localhostUrl = 'http://localhost:5000';
-    const okLocal = await checkApiHealth(localhostUrl);
-    if (okLocal) return localhostUrl;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      const localhostUrl = 'http://localhost:5000';
+      const okLocal = await checkApiHealth(localhostUrl);
+      if (okLocal) return localhostUrl;
+    }
   } catch {
     return null;
   }
