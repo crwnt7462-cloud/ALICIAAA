@@ -262,7 +262,7 @@ export default function AIAssistantNew() {
                 </div>
               </div>
               <div>
-                <h1 className="font-bold text-gray-900 text-lg">Rendly AI Pro</h1>
+                <h1 className="font-bold text-gray-900 text-lg">Avyento AI Pro</h1>
                 <p className="text-xs text-violet-600 font-medium">Assistant IA Spécialisé Beauté</p>
               </div>
             </div>
@@ -518,7 +518,7 @@ export default function AIAssistantNew() {
         <TabsContent value="features" className="flex-1 p-4 space-y-4">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Fonctionnalités IA Avancées</h2>
-            <p className="text-gray-600">Découvrez toutes les capacités de Rendly AI Pro</p>
+            <p className="text-gray-600">Découvrez toutes les capacités d'Avyento AI Pro</p>
           </div>
 
           <div className="grid grid-cols-1 gap-4">

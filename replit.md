@@ -4,6 +4,9 @@
 Cette plateforme web vise à révolutionner la gestion des salons et instituts de beauté en offrant une solution complète et intuitive. Le projet intègre des fonctionnalités avancées pour la gestion des rendez-vous, de la clientèle, des services, et des stocks, le tout soutenu par une intelligence artificielle de pointe. L'objectif est d'améliorer l'expérience client, d'optimiser les opérations des professionnels de la beauté et de proposer des outils d'analyse prédictive et de marketing pour une différenciation concurrentielle maximale.
 
 ## Recent Changes
+- ✅ REMPLACEMENT COMPLET LOGO AVYENTO : Nouveau logo violet moderne remplace tous les anciens logos "Rendly" 
+- ✅ MISE À JOUR BRANDING COMPLÈTE : Toutes les références textuelles "Rendly" remplacées par "Avyento"
+- ✅ COHÉRENCE VISUELLE : Logo unifié sur toutes les pages de connexion, inscription et interfaces
 - ✅ CORRECTION CRITIQUE INSCRIPTION : Résolution erreur base de données colonne `user_id` manquante dans `client_accounts`
 - ✅ INSCRIPTION CLIENT OPÉRATIONNELLE : Système création compte avec hash bcrypt fonctionnel
 - ✅ PRIX DYNAMIQUES CORRIGÉS : Affichage prix professionnels réels dans processus paiement

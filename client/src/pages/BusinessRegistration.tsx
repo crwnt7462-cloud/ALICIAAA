@@ -330,7 +330,7 @@ export default function BusinessRegistration() {
         <div className="max-w-md mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Rendly</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Avyento</h1>
               <p className="text-xs text-gray-600">Inscription</p>
             </div>
             <Button

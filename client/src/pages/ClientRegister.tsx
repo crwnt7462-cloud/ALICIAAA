@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 import { EmailVerificationSuccess } from "@/components/EmailVerificationSuccess";
 
 export default function ClientRegister() {
@@ -126,7 +126,7 @@ export default function ClientRegister() {
           <div className="w-10 h-10 bg-violet-600 rounded-lg flex items-center justify-center">
             <div className="w-6 h-1 bg-white rounded-full transform rotate-45"></div>
           </div>
-          <img src={rendlyLogo} alt="Rendly" className="h-8 w-auto" />
+          <img src={avyentoLogo} alt="Avyento" className="h-8 w-auto" />
         </div>
       </div>
 

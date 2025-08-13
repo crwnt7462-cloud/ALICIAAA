@@ -15,7 +15,7 @@ import {
   Navigation,
   Sparkles
 } from "lucide-react";
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
 const getSalonButtonClass = (salonId: string) => {
@@ -145,9 +145,9 @@ export default function SalonSearch() {
         <div className="px-6 pt-20 pb-8">
           <div className="max-w-sm mx-auto">
             
-            {/* Logo Rendly centré */}
+            {/* Logo Avyento centré */}
             <div className="text-center mb-8">
-              <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mx-auto" />
+              <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mx-auto" />
             </div>
 
             {/* Titre en gris */}

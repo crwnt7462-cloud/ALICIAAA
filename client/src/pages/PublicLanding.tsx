@@ -136,7 +136,7 @@ export default function PublicLanding() {
       name: "Sophie M.",
       location: "Lyon",
       rating: 5,
-      comment: "Excellent service ! Le salon était exactement comme décrit, et le processus de réservation très simple. Je recommande vivement Rendly.",
+      comment: "Excellent service ! Le salon était exactement comme décrit, et le processus de réservation très simple. Je recommande vivement Avyento.",
       service: "Soins visage",
       date: "Il y a 1 semaine"
     },

@@ -109,7 +109,7 @@ export default function ModernSubscriptionPlans() {
       ribbon: 'PREMIUM',
       features: [
         'TOUT du plan Beauty Pro +',
-        'Rendly AI - Assistant révolutionnaire',
+        'Avyento AI - Assistant révolutionnaire',
         'Messagerie clients illimitée temps réel',
         'Pages de réservation infinies',
         'IA prédictive et recommandations',

@@ -401,7 +401,7 @@ export default function AIProModern() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={isRecording ? "🎤 Parlez maintenant..." : "Ask Rendly"}
+              placeholder={isRecording ? "🎤 Parlez maintenant..." : "Ask Avyento"}
               className={`w-full rounded-full px-6 py-4 text-white border outline-none transition-all font-medium ${
                 isRecording 
                   ? 'bg-red-500/80 border-red-400 placeholder-red-200 focus:border-red-400 focus:ring-2 focus:ring-red-500/30' 

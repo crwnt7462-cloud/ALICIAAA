@@ -11,7 +11,7 @@ export default function BusinessSuccess() {
         <div className="max-w-md mx-auto px-4">
           <div className="flex justify-between items-center h-14">
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Rendly</h1>
+              <h1 className="text-lg font-semibold text-gray-900">Avyento</h1>
               <p className="text-xs text-gray-500">Inscription réussie</p>
             </div>
           </div>
@@ -51,8 +51,8 @@ export default function BusinessSuccess() {
               <h3 className="font-medium text-gray-900 mb-2">Support client :</h3>
               <p className="text-sm text-gray-600">
                 Une question ? Contactez-nous à{" "}
-                <a href="mailto:support@rendly.fr" className="text-violet-600 hover:underline">
-                  support@rendly.fr
+                <a href="mailto:support@avyento.fr" className="text-violet-600 hover:underline">
+                  support@avyento.fr
                 </a>
               </p>
             </div>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 // import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
@@ -109,9 +109,9 @@ export default function ProLoginModern() {
         <div className="px-6 pt-16 pb-6 flex items-center justify-center min-h-screen">
           <div className="w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-10 rounded-3xl shadow-2xl relative z-10">
             
-            {/* Logo Rendly centré */}
+            {/* Logo Avyento centré */}
             <div className="text-center mb-6">
-              <img src={rendlyLogo} alt="Rendly" className="h-32 w-auto mx-auto" />
+              <img src={avyentoLogo} alt="Avyento" className="h-32 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}

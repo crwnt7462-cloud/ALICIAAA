@@ -17,7 +17,7 @@ import {
   Shield,
   Star
 } from "lucide-react";
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 // import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
@@ -150,7 +150,7 @@ export default function ClientLoginWhite() {
           <Card className="w-full max-w-lg bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-2xl relative z-10">
             <CardHeader className="space-y-3 text-center pb-8">
               <div className="flex flex-col items-center justify-center mb-8">
-                <img src={rendlyLogo} alt="Rendly" className="h-24 w-auto mb-6" />
+                <img src={avyentoLogo} alt="Avyento" className="h-24 w-auto mb-6" />
                 <h2 className="text-3xl font-light text-gray-900">Espace Client</h2>
               </div>
               <div className="flex justify-center">

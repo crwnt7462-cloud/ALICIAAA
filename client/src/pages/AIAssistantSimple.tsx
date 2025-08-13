@@ -95,7 +95,7 @@ export default function AIAssistantSimple() {
               </div>
               <div>
                 <h1 className="text-base font-medium text-white">
-                  Rendly AI
+                  Avyento AI
                 </h1>
                 <p className="text-xs text-white/90">
                   Assistant beauté
@@ -197,7 +197,7 @@ export default function AIAssistantSimple() {
           </form>
           
           <p className="text-xs text-white/80 text-center mt-2">
-            Rendly AI peut faire des erreurs. Vérifiez les informations importantes.
+            Avyento AI peut faire des erreurs. Vérifiez les informations importantes.
           </p>
         </div>
       </div>

@@ -64,7 +64,7 @@ export default function Support() {
           <CardContent className="space-y-4">
             <Button variant="outline" className="w-full justify-start">
               <Mail className="w-4 h-4 mr-2" />
-              support@rendly.fr
+              support@avyento.fr
             </Button>
             <Button variant="outline" className="w-full justify-start">
               <Phone className="w-4 h-4 mr-2" />

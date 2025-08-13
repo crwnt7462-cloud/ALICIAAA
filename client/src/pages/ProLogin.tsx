@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -94,7 +94,7 @@ export default function ProLogin() {
       {/* Logo centré en haut */}
       <div className="pt-8 pb-2 text-center">
         <div className="flex items-center justify-center gap-2">
-          <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto" />
+          <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto" />
         </div>
       </div>
 

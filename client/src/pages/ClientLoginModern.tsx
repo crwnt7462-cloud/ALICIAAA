@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import rendlyLogo from "@assets/3_1753714421825.png";
+import avyentoLogo from "@assets/3_1753714421825.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function ClientLoginModern() {
@@ -88,9 +88,9 @@ export default function ClientLoginModern() {
         <div className="px-6 pt-16 pb-6">
           <div className="max-w-sm mx-auto glass-card p-8 rounded-2xl">
             
-            {/* Logo Rendly centré */}
+            {/* Logo Avyento centré */}
             <div className="text-center mb-3">
-              <img src={rendlyLogo} alt="Rendly" className="h-28 w-auto mx-auto" />
+              <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mx-auto" />
             </div>
 
             {/* Titre - même style */}
