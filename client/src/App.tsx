@@ -29,6 +29,7 @@ import Register from "@/pages/Register";
 import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
 import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
+import SalonExcellenceDemoMobile from "@/pages/salons/SalonExcellenceDemoMobile";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
@@ -898,6 +899,9 @@ function Router() {
           <Route path="/planity-professionals" component={PlanityStyleProfessionalList} />
           <Route path="/planity-account" component={PlanityStyleAccount} />
           <Route path="/planity-beauty-institute" component={PlanityStyleBeautyInstitute} />
+
+          {/* Routes Salon Mobile */}
+          <Route path="/salon/salon-excellence-demo" component={SalonExcellenceDemoMobile} />
 
           <Route component={NotFound} />
         </Switch>
