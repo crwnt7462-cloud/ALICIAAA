@@ -23,8 +23,8 @@ export async function autoDetectApiUrl(): Promise<string | null> {
       const ok = await checkApiHealth(candidate);
       if (ok) return candidate;
     }
-    // Cas localhost
-    const localhostUrl = 'http://localhost:3000';
+    // Cas localhost (port 5000 pour Express)
+    const localhostUrl = 'http://localhost:5000';
     const okLocal = await checkApiHealth(localhostUrl);
     if (okLocal) return localhostUrl;
   } catch {
