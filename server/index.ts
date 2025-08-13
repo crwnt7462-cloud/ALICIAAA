@@ -43,8 +43,11 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Utiliser les routes Firebase-compatible
-  const server = await registerFullStackRoutes(app);
+  // Register main API routes first (including by-slug)
+  const server = await registerRoutes(app);
+  
+  // Register additional full-stack routes
+  await registerFullStackRoutes(app);
   
   // SUPPRIMÉ: Création automatique de données de test désactivée
   

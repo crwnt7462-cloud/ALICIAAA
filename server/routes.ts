@@ -85,6 +85,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ✅ API SALON BY SLUG - Frontend compatibility route
+  app.get('/api/salons/by-slug/:slug', async (req, res) => {
+    const { slug } = req.params;
+    console.log(`📖 Récupération données salon: ${slug}`);
+    
+    try {
+      const salon = await storage.getSalonWithDetails(slug);
+      if (!salon) {
+        console.log(`📖 Salon non trouvé: ${slug}`);
+        return res.status(404).json({ error: 'Salon non trouvé' });
+      }
+      
+      console.log(`📖 Salon trouvé: ${salon.name} ID: ${salon.id}`);
+      res.json(salon);
+    } catch (error) {
+      console.error('Erreur lors de la récupération du salon par slug:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
   // ✅ API PROFESSIONALS - Point 7 de la checklist
   app.get('/api/professionals', async (req, res) => {
     const { salonId } = req.query;

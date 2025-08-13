@@ -1076,37 +1076,30 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`[SALON DB] Récupération détail: ${salonId}`);
       
-      // Récupérer le salon
-      const [salonData] = await db.select().from(salons).where(eq(salons.id, salonId));
+      // Recherche par slug dans business_registrations
+      const [salonData] = await db.select().from(businessRegistrations).where(eq(businessRegistrations.slug, salonId));
       
       if (!salonData) {
         console.log(`[SALON DB] ${salonId} -> non trouvé`);
         return null;
       }
 
-      // Récupérer les professionnels du salon
-      const professionalsData = await db.select()
-        .from(staff)
-        .where(and(
-          eq(staff.salonId, salonId),
-          eq(staff.isActive, true)
-        ));
+      // Récupérer les professionnels du salon (pour l'instant vide, pourra être ajouté plus tard)
+      const professionalsData: any[] = [];
 
-      // Récupérer les services du salon
-      const servicesData = await db.select()
-        .from(services)
-        .where(eq(services.userId, salonData.userId));
+      // Récupérer les services du salon (pour l'instant vide, pourra être ajouté plus tard)
+      const servicesData: any[] = [];
 
       const result = {
         id: salonData.id,
-        slug: salonData.id,
-        name: salonData.name,
-        city: salonData.address,
+        slug: salonData.slug,
+        name: salonData.businessName,
+        city: salonData.city,
         description: salonData.description,
         address: salonData.address,
         phone: salonData.phone,
         email: salonData.email,
-        photos: salonData.photos || [],
+        photos: [], // Pas de photos dans business_registrations
         professionals: professionalsData.map(prof => ({
           id: prof.id,
           name: `${prof.firstName} ${prof.lastName}`,
