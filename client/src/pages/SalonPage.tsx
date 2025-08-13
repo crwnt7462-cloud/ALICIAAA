@@ -149,7 +149,12 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
     
     // Rediriger vers la page de réservation avec l'ID du salon
     console.log('🎯 NAVIGATION BOOKING: Redirection avec salon ID:', currentPageUrl);
-    setLocation(`/salon-booking?salon=${currentPageUrl}`);
+    console.log('🎯 DONNÉES SAUVEGARDÉES:', preBookingData);
+    
+    // Utiliser un timeout pour s'assurer que les données sont sauvegardées avant la navigation
+    setTimeout(() => {
+      setLocation(`/salon-booking?salon=${encodeURIComponent(currentPageUrl)}`);
+    }, 100);
   };
 
   if (pageLoading) {

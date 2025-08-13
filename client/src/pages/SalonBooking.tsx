@@ -142,10 +142,14 @@ function SalonBooking() {
   });
 
   // Récupérer les données de pré-réservation si disponibles
-  const preBookingData = sessionStorage.getItem('preBookingData');
-  const preBooking = preBookingData ? JSON.parse(preBookingData) : null;
+  const [preBooking, setPreBooking] = useState(null);
   
-  console.log('🔍 Données de pré-réservation:', preBooking);
+  useEffect(() => {
+    const preBookingData = sessionStorage.getItem('preBookingData');
+    const parsedData = preBookingData ? JSON.parse(preBookingData) : null;
+    setPreBooking(parsedData);
+    console.log('🔍 Données de pré-réservation récupérées:', parsedData);
+  }, []);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<any>(null);
@@ -190,6 +194,9 @@ function SalonBooking() {
 
   // Récupérer le service sélectionné depuis sessionStorage au chargement
   useEffect(() => {
+    // Attendre que preBooking soit chargé
+    if (preBooking === null) return;
+    
     // Vérifier d'abord s'il y a des données de pré-réservation
     if (preBooking?.serviceId) {
       console.log('✅ Service trouvé dans pré-réservation:', preBooking.serviceName);
@@ -259,7 +266,7 @@ function SalonBooking() {
     if (userToken) {
       setIsUserLoggedIn(true);
     }
-  }, []);
+  }, [preBooking, professionals]);
 
   // ✅ GESTION ERREUR: Redirection si salon ID manquant
   if (!salonId) {
