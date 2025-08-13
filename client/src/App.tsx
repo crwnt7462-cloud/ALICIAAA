@@ -50,6 +50,8 @@ import ClientsModern from "@/pages/ClientsModern";
 import PageBuilder from "@/pages/PageBuilder";
 import QuickBooking from "@/pages/QuickBooking";
 import ModernBooking from "@/pages/ModernBooking";
+import OriginalBooking from "@/pages/OriginalBooking";
+import AdvancedBookingManager from "@/pages/AdvancedBookingManager";
 import ProfessionalPlans from "@/pages/ProfessionalPlans";
 import Subscribe from "@/pages/Subscribe";
 import DirectMessaging from "@/pages/DirectMessaging";
@@ -884,6 +886,8 @@ function Router() {
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
+          <Route path="/original-booking" component={OriginalBooking} />
+          <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           
           {/* Pages style Planity */}

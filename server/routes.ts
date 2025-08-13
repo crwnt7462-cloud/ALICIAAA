@@ -5,6 +5,8 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { messagingService, type Message } from "./messagingService";
 import { registerFullStackRoutes } from "./fullStackRoutes";
+import { overlapService } from "./overlapService";
+import { clientNotesService } from "./clientNotesService";
 import Stripe from "stripe";
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-key';
@@ -1932,6 +1934,235 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: 'Erreur lors de la récupération des détails',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
+    }
+  });
+
+  // ==========================================
+  // NOUVELLES ROUTES : GESTION CHEVAUCHEMENTS MANUELS 
+  // ==========================================
+
+  // Vérifier les conflits de rendez-vous selon nouvelles règles
+  app.post('/api/appointments/check-overlap', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { date, startTime, endTime, staffId, isManualBlock, excludeAppointmentId } = req.body;
+
+      console.log('🔍 Vérification chevauchement:', { date, startTime, endTime, isManualBlock });
+
+      const overlapResult = await overlapService.checkOverlap({
+        date,
+        startTime,
+        endTime,
+        staffId,
+        userId,
+        isManualBlock: isManualBlock || false,
+        createdByPro: true, // Toujours true pour les pros connectés
+        excludeAppointmentId
+      });
+
+      res.json(overlapResult);
+
+    } catch (error) {
+      console.error('❌ Erreur vérification overlap:', error);
+      res.status(500).json({ error: 'Erreur lors de la vérification des conflits' });
+    }
+  });
+
+  // Créer un bloc manuel avec possibilité de chevauchement
+  app.post('/api/appointments/manual-block', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { date, startTime, endTime, staffId, notes } = req.body;
+
+      console.log('🔧 Création bloc manuel par pro:', { date, startTime, endTime });
+
+      const newBlock = await overlapService.createManualBlock({
+        date,
+        startTime,
+        endTime,
+        staffId,
+        userId,
+        notes,
+        createdBy: userId
+      });
+
+      res.status(201).json(newBlock);
+
+    } catch (error) {
+      console.error('❌ Erreur création bloc manuel:', error);
+      res.status(500).json({ error: 'Erreur lors de la création du bloc manuel' });
+    }
+  });
+
+  // Récupérer tous les rendez-vous avec info sur les blocs manuels
+  app.get('/api/appointments/with-blocks/:date', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { date } = req.params;
+
+      const appointments = await overlapService.getAppointmentsWithBlockInfo(userId, date);
+      res.json(appointments);
+
+    } catch (error) {
+      console.error('❌ Erreur récupération rendez-vous:', error);
+      res.status(500).json({ error: 'Erreur lors de la récupération des rendez-vous' });
+    }
+  });
+
+  // ==========================================
+  // NOUVELLES ROUTES : NOTES DE SUIVI CLIENT
+  // ==========================================
+
+  // Créer une note de suivi client
+  app.post('/api/clients/:clientId/notes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { clientId } = req.params;
+      const { content, author } = req.body;
+
+      const newNote = await clientNotesService.createNote({
+        clientId: parseInt(clientId),
+        userId,
+        content,
+        author: author || 'Professionnel'
+      });
+
+      res.status(201).json(newNote);
+
+    } catch (error) {
+      console.error('❌ Erreur création note:', error);
+      res.status(500).json({ error: 'Erreur lors de la création de la note' });
+    }
+  });
+
+  // Mettre à jour une note de suivi
+  app.put('/api/clients/notes/:noteId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { noteId } = req.params;
+      const { content } = req.body;
+
+      const updatedNote = await clientNotesService.updateNote({
+        noteId: parseInt(noteId),
+        content,
+        userId
+      });
+
+      res.json(updatedNote);
+
+    } catch (error) {
+      console.error('❌ Erreur mise à jour note:', error);
+      res.status(500).json({ error: 'Erreur lors de la mise à jour de la note' });
+    }
+  });
+
+  // Supprimer une note
+  app.delete('/api/clients/notes/:noteId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { noteId } = req.params;
+
+      await clientNotesService.deleteNote(parseInt(noteId), userId);
+      res.json({ success: true });
+
+    } catch (error) {
+      console.error('❌ Erreur suppression note:', error);
+      res.status(500).json({ error: 'Erreur lors de la suppression de la note' });
+    }
+  });
+
+  // Récupérer toutes les notes d'un client
+  app.get('/api/clients/:clientId/notes', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { clientId } = req.params;
+
+      const notes = await clientNotesService.getClientNotes(parseInt(clientId), userId);
+      res.json(notes);
+
+    } catch (error) {
+      console.error('❌ Erreur récupération notes:', error);
+      res.status(500).json({ error: 'Erreur lors de la récupération des notes' });
+    }
+  });
+
+  // ==========================================
+  // NOUVELLES ROUTES : PHOTOS CLIENT
+  // ==========================================
+
+  // Ajouter une photo client
+  app.post('/api/clients/:clientId/photos', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { clientId } = req.params;
+      const { photoUrl, fileName, fileSize, mimeType, caption } = req.body;
+
+      const newPhoto = await clientNotesService.addPhoto({
+        clientId: parseInt(clientId),
+        userId,
+        photoUrl,
+        fileName,
+        fileSize,
+        mimeType,
+        caption
+      });
+
+      res.status(201).json(newPhoto);
+
+    } catch (error) {
+      console.error('❌ Erreur ajout photo:', error);
+      res.status(500).json({ error: error.message || 'Erreur lors de l\'ajout de la photo' });
+    }
+  });
+
+  // Supprimer une photo
+  app.delete('/api/clients/photos/:photoId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { photoId } = req.params;
+
+      await clientNotesService.deletePhoto(parseInt(photoId), userId);
+      res.json({ success: true });
+
+    } catch (error) {
+      console.error('❌ Erreur suppression photo:', error);
+      res.status(500).json({ error: 'Erreur lors de la suppression de la photo' });
+    }
+  });
+
+  // Récupérer toutes les photos d'un client
+  app.get('/api/clients/:clientId/photos', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { clientId } = req.params;
+
+      const photos = await clientNotesService.getClientPhotos(parseInt(clientId), userId);
+      res.json(photos);
+
+    } catch (error) {
+      console.error('❌ Erreur récupération photos:', error);
+      res.status(500).json({ error: 'Erreur lors de la récupération des photos' });
+    }
+  });
+
+  // Mettre à jour la légende d'une photo
+  app.put('/api/clients/photos/:photoId/caption', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { photoId } = req.params;
+      const { caption } = req.body;
+
+      const updatedPhoto = await clientNotesService.updatePhotoCaption(
+        parseInt(photoId), 
+        caption, 
+        userId
+      );
+
+      res.json(updatedPhoto);
+
+    } catch (error) {
+      console.error('❌ Erreur mise à jour légende:', error);
+      res.status(500).json({ error: 'Erreur lors de la mise à jour de la légende' });
     }
   });
 

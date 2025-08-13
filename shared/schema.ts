@@ -307,6 +307,31 @@ export const clients = pgTable("clients", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Notes de suivi clients
+export const clientNotes = pgTable("client_notes", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  author: varchar("author").notNull(), // Nom de l'auteur
+  isEditable: boolean("is_editable").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Photos clients
+export const clientPhotos = pgTable("client_photos", {
+  id: serial("id").primaryKey(),
+  clientId: integer("client_id").notNull().references(() => clients.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  photoUrl: text("photo_url").notNull(),
+  fileName: varchar("file_name"),
+  fileSize: integer("file_size"), // Taille en bytes
+  mimeType: varchar("mime_type"), // image/jpeg, image/png
+  caption: text("caption"),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+});
+
 // Appointments
 export const appointments = pgTable("appointments", {
   id: serial("id").primaryKey(),
@@ -328,6 +353,9 @@ export const appointments = pgTable("appointments", {
   paymentStatus: varchar("payment_status").default("pending"), // pending, partial, paid, refunded
   stripeSessionId: text("stripe_session_id"),
   source: varchar("source").default("app_direct"), // instagram, google, facebook, tiktok, app_direct, autre
+  isManualBlock: boolean("is_manual_block").default(false), // Flag pour blocs manuels créés par pro
+  createdByPro: boolean("created_by_pro").default(false), // Audit : créé par le professionnel
+  allowOverlap: boolean("allow_overlap").default(false), // Autoriser chevauchement pour blocs manuels
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -922,7 +950,8 @@ export const forumRepliesRelations = relations(forumReplies, ({ one, many }) => 
 export type UpsertUser = typeof users.$inferInsert;
 // Salons - Pages publiques des professionnels
 export const salons = pgTable("salons", {
-  id: varchar("id").primaryKey(), // salon-xxxxx format
+  id: varchar("id").primaryKey(), // salon-xxxxx format  
+  slug: varchar("slug").unique().notNull(), // URL-friendly identifier standardisé
   userId: varchar("user_id").references(() => users.id), // Référence au propriétaire
   name: varchar("name").notNull(),
   description: text("description"),
@@ -956,20 +985,7 @@ export const photos = pgTable("photos", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Notes client pour les professionnels
-export const clientNotes = pgTable("client_notes", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  clientId: varchar("client_id").notNull(),
-  professionalId: varchar("professional_id").notNull(),
-  notes: text("notes"),
-  photos: text("photos").array().default([]),
-  allergies: text("allergies").array().default([]),
-  tags: text("tags").array().default([]),
-  preferences: text("preferences"),
-  lastVisit: timestamp("last_visit"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+// Supprimé pour éviter duplication - utilisation de la définition précédente
 
 // Tags personnalisés pour les professionnels  
 export const customTags = pgTable("custom_tags", {
@@ -981,8 +997,11 @@ export const customTags = pgTable("custom_tags", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Notes de suivi et photos clients - types
 export type ClientNote = typeof clientNotes.$inferSelect;
 export type InsertClientNote = typeof clientNotes.$inferInsert;
+export type ClientPhoto = typeof clientPhotos.$inferSelect;
+export type InsertClientPhoto = typeof clientPhotos.$inferInsert;
 export type CustomTag = typeof customTags.$inferSelect;
 export type InsertCustomTag = typeof customTags.$inferInsert;
 
@@ -1125,9 +1144,7 @@ export type InsertPromotion = typeof promotions.$inferInsert;
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = typeof notifications.$inferInsert;
 
-// Client account types - properly defined at end
-export type ClientAccount = typeof clientAccounts.$inferSelect;
-export type InsertClientAccount = typeof clientAccounts.$inferInsert;
+// Types déjà définis plus haut dans le fichier
 
 // Schemas for validation
 export const insertServiceSchema = createInsertSchema(services).omit({
