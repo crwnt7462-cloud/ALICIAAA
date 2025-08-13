@@ -1,0 +1,298 @@
+🎯 Objectif
+Stabiliser le dépôt actuel, supprimer Firebase/Replit Auth, unifier les routes, activer TS/ESLint strict, installer SUPABASE + NEON + DRIZZLE, poser un schema minimal, et ajouter des tests de fumée.
+
+⚙️ Stack retenue
+→ SUPABASE (auth/storage/realtime) + NEON (Postgres) + DRIZZLE ORM (TypeScript).
+
+📜 RÈGLES STRICTES (NE PAS DÉVIER)
+1) TypeScript strict via `tsconfig.base.json` (strict, noImplicitAny, noUncheckedIndexedAccess, exactOptionalPropertyTypes, useUnknownInCatchVariables).
+2) Interdit `// @ts-ignore` et `any`. ESLint doit bloquer (`--max-warnings=0`).
+3) ESLint + Prettier : appliquer les configs fournitures, corriger jusqu’à 0 warning.
+4) Routes Express : montage **unique** `server/routes/**` sous `/api/v1`. Plus de `server/routes.ts` actif.
+5) Front : garder `client/src/App.tsx` et supprimer `client/src/App.optimized.tsx`. Fusionner `BottomNavigation*` en un seul composant avec prop `floating`.
+6) Erreurs réseau front : try/catch sur tous les `fetch` + état UI d’erreur.
+7) Validation d’entrée : Zod obligatoire sur tous les POST/PATCH/PUT (réponse 400 si invalides).
+8) Secrets : aucune clé en dur. Valider `.env` au démarrage. Côté client, n’exposer que `VITE_*`.
+9) Tests minima : Supertest pour `/api/v1/bookings` (201 valide / 400 invalide), Vitest côté front sur un hook/fonction critique.
+
+🧹 CHECKLIST DE NETTOYAGE
+# 0) Checkpoint
+git add -A && git commit -m "chore: checkpoint avant stabilisation" || true
+
+# 1) Supprimer artefacts résiduels
+git rm -r -f --cached --ignore-unmatch tmp || true
+git rm -r -f --cached --ignore-unmatch __MACOSX || true
+git rm -f --cached --ignore-unmatch "salon-beaute-code-complet.zip" || true
+
+# 2) Front — supprimer doublons / fusion navigation
+git rm -f --cached --ignore-unmatch client/src/App.optimized.tsx || true
+git rm -f --cached --ignore-unmatch client/src/components/BottomNavigationFloating.tsx || true
+# → Garder un seul composant: client/src/components/BottomNavigation.tsx avec prop `floating`
+
+# 3) Back — routes
+[ -f server/routes.ts ] && git mv server/routes.ts server/routes/_legacy.ts || true
+# Tous les endpoints doivent vivre dans server/routes/*.ts et être montés sous /api/v1 dans server/index.ts
+
+# 4) Purge Firebase/Replit Auth (on garde Supabase/Neon/Drizzle)
+git rm -f --cached --ignore-unmatch server/firebaseAdmin.ts || true
+git rm -f --cached --ignore-unmatch server/firebaseSetup.ts || true
+git rm -f --cached --ignore-unmatch server/replitAuth.ts || true
+
+---
+
+📦 PACKAGE.JSON (À CRÉER)
+1) `client/package.json`
+{
+  "name": "salon-client",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jsdom": "^24.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.5.0"
+  }
+}
+
+2) `server/package.json`
+{
+  "name": "salon-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "start": "node dist/index.js",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pino": "^9.0.0",
+    "zod": "^3.23.8",
+    "@supabase/supabase-js": "^2.45.0",
+    "@neondatabase/serverless": "^0.10.0",
+    "drizzle-orm": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30",
+    "@types/supertest": "^2.0.16",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "^3.2.5",
+    "supertest": "^7.0.0",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0",
+    "drizzle-kit": "^0.24.0"
+  }
+}
+
+---
+
+🔧 INSTALLATION DÉPENDANCES (dans `client/` puis `server/`)
+# client
+cd client && npm install
+
+# server
+cd ../server && npm install
+
+---
+
+🔐 ENV & CONFIG (server)
+Créer `server/.env` (ne pas committer) :
+DATABASE_URL="postgres://<USER>:<PWD>@<HOST>/<DB>?sslmode=require"
+SUPABASE_URL="https://<your-project>.supabase.co"
+SUPABASE_SERVICE_ROLE="<service-role-key>"
+PORT=3000
+
+Créer `server/src/db.ts` :
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+
+export const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+export const db = drizzle(pool);
+
+Créer `drizzle.config.ts` à la racine du repo :
+import 'dotenv/config';
+
+export default {
+  schema: './server/src/schema.ts',
+  out: './drizzle',
+  driver: 'pg',
+  dbCredentials: { connectionString: process.env.DATABASE_URL! }
+};
+
+Créer `server/src/schema.ts` (exemple minimal) :
+import { pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+
+export const bookings = pgTable('bookings', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 64 }).notNull(),
+  serviceId: varchar('service_id', { length: 64 }).notNull(),
+  date: timestamp('date', { withTimezone: true }).notNull(),
+  notes: text('notes')
+});
+
+Scripts `package.json` (server) déjà fournis utilisent `tsup`. Pour Drizzle :
+# Générer migrations depuis le schema
+npx drizzle-kit generate
+# Appliquer migrations (au choix : via psql/neon console, ou drizzle-kit si configuré)
+
+---
+
+🧭 ROUTES EXPRESS (unifier sous /api/v1)
+Créer/mettre à jour `server/src/index.ts` :
+import express from 'express';
+import cors from 'cors';
+import pino from 'pino';
+import { routerV1 } from './routes/v1.js'; // crée le fichier ci-dessous
+import { errorHandler } from './middlewares/errorHandler.js';
+
+const app = express();
+const logger = pino();
+app.use(cors());
+app.use(express.json());
+
+app.get('/health', (_req, res) => res.json({ ok: true }));
+
+app.use('/api/v1', routerV1);
+
+app.use((_req, _res, next) => { const err = new Error('Not Found'); // @ts-ignore
+  err.status = 404; next(err); });
+app.use(errorHandler(logger));
+
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => logger.info({ port }, 'server started'));
+
+Créer `server/src/middlewares/errorHandler.ts` :
+import type { NextFunction, Request, Response } from 'express';
+import type { Logger } from 'pino';
+export const errorHandler = (logger: Logger) => (err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = Number.isInteger(err?.status) ? err.status : 500;
+  logger.error({ err }, 'unhandled_error');
+  res.status(status).json({ error: { message: err?.message ?? 'Internal Error' } });
+};
+
+Créer `server/src/routes/v1.ts` :
+import { Router } from 'express';
+import { z } from 'zod';
+import { db } from '../db.js';
+import { bookings } from '../schema.js';
+import { eq } from 'drizzle-orm';
+
+export const routerV1 = Router();
+
+const createBookingSchema = z.object({
+  id: z.string().uuid().optional(), // générer côté serveur si besoin
+  userId: z.string().min(1),
+  serviceId: z.string().min(1),
+  date: z.string().datetime(),
+  notes: z.string().optional()
+});
+
+routerV1.post('/bookings', async (req, res, next) => {
+  const parsed = createBookingSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  try {
+    const payload = { ...parsed.data, id: crypto.randomUUID() };
+    await db.insert(bookings).values(payload);
+    res.status(201).json({ booking: payload });
+  } catch (err) { next(err); }
+});
+
+routerV1.get('/bookings/:id', async (req, res, next) => {
+  try {
+    const rows = await db.select().from(bookings).where(eq(bookings.id, req.params.id)).limit(1);
+    if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+    res.json({ booking: rows[0] });
+  } catch (err) { next(err); }
+});
+
+---
+
+🖥️ FRONT (Vite/React)
+- Garder `client/src/App.tsx`. Supprimer `client/src/App.optimized.tsx`.
+- Fusionner `client/src/components/BottomNavigation.tsx` et `.../BottomNavigationFloating.tsx` en un seul composant avec prop `floating`.
+- `.env` client : VITE_API_URL="http://localhost:3000"
+- Tous les `fetch` → try/catch + UI d’erreur.
+
+---
+
+✅ TESTS DE FUMÉE
+Back (dans `server/`):
+- Installer vitest/supertest déjà dans devDependencies.
+- Créer `server/test/bookings.test.ts` :
+import { describe, it, expect } from 'vitest';
+import request from 'supertest';
+import app from '../src/index'; // adapter export si nécessaire
+
+// Exemple (à adapter selon export de l'app)
+describe('bookings', () => {
+  it('rejects invalid body', async () => {
+    const r = await request('http://localhost:3000').post('/api/v1/bookings').send({});
+    expect([400,422]).toContain(r.status);
+  });
+});
+
+Front (dans `client/`) :
+- 1 test Vitest sur un hook/fonction critique (ex: parse de réponse API).
+
+---
+
+🛠️ PLAN D’EXÉCUTION (ordre)
+1) Exécuter la checklist de nettoyage (purge Firebase/Replit Auth incluse).
+2) Créer/mettre à jour `client/package.json` et `server/package.json` (ci-dessus), puis `npm install` dans chaque dossier.
+3) Appliquer `tsconfig.base.json`, `.eslintrc.cjs`, `.prettierrc` à la racine. S’assurer que `client/` & `server/` étendent ce tsconfig.
+4) Lancer `npm run lint` et `npm run typecheck` (client & server) et corriger jusqu’à 0 warning/erreur.
+5) Unifier les routes sous `/api/v1` + middleware d’erreurs + `/health`.
+6) Mettre en place Drizzle : `schema.ts`, `db.ts`, `drizzle.config.ts`, générer & appliquer migrations.
+7) Implémenter Zod sur tous les endpoints POST/PATCH/PUT.
+8) Mettre à jour le front (navigation fusionnée, fetch sécurisés, VITE_API_URL).
+9) Ajouter tests de fumée (Supertest + Vitest) et s’assurer qu’ils passent.
+10) Lancer `npm run build` (client & server) → doit passer sans warnings bloquants.
+
+🔚 Definition of Done
+- ESLint (0 warning) & TypeScript (0 erreur).
+- `/api/v1` unique, middleware d’erreurs OK, `/health` OK.
+- Aucune trace Firebase/Replit Auth.
+- Drizzle opérationnel (migrations appliquées), `bookings` accessible.
+- Aucun secret en dur. `.env` validé au boot.
+- Tests de fumée OK. Build OK.

@@ -1,0 +1,470 @@
+🎯 OBJECTIF (NE PAS DÉVIER)
+Stabiliser le dépôt actuel avec la stack **Supabase + Neon (Postgres) + Drizzle ORM** :
+- Purger Firebase/Replit Auth, doublons et artefacts
+- Unifier routes Express sous `/api/v1` avec middleware d’erreurs
+- Activer TypeScript/ESLint stricts (0 warning / 0 erreur)
+- Créer package.json client & server, configs TS/Vite/Vitest
+- Installer Drizzle + schema + config
+- Ajouter tests de fumée (server) et un test simple (client)
+
+────────────────────────────────────────────────────────────────────────
+
+🧹 1) NETTOYAGE (chemins Replit)
+Exécute ces commandes Shell dans la racine du repo :
+
+git add -A && git commit -m "chore: checkpoint avant stabilisation" || true
+
+# Artefacts
+git rm -r -f --cached --ignore-unmatch tmp || true
+git rm -r -f --cached --ignore-unmatch __MACOSX || true
+git rm -f --cached --ignore-unmatch "salon-beaute-code-complet.zip" || true
+
+# Front — doublons
+git rm -f --cached --ignore-unmatch client/src/App.optimized.tsx || true
+git rm -f --cached --ignore-unmatch client/src/components/BottomNavigationFloating.tsx || true
+
+# Back — routes
+[ -f server/routes.ts ] && git mv server/routes.ts server/routes/_legacy.ts || true
+
+# Purge Firebase / Replit Auth (on garde Supabase/Neon/Drizzle)
+git rm -f --cached --ignore-unmatch server/firebaseAdmin.ts || true
+git rm -f --cached --ignore-unmatch server/firebaseSetup.ts || true
+git rm -f --cached --ignore-unmatch server/replitAuth.ts || true
+
+────────────────────────────────────────────────────────────────────────
+
+📦 2) CRÉER/METTRE À JOUR LES FICHIERS (écrire exactement le contenu indiqué)
+
+# Racine: .gitignore
+Créer/écraser `./.gitignore` avec ce contenu :
+----------------
+node_modules
+dist
+build
+.drizzle
+drizzle
+.env
+.env.*
+.DS_Store
+----------------
+
+# Racine: tsconfig base stricte (si pas déjà présent)
+Créer/écraser `./tsconfig.base.json` avec ce contenu :
+----------------
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "exclude": ["node_modules", "dist", "build", ".next"]
+}
+----------------
+
+# Racine: ESLint + Prettier
+Créer/écraser `./.eslintrc.cjs` :
+----------------
+/* @type {import('eslint').Linter.Config} */
+module.exports = {
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint','react','react-hooks','import'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:import/recommended',
+    'plugin:import/typescript',
+    'prettier'
+  ],
+  settings: { react: { version: 'detect' } },
+  rules: {
+    '@typescript-eslint/ban-ts-comment': ['error', { 'ts-ignore': true }],
+    '@typescript-eslint/no-explicit-any': 'error',
+    'import/order': ['error',{ 'newlines-between':'always', alphabetize:{ order:'asc' } }],
+    'no-console': ['warn', { allow: ['warn','error'] }]
+  },
+  ignorePatterns: ['dist','build','.next','node_modules','**/__generated__/**']
+};
+----------------
+
+Créer/écraser `./.prettierrc` :
+----------------
+{
+  "singleQuote": true,
+  "trailingComma": "all"
+}
+----------------
+
+────────────────────────────────────────────────────────────────────────
+
+📁 3) CLIENT (Vite/React/TS/Vitest)
+
+Créer/écraser `client/package.json` :
+----------------
+{
+  "name": "salon-client",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jsdom": "^24.0.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.5.0"
+  }
+}
+----------------
+
+Créer/écraser `client/tsconfig.json` :
+----------------
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {}
+  },
+  "include": ["src", "vite.config.ts", "vitest.config.ts", "env.d.ts"],
+  "exclude": ["dist", "node_modules"]
+}
+----------------
+
+Créer/écraser `client/vite.config.ts` :
+----------------
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: [],
+    css: false
+  }
+});
+----------------
+
+Créer/écraser `client/env.d.ts` :
+----------------
+/// <reference types="vite/client" />
+interface ImportMetaEnv { readonly VITE_API_URL: string; }
+interface ImportMeta { readonly env: ImportMetaEnv; }
+----------------
+
+(Si besoin d’un test de démonstration)
+Créer/écraser `client/src/example.test.ts` :
+----------------
+import { describe, it, expect } from 'vitest';
+describe('example', () => { it('adds', () => { expect(1 + 1).toBe(2); }); });
+----------------
+
+────────────────────────────────────────────────────────────────────────
+
+🗄️ 4) SERVER (Express/TS/Zod/Pino/Supabase/Neon/Drizzle/Vitest)
+
+Créer/écraser `server/package.json` :
+----------------
+{
+  "name": "salon-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src/server.ts --format esm --dts --clean",
+    "start": "node dist/server.js",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --NoEmit false --emitDeclarationOnly false && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "pino": "^9.0.0",
+    "zod": "^3.23.8",
+    "@supabase/supabase-js": "^2.45.0",
+    "@neondatabase/serverless": "^0.10.0",
+    "drizzle-orm": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30",
+    "@types/supertest": "^2.0.16",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "prettier": "^3.2.5",
+    "supertest": "^7.0.0",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.5.0",
+    "drizzle-kit": "^0.24.0"
+  }
+}
+----------------
+
+Créer/écraser `server/tsconfig.json` :
+----------------
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
+  },
+  "include": ["src", "vitest.config.ts", "test"],
+  "exclude": ["dist", "node_modules"]
+}
+----------------
+
+Créer/écraser `server/vitest.config.ts` :
+----------------
+import { defineConfig } from 'vitest/config';
+export default defineConfig({ test: { environment: 'node', globals: true, include: ['test/**/*.test.ts'] } });
+----------------
+
+Créer/écraser `server/src/middlewares/errorHandler.ts` :
+----------------
+import type { NextFunction, Request, Response } from 'express';
+import type { Logger } from 'pino';
+export const errorHandler = (logger: Logger) => (err: any, _req: Request, res: Response, _next: NextFunction) => {
+  const status = Number.isInteger(err?.status) ? err.status : 500;
+  logger.error({ err }, 'unhandled_error');
+  res.status(status).json({ error: { message: err?.message ?? 'Internal Error' } });
+};
+----------------
+
+Créer/écraser `server/src/routes/v1.ts` :
+----------------
+import { Router } from 'express';
+import { z } from 'zod';
+import { db } from '../db';
+import { bookings } from '../schema';
+import { eq } from 'drizzle-orm';
+
+export const routerV1 = Router();
+
+const createBookingSchema = z.object({
+  userId: z.string().min(1),
+  serviceId: z.string().min(1),
+  date: z.string().datetime(),
+  notes: z.string().optional()
+});
+
+routerV1.post('/bookings', async (req, res, next) => {
+  const parsed = createBookingSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
+  try {
+    const payload = { id: crypto.randomUUID(), ...parsed.data };
+    await db.insert(bookings).values(payload);
+    res.status(201).json({ booking: payload });
+  } catch (err) { next(err); }
+});
+
+routerV1.get('/bookings/:id', async (req, res, next) => {
+  try {
+    const rows = await db.select().from(bookings).where(eq(bookings.id, req.params.id)).limit(1);
+    if (!rows[0]) return res.status(404).json({ error: 'Not found' });
+    res.json({ booking: rows[0] });
+  } catch (err) { next(err); }
+});
+----------------
+
+Créer/écraser `server/src/index.ts` (exporte l’app) :
+----------------
+import express from 'express';
+import cors from 'cors';
+import pino from 'pino';
+import { errorHandler } from './middlewares/errorHandler';
+import { routerV1 } from './routes/v1';
+
+const app = express();
+const logger = pino();
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/health', (_req, res) => res.json({ ok: true }));
+app.use('/api/v1', routerV1);
+
+app.use((_req, _res, next) => {
+  const err = new Error('Not Found') as any;
+  err.status = 404;
+  next(err);
+});
+app.use(errorHandler(logger));
+
+export default app;
+----------------
+
+Créer/écraser `server/src/server.ts` (démarrage) :
+----------------
+import 'dotenv/config';
+import app from './index';
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => { console.log(`[server] listening on :${port}`); });
+----------------
+
+Créer/écraser `server/src/env.ts` (validation .env) :
+----------------
+import { z } from 'zod';
+const EnvSchema = z.object({
+  PORT: z.string().optional(),
+  DATABASE_URL: z.string().url('DATABASE_URL doit être une URL Postgres valide'),
+  SUPABASE_URL: z.string().url('SUPABASE_URL doit être une URL valide'),
+  SUPABASE_SERVICE_ROLE: z.string().min(10, 'Service role Supabase manquant ou invalide')
+});
+export type Env = z.infer<typeof EnvSchema>;
+export const env: Env = (() => {
+  const parsed = EnvSchema.safeParse(process.env);
+  if (!parsed.success) {
+    console.error('[env] Invalid environment:', parsed.error.flatten().fieldErrors);
+    throw new Error('Invalid environment configuration');
+  }
+  return parsed.data;
+})();
+----------------
+
+Créer/écraser `server/src/db.ts` (Neon + Drizzle) :
+----------------
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+if (!process.env.DATABASE_URL) { throw new Error('DATABASE_URL manquant'); }
+export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+export const db = drizzle(pool);
+----------------
+
+Créer/écraser `server/src/schema.ts` (Drizzle) :
+----------------
+import { pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+export const bookings = pgTable('bookings', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('user_id', { length: 64 }).notNull(),
+  serviceId: varchar('service_id', { length: 64 }).notNull(),
+  date: timestamp('date', { withTimezone: true }).notNull(),
+  notes: text('notes')
+});
+----------------
+
+Créer/écraser `./drizzle.config.ts` (racine) :
+----------------
+import 'dotenv/config';
+export default {
+  schema: './server/src/schema.ts',
+  out: './drizzle',
+  driver: 'pg',
+  dbCredentials: { connectionString: process.env.DATABASE_URL! }
+};
+----------------
+
+Créer/écraser `server/test/bookings.test.ts` :
+----------------
+import { describe, it, expect } from 'vitest';
+import request from 'supertest';
+
+const baseURL = `http://localhost:${process.env.PORT ?? 3000}`;
+
+describe('bookings', () => {
+  it('rejects invalid body', async () => {
+    const r = await request(baseURL).post('/api/v1/bookings').send({});
+    expect([400,422]).toContain(r.status);
+  });
+});
+----------------
+
+────────────────────────────────────────────────────────────────────────
+
+🔐 5) ENVIRONNEMENT (à créer par l’agent)
+Créer `server/.env` avec des placeholders (NE PAS COMMITTER) :
+----------------
+DATABASE_URL="postgres://<USER>:<PWD>@<HOST>/<DB>?sslmode=require"
+SUPABASE_URL="https://<your-project>.supabase.co"
+SUPABASE_SERVICE_ROLE="<service-role-key>"
+PORT=3000
+----------------
+
+────────────────────────────────────────────────────────────────────────
+
+📦 6) INSTALLATION DÉPENDANCES
+Exécuter :
+cd client && npm install
+cd ../server && npm install
+
+────────────────────────────────────────────────────────────────────────
+
+🗃️ 7) DRIZZLE – MIGRATIONS
+Exécuter depuis la racine ou depuis server/ :
+npx drizzle-kit generate
+# Appliquer ensuite la migration dans Neon (console web ou psql).
+
+────────────────────────────────────────────────────────────────────────
+
+🧪 8) LINT / TYPES / TESTS / BUILD
+# Server en dev
+cd server && npm run dev  # laisse tourner
+
+# Lancer les tests (dans un autre shell ou onglet)
+npm test
+
+# Lint + Typecheck (client puis server)
+cd ../client && npm run lint && npm run typecheck
+cd ../server && npm run lint && npm run typecheck
+
+# Build (optionnel pour vérifier)
+cd ../client && npm run build
+cd ../server && npm run build
+
+────────────────────────────────────────────────────────────────────────
+
+✅ DEFINITION OF DONE
+- ESLint ⇒ 0 warning ; TypeScript ⇒ 0 erreur (client & server)
+- `/api/v1` monté uniquement via `server/src/routes/v1.ts` + middleware d’erreurs
+- Aucune trace Firebase/Replit Auth
+- Drizzle opérationnel (migrations générées et appliquées), table `bookings` accessible
+- Pas de secret en dur ; `.env` validé au boot
+- Tests de fumée OK ; build OK
+

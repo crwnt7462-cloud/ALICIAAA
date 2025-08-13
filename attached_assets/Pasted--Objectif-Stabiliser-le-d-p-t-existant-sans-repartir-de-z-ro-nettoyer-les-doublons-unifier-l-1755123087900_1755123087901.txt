@@ -1,0 +1,120 @@
+🎯 Objectif : Stabiliser le dépôt existant (sans repartir de zéro), nettoyer les doublons, unifier la stack, verrouiller TS/ESLint, et ajouter des tests de fumée. 
+
+⚙️ Contexte :
+- Le kit de stabilisation (tsconfig/eslint/prettier + exemples) est disponible localement.
+- Stack retenue (à définir ici AVANT exécution) : [REMPLACE PAR "SUPABASE/NEON/DRIZZLE" OU "FIREBASE"].
+
+📜 RÈGLES STRICTES (NE PAS DÉVIER) :
+1) TypeScript strict : utiliser `tsconfig.base.json` (strict, noImplicitAny, noUncheckedIndexedAccess, exactOptionalPropertyTypes, useUnknownInCatchVariables).
+2) Interdit `// @ts-ignore` et `any` (ESLint doit bloquer).
+3) ESLint/Prettier : appliquer `.eslintrc.cjs` et `.prettierrc`, corriger jusqu’à **0 warning**.
+4) Une seule stack backend : celle choisie plus haut. Supprimer l’autre stack (fichiers + dépendances).
+5) Unifier les routes Express :
+   - Monter UNIQUEMENT `server/routes/**` sous `/api/v1`.
+   - Ne pas conserver deux systèmes (pas de double montage).
+6) Front :
+   - Conserver `client/src/App.tsx` et supprimer `client/src/App.optimized.tsx`.
+   - Fusionner `BottomNavigation.tsx` et `BottomNavigationFloating.tsx` → un seul composant avec prop `floating`.
+7) Réseau & erreurs :
+   - Tous les `fetch` front → try/catch + état d’erreur UI explicite.
+8) Validation d’entrée :
+   - Zod obligatoire pour tous les POST/PATCH/PUT.
+   - 400 si validation échoue (réponse JSON déterministe).
+9) Secrets/env :
+   - AUCUNE clé en dur.
+   - Valider TOUTES les variables d’env au démarrage.
+   - Côté client : n’exposer que `VITE_*`.
+10) Tests minima :
+   - Supertest pour `/api/v1/bookings` (POST valide, POST invalide→400).
+   - Vitest pour un hook/front critique si présent.
+
+🧹 CHECKLIST DE NETTOYAGE (COMMANDES EXACTES) :
+# 0) Checkpoint
+git add -A && git commit -m "chore: checkpoint avant stabilisation" || true
+
+# 1) Supprimer artefacts et copies
+git rm -r -f --cached --ignore-unmatch Archive_2/tmp || true
+git rm -r -f --cached --ignore-unmatch __MACOSX || true
+git rm -f --cached --ignore-unmatch "Archive_3/salon-beaute-code-complet.zip" || true
+
+# 2) Front — supprimer doublons / fusion navigation
+git rm -f --cached --ignore-unmatch client/src/App.optimized.tsx || true
+git rm -f --cached --ignore-unmatch client/src/components/BottomNavigationFloating.tsx || true
+# → Conserver un seul composant : client/src/components/BottomNavigation.tsx (à paramétrer avec prop `floating`)
+
+# 3) Back — unifier les routes
+# Si présent, mettre de côté l’ancien point d’entrée de routes pour refactor :
+[ -f server/routes.ts ] && git mv server/routes.ts server/routes/_legacy.ts || true
+# Toutes les routes doivent vivre dans server/routes/*.ts et être montées sous /api/v1 dans server/index.ts
+
+# 4) Choisir UNE stack et PURGER l’autre (décommente le bloc voulu)
+
+## Option A — Garder SUPABASE/NEON/DRIZZLE → Purger Firebase + Replit Auth
+# git rm -f --cached --ignore-unmatch server/firebaseAdmin.ts || true
+# git rm -f --cached --ignore-unmatch server/firebaseSetup.ts || true
+# git rm -f --cached --ignore-unmatch server/replitAuth.ts || true
+
+## Option B — Garder FIREBASE → Purger Supabase/Neon/Drizzle
+# git rm -f --cached --ignore-unmatch server/supabaseSetup.ts || true
+# git rm -f --cached --ignore-unmatch server/db.ts || true
+# git rm -f --cached --ignore-unmatch server/drizzle*.ts || true
+# git rm -f --cached --ignore-unmatch server/neon*.ts || true
+
+# 5) Secrets : vérifier qu’aucune clé n’est en dur
+# (si des configs Firebase/Stripe/Supabase/Neon apparaissent en clair, les déplacer en .env et valider au boot)
+
+# 6) Appliquer les configs strictes (si le kit est déjà copié à la racine)
+# Fichiers attendus à la racine du repo :
+# - tsconfig.base.json
+# - .eslintrc.cjs
+# - .prettierrc
+
+# 7) Lancer lint & TS pour révéler le vrai scope restant
+npm run lint --silent || npx eslint . --max-warnings=0 || true
+npx tsc -p tsconfig.base.json --noEmit || true
+# Corriger jusqu’à 0 warning & 0 erreur. Remplacer tout `any`/`@ts-ignore` par des types/guards.
+
+# 8) Unifier les routes dans le style /api/v1 + middleware d’erreurs
+# - server/index.ts : monter app.use('/api/v1', routerV1)
+# - server/routes/v1.ts : regrouper les endpoints. Exemple :
+#   routerV1.post('/bookings', validate(zodSchema), handler)
+# - Ajouter un errorHandler (pino logger) et une route /health.
+
+# 9) Validation Zod pour chaque POST/PATCH/PUT
+# - Retourner 400 + JSON avec erreurs structurées si parsing échoue.
+# - Aucune logique métier avant validation réussie.
+
+# 10) Front — robustesse réseau
+# - Chaque fetch → try/catch, timeouts si possible, et état UI "error".
+# - Lire VITE_API_URL depuis import.meta.env
+
+# 11) Tests de fumée
+# - Back (Supertest):
+#   - POST /api/v1/bookings → 201 avec payload valide
+#   - POST /api/v1/bookings → 400 si payload invalide
+# - Front (Vitest) :
+#   - 1 test sur un hook/logic UI critique (ex. parser de réponse API)
+
+# 12) Build et scripts
+# - S’assurer que `npm run build` (front+back) passe sans warnings.
+# - S’assurer que `npm test` passe.
+# - Éviter la coexistence ESM/CJS incohérente (si "type": "module", adapter __dirname/__filename).
+
+🛠️ TÂCHES PRÉCISES À FAIRE MAINTENANT (dans cet ordre) :
+1. Exécuter la checklist de nettoyage (sections 0→4) selon la stack choisie.
+2. Copier/appliquer les configs strictes (`tsconfig.base.json`, `.eslintrc.cjs`, `.prettierrc`) si absentes.
+3. Passer ESLint jusqu’à 0 warning, puis `tsc --noEmit` jusqu’à 0 erreur.
+4. Unifier les routes sous `server/routes/**` et monter `/api/v1` dans `server/index.ts`. Ajouter `errorHandler` et `/health`.
+5. Implémenter Zod sur tous les endpoints modificateurs (POST/PATCH/PUT).
+6. Côté front, supprimer tout doublon, fusionner BottomNavigation, protéger chaque `fetch`.
+7. Ajouter les tests de fumée (Supertest + Vitest) et s’assurer qu’ils passent.
+8. Lancer un build complet, corriger toute alerte restante, puis commit.
+
+✅ CRITÈRES D’ACCEPTATION (Definition of Done) :
+- `eslint . --max-warnings=0` → OK.
+- `tsc -p tsconfig.base.json --noEmit` → 0 erreur.
+- `/api/v1` monté uniquement via `server/routes/**` + middleware d’erreurs opérationnel.
+- Plus aucune référence à la stack non retenue (fichiers et deps supprimés).
+- Aucun secret en dur. Les variables d’env sont validées au boot.
+- Tests de fumée (Supertest & Vitest) passent.
+- Build front/back OK sans warnings bloquants.
