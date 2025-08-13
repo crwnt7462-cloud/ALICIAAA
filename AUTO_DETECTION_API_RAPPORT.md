@@ -1,12 +1,17 @@
-# 🔍 SYSTÈME D'AUTO-DÉTECTION API URL - IMPLÉMENTÉ
+# 🔍 SYSTÈME D'AUTO-DÉTECTION API URL - OPTIMISÉ
 
 ## ✅ FONCTIONNALITÉS AJOUTÉES
 
 ### 1. Endpoint de santé API
 - **Route** : `GET /health`
-- **Réponse** : Status, timestamp, service, version
+- **Réponse** : `ok: true`, status, timestamp, service, version
 - **Utilisation** : Vérification automatique de connectivité
-- **Amélioration** : Endpoint plus court, validation JSON renforcée
+- **Amélioration** : Validation stricte avec propriété `ok`
+
+### 2. Système de retry intelligent
+- **Fonction** : `showRetryAlert()` avec bouton Réessayer
+- **Bénéfice** : Plus d'erreurs "Failed to fetch" silencieuses
+- **UX** : Messages clairs + possibilité de retry sans recharger
 
 ### 2. Bibliothèque de vérification de santé
 - **Fichier** : `client/src/lib/apiHealth.ts`

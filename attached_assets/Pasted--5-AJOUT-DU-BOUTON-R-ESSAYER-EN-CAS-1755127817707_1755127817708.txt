@@ -1,0 +1,76 @@
+──────────────────────────────────────────────────────────────
+5) AJOUT DU BOUTON "RÉESSAYER" EN CAS D'ÉCHEC
+
+Dans `client/src/lib/apiHealth.ts`, ajouter une fonction utilitaire pour afficher une boîte avec un bouton :
+
+export function showRetryAlert(message: string, retryFn: () => void) {
+  const retry = confirm(`${message}\n\nVoulez-vous réessayer ?`);
+  if (retry) retryFn();
+}
+
+──────────────────────────────────────────────────────────────
+6) INTÉGRATION DU BOUTON "RÉESSAYER" DANS LA DÉTECTION
+
+Dans `client/src/main.tsx`, remplacer les `alert(...)` par `showRetryAlert(...)` ainsi :
+
+import { checkApiHealth, autoDetectApiUrl, showRetryAlert } from './lib/apiHealth';
+
+(async function initApiUrl() {
+  let apiUrl = import.meta.env.VITE_API_URL;
+
+  async function tryConnect(url: string) {
+    const ok = await checkApiHealth(url);
+    if (ok) {
+      console.log('[Startup] API connectée avec succès.');
+      (window as any).__API_URL__ = url;
+      return true;
+    }
+    return false;
+  }
+
+  if (!apiUrl) {
+    console.warn('[Startup] VITE_API_URL manquant, tentative d’auto-détection…');
+    const detected = await autoDetectApiUrl();
+    if (detected) {
+      apiUrl = detected;
+      (window as any).__API_URL__ = apiUrl;
+      console.log(`[Startup] API détectée automatiquement : ${apiUrl}`);
+    }
+  }
+
+  if (!apiUrl) {
+    showRetryAlert(
+      '⚠ Impossible de trouver l’URL API.\nVérifie VITE_API_URL ou démarre le serveur.',
+      () => initApiUrl()
+    );
+    return;
+  }
+
+  const connected = await tryConnect(apiUrl);
+  if (!connected) {
+    console.warn(`[Startup] API inaccessible à ${apiUrl}, tentative de re-détection…`);
+    const detected = await autoDetectApiUrl();
+    if (detected && detected !== apiUrl) {
+      apiUrl = detected;
+      const connected2 = await tryConnect(apiUrl);
+      if (!connected2) {
+        showRetryAlert(
+          `⚠ Impossible de contacter l’API à ${apiUrl} (même après détection).\nVérifie que le serveur est démarré.`,
+          () => initApiUrl()
+        );
+      }
+    } else {
+      showRetryAlert(
+        `⚠ Impossible de contacter l’API à ${apiUrl}.\nVérifie que le serveur est démarré et accessible.`,
+        () => initApiUrl()
+      );
+    }
+  }
+})();
+
+──────────────────────────────────────────────────────────────
+✅ COMPORTEMENT ATTENDU AVEC LE BOUTON "RÉESSAYER"
+- Si l’API est down → message + bouton pour relancer la détection
+- Si la détection réussit au second essai → la page utilise l’URL trouvée immédiatement
+- Aucun rechargement nécessaire, l’utilisateur garde ses données du formulaire
+- Fonctionne même si VITE_API_URL est vide au départ

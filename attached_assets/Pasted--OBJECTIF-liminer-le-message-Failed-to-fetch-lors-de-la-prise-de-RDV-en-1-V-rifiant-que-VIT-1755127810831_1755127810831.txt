@@ -1,0 +1,107 @@
+🎯 OBJECTIF
+Éliminer le message “Failed to fetch” lors de la prise de RDV en :
+1. Vérifiant que `VITE_API_URL` est défini et correct
+2. Auto-détectant l’URL de l’API (Replit/localhost) si `VITE_API_URL` est vide ou incorrect
+3. Utilisant cette URL détectée dans tout le front
+4. Affichant un message clair si le serveur API est down
+
+──────────────────────────────────────────────────────────────
+1) CRÉER L’UTILITAIRE DE VÉRIFICATION ET DÉTECTION
+Créer/écraser `client/src/lib/apiHealth.ts` :
+
+export async function checkApiHealth(apiUrl: string): Promise<boolean> {
+  try {
+    const cleanUrl = apiUrl.replace(/\/+$/, '');
+    const res = await fetch(`${cleanUrl}/health`, { method: 'GET' });
+    if (!res.ok) return false;
+    const json = await res.json().catch(() => null);
+    return Boolean(json && (json.ok === true || json.status === 'ok'));
+  } catch {
+    return false;
+  }
+}
+
+export async function autoDetectApiUrl(): Promise<string | null> {
+  try {
+    const host = location.hostname;
+    // Cas Replit
+    if (host.includes('repl.co')) {
+      const candidate = `${location.protocol}//${host}`;
+      const ok = await checkApiHealth(candidate);
+      if (ok) return candidate;
+    }
+    // Cas localhost
+    const localhostUrl = 'http://localhost:3000';
+    const okLocal = await checkApiHealth(localhostUrl);
+    if (okLocal) return localhostUrl;
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+──────────────────────────────────────────────────────────────
+2) VÉRIFICATION ET AUTO-DÉTECTION AU DÉMARRAGE
+Dans `client/src/main.tsx` (ou le point d’entrée du front), **avant le rendu React**, ajouter :
+
+import { checkApiHealth, autoDetectApiUrl } from './lib/apiHealth';
+
+(async () => {
+  let apiUrl = import.meta.env.VITE_API_URL;
+
+  if (!apiUrl) {
+    console.warn('[Startup] VITE_API_URL manquant, tentative d’auto-détection…');
+    const detected = await autoDetectApiUrl();
+    if (detected) {
+      apiUrl = detected;
+      (window as any).__API_URL__ = apiUrl;
+      console.log(`[Startup] API détectée automatiquement : ${apiUrl}`);
+    }
+  }
+
+  if (!apiUrl) {
+    alert('⚠ Impossible de trouver l’URL API.\nVérifie VITE_API_URL ou démarre le serveur.');
+    return;
+  }
+
+  const ok = await checkApiHealth(apiUrl);
+  if (!ok) {
+    console.warn(`[Startup] API inaccessible à ${apiUrl}, tentative de re-détection…`);
+    const detected = await autoDetectApiUrl();
+    if (detected && detected !== apiUrl) {
+      apiUrl = detected;
+      (window as any).__API_URL__ = apiUrl;
+      console.log(`[Startup] API re-détectée : ${apiUrl}`);
+      const ok2 = await checkApiHealth(apiUrl);
+      if (!ok2) {
+        alert(`⚠ Impossible de contacter l’API à ${apiUrl} (même après détection).\nVérifie que le serveur est démarré.`);
+      }
+    } else {
+      alert(`⚠ Impossible de contacter l’API à ${apiUrl}.\nVérifie que le serveur est démarré et accessible.`);
+    }
+  } else {
+    console.log('[Startup] API connectée avec succès.');
+  }
+})();
+
+──────────────────────────────────────────────────────────────
+3) UTILISER L’URL DÉTECTÉE PARTOUT
+Partout dans le front où il y a :
+import.meta.env.VITE_API_URL
+remplacer par :
+(window as any).__API_URL__ ?? import.meta.env.VITE_API_URL
+
+──────────────────────────────────────────────────────────────
+4) AJOUTER LA ROUTE HEALTH SI ABSENTE
+Dans `server/src/routes/v1.ts` ou routeur principal, si non présent, ajouter :
+
+router.get('/health', (req, res) => {
+  res.json({ ok: true });
+});
+
+──────────────────────────────────────────────────────────────
+✅ RÉSULTAT ATTENDU
+- Si `.env` front est correct → aucun changement
+- Si `.env` est vide ou faux → auto-détection de l’URL Replit/localhost
+- Si API down → message clair au lieu de “Failed to fetch”
+- Aucun impact sur la logique de réservation et fallback déjà en place

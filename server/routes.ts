@@ -23,6 +23,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ✅ API HEALTH CHECK - Auto-détection URL API
   app.get('/health', (req, res) => {
     res.json({ 
+      ok: true,
       status: 'ok', 
       timestamp: new Date().toISOString(),
       service: 'Avyento API',

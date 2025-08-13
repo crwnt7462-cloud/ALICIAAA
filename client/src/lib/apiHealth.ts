@@ -32,3 +32,8 @@ export async function autoDetectApiUrl(): Promise<string | null> {
   }
   return null;
 }
+
+export function showRetryAlert(message: string, retryFn: () => void) {
+  const retry = confirm(`${message}\n\nVoulez-vous réessayer ?`);
+  if (retry) retryFn();
+}
