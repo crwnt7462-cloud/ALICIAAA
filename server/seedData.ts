@@ -1,234 +1,202 @@
-import { db } from './db';
-import { services, staff, users } from '@shared/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+import { db } from "./db";
+import { businessRegistrations, services, staffMembers } from "@shared/schema";
 
-export async function seedDatabase() {
+// Script pour ajouter des données de test des salons demandés
+export async function seedTestSalons() {
+  console.log('🌱 Ajout des données de test pour les salons...');
+
   try {
-    console.log('🌱 Ajout des données de test...');
-
-    // Vérifier si l'utilisateur de test existe déjà
-    const existingUser = await db.select().from(users).where(eq(users.email, 'test@monapp.com')).limit(1);
+    // Vérifier si les données existent déjà
+    const existingSalons = await db.select().from(businessRegistrations);
     
-    let testUserId = '1';
-    if (existingUser.length === 0) {
-      // Créer un utilisateur de test
-      const hashedPassword = await bcrypt.hash('test1234', 10);
-      const [newUser] = await db.insert(users).values({
-        id: testUserId,
-        email: 'test@monapp.com',
-        passwordHash: hashedPassword,
-        firstName: 'Excellence',
-        lastName: 'Paris',
-        businessName: 'Salon Excellence Paris',
-        phone: '01 42 86 75 90',
-        address: '15 Rue de la Paix, 75001 Paris',
-        mentionHandle: '@usemyrr',
-        isActive: true,
-        subscriptionPlan: 'premium',
-        subscriptionStatus: 'active'
-      }).returning();
-      testUserId = newUser.id;
-    } else {
-      testUserId = existingUser[0].id;
+    if (existingSalons.length > 0) {
+      console.log('✅ Données de salons déjà présentes dans la base');
+      return;
     }
 
-    // Vérifier si les services existent déjà
-    const existingServices = await db.select().from(services).where(eq(services.userId, testUserId));
-    
-    if (existingServices.length === 0) {
-      // Ajouter des services réels
-      const salonServices = [
-        {
-          userId: testUserId,
-          name: 'Coupe + Brushing Premium',
-          description: 'Coupe personnalisée avec brushing professionnel par nos experts. Consultation incluse.',
-          price: '85.00',
-          duration: 60,
-          category: 'Coiffure',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Coloration Complète Luxe',
-          description: 'Coloration haut de gamme avec soins capillaires L\'Oréal Professionnel. Garantie couleur 6 semaines.',
-          price: '120.00',
-          duration: 120,
-          category: 'Coiffure',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Soin Visage Anti-Âge',
-          description: 'Soin premium hydratant et raffermissant. Produits Sothys. Résultats visibles immédiatement.',
-          price: '95.00',
-          duration: 75,
-          category: 'Esthétique',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Manucure Française Parfaite',
-          description: 'Manucure complète avec french parfaite. Vernis gel longue tenue. Tenue 3 semaines.',
-          price: '45.00',
-          duration: 45,
-          category: 'Ongles',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Épilation Sourcils Design',
-          description: 'Restructuration complète des sourcils selon la morphologie du visage. Technique de précision.',
-          price: '25.00',
-          duration: 20,
-          category: 'Esthétique',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Massage Relaxant Corps',
-          description: 'Massage détente 60min aux huiles essentielles bio. Évacuation complète du stress.',
-          price: '80.00',
-          duration: 60,
-          category: 'Bien-être',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Balayage Californien',
-          description: 'Technique de balayage naturel pour un effet soleil. Spécialiste cheveux blonds.',
-          price: '140.00',
-          duration: 180,
-          category: 'Coiffure',
-          isActive: true
-        },
-        {
-          userId: testUserId,
-          name: 'Extension Cils Volume',
-          description: 'Pose d\'extensions cils effet volume russe. Tenue 4-6 semaines. Look glamour garanti.',
-          price: '75.00',
-          duration: 90,
-          category: 'Esthétique',
-          isActive: true
-        }
-      ];
+    const testSalons = [
+      {
+        businessName: "Barbier Gentleman Marais",
+        slug: "barbier-gentleman-marais",
+        businessType: "barbier",
+        siret: "12345678901234",
+        address: "15 rue des Rosiers",
+        city: "Paris",
+        postalCode: "75004",
+        phone: "01 42 77 88 99",
+        email: "contact@barbier-gentleman-marais.fr",
+        ownerFirstName: "Antoine",
+        ownerLastName: "Martin",
+        legalForm: "SARL",
+        description: "Barbier traditionnel dans le Marais, spécialisé dans la taille de barbe et coupes classiques",
+        planType: "premium",
+        status: "approved"
+      },
+      {
+        businessName: "Salon Excellence Paris",
+        slug: "salon-excellence-paris",
+        businessType: "coiffure",
+        siret: "23456789012345",
+        address: "25 avenue des Champs-Élysées",
+        city: "Paris",
+        postalCode: "75008",
+        phone: "01 45 62 33 44",
+        email: "contact@salon-excellence-paris.fr",
+        ownerFirstName: "Sophie",
+        ownerLastName: "Dubois",
+        legalForm: "SARL",
+        description: "Salon de coiffure haut de gamme sur les Champs-Élysées",
+        planType: "premium",
+        status: "approved"
+      },
+      {
+        businessName: "Institut Beauté Saint-Germain",
+        slug: "institut-beaute-saint-germain",
+        businessType: "esthetique",
+        siret: "34567890123456",
+        address: "12 boulevard Saint-Germain",
+        city: "Paris",
+        postalCode: "75005",
+        phone: "01 43 26 55 77",
+        email: "contact@institut-beaute-saint-germain.fr",
+        ownerFirstName: "Émilie",
+        ownerLastName: "Leroy",
+        legalForm: "SARL",
+        description: "Institut de beauté proposant soins du visage et épilations",
+        planType: "advanced",
+        status: "approved"
+      },
+      {
+        businessName: "Nail Art Opéra",
+        slug: "nail-art-opera",
+        businessType: "ongles",
+        siret: "45678901234567",
+        address: "8 rue de la Paix",
+        city: "Paris",
+        postalCode: "75002",
+        phone: "01 42 61 44 88",
+        email: "contact@nail-art-opera.fr",
+        ownerFirstName: "Maria",
+        ownerLastName: "Garcia",
+        legalForm: "EURL",
+        description: "Spécialiste nail art et soins des ongles près de l'Opéra",
+        planType: "basic",
+        status: "approved"
+      },
+      {
+        businessName: "Spa Wellness Bastille",
+        slug: "spa-wellness-bastille",
+        businessType: "spa",
+        siret: "56789012345678",
+        address: "20 rue de la Roquette",
+        city: "Paris",
+        postalCode: "75011",
+        phone: "01 48 05 22 66",
+        email: "contact@spa-wellness-bastille.fr",
+        ownerFirstName: "Claire",
+        ownerLastName: "Bernard",
+        legalForm: "SARL",
+        description: "Spa et centre de bien-être avec massages et soins relaxants",
+        planType: "premium",
+        status: "approved"
+      }
+    ];
 
-      await db.insert(services).values(salonServices);
-      console.log('✅ Services ajoutés avec succès');
+    // Insérer les salons de test
+    for (const salon of testSalons) {
+      await db.insert(businessRegistrations).values(salon);
+      console.log(`✅ Salon ajouté: ${salon.businessName} (${salon.slug})`);
     }
 
-    // Ajouter du staff si inexistant
-    const existingStaff = await db.select().from(staff).where(eq(staff.userId, testUserId));
-    
-    if (existingStaff.length === 0) {
-      const salonStaff = [
-        {
-          userId: testUserId,
-          firstName: 'Sophie',
-          lastName: 'Martinez',
-          email: 'sophie@excellence-paris.fr',
-          phone: '01 42 86 75 91',
-          role: 'coiffeuse',
-          specialization: 'Coiffure & Coloration',
-          experience: 8,
-          isActive: true,
-          workingDays: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
-          workingHours: { start: '09:00', end: '18:00' }
-        },
-        {
-          userId: testUserId,
-          firstName: 'Emma',
-          lastName: 'Dubois',
-          email: 'emma@excellence-paris.fr',
-          phone: '01 42 86 75 92',
-          role: 'estheticienne',
-          specialization: 'Esthétique & Soins',
-          experience: 5,
-          isActive: true,
-          workingDays: ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'],
-          workingHours: { start: '10:00', end: '19:00' }
-        },
-        {
-          userId: testUserId,
-          firstName: 'Luna',
-          lastName: 'Rodriguez',
-          email: 'luna@excellence-paris.fr',
-          phone: '01 42 86 75 93',
-          role: 'manucure',
-          specialization: 'Ongles & Manucure',
-          experience: 6,
-          isActive: true,
-          workingDays: ['monday', 'wednesday', 'thursday', 'friday', 'saturday'],
-          workingHours: { start: '09:30', end: '17:30' }
-        }
-      ];
-
-      await db.insert(staff).values(salonStaff);
-      console.log('✅ Équipe ajoutée avec succès');
-    }
-
-    console.log('✅ Données de test créées avec succès');
-    console.log('Compte PRO: test@monapp.com / test1234');
-    console.log('Handle PRO: @usemyrr');
-    console.log('Compte CLIENT: client@test.com / client123');
-    
-    // Créer un salon pour le compte test (après les imports)
-    setTimeout(() => {
-      import('./storage.js').then(({ storage }) => {
-        storage.saveSalonData('salon-demo', {
-          id: 'salon-demo',
-          userId: testUserId,
-          name: 'Excellence Paris - Salon Demo',
-          description: 'Salon de beauté moderne lié au compte test@monapp.com',
-          longDescription: `Notre salon Excellence Paris vous accueille depuis plus de 15 ans dans un cadre moderne et chaleureux. 
-          
-Spécialisés dans les coupes tendances et les soins personnalisés, notre équipe d'experts est formée aux dernières techniques et utilise exclusivement des produits de qualité professionnelle.
-
-Situé au cœur du 8ème arrondissement, nous proposons une gamme complète de services pour sublimer votre beauté naturelle.`,
-          address: '15 Avenue des Champs-Élysées, 75008 Paris',
-          phone: '01 42 25 76 89',
-          rating: 4.8,
-          reviews: 247,
-          verified: true,
-          certifications: [
-            'Salon labellisé L\'Oréal Professionnel',
-            'Formation continue Kérastase',
-            'Certification bio Shu Uemura'
-          ],
-          awards: [
-            'Élu Meilleur Salon Paris 8ème 2023',
-            'Prix de l\'Innovation Beauté 2022',
-            'Certification Éco-responsable'
-          ],
-          serviceCategories: [
-            {
-              id: 1,
-              name: 'Cheveux',
-              expanded: true,
-              services: [
-                { id: 1, name: 'Coupe & Brushing', price: 45, duration: '1h', description: 'Coupe personnalisée et brushing professionnel' },
-                { id: 2, name: 'Coloration', price: 80, duration: '2h', description: 'Coloration complète avec soins' },
-                { id: 3, name: 'Mèches', price: 120, duration: '2h30', description: 'Mèches naturelles ou colorées' },
-                { id: 4, name: 'Coupe Enfant', price: 25, duration: '30min', description: 'Coupe adaptée aux enfants -12 ans' }
-              ]
-            },
-            {
-              id: 2,
-              name: 'Soins Visage',
-              expanded: false,
-              services: [
-                { id: 5, name: 'Soin du visage classique', price: 65, duration: '1h15', description: 'Nettoyage, gommage et hydratation' },
-                { id: 6, name: 'Soin anti-âge', price: 95, duration: '1h30', description: 'Soin complet avec technologies avancées' },
-                { id: 7, name: 'Épilation sourcils', price: 20, duration: '20min', description: 'Épilation et restructuration' }
-              ]
-            }
-          ]
-        });
-        console.log('💎 SALON DEMO: salon-demo lié au compte test');
-      });
-    }, 100);
+    console.log('🎉 Données de test des salons ajoutées avec succès !');
 
   } catch (error) {
-    console.error('❌ Erreur lors du seeding:', error);
+    console.error('❌ Erreur lors de l\'ajout des données de test:', error);
   }
+}
+
+// Fonction pour ajouter des services de base aux salons
+export async function seedTestServices() {
+  console.log('🛠️ Ajout des services de test...');
+
+  try {
+    const salons = await db.select().from(businessRegistrations);
+    
+    if (salons.length === 0) {
+      console.log('⚠️ Aucun salon trouvé, ajout des salons d\'abord...');
+      await seedTestSalons();
+    }
+
+    const existingServices = await db.select().from(services);
+    
+    if (existingServices.length > 0) {
+      console.log('✅ Services déjà présents dans la base');
+      return;
+    }
+
+    // Services pour barbier
+    const barbierServices = [
+      {
+        userId: "barbier-gentleman-marais",
+        name: "Coupe classique",
+        description: "Coupe de cheveux traditionnelle",
+        price: "35.00",
+        duration: 45,
+        category: "coupe",
+        isActive: true
+      },
+      {
+        userId: "barbier-gentleman-marais", 
+        name: "Taille de barbe",
+        description: "Taille et entretien de barbe",
+        price: "25.00",
+        duration: 30,
+        category: "barbe",
+        isActive: true
+      }
+    ];
+
+    // Services pour salon de coiffure
+    const coiffureServices = [
+      {
+        userId: "salon-excellence-paris",
+        name: "Coupe femme",
+        description: "Coupe et brushing",
+        price: "65.00",
+        duration: 60,
+        category: "coupe",
+        isActive: true
+      },
+      {
+        userId: "salon-excellence-paris",
+        name: "Coloration",
+        description: "Coloration complète avec mèches",
+        price: "120.00",
+        duration: 180,
+        category: "coloration",
+        isActive: true
+      }
+    ];
+
+    // Ajouter tous les services
+    const allServices = [...barbierServices, ...coiffureServices];
+    
+    for (const service of allServices) {
+      await db.insert(services).values(service);
+      console.log(`✅ Service ajouté: ${service.name} pour ${service.userId}`);
+    }
+
+    console.log('🎉 Services de test ajoutés avec succès !');
+
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'ajout des services de test:', error);
+  }
+}
+
+// Fonction principale d'initialisation
+export async function initializeTestData() {
+  console.log('🚀 Initialisation des données de test...');
+  await seedTestSalons();
+  await seedTestServices();
+  console.log('✅ Initialisation terminée !');
 }

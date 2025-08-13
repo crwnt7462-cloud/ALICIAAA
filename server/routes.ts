@@ -2166,6 +2166,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour initialiser les données de test (DÉVELOPPEMENT UNIQUEMENT)
+  app.post('/api/init-test-data', async (req, res) => {
+    try {
+      console.log('🌱 Initialisation des données de test demandée...');
+      const { initializeTestData } = await import('./seedData');
+      await initializeTestData();
+      res.json({ 
+        success: true, 
+        message: 'Données de test initialisées avec succès' 
+      });
+    } catch (error) {
+      console.error('❌ Erreur initialisation données de test:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Erreur lors de l\'initialisation des données de test' 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   // Initialize WebSocket service for real-time notifications

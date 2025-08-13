@@ -82,6 +82,7 @@ export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 export const businessRegistrations = pgTable("business_registrations", {
   id: serial("id").primaryKey(),
   businessName: varchar("business_name").notNull(),
+  slug: varchar("slug").unique(), // AJOUT colonne slug pour recherche par URL
   businessType: varchar("business_type").notNull(),
   siret: varchar("siret").notNull().unique(),
   address: text("address").notNull(),
