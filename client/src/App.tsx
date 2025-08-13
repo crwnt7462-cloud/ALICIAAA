@@ -143,13 +143,7 @@ import BookingPage from "@/pages/BookingPage";
 import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
-import ProMessagingReal from "@/pages/ProMessagingReal";
 import MessagingTest from "@/pages/MessagingTest";
-import ProMessagingWithSearch from "@/pages/ProMessagingWithSearch";
-import ProMessagingPerfect from "@/pages/ProMessagingPerfect";
-import ProMessagingMobile from "@/pages/ProMessagingMobile";
-import ClientMessagingWithSearch from "@/pages/ClientMessagingWithSearch";
-import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
 import SalonBookingFlow from "@/pages/SalonBookingFlow";
@@ -162,7 +156,7 @@ import ClientLoginBooking from "@/pages/ClientLoginBooking";
 import SystemTest from "@/pages/SystemTest";
 import StripePayment from "@/pages/StripePayment";
 import SubscriptionTestLogin from "@/pages/SubscriptionTestLogin";
-import SalonDetail from "@/pages/SalonDetail";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 
 function Router() {
@@ -922,16 +916,18 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
-          <div className="h-full animated-bg">
-            <Toaster />
-            <Router />
-          </div>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <div className="h-full animated-bg">
+              <Toaster />
+              <Router />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

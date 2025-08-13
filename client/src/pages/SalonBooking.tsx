@@ -9,7 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { getGenericGlassButton } from "@/lib/salonColors";
-import { apiRequest } from "@/lib/queryClient";
+import { useNavigation } from "@/hooks/useNavigation";
+import { useLogger } from "@/logger";
+import { getSalonBySlug, getProfessionals, getServices, createPaymentIntent, ApiRequestError } from "@/api";
+import type { Salon, Professional, Service, PreBookingData } from "@/types";
 import {
   ArrowLeft, ChevronDown, ChevronUp, Eye, EyeOff, X
 } from "lucide-react";
@@ -127,46 +130,48 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
 }
 
 function SalonBooking() {
-  const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { navigate, location } = useNavigation();
+  const logger = useLogger('SalonBooking');
   
   // ✅ STANDARDISATION: Utilisation hook officiel Wouter
   const [match, params] = useRoute('/salon-booking/:slug');
   const salonSlug = params?.slug;
   
-  console.log('[NAV] router=wouter, action=extract-params, route=/salon-booking/' + salonSlug, 'match=' + match);
-  console.log('🎯 SALON BOOKING: Extraction salon slug depuis route:', {
+  // Logging robuste avec le système centralisé
+  logger.debug('Route extraction', {
     fullLocation: location,
     match,
-    extractedSalonSlug: salonSlug
+    extractedSalonSlug: salonSlug,
+    routeParams: params
   });
 
   // ✅ SAUVEGARDE SLUG: Pour préserver la navigation dans d'autres pages
   useEffect(() => {
     if (salonSlug) {
       sessionStorage.setItem('currentSalonSlug', salonSlug);
-      console.log('[SLUG] saved to sessionStorage:', salonSlug);
+      logger.debug('Salon slug saved to sessionStorage', { salonSlug });
     }
-  }, [salonSlug]);
+  }, [salonSlug, logger]);
 
   // Récupérer les données de pré-réservation si disponibles
-  const [preBooking, setPreBooking] = useState<any>(null);
+  const [preBooking, setPreBooking] = useState<PreBookingData | null>(null);
   
   useEffect(() => {
     const preBookingData = sessionStorage.getItem('preBookingData');
     const parsedData = preBookingData ? JSON.parse(preBookingData) : null;
     setPreBooking(parsedData);
-    console.log('🔍 Données de pré-réservation récupérées:', parsedData);
-  }, []);
+    logger.debug('Pre-booking data retrieved from sessionStorage', { parsedData });
+  }, [logger]);
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [selectedService, setSelectedService] = useState<any>(null);
-  const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
-  const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{ time: string; date: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('partial'); // partial, full, gift
+  const [paymentMethod, setPaymentMethod] = useState<'partial' | 'full' | 'gift'>('partial');
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginData, setLoginData] = useState({
@@ -281,24 +286,25 @@ function SalonBooking() {
 
   // ✅ SUPPRESSION SYSTÈME FALLBACK COMPLEXE TERMINÉE
 
-  // ✅ UTILISATION API STANDARDISÉE - utilise salonSlug depuis route params
+  // ✅ API CENTRALISÉE TYPÉE: Récupération salon avec validation Zod
   const { data: realSalonData, isLoading: salonLoading, error: salonError } = useQuery({
-    queryKey: [`/api/salons/by-slug/${salonSlug}`],
+    queryKey: ['salon', salonSlug],
+    queryFn: () => getSalonBySlug(salonSlug!),
     enabled: !!salonSlug,
-    retry: false
+    retry: 1,
   });
 
-  // Variable salon avec valeur par défaut pour éviter les erreurs TypeScript
-  const salon = realSalonData || { name: 'Salon', location: 'Adresse', address: 'Adresse', id: '', photos: [] };
-
-  // Récupérer salonId depuis les données réelles du salon
+  // Type safety : seulement utiliser realSalonData si elle est valide
+  const salon: Salon | null = realSalonData || null;
   const salonId = realSalonData?.id || salonSlug;
   
-  console.log('🏢 DONNÉES SALON RÉELLES:', {
+  // Logging centralisé des données salon
+  logger.info('Salon data loaded', {
     salonSlug,
     salonId,
-    realSalonData,
-    salonLoading
+    salonName: realSalonData?.name,
+    salonLoading,
+    hasError: !!salonError
   });
 
   // ✅ GESTION SALON DATA: Utilisation exclusive des données PostgreSQL
@@ -321,8 +327,7 @@ function SalonBooking() {
           <p className="text-gray-400 mb-4">Le salon {salonSlug} n'existe pas dans nos données.</p>
           <button 
             onClick={() => {
-              console.log('[REDIRECT] reason=salon-not-found slug=' + salonSlug);
-              setLocation('/search');
+              navigate('/search', 'salon-not-found', { salonSlug });
             }}
             className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
           >
@@ -333,11 +338,12 @@ function SalonBooking() {
     );
   }
 
-  // ✅ RÉCUPÉRATION DES PROFESSIONNELS - FILTRÉS PAR SALON ID
+  // ✅ API CENTRALISÉE TYPÉE: Récupération professionnels avec validation Zod
   const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: [`/api/salon/${salonId}/professionals`],
+    queryKey: ['professionals', salonId],
+    queryFn: () => getProfessionals({ salonId: salonId! }),
     enabled: !!salonId && !!realSalonData,
-    retry: false
+    retry: 1
   });
 
   // Types pour les données du salon et des professionnels
@@ -358,13 +364,21 @@ function SalonBooking() {
     }
   }, [professionalsArray]);
 
-  console.log('👥 PROFESSIONNELS RÉCUPÉRÉS:', {
-    professionals: professionalsArray,
+  logger.info('Professionals data loaded', {
+    professionalsCount,
     professionalsLoading,
-    count: professionalsCount
+    hasPendingRestore: !!sessionStorage.getItem('pendingProfessionalName')
   });
 
-  // ✅ DÉFINITION DES VARIABLES MANQUANTES
+  // ✅ API CENTRALISÉE TYPÉE: Récupération services avec validation Zod
+  const { data: services = [], isLoading: servicesLoading } = useQuery({
+    queryKey: ['services', salonId],
+    queryFn: () => getServices({ salonId: salonId! }),
+    enabled: !!salonId && !!realSalonData,
+    retry: 1
+  });
+
+  // ✅ SUPPRESSION DES DONNÉES MOCK: Utilisation exclusive des vraies données
   const availableDates = [
     { date: '2024-01-15', day: 'Lun', expanded: false },
     { date: '2024-01-16', day: 'Mar', expanded: false },
@@ -373,14 +387,8 @@ function SalonBooking() {
   
   const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
   
-  // Service par défaut si aucun service sélectionné
-  const service = selectedService || {
-    id: 1,
-    name: 'Service par défaut',
-    price: 50,
-    duration: 60,
-    depositAmount: 15
-  };
+  // ✅ TYPE SAFETY: Pas de service par défaut, utilisation du service sélectionné uniquement
+  const service = selectedService;
 
   const [dateStates, setDateStates] = useState(availableDates);
 
@@ -390,9 +398,11 @@ function SalonBooking() {
     ));
   };
 
-  const handleServiceSelect = (service: any) => {
-    console.log('🎯 SERVICE SÉLECTIONNÉ:', {
-      service,
+  const handleServiceSelect = (service: Service) => {
+    logger.info('Service selected', {
+      serviceId: service.id,
+      serviceName: service.name,
+      servicePrice: service.price,
       professionalsStatus: {
         loaded: Array.isArray(professionalsArray),
         count: professionalsCount,
@@ -403,15 +413,13 @@ function SalonBooking() {
     setCurrentStep(3);
   };
 
-  const handleProfessionalSelect = (professional: any) => {
-    console.log('[BOOKING] slug=' + salonSlug + ', salonId=' + salonId + ', professionalId=' + professional.id + ', prosLen=' + professionalsCount);
-    console.log('👤 PROFESSIONNEL SÉLECTIONNÉ:', {
-      professional,
-      professionalsStatus: {
-        loaded: Array.isArray(professionalsArray),
-        count: professionalsCount,
-        loading: professionalsLoading
-      }
+  const handleProfessionalSelect = (professional: Professional) => {
+    logger.info('Professional selected', {
+      professionalId: professional.id,
+      professionalName: professional.name,
+      salonSlug,
+      salonId,
+      professionalsCount
     });
     setSelectedProfessional(professional);
     setCurrentStep(2);
@@ -429,44 +437,49 @@ function SalonBooking() {
     setCurrentStep(4);
   };
 
-  // Créer un Payment Intent quand l'utilisateur se connecte/s'inscrit
-  const createPaymentIntent = async () => {
+  // ✅ API CENTRALISÉE TYPÉE: Créer Payment Intent avec validation
+  const handleCreatePaymentIntent = async () => {
+    if (!selectedService) {
+      logger.error('Payment intent creation failed: no service selected');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: selectedService?.depositAmount || (selectedService?.price * 0.3) || selectedService?.price || 20.50,
-          currency: 'eur',
-          metadata: {
-            salonName: salon?.name || "Salon",
-            serviceName: selectedService?.name || "Service",
-            servicePrice: selectedService?.price || 0,
-            depositAmount: selectedService?.depositAmount || (selectedService?.price * 0.3) || 0,
-            clientEmail: formData.email,
-            appointmentDate: selectedDate,
-            appointmentTime: selectedSlot?.time
-          }
-        }),
+      const amount = selectedService.depositAmount || (selectedService.price * 0.3) || selectedService.price || 20.50;
+      
+      logger.info('Creating payment intent', {
+        amount,
+        serviceId: selectedService.id,
+        salonId
       });
 
-      const data = await response.json();
+      const { clientSecret } = await createPaymentIntent({
+        amount,
+        currency: 'eur',
+        metadata: {
+          salonName: salon?.name || "Salon",
+          serviceName: selectedService.name,
+          servicePrice: selectedService.price.toString(),
+          depositAmount: (selectedService.depositAmount || (selectedService.price * 0.3)).toString(),
+          clientEmail: formData.email,
+          appointmentDate: selectedDate,
+          appointmentTime: selectedSlot?.time || ''
+        }
+      });
       
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-      } else {
-        toast({
-          title: "Erreur",
-          description: data.error || "Erreur lors de la préparation du paiement",
-          variant: "destructive"
-        });
-      }
-    } catch (err) {
+      setClientSecret(clientSecret);
+      logger.info('Payment intent created successfully');
+      
+    } catch (error) {
+      logger.error('Payment intent creation failed', { 
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      
       toast({
         title: "Erreur",
-        description: "Erreur de connexion. Veuillez réessayer.",
+        description: error instanceof ApiRequestError 
+          ? error.message 
+          : "Erreur lors de la préparation du paiement",
         variant: "destructive"
       });
     }
@@ -506,7 +519,7 @@ function SalonBooking() {
         });
 
         // Créer le Payment Intent pour Stripe
-        await createPaymentIntent();
+        await handleCreatePaymentIntent();
 
         // Sauvegarder les données de réservation pour la confirmation
         const bookingData = {
@@ -538,7 +551,11 @@ function SalonBooking() {
         });
       }
     } catch (error) {
-      console.error('Erreur création compte:', error);
+      logger.error('Account creation failed', { 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        email: formData.email
+      });
+      
       toast({
         title: "Erreur",
         description: "Erreur de connexion. Veuillez réessayer.",
@@ -547,9 +564,12 @@ function SalonBooking() {
     }
   };
 
-  // Fonction pour rediriger vers le paiement
+  // Fonction pour rediriger vers le paiement avec navigation robuste
   const handlePayment = () => {
-    setLocation('/stripe-payment');
+    navigate('/stripe-payment', 'booking-payment', {
+      serviceId: selectedService?.id,
+      salonSlug
+    });
   };
 
   // Fonction pour valider le paiement depuis le bottom sheet
