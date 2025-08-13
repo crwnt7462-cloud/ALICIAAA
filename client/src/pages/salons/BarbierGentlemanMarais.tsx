@@ -143,51 +143,49 @@ export default function BarbierGentlemanMarais() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header avec photo de couverture */}
-      <div className="relative h-64 bg-gradient-to-br from-amber-600 to-orange-700">
+    <div className="min-h-screen bg-black">
+      {/* Header avec photo de couverture - Design mobile exact */}
+      <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
-          src={salon.coverImageUrl || salon.photos?.[0] || defaultSalonData.coverImageUrl} 
-          alt={salon.name}
+          src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+          alt="Gentleman Barbier"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
         
-        {/* Bouton retour */}
+        {/* Bouton retour - Style mobile */}
         <button 
           onClick={() => {
             console.log('🔙 Bouton retour cliqué - Navigation vers /search');
             setLocation('/search');
           }}
-          className="absolute top-4 left-4 glass-button-secondary w-10 h-10 rounded-full flex items-center justify-center z-10"
+          className="absolute top-8 left-4 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center z-10"
         >
           <ArrowLeft className="h-5 w-5 text-white" />
         </button>
         
-        {/* Informations salon en overlay */}
+        {/* Informations salon en overlay - Style exact du screenshot */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-2xl font-bold">{salon.name}</h1>
-            {salon.verified && (
-              <CheckCircle className="h-5 w-5 text-blue-400" />
-            )}
+          <div className="flex items-center gap-2 mb-3">
+            <h1 className="text-3xl font-bold">Gentleman Barbier</h1>
+            <CheckCircle className="h-6 w-6 text-blue-400" />
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-semibold">{salon.rating || 5.0}</span>
-              <span className="opacity-80">({salon.reviews || 0} avis)</span>
+              <span className="font-semibold">4.9</span>
+              <span className="opacity-90">(189 avis)</span>
             </div>
             <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              <span className="opacity-80">{salon.address || 'Paris'}</span>
+              <MapPin className="h-4 w-4 opacity-90" />
+              <span className="opacity-90">Le Marais</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Navigation par onglets */}
-      <div className="bg-white border-b">
+      {/* Navigation par onglets - Style mobile */}
+      <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200">
         <div className="flex">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
@@ -199,8 +197,8 @@ export default function BarbierGentlemanMarais() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'glass-button-amber border-b-2 border-amber-600'
-                  : 'glass-button-secondary'
+                  ? 'text-amber-600 border-b-2 border-amber-600 bg-amber-50/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -210,45 +208,43 @@ export default function BarbierGentlemanMarais() {
         </div>
       </div>
 
-      {/* Contenu des onglets */}
-      <div className="p-4">
+      {/* Contenu des onglets - Style mobile exact */}
+      <div className="bg-white p-6 pb-32">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {displayServiceCategories.map((category: ServiceCategory) => (
-              <Card key={category.id} className="overflow-hidden">
+              <div key={category.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  <h3 className="font-semibold text-lg">{category.name}</h3>
+                  <h3 className="font-semibold text-lg text-gray-900">{category.name}</h3>
                   {category.expanded ? 
-                    <ChevronUp className="h-5 w-5 text-gray-500" /> : 
-                    <ChevronDown className="h-5 w-5 text-gray-500" />
+                    <ChevronUp className="h-5 w-5 text-gray-400" /> : 
+                    <ChevronDown className="h-5 w-5 text-gray-400" />
                   }
                 </button>
                 
                 {category.expanded && (
-                  <CardContent className="pt-0">
-                    <div className="space-y-3">
+                  <div className="border-t border-gray-100">
+                    <div className="space-y-0">
                       {category.services.map((service: Service) => (
-                        <div key={service.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={service.id} className="flex items-center justify-between p-5 border-b border-gray-50 last:border-b-0">
                           <div className="flex-1">
-                            <h4 className="font-medium">{service.name}</h4>
+                            <h4 className="font-medium text-gray-900">{service.name}</h4>
                             {service.description && (
-                              <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                              <p className="text-sm text-gray-500 mt-1">{service.description}</p>
                             )}
-                            <div className="flex items-center gap-3 mt-2">
-                              <div className="flex items-center gap-1 text-sm text-gray-500">
-                                <Clock className="h-3 w-3" />
-                                {service.duration}
-                              </div>
+                            <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                              <Clock className="h-3 w-3" />
+                              {service.duration}
                             </div>
                           </div>
                           <div className="text-right ml-4">
-                            <p className="font-bold text-lg">{service.price}€</p>
+                            <p className="font-bold text-xl text-gray-900 mb-3">{service.price}€</p>
                             <Button 
                               size="sm" 
-                              className="mt-2 glass-button-amber"
+                              className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-medium"
                               onClick={() => {
                                 console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
                                 setLocation('/salon-booking/barbier-gentleman-marais');
@@ -260,9 +256,9 @@ export default function BarbierGentlemanMarais() {
                         </div>
                       ))}
                     </div>
-                  </CardContent>
+                  </div>
                 )}
-              </Card>
+              </div>
             ))}
           </div>
         )}
@@ -358,10 +354,10 @@ export default function BarbierGentlemanMarais() {
         )}
       </div>
 
-      {/* Bouton réservation fixe en bas */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
+      {/* Bouton réservation fixe en bas - Style exact du screenshot */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-purple-100 to-white/95 backdrop-blur-sm border-t border-purple-200">
         <Button 
-          className="w-full glass-button py-3 text-lg font-semibold"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 text-lg font-semibold rounded-2xl shadow-lg"
           onClick={() => {
             console.log('[CLICK] type=main-booking, salon=barbier-gentleman-marais');
             setLocation('/salon-booking/barbier-gentleman-marais');

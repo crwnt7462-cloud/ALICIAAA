@@ -468,7 +468,16 @@ function Router() {
 
   // ✅ SUPPRIMÉ: Redirection parasite vers /search - cause du bug critique
 
-  // ✅ ROUTE DYNAMIQUE POUR TOUS LES SALONS - /salon/:id
+  // ✅ ROUTE SPÉCIFIQUE POUR BARBIER GENTLEMAN MARAIS
+  if (location === '/salon/barbier-gentleman-marais') {
+    return (
+      <div className="h-full">
+        <BarbierGentlemanMarais />
+      </div>
+    );
+  }
+
+  // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES SALONS - /salon/:id
   if (location.startsWith('/salon/') && location !== '/salon') {
     return (
       <div className="h-full">
