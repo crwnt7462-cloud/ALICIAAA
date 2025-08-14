@@ -114,7 +114,7 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
       <Button 
         type="submit"
         disabled={!stripe || isProcessing}
-        className={`w-full ${getGenericGlassButton(0)} text-white py-4 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all`}
+        className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 text-white py-4 rounded-full font-semibold text-lg shadow-2xl hover:shadow-purple-500/50 hover:scale-[1.02] transition-all duration-300 animate-pulse hover:animate-none neon-button"
       >
         {isProcessing ? (
           <div className="flex items-center gap-2">
@@ -637,7 +637,17 @@ function SalonBooking() {
       </div>
 
       <div className="max-w-lg mx-auto p-4">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Choisir un professionnel</h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold text-gray-900">Choisir un professionnel</h2>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.open('/salon-page-editor', '_blank')}
+            className="glass-button hover:glass-effect text-purple-600 border-purple-200 hover:bg-purple-50 transition-all duration-300"
+          >
+            ⚙️ Gérer
+          </Button>
+        </div>
         
         <div className="space-y-3">
           {professionalsLoading ? (
@@ -1499,7 +1509,7 @@ function SalonBooking() {
               });
               setLocation('/');
             }}
-            className="w-full glass-button hover:glass-effect text-black py-3 rounded-full font-medium shadow-md hover:shadow-lg transition-all duration-300"
+            className="w-full bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 text-white py-3 rounded-full font-semibold shadow-2xl hover:shadow-purple-500/50 hover:scale-[1.02] transition-all duration-300 animate-pulse hover:animate-none neon-button"
           >
             Confirmer la réservation
           </Button>

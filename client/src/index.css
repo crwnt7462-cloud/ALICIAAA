@@ -31,6 +31,72 @@
   box-shadow: 0 4px 16px 0 rgba(31, 38, 135, 0.3);
 }
 
+/* Boutons Néon Avyento */
+.neon-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 50%, #8B5CF6 100%) !important;
+  border: none !important;
+  box-shadow: 
+    0 0 20px rgba(139, 92, 246, 0.6),
+    0 0 40px rgba(236, 72, 153, 0.4),
+    0 0 60px rgba(139, 92, 246, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+  animation: neon-glow 2s ease-in-out infinite alternate;
+}
+
+.neon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s;
+}
+
+.neon-button:hover::before {
+  left: 100%;
+}
+
+.neon-button:hover {
+  animation: neon-glow-intense 0.3s ease-in-out;
+  transform: scale(1.02) translateY(-1px) !important;
+}
+
+@keyframes neon-glow {
+  from {
+    box-shadow: 
+      0 0 20px rgba(139, 92, 246, 0.6),
+      0 0 40px rgba(236, 72, 153, 0.4),
+      0 0 60px rgba(139, 92, 246, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  to {
+    box-shadow: 
+      0 0 30px rgba(139, 92, 246, 0.8),
+      0 0 60px rgba(236, 72, 153, 0.6),
+      0 0 90px rgba(139, 92, 246, 0.4),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes neon-glow-intense {
+  0% {
+    box-shadow: 
+      0 0 20px rgba(139, 92, 246, 0.6),
+      0 0 40px rgba(236, 72, 153, 0.4),
+      0 0 60px rgba(139, 92, 246, 0.3);
+  }
+  100% {
+    box-shadow: 
+      0 0 40px rgba(139, 92, 246, 1),
+      0 0 80px rgba(236, 72, 153, 0.8),
+      0 0 120px rgba(139, 92, 246, 0.6);
+  }
+}
+
 /* Toast Notifications Glassmorphism Personnalisé */
 .glass-toast-success {
   background: linear-gradient(135deg, 
