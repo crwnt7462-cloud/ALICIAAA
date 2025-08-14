@@ -107,9 +107,9 @@ export default function SalonSettingsModern() {
         {/* Bouton retour */}
         <button
           onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 p-2"
+          className="absolute left-4 top-4 z-10 glass-button text-black px-3 py-2 rounded-2xl shadow-xl hover:shadow-2xl"
         >
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
 
         {/* Container principal */}
@@ -132,10 +132,10 @@ export default function SalonSettingsModern() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-sm font-medium transition-colors ${
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl font-semibold transition-all ${
                     activeTab === tab.id 
-                      ? 'glass-button text-black shadow-sm' 
-                      : 'text-gray-500 hover:text-gray-700'
+                      ? 'glass-button text-black shadow-xl hover:shadow-2xl' 
+                      : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   }`}
                 >
                   <tab.icon className="h-4 w-4" />
@@ -284,7 +284,7 @@ export default function SalonSettingsModern() {
               <button
                 onClick={handleSave}
                 disabled={saveMutation.isPending}
-                className="w-full h-12 glass-button text-black rounded-2xl text-base font-medium disabled:opacity-50 flex items-center justify-center gap-2"
+                className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl w-full disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 <Save className="h-4 w-4" />
                 {saveMutation.isPending ? "Sauvegarde..." : "Sauvegarder"}

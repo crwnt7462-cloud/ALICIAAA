@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
 

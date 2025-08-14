@@ -158,13 +158,13 @@ export default function Clients() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button 
-              className="glass-button-pink shadow-md hover:scale-105 transition-all duration-200 rounded-lg"
+            <button 
+              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center"
               onClick={handleNewClient}
             >
               <Plus className="w-4 h-4 mr-2" />
               Nouveau client
-            </Button>
+            </button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -242,19 +242,20 @@ export default function Clients() {
                   )}
                 />
                 <div className="flex justify-end space-x-2 pt-4">
-                  <Button 
+                  <button 
                     type="button" 
-                    variant="outline" 
                     onClick={() => setIsDialogOpen(false)}
+                    className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                   >
                     Annuler
-                  </Button>
-                  <Button 
+                  </button>
+                  <button 
                     type="submit" 
                     disabled={createMutation.isPending || updateMutation.isPending}
+                    className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl disabled:opacity-50"
                   >
                     {editingClient ? "Modifier" : "Créer"}
-                  </Button>
+                  </button>
                 </div>
               </form>
             </Form>

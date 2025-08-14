@@ -178,13 +178,12 @@ export default function Planning() {
       {/* Header avec navigation de date et toggle vue */}
       <div className="glass-card rounded-lg p-4 space-y-4">
         <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => viewMode === 'day' ? changeDate(-1) : changeDate(-30)}
+            className="glass-button text-black px-4 py-2 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
           >
             <ChevronLeft className="h-4 w-4" />
-          </Button>
+          </button>
           
           <div className="text-center">
             <h1 className="text-lg font-semibold capitalize">
@@ -206,20 +205,22 @@ export default function Planning() {
 
         {/* Toggle vue jour/semaine/mois */}
         <div className="flex items-center justify-center gap-2">
-          <Button
-            variant={viewMode === 'day' ? 'default' : 'outline'}
-            size="sm"
+          <button
             onClick={() => setViewMode('day')}
+            className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+              viewMode === 'day' ? 'bg-violet-600 text-white border-violet-700' : ''
+            }`}
           >
             Jour
-          </Button>
-          <Button
-            variant={viewMode === 'week' ? 'default' : 'outline'}
-            size="sm"
+          </button>
+          <button
             onClick={() => setViewMode('week')}
+            className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+              viewMode === 'week' ? 'bg-violet-600 text-white border-violet-700' : ''
+            }`}
           >
             Semaine
-          </Button>
+          </button>
           <Button
             variant={viewMode === 'month' ? 'default' : 'outline'}
             size="sm"
@@ -234,10 +235,10 @@ export default function Planning() {
       <div className="grid grid-cols-2 gap-2">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="h-12 flex items-center gap-2">
+            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Nouveau RDV
-            </Button>
+            </button>
           </DialogTrigger>
           <DialogContent className="max-w-sm">
             <DialogHeader>
@@ -325,9 +326,9 @@ export default function Planning() {
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={createMutation.isPending}>
+                <button type="submit" className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl w-full disabled:opacity-50" disabled={createMutation.isPending}>
                   {createMutation.isPending ? "Création..." : "Créer le rendez-vous"}
-                </Button>
+                </button>
               </form>
             </Form>
           </DialogContent>

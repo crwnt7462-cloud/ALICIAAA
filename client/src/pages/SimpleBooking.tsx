@@ -208,14 +208,12 @@ export default function SimpleBooking() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         
         {/* Bouton retour */}
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={() => window.history.back()}
-          className="absolute top-4 left-4 text-white hover:bg-white/20 backdrop-blur-sm"
+          className="absolute top-4 left-4 glass-button text-white px-3 py-2 rounded-xl shadow-xl hover:shadow-2xl"
         >
           <ArrowLeft className="w-4 h-4" />
-        </Button>
+        </button>
         
         {/* Badge certifié */}
         {salon.verified && (
@@ -423,16 +421,15 @@ export default function SimpleBooking() {
               <Label className="text-base font-medium">Date</Label>
               <div className="grid grid-cols-2 gap-2 mt-3">
                 {getAvailableDates().map((date) => (
-                  <Button
+                  <button
                     key={date.value}
-                    variant={selectedDate === date.value ? "default" : "outline"}
-                    className={`p-3 h-auto ${
-                      selectedDate === date.value ? 'bg-violet-600 hover:bg-violet-700' : ''
+                    className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+                      selectedDate === date.value ? 'bg-violet-600 text-white border-violet-700' : ''
                     }`}
                     onClick={() => setSelectedDate(date.value)}
                   >
                     {date.label}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
@@ -442,16 +439,15 @@ export default function SimpleBooking() {
                 <Label className="text-base font-medium">Heure</Label>
                 <div className="grid grid-cols-3 gap-2 mt-3">
                   {timeSlots.map((time) => (
-                    <Button
+                    <button
                       key={time}
-                      variant={selectedTime === time ? "default" : "outline"}
-                      className={`p-2 ${
-                        selectedTime === time ? 'bg-violet-600 hover:bg-violet-700' : ''
+                      className={`glass-button text-black px-4 py-2 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+                        selectedTime === time ? 'bg-violet-600 text-white border-violet-700' : ''
                       }`}
                       onClick={() => setSelectedTime(time)}
                     >
                       {time}
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -683,32 +679,30 @@ export default function SimpleBooking() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
         <div className="max-w-2xl mx-auto flex space-x-3">
           {step > 1 && (
-            <Button
-              variant="outline"
+            <button
               onClick={handleBack}
-              className="flex-1"
+              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1"
             >
               Retour
-            </Button>
+            </button>
           )}
           
           {step < 4 ? (
-            <Button
+            <button
               onClick={handleNext}
               disabled={!isStepComplete()}
-              className="flex-1 bg-violet-600 hover:bg-violet-700"
+              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1 disabled:opacity-50"
             >
               Continuer
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               onClick={handleBooking}
-              className="flex-1 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg"
-              size="lg"
+              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1 inline-flex items-center justify-center"
             >
               <CreditCard className="w-5 h-5 mr-2" />
               Confirmer et payer {selectedServiceData?.price}€
-            </Button>
+            </button>
           )}
         </div>
       </div>
