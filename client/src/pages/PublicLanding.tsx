@@ -462,7 +462,7 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3">
               {/* Bouton hamburger animé avec Framer Motion */}
               <motion.button
                 id="hamburger-button"
@@ -551,7 +551,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-1 leading-tight"
             >
               Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
             </motion.h2>
@@ -632,7 +632,7 @@ export default function PublicLanding() {
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Rejoignez des milliers de professionnels</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-1">Rejoignez des milliers de professionnels</h2>
             <p className="text-lg text-gray-600">Ils nous font confiance pour <br className="sm:hidden" />développer leur activité</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -676,7 +676,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6"
+              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1"
             >
               Ils parlent d'<span className="text-violet-600">Avyento</span>
             </motion.h2>
