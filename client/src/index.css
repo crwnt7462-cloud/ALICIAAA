@@ -191,7 +191,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: url('@assets/IMG_1532_1755209271985.jpeg') center/cover no-repeat;
+    background: url('@assets/IMG_3297_1755212245912.jpeg') center/cover no-repeat;
     filter: blur(14px);                 /* flou net et visible */
     opacity: .35;                       /* lisibilité parfaite du texte */
     z-index: 0;
