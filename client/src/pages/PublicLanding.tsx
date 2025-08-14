@@ -383,9 +383,9 @@ export default function PublicLanding() {
             
             {/* Colonne droite - Mockup téléphone (visible sur desktop uniquement) */}
             <div className="relative lg:flex justify-center hidden">
-              <div className="relative transform rotate-12 translate-x-4 translate-y-8">
+              <div className="relative transform rotate-12 translate-x-8 translate-y-4">
                 {/* Mockup de téléphone style iPhone incliné */}
-                <div className="w-72 h-[580px] bg-white rounded-[2.5rem] shadow-2xl border-4 border-gray-200 relative overflow-hidden">
+                <div className="w-80 h-[600px] bg-white rounded-[3rem] shadow-2xl border-2 border-gray-100 relative overflow-hidden">
                   {/* Barre de statut iPhone */}
                   <div className="flex justify-between items-center px-4 py-2 text-xs font-medium text-gray-900">
                     <span>9:41</span>
@@ -408,38 +408,38 @@ export default function PublicLanding() {
                     </div>
                   </div>
                   
-                  {/* Contenu de l'écran - reproduction exacte du screenshot */}
-                  <div className="px-5 py-4 space-y-3">
-                    {/* Header "Sélectionnez..." centré */}
-                    <div className="bg-gray-100 rounded-2xl p-4 text-center">
-                      <div className="text-base font-medium text-gray-800 mb-1">Sélectionnez...</div>
+                  {/* Contenu de l'écran - parfaitement centré */}
+                  <div className="px-6 py-6 space-y-4 flex flex-col items-center">
+                    {/* Header "Sélectionnez..." */}
+                    <div className="bg-gray-50 rounded-2xl p-4 w-full text-center">
+                      <div className="text-base font-semibold text-gray-800 mb-1">Sélectionnez...</div>
                       <div className="text-sm text-gray-500">Sous un checker</div>
                     </div>
                     
-                    {/* Cards exactement comme le screenshot - centrées */}
-                    <div className="space-y-3">
-                      {/* Card violette avec point */}
+                    {/* Cards parfaitement centrées */}
+                    <div className="space-y-3 w-full">
+                      {/* Card violette avec point centré */}
                       <div className="bg-violet-100 rounded-2xl p-4 text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="flex items-center justify-center gap-2 mb-1">
                           <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
-                          <div className="text-base font-medium text-gray-800">Sérebo...</div>
+                          <span className="text-base font-medium text-gray-800">Sérebo...</span>
                         </div>
                         <div className="text-sm text-gray-600">1.000+</div>
                       </div>
                       
-                      {/* Card rose avec grand nombre */}
+                      {/* Card rose avec grand nombre centré */}
                       <div className="bg-pink-100 rounded-2xl p-4 text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
+                        <div className="flex items-center justify-center gap-2">
                           <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                          <div className="text-2xl font-bold text-gray-800">90.000+</div>
+                          <span className="text-2xl font-bold text-gray-800">90.000+</span>
                         </div>
                       </div>
                       
-                      {/* Card violette "4.0 tv" */}
+                      {/* Card violette "4.0 tv" centrée */}
                       <div className="bg-violet-100 rounded-2xl p-4 text-center">
                         <div className="flex items-center justify-center gap-2 mb-2">
                           <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
-                          <div className="text-base font-medium text-gray-800">4.0 tv</div>
+                          <span className="text-base font-medium text-gray-800">4.0 tv</span>
                         </div>
                         <div className="text-sm text-gray-600 leading-tight">
                           Salons<br/>
@@ -449,9 +449,9 @@ export default function PublicLanding() {
                       </div>
                     </div>
                     
-                    {/* Bouton principal exactement comme le screenshot */}
-                    <div className="mt-6">
-                      <div className="bg-violet-500 text-white text-center py-4 px-6 rounded-3xl text-base font-medium">
+                    {/* Bouton principal centré */}
+                    <div className="w-full mt-4">
+                      <div className="bg-violet-500 text-white text-center py-4 px-6 rounded-3xl text-base font-semibold">
                         Pécher à nos jipl salons
                       </div>
                     </div>
