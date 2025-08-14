@@ -633,7 +633,7 @@ export default function PublicLanding() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Rejoignez des milliers de professionnels</h2>
-            <p className="text-xl text-gray-600">Ils nous font confiance pour développer leur activité</p>
+            <p className="text-lg text-gray-600">Ils nous font confiance pour développer leur activité</p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
@@ -676,7 +676,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
+              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6"
             >
               Ils parlent d'<span className="text-violet-600">Avyento</span>
             </motion.h2>
@@ -685,7 +685,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-lg text-gray-600 max-w-3xl mx-auto"
             >
               Découvrez les témoignages de nos professionnels partenaires qui ont transformé leur activité avec notre plateforme.
             </motion.p>
@@ -785,7 +785,7 @@ export default function PublicLanding() {
                 <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
               Salons recommandés
             </h2>
             <p className="text-lg text-gray-600">
