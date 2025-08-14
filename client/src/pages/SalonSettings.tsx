@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
+import { useState } from 'react';
+// import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,54 +8,24 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { useSalonSync } from '@/hooks/useSalonSync';
+import { useSalonData } from '@/hooks/useSalonData';
 import { 
   ArrowLeft, 
-  Settings, 
   Store, 
   Clock, 
   Users, 
   Bell,
-  MapPin,
-  Phone,
-  Mail,
-  Camera,
   Save,
   CheckCircle2
 } from 'lucide-react';
 
 export default function SalonSettings() {
-  const [, setLocation] = useLocation();
+  // const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isManualLoading, setIsManualLoading] = useState(false);
   
-  const [salonData, setSalonData] = useState({
-    id: 'salon-pro-1', // ID du salon du professionnel connecté
-    name: '',
-    address: '',
-    phone: '',
-    email: '',
-    description: '',
-    openingHours: {
-      monday: { open: '', close: '', closed: true },
-      tuesday: { open: '', close: '', closed: true },
-      wednesday: { open: '', close: '', closed: true },
-      thursday: { open: '', close: '', closed: true },
-      friday: { open: '', close: '', closed: true },
-      saturday: { open: '', close: '', closed: true },
-      sunday: { open: '', close: '', closed: true }
-    },
-    notifications: {
-      newBookings: false,
-      cancellations: false,
-      reminders: false,
-      reviews: false
-    },
-    bookingSettings: {
-      advanceBooking: 0,
-      cancellationDelay: 0,
-      autoConfirm: false
-    }
-  });
+  // Hook pour gérer les données du salon avec persistance
+  const { salonData, setSalonData, isLoading } = useSalonData('salon-pro-1');
 
   // Hook de sauvegarde automatique
   const { forceSave, isSaving } = useAutoSave({
@@ -74,10 +44,10 @@ export default function SalonSettings() {
   useSalonSync();
 
   const handleSave = async () => {
-    setIsLoading(true);
+    setIsManualLoading(true);
     try {
-      // Simulation de sauvegarde
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Forcer la sauvegarde immédiate
+      await forceSave();
       
       toast({
         title: "Paramètres sauvegardés",
@@ -90,7 +60,7 @@ export default function SalonSettings() {
         variant: "destructive"
       });
     } finally {
-      setIsLoading(false);
+      setIsManualLoading(false);
     }
   };
 
@@ -117,6 +87,18 @@ export default function SalonSettings() {
     { key: 'sunday', label: 'Dimanche' }
   ];
 
+  // Afficher un état de chargement pendant le chargement initial
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Chargement des paramètres...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -142,12 +124,12 @@ export default function SalonSettings() {
             </div>
             <Button 
               size="sm"
-              onClick={forceSave}
-              disabled={isLoading || isSaving}
+              onClick={handleSave}
+              disabled={isLoading || isManualLoading || isSaving}
               className="bg-violet-600 hover:bg-violet-700"
             >
               <Save className="w-3 h-3 mr-1" />
-              {isLoading || isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
+              {isLoading || isManualLoading || isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
         </div>
@@ -230,25 +212,25 @@ export default function SalonSettings() {
                     className="scale-75"
                   />
                   
-                  {!hours.closed && (
+                  {hours && !hours.closed && (
                     <div className="flex items-center gap-2 flex-1">
                       <Input
                         type="time"
-                        value={hours.open}
+                        value={hours.open || ''}
                         onChange={(e) => updateOpeningHours(day.key, 'open', e.target.value)}
                         className="text-sm"
                       />
                       <span className="text-gray-500 text-sm">-</span>
                       <Input
                         type="time"
-                        value={hours.close}
+                        value={hours.close || ''}
                         onChange={(e) => updateOpeningHours(day.key, 'close', e.target.value)}
                         className="text-sm"
                       />
                     </div>
                   )}
                   
-                  {hours.closed && (
+                  {hours && hours.closed && (
                     <div className="flex-1 text-sm text-gray-500">Fermé</div>
                   )}
                 </div>

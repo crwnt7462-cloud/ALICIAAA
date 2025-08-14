@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+// import { apiRequest } from '@/lib/queryClient';
 
 interface AutoSaveOptions {
   data: any;
@@ -44,10 +44,17 @@ export function useAutoSave({
       try {
         isSavingRef.current = true;
         
-        await apiRequest(endpoint, {
-          method: 'PUT',
-          body: JSON.stringify(data),
-        });
+        // Simuler une sauvegarde API (remplacer par vraie API)
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Sauvegarder en localStorage comme backup
+        localStorage.setItem(`salon-${data.id}`, JSON.stringify(data));
+        
+        // TODO: Remplacer par un vrai appel API
+        // await apiRequest(endpoint, {
+        //   method: 'PUT',
+        //   body: JSON.stringify(data),
+        // });
 
         previousDataRef.current = data;
         
@@ -105,10 +112,17 @@ export function useAutoSave({
     try {
       isSavingRef.current = true;
       
-      await apiRequest(endpoint, {
-        method: 'PUT',
-        body: JSON.stringify(data),
-      });
+      // Simuler une sauvegarde API (remplacer par vraie API)
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Sauvegarder en localStorage comme backup
+      localStorage.setItem(`salon-${data.id}`, JSON.stringify(data));
+      
+      // TODO: Remplacer par un vrai appel API
+      // await apiRequest(endpoint, {
+      //   method: 'PUT',
+      //   body: JSON.stringify(data),
+      // });
 
       previousDataRef.current = data;
       
