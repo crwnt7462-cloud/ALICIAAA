@@ -39,7 +39,7 @@ function PaymentForm({ bookingData, onSuccess }: { bookingData: BookingData; onS
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            amount: 20.50, // Montant de l'acompte
+            amount: bookingData.servicePrice * 0.3, // Acompte de 30%
             currency: 'eur',
             metadata: {
               salonName: bookingData.salonName,
@@ -171,7 +171,7 @@ function PaymentForm({ bookingData, onSuccess }: { bookingData: BookingData; onS
             Traitement en cours...
           </div>
         ) : (
-          `Payer 20,50 €`
+          `Payer ${(bookingData.servicePrice * 0.3).toFixed(2)} €`
         )}
       </Button>
     </form>

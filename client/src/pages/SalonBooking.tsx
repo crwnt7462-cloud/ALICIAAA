@@ -45,7 +45,7 @@ const getSpecialtiesArray = (specialties: any): string[] => {
 };
 
 // Composant de paiement Stripe intégré
-function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void, clientSecret: string }) {
+function StripePaymentForm({ onSuccess, clientSecret, amount }: { onSuccess: () => void, clientSecret: string, amount: number }) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -122,7 +122,7 @@ function StripePaymentForm({ onSuccess, clientSecret }: { onSuccess: () => void,
             Traitement en cours...
           </div>
         ) : (
-          `Confirmer & Payer 20,00 €`
+          `Confirmer & Payer ${amount.toFixed(2)} €`
         )}
       </Button>
     </form>
@@ -1183,6 +1183,7 @@ function SalonBooking() {
                   }, 2000);
                 }}
                 clientSecret={clientSecret}
+                amount={selectedService ? (selectedService.depositAmount || (selectedService.price * 0.3) || selectedService.price) : 20}
               />
             </Elements>
           ) : (

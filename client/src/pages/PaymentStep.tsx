@@ -293,7 +293,7 @@ export default function PaymentStep() {
                 Payer une partie maintenant, le reste sur place
               </p>
               <p className="text-sm text-gray-600 mb-2">
-                Payer une partie 20 € maintenant puis le reste 20 € sur place.
+                Payer une partie {Math.round((bookingData?.price || 40) * 0.5)} € maintenant puis le reste {Math.round((bookingData?.price || 40) * 0.5)} € sur place.
               </p>
             </div>
           </label>
@@ -309,7 +309,7 @@ export default function PaymentStep() {
             <div className="flex-1">
               <p className="font-medium text-gray-900 mb-1">Payer la totalité</p>
               <p className="text-sm text-gray-600">
-                Payer maintenant le montant total 39,00 € de votre réservation.
+                Payer maintenant le montant total {(bookingData?.price || 39).toFixed(2)} € de votre réservation.
               </p>
             </div>
           </label>
