@@ -408,46 +408,56 @@ export default function PublicLanding() {
                     </div>
                   </div>
                   
-                  {/* Contenu de l'écran */}
-                  <div className="px-4 py-4 space-y-3">
-                    {/* En-tête avec texte "Sélectionnez..." */}
-                    <div className="bg-gray-50 rounded-xl p-3">
-                      <div className="text-sm font-medium text-gray-800 mb-1">Sélectionnez...</div>
-                      <div className="text-xs text-gray-500">Sous un checker</div>
+                  {/* Contenu de l'écran - reproduction exacte du screenshot */}
+                  <div className="px-4 py-3 space-y-3">
+                    {/* Header "Sélectionnez..." */}
+                    <div className="bg-gray-100 rounded-2xl p-4">
+                      <div className="text-base font-medium text-gray-800 mb-1">Sélectionnez...</div>
+                      <div className="text-sm text-gray-500">Sous un checker</div>
                     </div>
                     
-                    {/* Cards salon comme dans le screenshot */}
-                    <div className="space-y-2">
-                      {/* Card violette "Sérebo" */}
-                      <div className="bg-purple-100 rounded-xl p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-gray-800">Sérebo...</span>
+                    {/* Cards exactement comme le screenshot */}
+                    <div className="space-y-3">
+                      {/* Card violette avec point */}
+                      <div className="bg-violet-100 rounded-2xl p-4 relative">
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 bg-violet-500 rounded-full mt-1"></div>
+                          <div>
+                            <div className="text-base font-medium text-gray-800">Sérebo...</div>
+                            <div className="text-sm text-gray-600 mt-1">1.000+</div>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-600">1.000+</div>
                       </div>
                       
-                      {/* Card rose "90.000+" */}
-                      <div className="bg-pink-100 rounded-xl p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-                          <span className="text-lg font-bold text-gray-800">90.000+</span>
+                      {/* Card rose avec grand nombre */}
+                      <div className="bg-pink-100 rounded-2xl p-4 relative">
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 bg-pink-500 rounded-full mt-1"></div>
+                          <div>
+                            <div className="text-2xl font-bold text-gray-800">90.000+</div>
+                          </div>
                         </div>
                       </div>
                       
                       {/* Card violette "4.0 tv" */}
-                      <div className="bg-purple-100 rounded-xl p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-gray-800">4.0 tv</span>
+                      <div className="bg-violet-100 rounded-2xl p-4 relative">
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 bg-violet-500 rounded-full mt-1"></div>
+                          <div>
+                            <div className="text-base font-medium text-gray-800 mb-1">4.0 tv</div>
+                            <div className="text-sm text-gray-600 leading-tight">
+                              Salons<br/>
+                              & instituts<br/>
+                              & cliniques
+                            </div>
+                          </div>
                         </div>
-                        <div className="text-xs text-gray-600">Salons<br/>& instituts<br/>& cliniques</div>
                       </div>
                     </div>
                     
-                    {/* Bouton principal violet arrondi */}
-                    <div className="mt-4">
-                      <div className="bg-violet-500 text-white text-center py-3 px-4 rounded-2xl text-sm font-medium">
+                    {/* Bouton principal exactement comme le screenshot */}
+                    <div className="mt-6">
+                      <div className="bg-violet-500 text-white text-center py-4 px-6 rounded-3xl text-base font-medium">
                         Pécher à nos jipl salons
                       </div>
                     </div>
