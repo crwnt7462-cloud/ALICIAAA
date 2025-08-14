@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Cpu } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -101,14 +101,16 @@ export default function PublicLanding() {
     {
       icon: <Bot className="w-6 h-6" />,
       title: "IA Prédictive",
-      description: "Optimisation automatique des plannings et prédiction des créneaux rentables",
-      highlight: "EXCLUSIF"
+      description: "Analyse vos données pour prédire les créneaux les plus rentables et optimiser automatiquement votre planning",
+      highlight: "EXCLUSIF",
+      benefits: ["Augmentation CA +35%", "Optimisation temps réel", "Prédictions précises"]
     },
     {
       icon: <Zap className="w-6 h-6" />,
-      title: "Automatisation",
-      description: "Rappels, confirmations et gestion complète sans intervention manuelle",
-      highlight: "PRO"
+      title: "Automatisation Complète",
+      description: "Gestion automatique des rappels, confirmations et follow-up clients sans intervention",
+      highlight: "PRO",
+      benefits: ["Zéro oubli", "Gain de temps 3h/jour", "Satisfaction client +40%"]
     }
   ];
 
@@ -436,15 +438,15 @@ export default function PublicLanding() {
       <HeroSlash />
 
       {/* Section IA Minimaliste - Style iOS */}
-      <section className="py-24 bg-white">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-sm font-medium mb-6"
+              className="inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-sm font-medium mb-4"
             >
               Intelligence Artificielle
             </motion.div>
@@ -453,7 +455,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-4 leading-tight"
+              className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
             >
               Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
             </motion.h2>
@@ -462,13 +464,13 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-lg text-gray-600 max-w-2xl mx-auto"
+              className="text-lg text-gray-600 max-w-2xl mx-auto mb-8"
             >
-              Optimisation automatique de vos plannings pour maximiser vos revenus.
+              Seule solution qui analyse et optimise automatiquement vos revenus.
             </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-6 mb-12">
             {aiFeatures.map((feature, index) => (
               <motion.div
                 key={index}
@@ -478,25 +480,55 @@ export default function PublicLanding() {
                 viewport={{ once: true }}
                 className="relative"
               >
-                <div className="bg-gray-50 rounded-3xl p-8 h-full border border-gray-100 hover:border-violet-200 transition-colors">
-                  <div className="flex items-start gap-4">
+                <div className="bg-gray-50 rounded-3xl p-6 h-full border border-gray-100 hover:border-violet-200 transition-colors">
+                  <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center flex-shrink-0">
                       <span className="text-violet-600">{feature.icon}</span>
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-3 mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
                         <span className="text-xs font-medium bg-violet-100 text-violet-700 px-2 py-1 rounded-full">
                           {feature.highlight}
                         </span>
                       </div>
-                      <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                      <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
                     </div>
+                  </div>
+                  
+                  {/* Avantages */}
+                  <div className="space-y-2">
+                    {feature.benefits.map((benefit, benefitIndex) => (
+                      <div key={benefitIndex} className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-green-100 rounded-full flex items-center justify-center">
+                          <CheckCircle2 className="w-3 h-3 text-green-600" />
+                        </div>
+                        <span className="text-sm text-gray-700">{benefit}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
+
+          {/* CTA vers abonnements */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Button 
+              className="glass-button-violet text-lg px-8 py-4"
+              onClick={() => setLocation("/professional-plans")}
+            >
+              Découvrir nos offres IA
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <p className="text-sm text-gray-500 mt-3">Essai gratuit 14 jours • Sans engagement</p>
+          </motion.div>
         </div>
       </section>
 
@@ -972,10 +1004,7 @@ export default function PublicLanding() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-3 mb-4">
-                <img src={logoImage} alt="Avyento" className="h-8 w-auto" />
-                <h3 className="text-xl font-bold">Avyento</h3>
-              </div>
+              <h3 className="text-xl font-bold mb-4">Avyento</h3>
               <p className="text-gray-400 text-sm">
                 La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
