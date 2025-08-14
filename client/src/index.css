@@ -222,6 +222,26 @@
 @media (min-width: 981px){
   .heroSlash::before{ content: none !important; }
 }
+
+/* Nouveaux boutons glass pour les sections */
+.glass-button-violet {
+  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10)) padding-box,
+              linear-gradient(90deg, var(--violet), var(--violet-2)) border-box;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 12px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(122,77,255,.25);
+}
+
+.glass-button-violet:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(122,77,255,.35);
+}
 @media (max-width: 560px){
   .heroSlash{ padding: 40px 16px 22px; }
   .heroSlash__title{ font-size: clamp(34px, 8vw, 44px); }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
+import { Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, MessageCircle, Zap, ArrowRight, Play, Cpu, Brain, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -90,13 +90,35 @@ export default function PublicLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-
-
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
     { number: "2,500+", label: "Salons partenaires" },
     { number: "4.9/5", label: "Satisfaction client" },
     { number: "24h/24", label: "Réservation disponible" }
+  ];
+
+  const features = [
+    {
+      icon: <Bot className="w-8 h-8" />,
+      title: "IA Révolutionnaire",
+      description: "Seule plateforme avec IA prédictive pour optimiser vos plannings automatiquement",
+      highlight: "EXCLUSIF",
+      color: "violet"
+    },
+    {
+      icon: <MessageCircle className="w-8 h-8" />,
+      title: "Messagerie Intégrée",
+      description: "Communication directe pro-client avec notifications temps réel",
+      highlight: "NOUVEAU",
+      color: "blue"
+    },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Automatisation Complète",
+      description: "Rappels, confirmations et gestion de l'agenda 100% automatisés",
+      highlight: "PRO",
+      color: "amber"
+    }
   ];
 
 
@@ -392,44 +414,185 @@ export default function PublicLanding() {
       {/* Nouveau Hero selon spécifications exactes */}
       <HeroSlash />
 
+      {/* Section IA Exclusive - Inspired by SaaS template */}
+      <section className="py-16 bg-gradient-to-br from-violet-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+            >
+              <Cpu className="w-4 h-4" />
+              Intelligence Artificielle Avancée
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
+            >
+              Révolutionnez votre salon avec l'<span className="text-violet-600">IA</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Seule plateforme beauté intégrant une IA prédictive pour optimiser automatiquement vos plannings et maximiser vos revenus.
+            </motion.p>
+          </div>
 
-
-      {/* Statistiques et garanties */}
-      <section className="py-6 md:py-8 bg-white border-y border-gray-100">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center mb-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="p-2">
-                <div className="text-xl md:text-2xl font-bold text-gray-900 mb-1">
-                  {stat.number}
+          <div className="grid lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative group"
+              >
+                <div className="bg-white/70 backdrop-blur-lg border border-white/30 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 h-full">
+                  <div className="absolute top-4 right-4">
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                      feature.color === 'violet' ? 'bg-violet-100 text-violet-700' :
+                      feature.color === 'blue' ? 'bg-blue-100 text-blue-700' :
+                      'bg-amber-100 text-amber-700'
+                    }`}>
+                      {feature.highlight}
+                    </span>
+                  </div>
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6 ${
+                    feature.color === 'violet' ? 'bg-violet-100 text-violet-600' :
+                    feature.color === 'blue' ? 'bg-blue-100 text-blue-600' :
+                    'bg-amber-100 text-amber-600'
+                  }`}>
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600 mb-6">{feature.description}</p>
+                  <Button className="glass-button-violet w-full group-hover:scale-105 transition-transform">
+                    En savoir plus
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </div>
-                <div className="text-xs md:text-sm text-gray-600">
-                  {stat.label}
-                </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-          
-          {/* Garanties professionnelles */}
-          <div className="border-t pt-4">
-            <div className="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-3 md:gap-6 text-xs md:text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-green-600 flex-shrink-0" />
-                <span>SSL sécurisé</span>
+        </div>
+      </section>
+
+      {/* Messagerie Intégrée Section */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <MessageSquare className="w-4 h-4" />
+                Communication Révolutionnaire
               </div>
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                <span>Pros certifiés</span>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                Messagerie intégrée <span className="text-blue-600">pro-client</span>
+              </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Communiquez directement avec vos clients via notre messagerie intégrée. 
+                Notifications temps réel, historique complet, tout dans une seule interface.
+              </p>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Messages temps réel instantanés</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Notifications push automatiques</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <span className="text-gray-700">Historique conversations sauvegardé</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-violet-600 flex-shrink-0" />
-                <span>Support 7j/7</span>
+              <Button className="glass-button-violet">
+                <Play className="w-4 h-4 mr-2" />
+                Voir la démo
+              </Button>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+                <div className="space-y-4">
+                  <div className="bg-white rounded-2xl p-4 shadow-sm">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-violet-600" />
+                      </div>
+                      <span className="font-medium text-gray-900">Sophie Martin</span>
+                      <span className="text-xs text-gray-500">Il y a 2 min</span>
+                    </div>
+                    <p className="text-gray-700">Bonjour ! Je souhaiterais décaler mon RDV de demain à 15h, est-ce possible ?</p>
+                  </div>
+                  <div className="bg-violet-500 rounded-2xl p-4 ml-8">
+                    <p className="text-white">Bien sûr ! Je vous confirme le nouveau créneau 15h-16h30. À bientôt 😊</p>
+                  </div>
+                  <div className="text-center">
+                    <span className="text-xs text-gray-400">✓ Lu par Sophie</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" />
-                <span>Satisfait ou remboursé</span>
-              </div>
-            </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistiques améliorées */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Rejoignez des milliers de professionnels</h2>
+            <p className="text-xl text-gray-600">Ils nous font confiance pour développer leur activité</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="text-center"
+              >
+                <div className="text-3xl lg:text-4xl font-bold text-violet-600 mb-2">
+                  {stat.number}
+                </div>
+                <div className="text-gray-600">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
