@@ -128,7 +128,7 @@ export interface IStorage {
   
   // ✅ NOUVELLES MÉTHODES SPÉCIFIQUES SALONS
   getSalonBySlug(slug: string): Promise<any | null>;
-  getProfessionalsBySalonId(salonId: number): Promise<any[]>;
+  getProfessionalsBySalonId(salonId: string | number): Promise<any[]>;
   getAllProfessionals(): Promise<any[]>;
   
   // Professional Settings - PERSISTENT STORAGE
@@ -1192,15 +1192,25 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async getProfessionalsBySalonId(salonId: number): Promise<any[]> {
+  async getProfessionalsBySalonId(salonId: string | number): Promise<any[]> {
     try {
-      // Rechercher dans la table staff pour les professionnels de ce salon
+      // Rechercher d'abord dans la table professionals (nouveau système)
+      const professionals = await db.select()
+        .from(schema.professionals)
+        .where(eq(schema.professionals.salon_id, String(salonId)));
+      
+      if (professionals.length > 0) {
+        console.log(`👥 ${professionals.length} professionnels trouvés dans professionals pour salon: ${salonId}`);
+        return professionals;
+      }
+      
+      // Fallback: rechercher dans la table staff (ancien système)
       const staffMembers = await db.select()
         .from(staff)
-        .where(eq(staff.salonId, salonId));
+        .where(eq(staff.salonId, String(salonId)));
       
-      console.log(`👥 ${staffMembers.length} professionnels trouvés pour salon ID: ${salonId}`);
-      return staffMembers;
+      console.log(`👥 ${staffMembers.length + professionals.length} professionnels trouvés pour salon: ${salonId}`);
+      return [...professionals, ...staffMembers];
     } catch (error) {
       console.error('Erreur getProfessionalsBySalonId:', error);
       return [];

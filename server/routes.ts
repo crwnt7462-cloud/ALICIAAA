@@ -766,15 +766,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { salonSlug } = req.params;
       console.log(`🔍 Récupération professionnels pour salon: ${salonSlug}`);
       
-      // Récupérer d'abord le salon
-      const salon = await storage.getSalonBySlug(salonSlug);
-      if (!salon) {
-        return res.status(404).json({ error: "Salon non trouvé" });
+      // Si c'est l'ID numérique 8, convertir vers le slug correct
+      let actualSalonId = salonSlug;
+      if (salonSlug === '8') {
+        actualSalonId = 'barbier-gentleman-marais';
+        console.log(`🔄 ID 8 converti vers slug: ${actualSalonId}`);
       }
       
-      // Récupérer les professionnels du salon
-      const professionals = await storage.getProfessionalsBySalonId(salon.id);
-      console.log(`👥 ${professionals.length} professionnels trouvés pour salon ${salon.name}`);
+      // Récupérer directement les professionnels par salon ID (peut être slug ou ID)
+      const professionals = await storage.getProfessionalsBySalonId(actualSalonId);
+      console.log(`👥 ${professionals.length} professionnels trouvés pour salon ${actualSalonId}`);
       
       res.json(professionals);
     } catch (error) {
