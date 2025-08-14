@@ -35,18 +35,21 @@ const SalonSchema = z.object({
 });
 
 const ProfessionalSchema = z.object({
-  id: z.string(),
-  salonId: z.string(),
+  id: z.number(),
+  salon_id: z.string(),
   name: z.string(),
-  email: z.string().email().optional(),
+  role: z.string().optional(),
+  email: z.string().optional(),
   phone: z.string().optional(),
   image: z.string().optional(),
-  specialties: z.union([z.string(), z.array(z.string())]),
+  specialties: z.union([z.string(), z.array(z.string())]).optional(),
+  color: z.string().optional(),
   rating: z.number().optional(),
   experience: z.number().optional(),
   nextSlot: z.string().optional(),
   bio: z.string().optional(),
-  isActive: z.boolean().optional(),
+  is_active: z.boolean().optional(),
+  work_schedule: z.any().optional(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
