@@ -219,24 +219,63 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-/* Nouveaux boutons glass pour les sections */
+/* Carrousel styling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Boutons glass améliorés avec contours violets */
 .glass-button-violet {
-  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10)) padding-box,
-              linear-gradient(90deg, var(--violet), var(--violet-2)) border-box;
-  border: 1px solid rgba(255,255,255,.35);
-  border-radius: 12px;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
   color: white;
   font-weight: 600;
   padding: 12px 24px;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(122,77,255,.25);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-button-violet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(168, 85, 247, 0.1));
+  border-radius: inherit;
+  z-index: -1;
 }
 
 .glass-button-violet:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(122,77,255,.35);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 16px 48px rgba(139, 92, 246, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Bouton glass standard avec contour violet */
+.glass-button {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.glass-button:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.15);
 }
 @media (max-width: 560px){
   .heroSlash{ padding: 40px 16px 22px; }

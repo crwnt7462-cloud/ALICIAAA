@@ -7,12 +7,17 @@ import logoImage from "@assets/3_1753714421825.png";
 
 
 
-// Composant HeroSlash avec animation de frappe
+// Composant HeroSlash avec animations de frappe
 function HeroSlash() {
   const [cityText, setCityText] = useState("");
   const [cityIndex, setCityIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [cityCharIndex, setCityCharIndex] = useState(0);
+  const [isCityDeleting, setIsCityDeleting] = useState(false);
+
+  const [serviceText, setServiceText] = useState("");
+  const [serviceIndex, setServiceIndex] = useState(0);
+  const [serviceCharIndex, setServiceCharIndex] = useState(0);
+  const [isServiceDeleting, setIsServiceDeleting] = useState(false);
 
   const frenchCities = [
     "Paris",
@@ -27,28 +32,66 @@ function HeroSlash() {
     "Strasbourg"
   ];
 
+  const beautyServices = [
+    "Coiffure",
+    "Massage",
+    "Manucure",
+    "Esthétique",
+    "Barbier",
+    "Extensions",
+    "Épilation",
+    "Soins visage"
+  ];
+
+  // Animation pour les villes
   useEffect(() => {
     const currentCity = frenchCities[cityIndex];
-    const typeSpeed = isDeleting ? 50 : 100;
-    const pauseTime = isDeleting ? 500 : 2000;
+    if (!currentCity) return;
+    
+    const typeSpeed = isCityDeleting ? 50 : 100;
+    const pauseTime = isCityDeleting ? 500 : 2000;
 
     const timeout = setTimeout(() => {
-      if (!isDeleting && charIndex < currentCity.length) {
-        setCityText(currentCity.slice(0, charIndex + 1));
-        setCharIndex(charIndex + 1);
-      } else if (isDeleting && charIndex > 0) {
-        setCityText(currentCity.slice(0, charIndex - 1));
-        setCharIndex(charIndex - 1);
-      } else if (!isDeleting && charIndex === currentCity.length) {
-        setTimeout(() => setIsDeleting(true), pauseTime);
-      } else if (isDeleting && charIndex === 0) {
-        setIsDeleting(false);
+      if (!isCityDeleting && cityCharIndex < currentCity.length) {
+        setCityText(currentCity.slice(0, cityCharIndex + 1));
+        setCityCharIndex(cityCharIndex + 1);
+      } else if (isCityDeleting && cityCharIndex > 0) {
+        setCityText(currentCity.slice(0, cityCharIndex - 1));
+        setCityCharIndex(cityCharIndex - 1);
+      } else if (!isCityDeleting && cityCharIndex === currentCity.length) {
+        setTimeout(() => setIsCityDeleting(true), pauseTime);
+      } else if (isCityDeleting && cityCharIndex === 0) {
+        setIsCityDeleting(false);
         setCityIndex((cityIndex + 1) % frenchCities.length);
       }
     }, typeSpeed);
 
     return () => clearTimeout(timeout);
-  }, [cityText, charIndex, cityIndex, isDeleting, frenchCities]);
+  }, [cityText, cityCharIndex, cityIndex, isCityDeleting, frenchCities]);
+
+  // Animation pour les services
+  useEffect(() => {
+    const currentService = beautyServices[serviceIndex];
+    const typeSpeed = isServiceDeleting ? 60 : 120;
+    const pauseTime = isServiceDeleting ? 600 : 2500;
+
+    const timeout = setTimeout(() => {
+      if (!isServiceDeleting && serviceCharIndex < currentService.length) {
+        setServiceText(currentService.slice(0, serviceCharIndex + 1));
+        setServiceCharIndex(serviceCharIndex + 1);
+      } else if (isServiceDeleting && serviceCharIndex > 0) {
+        setServiceText(currentService.slice(0, serviceCharIndex - 1));
+        setServiceCharIndex(serviceCharIndex - 1);
+      } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
+        setTimeout(() => setIsServiceDeleting(true), pauseTime);
+      } else if (isServiceDeleting && serviceCharIndex === 0) {
+        setIsServiceDeleting(false);
+        setServiceIndex((serviceIndex + 1) % beautyServices.length);
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [serviceText, serviceCharIndex, serviceIndex, isServiceDeleting, beautyServices]);
 
   return (
     <section className="heroSlash">
@@ -71,9 +114,14 @@ function HeroSlash() {
 
           {/* Barre de recherche + CTA */}
           <div className="heroSlash__search heroSlash__search--double">
-            {/* Champ Service */}
+            {/* Champ Service avec animation */}
             <div className="field">
-              <input placeholder="Service (coiffure, massage…)" />
+              <input 
+                value={serviceText} 
+                placeholder={serviceText || "Service"} 
+                readOnly
+                style={{ cursor: 'pointer' }}
+              />
               <span className="icon">
                 {/* loupe */}
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -725,7 +773,7 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Salons recommandés */}
+      {/* Salons recommandés - Carrousel */}
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -737,292 +785,303 @@ export default function PublicLanding() {
             </p>
           </div>
 
-          <div className="space-y-4">
-            {/* Barbier Moderne */}
-            <div 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/barbier-gentleman-marais')}
-            >
-              <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
-                <img 
-                  src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
-                  alt="Barbier Moderne"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-                
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                    Vérifié
-                  </span>
-                </div>
-              </div>
+          <div className="relative overflow-hidden">
+            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Barbier Moderne</h4>
-                    <p className="text-sm text-gray-500 mb-2">République, Paris 11ème</p>
+              {/* Barbier Moderne */}
+              <div className="flex-none w-80 snap-start">
+                <div 
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow h-full"
+                  onClick={() => setLocation('/salon/barbier-gentleman-marais')}
+                >
+                  <div className="relative h-48 bg-gradient-to-br from-amber-400 to-orange-500">
+                    <img 
+                      src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop"
+                      alt="Barbier Moderne"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                    
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
                   </div>
-                  <span className="text-sm text-gray-600 font-medium">€€</span>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">4.8</span>
-                    <span className="text-sm text-gray-500">(156 avis)</span>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 text-lg mb-1">Barbier Moderne</h4>
+                        <p className="text-sm text-gray-500 mb-2">République, Paris 11ème</p>
+                      </div>
+                      <span className="text-sm text-gray-600 font-medium">€€</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-semibold">4.8</span>
+                        <span className="text-sm text-gray-500">(156 avis)</span>
+                      </div>
+                      <span className="text-sm text-gray-500">• 0.8 km</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Coupe homme
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Barbe
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Shampoing
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-green-600 font-medium">
+                          Dispo 11:30
+                        </span>
+                      </div>
+                      <button 
+                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/salon/barbier-gentleman-marais');
+                        }}
+                      >
+                        Réserver
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-sm text-gray-500">• 0.8 km</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Coupe homme
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Barbe
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Shampoing
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-green-600 font-medium">
-                      Dispo 11:30
-                    </span>
-                  </div>
-                  <button 
-                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/salon/barbier-gentleman-marais');
-                    }}
-                  >
-                    Réserver
-                  </button>
                 </div>
               </div>
+
+              {/* Salon Excellence */}
+              <div className="flex-none w-80 snap-start">
+                <div 
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow h-full"
+                  onClick={() => setLocation('/salon/salon-excellence-paris')}
+                >
+                  <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
+                    <img 
+                      src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
+                      alt="Salon Excellence"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                    
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence</h4>
+                        <p className="text-sm text-gray-500 mb-2">Marais, Paris 4ème</p>
+                      </div>
+                      <span className="text-sm text-gray-600 font-medium">€€€</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-semibold">4.9</span>
+                        <span className="text-sm text-gray-500">(298 avis)</span>
+                      </div>
+                      <span className="text-sm text-gray-500">• 1.2 km</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Coupe
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Coloration
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Brushing
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-green-600 font-medium">
+                          Dispo 14:15
+                        </span>
+                      </div>
+                      <button 
+                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/salon/salon-excellence-paris');
+                        }}
+                      >
+                        Réserver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Beauty Institute */}
+              <div className="flex-none w-80 snap-start">
+                <div 
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow h-full"
+                  onClick={() => setLocation('/salon/institut-beaute-saint-germain')}
+                >
+                  <div className="relative h-48 bg-gradient-to-br from-purple-400 to-indigo-500">
+                    <img 
+                      src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
+                      alt="Beauty Institute"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                    
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute</h4>
+                        <p className="text-sm text-gray-500 mb-2">Saint-Germain, Paris 6ème</p>
+                      </div>
+                      <span className="text-sm text-gray-600 font-medium">€€</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-semibold">4.7</span>
+                        <span className="text-sm text-gray-500">(187 avis)</span>
+                      </div>
+                      <span className="text-sm text-gray-500">• 1.5 km</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Soins visage
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Épilation
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Massage
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-500 font-medium">
+                          Fermé
+                        </span>
+                      </div>
+                      <button 
+                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/salon/institut-beaute-saint-germain');
+                        }}
+                      >
+                        Réserver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Nail Art Studio */}
+              <div className="flex-none w-80 snap-start">
+                <div 
+                  className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow h-full"
+                  onClick={() => setLocation('/salon/nail-art-opera')}
+                >
+                  <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-teal-500">
+                    <img 
+                      src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop"
+                      alt="Nail Art Studio"
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-10"></div>
+                    
+                    <div className="absolute top-3 left-3 flex gap-2">
+                      <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
+                        <CheckCircle2 className="h-3 w-3 inline mr-1" />
+                        Vérifié
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 text-lg mb-1">Nail Art Studio</h4>
+                        <p className="text-sm text-gray-500 mb-2">Opéra, Paris 9ème</p>
+                      </div>
+                      <span className="text-sm text-gray-600 font-medium">€€</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-semibold">4.6</span>
+                        <span className="text-sm text-gray-500">(89 avis)</span>
+                      </div>
+                      <span className="text-sm text-gray-500">• 2.1 km</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Manucure
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Pose gel
+                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                        Nail art
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-green-600 font-medium">
+                          Dispo 15:30
+                        </span>
+                      </div>
+                      <button 
+                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setLocation('/salon/nail-art-opera');
+                        }}
+                      >
+                        Réserver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             </div>
-
-            {/* Salon Excellence */}
-            <div 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/salon-excellence-paris')}
-            >
-              <div className="relative h-48 bg-gradient-to-br from-pink-400 to-rose-500">
-                <img 
-                  src="https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop"
-                  alt="Salon Excellence"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-                
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                    Vérifié
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Salon Excellence</h4>
-                    <p className="text-sm text-gray-500 mb-2">Marais, Paris 4ème</p>
-                  </div>
-                  <span className="text-sm text-gray-600 font-medium">€€€</span>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">4.9</span>
-                    <span className="text-sm text-gray-500">(298 avis)</span>
-                  </div>
-                  <span className="text-sm text-gray-500">• 1.2 km</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Coupe
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Coloration
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Brushing
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-green-600 font-medium">
-                      Dispo 14:15
-                    </span>
-                  </div>
-                  <button 
-                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/salon/salon-excellence-paris');
-                    }}
-                  >
-                    Réserver
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Beauty Institute */}
-            <div 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/institut-beaute-saint-germain')}
-            >
-              <div className="relative h-48 bg-gradient-to-br from-purple-400 to-indigo-500">
-                <img 
-                  src="https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=300&fit=crop"
-                  alt="Beauty Institute"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-                
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                    Vérifié
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Beauty Institute</h4>
-                    <p className="text-sm text-gray-500 mb-2">Saint-Germain, Paris 6ème</p>
-                  </div>
-                  <span className="text-sm text-gray-600 font-medium">€€</span>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">4.7</span>
-                    <span className="text-sm text-gray-500">(187 avis)</span>
-                  </div>
-                  <span className="text-sm text-gray-500">• 1.5 km</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Soins visage
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Épilation
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Massage
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-500 font-medium">
-                      Fermé
-                    </span>
-                  </div>
-                  <button 
-                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/salon/institut-beaute-saint-germain');
-                    }}
-                  >
-                    Réserver
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Nail Art Studio */}
-            <div 
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              onClick={() => setLocation('/salon/nail-art-opera')}
-            >
-              <div className="relative h-48 bg-gradient-to-br from-emerald-400 to-teal-500">
-                <img 
-                  src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop"
-                  alt="Nail Art Studio"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-10"></div>
-                
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <span className="bg-white text-gray-900 text-xs px-2 py-1 rounded-full font-medium">
-                    <CheckCircle2 className="h-3 w-3 inline mr-1" />
-                    Vérifié
-                  </span>
-                </div>
-              </div>
-              
-              <div className="p-4">
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-1">Nail Art Studio</h4>
-                    <p className="text-sm text-gray-500 mb-2">Opéra, Paris 9ème</p>
-                  </div>
-                  <span className="text-sm text-gray-600 font-medium">€€</span>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">4.6</span>
-                    <span className="text-sm text-gray-500">(89 avis)</span>
-                  </div>
-                  <span className="text-sm text-gray-500">• 2.1 km</span>
-                </div>
-                
-                <div className="flex flex-wrap gap-1 mb-3">
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Manucure
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Pose gel
-                  </span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                    Nail art
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-green-600 font-medium">
-                      Dispo 15:30
-                    </span>
-                  </div>
-                  <button 
-                    className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setLocation('/salon/nail-art-opera');
-                    }}
-                  >
-                    Réserver
-                  </button>
-                </div>
-              </div>
-            </div>
-
-
           </div>
         </div>
       </section>
