@@ -408,100 +408,88 @@ export default function PublicLanding() {
         </div>
       </div>
 
-      {/* Section Hero principale */}
-      <main className="relative">
-        {/* Gradient de fond */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-amber-50"></div>
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="pt-8 pb-24">
-            <div className="text-center space-y-8 max-w-4xl mx-auto">
-              {/* Titre principal */}
-              <div className="space-y-6">
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Réservez votre rendez-vous
-                  <br />
-                  <span className="bg-gradient-to-r from-violet-600 to-amber-500 bg-clip-text text-transparent">
-                    {words[currentWord]}
-                  </span>
-                </h1>
-              </div>
-
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                Trouvez et réservez chez les meilleurs professionnels près de chez vous
-              </p>
-
-              {/* Barre de recherche améliorée */}
-              <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 p-2">
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
-                      type="text"
-                      placeholder="Service (coiffure, massage...)"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-0 focus:ring-0 text-gray-900 placeholder-gray-400 rounded-xl"
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                  </div>
-                  
-                  <div className="relative sm:min-w-[200px]">
-                    <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input
-                      type="text"
-                      placeholder="Ville"
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 border-0 focus:ring-0 text-gray-900 placeholder-gray-400 rounded-xl"
-                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleSearch}
-                    className="bg-gradient-to-r from-violet-600 to-violet-700 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 sm:min-w-[160px]"
-                  >
-                    <Search className="w-4 h-4" />
-                    <span className="hidden sm:inline">Rechercher un salon</span>
-                    <span className="sm:hidden">Rechercher</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Recherches populaires */}
-              <div className="text-center">
-                <p className="text-gray-500 text-sm mb-4">Recherches populaires :</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((tag, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setSearchQuery(tag.toLowerCase());
-                        handleSearch();
-                      }}
-                      className="px-4 py-2 bg-gray-100 text-gray-600 rounded-full text-sm hover:bg-violet-100 hover:text-violet-600 transition-colors"
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Statistiques */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-12">
-                {stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                      {stat.number}
-                    </div>
-                    <div className="text-gray-600 text-sm">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {/* Section Hero selon screenshot */}
+      <main className="bg-gray-50 px-4 py-8">
+        <div className="text-center space-y-6">
+          {/* Titre principal avec animation "beau" */}
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold text-gray-900 leading-tight">
+              Réservez votre rendez-vous
+            </h1>
+            <div className="inline-block bg-purple-200 px-4 py-2 rounded-lg">
+              <span className="text-2xl font-bold text-gray-900">
+                be<span className="bg-gradient-to-r from-violet-600 to-amber-500 bg-clip-text text-transparent">{words[currentWord]}</span>
+              </span>
             </div>
+          </div>
+
+          <p className="text-gray-600 leading-relaxed max-w-md mx-auto">
+            Trouvez et réservez chez les meilleurs<br />
+            professionnels près de chez vous
+          </p>
+
+          {/* Barre de recherche mobile */}
+          <div className="space-y-3 max-w-md mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Service (coiffure, massage...)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+            </div>
+            
+            <div className="relative">
+              <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-purple-500 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Ville"
+                value={searchLocation}
+                onChange={(e) => setSearchLocation(e.target.value)}
+                className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+            </div>
+
+            <button
+              onClick={handleSearch}
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white py-4 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+            >
+              <Search className="w-4 h-4" />
+              Rechercher un salon
+            </button>
+          </div>
+
+          {/* Recherches populaires */}
+          <div className="text-center">
+            <p className="text-gray-500 text-sm mb-3">Recherches populaires :</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((tag, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setSearchQuery(tag.toLowerCase());
+                    handleSearch();
+                  }}
+                  className="px-3 py-1 bg-white text-gray-600 rounded-full text-sm hover:bg-purple-100 hover:text-purple-600 transition-colors border border-gray-200"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Lien professionnel */}
+          <div className="pt-4">
+            <button
+              onClick={() => setLocation('/professional-plans')}
+              className="text-gray-600 text-sm underline hover:text-purple-600 transition-colors"
+            >
+              Vous êtes un professionnel ?
+            </button>
           </div>
         </div>
       </main>
