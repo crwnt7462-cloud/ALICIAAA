@@ -714,7 +714,7 @@ export default function SalonPageEditor() {
                                   };
                                   sessionStorage.setItem('selectedService', JSON.stringify(serviceData));
                                   console.log('💰 Service sélectionné stocké:', serviceData);
-                                  setLocation('/salon-booking');
+                                  setLocation(`/salon-booking/${salonId}`);
                                 }}
                               >
                                 Réserver
@@ -1349,7 +1349,7 @@ export default function SalonPageEditor() {
                   onClick={() => {
                     // Aller à la réservation sans service préselectionné
                     sessionStorage.removeItem('selectedService');
-                    setLocation('/salon-booking');
+                    setLocation(`/salon-booking/${salonId}`);
                   }}
                 >
                   Réserver après lecture des avis
@@ -1376,7 +1376,7 @@ export default function SalonPageEditor() {
             onClick={() => {
               // Aller à la réservation sans service préselectionné
               sessionStorage.removeItem('selectedService');
-              setLocation('/salon-booking');
+              setLocation(`/salon-booking/${salonId}`);
             }}
           >
             Réserver maintenant
