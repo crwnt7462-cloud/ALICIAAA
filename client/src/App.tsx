@@ -819,10 +819,11 @@ function Router() {
     );
   }
 
-  // Page d'accueil publique nouvelle
+  // Page d'accueil publique nouvelle - FORCÉE
   if (location === '/') {
+    console.log('RENDERING NEW HOMEPAGE - FORCED');
     return (
-      <div className="h-full">
+      <div className="h-full" style={{backgroundColor: '#f3f4f6'}}>
         <HomePage />
       </div>
     );
