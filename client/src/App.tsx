@@ -41,7 +41,7 @@ import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 import DownloadCode from "@/pages/DownloadCode";
 import BusinessFeaturesModern from "@/pages/BusinessFeaturesModern";
-import BusinessFeaturesWithBottomSheets from "@/pages/BusinessFeaturesWithBottomSheets";
+import BusinessFeaturesFixed from "@/pages/BusinessFeaturesFixed";
 import DashboardModern from "@/pages/DashboardModern";
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
@@ -832,7 +832,7 @@ function Router() {
           <Route path="/staff-management" component={StaffManagement} />
           <Route path="/services-management" component={ServicesManagement} />
           <Route path="/professional-settings-demo" component={ProfessionalSettingsDemo} />
-          <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
+          <Route path="/business-features" component={BusinessFeaturesFixed} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />
