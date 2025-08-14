@@ -1,0 +1,59 @@
+🎯 OBJECTIF (STRICT)
+Ne touche à rien dans le hero actuel de la page **slash**.  
+Fais uniquement ces deux modifications :  
+
+1. Appliquer un **effet glassmorphism** au bouton « Rechercher un salon » :  
+   - Fond semi-transparent blanc/violet (rgba)
+   - Effet blur net et visible (backdrop-filter: blur(14px))
+   - Bordure fine blanche semi-transparente
+   - Légère ombre douce
+
+2. Sur **version mobile uniquement** :  
+   - Ajouter en arrière-plan du hero une **photo floue** en rapport avec l’univers de la beauté  
+     (ex : ambiance salon de coiffure, maquillage, spa)  
+   - La photo doit être **clairement floue** : appliquer `filter: blur(12px)` ou plus si nécessaire  
+   - L’image doit couvrir toute la largeur (`background-size: cover`)  
+   - Opacité réduite (~0.3 à 0.4) pour que le texte reste parfaitement lisible  
+   - Cette image floue doit **uniquement** apparaître sur mobile, jamais sur desktop
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💻 CSS à ajouter / modifier
+
+/* Effet glassmorphism sur le bouton */
+.heroSlash__cta{
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  color: #fff;
+}
+
+/* Image floue en background sur mobile */
+@media (max-width: 980px){
+  .heroSlash{
+    position: relative;
+    overflow: hidden;
+  }
+  .heroSlash::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/images/bg-beaute-mobile.jpg') center/cover no-repeat;
+    filter: blur(12px); /* IMPORTANT : garder un flou net et visible */
+    opacity: 0.35;
+    z-index: 0;
+  }
+  .heroSlash__inner{
+    position: relative;
+    z-index: 1;
+  }
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 NOTES IMPORTANTES :
+- Remplacer **`/images/bg-beaute-mobile.jpg`** par le chemin réel de l’image beauté à utiliser  
+  (ex : `/assets/images/hero-mobile-beaute.jpg`).
+- L’image doit être optimisée pour mobile (poids ≤ 150ko pour éviter un chargement lent).
+- Vérifier que la classe du bouton CTA est bien **`.heroSlash__cta`** et celle du container est **`.heroSlash`**.
+- Le flou doit être **visible et esthétique**, pas juste léger.
+- Ne rien modifier d’autre que ces deux ajouts. Tout le reste du hero doit rester identique au screen fourni.
