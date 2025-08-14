@@ -553,7 +553,7 @@ export default function PublicLanding() {
               viewport={{ once: true }}
               className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
             >
-              Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
+              Première plateforme beauté avec <span className="text-violet-600">IA prédictive</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
