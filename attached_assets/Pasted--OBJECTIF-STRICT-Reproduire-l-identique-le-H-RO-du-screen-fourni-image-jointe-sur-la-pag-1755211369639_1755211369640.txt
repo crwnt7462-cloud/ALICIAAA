@@ -1,0 +1,190 @@
+🎯 OBJECTIF (STRICT)
+Reproduire **à l’identique** le HÉRO du screen fourni (image jointe) sur la page **slash** (la home `/`) avec :
+- Desktop : identique au screen, téléphone visible, halo violet, rotation légère.
+- Mobile : téléphone masqué, textes centrés, mise en page optimisée et épurée.
+- NE PAS créer de nouvelle page, NE PAS toucher aux autres sections.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1) OÙ INTERVENIR
+- Ouvre la page **slash** (home).
+- Repère le bloc "Hero" ou le composant équivalent.
+- Remplace uniquement ce bloc par le code fourni ci-dessous.
+- Garde les autres sections inchangées.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2) CODE — JSX
+
+function HeroSlash() {
+  return (
+    <section className="heroSlash">
+      <div className="heroSlash__inner">
+        
+        {/* Colonne gauche */}
+        <div className="heroSlash__left">
+          <div className="heroSlash__badge">
+            <span className="dot" />
+            <span>Réservation instantanée</span>
+          </div>
+
+          <h1 className="heroSlash__title">
+            Réservez votre<br/> rendez-vous <span className="light">beauté</span>
+          </h1>
+
+          <p className="heroSlash__subtitle">
+            Trouvez et réservez chez les meilleurs professionnels près de chez vous
+          </p>
+
+          {/* Barre de recherche + CTA */}
+          <div className="heroSlash__search">
+            <div className="heroSlash__input">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 5.303-12.803A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+              <input placeholder="Rechercher un salon" />
+            </div>
+            <button className="heroSlash__cta">Rechercher un salon</button>
+          </div>
+
+          {/* KPIs */}
+          <ul className="heroSlash__kpis">
+            <li><strong>50 000+</strong><span>Rendez-vous / mois</span></li>
+            <li><strong>2 500+</strong><span>Salons partenaires</span></li>
+            <li><strong>4,9/5</strong><span>Satisfaction client</span></li>
+            <li><strong>24h/24</strong><span>Réservation dispo</span></li>
+          </ul>
+        </div>
+
+        {/* Colonne droite — téléphone glass */}
+        <div className="heroSlash__right">
+          <div className="heroPhone">
+            <div className="heroPhone__screen">
+              <div className="heroPhone__pill" />
+              <div className="heroPhone__row" />
+              <div className="heroPhone__row" />
+              <div className="heroPhone__stat" />
+              <div className="heroPhone__cta" />
+            </div>
+          </div>
+          <div className="heroSlash__pad" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3) CSS — AJOUTER / ADAPTER
+
+:root{
+  --violet:#7A4DFF;
+  --violet-2:#B37DFF;
+  --ink:#0E1320;
+  --ink-dim:#5B6475;
+  --glass: rgba(255,255,255,.62);
+  --glass-border: rgba(255,255,255,.38);
+  --bg-grad: radial-gradient(1600px 800px at 18% -10%, #F3EFFF 0%, #FFFFFF 58%);
+}
+
+.heroSlash{
+  background: var(--bg-grad);
+  padding: 56px 24px 28px;
+}
+.heroSlash__inner{
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 36px;
+}
+
+/* GAUCHE */
+.heroSlash__badge{
+  display:inline-flex; align-items:center; gap:10px;
+  padding: 10px 16px; border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.55));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 12px 28px rgba(122,77,255,.15);
+  font-weight: 600;
+}
+.heroSlash__badge .dot{
+  width:10px; height:10px; border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, var(--violet), var(--violet-2));
+}
+
+.heroSlash__title{
+  margin: 18px 0 8px;
+  font-size: clamp(40px, 6.2vw, 72px);
+  line-height: 1.02;
+  font-weight: 800;
+}
+.heroSlash__subtitle{
+  color: var(--ink-dim);
+  font-size: clamp(16px, 1.4vw, 18px);
+  max-width: 640px;
+}
+
+.heroSlash__search{
+  margin-top: 18px;
+  display: grid; gap: 12px;
+  grid-template-columns: 1fr auto;
+}
+.heroSlash__input{
+  height: 56px; display:flex; align-items:center; gap:12px;
+  padding: 0 14px; border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+.heroSlash__cta{
+  height:56px; padding: 0 18px; border:none; border-radius: 14px; cursor:pointer;
+  font-weight: 800; color:#fff;
+  background: linear-gradient(90deg, var(--violet), var(--violet-2));
+}
+
+/* KPIs */
+.heroSlash__kpis{
+  margin-top: 22px;
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px;
+}
+.heroSlash__kpis span{
+  color: var(--ink-dim);
+  font-size: 14px;
+}
+
+/* DROITE — Téléphone */
+.heroSlash__right{ position: relative; display:flex; justify-content:center; }
+.heroPhone{
+  width: 360px; height: 720px; border-radius: 38px;
+  background: linear-gradient(180deg, rgba(255,255,255,.8), rgba(255,255,255,.62));
+  border:1px solid var(--glass-border);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 50px rgba(20,0,60,.22);
+  transform: rotate(-8deg);
+}
+.heroPhone__screen{
+  position:absolute; inset: 14px; border-radius: 30px; overflow:hidden;
+  background: linear-gradient(180deg, rgba(245,245,255,.9), rgba(240,240,255,.65));
+}
+
+/* MOBILE OPTIMISÉ */
+@media (max-width: 980px){
+  .heroSlash__inner{
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .heroSlash__right{
+    display: none; /* cache téléphone */
+  }
+  .heroSlash__subtitle{
+    margin: 0 auto;
+  }
+  .heroSlash__search{
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .heroSlash__kpis{
+    grid-template-columns: repeat(2,1fr);
+    justify-items: center;
+  }
+}

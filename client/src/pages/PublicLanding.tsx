@@ -1,27 +1,18 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
+import { Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
 
 
 
-// Composant HeroSlash selon les spécifications exactes
+// Composant HeroSlash selon spécifications strictes
 function HeroSlash() {
-  const [, setLocation] = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   return (
     <section className="heroSlash">
       <div className="heroSlash__inner">
+        
         {/* Colonne gauche */}
         <div className="heroSlash__left">
           <div className="heroSlash__badge">
@@ -30,7 +21,7 @@ function HeroSlash() {
           </div>
 
           <h1 className="heroSlash__title">
-            Réservez votre<br/> rendez‑vous <span className="light">beauté</span>
+            Réservez votre<br/> rendez-vous <span className="light">beauté</span>
           </h1>
 
           <p className="heroSlash__subtitle">
@@ -41,19 +32,14 @@ function HeroSlash() {
           <div className="heroSlash__search">
             <div className="heroSlash__input">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 5.303-12.803A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
-              <input 
-                placeholder="Rechercher un salon" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
+              <input placeholder="Rechercher un salon" />
             </div>
-            <button className="heroSlash__cta" onClick={handleSearch}>Rechercher un salon</button>
+            <button className="heroSlash__cta">Rechercher un salon</button>
           </div>
 
-          {/* KPIs alignés (ligne de base du screen) */}
+          {/* KPIs */}
           <ul className="heroSlash__kpis">
-            <li><strong>50 000+</strong><span>Rendez‑vous / mois</span></li>
+            <li><strong>50 000+</strong><span>Rendez-vous / mois</span></li>
             <li><strong>2 500+</strong><span>Salons partenaires</span></li>
             <li><strong>4,9/5</strong><span>Satisfaction client</span></li>
             <li><strong>24h/24</strong><span>Réservation dispo</span></li>
@@ -71,7 +57,6 @@ function HeroSlash() {
               <div className="heroPhone__cta" />
             </div>
           </div>
-          {/* Ombre posée derrière le téléphone */}
           <div className="heroSlash__pad" />
         </div>
       </div>
