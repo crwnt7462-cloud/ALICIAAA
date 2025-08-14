@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
+import { useAutoSave } from '@/hooks/useAutoSave';
+import { useSalonSync } from '@/hooks/useSalonSync';
 import { 
   ArrowLeft, 
   Settings, 
@@ -16,7 +18,9 @@ import {
   MapPin,
   Phone,
   Mail,
-  Camera
+  Camera,
+  Save,
+  CheckCircle2
 } from 'lucide-react';
 
 export default function SalonSettings() {
@@ -25,6 +29,7 @@ export default function SalonSettings() {
   const [isLoading, setIsLoading] = useState(false);
   
   const [salonData, setSalonData] = useState({
+    id: 'salon-pro-1', // ID du salon du professionnel connecté
     name: '',
     address: '',
     phone: '',
@@ -51,6 +56,22 @@ export default function SalonSettings() {
       autoConfirm: false
     }
   });
+
+  // Hook de sauvegarde automatique
+  const { forceSave, isSaving } = useAutoSave({
+    data: salonData,
+    endpoint: `/api/salons/${salonData.id}`,
+    delay: 3000, // Sauvegarde automatique après 3 secondes d'inactivité
+    onSave: (data) => {
+      console.log('✅ Salon sauvegardé automatiquement:', data.name);
+    },
+    onError: (error) => {
+      console.error('❌ Erreur sauvegarde:', error);
+    }
+  });
+
+  // Hook de synchronisation
+  useSalonSync();
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -110,14 +131,23 @@ export default function SalonSettings() {
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-base font-medium text-gray-900">Paramètres du salon</h1>
+            <div className="text-center">
+              <h1 className="text-base font-medium text-gray-900">Paramètres du salon</h1>
+              {isSaving && (
+                <div className="flex items-center justify-center gap-1 text-xs text-green-600 mt-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Sauvegarde automatique...
+                </div>
+              )}
+            </div>
             <Button 
               size="sm"
-              onClick={handleSave}
-              disabled={isLoading}
+              onClick={forceSave}
+              disabled={isLoading || isSaving}
               className="bg-violet-600 hover:bg-violet-700"
             >
-              {isLoading ? 'Sauvegarde...' : 'Sauvegarder'}
+              <Save className="w-3 h-3 mr-1" />
+              {isLoading || isSaving ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
           </div>
         </div>

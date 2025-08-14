@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useSalonSync } from "@/hooks/useSalonSync";
 import { 
   Search, 
   MapPin, 
@@ -39,6 +40,9 @@ export default function SalonSearch() {
   const [showResults, setShowResults] = useState(true);
   const [sortBy, setSortBy] = useState("distance");
   
+  // Hook de synchronisation pour recevoir les mises à jour des salons
+  const { lastUpdate } = useSalonSync();
+  
   // Page complète avec interface de recherche et résultats
 
   // Récupérer les paramètres de l'URL
@@ -52,7 +56,7 @@ export default function SalonSearch() {
     if (q || location) setShowResults(true);
   }, []);
 
-  const salons = [
+  const [salons, setSalons] = useState([
     {
       id: "salon-1",
       name: "Salon Excellence Paris",
@@ -108,8 +112,30 @@ export default function SalonSearch() {
       distance: "1.8km", 
       category: "onglerie",
       image: "💅"
+    },
+    {
+      id: "salon-pro-1", // Salon du professionnel connecté (pour démonstration)
+      name: "Mon Salon Pro", 
+      location: "Paris 11ème",
+      rating: 4.9,
+      reviews: 87,
+      nextSlot: "14:00",
+      price: "€€",
+      services: ["Coupe", "Barbe"],
+      verified: true,
+      distance: "500m",
+      category: "coiffure",
+      image: "💇‍♂️"
     }
-  ];
+  ]);
+
+  // Écouter les mises à jour de synchronisation
+  useEffect(() => {
+    if (lastUpdate) {
+      console.log('🔄 Mise à jour détectée dans SalonSearch, rafraîchissement de la liste');
+      // Optionnel : ajouter un effet visuel pour montrer la synchronisation
+    }
+  }, [lastUpdate]);
 
   const categories = [
     { id: "all", name: "Tout", count: salons.length },
@@ -221,15 +247,25 @@ export default function SalonSearch() {
       {(searchQuery || activeFilter !== "all") && filteredSalons.length > 0 && (
         <div className="bg-gray-50 min-h-screen pt-8">
           <div className="max-w-sm mx-auto px-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-6 text-center">
-              Available salons
-            </h2>
+            <div className="text-center mb-6">
+              <h2 className="text-lg font-medium text-gray-900">Available salons</h2>
+              {lastUpdate > 0 && (
+                <div className="flex items-center justify-center gap-1 text-xs text-green-600 mt-1 animate-pulse">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Synchronisé à l'instant
+                </div>
+              )}
+            </div>
 
             <div className="space-y-3 pb-20">
               {filteredSalons.map((salon) => (
                 <Card 
                   key={salon.id} 
-                  className="border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all"
+                  className={`border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all ${
+                    salon.id === 'salon-pro-1' && lastUpdate > Date.now() - 5000 
+                      ? 'ring-2 ring-green-200 ring-opacity-50' 
+                      : ''
+                  }`}
                   onClick={() => setLocation(`/salon/${salon.id}`)}
                 >
                   <CardContent className="p-4">
