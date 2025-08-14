@@ -72,6 +72,8 @@ function HeroSlash() {
   // Animation pour les services
   useEffect(() => {
     const currentService = beautyServices[serviceIndex];
+    if (!currentService) return;
+    
     const typeSpeed = isServiceDeleting ? 60 : 120;
     const pauseTime = isServiceDeleting ? 600 : 2500;
 
@@ -149,7 +151,7 @@ function HeroSlash() {
               </span>
             </div>
 
-            <button className="heroSlash__cta">Rechercher un salon</button>
+            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl">Rechercher un salon</button>
           </div>
 
           {/* KPIs */}
@@ -504,25 +506,25 @@ export default function PublicLanding() {
             </div>
             
             <div className="flex items-center gap-2 md:gap-4">
-              <Button 
-                className="glass-button text-black text-sm md:text-base px-2 md:px-4 hidden lg:flex rounded-lg"
+              <button 
+                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
                 onClick={() => setLocation("/client-login-modern")}
               >
                 <span className="hidden md:inline">Se connecter</span>
                 <span className="md:hidden">Connexion</span>
-              </Button>
-              <Button 
-                className="glass-button text-black text-sm md:text-base px-3 md:px-4 h-9 md:h-10 rounded-lg hidden lg:flex"
+              </button>
+              <button 
+                className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
                 onClick={() => setLocation("/salon/salon-elegance")}
               >
                 Réserver
-              </Button>
-              <Button 
-                className="glass-button p-2 rounded-lg"
+              </button>
+              <button 
+                className="glass-button text-black p-3 rounded-2xl shadow-xl hover:shadow-2xl"
                 onClick={() => setLocation("/pro-login")}
               >
-                <LogIn className="w-5 h-5 text-black" />
-              </Button>
+                <LogIn className="w-5 h-5" />
+              </button>
             </div>
           </div>
         </div>
@@ -614,13 +616,13 @@ export default function PublicLanding() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <Button 
-              className="glass-button-violet text-lg px-8 py-4"
+            <button 
+              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center"
               onClick={() => setLocation("/professional-plans")}
             >
               Découvrir nos offres IA
               <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            </button>
             <p className="text-sm text-gray-500 mt-3">Essai gratuit 14 jours • Sans engagement</p>
           </motion.div>
         </div>
@@ -736,10 +738,10 @@ export default function PublicLanding() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <Button className="glass-button-violet">
+            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center">
               Voir tous les avis
               <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            </button>
           </motion.div>
         </div>
       </section>
@@ -849,7 +851,7 @@ export default function PublicLanding() {
                         </span>
                       </div>
                       <button 
-                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                         onClick={(e) => {
                           e.stopPropagation();
                           setLocation('/salon/barbier-gentleman-marais');
@@ -922,7 +924,7 @@ export default function PublicLanding() {
                         </span>
                       </div>
                       <button 
-                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                         onClick={(e) => {
                           e.stopPropagation();
                           setLocation('/salon/salon-excellence-paris');
@@ -995,7 +997,7 @@ export default function PublicLanding() {
                         </span>
                       </div>
                       <button 
-                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                         onClick={(e) => {
                           e.stopPropagation();
                           setLocation('/salon/institut-beaute-saint-germain');
@@ -1068,7 +1070,7 @@ export default function PublicLanding() {
                         </span>
                       </div>
                       <button 
-                        className="glass-button text-black px-4 py-2 rounded-xl text-sm font-medium"
+                        className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl"
                         onClick={(e) => {
                           e.stopPropagation();
                           setLocation('/salon/nail-art-opera');
