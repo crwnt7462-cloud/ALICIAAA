@@ -858,7 +858,7 @@ function Router() {
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
           <Route path="/messaging-test" component={RealTimeMessaging} />
-          <Route path="/pro-messaging-search" component={ProMessagingMobile} />
+          <Route path="/pro-messaging-search" component={ProMessaging} />
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />
           <Route path="/client-management" component={ClientManagement} />
