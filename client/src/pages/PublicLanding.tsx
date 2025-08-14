@@ -7,8 +7,49 @@ import logoImage from "@assets/3_1753714421825.png";
 
 
 
-// Composant HeroSlash selon spécifications strictes
+// Composant HeroSlash avec animation de frappe
 function HeroSlash() {
+  const [cityText, setCityText] = useState("");
+  const [cityIndex, setCityIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const frenchCities = [
+    "Paris",
+    "Lyon",
+    "Marseille",
+    "Toulouse",
+    "Nice",
+    "Nantes",
+    "Bordeaux",
+    "Lille",
+    "Rennes",
+    "Strasbourg"
+  ];
+
+  useEffect(() => {
+    const currentCity = frenchCities[cityIndex];
+    const typeSpeed = isDeleting ? 50 : 100;
+    const pauseTime = isDeleting ? 500 : 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isDeleting && charIndex < currentCity.length) {
+        setCityText(currentCity.slice(0, charIndex + 1));
+        setCharIndex(charIndex + 1);
+      } else if (isDeleting && charIndex > 0) {
+        setCityText(currentCity.slice(0, charIndex - 1));
+        setCharIndex(charIndex - 1);
+      } else if (!isDeleting && charIndex === currentCity.length) {
+        setTimeout(() => setIsDeleting(true), pauseTime);
+      } else if (isDeleting && charIndex === 0) {
+        setIsDeleting(false);
+        setCityIndex((cityIndex + 1) % frenchCities.length);
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [cityText, charIndex, cityIndex, isDeleting, frenchCities]);
+
   return (
     <section className="heroSlash">
       <div className="heroSlash__inner">
@@ -42,9 +83,14 @@ function HeroSlash() {
               </span>
             </div>
 
-            {/* Champ Ville */}
+            {/* Champ Ville avec animation */}
             <div className="field">
-              <input placeholder="Ville" />
+              <input 
+                value={cityText} 
+                placeholder={cityText || "Ville"} 
+                readOnly
+                style={{ cursor: 'pointer' }}
+              />
               <span className="icon location">
                 {/* pin */}
                 <svg viewBox="0 0 24 24" aria-hidden="true">
