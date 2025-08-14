@@ -1,4 +1,4 @@
-// Messagerie Pro parfaite niveau Planity/Treatwell
+// Messagerie Pro parfaite niveau Avyento/Treatwell
 import { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';

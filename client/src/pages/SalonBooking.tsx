@@ -947,7 +947,7 @@ function SalonBooking() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">3. Identification</h2>
           
           <div className="text-center mb-6">
-            <p className="text-gray-900 font-medium mb-4">Nouveau sur Planity ?</p>
+            <p className="text-gray-900 font-medium mb-4">Nouveau sur Avyento ?</p>
             <Button 
               onClick={() => {
                 // Sauvegarder l'état de réservation avant la connexion
@@ -1070,7 +1070,7 @@ function SalonBooking() {
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, acceptCGU: checked as boolean }))}
               />
               <label htmlFor="cgu" className="text-sm text-gray-600 leading-4">
-                J'accepte les <span className="underline">CGU</span> de Planity.
+                J'accepte les <span className="underline">CGU</span> d'Avyento.
               </label>
             </div>
 
@@ -1571,7 +1571,7 @@ function SalonBooking() {
           <h2 className="text-lg font-semibold text-gray-900 mb-3">3. Identification</h2>
           
           <div className="text-center mb-4">
-            <p className="text-gray-600">Nouveau sur Planity ?</p>
+            <p className="text-gray-600">Nouveau sur Avyento ?</p>
           </div>
 
           <Button 
@@ -1691,7 +1691,7 @@ function SalonBooking() {
             </Button>
 
             <p className="text-xs text-gray-500 text-center leading-4">
-              Vos informations sont traitées par Planity, consultez notre{' '}
+              Vos informations sont traitées par Avyento, consultez notre{' '}
               <span className="underline">politique de confidentialité</span>. Ce site est protégé par reCAPTCHA 
               et est soumis à la <span className="underline">Politique de confidentialité</span> et aux{' '}
               <span className="underline">Conditions d'utilisation</span> de Google.

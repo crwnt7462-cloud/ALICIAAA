@@ -13,7 +13,7 @@ interface Service {
   description?: string;
 }
 
-export default function PlanityStyleBooking() {
+export default function AvyentoStyleBooking() {
   const [, setLocation] = useLocation();
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [currentStep, setCurrentStep] = useState<'service' | 'time' | 'details'>('service');

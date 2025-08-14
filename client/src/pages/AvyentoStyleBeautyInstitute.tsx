@@ -14,7 +14,7 @@ interface CityCard {
   count: number;
 }
 
-export default function PlanityStyleBeautyInstitute() {
+export default function AvyentoStyleBeautyInstitute() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [locationQuery, setLocationQuery] = useState('');

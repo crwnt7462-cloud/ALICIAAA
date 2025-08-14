@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-export default function PlanityStyleClientLogin() {
+export default function AvyentoStyleClientLogin() {
   const [, setLocation] = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,7 +33,7 @@ export default function PlanityStyleClientLogin() {
       }
 
       const data = await response.json();
-      console.log('✅ Planity Login response:', data);
+      console.log('✅ Avyento Login response:', data);
 
       if (data.success && data.client) {
         localStorage.setItem('clientToken', data.client.token);
@@ -50,7 +50,7 @@ export default function PlanityStyleClientLogin() {
         throw new Error(data.error || "Erreur de connexion");
       }
     } catch (error) {
-      console.error('❌ Erreur connexion Planity:', error);
+      console.error('❌ Erreur connexion Avyento:', error);
       toast({
         title: "Erreur de connexion",
         description: error instanceof Error ? error.message : "Erreur serveur",

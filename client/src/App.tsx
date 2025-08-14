@@ -108,11 +108,11 @@ import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import ClientLoginModern from "@/pages/ClientLoginModern";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
-import PlanityStyleClientLogin from "@/pages/PlanityStyleClientLogin";
-import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
-import PlanityStyleProfessionalList from "@/pages/PlanityStyleProfessionalList";
-import PlanityStyleAccount from "@/pages/PlanityStyleAccount";
-import PlanityStyleBeautyInstitute from "@/pages/PlanityStyleBeautyInstitute";
+import AvyentoStyleClientLogin from "@/pages/AvyentoStyleClientLogin";
+import AvyentoStyleBooking from "@/pages/AvyentoStyleBooking";
+import AvyentoStyleProfessionalList from "@/pages/AvyentoStyleProfessionalList";
+import AvyentoStyleAccount from "@/pages/AvyentoStyleAccount";
+import AvyentoStyleBeautyInstitute from "@/pages/AvyentoStyleBeautyInstitute";
 import SalonRegistration from "@/pages/SalonRegistration";
 import SalonPhotosManager from "@/pages/SalonPhotosManager";
 import MonthlyCalendar from "@/pages/MonthlyCalendar";
@@ -891,12 +891,12 @@ function Router() {
           <Route path="/advanced-booking" component={AdvancedBookingManager} />
           <Route path="/booking-success" component={BookingSuccess} />
           
-          {/* Pages style Planity */}
-          <Route path="/planity-client-login" component={PlanityStyleClientLogin} />
-          <Route path="/planity-booking" component={PlanityStyleBooking} />
-          <Route path="/planity-professionals" component={PlanityStyleProfessionalList} />
-          <Route path="/planity-account" component={PlanityStyleAccount} />
-          <Route path="/planity-beauty-institute" component={PlanityStyleBeautyInstitute} />
+          {/* Pages style Avyento */}
+          <Route path="/avyento-client-login" component={AvyentoStyleClientLogin} />
+          <Route path="/avyento-booking" component={AvyentoStyleBooking} />
+          <Route path="/avyento-professionals" component={AvyentoStyleProfessionalList} />
+          <Route path="/avyento-account" component={AvyentoStyleAccount} />
+          <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
 
           {/* Routes Salon Mobile */}
           <Route path="/salon/salon-excellence-demo" component={SalonExcellenceDemoMobile} />

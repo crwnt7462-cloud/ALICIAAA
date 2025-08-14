@@ -20,7 +20,7 @@ interface Professional {
   distance?: string;
 }
 
-export default function PlanityStyleProfessionalList() {
+export default function AvyentoStyleProfessionalList() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('coiffeur');

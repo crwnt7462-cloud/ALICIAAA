@@ -663,7 +663,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Business Settings (like Planity's business configuration)
+// Business Settings (like Avyento's business configuration)
 export const businessSettings = pgTable("business_settings", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id),

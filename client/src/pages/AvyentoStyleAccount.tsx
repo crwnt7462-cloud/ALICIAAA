@@ -20,7 +20,7 @@ import {
   LogOut
 } from "lucide-react";
 
-export default function PlanityStyleAccount() {
+export default function AvyentoStyleAccount() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('profile');
 

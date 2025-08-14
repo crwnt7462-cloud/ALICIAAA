@@ -1,0 +1,48 @@
+🎯 OBJECTIF
+Supprimer toute référence au mot “Planity” dans le projet (code, texte, commentaires, assets) et les remplacer par “Avyento”, tout en préservant le fonctionnement de l’application.
+
+──────────────────────────────────────────────────────────────
+1) PÉRIMÈTRE DE REMPLACEMENT
+- Fichiers code : .ts, .tsx, .js, .jsx, .json, .md
+- Fichiers de config : package.json, vite.config.ts, tsconfig*.json, README.md
+- Assets texte : .svg, .png, .jpg, .jpeg (uniquement si nom de fichier ou metadata contient “planity”)
+- Variables env : .env, .env.local (ne pas toucher aux clés API si ce sont des valeurs externes)
+- Commentaires & documentation
+
+──────────────────────────────────────────────────────────────
+2) RÈGLES DE REMPLACEMENT
+- Remplacer **exactement** “Planity” (majuscules) → “Avyento”
+- Remplacer **exactement** “planity” (minuscules) → “avyento”
+- Si “planity” est dans un chemin d’import ou nom de fichier :
+  - Renommer le fichier/dossier
+  - Mettre à jour tous les imports qui le référencent
+- Si “planity” est dans un nom de variable/fonction :
+  - Renommer la variable/fonction
+  - Mettre à jour toutes les occurrences
+- Ne pas remplacer si c’est une URL externe qui ne t’appartient pas (ex : `api.planity.com` → garder tel quel)
+- Ne pas remplacer à l’intérieur de `node_modules/` ou des fichiers générés
+
+──────────────────────────────────────────────────────────────
+3) PROCÉDURE
+- Lister toutes les occurrences de “Planity” et “planity” dans le projet (`grep -R "planity" .` en excluant node_modules, .git, dist, build)
+- Pour chaque occurrence :
+  - Identifier si c’est une chaîne affichée à l’utilisateur → remplacer par “Avyento”
+  - Identifier si c’est une variable/fonction → renommer + MAJ imports
+  - Identifier si c’est un commentaire/doc → remplacer texte
+  - Identifier si c’est dans un asset (nom de fichier) → renommer fichier + MAJ imports
+- Effectuer les remplacements
+- Lancer un `npm run lint` + `npm run typecheck` (client et server) pour détecter des imports cassés
+- Lancer un build complet (`npm run build`) pour s’assurer qu’aucune référence à “planity” manquante
+
+──────────────────────────────────────────────────────────────
+4) VÉRIFICATION
+- Rechercher à nouveau “planity” et “Planity” → zéro résultat dans le code, docs, assets
+- Lancer l’application et tester toutes les fonctionnalités liées aux pages qui contenaient “planity” auparavant
+- Commit des changements avec :
+  git add -A
+  git commit -m "refactor: replace all Planity references with Avyento"
+
+──────────────────────────────────────────────────────────────
+✅ RÉSULTAT ATTENDU
+- Plus aucune occurrence du mot “planity” dans le code, les noms de fichiers, les imports, ou l’UI
+- Tout le code continue de fonctionner normalement avec “Avyento” à la place

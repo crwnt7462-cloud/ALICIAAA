@@ -229,7 +229,7 @@ export default function FreeTrialSignup() {
 
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-4 py-8">
         <div className="w-full max-w-md">
-          {/* Header simple comme Planity */}
+          {/* Header simple comme Avyento */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce shadow-lg">
               <Sparkles className="w-8 h-8 text-white" />
@@ -242,7 +242,7 @@ export default function FreeTrialSignup() {
             </p>
           </div>
 
-          {/* Progress simple comme Planity */}
+          {/* Progress simple comme Avyento */}
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-medium text-gray-700">Étape {step} sur 3</span>
