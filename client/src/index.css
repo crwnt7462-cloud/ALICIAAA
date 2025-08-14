@@ -183,23 +183,7 @@
 
 /* MOBILE OPTIMISÉ */
 @media (max-width: 980px){
-  .heroSlash{
-    position: relative;
-    overflow: hidden;
-  }
-  .heroSlash::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: url('@assets/IMG_3297_1755212245912.jpeg') center/cover no-repeat;
-    filter: blur(14px);                 /* flou net et visible */
-    opacity: .35;                       /* lisibilité parfaite du texte */
-    z-index: 0;
-    transform: scale(1.08);             /* évite de voir les bords après flou */
-  }
   .heroSlash__inner{
-    position: relative;
-    z-index: 1;
     grid-template-columns: 1fr;
     text-align: center;
   }
@@ -216,11 +200,6 @@
     grid-template-columns: repeat(2,1fr);
     justify-items: center;
   }
-}
-
-/* Desktop : on s'assure que l'arrière-plan photo ne s'affiche pas */
-@media (min-width: 981px){
-  .heroSlash::before{ content: none !important; }
 }
 
 /* Nouveaux boutons glass pour les sections */

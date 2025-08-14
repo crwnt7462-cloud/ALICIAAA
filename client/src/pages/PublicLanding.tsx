@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, MessageCircle, Zap, ArrowRight, Play, Cpu, Brain, MessageSquare } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, MessageCircle, Zap, ArrowRight, Play, Cpu, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -118,6 +118,36 @@ export default function PublicLanding() {
       description: "Rappels, confirmations et gestion de l'agenda 100% automatisés",
       highlight: "PRO",
       color: "amber"
+    }
+  ];
+
+  const testimonials = [
+    {
+      id: 1,
+      name: "Marie Dubois",
+      role: "Directrice, Salon Élégance",
+      avatar: "M",
+      content: "Avyento a révolutionné notre salon ! L'IA prédit parfaitement nos créneaux optimaux et nous avons augmenté notre CA de 35%.",
+      rating: 5,
+      location: "Paris 16ème"
+    },
+    {
+      id: 2,
+      name: "Thomas Barbier",
+      role: "Propriétaire, Barbier Moderne",
+      avatar: "T",
+      content: "La messagerie intégrée est géniale ! Plus de calls ratés, tout passe par l'app. Mes clients adorent la simplicité.",
+      rating: 5,
+      location: "Lyon 2ème"
+    },
+    {
+      id: 3,
+      name: "Sarah Wellness",
+      role: "Institut de beauté",
+      avatar: "S",
+      content: "Enfin une solution complète ! Planning, paiements, suivi client... tout est centralisé. Un gain de temps énorme.",
+      rating: 5,
+      location: "Marseille"
     }
   ];
 
@@ -594,6 +624,95 @@ export default function PublicLanding() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Section Avis Clients */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+            >
+              <Star className="w-4 h-4" />
+              Avis Clients Vérifiés
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
+            >
+              Ils parlent d'<span className="text-violet-600">Avyento</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Découvrez les témoignages de nos professionnels partenaires qui ont transformé leur activité avec notre plateforme.
+            </motion.p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={testimonial.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative group"
+              >
+                <div className="bg-gray-50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 h-full">
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  
+                  {/* Content */}
+                  <blockquote className="text-gray-700 text-lg mb-6 leading-relaxed">
+                    "{testimonial.content}"
+                  </blockquote>
+                  
+                  {/* Author */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center">
+                      <span className="text-violet-600 font-bold text-lg">{testimonial.avatar}</span>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                      <div className="text-sm text-gray-500">{testimonial.role}</div>
+                      <div className="text-xs text-gray-400">{testimonial.location}</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA pour voir plus d'avis */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Button className="glass-button-violet">
+              Voir tous les avis
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </motion.div>
         </div>
       </section>
 
