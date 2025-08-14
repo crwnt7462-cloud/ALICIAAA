@@ -847,7 +847,7 @@ function Router() {
 
           <Route path="/notifications" component={NotificationCenter} />
           <Route path="/share" component={ShareBooking} />
-          <Route path="/test-booking" component={SimpleBooking} />
+          {/* <Route path="/test-booking" component={SimpleBooking} /> */}
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
           <Route path="/centre-aide" component={CentreAide} />
