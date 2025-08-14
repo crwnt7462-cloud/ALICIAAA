@@ -304,17 +304,17 @@ function SalonBooking() {
 
   // ✅ API CENTRALISÉE TYPÉE: Récupération professionnels avec validation Zod
   const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: ['professionals', realSalonData?.id || salonSlug],
-    queryFn: () => getProfessionals({ salonId: (realSalonData?.id || salonSlug)! }),
-    enabled: !!salonSlug && !!realSalonData,
+    queryKey: ['professionals', realSalonData?.id],
+    queryFn: () => getProfessionals({ salonId: realSalonData!.id.toString() }),
+    enabled: !!realSalonData?.id,
     retry: 1
   });
 
   // ✅ API CENTRALISÉE TYPÉE: Récupération services avec validation Zod
   const { data: services = [], isLoading: servicesLoading } = useQuery({
-    queryKey: ['services', realSalonData?.id || salonSlug],
-    queryFn: () => getServices({ salonId: (realSalonData?.id || salonSlug)! }),
-    enabled: !!salonSlug && !!realSalonData,
+    queryKey: ['services', realSalonData?.id],
+    queryFn: () => getServices({ salonId: realSalonData!.id.toString() }),
+    enabled: !!realSalonData?.id,
     retry: 1
   });
 
