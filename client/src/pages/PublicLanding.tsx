@@ -29,11 +29,32 @@ function HeroSlash() {
           </p>
 
           {/* Barre de recherche + CTA */}
-          <div className="heroSlash__search">
-            <div className="heroSlash__input">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 5.303-12.803A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
-              <input placeholder="Rechercher un salon" />
+          <div className="heroSlash__search heroSlash__search--double">
+            {/* Champ Service */}
+            <div className="field">
+              <input placeholder="Service (coiffure, massage…)" />
+              <span className="icon">
+                {/* loupe */}
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" 
+                        stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
+                </svg>
+              </span>
             </div>
+
+            {/* Champ Ville */}
+            <div className="field">
+              <input placeholder="Ville" />
+              <span className="icon location">
+                {/* pin */}
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 22s7-6.2 7-12A7 7 0 0 0 5 10c0 5.8 7 12 7 12Z" 
+                        stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
+                  <circle cx="12" cy="10" r="2.5" fill="currentColor"/>
+                </svg>
+              </span>
+            </div>
+
             <button className="heroSlash__cta">Rechercher un salon</button>
           </div>
 

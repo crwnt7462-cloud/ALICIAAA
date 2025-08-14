@@ -60,34 +60,66 @@
   max-width: 640px;
 }
 
-.heroSlash__search{
+/* Grille des champs + CTA */
+.heroSlash__search--double{
   margin-top: 18px;
-  display: grid; gap: 12px;
-  grid-template-columns: 1fr auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 620px;
 }
-.heroSlash__input{
-  height: 56px; display:flex; align-items:center; gap:12px;
-  padding: 0 14px; border-radius: 12px;
-  background: var(--glass);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+
+/* Champ (style comme ta capture) */
+.heroSlash__search--double .field{
+  position: relative;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.65));
   border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 16px rgba(10,10,40,.06);
+  display: flex;
+  align-items: center;
+  padding: 0 52px 0 18px;   /* place pour l'icône à droite */
 }
-.heroSlash__input svg{ width:20px; height:20px; color: #8A8FA0; flex: 0 0 auto; }
-.heroSlash__input input{
-  border:none; outline:none; background:transparent; width:100%;
-  font-size:16px; color: var(--ink);
+.heroSlash__search--double .field input{
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
 }
+.heroSlash__search--double .field .icon{
+  position: absolute;
+  right: 14px; top: 50%; transform: translateY(-50%);
+  color: #9AA1B2;
+}
+.heroSlash__search--double .field .icon svg{ width: 22px; height: 22px; }
+
+/* Pin violet pour "Ville" */
+.heroSlash__search--double .field .icon.location{ color: var(--violet); }
+
+/* CTA — VIOLET GLASS, PAS BLANC */
 .heroSlash__cta{
-  height:56px; padding: 0 18px; border:none; border-radius: 14px; cursor:pointer;
-  font-weight: 800; color:#fff;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255,255,255,0.3);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  height: 56px;
+  padding: 0 18px;
+  font-weight: 800;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 14px;
+  cursor: pointer;
+
+  /* glass violet respectant la charte */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10)) padding-box,
+    linear-gradient(90deg, var(--violet), var(--violet-2)) border-box;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 26px rgba(122,77,255,.35);
   transition: transform .15s ease;
 }
 .heroSlash__cta:hover{ 
-  background: rgba(255,255,255,0.2);
   transform: translateY(-1px);
 }
 .heroSlash__cta:active{ transform: scale(.98); }
@@ -160,9 +192,10 @@
     position: absolute;
     inset: 0;
     background: url('@assets/IMG_1532_1755209271985.jpeg') center/cover no-repeat;
-    filter: blur(12px);
-    opacity: 0.35;
+    filter: blur(14px);                 /* flou net et visible */
+    opacity: .35;                       /* lisibilité parfaite du texte */
     z-index: 0;
+    transform: scale(1.08);             /* évite de voir les bords après flou */
   }
   .heroSlash__inner{
     position: relative;
@@ -176,14 +209,18 @@
   .heroSlash__subtitle{
     margin: 0 auto;
   }
-  .heroSlash__search{
-    grid-template-columns: 1fr;
+  .heroSlash__search--double{
     justify-items: center;
   }
   .heroSlash__kpis{
     grid-template-columns: repeat(2,1fr);
     justify-items: center;
   }
+}
+
+/* Desktop : on s'assure que l'arrière-plan photo ne s'affiche pas */
+@media (min-width: 981px){
+  .heroSlash::before{ content: none !important; }
 }
 @media (max-width: 560px){
   .heroSlash{ padding: 40px 16px 22px; }

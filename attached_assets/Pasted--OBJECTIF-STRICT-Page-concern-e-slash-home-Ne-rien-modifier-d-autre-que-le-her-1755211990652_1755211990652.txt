@@ -1,0 +1,161 @@
+🎯 OBJECTIF (STRICT)
+Page concernée : **slash** (home `/`). 
+➜ Ne rien modifier d’autre que le **hero** ET à l’intérieur du hero : 
+1) Remplacer la barre unique “Rechercher un salon” par **deux champs** (Service + Ville) comme sur la photo fournie (icônes à droite).
+2) Mettre le bouton **« Rechercher un salon »** en **violet glass** (pas blanc), avec notre gradient Avyento.
+3) Ajouter une **photo floue** en arrière-plan **uniquement sur mobile**.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1) REMPLACER LA BARRE UNIQUE PAR 2 CHAMPS
+
+Dans le JSX du hero, remplacer le bloc `.heroSlash__search` par ceci (garder le même emplacement) :
+
+<div className="heroSlash__search heroSlash__search--double">
+  {/* Champ Service */}
+  <div className="field">
+    <input placeholder="Service (coiffure, massage…)" />
+    <span className="icon">
+      {/* loupe */}
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" 
+              stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
+      </svg>
+    </span>
+  </div>
+
+  {/* Champ Ville */}
+  <div className="field">
+    <input placeholder="Ville" />
+    <span className="icon location">
+      {/* pin */}
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 22s7-6.2 7-12A7 7 0 0 0 5 10c0 5.8 7 12 7 12Z" 
+              stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round"/>
+        <circle cx="12" cy="10" r="2.5" fill="currentColor"/>
+      </svg>
+    </span>
+  </div>
+
+  <button className="heroSlash__cta">Rechercher un salon</button>
+</div>
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2) STYLES — VIOLET GLASS + INPUTS (ajouter/adapter dans le CSS global déjà importé)
+
+:root{
+  --violet:#7A4DFF;        /* Avyento primary */
+  --violet-2:#B37DFF;      /* Avyento gradient */
+  --ink:#0E1320;
+  --ink-dim:#5B6475;
+  --glass: rgba(255,255,255,.62);
+  --glass-border: rgba(255,255,255,.38);
+}
+
+/* Grille des champs + CTA */
+.heroSlash__search--double{
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  max-width: 620px;
+}
+
+/* Champ (style comme ta capture) */
+.heroSlash__search--double .field{
+  position: relative;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.65));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 6px 16px rgba(10,10,40,.06);
+  display: flex;
+  align-items: center;
+  padding: 0 52px 0 18px;   /* place pour l’icône à droite */
+}
+.heroSlash__search--double .field input{
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+}
+.heroSlash__search--double .field .icon{
+  position: absolute;
+  right: 14px; top: 50%; transform: translateY(-50%);
+  color: #9AA1B2;
+}
+.heroSlash__search--double .field .icon svg{ width: 22px; height: 22px; }
+
+/* Pin violet pour "Ville" */
+.heroSlash__search--double .field .icon.location{ color: var(--violet); }
+
+/* CTA — VIOLET GLASS, PAS BLANC */
+.heroSlash__cta{
+  height: 56px;
+  padding: 0 18px;
+  font-weight: 800;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 14px;
+  cursor: pointer;
+
+  /* >>>> glass violet respectant la charte <<<< */
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.10)) padding-box,
+    linear-gradient(90deg, var(--violet), var(--violet-2)) border-box;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 26px rgba(122,77,255,.35);
+}
+
+/* Desktop: si tu veux les 2 champs + CTA sur une ligne, décommente :
+@media (min-width: 1000px){
+  .heroSlash__search--double{
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+  }
+}
+*/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3) PHOTO FLOUE EN ARRIÈRE-PLAN — UNIQUEMENT MOBILE
+
+/* IMPORTANT : seulement en mobile */
+@media (max-width: 980px){
+  .heroSlash{
+    position: relative;
+    overflow: hidden;
+  }
+  .heroSlash::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url('/images/bg-beaute-mobile.jpg') center/cover no-repeat; /* ➜ remplace par ton chemin réel */
+    filter: blur(14px);                 /* >>> flou net et visible <<< */
+    opacity: .35;                       /* lisibilité parfaite du texte */
+    z-index: 0;
+    transform: scale(1.08);             /* évite de voir les bords après flou */
+  }
+  .heroSlash__inner{ position: relative; z-index: 1; }
+}
+
+/* Desktop : on s’assure que l’arrière-plan photo ne s’affiche pas */
+@media (min-width: 981px){
+  .heroSlash::before{ content: none !important; }
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4) CONTRÔLES & NOTES IMPORTANTES
+- Le bouton CTA **ne doit JAMAIS être blanc** : il est **violet glass** via le gradient + border‑box ci‑dessus.
+- Les 2 champs doivent visuellement correspondre à ta photo : bord arrondi 14px, fond glass clair, **icône à droite** (loupe grise pour “Service”, pin violet pour “Ville”).
+- La **photo floue** ne doit apparaître **que** sur mobile (`max-width: 980px`).  
+  ➜ Utiliser une image en rapport avec l’univers beauté (spa/coiffure/make‑up), légère (≤ 150 ko).
+- Conserver tous les autres styles/espacements du hero tels qu’ils sont actuellement.
+- NE PAS toucher aux autres sections sous le hero, ni au routing, ni aux pages.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5) COMMIT
+git add -A
+git commit -m "fix(hero): double search fields + violet glass CTA + mobile blurred bg"
