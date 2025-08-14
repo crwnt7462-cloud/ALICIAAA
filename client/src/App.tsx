@@ -12,7 +12,7 @@ import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
 import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
-import HomePage from "@/pages/HomePage";
+
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
@@ -380,7 +380,7 @@ function Router() {
   }
 
   // Page d'accueil publique (sans header/nav mobile)
-  if (location === '/home') {
+  if (location === '/' || location === '/home') {
     return (
       <div className="h-full">
         <PublicLanding />
@@ -819,15 +819,7 @@ function Router() {
     );
   }
 
-  // Page d'accueil publique nouvelle - FORCÉE
-  if (location === '/') {
-    console.log('RENDERING NEW HOMEPAGE - FORCED');
-    return (
-      <div className="h-full" style={{backgroundColor: '#f3f4f6'}}>
-        <HomePage />
-      </div>
-    );
-  }
+
 
   // Application principale avec navigation
   return (
