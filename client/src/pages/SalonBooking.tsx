@@ -205,6 +205,7 @@ function SalonBooking() {
     acceptCGU: false,
     saveCard: false
   });
+  const [dateStates, setDateStates] = useState(availableDates);
 
   // Récupérer le service sélectionné depuis sessionStorage au chargement
   useEffect(() => {
@@ -389,8 +390,6 @@ function SalonBooking() {
   
   // ✅ TYPE SAFETY: Pas de service par défaut, utilisation du service sélectionné uniquement
   const service = selectedService;
-
-  const [dateStates, setDateStates] = useState(availableDates);
 
   const toggleDateExpansion = (index: number) => {
     setDateStates((prev: any[]) => prev.map((date: any, i: number) => 

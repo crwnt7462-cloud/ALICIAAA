@@ -450,7 +450,7 @@ function Router() {
   if (location.startsWith('/salon-booking/')) {
     return (
       <div className="h-full">
-        <SalonBooking />
+        <SalonBookingFixed />
       </div>
     );
   }
