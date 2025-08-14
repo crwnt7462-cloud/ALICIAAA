@@ -65,7 +65,7 @@
   margin-top: 18px;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: 18px;
   max-width: 620px;
 }
 
@@ -126,7 +126,7 @@
 
 /* KPIs */
 .heroSlash__kpis{
-  margin-top: 22px; padding: 0; list-style:none;
+  margin-top: 32px; padding: 0; list-style:none;
   display:grid;
   grid-template-columns: repeat(4, minmax(0,1fr));
   gap: 12px;
