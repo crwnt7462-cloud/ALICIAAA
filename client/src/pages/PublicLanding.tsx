@@ -8,6 +8,77 @@ import logoImage from "@assets/3_1753714421825.png";
 
 
 
+// Composant HeroSlash selon les spécifications exactes
+function HeroSlash() {
+  const [, setLocation] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  return (
+    <section className="heroSlash">
+      <div className="heroSlash__inner">
+        {/* Colonne gauche */}
+        <div className="heroSlash__left">
+          <div className="heroSlash__badge">
+            <span className="dot" />
+            <span>Réservation instantanée</span>
+          </div>
+
+          <h1 className="heroSlash__title">
+            Réservez votre<br/> rendez‑vous <span className="light">beauté</span>
+          </h1>
+
+          <p className="heroSlash__subtitle">
+            Trouvez et réservez chez les meilleurs professionnels près de chez vous
+          </p>
+
+          {/* Barre de recherche + CTA */}
+          <div className="heroSlash__search">
+            <div className="heroSlash__input">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 5.303-12.803A7.5 7.5 0 0 1 10.5 18Zm8-1 4 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+              <input 
+                placeholder="Rechercher un salon" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+              />
+            </div>
+            <button className="heroSlash__cta" onClick={handleSearch}>Rechercher un salon</button>
+          </div>
+
+          {/* KPIs alignés (ligne de base du screen) */}
+          <ul className="heroSlash__kpis">
+            <li><strong>50 000+</strong><span>Rendez‑vous / mois</span></li>
+            <li><strong>2 500+</strong><span>Salons partenaires</span></li>
+            <li><strong>4,9/5</strong><span>Satisfaction client</span></li>
+            <li><strong>24h/24</strong><span>Réservation dispo</span></li>
+          </ul>
+        </div>
+
+        {/* Colonne droite — téléphone glass */}
+        <div className="heroSlash__right">
+          <div className="heroPhone">
+            <div className="heroPhone__screen">
+              <div className="heroPhone__pill" />
+              <div className="heroPhone__row" />
+              <div className="heroPhone__row" />
+              <div className="heroPhone__stat" />
+              <div className="heroPhone__cta" />
+            </div>
+          </div>
+          {/* Ombre posée derrière le téléphone */}
+          <div className="heroSlash__pad" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function PublicLanding() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -312,161 +383,8 @@ export default function PublicLanding() {
         </div>
       </header>
 
-      {/* Hero section moderne avec layout côte à côte */}
-      <section className="bg-gradient-to-br from-violet-50/50 to-purple-50/30 py-8 sm:py-12 md:py-16 lg:py-20 relative overflow-hidden">
-        {/* Éléments décoratifs en arrière-plan */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200/20 to-purple-200/20 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-200/20 to-violet-200/20 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            
-            {/* Colonne gauche - Contenu */}
-            <div className="lg:pr-8 px-4 sm:px-0">
-              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-violet-100/50 border border-violet-200/50">
-                <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
-                <span className="text-sm font-medium text-violet-700">Réserver votre rendez vous</span>
-              </div>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Réservez votre<br className="hidden sm:block" />
-                <span className="text-gray-900">rendez-vous</span> <span className="text-violet-600">beauté</span>
-              </h1>
-              
-              <p className="text-base sm:text-lg text-gray-600 mb-8 leading-relaxed">
-                Trouvez et réservez chez tes meilleurs<br className="hidden sm:block" />
-                professionnels près de chez vous
-              </p>
-              
-              {/* Barre de recherche moderne - optimisée mobile */}
-              <div className="max-w-lg mb-6 sm:mb-8">
-                <div className="relative">
-                  <Input
-                    placeholder="Rechercher un salon"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-12 sm:h-14 pl-4 sm:pl-6 pr-10 sm:pr-12 text-sm sm:text-base rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-violet-400 bg-white/80 backdrop-blur-sm"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                  <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
-                </div>
-                <Button 
-                  onClick={handleSearch}
-                  className="w-full mt-3 h-11 sm:h-12 bg-violet-600 hover:bg-violet-700 text-white text-sm sm:text-base font-medium rounded-xl sm:rounded-2xl"
-                >
-                  Rechercher un salon
-                </Button>
-              </div>
-              
-              {/* Statistiques - Responsive design mobile first */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">50.000+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Rendez vous par mois</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">2.500+</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Salons partenaires</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Satisfaction client</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">24h/24</div>
-                  <div className="text-xs sm:text-sm text-gray-600">Réservation disponible</div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Colonne droite - Mockup téléphone (visible sur desktop uniquement) */}
-            <div className="relative lg:flex justify-center hidden">
-              <div className="relative transform rotate-12 translate-x-8 translate-y-4">
-                {/* Mockup de téléphone style iPhone incliné */}
-                <div className="w-80 h-[600px] bg-white rounded-[3rem] shadow-2xl border-2 border-gray-100 relative overflow-hidden">
-                  {/* Barre de statut iPhone */}
-                  <div className="flex justify-between items-center px-4 py-2 text-xs font-medium text-gray-900">
-                    <span>9:41</span>
-                    <div className="flex items-center gap-1">
-                      {/* Signal */}
-                      <div className="flex gap-0.5">
-                        <div className="w-1 h-1 bg-gray-900 rounded-full"></div>
-                        <div className="w-1 h-1.5 bg-gray-900 rounded-full"></div>
-                        <div className="w-1 h-2 bg-gray-900 rounded-full"></div>
-                      </div>
-                      {/* WiFi */}
-                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M2 17h20v2H2zm1.15-4.05L4 11.47l.85 1.48c-.36.42-.85.76-1.4 1.02L3 13.95zM8.85 12.95l-.85-1.48c1.42-1.16 3.28-1.8 5-1.8s3.58.64 5 1.8l-.85 1.48c-1.13-.92-2.67-1.48-4.15-1.48s-3.02.56-4.15 1.48z"/>
-                      </svg>
-                      {/* Batterie */}
-                      <div className="w-5 h-2.5 border border-gray-900 rounded-sm relative">
-                        <div className="w-3 h-1 bg-gray-900 rounded-sm absolute top-0.5 left-0.5"></div>
-                        <div className="w-0.5 h-1 bg-gray-900 rounded-r absolute top-1 -right-1"></div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Contenu de l'écran - aligné à GAUCHE comme le screenshot */}
-                  <div className="px-5 py-4 space-y-3">
-                    {/* Header "Sélectionnez..." aligné à gauche */}
-                    <div className="bg-gray-50 rounded-2xl p-4">
-                      <div className="text-base font-semibold text-gray-800 mb-1">Sélectionnez...</div>
-                      <div className="text-sm text-gray-500">Sous un checker</div>
-                    </div>
-                    
-                    {/* Cards alignées à gauche comme le screenshot */}
-                    <div className="space-y-3">
-                      {/* Card violette avec point à gauche */}
-                      <div className="bg-violet-100 rounded-2xl p-4">
-                        <div className="flex items-center gap-3 mb-1">
-                          <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
-                          <span className="text-base font-medium text-gray-800">Sérebo...</span>
-                        </div>
-                        <div className="text-sm text-gray-600 ml-6">1.000+</div>
-                      </div>
-                      
-                      {/* Card rose avec grand nombre à gauche */}
-                      <div className="bg-pink-100 rounded-2xl p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
-                          <span className="text-2xl font-bold text-gray-800">90.000+</span>
-                        </div>
-                      </div>
-                      
-                      {/* Card violette "4.0 tv" à gauche */}
-                      <div className="bg-violet-100 rounded-2xl p-4">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
-                          <span className="text-base font-medium text-gray-800">4.0 tv</span>
-                        </div>
-                        <div className="text-sm text-gray-600 leading-tight ml-6">
-                          Salons<br/>
-                          & instituts<br/>
-                          & cliniques
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Bouton principal */}
-                    <div className="mt-4">
-                      <div className="bg-violet-500 text-white text-center py-4 px-6 rounded-3xl text-base font-semibold">
-                        Pécher à nos jipl salons
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Éléments décoratifs autour du téléphone incliné */}
-                <div className="absolute -top-6 -right-8 w-8 h-8 bg-violet-200 rounded-full animate-pulse"></div>
-                <div className="absolute -bottom-12 -left-8 w-12 h-12 bg-purple-200 rounded-full opacity-60"></div>
-                <div className="absolute top-20 -left-4 w-6 h-6 bg-pink-200 rounded-full opacity-70"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Nouveau Hero selon spécifications exactes */}
+      <HeroSlash />
 
 
 
