@@ -369,8 +369,8 @@ export default function PublicLanding() {
         )}
       </AnimatePresence>
 
-      {/* NOUVEAU HEADER ÉPURÉ */}
-      <header className="flex items-center justify-between px-4 py-4 bg-white border-b border-gray-100">
+      {/* NOUVEAU HEADER MOBILE EXACT */}
+      <header className="flex items-center justify-between px-4 py-4 bg-white">
         {/* Menu hamburger */}
         <button
           id="hamburger-button"
@@ -399,7 +399,7 @@ export default function PublicLanding() {
       </header>
 
       {/* Badge Réservation instantanée */}
-      <div className="px-4 py-4">
+      <div className="px-4 py-4 bg-gray-50">
         <div className="flex items-center justify-center">
           <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm font-medium">
             <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
