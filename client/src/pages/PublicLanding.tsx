@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, CheckCircle2, Users, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Search, Star, Calendar, Clock, Shield, Award, CheckCircle2, Users, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
@@ -12,19 +11,7 @@ import logoImage from "@assets/3_1753714421825.png";
 export default function PublicLanding() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchLocation, setSearchLocation] = useState("");
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentWord, setCurrentWord] = useState(0);
-  
-  const words = ["beauté", "barber", "cils", "manucure"];
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentWord((prev) => (prev + 1) % words.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [words.length]);
 
 
 
@@ -35,154 +22,14 @@ export default function PublicLanding() {
     { number: "24h/24", label: "Réservation disponible" }
   ];
 
-  // Salons ajoutés automatiquement lors de l'inscription pro
-  const [topSalons, setTopSalons] = useState([
-    {
-      id: "salon-excellence",
-      name: "Salon Excellence Paris",
-      location: "Paris 16ème",
-      rating: 4.9,
-      reviews: 324,
-      nextSlot: "Aujourd'hui 15h",
-      services: ["Coiffure", "Coloration"],
-      verified: true
-    },
-    {
-      id: "salon-2",
-      name: "Institut Prestige",
-      location: "Lyon Centre",
-      rating: 4.8,
-      reviews: 198,
-      nextSlot: "Demain 9h30",
-      services: ["Soins visage", "Épilation"],
-      verified: true
-    },
-    {
-      id: "salon-3",
-      name: "Spa Wellness",
-      location: "Marseille",
-      rating: 4.7,
-      reviews: 156,
-      nextSlot: "Aujourd'hui 17h",
-      services: ["Massage", "Relaxation"],
-      verified: true
-    }
-  ]);
 
-  // Simuler l'ajout automatique d'un nouveau salon pro
-  useEffect(() => {
-    const addNewProSalons = () => {
-      const newSalons = [
-        {
-          id: "mon-salon-beaute",
-          name: "Mon Salon de Beauté",
-          location: "Paris Centre",
-          rating: 4.8,
-          reviews: 42,
-          nextSlot: "Disponible maintenant",
-          services: ["Coupe", "Brushing", "Soin"],
-          verified: true,
-          isNew: true
-        }
-      ];
-      
-      // Ajouter les nouveaux salons automatiquement
-      setTopSalons(prev => [...newSalons, ...prev]);
-    };
 
-    // Simuler l'ajout après 3 secondes (normalement lors de l'inscription)
-    const timer = setTimeout(addNewProSalons, 3000);
-    return () => clearTimeout(timer);
-  }, []);
 
-  const benefits = [
-    {
-      icon: <Calendar className="w-6 h-6" />,
-      title: "Réservation instantanée",
-      description: "Trouvez et réservez votre créneau en moins de 2 minutes"
-    },
-    {
-      icon: <Shield className="w-6 h-6" />,
-      title: "Paiement sécurisé",
-      description: "Transactions protégées et remboursement garanti"
-    },
-    {
-      icon: <Award className="w-6 h-6" />,
-      title: "Salons certifiés",
-      description: "Tous nos partenaires sont vérifiés et évalués"
-    },
-    {
-      icon: <Users className="w-6 h-6" />,
-      title: "Support client",
-      description: "Assistance 7j/7 pour toutes vos questions"
-    }
-  ];
-
-  const testimonials = [
-    {
-      id: 1,
-      name: "Marie L.",
-      location: "Paris",
-      rating: 5,
-      comment: "Interface très intuitive ! J'ai trouvé mon salon de coiffure parfait en 2 minutes. Le système de réservation est fluide et les rappels automatiques très pratiques.",
-      service: "Coiffure & Coloration",
-      date: "Il y a 2 jours"
-    },
-    {
-      id: 2,
-      name: "Sophie M.",
-      location: "Lyon",
-      rating: 5,
-      comment: "Excellent service ! Le salon était exactement comme décrit, et le processus de réservation très simple. Je recommande vivement Avyento.",
-      service: "Soins visage",
-      date: "Il y a 1 semaine"
-    },
-    {
-      id: 3,
-      name: "Julie R.",
-      location: "Marseille",
-      rating: 5,
-      comment: "Parfait pour les rendez-vous de dernière minute. J'ai pu réserver un massage le jour même. L'équipe était professionnelle et accueillante.",
-      service: "Massage bien-être",
-      date: "Il y a 3 jours"
-    }
-  ];
-
-  const faqs = [
-    {
-      question: "Comment réserver un rendez-vous ?",
-      answer: "Recherchez un salon ou service, sélectionnez un créneau disponible, remplissez vos informations et confirmez. Vous recevrez immédiatement une confirmation par email et SMS."
-    },
-    {
-      question: "Puis-je annuler ou modifier mon rendez-vous ?",
-      answer: "Oui, vous pouvez annuler ou modifier gratuitement jusqu'à 24h avant votre rendez-vous directement depuis votre email de confirmation ou en contactant le salon."
-    },
-    {
-      question: "Les salons sont-ils vérifiés ?",
-      answer: "Tous nos partenaires sont rigoureusement sélectionnés et vérifiés. Nous contrôlons leurs certifications, équipements et respectons les normes d'hygiène et de qualité."
-    },
-    {
-      question: "Que se passe-t-il si je suis en retard ?",
-      answer: "Contactez directement le salon dès que possible. La plupart acceptent un retard de 15-20 minutes, mais au-delà, le rendez-vous peut être annulé."
-    },
-    {
-      question: "Comment fonctionne le paiement ?",
-      answer: "Le paiement se fait généralement sur place. Certains salons proposent un acompte en ligne sécurisé. Tous les modes de paiement sont acceptés."
-    }
-  ];
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      setLocation(`/search?q=${encodeURIComponent(searchQuery)}&location=${encodeURIComponent(searchLocation)}`);
+      setLocation(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
-  };
-
-  const handleBookSalon = (salonId: string) => {
-    setLocation(`/salon/salon-elegance`);
-  };
-
-  const handleSalonClick = (salonId: string) => {
-    setLocation(`/salon/${salonId}`);
   };
 
   const menuItems = [
@@ -241,16 +88,16 @@ export default function PublicLanding() {
   const handleMenuItemClick = (item: typeof menuItems[0]) => {
     if (item.id === 'coiffeur') {
       setSearchQuery('coiffure');
-      setLocation(`/search?q=coiffure&location=${encodeURIComponent(searchLocation || 'paris')}`);
+      setLocation(`/search?q=coiffure`);
     } else if (item.id === 'barbier') {
       setSearchQuery('barbier');
-      setLocation(`/search?q=barbier&location=${encodeURIComponent(searchLocation || 'paris')}`);
+      setLocation(`/search?q=barbier`);
     } else if (item.id === 'manucure') {
       setSearchQuery('ongle');
-      setLocation(`/search?q=ongle&location=${encodeURIComponent(searchLocation || 'paris')}`);
+      setLocation(`/search?q=ongle`);
     } else if (item.id === 'institut') {
       setSearchQuery('esthetique');
-      setLocation(`/search?q=esthetique&location=${encodeURIComponent(searchLocation || 'paris')}`);
+      setLocation(`/search?q=esthetique`);
     } else {
       item.action();
     }
@@ -465,156 +312,144 @@ export default function PublicLanding() {
         </div>
       </header>
 
-      {/* Hero section épuré */}
-      <section className="bg-gradient-to-b from-violet-50/30 to-white py-8 md:py-12 lg:py-16 relative">
+      {/* Hero section moderne avec layout côte à côte */}
+      <section className="bg-gradient-to-br from-violet-50/50 to-purple-50/30 py-12 md:py-16 lg:py-20 relative overflow-hidden">
+        {/* Éléments décoratifs en arrière-plan */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200/20 to-purple-200/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-200/20 to-violet-200/20 rounded-full blur-3xl"></div>
+        </div>
         
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <div 
-              className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full"
-              style={{
-                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(139, 92, 246, 0.10) 50%, rgba(124, 58, 237, 0.15) 100%)',
-                backdropFilter: 'blur(25px)',
-                WebkitBackdropFilter: 'blur(25px)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(168, 85, 247, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
-              }}
-            >
-              <span 
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.8) 0%, rgba(124, 58, 237, 1) 100%)',
-                  boxShadow: '0 0 8px rgba(168, 85, 247, 0.3)'
-                }}
-              ></span>
-              <span className="text-sm font-medium text-black">Réservation instantanée</span>
-            </div>
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 px-4">
-              Réservez votre rendez-vous{" "}
-              <span 
-                className="inline-block px-3 py-1 rounded-lg relative overflow-hidden text-center"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.20) 0%, rgba(139, 92, 246, 0.15) 50%, rgba(124, 58, 237, 0.20) 100%)',
-                  backdropFilter: 'blur(25px)',
-                  WebkitBackdropFilter: 'blur(25px)',
-                  border: '2px solid rgba(168, 85, 247, 0.3)',
-                  boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
-                  color: '#1f2937'
-                }}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={currentWord}
-                    className="inline-block"
-                  >
-                    {words[currentWord].split('').map((letter, index) => (
-                      <motion.span
-                        key={`${currentWord}-${index}`}
-                        initial={{ y: 30, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: -30, opacity: 0 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 20,
-                          delay: index * 0.05
-                        }}
-                        className="inline-block"
-                      >
-                        {letter}
-                      </motion.span>
-                    ))}
-                  </motion.span>
-                </AnimatePresence>
-              </span>
-            </h1>
-            <p className="text-sm md:text-base text-gray-600 mb-6 px-4">
-              Trouvez et réservez chez les meilleurs professionnels près de chez vous
-            </p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             
-            {/* Barre de recherche compacte */}
-            <div className="max-w-md mx-auto mb-5">
-              <div className="space-y-2">
+            {/* Colonne gauche - Contenu */}
+            <div className="lg:pr-8">
+              <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-violet-100/50 border border-violet-200/50">
+                <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
+                <span className="text-sm font-medium text-violet-700">Réserver votre rendez vous</span>
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Réservez votre<br />
+                <span className="text-gray-900">rendez-vous</span> <span className="text-violet-600">beauté</span>
+              </h1>
+              
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Trouvez et réservez chez tes meilleurs<br />
+                professionnels près de chez vous
+              </p>
+              
+              {/* Barre de recherche moderne */}
+              <div className="max-w-lg mb-8">
                 <div className="relative">
                   <Input
-                    placeholder="Service (coiffure, massage...)"
+                    placeholder="Rechercher un salon"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
+                    className="h-14 pl-6 pr-12 text-base rounded-2xl border-2 border-gray-200 focus:border-violet-400 bg-white/80 backdrop-blur-sm"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <Search className="absolute right-3 top-3 w-5 h-5 text-gray-400" />
-                </div>
-                <div className="relative">
-                  <Input
-                    placeholder="Ville"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="h-11 pl-3 pr-10 text-sm rounded-lg border border-gray-300 focus:border-violet-500"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                  <button
-                    onClick={() => {
-                      if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                          (position) => {
-                            setSearchLocation("Près de moi");
-                          },
-                          (error) => console.log("Géolocalisation non disponible")
-                        );
-                      }
-                    }}
-                    className="absolute right-3 top-3 text-violet-500 active:text-violet-700 touch-manipulation"
-                    title="Utiliser ma position"
-                  >
-                    <MapPin className="w-5 h-5" />
-                  </button>
+                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full h-11 glass-button text-black text-sm font-medium rounded-lg touch-manipulation"
+                  className="w-full mt-3 h-12 bg-violet-600 hover:bg-violet-700 text-white text-base font-medium rounded-2xl"
                 >
-                  <Search className="w-4 h-4 mr-2" />
                   Rechercher un salon
                 </Button>
               </div>
-            </div>
-            
-
-
-            {/* Recherches populaires compactes */}
-            <div className="max-w-md mx-auto mb-4">
-              <p className="text-xs text-gray-500 mb-2 text-center">Recherches populaires :</p>
-              <div className="flex flex-wrap gap-1 justify-center">
-                {['Coiffure', 'Massage', 'Manucure', 'Soin visage'].map((search) => (
-                  <button
-                    key={search}
-                    onClick={() => {
-                      setSearchQuery(search);
-                      handleSearch();
-                    }}
-                    className="px-3 py-1 bg-gray-100 active:bg-violet-100 text-xs rounded-full transition-colors touch-manipulation"
-                  >
-                    {search}
-                  </button>
-                ))}
+              
+              {/* Statistiques */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">50.000+</div>
+                  <div className="text-sm text-gray-600">Rendez vous par mois</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">2.500+</div>
+                  <div className="text-sm text-gray-600">Salons partenaires</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
+                  <div className="text-sm text-gray-600">Satisfaction client</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">24h/24</div>
+                  <div className="text-sm text-gray-600">Réservation disponible</div>
+                </div>
               </div>
             </div>
-
-            {/* Bouton connexion salon */}
-            <div className="max-w-md mx-auto text-center">
-              <div className="text-xs text-gray-500 mb-2">Vous êtes un professionnel ?</div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLocation("/pro-login")}
-                className="px-4 py-2 glass-button text-black text-sm rounded-lg"
-              >
-                Connexion Salon
-              </Button>
+            
+            {/* Colonne droite - Mockup téléphone */}
+            <div className="relative lg:flex justify-center hidden">
+              <div className="relative">
+                {/* Mockup de téléphone */}
+                <div className="w-80 h-[600px] bg-white rounded-[3rem] shadow-2xl border-8 border-gray-900/10 relative overflow-hidden">
+                  {/* Barre de statut */}
+                  <div className="flex justify-between items-center px-6 py-3 text-xs font-medium text-gray-900">
+                    <span>9:41</span>
+                    <div className="flex items-center gap-1">
+                      <div className="flex gap-1">
+                        <div className="w-1 h-1 bg-gray-900 rounded-full"></div>
+                        <div className="w-1 h-1 bg-gray-900 rounded-full"></div>
+                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                      </div>
+                      <div className="w-6 h-3 border border-gray-900 rounded-sm relative">
+                        <div className="w-3 h-1.5 bg-gray-900 rounded-sm absolute top-0.5 left-0.5"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Contenu de l'écran */}
+                  <div className="px-6 py-4 space-y-4">
+                    {/* Recherche */}
+                    <div className="bg-gray-100 rounded-xl p-3">
+                      <div className="text-sm font-medium text-gray-700 mb-2">Sélectionner</div>
+                      <div className="text-xs text-gray-500">Trouve chez les top</div>
+                    </div>
+                    
+                    {/* Salon cards */}
+                    <div className="space-y-3">
+                      <div className="bg-violet-100 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                          <span className="text-sm font-medium">Salon esthétique</span>
+                        </div>
+                        <div className="text-xs text-gray-600">Soins beauté</div>
+                      </div>
+                      
+                      <div className="bg-pink-100 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                          <span className="text-sm font-medium">Soins</span>
+                        </div>
+                        <div className="text-xs text-gray-600">90.000+</div>
+                      </div>
+                      
+                      <div className="bg-green-100 rounded-xl p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm font-medium">1.000+</span>
+                        </div>
+                        <div className="text-xs text-gray-600">4.0 tv</div>
+                      </div>
+                    </div>
+                    
+                    {/* Bouton principal */}
+                    <div className="mt-6">
+                      <div className="bg-violet-500 text-white text-center py-3 rounded-xl font-medium">
+                        Pécher à nos just salons
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Éléments décoratifs autour du téléphone */}
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-violet-200 rounded-full animate-pulse"></div>
+                <div className="absolute -bottom-8 -left-6 w-12 h-12 bg-purple-200 rounded-full opacity-60"></div>
+              </div>
             </div>
-
-
           </div>
         </div>
       </section>
