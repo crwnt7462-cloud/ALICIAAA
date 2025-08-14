@@ -17,7 +17,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50" data-homepage="new-design-v2">
       {/* Header avec logo et navigation */}
       <header className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm">
         <button className="p-2">
