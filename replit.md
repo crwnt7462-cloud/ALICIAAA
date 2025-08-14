@@ -4,7 +4,7 @@
 Cette plateforme web vise à révolutionner la gestion des salons et instituts de beauté en offrant une solution complète et intuitive. Le projet intègre des fonctionnalités avancées pour la gestion des rendez-vous, de la clientèle, des services, et des stocks, le tout soutenu par une intelligence artificielle de pointe. L'objectif est d'améliorer l'expérience client, d'optimiser les opérations des professionnels de la beauté et de proposer des outils d'analyse prédictive et de marketing pour une différenciation concurrentielle maximale.
 
 ## Recent Changes
-- ✅ HEADER + HERO MOBILE REDESIGN (14/08/2025 23:00) : Header mobile exact (hamburger + logo "avyento." + login), section hero mobile style app avec titre "Réservez votre rendez-vous", animation "beauté", champs de recherche empilés, bouton violet pleine largeur
+- ✅ RETOUR ANCIENNE PAGE ACCUEIL (14/08/2025 23:03) : Restauration page d'accueil simple et épurée avec header minimal, section hero desktop, mockup téléphone 3D et statistiques
 - ✅ SYSTÈME SAUVEGARDE AUTOMATIQUE IMPLÉMENTÉ (14/08/2025 21:44) : Hook useAutoSave avec délai configurable, localStorage backup, useSalonData pour persistance données, synchronisation temps réel SalonSettings ↔ SalonSearch, indicateurs visuels état sauvegarde
 - ✅ SUPPRESSION COMPLÈTE RÉFÉRENCES "PLANITY" (14/08/2025 20:21) : Remplacement systématique par "Avyento", renommage fichiers PlanityStyle* → AvyentoStyle*, mise à jour routes /planity-* → /avyento-*, 0 erreurs LSP, build réussi
 - ✅ AUTO-DÉTECTION API OPTIMISÉE (13/01/2025 23:35) : Système silencieux sans popups, auto-détection Replit/localhost parfaite
