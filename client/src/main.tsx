@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { checkApiHealth, autoDetectApiUrl, showRetryAlert } from './lib/apiHealth';
+import { checkApiHealth, autoDetectApiUrl } from './lib/apiHealth';
 
 // Auto-détection de l'URL API au démarrage avec retry
 (async function initApiUrl() {

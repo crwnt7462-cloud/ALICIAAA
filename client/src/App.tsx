@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { useAuth } from "@/hooks/useAuth";
+
 
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
@@ -40,7 +40,7 @@ import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
 
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
-import DownloadCode from "@/pages/DownloadCode";
+
 import BusinessFeaturesModern from "@/pages/BusinessFeaturesModern";
 import BusinessFeaturesFixed from "@/pages/BusinessFeaturesFixed";
 import DashboardModern from "@/pages/DashboardModern";
@@ -667,7 +667,7 @@ function Router() {
     const planType = location.split('/')[3] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
     return (
       <div className="h-full">
-        <SubscriptionSignup selectedPlan={planType} />
+        <SubscriptionSignup selectedPlan={planType || "basic-pro"} />
       </div>
     );
   }
@@ -677,7 +677,7 @@ function Router() {
     const planType = location.split('/')[2] as "basic-pro" | "advanced-pro" | "premium-pro" | undefined;
     return (
       <div className="h-full">
-        <MultiStepSubscription selectedPlan={planType} />
+        <MultiStepSubscription selectedPlan={planType || "basic-pro"} />
       </div>
     );
   }
@@ -689,7 +689,7 @@ function Router() {
     const subscriptionId = location.split('/')[3];
     return (
       <div className="h-full">
-        <SubscriptionPayment subscriptionId={subscriptionId} />
+        <SubscriptionPayment subscriptionId={subscriptionId || ""} />
       </div>
     );
   }
@@ -859,7 +859,7 @@ function Router() {
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
-          <Route path="/messaging-test" component={RealTimeMessaging} />
+          <Route path="/messaging-test" component={() => <RealTimeMessaging currentUserId="demo" currentUserType="pro" currentUserName="Demo User" otherUserId="client" otherUserType="client" otherUserName="Client Demo" />} />
           <Route path="/pro-messaging-search" component={ProMessaging} />
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />

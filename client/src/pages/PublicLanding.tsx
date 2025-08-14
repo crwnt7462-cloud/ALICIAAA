@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, MapPin, Star, Calendar, Clock, Shield, Award, ArrowRight, CheckCircle2, Users, TrendingUp, Quote, ThumbsUp, Sparkles, Zap, Heart, Camera, Phone, Scissors, Filter, SortAsc, Truck, Bell, Share2, Copy, Menu, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
+import { Search, MapPin, Star, Calendar, Clock, Shield, Award, CheckCircle2, Users, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
-import { getGenericGlassButton } from '@/lib/salonColors';
+
 
 
 export default function PublicLanding() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentWord, setCurrentWord] = useState(0);
   
@@ -27,9 +26,7 @@ export default function PublicLanding() {
     return () => clearInterval(interval);
   }, [words.length]);
 
-  const handleSearchService = (service: string) => {
-    setLocation(`/services/${service}`);
-  };
+
 
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
