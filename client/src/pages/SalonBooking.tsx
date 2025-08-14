@@ -205,6 +205,13 @@ function SalonBooking() {
     acceptCGU: false,
     saveCard: false
   });
+
+  // État pour les dates disponibles - nécessaire pour toggleDateExpansion
+  const availableDates = [
+    { date: '2024-01-15', day: 'Lun', expanded: false },
+    { date: '2024-01-16', day: 'Mar', expanded: false },
+    { date: '2024-01-17', day: 'Mer', expanded: false }
+  ];
   const [dateStates, setDateStates] = useState(availableDates);
 
   // Récupérer le service sélectionné depuis sessionStorage au chargement
@@ -380,11 +387,7 @@ function SalonBooking() {
   }
 
   // ✅ SUPPRESSION DES DONNÉES MOCK: Utilisation exclusive des vraies données
-  const availableDates = [
-    { date: '2024-01-15', day: 'Lun', expanded: false },
-    { date: '2024-01-16', day: 'Mar', expanded: false },
-    { date: '2024-01-17', day: 'Mer', expanded: false }
-  ];
+  // availableDates et dateStates déjà définis dans les useState au début
   
   const timeSlots = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
   
@@ -1070,7 +1073,7 @@ function SalonBooking() {
             </Button>
 
             <p className="text-xs text-gray-500 text-center leading-4">
-              Vos informations sont traitées par Planity, consultez notre{' '}
+              Vos informations sont traitées par Avyento, consultez notre{' '}
               <span className="underline">politique de confidentialité</span>. Ce site est protégé
               par reCAPTCHA et est soumis à la{' '}
               <span className="underline">Politique de Confidentialité</span> et aux{' '}
@@ -1084,7 +1087,7 @@ function SalonBooking() {
     </div>
   );
 
-  // Bottom Sheet de Paiement - Style Apple Pay/Planity
+  // Bottom Sheet de Paiement - Style Apple Pay/Avyento
   const renderPaymentBottomSheet = () => (
     <>
       {/* Overlay */}
@@ -1665,7 +1668,7 @@ function SalonBooking() {
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, acceptCGU: !!checked }))}
               />
               <label htmlFor="terms" className="text-sm text-gray-600 leading-5">
-                J'accepte les <span className="underline">CGU</span> de Planity.
+                J'accepte les <span className="underline">CGU</span> d'Avyento.
               </label>
             </div>
 
