@@ -29,6 +29,13 @@ export default function SalonBookingSimple() {
   // Récupérer les informations du salon
   const { data: salon, isLoading: salonLoading } = useQuery({
     queryKey: ['/api/salons/by-slug', salonSlug],
+    queryFn: async () => {
+      const response = await fetch(`/api/salons/by-slug/${salonSlug}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch salon');
+      }
+      return response.json();
+    },
     enabled: !!salonSlug,
   });
 
@@ -73,6 +80,10 @@ export default function SalonBookingSimple() {
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600">Erreur de chargement</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Salon: {salon ? '✓' : '✗'} | Services: {services ? '✓' : '✗'}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">Slug: {salonSlug}</p>
         </div>
       </div>
     );
