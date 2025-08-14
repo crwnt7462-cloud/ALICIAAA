@@ -1,0 +1,130 @@
+🎯 OBJECTIF (CLIENT UNIQUEMENT)
+Refondre la page d’accueil Avyento (glassy, minimal, iOS-like), responsive desktop + mobile, sans toucher au back.
+Conserver couleurs/typos/logo/effet glass et intégrer :
+- Hero avec badge, titre, sous-titre, **barre de recherche service + ville**
+- Preuve sociale (KPI)
+- Catégories (cartes glass)
+- Bloc différenciant **IA anti no-show (Pro+)**
+- Bloc **Messagerie intégrée**
+- "Salons recommandés" (placeholder API)
+- CTA final
+- **Animations subtiles iOS-like** sur hover, clic et chargement
+
+────────────────────────────────────────────────────────────────────────
+1) CSS GLOBAL — DESIGN SYSTEM GLASS + ANIMATIONS
+Créer/écraser `client/src/index.css` (ou injecter si existe) :
+
+:root{
+  --avyento-bg: radial-gradient(1200px 600px at 20% -10%, #F3EFFF 0%, #FFFFFF 55%) fixed;
+  --avyento-primary: #7A4DFF;
+  --avyento-primary-2: #B37DFF;
+  --avyento-ink: #0E1320;
+  --avyento-ink-dim: #5B6475;
+  --glass: rgba(255,255,255,.6);
+  --glass-border: rgba(255,255,255,.35);
+  --shadow: 0 10px 30px rgba(28,5,78,.10);
+  --radius: 18px;
+  --blur: 14px;
+}
+
+body{ background: var(--avyento-bg); color: var(--avyento-ink); }
+
+.glass{
+  background: var(--glass);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.glass:hover{
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 36px rgba(28,5,78,.14);
+}
+
+.badge{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.5rem .9rem; border-radius:999px; font-weight:600;
+  background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.55));
+  border:1px solid var(--glass-border);
+}
+
+.cta{
+  border:none; border-radius:14px; padding:.9rem 1.1rem; font-weight:700; cursor:pointer;
+  background: linear-gradient(90deg, var(--avyento-primary), var(--avyento-primary-2));
+  background-size: 200% auto;
+  color:#fff; box-shadow: 0 8px 24px rgba(122,77,255,.35);
+  transition: background-position 3s linear, transform .15s ease;
+}
+.cta:hover{ background-position: 200% center; }
+.cta:active{ transform: scale(0.97); }
+
+.cta--ghost{
+  background: transparent; color: var(--avyento-primary); border:1px solid var(--avyento-primary);
+}
+
+.title-xl{ font-size: clamp(28px, 5vw, 48px); line-height:1.05; letter-spacing:-.01em; }
+
+.kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+@media (max-width: 900px){ .kpis{ grid-template-columns:repeat(2,1fr);} }
+
+.input{
+  height:52px; padding:0 14px; outline:none; border:none; width:100%;
+  background: var(--glass);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: box-shadow .2s ease, background .2s ease;
+}
+.input:focus{
+  box-shadow: 0 0 0 2px rgba(122,77,255,0.35);
+  background: rgba(255,255,255,.75);
+}
+
+.search-grid{
+  display:grid; gap:10px; grid-template-columns:1fr 1fr auto; align-items:center;
+}
+@media (max-width: 700px){ .search-grid{ grid-template-columns:1fr; } }
+
+.chip{
+  padding:6px 10px; border-radius:999px;
+  background:rgba(122,77,255,.08); border:1px solid rgba(122,77,255,.25); font-weight:600; font-size:13px;
+}
+
+.section{
+  margin: clamp(20px,4vw,48px) auto; max-width: 1120px; padding: 0 20px;
+  opacity:0; transform: translateY(12px);
+  animation: fadeUp .4s ease-out forwards;
+}
+.section:nth-of-type(1){ animation-delay:.05s; }
+.section:nth-of-type(2){ animation-delay:.1s; }
+.section:nth-of-type(3){ animation-delay:.15s; }
+.section:nth-of-type(4){ animation-delay:.2s; }
+.section:nth-of-type(5){ animation-delay:.25s; }
+.section:nth-of-type(6){ animation-delay:.3s; }
+
+@keyframes fadeUp{
+  to{ opacity:1; transform:translateY(0); }
+}
+
+────────────────────────────────────────────────────────────────────────
+2) PAGE REACT — HOMEPAGE
+[⚠ Le composant React est identique à celui fourni précédemment, avec les mêmes sections et contenu optimisé.
+Reprendre intégralement le code du composant HomePage.tsx précédent et coller ici — aucun changement de structure, juste profiter des classes/animations ci-dessus.]
+
+────────────────────────────────────────────────────────────────────────
+3) ROUTAGE
+Ouvrir `client/src/App.tsx` et s’assurer que `/` affiche `<HomePage />` sans casser la logique existante.
+
+────────────────────────────────────────────────────────────────────────
+4) FINITIONS
+- Tester sur desktop & mobile
+- Vérifier la fluidité des animations (pas de lag)
+- Commiter : `feat(ui): new glassy iOS-like homepage with search + IA + messaging + animations`
+
+✅ Résultat attendu :
+- Page d’accueil responsive, engageante, fluide
+- Animations subtiles : hover cartes, clic boutons, fade-in séquentiel, focus input
+- Contenu optimisé : IA anti no-show, messagerie, KPI, catégories, salons recommandés, CTA

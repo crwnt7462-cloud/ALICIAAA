@@ -12,6 +12,7 @@ import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
 import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
+import HomePage from "@/pages/HomePage";
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
@@ -818,13 +819,44 @@ function Router() {
     );
   }
 
+  // Page d'accueil publique pour les non-connectés
+  if (location === '/') {
+    const { isAuthenticated, isLoading } = useAuth();
+    
+    if (isLoading) {
+      return (
+        <div className="h-full flex items-center justify-center">
+          <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
+        </div>
+      );
+    }
+    
+    if (!isAuthenticated) {
+      return (
+        <div className="h-full">
+          <HomePage />
+        </div>
+      );
+    }
+    
+    // Si authentifié, rediriger vers dashboard
+    return (
+      <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
+        <Header />
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
+          <Dashboard />
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
       <Header />
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/" component={Dashboard} />
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
           <Route path="/planning" component={PlanningModern} />
