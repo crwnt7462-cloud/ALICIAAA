@@ -819,34 +819,11 @@ function Router() {
     );
   }
 
-  // Page d'accueil publique pour les non-connectés
+  // Page d'accueil publique nouvelle
   if (location === '/') {
-    const { isAuthenticated, isLoading } = useAuth();
-    
-    if (isLoading) {
-      return (
-        <div className="h-full flex items-center justify-center">
-          <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full"></div>
-        </div>
-      );
-    }
-    
-    if (!isAuthenticated) {
-      return (
-        <div className="h-full">
-          <HomePage />
-        </div>
-      );
-    }
-    
-    // Si authentifié, rediriger vers dashboard
     return (
-      <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
-          <Dashboard />
-        </main>
-        <BottomNavigation />
+      <div className="h-full">
+        <HomePage />
       </div>
     );
   }
