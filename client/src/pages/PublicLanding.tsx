@@ -551,7 +551,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
+              className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
             >
               Première plateforme beauté avec <span className="text-violet-600">IA prédictive</span>
             </motion.h2>
