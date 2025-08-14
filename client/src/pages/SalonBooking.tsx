@@ -294,10 +294,44 @@ function SalonBooking() {
     retry: 1,
   });
 
+  // ✅ API CENTRALISÉE TYPÉE: Récupération professionnels avec validation Zod
+  const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
+    queryKey: ['professionals', realSalonData?.id || salonSlug],
+    queryFn: () => getProfessionals({ salonId: (realSalonData?.id || salonSlug)! }),
+    enabled: !!salonSlug && !!realSalonData,
+    retry: 1
+  });
+
+  // ✅ API CENTRALISÉE TYPÉE: Récupération services avec validation Zod
+  const { data: services = [], isLoading: servicesLoading } = useQuery({
+    queryKey: ['services', realSalonData?.id || salonSlug],
+    queryFn: () => getServices({ salonId: (realSalonData?.id || salonSlug)! }),
+    enabled: !!salonSlug && !!realSalonData,
+    retry: 1
+  });
+
   // Type safety : seulement utiliser realSalonData si elle est valide
   const salon: Salon | null = realSalonData || null;
   const salonId = realSalonData?.id || salonSlug;
   
+  // Types pour les données du salon et des professionnels
+  const professionalsArray = Array.isArray(professionals) ? professionals : [];
+  const professionalsCount = professionalsArray.length;
+
+  // ✅ EFFET POUR RESTAURER LE PROFESSIONNEL APRÈS CHARGEMENT DES DONNÉES
+  useEffect(() => {
+    if (professionalsArray.length > 0) {
+      const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
+      if (pendingProfName) {
+        const prof = professionalsArray.find((p: any) => p?.name === pendingProfName);
+        if (prof) {
+          setSelectedProfessional(prof);
+          sessionStorage.removeItem('pendingProfessionalName');
+        }
+      }
+    }
+  }, [professionalsArray]);
+
   // Logging centralisé des données salon
   logger.info('Salon data loaded', {
     salonSlug,
@@ -305,6 +339,12 @@ function SalonBooking() {
     salonName: realSalonData?.name,
     salonLoading,
     hasError: !!salonError
+  });
+
+  logger.info('Professionals data loaded', {
+    professionalsCount,
+    professionalsLoading,
+    hasPendingRestore: !!sessionStorage.getItem('pendingProfessionalName')
   });
 
   // ✅ GESTION SALON DATA: Utilisation exclusive des données PostgreSQL
@@ -337,46 +377,6 @@ function SalonBooking() {
       </div>
     );
   }
-
-  // ✅ API CENTRALISÉE TYPÉE: Récupération professionnels avec validation Zod
-  const { data: professionals = [], isLoading: professionalsLoading } = useQuery({
-    queryKey: ['professionals', salonId],
-    queryFn: () => getProfessionals({ salonId: salonId! }),
-    enabled: !!salonId && !!realSalonData,
-    retry: 1
-  });
-
-  // Types pour les données du salon et des professionnels
-  const professionalsArray = Array.isArray(professionals) ? professionals : [];
-  const professionalsCount = professionalsArray.length;
-
-  // ✅ EFFET POUR RESTAURER LE PROFESSIONNEL APRÈS CHARGEMENT DES DONNÉES
-  useEffect(() => {
-    if (professionalsArray.length > 0) {
-      const pendingProfName = sessionStorage.getItem('pendingProfessionalName');
-      if (pendingProfName) {
-        const prof = professionalsArray.find((p: any) => p?.name === pendingProfName);
-        if (prof) {
-          setSelectedProfessional(prof);
-          sessionStorage.removeItem('pendingProfessionalName');
-        }
-      }
-    }
-  }, [professionalsArray]);
-
-  logger.info('Professionals data loaded', {
-    professionalsCount,
-    professionalsLoading,
-    hasPendingRestore: !!sessionStorage.getItem('pendingProfessionalName')
-  });
-
-  // ✅ API CENTRALISÉE TYPÉE: Récupération services avec validation Zod
-  const { data: services = [], isLoading: servicesLoading } = useQuery({
-    queryKey: ['services', salonId],
-    queryFn: () => getServices({ salonId: salonId! }),
-    enabled: !!salonId && !!realSalonData,
-    retry: 1
-  });
 
   // ✅ SUPPRESSION DES DONNÉES MOCK: Utilisation exclusive des vraies données
   const availableDates = [
