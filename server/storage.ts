@@ -12,6 +12,7 @@ import {
   photos,
   professionalSettings,
   staffMembers,
+  professionals,
   type User,
   type ClientAccount,
   type Service,
@@ -1194,25 +1195,32 @@ export class DatabaseStorage implements IStorage {
 
   async getProfessionalsBySalonId(salonId: string | number): Promise<any[]> {
     try {
-      // Rechercher d'abord dans la table professionals (nouveau système)
-      const professionals = await db.select()
-        .from(schema.professionals)
-        .where(eq(schema.professionals.salon_id, String(salonId)));
+      console.log(`🔍 Recherche professionnels pour salon: ${salonId} (type: ${typeof salonId})`);
       
-      if (professionals.length > 0) {
-        console.log(`👥 ${professionals.length} professionnels trouvés dans professionals pour salon: ${salonId}`);
-        return professionals;
+      // Rechercher d'abord dans la table professionals (nouveau système)
+      console.log(`🔍 Recherche dans table professionals...`);
+      const professionalsResult = await db.select()
+        .from(professionals)
+        .where(eq(professionals.salon_id, String(salonId)));
+      
+      console.log(`📋 Professionnels trouvés:`, professionalsResult);
+      
+      if (professionalsResult.length > 0) {
+        console.log(`👥 ${professionalsResult.length} professionnels trouvés dans professionals pour salon: ${salonId}`);
+        return professionalsResult;
       }
       
       // Fallback: rechercher dans la table staff (ancien système)
+      console.log(`🔍 Fallback: recherche dans table staff...`);
       const staffMembers = await db.select()
         .from(staff)
         .where(eq(staff.salonId, String(salonId)));
       
-      console.log(`👥 ${staffMembers.length + professionals.length} professionnels trouvés pour salon: ${salonId}`);
-      return [...professionals, ...staffMembers];
+      console.log(`📋 Staff trouvés:`, staffMembers);
+      console.log(`👥 ${staffMembers.length} professionnels trouvés pour salon: ${salonId}`);
+      return staffMembers;
     } catch (error) {
-      console.error('Erreur getProfessionalsBySalonId:', error);
+      console.error('❌ Erreur getProfessionalsBySalonId:', error);
       return [];
     }
   }

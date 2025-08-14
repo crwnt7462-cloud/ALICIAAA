@@ -106,6 +106,25 @@ export const businessRegistrations = pgTable("business_registrations", {
 export type BusinessRegistration = typeof businessRegistrations.$inferSelect;
 export type InsertBusinessRegistration = typeof businessRegistrations.$inferInsert;
 
+// Table professionals
+export const professionals = pgTable("professionals", {
+  id: serial("id").primaryKey(),
+  salon_id: varchar("salon_id").notNull(),
+  name: varchar("name").notNull(),
+  role: varchar("role"),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  specialties: jsonb("specialties"),
+  color: varchar("color"),
+  is_active: boolean("is_active").default(true),
+  work_schedule: jsonb("work_schedule"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export type Professional = typeof professionals.$inferSelect;
+export type InsertProfessional = typeof professionals.$inferInsert;
+
 // Schema for business registration validation
 export const businessRegistrationSchema = createInsertSchema(businessRegistrations).omit({
   id: true,
