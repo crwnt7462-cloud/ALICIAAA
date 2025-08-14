@@ -534,9 +534,9 @@ export default function PublicLanding() {
       <HeroSlash />
 
       {/* Section IA Minimaliste - Style iOS */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -553,7 +553,7 @@ export default function PublicLanding() {
               viewport={{ once: true }}
               className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 mb-3 leading-tight"
             >
-              Première plateforme beauté avec <span className="text-violet-600">IA prédictive</span>
+              Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -629,9 +629,9 @@ export default function PublicLanding() {
       </section>
 
       {/* Statistiques améliorées */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Rejoignez des milliers de professionnels</h2>
             <p className="text-xl text-gray-600">Ils nous font confiance pour développer leur activité</p>
           </div>
@@ -658,9 +658,9 @@ export default function PublicLanding() {
       </section>
 
       {/* Section Avis Clients */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -776,9 +776,9 @@ export default function PublicLanding() {
       </section>
 
       {/* Salons recommandés - Carrousel */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
               Salons recommandés
             </h2>
