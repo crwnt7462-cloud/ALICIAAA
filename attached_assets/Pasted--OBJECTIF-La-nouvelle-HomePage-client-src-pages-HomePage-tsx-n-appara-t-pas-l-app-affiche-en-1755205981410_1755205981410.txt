@@ -1,0 +1,113 @@
+🎯 OBJECTIF
+La nouvelle HomePage (`client/src/pages/HomePage.tsx`) n’apparaît pas : l’app affiche encore l’ancienne. 
+➡️ Diagnostiquer puis corriger pour que la nouvelle Home s’affiche bien à l’URL `/`.
+⚠️ Scope strict : client/** seulement. NE PAS modifier server/**.
+
+────────────────────────────────────────────────────────
+1) CHECKS RAPIDES (VISUELS & LOGS)
+- Ouvrir `client/src/pages/HomePage.tsx` et ajouter en haut du composant, **temporairement** :
+  console.log('[Avyento] New HomePage mounted');
+  return <main data-testid="new-home"> ... (garder le reste) ... </main>
+
+- Démarrer le client : `cd client && npm run dev`
+- Ouvrir la console du navigateur. Si tu ne vois PAS `[Avyento] New HomePage mounted` ni l’attribut `data-testid="new-home"` dans le DOM :
+  → la nouvelle page **n’est pas montée** (routing, mauvais import, autre client lancé, cache…).
+
+────────────────────────────────────────────────────────
+2) VÉRIFIER LE ROUTING & LE POINT D’ENTRÉE
+- Ouvrir `client/src/main.tsx` et `client/src/App.tsx`. Vérifier :
+  (a) `main.tsx` rend bien `<App />` :
+      ReactDOM.createRoot(...).render(<App />)
+  (b) `App.tsx` utilise **React Router** et route bien `/` vers la nouvelle page :
+      import HomePage from './pages/HomePage';
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        {/* autres routes */}
+      </Routes>
+  (c) Pas de **deuxième Router** imbriqué qui masquerait la route.
+  (d) Pas d’ancienne Home importée ailleurs (ex: `import OldHome ...`).
+
+- Si `App.tsx` ne route pas `/` vers `HomePage`, fais-le maintenant. 
+- Si `App.tsx` ne passe pas par React Router, rends directement `<HomePage />` par défaut sur `/`.
+
+────────────────────────────────────────────────────────
+3) VÉRIFIER LES CHEMINS & CASING (Linux = sensible à la casse)
+- Vérifier que le fichier est **exactement** `client/src/pages/HomePage.tsx` et que l’import dans App.tsx est **exactement** :
+  import HomePage from './pages/HomePage';
+  (Pas de `./pages/homePage` ou `./Pages/Homepage` → ça casserait silencieusement selon l’IDE).
+
+- Rechercher d’éventuels doublons de fichiers :
+  cd client
+  git ls-files | grep -i "homepage"
+  rg -n "HomePage" src | head -n 50
+
+- S’il existe une **autre `HomePage.tsx`** dans un autre dossier (ex : `src/Pages/`), supprimer/renommer l’ancienne et corriger les imports.
+
+────────────────────────────────────────────────────────
+4) S’ASSURER QU’ON LANCE LE **BON** CLIENT
+- Vérifier qu’il n’y a pas **deux dossiers** front (ex: `client/` et `app/`), ni un build statique servi à la place.
+- Confirmer que la commande lancée est bien `cd client && npm run dev`.
+- Dans la console dev, logguer la version :
+  Ajoute `console.log('[Avyento] client boot', import.meta.env.MODE);` dans `client/src/main.tsx`.
+  Si ça n’apparaît pas → tu ne regardes pas le bon front.
+
+────────────────────────────────────────────────────────
+5) PURGER LES CACHES (Vite, SW, navigateur)
+- Arrêter le serveur dev.
+- Supprimer `.vite` et `dist` :
+  rm -rf client/node_modules/.vite client/dist || true
+- Repartir : `npm install` (si besoin), puis `npm run dev`.
+- Dans le navigateur : hard refresh (Cmd/Ctrl+Shift+R).
+- Si un **service worker** a déjà été ajouté dans le passé :
+  - Ouvrir `chrome://serviceworker-internals` (ou Application > Service Workers) et **Unregister**.
+  - Recharger.
+
+────────────────────────────────────────────────────────
+6) CSS & STYLE (pour confirmer la **nouvelle DA** est appliquée)
+- Vérifier que `client/src/index.css` (avec les classes .glass / .cta / animations) est **importé** quelque part (souvent dans `main.tsx` ou `App.tsx`) :
+  import './index.css';
+- Si pas importé → l’importer dans `client/src/main.tsx`.
+
+────────────────────────────────────────────────────────
+7) ANCRER LA NOUVELLE HOME — PATCH AUTOMATIQUE (SI BESOIN)
+Si après 1–6, la nouvelle Home n’apparaît toujours pas, applique ce patch minimal :
+
+- `client/src/App.tsx` (exemple React Router v6) :
+  import { BrowserRouter, Routes, Route } from 'react-router-dom';
+  import HomePage from './pages/HomePage';
+  export default function App(){
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage/>} />
+          {/* conserver vos autres routes */}
+        </Routes>
+      </BrowserRouter>
+    );
+  }
+
+- `client/src/main.tsx` :
+  import './index.css';
+  import App from './App';
+  ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
+
+- `client/index.html` : vérifier qu’il contient bien `<div id="root"></div>`.
+
+────────────────────────────────────────────────────────
+8) BUILD & TEST
+- Relancer : `npm run dev` (client) et ouvrir `/`.
+- Console doit afficher : `[Avyento] New HomePage mounted`.
+- Le DOM doit contenir : `data-testid="new-home"`.
+- Si OK → retirer les logs temporaires et `data-testid` (facultatif) et commit :
+  git add -A && git commit -m "fix(ui): route / now renders new HomePage"
+
+────────────────────────────────────────────────────────
+9) SI TOUJOURS KO — MATRICE DES CAUSES RARES
+- **Deux apps en parallèle** (monorepo) : désactiver/retirer l’autre front.
+- **Base path** (Vite) : si déployé sous un sous-chemin (ex: `/app`), ajuster le Router (`<BrowserRouter basename="/app">`) et vérifier les routes.
+- **Redirections externes** (proxy, Nginx, Replit custom) : s’assurer que `/` pointe bien sur le front dev et pas sur un build ancien.
+
+✅ Sortie attendue :
+- La nouvelle `HomePage` s’affiche à `/` avec le style glassy + la barre de recherche.
+- La console affiche le log de montage une fois (puis tu peux le retirer).
+- L’ancienne home n’est plus rendue.

@@ -380,7 +380,7 @@ function Router() {
   }
 
   // Page d'accueil publique (sans header/nav mobile)
-  if (location === '/' || location === '/home') {
+  if (location === '/home') {
     return (
       <div className="h-full">
         <PublicLanding />

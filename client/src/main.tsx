@@ -50,4 +50,5 @@ import { checkApiHealth, autoDetectApiUrl, showRetryAlert } from './lib/apiHealt
   }
 })();
 
+console.log('[Avyento] client boot', import.meta.env.MODE);
 createRoot(document.getElementById("root")!).render(<App />);

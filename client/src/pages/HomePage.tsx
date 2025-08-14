@@ -3,6 +3,7 @@ import { useLocation } from 'wouter';
 import { Search, MapPin, X, MoreHorizontal } from 'lucide-react';
 
 export default function HomePage() {
+  console.log('[Avyento] New HomePage mounted');
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [locationQuery, setLocationQuery] = useState('');
@@ -17,7 +18,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50" data-homepage="new-design-v2">
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50" data-testid="new-home" data-homepage="new-design-v2">
       {/* Header avec logo et navigation */}
       <header className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm">
         <button className="p-2">
@@ -228,6 +229,6 @@ export default function HomePage() {
           </button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
