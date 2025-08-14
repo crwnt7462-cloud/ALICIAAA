@@ -74,6 +74,7 @@ import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
+import SalonBookingSimple from "@/pages/SalonBookingSimple";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
 import Inventory from "@/pages/Inventory";
@@ -449,7 +450,7 @@ function Router() {
   if (location.startsWith('/salon-booking/')) {
     return (
       <div className="h-full">
-        <SalonBookingFixed />
+        <SalonBookingSimple />
       </div>
     );
   }
