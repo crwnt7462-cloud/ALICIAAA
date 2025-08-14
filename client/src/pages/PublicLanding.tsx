@@ -779,10 +779,16 @@ export default function PublicLanding() {
       <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            {/* 5 étoiles */}
+            <div className="flex justify-center gap-1 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
               Salons recommandés
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-lg text-gray-600">
               Découvrez nos partenaires les mieux notés
             </p>
           </div>
