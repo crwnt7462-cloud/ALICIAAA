@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, MessageCircle, Zap, ArrowRight, Play, Cpu, MessageSquare } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -97,27 +97,18 @@ export default function PublicLanding() {
     { number: "24h/24", label: "Réservation disponible" }
   ];
 
-  const features = [
+  const aiFeatures = [
     {
-      icon: <Bot className="w-8 h-8" />,
-      title: "IA Révolutionnaire",
-      description: "Seule plateforme avec IA prédictive pour optimiser vos plannings automatiquement",
-      highlight: "EXCLUSIF",
-      color: "violet"
+      icon: <Bot className="w-6 h-6" />,
+      title: "IA Prédictive",
+      description: "Optimisation automatique des plannings et prédiction des créneaux rentables",
+      highlight: "EXCLUSIF"
     },
     {
-      icon: <MessageCircle className="w-8 h-8" />,
-      title: "Messagerie Intégrée",
-      description: "Communication directe pro-client avec notifications temps réel",
-      highlight: "NOUVEAU",
-      color: "blue"
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Automatisation Complète",
-      description: "Rappels, confirmations et gestion de l'agenda 100% automatisés",
-      highlight: "PRO",
-      color: "amber"
+      icon: <Zap className="w-6 h-6" />,
+      title: "Automatisation",
+      description: "Rappels, confirmations et gestion complète sans intervention manuelle",
+      highlight: "PRO"
     }
   ];
 
@@ -444,156 +435,67 @@ export default function PublicLanding() {
       {/* Nouveau Hero selon spécifications exactes */}
       <HeroSlash />
 
-      {/* Section IA Exclusive - Inspired by SaaS template */}
-      <section className="py-16 bg-gradient-to-br from-violet-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Section IA Minimaliste - Style iOS */}
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-sm font-medium mb-6"
             >
-              <Cpu className="w-4 h-4" />
-              Intelligence Artificielle Avancée
+              Intelligence Artificielle
             </motion.div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6"
+              className="text-3xl lg:text-4xl font-semibold text-gray-900 mb-4 leading-tight"
             >
-              Révolutionnez votre salon avec l'<span className="text-violet-600">IA</span>
+              Première plateforme beauté avec <br/><span className="text-violet-600">IA prédictive</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              className="text-lg text-gray-600 max-w-2xl mx-auto"
             >
-              Seule plateforme beauté intégrant une IA prédictive pour optimiser automatiquement vos plannings et maximiser vos revenus.
+              Optimisation automatique de vos plannings pour maximiser vos revenus.
             </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
+          <div className="grid lg:grid-cols-2 gap-6">
+            {aiFeatures.map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="relative group"
+                className="relative"
               >
-                <div className="bg-white/70 backdrop-blur-lg border border-white/30 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 h-full">
-                  <div className="absolute top-4 right-4">
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                      feature.color === 'violet' ? 'bg-violet-100 text-violet-700' :
-                      feature.color === 'blue' ? 'bg-blue-100 text-blue-700' :
-                      'bg-amber-100 text-amber-700'
-                    }`}>
-                      {feature.highlight}
-                    </span>
+                <div className="bg-gray-50 rounded-3xl p-8 h-full border border-gray-100 hover:border-violet-200 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-violet-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-violet-600">{feature.icon}</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
+                        <span className="text-xs font-medium bg-violet-100 text-violet-700 px-2 py-1 rounded-full">
+                          {feature.highlight}
+                        </span>
+                      </div>
+                      <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                    </div>
                   </div>
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6 ${
-                    feature.color === 'violet' ? 'bg-violet-100 text-violet-600' :
-                    feature.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                    'bg-amber-100 text-amber-600'
-                  }`}>
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600 mb-6">{feature.description}</p>
-                  <Button className="glass-button-violet w-full group-hover:scale-105 transition-transform">
-                    En savoir plus
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
                 </div>
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Messagerie Intégrée Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <MessageSquare className="w-4 h-4" />
-                Communication Révolutionnaire
-              </div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                Messagerie intégrée <span className="text-blue-600">pro-client</span>
-              </h2>
-              <p className="text-xl text-gray-600 mb-8">
-                Communiquez directement avec vos clients via notre messagerie intégrée. 
-                Notifications temps réel, historique complet, tout dans une seule interface.
-              </p>
-              <div className="space-y-4 mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Messages temps réel instantanés</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Notifications push automatiques</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                  <span className="text-gray-700">Historique conversations sauvegardé</span>
-                </div>
-              </div>
-              <Button className="glass-button-violet">
-                <Play className="w-4 h-4 mr-2" />
-                Voir la démo
-              </Button>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="relative"
-            >
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-200/30 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="space-y-4">
-                  <div className="bg-white rounded-2xl p-4 shadow-sm">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-violet-600" />
-                      </div>
-                      <span className="font-medium text-gray-900">Sophie Martin</span>
-                      <span className="text-xs text-gray-500">Il y a 2 min</span>
-                    </div>
-                    <p className="text-gray-700">Bonjour ! Je souhaiterais décaler mon RDV de demain à 15h, est-ce possible ?</p>
-                  </div>
-                  <div className="bg-violet-500 rounded-2xl p-4 ml-8">
-                    <p className="text-white">Bien sûr ! Je vous confirme le nouveau créneau 15h-16h30. À bientôt 😊</p>
-                  </div>
-                  <div className="text-center">
-                    <span className="text-xs text-gray-400">✓ Lu par Sophie</span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -1070,9 +972,12 @@ export default function PublicLanding() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">BeautyApp</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <img src={logoImage} alt="Avyento" className="h-8 w-auto" />
+                <h3 className="text-xl font-bold">Avyento</h3>
+              </div>
               <p className="text-gray-400 text-sm">
-                La plateforme de réservation beauté qui révolutionne votre expérience.
+                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
             </div>
             <div>
@@ -1138,7 +1043,7 @@ export default function PublicLanding() {
           
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 BeautyApp. Tous droits réservés.
+              © 2024 Avyento. Tous droits réservés.
             </p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <button className="text-gray-400 hover:text-white transition-colors">
