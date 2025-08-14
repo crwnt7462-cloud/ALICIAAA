@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Star, Calendar, Clock, Shield, Award, CheckCircle2, Users, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
+import { Search, Star, Clock, Shield, Award, CheckCircle2, Sparkles, Heart, Scissors, Truck, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
@@ -313,75 +313,75 @@ export default function PublicLanding() {
       </header>
 
       {/* Hero section moderne avec layout côte à côte */}
-      <section className="bg-gradient-to-br from-violet-50/50 to-purple-50/30 py-12 md:py-16 lg:py-20 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-violet-50/50 to-purple-50/30 py-8 sm:py-12 md:py-16 lg:py-20 relative overflow-hidden">
         {/* Éléments décoratifs en arrière-plan */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-violet-200/20 to-purple-200/20 rounded-full blur-3xl"></div>
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-200/20 to-violet-200/20 rounded-full blur-3xl"></div>
         </div>
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 relative">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
             {/* Colonne gauche - Contenu */}
-            <div className="lg:pr-8">
+            <div className="lg:pr-8 px-4 sm:px-0">
               <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-violet-100/50 border border-violet-200/50">
                 <span className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></span>
                 <span className="text-sm font-medium text-violet-700">Réserver votre rendez vous</span>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Réservez votre<br />
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Réservez votre<br className="hidden sm:block" />
                 <span className="text-gray-900">rendez-vous</span> <span className="text-violet-600">beauté</span>
               </h1>
               
-              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                Trouvez et réservez chez tes meilleurs<br />
+              <p className="text-base sm:text-lg text-gray-600 mb-8 leading-relaxed">
+                Trouvez et réservez chez tes meilleurs<br className="hidden sm:block" />
                 professionnels près de chez vous
               </p>
               
-              {/* Barre de recherche moderne */}
-              <div className="max-w-lg mb-8">
+              {/* Barre de recherche moderne - optimisée mobile */}
+              <div className="max-w-lg mb-6 sm:mb-8">
                 <div className="relative">
                   <Input
                     placeholder="Rechercher un salon"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="h-14 pl-6 pr-12 text-base rounded-2xl border-2 border-gray-200 focus:border-violet-400 bg-white/80 backdrop-blur-sm"
+                    className="h-12 sm:h-14 pl-4 sm:pl-6 pr-10 sm:pr-12 text-sm sm:text-base rounded-xl sm:rounded-2xl border-2 border-gray-200 focus:border-violet-400 bg-white/80 backdrop-blur-sm"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
+                  <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-5 sm:w-6 h-5 sm:h-6 text-gray-400" />
                 </div>
                 <Button 
                   onClick={handleSearch}
-                  className="w-full mt-3 h-12 bg-violet-600 hover:bg-violet-700 text-white text-base font-medium rounded-2xl"
+                  className="w-full mt-3 h-11 sm:h-12 bg-violet-600 hover:bg-violet-700 text-white text-sm sm:text-base font-medium rounded-xl sm:rounded-2xl"
                 >
                   Rechercher un salon
                 </Button>
               </div>
               
-              {/* Statistiques */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {/* Statistiques - Responsive design mobile first */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                 <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">50.000+</div>
-                  <div className="text-sm text-gray-600">Rendez vous par mois</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">50.000+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Rendez vous par mois</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">2.500+</div>
-                  <div className="text-sm text-gray-600">Salons partenaires</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">2.500+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Salons partenaires</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
-                  <div className="text-sm text-gray-600">Satisfaction client</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">4.9/5</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Satisfaction client</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">24h/24</div>
-                  <div className="text-sm text-gray-600">Réservation disponible</div>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">24h/24</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Réservation disponible</div>
                 </div>
               </div>
             </div>
             
-            {/* Colonne droite - Mockup téléphone */}
+            {/* Colonne droite - Mockup téléphone (visible sur desktop uniquement) */}
             <div className="relative lg:flex justify-center hidden">
               <div className="relative">
                 {/* Mockup de téléphone */}
