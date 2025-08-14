@@ -462,7 +462,7 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-5">
               {/* Bouton hamburger animé avec Framer Motion */}
               <motion.button
                 id="hamburger-button"
@@ -505,7 +505,7 @@ export default function PublicLanding() {
               </div>
             </div>
             
-            <div className="flex items-center gap-2 md:gap-4">
+            <div className="flex items-center gap-3 md:gap-5">
               <button 
                 className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
                 onClick={() => setLocation("/client-login-modern")}
@@ -666,7 +666,7 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+              className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
             >
               <Star className="w-4 h-4" />
               Avis Clients Vérifiés
