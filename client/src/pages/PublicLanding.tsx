@@ -408,40 +408,40 @@ export default function PublicLanding() {
                     </div>
                   </div>
                   
-                  {/* Contenu de l'écran - parfaitement centré */}
-                  <div className="px-6 py-6 space-y-4 flex flex-col items-center">
-                    {/* Header "Sélectionnez..." */}
-                    <div className="bg-gray-50 rounded-2xl p-4 w-full text-center">
+                  {/* Contenu de l'écran - aligné à GAUCHE comme le screenshot */}
+                  <div className="px-5 py-4 space-y-3">
+                    {/* Header "Sélectionnez..." aligné à gauche */}
+                    <div className="bg-gray-50 rounded-2xl p-4">
                       <div className="text-base font-semibold text-gray-800 mb-1">Sélectionnez...</div>
                       <div className="text-sm text-gray-500">Sous un checker</div>
                     </div>
                     
-                    {/* Cards parfaitement centrées */}
-                    <div className="space-y-3 w-full">
-                      {/* Card violette avec point centré */}
-                      <div className="bg-violet-100 rounded-2xl p-4 text-center">
-                        <div className="flex items-center justify-center gap-2 mb-1">
+                    {/* Cards alignées à gauche comme le screenshot */}
+                    <div className="space-y-3">
+                      {/* Card violette avec point à gauche */}
+                      <div className="bg-violet-100 rounded-2xl p-4">
+                        <div className="flex items-center gap-3 mb-1">
                           <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
                           <span className="text-base font-medium text-gray-800">Sérebo...</span>
                         </div>
-                        <div className="text-sm text-gray-600">1.000+</div>
+                        <div className="text-sm text-gray-600 ml-6">1.000+</div>
                       </div>
                       
-                      {/* Card rose avec grand nombre centré */}
-                      <div className="bg-pink-100 rounded-2xl p-4 text-center">
-                        <div className="flex items-center justify-center gap-2">
+                      {/* Card rose avec grand nombre à gauche */}
+                      <div className="bg-pink-100 rounded-2xl p-4">
+                        <div className="flex items-center gap-3">
                           <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
                           <span className="text-2xl font-bold text-gray-800">90.000+</span>
                         </div>
                       </div>
                       
-                      {/* Card violette "4.0 tv" centrée */}
-                      <div className="bg-violet-100 rounded-2xl p-4 text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
+                      {/* Card violette "4.0 tv" à gauche */}
+                      <div className="bg-violet-100 rounded-2xl p-4">
+                        <div className="flex items-center gap-3 mb-2">
                           <div className="w-3 h-3 bg-violet-500 rounded-full"></div>
                           <span className="text-base font-medium text-gray-800">4.0 tv</span>
                         </div>
-                        <div className="text-sm text-gray-600 leading-tight">
+                        <div className="text-sm text-gray-600 leading-tight ml-6">
                           Salons<br/>
                           & instituts<br/>
                           & cliniques
@@ -449,8 +449,8 @@ export default function PublicLanding() {
                       </div>
                     </div>
                     
-                    {/* Bouton principal centré */}
-                    <div className="w-full mt-4">
+                    {/* Bouton principal */}
+                    <div className="mt-4">
                       <div className="bg-violet-500 text-white text-center py-4 px-6 rounded-3xl text-base font-semibold">
                         Pécher à nos jipl salons
                       </div>
