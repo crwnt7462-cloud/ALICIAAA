@@ -384,62 +384,71 @@ export default function PublicLanding() {
             {/* Colonne droite - Mockup téléphone (visible sur desktop uniquement) */}
             <div className="relative lg:flex justify-center hidden">
               <div className="relative">
-                {/* Mockup de téléphone */}
-                <div className="w-80 h-[600px] bg-white rounded-[3rem] shadow-2xl border-8 border-gray-900/10 relative overflow-hidden">
-                  {/* Barre de statut */}
-                  <div className="flex justify-between items-center px-6 py-3 text-xs font-medium text-gray-900">
+                {/* Mockup de téléphone style iPhone */}
+                <div className="w-72 h-[580px] bg-white rounded-[2.5rem] shadow-2xl border-4 border-gray-200 relative overflow-hidden">
+                  {/* Barre de statut iPhone */}
+                  <div className="flex justify-between items-center px-4 py-2 text-xs font-medium text-gray-900">
                     <span>9:41</span>
                     <div className="flex items-center gap-1">
-                      <div className="flex gap-1">
+                      {/* Signal */}
+                      <div className="flex gap-0.5">
                         <div className="w-1 h-1 bg-gray-900 rounded-full"></div>
-                        <div className="w-1 h-1 bg-gray-900 rounded-full"></div>
-                        <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                        <div className="w-1 h-1.5 bg-gray-900 rounded-full"></div>
+                        <div className="w-1 h-2 bg-gray-900 rounded-full"></div>
                       </div>
-                      <div className="w-6 h-3 border border-gray-900 rounded-sm relative">
-                        <div className="w-3 h-1.5 bg-gray-900 rounded-sm absolute top-0.5 left-0.5"></div>
+                      {/* WiFi */}
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M2 17h20v2H2zm1.15-4.05L4 11.47l.85 1.48c-.36.42-.85.76-1.4 1.02L3 13.95zM8.85 12.95l-.85-1.48c1.42-1.16 3.28-1.8 5-1.8s3.58.64 5 1.8l-.85 1.48c-1.13-.92-2.67-1.48-4.15-1.48s-3.02.56-4.15 1.48z"/>
+                      </svg>
+                      {/* Batterie */}
+                      <div className="w-5 h-2.5 border border-gray-900 rounded-sm relative">
+                        <div className="w-3 h-1 bg-gray-900 rounded-sm absolute top-0.5 left-0.5"></div>
+                        <div className="w-0.5 h-1 bg-gray-900 rounded-r absolute top-1 -right-1"></div>
                       </div>
                     </div>
                   </div>
                   
                   {/* Contenu de l'écran */}
-                  <div className="px-6 py-4 space-y-4">
-                    {/* Recherche */}
-                    <div className="bg-gray-100 rounded-xl p-3">
-                      <div className="text-sm font-medium text-gray-700 mb-2">Sélectionner</div>
-                      <div className="text-xs text-gray-500">Trouve chez les top</div>
+                  <div className="px-4 py-4 space-y-3">
+                    {/* En-tête avec texte "Sélectionnez..." */}
+                    <div className="bg-gray-50 rounded-xl p-3">
+                      <div className="text-sm font-medium text-gray-800 mb-1">Sélectionnez...</div>
+                      <div className="text-xs text-gray-500">Sous un checker</div>
                     </div>
                     
-                    {/* Salon cards */}
-                    <div className="space-y-3">
-                      <div className="bg-violet-100 rounded-xl p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
-                          <span className="text-sm font-medium">Salon esthétique</span>
+                    {/* Cards salon comme dans le screenshot */}
+                    <div className="space-y-2">
+                      {/* Card violette "Sérebo" */}
+                      <div className="bg-purple-100 rounded-xl p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-gray-800">Sérebo...</span>
                         </div>
-                        <div className="text-xs text-gray-600">Soins beauté</div>
+                        <div className="text-xs text-gray-600">1.000+</div>
                       </div>
                       
-                      <div className="bg-pink-100 rounded-xl p-4">
-                        <div className="flex items-center gap-2 mb-2">
+                      {/* Card rose "90.000+" */}
+                      <div className="bg-pink-100 rounded-xl p-3">
+                        <div className="flex items-center gap-2 mb-1">
                           <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-                          <span className="text-sm font-medium">Soins</span>
+                          <span className="text-lg font-bold text-gray-800">90.000+</span>
                         </div>
-                        <div className="text-xs text-gray-600">90.000+</div>
                       </div>
                       
-                      <div className="bg-green-100 rounded-xl p-4">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-medium">1.000+</span>
+                      {/* Card violette "4.0 tv" */}
+                      <div className="bg-purple-100 rounded-xl p-3">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-gray-800">4.0 tv</span>
                         </div>
-                        <div className="text-xs text-gray-600">4.0 tv</div>
+                        <div className="text-xs text-gray-600">Salons<br/>& instituts<br/>& cliniques</div>
                       </div>
                     </div>
                     
-                    {/* Bouton principal */}
-                    <div className="mt-6">
-                      <div className="bg-violet-500 text-white text-center py-3 rounded-xl font-medium">
-                        Pécher à nos just salons
+                    {/* Bouton principal violet arrondi */}
+                    <div className="mt-4">
+                      <div className="bg-violet-500 text-white text-center py-3 px-4 rounded-2xl text-sm font-medium">
+                        Pécher à nos jipl salons
                       </div>
                     </div>
                   </div>
