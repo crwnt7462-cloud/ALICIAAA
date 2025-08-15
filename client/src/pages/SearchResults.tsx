@@ -521,58 +521,7 @@ export default function SearchResults() {
           </div>
         </div>
           
-        {/* Notification de mise à jour temps réel */}
-        <AnimatePresence>
-          {showUpdateNotification && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="ios-card bg-green-50 border-green-200 text-green-800 text-sm px-4 py-2 rounded-xl text-center mb-6"
-            >
-              ✨ Salon mis à jour en temps réel
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {/* Titre principal minimaliste */}
-        <div className="text-center mb-8">
-          <h1 className="heroSlash__title mb-4">
-            Trouvez votre salon de beauté idéal
-          </h1>
-          <p className="heroSlash__subtitle max-w-2xl mx-auto">
-            Découvrez les meilleurs professionnels de la beauté près de chez vous et réservez en quelques clics
-          </p>
-        </div>
 
-        {/* Instructions pour le test de synchronisation - Style iOS */}
-        <div className="ios-card p-6 text-center mb-8">
-          <p className="text-gray-800 font-semibold mb-2">
-            🚀 Test de synchronisation temps réel
-          </p>
-          <p className="text-gray-600 text-sm mb-4">
-            Modifiez un salon dans l'éditeur et voyez les changements apparaître instantanément ici
-          </p>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-            <span className="text-xs text-gray-600">
-              WebSocket: {isConnected ? 'Connecté' : 'Déconnecté'}
-            </span>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={() => setLocation('/salon-page-editor')}
-              className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
-            >
-              ✏️ Ouvrir l'éditeur
-            </Button>
-            <Button
-              onClick={() => refetchSalons()}
-              className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
-            >
-              🔄 Actualiser
-            </Button>
-          </div>
-        </div>
 
 
 
