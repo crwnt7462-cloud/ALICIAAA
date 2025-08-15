@@ -3,9 +3,7 @@ import {
   MapPin, 
   Phone, 
   Clock, 
-  Star, 
-  Heart, 
-  Share2,
+  Star,
   Calendar,
   Users,
   Camera,
@@ -14,7 +12,6 @@ import {
   ArrowLeft,
   CheckCircle
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AdvancedGallery } from '@/components/AdvancedGallery';
 
@@ -110,9 +107,7 @@ export function SalonPageTemplate({
   isOwner = false 
 }: SalonPageTemplateProps) {
   const [activeTab, setActiveTab] = useState('services');
-  const [isFavorite, setIsFavorite] = useState(false);
   const [expandedCategoryDescriptions, setExpandedCategoryDescriptions] = useState<Set<number>>(new Set());
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
   // Appliquer les couleurs personnalisées du salon
   const customColors = salonData.customColors;
@@ -128,13 +123,13 @@ export function SalonPageTemplate({
   } as React.CSSProperties : {};
 
   // Grouper les services par catégorie avec descriptions
-  const servicesByCategory = services.reduce((acc, service) => {
+  const servicesByCategory = services?.reduce((acc, service) => {
     if (!acc[service.category]) {
       acc[service.category] = [];
     }
     acc[service.category].push(service);
     return acc;
-  }, {} as Record<string, SalonService[]>);
+  }, {} as Record<string, SalonService[]>) || {};
 
   // Créer les catégories de services avec descriptions
   const displayServiceCategories: ServiceCategory[] = useMemo(() => 
@@ -143,11 +138,11 @@ export function SalonPageTemplate({
       name: categoryName,
       description: getCategoryDescription(categoryName),
       services: categoryServices,
-      expanded: expandedCategories.has(index + 1),
-    })), [servicesByCategory, expandedCategories]);
+      expanded: true, // Toujours expanded par défaut
+    })), [servicesByCategory]);
 
   // Descriptions spécifiques par catégorie avec formatage HTML
-  function getCategoryDescription(categoryName: string): string | undefined {
+  function getCategoryDescription(categoryName: string): string {
     const descriptions: Record<string, string> = {
       // Coiffure
       'Coiffure Femme': '<strong>Créativité</strong> et <em>savoir-faire</em> pour sublimer votre <u>style unique</u>. Nos coiffeurs experts créent la coupe parfaite selon votre personnalité.',
@@ -173,39 +168,25 @@ export function SalonPageTemplate({
       'Bien-être': '<strong>Relaxation</strong> et <em>sérénité</em> pour un moment <u>d\'évasion totale</u>. Massages et soins wellness personnalisés.',
       'Forfaits': '<strong>Expérience complète</strong> alliant <em>plusieurs expertises</em> pour un résultat <u>harmonieux et durable</u>.'
     };
-    return descriptions[categoryName];
+    
+    return descriptions[categoryName] || `<strong>Expertise</strong> professionnelle pour des <em>services de qualité</em> dans la catégorie <u>${categoryName}</u>.`;
   }
 
   const toggleCategory = (categoryId: number) => {
-    setExpandedCategories(prev => {
-      const newSet = new Set();
-      if (!prev.has(categoryId)) {
+    setExpandedCategoryDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (prev.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
         newSet.add(categoryId);
       }
       return newSet;
     });
   };
 
-  // Calculer les stats
-  const averageServicePrice = services.length > 0 
-    ? Math.round(services.reduce((sum, s) => sum + s.price, 0) / services.length)
-    : 0;
-
   const handleBooking = (serviceId?: number) => {
     // Navigation vers réservation
     window.location.href = `/salon-booking/${salonData.slug}${serviceId ? `?service=${serviceId}` : ''}`;
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: salonData.name,
-        text: salonData.description,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-    }
   };
 
   return (

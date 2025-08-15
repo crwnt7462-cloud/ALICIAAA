@@ -186,11 +186,19 @@ function ModernSalonDetailNew() {
       'Dimanche': { closed: true, open: '', close: '' }
     },
     amenities: salonData.amenities || ['Wi-Fi gratuit', 'Climatisation', 'Parking'],
-    priceRange: salonData.priceRange || '€€'
+    priceRange: salonData.priceRange || '€€',
+    customColors: salonData.customColors
   };
 
-  // Utiliser les services de l'API ou les données par défaut
-  const services = salonData.services?.length > 0 ? salonData.services : defaultServices;
+  // Transformer les serviceCategories en format services plats
+  const services = salonData.serviceCategories?.length > 0 
+    ? salonData.serviceCategories.flatMap((category: any) => 
+        category.services?.map((service: any) => ({
+          ...service,
+          category: category.name
+        })) || []
+      )
+    : defaultServices;
   const staff = salonData.staff?.length > 0 ? salonData.staff : defaultStaff;
   const reviews = salonData.reviews?.length > 0 ? salonData.reviews : defaultReviews;
 
