@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { X, CreditCard, ArrowLeft, Building, CheckCircle2, Star, Sparkles } from "lucide-react";
+import { X, CreditCard, ArrowLeft, Building, CheckCircle2, Star, Sparkles, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import logoImage from "@assets/3_1753714421825.png";
 
@@ -155,49 +155,57 @@ const legalForms = [
 
 const plans = [
   { 
-    id: 'essentiel', 
-    name: 'ESSENTIEL', 
+    id: 'basic-pro', 
+    name: 'BASIC PRO', 
     price: 29, 
     color: 'from-green-500 to-emerald-600',
     description: 'Pour débuter votre transformation digitale',
     features: [
-      'Réservation en ligne 24h/24',
-      'Gestion des clients et RDV',
+      'Gestion des rendez-vous',
+      'Fiche client complète', 
+      'Planning professionnel',
       'Notifications automatiques',
-      'Support par email'
+      'Page salon personnalisée',
+      'Réservation en ligne',
+      'Support email'
     ],
+    limits: 'Jusqu\'à 200 clients • 1GB stockage',
     popular: false
   },
   { 
-    id: 'professionnel', 
-    name: 'PROFESSIONNEL', 
+    id: 'advanced-pro', 
+    name: 'ADVANCED PRO', 
     price: 79, 
-    color: 'from-blue-500 to-purple-600',
+    color: 'from-violet-500 to-purple-600',
     description: 'La solution complète pour pros ambitieux',
     features: [
-      'Tout ESSENTIEL +',
-      'IA prédictive avancée',
-      'Gestion multi-employés',
-      'Analytics et reporting',
-      'Chat en temps réel',
+      'Tout Basic Pro +',
+      '📊 Analytics avancés',
+      '💰 Gestion paiements avancée',
+      '📱 App mobile complète',
+      '🎯 Marketing de base',
+      '⚡ Auto-planning basique',
       'Support prioritaire'
     ],
+    limits: 'Jusqu\'à 1000 clients • 10GB stockage',
     popular: true
   },
   { 
-    id: 'premium', 
-    name: 'PREMIUM', 
+    id: 'premium-pro', 
+    name: 'PREMIUM PRO', 
     price: 149, 
     color: 'from-purple-500 to-pink-600',
     description: 'Excellence maximale avec IA révolutionnaire',
     features: [
-      'Tout PROFESSIONNEL +',
-      'IA GPT-4 personnalisée',
-      'Marketing automation',
-      'API personnalisées',
-      'Formation dédiée 1-to-1',
-      'Manager success dédié'
+      'Tout Advanced Pro +',
+      '🤖 IA Assistant personnalisé',
+      '📊 Analyse prédictive avancée',
+      '💬 Chatbot intelligent',
+      '⚡ Optimisation auto planning',
+      '🎯 Marketing automation complet',
+      'Support prioritaire 24/7'
     ],
+    limits: 'Clients illimités • Stockage illimité',
     popular: false
   }
 ];
@@ -209,9 +217,9 @@ export default function BusinessRegistration() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Récupérer le plan sélectionné
+  // Récupérer le plan sélectionné avec les nouveaux IDs
   const searchParams = new URLSearchParams(window.location.search);
-  const planId = searchParams.get('plan') || 'professionnel';
+  const planId = searchParams.get('plan') || 'advanced-pro';
   const currentPlan = plans.find(p => p.id === planId) || plans[1];
   
   console.log(`🎯 Plan sélectionné dans BusinessRegistration:`, { planId, currentPlan: currentPlan.name, price: currentPlan.price });
@@ -451,33 +459,40 @@ export default function BusinessRegistration() {
         </div>
       </div>
 
-      {/* Section Aperçu des Offres */}
+      {/* Section Plans - Design mobile-friendly glassmorphism */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Choisissez votre offre
+          <div className="inline-flex items-center gap-2 glass-effect rounded-full px-6 py-3 mb-6 border border-white/20">
+            <Crown className="h-5 w-5 text-violet-600" />
+            <span className="text-gray-800 font-semibold">Plans Professionnels</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+            Choisissez votre solution Avyento Pro
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Des solutions adaptées à chaque étape de votre développement
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Solutions professionnelles adaptées à votre salon
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Plans côte à côte même sur mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
-              className={`relative bg-white/60 backdrop-blur-xl rounded-2xl p-6 border transition-all duration-300 hover:scale-105 cursor-pointer ${
-                plan.popular 
-                  ? 'border-violet-300 shadow-2xl ring-2 ring-violet-200' 
-                  : 'border-white/30 shadow-xl hover:border-violet-200'
+              transition={{ duration: 0.4, delay: 0.1 * index }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              className={`relative cursor-pointer transition-all duration-300 group ${
+                currentPlan?.id === plan.id 
+                  ? 'transform scale-105 sm:scale-100 lg:scale-105 ring-2 ring-violet-400/50 shadow-2xl shadow-violet-400/20' 
+                  : 'hover:shadow-xl'
               }`}
               onClick={() => {
                 const url = new URL(window.location.href);
@@ -486,41 +501,71 @@ export default function BusinessRegistration() {
                 setLocation(`/business-registration?plan=${plan.id}`);
               }}
             >
+              {/* Badge populaire au milieu */}
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    PLUS POPULAIRE
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="glass-effect border border-violet-300/50 text-violet-700 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-md">
+                    🔥 POPULAIRE
                   </div>
                 </div>
               )}
               
-              <div className="text-center mb-6">
-                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${plan.color} mb-4`}>
-                  <Building className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-3xl font-bold text-gray-900">{plan.price}€</span>
-                  <span className="text-sm text-gray-600">/mois</span>
-                </div>
-              </div>
+              <div className={`glass-card p-4 lg:p-6 rounded-2xl h-full flex flex-col relative overflow-hidden ${
+                plan.popular ? 'border-violet-200/50 bg-gradient-to-br from-violet-50/20 via-white/15 to-purple-50/20' : ''
+              } ${currentPlan?.id === plan.id ? 'bg-gradient-to-br from-violet-50/30 via-white/20 to-purple-50/30' : ''}`}>
+                
+                {/* Effet de brillance pour le plan sélectionné/populaire */}
+                {(plan.popular || currentPlan?.id === plan.id) && (
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-violet-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                )}
 
-              <ul className="space-y-3 mb-6">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-3 text-sm text-gray-700">
-                    <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
+                {/* Header compact */}
+                <div className="text-center mb-4 relative z-10">
+                  <div className={`inline-flex items-center justify-center w-10 h-10 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-r ${plan.color} mb-3 shadow-lg`}>
+                    <Building className="h-5 w-5 lg:h-7 lg:w-7 text-white" />
+                  </div>
+                  <h3 className="text-sm lg:text-lg font-bold text-gray-900 mb-1">{plan.name}</h3>
+                  <p className="text-xs lg:text-sm text-gray-600 leading-tight">{plan.description}</p>
+                </div>
 
-              <div className={`w-full py-3 px-4 rounded-xl text-center font-semibold transition-all ${
-                currentPlan?.id === plan.id
-                  ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
-                {currentPlan?.id === plan.id ? 'SÉLECTIONNÉ' : 'SÉLECTIONNER'}
+                {/* Prix */}
+                <div className="text-center mb-4 relative z-10">
+                  <div className="flex items-baseline justify-center mb-1">
+                    <span className="text-2xl lg:text-3xl font-bold text-gray-900">{plan.price}€</span>
+                    <span className="text-gray-500 text-xs ml-1">/mois</span>
+                  </div>
+                  <div className="text-xs text-gray-500">{plan.limits}</div>
+                </div>
+
+                {/* Features compactes */}
+                <div className="flex-grow mb-4 relative z-10">
+                  <div className="space-y-1.5">
+                    {plan.features.slice(0, 4).map((feature, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <CheckCircle2 className="h-3 w-3 lg:h-4 lg:w-4 text-green-500 flex-shrink-0 mt-0.5" />
+                        <span className="text-xs lg:text-sm text-gray-700 leading-tight">{feature}</span>
+                      </div>
+                    ))}
+                    {plan.features.length > 4 && (
+                      <div className="text-center pt-1">
+                        <span className="text-xs text-gray-500">+{plan.features.length - 4} fonctionnalités</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Bouton */}
+                <div className="relative z-10">
+                  <div className={`w-full text-center py-2.5 lg:py-3 rounded-xl font-semibold transition-all duration-200 text-xs lg:text-sm ${
+                    currentPlan?.id === plan.id
+                      ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg'
+                      : plan.popular
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg hover:shadow-xl hover:from-violet-600 hover:to-purple-700'
+                      : 'glass-button text-gray-900 hover:shadow-lg hover:bg-white/60'
+                  }`}>
+                    {currentPlan?.id === plan.id ? '✓ Sélectionné' : 'Choisir'}
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -786,29 +831,32 @@ export default function BusinessRegistration() {
                   </div>
                 </div>
 
-                {/* Bouton de soumission */}
-                <div className="pt-6">
+                {/* Bouton de soumission avec style glassmorphism */}
+                <div className="pt-8">
                   <motion.button
                     type="submit"
                     disabled={isLoading}
                     whileHover={{ scale: isLoading ? 1 : 1.02 }}
                     whileTap={{ scale: isLoading ? 1 : 0.98 }}
-                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-5 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    className="w-full glass-button bg-gradient-to-r from-violet-600/90 to-purple-600/90 backdrop-blur-xl border-violet-300/30 text-white px-8 py-5 rounded-2xl text-lg font-semibold shadow-2xl hover:shadow-violet-500/25 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:from-violet-700/90 hover:to-purple-700/90"
                   >
                     <Building className="h-6 w-6" />
-                    {isLoading ? "Création en cours..." : `Créer mon salon • ${currentPlan?.price}€/mois`}
+                    {isLoading ? "Création en cours..." : `Créer mon espace • ${currentPlan?.name} ${currentPlan?.price}€/mois`}
                   </motion.button>
 
-                  {/* Informations légales */}
-                  <div className="text-center space-y-3 pt-6 border-t border-white/20 mt-8">
-                    <div className="flex items-center justify-center gap-2 text-sm text-green-600">
-                      <CheckCircle2 className="h-4 w-4" />
-                      <span>Inscription gratuite • Aucun engagement</span>
+                  {/* Informations légales avec style glassmorphism */}
+                  <div className="text-center space-y-4 pt-8 mt-8 border-t border-white/20">
+                    <div className="glass-effect rounded-2xl p-4 border border-white/20">
+                      <div className="flex items-center justify-center gap-2 text-sm text-green-600 mb-2">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span className="font-medium">Inscription gratuite • Aucun engagement</span>
+                      </div>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        En créant votre compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
+                        <br />
+                        <span className="font-medium text-violet-600">Support premium 7j/7 inclus avec tous les plans.</span>
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-600 leading-relaxed">
-                      En créant votre compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
-                      Support premium 7j/7 inclus.
-                    </p>
                   </div>
                 </div>
               </form>
