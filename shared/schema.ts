@@ -116,6 +116,7 @@ export const professionals = pgTable("professionals", {
   phone: varchar("phone"),
   specialties: jsonb("specialties"),
   color: varchar("color"),
+  photo_url: varchar("photo_url"), // URL de la photo du professionnel
   is_active: boolean("is_active").default(true),
   work_schedule: jsonb("work_schedule"),
   createdAt: timestamp("created_at").defaultNow(),

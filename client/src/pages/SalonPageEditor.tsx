@@ -764,9 +764,9 @@ export default function SalonPageEditor() {
                   <div className="flex items-start gap-4">
                     {/* Photo du professionnel */}
                     <div className="relative">
-                      {professional.photoUrl ? (
+                      {professional.photo_url ? (
                         <img
-                          src={professional.photoUrl}
+                          src={professional.photo_url}
                           alt={professional.name}
                           className="w-20 h-20 rounded-full object-cover border-2"
                           style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
@@ -776,7 +776,7 @@ export default function SalonPageEditor() {
                           className="w-20 h-20 rounded-full flex items-center justify-center text-4xl border-2"
                           style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
                         >
-                          {professional.image}
+                          {professional.image || professional.name?.charAt(0) || 'P'}
                         </div>
                       )}
                       

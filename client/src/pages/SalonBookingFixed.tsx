@@ -143,6 +143,7 @@ function SalonBookingFixed() {
   const [preBooking, setPreBooking] = useState<PreBookingData | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [selectedServices, setSelectedServices] = useState<Service[]>([]); // Pour prestations multiples
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<{ time: string; date: string } | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -379,6 +380,14 @@ function SalonBookingFixed() {
     ));
   };
 
+  const getSpecialtiesText = (specialties: any) => {
+    if (!specialties) return 'Spécialiste beauté';
+    if (Array.isArray(specialties)) {
+      return specialties.length > 0 ? specialties.join(', ') : 'Spécialiste beauté';
+    }
+    return typeof specialties === 'string' ? specialties : 'Spécialiste beauté';
+  };
+
   const handleServiceSelect = (service: Service) => {
     logger.info('Service selected', {
       serviceId: service.id,
@@ -390,8 +399,43 @@ function SalonBookingFixed() {
         loading: professionalsLoading
       }
     });
-    setSelectedService(service);
-    setCurrentStep(3);
+    
+    // Ajouter le service à la liste si pas déjà sélectionné
+    setSelectedServices(prev => {
+      const isAlreadySelected = prev.some(s => s.id === service.id);
+      if (isAlreadySelected) {
+        return prev; // Ne pas ajouter de doublons
+      }
+      return [...prev, service];
+    });
+    
+    // Sauvegarder le premier service comme service principal
+    if (!selectedService) {
+      setSelectedService(service);
+      sessionStorage.setItem('selectedService', JSON.stringify(service));
+    }
+  };
+
+  const handleRemoveService = (serviceId: number) => {
+    setSelectedServices(prev => prev.filter(s => s.id !== serviceId));
+    
+    // Si on supprime le service principal, prendre le premier restant
+    if (selectedService?.id === serviceId && selectedServices.length > 1) {
+      const remainingServices = selectedServices.filter(s => s.id !== serviceId);
+      const newMainService = remainingServices[0];
+      setSelectedService(newMainService);
+      sessionStorage.setItem('selectedService', JSON.stringify(newMainService));
+    } else if (selectedServices.length === 1) {
+      // Si c'était le seul service, remettre à null
+      setSelectedService(null);
+      sessionStorage.removeItem('selectedService');
+    }
+  };
+
+  const handleContinueToNext = () => {
+    if (selectedServices.length > 0) {
+      setCurrentStep(2);
+    }
   };
 
   const handleProfessionalSelect = (professional: Professional) => {
@@ -403,7 +447,7 @@ function SalonBookingFixed() {
       professionalsCount
     });
     setSelectedProfessional(professional);
-    setCurrentStep(2);
+    setCurrentStep(3); // Corriger pour aller à l'étape suivante (sélection date/heure)
   };
 
   // RENDU PRINCIPAL - Page de réservation complète avec toutes les étapes
@@ -442,7 +486,44 @@ function SalonBookingFixed() {
         {/* Étape 1: Sélection du service */}
         {currentStep === 1 && (
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold mb-4">Choisissez votre service</h2>
+            <h2 className="text-xl font-semibold mb-4">Choisissez vos services</h2>
+            
+            {/* Services sélectionnés */}
+            {selectedServices.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-3 text-violet-400">Services sélectionnés</h3>
+                <div className="space-y-2">
+                  {selectedServices.map((service: any) => (
+                    <div key={service.id} className="flex items-center justify-between bg-violet-600/20 border border-violet-500/30 rounded-lg p-3">
+                      <div>
+                        <h4 className="font-semibold text-white">{service.name}</h4>
+                        <p className="text-sm text-gray-300">{service.duration} min • {service.price}€</p>
+                      </div>
+                      <button 
+                        onClick={() => handleRemoveService(service.id)}
+                        className="text-red-400 hover:text-red-300 p-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 p-3 bg-green-600/20 border border-green-500/30 rounded-lg">
+                  <p className="text-green-400 font-medium">
+                    Total: {selectedServices.reduce((sum, s) => sum + s.price, 0)}€
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    Durée totale: {selectedServices.reduce((sum, s) => sum + (parseInt(s.duration) || 30), 0)} min
+                  </p>
+                </div>
+                <button 
+                  onClick={handleContinueToNext}
+                  className="w-full mt-4 bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-medium transition-colors"
+                >
+                  Continuer avec {selectedServices.length} service{selectedServices.length > 1 ? 's' : ''}
+                </button>
+              </div>
+            )}
             
             {servicesLoading ? (
               <div className="text-center py-8">
@@ -451,31 +532,42 @@ function SalonBookingFixed() {
               </div>
             ) : services.length > 0 ? (
               <div className="space-y-3">
-                {services.map((service: any) => (
-                  <Card
-                    key={service.id}
-                    className="bg-white/5 border-white/10 hover:border-violet-500/50 cursor-pointer transition-all"
-                    onClick={() => handleServiceSelect(service)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-white">{service.name}</h3>
-                          <p className="text-sm text-gray-400">{service.duration} min</p>
-                          {service.description && (
-                            <p className="text-sm text-gray-300 mt-1">{service.description}</p>
-                          )}
+                <h3 className="text-lg font-medium text-gray-300">Services disponibles</h3>
+                {services.map((service: any) => {
+                  const isSelected = selectedServices.some(s => s.id === service.id);
+                  return (
+                    <Card
+                      key={service.id}
+                      className={`${isSelected 
+                        ? 'bg-violet-600/30 border-violet-500' 
+                        : 'bg-white/5 border-white/10 hover:border-violet-500/50'
+                      } cursor-pointer transition-all`}
+                      onClick={() => handleServiceSelect(service)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className={`font-semibold ${isSelected ? 'text-violet-200' : 'text-white'}`}>
+                              {service.name} {isSelected && '✓'}
+                            </h3>
+                            <p className="text-sm text-gray-400">{service.duration} min</p>
+                            {service.description && (
+                              <p className="text-sm text-gray-300 mt-1">{service.description}</p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className={`font-bold ${isSelected ? 'text-violet-300' : 'text-violet-400'}`}>
+                              {service.price}€
+                            </p>
+                            {service.depositAmount && (
+                              <p className="text-xs text-gray-400">Acompte: {service.depositAmount}€</p>
+                            )}
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-bold text-violet-400">{service.price}€</p>
-                          {service.depositAmount && (
-                            <p className="text-xs text-gray-400">Acompte: {service.depositAmount}€</p>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-8">
@@ -513,10 +605,21 @@ function SalonBookingFixed() {
                   >
                     <CardContent className="p-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-violet-600 rounded-full flex items-center justify-center">
-                          <span className="text-lg font-bold text-white">
-                            {professional.name?.charAt(0) || 'P'}
-                          </span>
+                        {/* Photo du professionnel ou avatar par défaut */}
+                        <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                          {professional.photo_url ? (
+                            <img 
+                              src={professional.photo_url} 
+                              alt={professional.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-violet-600 flex items-center justify-center">
+                              <span className="text-lg font-bold text-white">
+                                {professional.name?.charAt(0) || 'P'}
+                              </span>
+                            </div>
+                          )}
                         </div>
                         <div className="flex-1">
                           <h3 className="font-semibold text-white">{professional.name}</h3>
