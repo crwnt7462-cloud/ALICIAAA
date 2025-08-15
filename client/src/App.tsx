@@ -963,7 +963,7 @@ function Router() {
           {/* Routes Salons Template - Nouvelle génération standardisée */}
           <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
           <Route path="/salons/barbier-gentleman-marais" component={BarbierGentlemanMarais} />
-          <Route path="/salons/institut-belle-epoque" component={InstitutBelleEpoque} />
+          {/* Route désactivée temporairement - Composant InstitutBelleEpoque non disponible */}
           <Route path="/salons/modern-hair-studio" component={ModernHairStudio} />
 
           <Route component={NotFound} />
