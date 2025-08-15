@@ -258,12 +258,12 @@ export function SalonPageTemplate({
       {/* Contenu des onglets - Style mobile exact */}
       <div className="bg-white p-6 pb-6">
         {activeTab === 'services' && (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {displayServiceCategories.map((category: ServiceCategory) => (
               <div key={category.id} className="avyento-card overflow-hidden">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full p-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="text-left">
                     <h3 className="font-semibold text-lg text-gray-900">{category.name}</h3>
@@ -312,7 +312,7 @@ export function SalonPageTemplate({
                   <div className="border-t border-gray-100">
                     <div className="space-y-0">
                       {category.services.map((service: SalonService) => (
-                        <div key={service.id} className="p-3 border-b border-gray-50 last:border-b-0">
+                        <div key={service.id} className="px-3 py-2 border-b border-gray-50 last:border-b-0">
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-2">

@@ -16,7 +16,7 @@ export default function SalonExcellenceParis() {
     description: 'Salon de coiffure haut de gamme sur les Champs-Élysées - Excellence et innovation',
     address: '45 Avenue des Champs-Élysées, 75008 Paris',
     phone: '01 42 89 15 67',
-    coverImageUrl: 'https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+    coverImageUrl: 'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
     amenities: ['WiFi gratuit', 'Climatisation', 'Produits premium', 'Parking valet', 'Accessible PMR', 'Champagne offert'],
     priceRange: '€€€',
     openingHours: {
