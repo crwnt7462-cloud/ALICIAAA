@@ -1213,8 +1213,18 @@ export default function PublicLanding() {
       </section>
 
       {/* Section FAQ */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
+        {/* Icônes flottantes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-10 text-2xl opacity-20 animate-pulse">💡</div>
+          <div className="absolute top-32 right-16 text-lg opacity-15 animate-bounce" style={{ animationDelay: '1s', animationDuration: '3s' }}>❓</div>
+          <div className="absolute top-60 left-20 text-xl opacity-10 animate-pulse" style={{ animationDelay: '2s' }}>✨</div>
+          <div className="absolute bottom-40 right-12 text-2xl opacity-20 animate-bounce" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>📱</div>
+          <div className="absolute bottom-60 left-16 text-lg opacity-15 animate-pulse" style={{ animationDelay: '1.5s' }}>💬</div>
+          <div className="absolute top-40 right-32 text-xl opacity-10 animate-bounce" style={{ animationDelay: '3s', animationDuration: '2.5s' }}>⭐</div>
+        </div>
+        
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
