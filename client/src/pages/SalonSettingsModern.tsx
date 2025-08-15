@@ -101,24 +101,30 @@ export default function SalonSettingsModern() {
   return (
     <div className="min-h-screen bg-white">
       
-      {/* Header - même style que page recherche */}
-      <div className="relative">
-        
-        {/* Bouton retour */}
-        <button
-          onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 glass-button text-black px-3 py-2 rounded-2xl shadow-xl hover:shadow-2xl"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
+      {/* Header - cohérence Avyento */}
+      <header className="avyento-header">
+        <div className="avyento-header-content">
+          <div className="avyento-header-inner">
+            <div className="avyento-logo-container">
+              <button
+                onClick={() => window.history.back()}
+                className="avyento-button-secondary p-3"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
 
-        {/* Container principal */}
-        <div className="px-6 pt-16 pb-6">
-          <div className="max-w-sm mx-auto">
+      <div className="avyento-section-spacing">
+        <div className="avyento-container">
+          <div className="max-w-2xl mx-auto">
             
-            {/* Logo salon - même style que "Design" */}
-            <div className="text-center mb-12">
-              <h1 className="text-3xl font-bold text-violet-600">Settings</h1>
+            {/* Titre - cohérence avec page d'accueil */}
+            <div className="avyento-text-content">
+              <h1 className="avyento-title">Paramètres du salon</h1>
+              <p className="avyento-subtitle">Gérez les informations de votre établissement</p>
             </div>
 
             {/* Titre */}

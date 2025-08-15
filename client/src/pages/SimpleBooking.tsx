@@ -191,7 +191,7 @@ export default function SimpleBooking() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Photo de couverture du salon */}
       <div className="relative h-72 overflow-hidden">
         <img 
@@ -681,7 +681,7 @@ export default function SimpleBooking() {
           {step > 1 && (
             <button
               onClick={handleBack}
-              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1"
+              className="avyento-button-primary flex-1"
             >
               Retour
             </button>
@@ -691,14 +691,14 @@ export default function SimpleBooking() {
             <button
               onClick={handleNext}
               disabled={!isStepComplete()}
-              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1 disabled:opacity-50"
+              className="avyento-button-primary flex-1 disabled:opacity-50"
             >
               Continuer
             </button>
           ) : (
             <button
               onClick={handleBooking}
-              className="glass-button text-black px-8 py-4 rounded-2xl font-semibold shadow-xl hover:shadow-2xl flex-1 inline-flex items-center justify-center"
+              className="avyento-button-primary flex-1 inline-flex items-center justify-center"
             >
               <CreditCard className="w-5 h-5 mr-2" />
               Confirmer et payer {selectedServiceData?.price}€

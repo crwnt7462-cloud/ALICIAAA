@@ -174,13 +174,15 @@ export default function Planning() {
   const calendarDays = generateCalendarDays();
 
   return (
-    <div className="p-4 max-w-md mx-auto space-y-4 min-h-screen bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50">
-      {/* Header avec navigation de date et toggle vue */}
-      <div className="glass-card rounded-lg p-4 space-y-4">
+    <div className="min-h-screen bg-white">
+      <div className="avyento-section-spacing">
+        <div className="max-w-md mx-auto space-y-4">
+          {/* Header avec navigation de date et toggle vue */}
+          <div className="avyento-glass-card space-y-4">
         <div className="flex items-center justify-between">
           <button
             onClick={() => viewMode === 'day' ? changeDate(-1) : changeDate(-30)}
-            className="glass-button text-black px-4 py-2 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
+            className="avyento-button-secondary"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -207,7 +209,7 @@ export default function Planning() {
         <div className="flex items-center justify-center gap-2">
           <button
             onClick={() => setViewMode('day')}
-            className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+            className={`avyento-button-secondary ${
               viewMode === 'day' ? 'bg-violet-600 text-white border-violet-700' : ''
             }`}
           >
@@ -215,7 +217,7 @@ export default function Planning() {
           </button>
           <button
             onClick={() => setViewMode('week')}
-            className={`glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl ${
+            className={`avyento-button-secondary ${
               viewMode === 'week' ? 'bg-violet-600 text-white border-violet-700' : ''
             }`}
           >
@@ -235,7 +237,7 @@ export default function Planning() {
       <div className="grid grid-cols-2 gap-2">
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center gap-2">
+            <button className="avyento-button-primary inline-flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Nouveau RDV
             </button>

@@ -6,6 +6,100 @@
 @tailwind components;
 @tailwind utilities;
 
+/* === COHÉRENCE VISUELLE GLOBALE AVYENTO === */
+
+/* Typographie uniforme sur toute l'app */
+.avyento-title {
+  @apply text-3xl lg:text-4xl font-bold text-gray-900 mb-1;
+}
+
+.avyento-subtitle {
+  @apply text-lg text-gray-600;
+}
+
+.avyento-section-spacing {
+  @apply py-12;
+}
+
+.avyento-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.avyento-text-content {
+  @apply text-center mb-10;
+}
+
+/* Header uniforme sur toutes les pages */
+.avyento-header {
+  @apply bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95;
+}
+
+.avyento-header-content {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.avyento-header-inner {
+  @apply flex justify-between items-center h-16;
+}
+
+.avyento-logo-container {
+  @apply flex items-center;
+  gap: 2px;
+}
+
+/* Boutons uniformes */
+.avyento-button-primary {
+  @apply glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl;
+}
+
+.avyento-button-secondary {
+  @apply glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl;
+}
+
+/* Cartes uniformes */
+.avyento-card {
+  @apply bg-gray-50 rounded-3xl p-6 border border-gray-100 hover:border-violet-200 transition-colors;
+}
+
+.avyento-glass-card {
+  @apply glass-card rounded-3xl p-6;
+}
+
+/* Formulaires uniformes */
+.avyento-input {
+  @apply glass-input w-full px-4 py-3 rounded-2xl text-gray-900 placeholder-gray-500;
+}
+
+.avyento-select {
+  @apply glass-input w-full px-4 py-3 rounded-2xl text-gray-900 bg-white/10;
+}
+
+/* Badges uniformes */
+.avyento-badge-success {
+  @apply inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-medium;
+}
+
+.avyento-badge-violet {
+  @apply inline-block bg-violet-50 text-violet-600 px-3 py-1 rounded-full text-sm font-medium;
+}
+
+/* Navigation tabs uniforme */
+.avyento-nav-tabs {
+  @apply flex gap-1 p-1 bg-gray-100 rounded-2xl;
+}
+
+.avyento-nav-tab {
+  @apply flex-1 py-3 px-4 text-center text-sm font-medium rounded-xl transition-all;
+}
+
+.avyento-nav-tab-active {
+  @apply bg-white text-violet-600 shadow-sm;
+}
+
+.avyento-nav-tab-inactive {
+  @apply text-gray-600 hover:text-gray-800;
+}
+
 /* Couleurs & tokens pour HeroSlash */
 :root{
   --violet:#7A4DFF;

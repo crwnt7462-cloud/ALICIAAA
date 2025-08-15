@@ -147,25 +147,28 @@ export default function Clients() {
   };
 
   return (
-    <div className="p-4 space-y-6 bg-gradient-to-br from-violet-100 via-purple-50 to-amber-50 min-h-screen">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Gestion des clients</h1>
-          <p className="text-gray-600 text-sm mt-1">
-            {filteredClients.length} client{filteredClients.length > 1 ? "s" : ""}
-          </p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <button 
-              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center"
-              onClick={handleNewClient}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Nouveau client
-            </button>
-          </DialogTrigger>
+    <div className="min-h-screen bg-white">
+      <div className="avyento-section-spacing">
+        <div className="avyento-container">
+          {/* Header */}
+          <div className="avyento-text-content">
+            <h1 className="avyento-title">Gestion des clients</h1>
+            <p className="avyento-subtitle">
+              {filteredClients.length} client{filteredClients.length > 1 ? "s" : ""} enregistré{filteredClients.length > 1 ? "s" : ""}
+            </p>
+          </div>
+          {/* Actions */}
+          <div className="flex justify-center mb-8">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <button 
+                  className="avyento-button-primary inline-flex items-center"
+                  onClick={handleNewClient}
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nouveau client
+                </button>
+              </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>
