@@ -39,7 +39,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Nettoyage, gommage, masque et hydratation',
       price: 75,
       duration: 60,
-      category: 'soins-visage'
+      category: 'Soins Premium'
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin complet avec actifs anti-âge',
       price: 120,
       duration: 75,
-      category: 'soins-visage'
+      category: 'Soins Premium'
     },
     {
       id: 3,
@@ -55,7 +55,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin illuminateur pour teint terne',
       price: 90,
       duration: 60,
-      category: 'soins-visage'
+      category: 'Soins Premium'
     },
     {
       id: 4,
@@ -63,7 +63,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Extraction des comédons et purification',
       price: 85,
       duration: 70,
-      category: 'soins-visage'
+      category: 'Soins Premium'
     },
     {
       id: 5,
@@ -71,7 +71,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Exfoliation douce tout le corps',
       price: 65,
       duration: 45,
-      category: 'soins-corps'
+      category: 'Coupes Homme'
     },
     {
       id: 6,
@@ -79,7 +79,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin raffermissant et drainant',
       price: 95,
       duration: 60,
-      category: 'soins-corps'
+      category: 'Coupes Homme'
     },
     {
       id: 7,
@@ -87,7 +87,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Épilation + restructuration sourcils',
       price: 25,
       duration: 20,
-      category: 'epilation'
+      category: 'Barbe & Rasage'
     },
     {
       id: 8,
@@ -95,7 +95,7 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Épilation cire chaude professionnelle',
       price: 55,
       duration: 45,
-      category: 'epilation'
+      category: 'Barbe & Rasage'
     }
   ];
 

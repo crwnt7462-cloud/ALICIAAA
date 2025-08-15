@@ -39,7 +39,7 @@ export default function SalonModerneRepublique() {
       description: 'Coupe personnalisée selon votre style avec produits bio',
       price: 75,
       duration: 60,
-      category: 'coiffure'
+      category: 'Coupes Homme'
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ export default function SalonModerneRepublique() {
       description: 'Coupe moderne et audacieuse créée sur-mesure',
       price: 80,
       duration: 75,
-      category: 'coiffure'
+      category: 'Coupes Homme'
     },
     {
       id: 3,
@@ -55,7 +55,7 @@ export default function SalonModerneRepublique() {
       description: 'Coloration 100% végétale respectueuse de vos cheveux',
       price: 95,
       duration: 120,
-      category: 'couleur'
+      category: 'Barbe & Rasage'
     },
     {
       id: 4,
@@ -63,7 +63,7 @@ export default function SalonModerneRepublique() {
       description: 'Technique de balayage avec produits naturels',
       price: 110,
       duration: 150,
-      category: 'couleur'
+      category: 'Barbe & Rasage'
     },
     {
       id: 5,
@@ -71,7 +71,7 @@ export default function SalonModerneRepublique() {
       description: 'Soin profond aux huiles essentielles biologiques',
       price: 45,
       duration: 30,
-      category: 'soins'
+      category: 'Soins Premium'
     },
     {
       id: 6,
@@ -79,7 +79,7 @@ export default function SalonModerneRepublique() {
       description: 'Coiffage avec techniques éco-responsables',
       price: 35,
       duration: 45,
-      category: 'coiffure'
+      category: 'Soins Premium'
     }
   ];
 

@@ -37,7 +37,7 @@ export default function SalonExcellenceParis() {
       description: "Coupe sur-mesure avec consultation style personnalisée",
       price: 85,
       duration: 90,
-      category: "coiffure"
+      category: "Coupes Homme"
     },
     {
       id: 2,
@@ -45,7 +45,7 @@ export default function SalonExcellenceParis() {
       description: "Coloration professionnelle avec produits premium européens",
       price: 120,
       duration: 150,
-      category: "coiffure"
+      category: "Coupes Homme"
     },
     {
       id: 3,
@@ -53,7 +53,7 @@ export default function SalonExcellenceParis() {
       description: "Mise en forme professionnelle longue durée avec finition parfaite",
       price: 45,
       duration: 60,
-      category: "coiffure"
+      category: "Coupes Homme"
     },
     {
       id: 4,
@@ -61,7 +61,7 @@ export default function SalonExcellenceParis() {
       description: "Soin réparateur intensif pour cheveux abîmés ou colorés",
       price: 65,
       duration: 45,
-      category: "soins"
+      category: "Soins Premium"
     },
     {
       id: 5,
@@ -69,7 +69,7 @@ export default function SalonExcellenceParis() {
       description: "Coupe masculine exclusive avec finition précise",
       price: 55,
       duration: 60,
-      category: "coiffure"
+      category: "Barbe & Rasage"
     },
     {
       id: 6,
@@ -77,7 +77,7 @@ export default function SalonExcellenceParis() {
       description: "Technique de mèches naturelles pour un effet soleil",
       price: 95,
       duration: 120,
-      category: "coiffure"
+      category: "Soins Premium"
     }
   ];
 

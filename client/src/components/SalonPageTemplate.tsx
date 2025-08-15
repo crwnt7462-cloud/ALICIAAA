@@ -124,13 +124,12 @@ export function SalonPageTemplate({
       expanded: expandedCategories.has(index + 1),
     })), [servicesByCategory, expandedCategories]);
 
-  // Fonction pour obtenir les descriptions de catégories avec formatage HTML
+  // EXACTEMENT LES MÊMES CATÉGORIES QUE BARBIER GENTLEMAN MARAIS
   function getCategoryDescription(categoryName: string): string | undefined {
     const descriptions: Record<string, string> = {
-      'Coupe & Styling': '<strong>Créativité</strong> et <em>savoir-faire</em> pour sublimer votre <u>style unique</u>',
-      'Barbe & Moustache': '<strong>Précision</strong> et <em>finition parfaite</em> pour un look <u>impeccable</u>',
-      'Soins & Traitements': '<strong>Relaxation</strong> et <em>bien-être</em> pour une <u>expérience premium</u>',
-      'Colorations': '<strong>Innovation</strong> et <em>personnalisation</em> pour révéler votre <u>véritable couleur</u>'
+      'Coupes Homme': 'Nos coupes masculines allient <strong>tradition</strong> et <em>modernité</em>. Chaque coupe est <u>personnalisée</u> selon votre morphologie et votre style de vie. Nos barbiers maîtrisent les techniques classiques aux ciseaux ainsi que les dégradés contemporains pour un résultat <strong>impeccable</strong>.',
+      'Barbe & Rasage': 'L\'art du <strong>rasage traditionnel</strong> et de l\'entretien de barbe. Nos barbiers utilisent des <em>techniques ancestrales</em> avec des produits <u>haut de gamme</u> pour sublimer votre barbe. Du simple rafraîchissement au rasage complet à l\'ancienne, chaque prestation est un moment de <strong>détente absolue</strong>.',
+      'Soins Premium': 'Des <strong>soins d\'exception</strong> pour sublimer votre beauté naturelle. Nos experts utilisent les dernières <em>innovations</em> et des produits <u>professionnels</u> pour des résultats visibles et durables. Une expérience de <strong>bien-être total</strong>.'
     };
     return descriptions[categoryName];
   }
