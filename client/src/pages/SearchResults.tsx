@@ -270,7 +270,7 @@ export default function SearchResults() {
         </div>
       </div>
 
-      <div className="max-w-md mx-auto p-4 space-y-3">
+      <div className="max-w-md mx-auto p-4 space-y-1.5">
         {/* Logo Avyento */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
