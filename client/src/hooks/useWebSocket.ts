@@ -1,87 +1,76 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-interface WebSocketConfig {
-  userType: 'professional' | 'client';
-  userId?: string;
-  clientId?: string;
-  autoReconnect?: boolean;
+interface WebSocketMessage {
+  type: string;
+  salonId: string;
+  salonData: any;
+  timestamp: number;
 }
 
-interface NotificationData {
-  type: 'appointment' | 'payment' | 'reminder' | 'cancellation' | 'system';
-  title: string;
-  message: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  data?: any;
+interface UseWebSocketOptions {
+  onSalonUpdate?: (salonId: string, salonData: any) => void;
+  onConnect?: () => void;
+  onDisconnect?: () => void;
 }
 
-export function useWebSocket(config: WebSocketConfig) {
-  const [isConnected, setIsConnected] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationData[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
+export function useWebSocket({ onSalonUpdate, onConnect, onDisconnect }: UseWebSocketOptions = {}) {
   const wsRef = useRef<WebSocket | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
 
   const connect = () => {
     try {
-      // En développement, on simule juste la connexion
-      if (process.env.NODE_ENV === 'development') {
-        setIsConnected(true);
-        console.log('WebSocket simulé connecté');
-        return;
-      }
-
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${protocol}//${window.location.host}/ws`;
+      
+      console.log('🔌 Connexion WebSocket:', wsUrl);
       
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
 
       ws.onopen = () => {
+        console.log('✅ WebSocket connecté');
         setIsConnected(true);
-        console.log('WebSocket connecté');
+        onConnect?.();
         
-        // S'identifier auprès du serveur
-        ws.send(JSON.stringify({
-          type: 'auth',
-          userType: config.userType,
-          userId: config.userId,
-          clientId: config.clientId
-        }));
+        // Effacer le timeout de reconnexion s'il existe
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+        }
       };
 
       ws.onmessage = (event) => {
         try {
-          const data = JSON.parse(event.data);
-          if (data.type === 'notification') {
-            setNotifications(prev => [data.notification, ...prev.slice(0, 49)]);
-            setUnreadCount(prev => prev + 1);
+          const message: WebSocketMessage = JSON.parse(event.data);
+          console.log('📨 Message WebSocket reçu:', message.type, message.salonId);
+          
+          if (message.type === 'salon-updated' && onSalonUpdate) {
+            onSalonUpdate(message.salonId, message.salonData);
           }
         } catch (error) {
-          console.error('Erreur parsing message WebSocket:', error);
+          console.error('❌ Erreur parsing message WebSocket:', error);
         }
       };
 
       ws.onclose = () => {
+        console.log('🔌 WebSocket déconnecté');
         setIsConnected(false);
-        console.log('WebSocket déconnecté');
+        onDisconnect?.();
         
-        // Reconnexion automatique si activée
-        if (config.autoReconnect) {
-          reconnectTimeoutRef.current = setTimeout(() => {
-            connect();
-          }, 3000);
-        }
+        // Tentative de reconnexion après 3 secondes
+        reconnectTimeoutRef.current = setTimeout(() => {
+          console.log('🔄 Tentative de reconnexion WebSocket...');
+          connect();
+        }, 3000);
       };
 
       ws.onerror = (error) => {
-        console.error('Erreur WebSocket:', error);
+        console.error('❌ Erreur WebSocket:', error);
         setIsConnected(false);
       };
 
     } catch (error) {
-      console.error('Erreur connexion WebSocket:', error);
-      setIsConnected(false);
+      console.error('❌ Erreur création WebSocket:', error);
     }
   };
 
@@ -94,20 +83,14 @@ export function useWebSocket(config: WebSocketConfig) {
       wsRef.current.close();
       wsRef.current = null;
     }
-    
     setIsConnected(false);
   };
 
-  const clearNotifications = () => {
-    setNotifications([]);
-    setUnreadCount(0);
-  };
-
-  const markAsRead = (count: number = 0) => {
-    if (count === 0) {
-      setUnreadCount(0);
+  const sendMessage = (message: any) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(message));
     } else {
-      setUnreadCount(prev => Math.max(0, prev - count));
+      console.warn('⚠️ WebSocket non connecté, impossible d\'envoyer le message');
     }
   };
 
@@ -117,15 +100,12 @@ export function useWebSocket(config: WebSocketConfig) {
     return () => {
       disconnect();
     };
-  }, [config.userId, config.clientId]);
+  }, []);
 
   return {
     isConnected,
-    notifications,
-    unreadCount,
-    clearNotifications,
-    markAsRead,
-    reconnect: connect,
+    sendMessage,
+    connect,
     disconnect
   };
 }

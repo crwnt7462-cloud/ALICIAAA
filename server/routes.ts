@@ -1,11 +1,35 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import {
   ObjectStorageService,
   ObjectNotFoundError,
 } from "./objectStorage";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+
+// Global WebSocket server instance
+let wss: WebSocketServer;
+
+// Fonction pour diffuser des mises à jour via WebSocket
+export function broadcastSalonUpdate(salonId: string, salonData: any) {
+  if (wss) {
+    const message = JSON.stringify({
+      type: 'salon-updated',
+      salonId: salonId,
+      salonData: salonData,
+      timestamp: Date.now()
+    });
+    
+    console.log('📢 Diffusion WebSocket salon-updated:', salonId);
+    
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  }
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -197,5 +221,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // Setup WebSocket server for real-time synchronization
+  wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws' 
+  });
+  
+  console.log('🔌 WebSocket server configuré sur /ws');
+  
+  wss.on('connection', (ws: WebSocket) => {
+    console.log('📱 Nouvelle connexion WebSocket');
+    
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        console.log('📨 Message WebSocket reçu:', data.type);
+        
+        // Retransmettre le message à tous les clients connectés
+        wss.clients.forEach((client) => {
+          if (client !== ws && client.readyState === WebSocket.OPEN) {
+            client.send(message.toString());
+          }
+        });
+      } catch (error) {
+        console.error('❌ Erreur WebSocket:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      console.log('🔌 Connexion WebSocket fermée');
+    });
+  });
+  
   return httpServer;
 }

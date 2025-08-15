@@ -8,6 +8,7 @@ import { FIREBASE_CONFIG, FIREBASE_INSTRUCTIONS } from "./firebaseSetup";
 import { SUPABASE_CONFIG, SUPABASE_INSTRUCTIONS, realtimeService } from "./supabaseSetup";
 import { aiService } from "./aiService";
 import { clientAnalyticsService, type ClientProfile } from "./clientAnalyticsService";
+import { broadcastSalonUpdate } from "./routes";
 
 // Configuration: utiliser Firebase ou stockage mémoire
 const USE_FIREBASE = FIREBASE_CONFIG.USE_FIREBASE && FIREBASE_CONFIG.hasFirebaseSecrets();
@@ -1255,6 +1256,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         }
         console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', actualId);
       }
+      
+      // 🔌 Diffuser la mise à jour via WebSocket pour synchronisation temps réel
+      broadcastSalonUpdate(actualId, savedSalon);
       
       res.json({ 
         success: true, 
@@ -2766,6 +2770,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Mettre à jour les données
       const updatedSalon = { ...salon, ...updateData, updatedAt: new Date() };
       storage.salons?.set(salonId, updatedSalon);
+      
+      // 🔌 Diffuser la mise à jour via WebSocket pour synchronisation temps réel
+      broadcastSalonUpdate(salonId, updatedSalon);
       
       res.json(updatedSalon);
     } catch (error: any) {

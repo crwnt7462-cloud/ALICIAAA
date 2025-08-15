@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useWebSocket } from "@/hooks/useWebSocket";
 import avyentoLogo from "@assets/3_1753714421825.png";
 
 export default function SearchResults() {
@@ -149,10 +150,10 @@ export default function SearchResults() {
     gcTime: 0 // Pas de cache en mémoire
   });
 
-  // Écoute des événements de synchronisation en temps réel
-  useEffect(() => {
-    const handleSalonUpdated = async (event: CustomEvent) => {
-      console.log('🔄 Salon mis à jour détecté dans SearchResults:', event.detail);
+  // 🔌 WebSocket pour synchronisation temps réel
+  const { isConnected } = useWebSocket({
+    onSalonUpdate: async (salonId: string, salonData: any) => {
+      console.log('🔄 Mise à jour salon reçue via WebSocket:', salonId, salonData?.name);
       
       // FORCER le rafraîchissement immédiat sans cache
       queryClient.removeQueries({ queryKey: ['/api/public/salons'] }); // Supprimer tout cache
@@ -160,24 +161,15 @@ export default function SearchResults() {
       // Refetch forcé avec nouvelles données
       await refetchSalons();
       
-      console.log('✅ SearchResults mis à jour suite à modification salon');
-    };
-
-    // Écouter les événements de mise à jour salon
-    window.addEventListener('salon-updated', handleSalonUpdated as any);
-    
-    // Rafraîchissement automatique toutes les 2 secondes en cas d'activité d'édition
-    const autoRefreshInterval = setInterval(async () => {
-      if (document.visibilityState === 'visible') {
-        await refetchSalons();
-      }
-    }, 2000);
-    
-    return () => {
-      window.removeEventListener('salon-updated', handleSalonUpdated as any);
-      clearInterval(autoRefreshInterval);
-    };
-  }, [queryClient, refetchSalons]);
+      console.log('✅ SearchResults mis à jour via WebSocket');
+    },
+    onConnect: () => {
+      console.log('✅ SearchResults connecté au WebSocket');
+    },
+    onDisconnect: () => {
+      console.log('⚠️ SearchResults déconnecté du WebSocket');
+    }
+  });
 
 
 
@@ -415,6 +407,12 @@ export default function SearchResults() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-lg font-semibold text-gray-900">Recherche</h1>
+            <div className="flex items-center gap-1 ml-auto">
+              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className="text-xs text-gray-500">
+                {isConnected ? 'Temps réel' : 'Hors ligne'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
