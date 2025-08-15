@@ -39,7 +39,10 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Coupe moderne adaptée à votre morphologie',
       price: 65,
       duration: 60,
-      category: 'Coupes Homme'
+      category: 'Coiffure',
+      photos: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80'],
+      rating: 4.8,
+      reviewCount: 67
     },
     {
       id: 2,
@@ -47,7 +50,10 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Coloration haut de gamme avec produits professionnels',
       price: 85,
       duration: 120,
-      category: 'Coupes Homme'
+      category: 'Coloration',
+      photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80'],
+      rating: 4.6,
+      reviewCount: 45
     },
     {
       id: 3,
@@ -55,7 +61,10 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Soin complet du visage avec massage relaxant',
       price: 70,
       duration: 75,
-      category: 'Soins Premium'
+      category: 'Esthétique',
+      photos: ['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 89
     },
     {
       id: 4,
@@ -63,7 +72,9 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Pose de vernis gel longue tenue avec nail art',
       price: 45,
       duration: 60,
-      category: 'Barbe & Rasage'
+      category: 'Ongles',
+      rating: 4.7,
+      reviewCount: 34
     },
     {
       id: 5,
@@ -71,7 +82,10 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Massage relaxant aux huiles essentielles',
       price: 80,
       duration: 60,
-      category: 'Soins Premium'
+      category: 'Bien-être',
+      photos: ['https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&q=80'],
+      rating: 4.8,
+      reviewCount: 56
     },
     {
       id: 6,
@@ -79,7 +93,10 @@ export default function BeautyLoungeMontparnasse() {
       description: 'Coupe + couleur + soin visage + manucure',
       price: 220,
       duration: 240,
-      category: 'Soins Premium'
+      category: 'Forfaits',
+      photos: ['https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=80', 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 123
     }
   ];
 

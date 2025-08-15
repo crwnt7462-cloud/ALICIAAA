@@ -39,7 +39,10 @@ export default function SalonModerneRepublique() {
       description: 'Coupe personnalisée selon votre style avec produits bio',
       price: 75,
       duration: 60,
-      category: 'Coupes Homme'
+      category: 'Coiffure Créative',
+      photos: ['https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=1200&q=80'],
+      rating: 4.8,
+      reviewCount: 42
     },
     {
       id: 2,
@@ -47,7 +50,10 @@ export default function SalonModerneRepublique() {
       description: 'Coupe moderne et audacieuse créée sur-mesure',
       price: 80,
       duration: 75,
-      category: 'Coupes Homme'
+      category: 'Coiffure Créative',
+      photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 31
     },
     {
       id: 3,
@@ -55,7 +61,10 @@ export default function SalonModerneRepublique() {
       description: 'Coloration 100% végétale respectueuse de vos cheveux',
       price: 95,
       duration: 120,
-      category: 'Barbe & Rasage'
+      category: 'Coloration Écologique',
+      photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80'],
+      rating: 4.7,
+      reviewCount: 58
     },
     {
       id: 4,
@@ -63,7 +72,9 @@ export default function SalonModerneRepublique() {
       description: 'Technique de balayage avec produits naturels',
       price: 110,
       duration: 150,
-      category: 'Barbe & Rasage'
+      category: 'Coloration Écologique',
+      rating: 4.6,
+      reviewCount: 39
     },
     {
       id: 5,
@@ -71,7 +82,10 @@ export default function SalonModerneRepublique() {
       description: 'Soin profond aux huiles essentielles biologiques',
       price: 45,
       duration: 30,
-      category: 'Soins Premium'
+      category: 'Soins Naturels',
+      photos: ['https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 67
     },
     {
       id: 6,
@@ -79,7 +93,9 @@ export default function SalonModerneRepublique() {
       description: 'Coiffage avec techniques éco-responsables',
       price: 35,
       duration: 45,
-      category: 'Soins Premium'
+      category: 'Soins Naturels',
+      rating: 4.5,
+      reviewCount: 24
     }
   ];
 

@@ -39,7 +39,10 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Nettoyage, gommage, masque et hydratation',
       price: 75,
       duration: 60,
-      category: 'Soins Premium'
+      category: 'Soins Visage',
+      photos: ['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&q=80'],
+      rating: 4.7,
+      reviewCount: 28
     },
     {
       id: 2,
@@ -47,7 +50,10 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin complet avec actifs anti-âge',
       price: 120,
       duration: 75,
-      category: 'Soins Premium'
+      category: 'Soins Visage',
+      photos: ['https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 45
     },
     {
       id: 3,
@@ -55,7 +61,9 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin illuminateur pour teint terne',
       price: 90,
       duration: 60,
-      category: 'Soins Premium'
+      category: 'Soins Visage',
+      rating: 4.6,
+      reviewCount: 32
     },
     {
       id: 4,
@@ -63,7 +71,10 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Extraction des comédons et purification',
       price: 85,
       duration: 70,
-      category: 'Soins Premium'
+      category: 'Soins Visage',
+      photos: ['https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&q=80'],
+      rating: 4.8,
+      reviewCount: 67
     },
     {
       id: 5,
@@ -71,7 +82,9 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Exfoliation douce tout le corps',
       price: 65,
       duration: 45,
-      category: 'Coupes Homme'
+      category: 'Soins Corps',
+      rating: 4.5,
+      reviewCount: 19
     },
     {
       id: 6,
@@ -79,7 +92,10 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Soin raffermissant et drainant',
       price: 95,
       duration: 60,
-      category: 'Coupes Homme'
+      category: 'Soins Corps',
+      photos: ['https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&q=80'],
+      rating: 4.7,
+      reviewCount: 23
     },
     {
       id: 7,
@@ -87,7 +103,9 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Épilation + restructuration sourcils',
       price: 25,
       duration: 20,
-      category: 'Barbe & Rasage'
+      category: 'Épilation',
+      rating: 4.9,
+      reviewCount: 89
     },
     {
       id: 8,
@@ -95,7 +113,9 @@ export default function InstitutBeauteSaintGermain() {
       description: 'Épilation cire chaude professionnelle',
       price: 55,
       duration: 45,
-      category: 'Barbe & Rasage'
+      category: 'Épilation',
+      rating: 4.8,
+      reviewCount: 56
     }
   ];
 

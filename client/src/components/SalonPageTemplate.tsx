@@ -124,12 +124,32 @@ export function SalonPageTemplate({
       expanded: expandedCategories.has(index + 1),
     })), [servicesByCategory, expandedCategories]);
 
-  // EXACTEMENT LES MÊMES CATÉGORIES QUE BARBIER GENTLEMAN MARAIS
+  // Descriptions spécifiques par catégorie avec formatage HTML
   function getCategoryDescription(categoryName: string): string | undefined {
     const descriptions: Record<string, string> = {
-      'Coupes Homme': 'Nos coupes masculines allient <strong>tradition</strong> et <em>modernité</em>. Chaque coupe est <u>personnalisée</u> selon votre morphologie et votre style de vie. Nos barbiers maîtrisent les techniques classiques aux ciseaux ainsi que les dégradés contemporains pour un résultat <strong>impeccable</strong>.',
-      'Barbe & Rasage': 'L\'art du <strong>rasage traditionnel</strong> et de l\'entretien de barbe. Nos barbiers utilisent des <em>techniques ancestrales</em> avec des produits <u>haut de gamme</u> pour sublimer votre barbe. Du simple rafraîchissement au rasage complet à l\'ancienne, chaque prestation est un moment de <strong>détente absolue</strong>.',
-      'Soins Premium': 'Des <strong>soins d\'exception</strong> pour sublimer votre beauté naturelle. Nos experts utilisent les dernières <em>innovations</em> et des produits <u>professionnels</u> pour des résultats visibles et durables. Une expérience de <strong>bien-être total</strong>.'
+      // Coiffure
+      'Coiffure Femme': '<strong>Créativité</strong> et <em>savoir-faire</em> pour sublimer votre <u>style unique</u>. Nos coiffeurs experts créent la coupe parfaite selon votre personnalité.',
+      'Coiffure Homme': '<strong>Élégance</strong> et <em>modernité</em> pour un look <u>impeccable</u>. Coupes classiques et tendances actuelles maîtrisées par nos professionnels.',
+      'Coiffure': '<strong>Expertise</strong> et <em>créativité</em> pour révéler votre <u>beauté naturelle</u>. Coupes personnalisées et techniques de pointe.',
+      'Coiffure Créative': '<strong>Innovation</strong> et <em>audace</em> pour un style <u>unique</u>. Coupes avant-gardistes et créations sur-mesure.',
+      
+      // Colorations
+      'Colorations': '<strong>Maîtrise</strong> de la <em>couleur</em> pour un résultat <u>éclatant</u>. Techniques avancées et produits premium pour sublimer vos cheveux.',
+      'Coloration': '<strong>Excellence</strong> en <em>coloration</em> pour un rendu <u>parfait</u>. Nuances sur-mesure et techniques professionnelles.',
+      'Coloration Écologique': '<strong>Respect</strong> de vos cheveux avec des <em>produits bio</em> pour une couleur <u>naturelle et durable</u>.',
+      
+      // Soins
+      'Soins Capillaires': '<strong>Régénération</strong> et <em>nutrition</em> pour des cheveux <u>en pleine santé</u>. Soins professionnels adaptés à chaque type de cheveux.',
+      'Soins Visage': '<strong>Éclat</strong> et <em>jeunesse</em> pour une peau <u>parfaitement soignée</u>. Protocoles personnalisés et produits haut de gamme.',
+      'Soins Corps': '<strong>Détente</strong> et <em>bien-être</em> pour un corps <u>sublimé</u>. Soins relaxants et raffermissants dans un cadre apaisant.',
+      'Soins Naturels': '<strong>Pureté</strong> des <em>ingrédients biologiques</em> pour des soins <u>respectueux</u> de votre peau et cheveux.',
+      
+      // Autres
+      'Épilation': '<strong>Précision</strong> et <em>douceur</em> pour une épilation <u>parfaite</u>. Techniques modernes et produits apaisants.',
+      'Esthétique': '<strong>Beauté</strong> et <em>harmonie</em> pour un visage <u>radieux</u>. Soins experts adaptés à chaque type de peau.',
+      'Ongles': '<strong>Créativité</strong> et <em>perfection</em> pour des ongles <u>sublimes</u>. Nail art et soins professionnels longue durée.',
+      'Bien-être': '<strong>Relaxation</strong> et <em>sérénité</em> pour un moment <u>d\'évasion totale</u>. Massages et soins wellness personnalisés.',
+      'Forfaits': '<strong>Expérience complète</strong> alliant <em>plusieurs expertises</em> pour un résultat <u>harmonieux et durable</u>.'
     };
     return descriptions[categoryName];
   }

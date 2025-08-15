@@ -37,7 +37,10 @@ export default function SalonExcellenceParis() {
       description: "Coupe sur-mesure avec consultation style personnalisée",
       price: 85,
       duration: 90,
-      category: "Coupes Homme"
+      category: "Coiffure Femme",
+      photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80'],
+      rating: 4.8,
+      reviewCount: 45
     },
     {
       id: 2,
@@ -45,7 +48,10 @@ export default function SalonExcellenceParis() {
       description: "Coloration professionnelle avec produits premium européens",
       price: 120,
       duration: 150,
-      category: "Coupes Homme"
+      category: "Colorations",
+      photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 67
     },
     {
       id: 3,
@@ -53,7 +59,9 @@ export default function SalonExcellenceParis() {
       description: "Mise en forme professionnelle longue durée avec finition parfaite",
       price: 45,
       duration: 60,
-      category: "Coupes Homme"
+      category: "Coiffure Femme",
+      rating: 4.7,
+      reviewCount: 23
     },
     {
       id: 4,
@@ -61,7 +69,10 @@ export default function SalonExcellenceParis() {
       description: "Soin réparateur intensif pour cheveux abîmés ou colorés",
       price: 65,
       duration: 45,
-      category: "Soins Premium"
+      category: "Soins Capillaires",
+      photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80'],
+      rating: 4.6,
+      reviewCount: 34
     },
     {
       id: 5,
@@ -69,7 +80,9 @@ export default function SalonExcellenceParis() {
       description: "Coupe masculine exclusive avec finition précise",
       price: 55,
       duration: 60,
-      category: "Barbe & Rasage"
+      category: "Coiffure Homme",
+      rating: 4.8,
+      reviewCount: 56
     },
     {
       id: 6,
@@ -77,7 +90,10 @@ export default function SalonExcellenceParis() {
       description: "Technique de mèches naturelles pour un effet soleil",
       price: 95,
       duration: 120,
-      category: "Soins Premium"
+      category: "Colorations",
+      photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80'],
+      rating: 4.9,
+      reviewCount: 78
     }
   ];
 
