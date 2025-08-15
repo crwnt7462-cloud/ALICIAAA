@@ -551,7 +551,7 @@ export default function SalonPageEditor() {
                 fill: salonData.customColors?.primary || '#f59e0b' 
               }} />
               <span className="font-semibold">{salonData.rating}</span>
-              <span className="opacity-80">({salonData.reviews} avis)</span>
+              <span className="opacity-80">({typeof salonData.reviews === 'number' ? salonData.reviews : salonData.reviewCount || 0} avis)</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
@@ -1356,7 +1356,7 @@ export default function SalonPageEditor() {
                 {salonData.rating}/5 étoiles
               </h3>
               <p className="text-gray-600">
-                Basé sur {salonData.reviews} avis clients
+                Basé sur {typeof salonData.reviews === 'number' ? salonData.reviews : salonData.reviewCount || 0} avis clients
               </p>
             </div>
             
