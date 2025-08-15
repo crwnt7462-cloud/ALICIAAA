@@ -31,7 +31,7 @@ export default function SearchResults() {
   const [locationCharIndex, setLocationCharIndex] = useState(0);
   const [isServiceDeleting, setIsServiceDeleting] = useState(false);
   const [isLocationDeleting, setIsLocationDeleting] = useState(false);
-  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
+
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
   const services = [
@@ -128,7 +128,7 @@ export default function SearchResults() {
   ];
 
   // Recherche salons temps réel depuis l'API - SANS CACHE pour données fraîches
-  const { data: apiResults, refetch: refetchSalons } = useQuery({
+  const { data: apiResults, refetch: refetchSalons, isLoading } = useQuery({
     queryKey: ['/api/public/salons', searchQuery, searchLocation], // Clé stable
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -145,9 +145,14 @@ export default function SearchResults() {
       });
       const data = await response.json();
       console.log('📋 Données salons récupérées:', data.salons?.length || 0, 'salons');
+      if (data.salons?.length > 0) {
+        console.log('🔄 Mise à jour avec données serveur:', data.salons[0]);
+      }
       return data.success ? data.salons : [];
     },
     refetchOnWindowFocus: true, // Refetch quand on revient sur la page
+    refetchOnMount: true, // Refetch au montage du composant
+    refetchInterval: 5000, // Refetch toutes les 5 secondes
     staleTime: 0, // Toujours considérer comme périmé
     gcTime: 0 // Pas de cache en mémoire
   });
@@ -158,7 +163,6 @@ export default function SearchResults() {
       console.log('🔄 Mise à jour salon reçue via WebSocket:', salonId, salonData?.name);
       
       // Afficher notification de mise à jour
-      setLastUpdateTime(new Date());
       setShowUpdateNotification(true);
       
       // FORCER le rafraîchissement immédiat sans cache
@@ -393,7 +397,7 @@ export default function SearchResults() {
     window.history.pushState({}, '', `/search?${params.toString()}`);
   };
 
-  const handleSalonClick = (salon: { route?: string; shareableUrl?: string }) => {
+  const handleSalonClick = (salon: { route?: string; shareableUrl?: string; name?: string; id?: string }) => {
     const url = salon.shareableUrl || salon.route;
     console.log('🔗 Salon cliqué:', salon.name || salon.id, 'URL:', url);
     if (url) {
@@ -483,13 +487,23 @@ export default function SearchResults() {
               WebSocket: {isConnected ? 'Connecté' : 'Déconnecté'}
             </span>
           </div>
-          <Button
-            onClick={() => setLocation('/salon-page-editor')}
-            size="sm"
-            className="mt-3 bg-gradient-to-r from-purple-500 to-amber-500 text-white rounded-full px-4 py-2 text-xs"
-          >
-            ✏️ Ouvrir l'éditeur de salon
-          </Button>
+          <div className="flex gap-2 mt-3">
+            <Button
+              onClick={() => setLocation('/salon-page-editor')}
+              size="sm"
+              className="bg-gradient-to-r from-purple-500 to-amber-500 text-white rounded-full px-4 py-2 text-xs"
+            >
+              ✏️ Ouvrir l'éditeur
+            </Button>
+            <Button
+              onClick={() => refetchSalons()}
+              size="sm"
+              variant="outline"
+              className="rounded-full px-4 py-2 text-xs"
+            >
+              🔄 Actualiser
+            </Button>
+          </div>
         </motion.div>
 
         {/* Barre de recherche glassmorphism */}
@@ -599,6 +613,13 @@ export default function SearchResults() {
               {filteredResults.length} salon{filteredResults.length > 1 ? 's' : ''} trouvé{filteredResults.length > 1 ? 's' : ''}
             </h2>
           </div>
+
+          {isLoading && (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+              <p className="text-gray-500 mt-2">Recherche de salons...</p>
+            </div>
+          )}
 
           <div className="space-y-3">
             <AnimatePresence>
