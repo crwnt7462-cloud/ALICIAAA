@@ -82,19 +82,99 @@ export function useSalonPageTemplate(salonSlug: string): {
   useEffect(() => {
     const loadSalonData = async () => {
       try {
-        // Vérifier d'abord la propriété du salon (si utilisateur connecté)
+        // ✅ CORRECTION : Utiliser directement la route publique qui contient toutes les données
+        console.log('🔍 Chargement salon public:', salonSlug);
+        const salonResponse = await fetch(`/api/salons/by-slug/${salonSlug}`);
+        
+        if (salonResponse.ok) {
+          const salonResponseData = await salonResponse.json();
+          console.log('✅ Données salon reçues:', salonResponseData);
+          
+          if (salonResponseData) {
+            const salon = salonResponseData;
+            const mappedSalonData: SalonData = {
+              id: salon.id,
+              name: salon.name,
+              slug: salon.slug || salonSlug,
+              description: salon.description || `Salon de beauté professionnel ${salon.name}`,
+              address: salon.address || "Adresse non renseignée",
+              phone: salon.phone || "Téléphone non renseigné",
+              rating: salon.rating || 4.8,
+              reviewsCount: salon.reviewCount || 0,
+              coverImageUrl: salon.photos?.[0] || salon.coverImageUrl,
+              logo: salon.logoUrl,
+              openingHours: salon.openingHours || {
+                lundi: { open: '09:00', close: '19:00' },
+                mardi: { open: '09:00', close: '19:00' },
+                mercredi: { open: '09:00', close: '19:00' },
+                jeudi: { open: '09:00', close: '19:00' },
+                vendredi: { open: '09:00', close: '19:00' },
+                samedi: { open: '09:00', close: '18:00' },
+                dimanche: { closed: true, open: '', close: '' }
+              },
+              amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
+              priceRange: salon.priceRange || '€€',
+              customColors: salon.customColors
+            };
+            
+            console.log('🎨 CustomColors récupérées:', salon.customColors);
+            setSalonData(mappedSalonData);
+            
+            // ✅ Extraire les services des catégories
+            if (salon.serviceCategories && salon.serviceCategories.length > 0) {
+              const extractedServices: SalonService[] = [];
+              
+              salon.serviceCategories.forEach((category: any) => {
+                if (category.services && category.services.length > 0) {
+                  category.services.forEach((service: any) => {
+                    extractedServices.push({
+                      id: service.id,
+                      name: service.name,
+                      description: service.description || `Service ${service.name}`,
+                      price: service.price,
+                      duration: service.duration,
+                      category: category.name || 'Services',
+                      rating: service.rating,
+                      reviewCount: service.reviewCount,
+                      photos: service.photos || []
+                    });
+                  });
+                }
+              });
+              
+              setServices(extractedServices);
+              console.log('✅ Services extraits:', extractedServices.length, extractedServices);
+            }
+            
+            // ✅ Extraire l'équipe
+            if (salon.professionals && salon.professionals.length > 0) {
+              setStaff(salon.professionals);
+              console.log('✅ Équipe extraite:', salon.professionals.length);
+            }
+            
+            // ✅ Extraire les avis
+            if (salon.reviews && salon.reviews.length > 0) {
+              setReviews(salon.reviews);
+              console.log('✅ Avis extraits:', salon.reviews.length);
+            }
+            
+            setLoading(false);
+            return;
+          }
+        } else {
+          console.error('❌ Erreur lors du chargement du salon:', salonResponse.status);
+        }
+        
+        // Fallback: essayer la route ownership
         try {
           const ownershipResponse = await fetch(`/api/salon/${salonSlug}/ownership`);
           if (ownershipResponse.ok) {
             const ownershipData = await ownershipResponse.json();
             setIsOwner(ownershipData.isOwner);
             
-            if (ownershipData.salon && ownershipData.isOwner) {
-              // Utiliser les données complètes si propriétaire
+            if (ownershipData.salon) {
               const salon = ownershipData.salon;
               const mappedSalonData: SalonData = {
-                id: salon.id,
-                name: salon.name,
                 slug: salon.slug || salonSlug,
                 description: salon.description || `Salon de beauté professionnel ${salon.name}`,
                 address: salon.address || "Adresse non renseignée",
@@ -162,107 +242,7 @@ export function useSalonPageTemplate(salonSlug: string): {
             }
           }
         } catch (error) {
-          console.log('Vérification propriété non disponible (utilisateur non connecté)');
-        }
-
-        // Charger les données du salon (méthode classique)
-        const salonResponse = await fetch(`/api/salons/by-slug/${salonSlug}`);
-        if (salonResponse.ok) {
-          const salon = await salonResponse.json();
-          
-          // Mapper les données vers le format template
-          const mappedSalonData: SalonData = {
-            id: salon.id,
-            name: salon.name,
-            slug: salon.slug,
-            description: salon.description || `Salon de beauté professionnel ${salon.name}`,
-            address: salon.address || "Adresse non renseignée",
-            phone: salon.phone || "Téléphone non renseigné",
-            rating: salon.rating || 4.8,
-            reviewsCount: salon.reviewsCount || 0,
-            coverImageUrl: salon.coverImageUrl,
-            logo: salon.logoUrl,
-            openingHours: salon.openingHours || {
-              lundi: { open: '09:00', close: '19:00' },
-              mardi: { open: '09:00', close: '19:00' },
-              mercredi: { open: '09:00', close: '19:00' },
-              jeudi: { open: '09:00', close: '19:00' },
-              vendredi: { open: '09:00', close: '19:00' },
-              samedi: { open: '09:00', close: '18:00' },
-              dimanche: { closed: true, open: '', close: '' }
-            },
-            amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
-            priceRange: salon.priceRange || '€€',
-            customColors: salon.customColors
-          };
-          
-          setSalonData(mappedSalonData);
-          
-          // ✅ CORRECTION : Extraire les services depuis serviceCategories
-          if (salon.serviceCategories && salon.serviceCategories.length > 0) {
-            const extractedServices: SalonService[] = [];
-            
-            salon.serviceCategories.forEach((category: any) => {
-              if (category.services && category.services.length > 0) {
-                category.services.forEach((service: any) => {
-                  extractedServices.push({
-                    id: service.id,
-                    name: service.name,
-                    description: service.description || `Service ${service.name}`,
-                    price: service.price,
-                    duration: service.duration,
-                    category: category.name || 'Services',
-                    rating: service.rating,
-                    reviewCount: service.reviewCount,
-                    photos: service.photos || []
-                  });
-                });
-              }
-            });
-            
-            setServices(extractedServices);
-            console.log('✅ Services extraits des catégories:', extractedServices.length);
-          } else {
-            console.log('Aucun service trouvé dans les catégories du salon');
-            setServices([]);
-          }
-          
-          // ✅ Extraire l'équipe
-          if (salon.professionals && salon.professionals.length > 0) {
-            setStaff(salon.professionals);
-            console.log('✅ Équipe extraite:', salon.professionals.length);
-          }
-          
-          // ✅ Extraire les avis
-          if (salon.reviews && salon.reviews.length > 0) {
-            setReviews(salon.reviews);
-            console.log('✅ Avis extraits:', salon.reviews.length);
-          }
-          
-          // Charger l'équipe (si disponible)
-          try {
-            const staffResponse = await fetch(`/api/salons/${salon.id}/staff`);
-            if (staffResponse.ok) {
-              const staffData = await staffResponse.json();
-              setStaff(staffData);
-            }
-          } catch (error) {
-            console.log('Équipe non disponible pour ce salon');
-          }
-          
-          // Charger les avis (si disponibles)
-          try {
-            const reviewsResponse = await fetch(`/api/salons/${salon.id}/reviews`);
-            if (reviewsResponse.ok) {
-              const reviewsData = await reviewsResponse.json();
-              setReviews(reviewsData);
-            }
-          } catch (error) {
-            console.log('Avis non disponibles pour ce salon');
-          }
-          
-        } else {
-          console.error('Salon non trouvé:', salonSlug);
+          console.log('❌ Erreur propriété salon:', error);
         }
       } catch (error) {
         console.error('Erreur lors du chargement du salon:', error);
