@@ -6,7 +6,7 @@ import {
   Search, MapPin, Star, Clock, ArrowLeft, 
   Sparkles, ChevronRight, Heart, LogIn,
   SlidersHorizontal, TrendingUp, Award, Scissors, Palette,
-  Gem, Waves, PaintBrush
+  Gem, Waves, Brush
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -128,7 +128,7 @@ export default function SearchResults() {
     { id: "coiffure", name: "Coiffure", icon: Scissors },
     { id: "esthetique", name: "Esthétique", icon: Gem },
     { id: "massage", name: "Massage", icon: Waves },
-    { id: "onglerie", name: "Onglerie", icon: PaintBrush }
+    { id: "onglerie", name: "Onglerie", icon: Brush }
   ];
 
   // Recherche salons temps réel depuis l'API - SANS CACHE pour données fraîches
