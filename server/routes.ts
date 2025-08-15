@@ -220,31 +220,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // API pour personnaliser les couleurs du salon barbier-gentleman-marais
-  app.put('/api/salon/barbier-gentleman-marais/custom-colors', async (req, res) => {
-    try {
-      const { customColors } = req.body;
-      
-      // Valider les couleurs
-      if (!customColors || typeof customColors !== 'object') {
-        return res.status(400).json({ error: 'Invalid custom colors data' });
-      }
-
-      // Mettre à jour le salon barbier dans la base de données
-      const result = await storage.updateSalonCustomColors('barbier-gentleman-marais', customColors);
-      
-      if (result) {
-        console.log('✅ Couleurs salon barbier mises à jour:', customColors);
-        res.json({ success: true, customColors });
-      } else {
-        res.status(404).json({ error: 'Salon not found' });
-      }
-    } catch (error) {
-      console.error('❌ Erreur mise à jour couleurs barbier:', error);
-      res.status(500).json({ error: 'Failed to update custom colors' });
-    }
-  });
-
   const httpServer = createServer(app);
   
   // Setup WebSocket server for real-time synchronization
