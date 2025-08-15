@@ -176,7 +176,6 @@ export default function BeautyLashStudio() {
       staff={customizedStaff}
       reviews={customizedReviews}
       isOwner={isOwner}
-      loading={loading}
     />
   );
 }
