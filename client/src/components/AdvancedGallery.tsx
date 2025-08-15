@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Camera, 
   Plus, 
@@ -56,6 +56,8 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
   const [newAlbumDialog, setNewAlbumDialog] = useState(false);
   const [editPhotoDialog, setEditPhotoDialog] = useState(false);
   const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   // Charger les albums
   useEffect(() => {
@@ -97,21 +99,63 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
   };
 
   // Navigation dans le viewer
-  const nextPhoto = () => {
+  const nextPhoto = useCallback(() => {
     if (photoIndex < albumPhotos.length - 1) {
       const newIndex = photoIndex + 1;
       setPhotoIndex(newIndex);
       setSelectedPhoto(albumPhotos[newIndex] || null);
     }
-  };
+  }, [photoIndex, albumPhotos]);
 
-  const prevPhoto = () => {
+  const prevPhoto = useCallback(() => {
     if (photoIndex > 0) {
       const newIndex = photoIndex - 1;
       setPhotoIndex(newIndex);
       setSelectedPhoto(albumPhotos[newIndex] || null);
     }
+  }, [photoIndex, albumPhotos]);
+
+  // Gestion des gestes tactiles pour le swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
   };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && photoIndex < albumPhotos.length - 1) {
+      nextPhoto();
+    }
+    if (isRightSwipe && photoIndex > 0) {
+      prevPhoto();
+    }
+  };
+
+  // Gestion navigation clavier
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!selectedPhoto) return;
+      
+      if (e.key === 'ArrowLeft') {
+        prevPhoto();
+      } else if (e.key === 'ArrowRight') {
+        nextPhoto();
+      } else if (e.key === 'Escape') {
+        setSelectedPhoto(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [selectedPhoto, prevPhoto, nextPhoto]);
 
   // Gestion upload photos
   const handleGetUploadParameters = async () => {
@@ -282,10 +326,7 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                           )}
                         </div>
                         <div className="ml-4 text-right">
-                          <div className="text-xs font-bold text-violet-600 tracking-wider">
-                            AVYENTO
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
+                          <div className="text-xs text-gray-500">
                             Photo {index + 1}/{albumPhotos.length}
                           </div>
                         </div>
@@ -315,11 +356,16 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
           </div>
         )}
 
-        {/* Viewer photo haute résolution */}
+        {/* Viewer photo haute résolution avec swipe */}
         {selectedPhoto && (
           <Dialog open={!!selectedPhoto} onOpenChange={() => setSelectedPhoto(null)}>
             <DialogContent className="max-w-6xl w-full max-h-[90vh] p-0">
-              <div className="relative">
+              <div 
+                className="relative"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
                 {/* Header */}
                 <div className="absolute top-0 left-0 right-0 bg-black/50 backdrop-blur-sm z-10 p-4">
                   <div className="flex items-center justify-between text-white">
@@ -327,6 +373,9 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                       <h3 className="font-semibold">{selectedPhoto.title}</h3>
                       <p className="text-sm opacity-90">
                         Photo {photoIndex + 1} sur {albumPhotos.length}
+                      </p>
+                      <p className="text-xs opacity-75 mt-1">
+                        Balayez ou utilisez les flèches pour naviguer
                       </p>
                     </div>
                     <Button
@@ -355,19 +404,33 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                       <button
                         onClick={prevPhoto}
                         disabled={photoIndex === 0}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       >
                         <ChevronLeft className="h-6 w-6" />
                       </button>
                       <button
                         onClick={nextPhoto}
                         disabled={photoIndex === albumPhotos.length - 1}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                       >
                         <ChevronRight className="h-6 w-6" />
                       </button>
                     </>
                   )}
+
+                  {/* Indicateurs de swipe sur mobile */}
+                  <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 md:hidden">
+                    <div className="flex items-center gap-2 bg-black/50 rounded-full px-3 py-1">
+                      {albumPhotos.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`h-2 w-2 rounded-full transition-all ${
+                            index === photoIndex ? 'bg-white' : 'bg-white/40'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Description */}
