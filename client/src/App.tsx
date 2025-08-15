@@ -17,7 +17,7 @@ import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
-import AIAutomationNew from "@/pages/AIAutomationNew";
+
 
 import ChatGPTInterface from "@/pages/ChatGPTInterface";
 
@@ -45,7 +45,7 @@ import DashboardModern from "@/pages/DashboardModern";
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
 import InventoryModern from "@/pages/InventoryModern";
-import PlanningOptimized from "@/pages/PlanningOptimized";
+
 import ClientsModern from "@/pages/ClientsModern";
 
 import QuickBooking from "@/pages/QuickBooking";
@@ -70,7 +70,7 @@ import FreeTrialSignup from "@/pages/FreeTrialSignup";
 import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
 import ClientDashboardNew from "@/pages/ClientDashboardNew";
-import AIAssistantSimple from "@/pages/AIAssistantSimple";
+
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
 import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
@@ -123,8 +123,8 @@ import SalonPhotosManager from "@/pages/SalonPhotosManager";
 import MonthlyCalendar from "@/pages/MonthlyCalendar";
 import AIProComplete from "@/pages/AIProComplete";
 import EditSalon from "@/pages/EditSalon";
-import ClientAIMessages from "@/pages/ClientAIMessages";
-import AIAlertsDrops from "@/pages/AIAlertsDrops";
+
+
 import SalonSelection from "@/pages/SalonSelection";
 import CategorySelection from "@/pages/CategorySelection";
 import PageCreator from "@/pages/PageCreator";
@@ -333,22 +333,9 @@ function Router() {
   }
 
   // Messages IA pour clients
-  if (location === '/client-ai-messages') {
-    return (
-      <div className="h-full">
-        <ClientAIMessages />
-      </div>
-    );
-  }
 
-  // Centre d'alertes IA avec style gouttes d'eau
-  if (location === '/ai-alerts-drops') {
-    return (
-      <div className="h-full">
-        <AIAlertsDrops />
-      </div>
-    );
-  }
+
+
 
   // Page de réservation publique
   if (location === '/booking' || location.startsWith('/booking/')) {
@@ -865,14 +852,7 @@ function Router() {
     );
   }
 
-  // Page IA moderne en plein écran
-  if (location === '/ai-simple') {
-    return (
-      <div className="h-full">
-        <AIAssistantSimple />
-      </div>
-    );
-  }
+
 
   // Messagerie directe en plein écran
   if (location === '/direct-messaging') {
@@ -923,7 +903,7 @@ function Router() {
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
-          <PlanningOptimized />
+          <Planning />
         </main>
         <BottomNavigation />
       </div>

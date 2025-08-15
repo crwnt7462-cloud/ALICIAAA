@@ -726,6 +726,6 @@ export default function Planning() {
           )}
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
