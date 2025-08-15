@@ -283,7 +283,7 @@ export default function SearchResults() {
             alt="Avyento" 
             className="h-32 w-auto object-contain mx-auto"
           />
-          <p className="text-gray-600 text-sm mt-2 px-4">
+          <p className="text-gray-600 text-sm mt-1 px-4">
             Toutes vos réservations beauté en un clic
           </p>
         </motion.div>
