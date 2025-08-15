@@ -1,233 +1,150 @@
-import { useEffect, useState } from "react";
-import { useLocation, Link } from "wouter";
-import { Check, Calendar, Clock, MapPin, Phone, CreditCard } from "lucide-react";
+import React from 'react';
+import { useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-interface BookingDetails {
-  id: number;
-  professional: string;
-  service: string;
-  salon: string;
-  date: string;
-  time: string;
-  duration: string;
-  price: string;
-  address: string;
-  phone: string;
-  status: string;
-  paymentStatus: string;
-  depositPaid?: string;
-}
+import { CheckCircle, Calendar, MapPin, Clock, User } from "lucide-react";
 
 export default function BookingSuccess() {
-  const [location] = useLocation();
-  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLocation] = useLocation();
 
-  useEffect(() => {
-    // Extraire l'ID de réservation depuis l'URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const bookingId = urlParams.get('bookingId');
-    
-    if (!bookingId) {
-      setError('ID de réservation manquant');
-      setLoading(false);
-      return;
-    }
+  // Récupérer les données de la réservation
+  const selectedProfessional = localStorage.getItem('selectedProfessional');
+  const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
 
-    // Récupérer les détails de la réservation depuis l'API
-    const fetchBookingDetails = async () => {
-      try {
-        console.log('🔍 Récupération détails réservation:', bookingId);
-        
-        const response = await fetch(`/api/bookings/${bookingId}`);
-        
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('Réservation non trouvée');
-          }
-          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('✅ Détails réservation récupérés:', data);
-        
-        setBookingDetails(data);
-      } catch (err) {
-        console.error('❌ Erreur récupération réservation:', err);
-        setError(err instanceof Error ? err.message : 'Erreur inconnue');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBookingDetails();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl">
-            <CardContent className="p-8 text-center">
-              <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-              <p className="text-gray-600">Chargement des détails de votre réservation...</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !bookingDetails) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl">
-            <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-red-500 text-2xl">⚠️</span>
-              </div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Erreur de chargement
-              </h2>
-              <p className="text-gray-600 mb-6">{error}</p>
-              <Button asChild>
-                <Link href="/salon-search">
-                  Retour à la recherche
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  const handleBackToHome = () => {
+    // Nettoyer les données de réservation
+    localStorage.removeItem('selectedProfessional');
+    localStorage.removeItem('selectedDateTime');
+    setLocation('/');
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-amber-50 p-4">
-      <div className="max-w-2xl mx-auto py-8">
-        {/* Confirmation Header */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="w-10 h-10 text-green-600" />
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50">
+      <div className="max-w-lg mx-auto p-6">
+        {/* Animation de succès */}
+        <div className="text-center py-12">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6 animate-pulse">
+            <CheckCircle className="w-12 h-12 text-green-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            Réservation Confirmée !
+          
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Réservation confirmée !
           </h1>
-          <p className="text-gray-600">
-            Votre rendez-vous a été confirmé avec succès
+          
+          <p className="text-gray-600 mb-8">
+            Votre rendez-vous a été enregistré avec succès
           </p>
         </div>
 
-        {/* Booking Details Card */}
-        <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl mb-6">
-          <CardHeader className="bg-gradient-to-r from-purple-600 to-amber-600 text-white rounded-t-lg">
-            <CardTitle className="text-xl">Détails de votre réservation</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-6">
-            {/* Service Info */}
-            <div className="border-b pb-4">
-              <h3 className="font-semibold text-gray-800 mb-2">{bookingDetails.service}</h3>
-              <p className="text-gray-600">Avec {bookingDetails.professional}</p>
-              <p className="text-2xl font-bold text-purple-600 mt-2">{bookingDetails.price}</p>
-            </div>
-
-            {/* Date & Time */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-purple-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">Date</p>
-                  <p className="text-gray-600">{bookingDetails.date}</p>
-                </div>
+        {/* Détails de la réservation */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Détails de votre rendez-vous
+          </h2>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-violet-100 rounded-lg">
+                <Calendar className="w-5 h-5 text-violet-600" />
               </div>
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-purple-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">Heure</p>
-                  <p className="text-gray-600">{bookingDetails.time} ({bookingDetails.duration})</p>
-                </div>
+              <div>
+                <p className="font-medium text-gray-900">
+                  {selectedDateTime?.date || "Jeudi 20 février"}
+                </p>
+                <p className="text-sm text-gray-500">Date du rendez-vous</p>
               </div>
             </div>
 
-            {/* Location Info */}
-            <div className="border-t pt-4">
-              <div className="flex items-start gap-3 mb-3">
-                <MapPin className="w-5 h-5 text-purple-600 mt-1" />
-                <div>
-                  <p className="font-semibold text-gray-800">{bookingDetails.salon}</p>
-                  <p className="text-gray-600">{bookingDetails.address}</p>
-                </div>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-amber-100 rounded-lg">
+                <Clock className="w-5 h-5 text-amber-600" />
               </div>
-              <div className="flex items-center gap-3">
-                <Phone className="w-5 h-5 text-purple-600" />
-                <div>
-                  <p className="font-semibold text-gray-800">Contact</p>
-                  <p className="text-gray-600">{bookingDetails.phone}</p>
-                </div>
+              <div>
+                <p className="font-medium text-gray-900">
+                  {selectedDateTime?.time || "11:00"}
+                </p>
+                <p className="text-sm text-gray-500">Heure du rendez-vous</p>
               </div>
             </div>
 
-            {/* Payment Info */}
-            {bookingDetails.paymentStatus && (
-              <div className="border-t pt-4">
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-5 h-5 text-purple-600" />
-                  <div>
-                    <p className="font-semibold text-gray-800">Statut du paiement</p>
-                    <p className="text-gray-600 capitalize">{bookingDetails.paymentStatus}</p>
-                    {bookingDetails.depositPaid && (
-                      <p className="text-sm text-green-600">
-                        Acompte payé: {bookingDetails.depositPaid}€
-                      </p>
-                    )}
-                  </div>
-                </div>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
+                <User className="w-5 h-5 text-blue-600" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <div>
+                <p className="font-medium text-gray-900">
+                  {selectedProfessional === 'any' ? 'Aucune préférence' : selectedProfessional}
+                </p>
+                <p className="text-sm text-gray-500">Professionnel(le)</p>
+              </div>
+            </div>
 
-        {/* Instructions */}
-        <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-xl mb-6">
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-gray-800 mb-4">Informations importantes</h3>
-            <ul className="space-y-2 text-gray-600">
-              <li>• Un email de confirmation vous sera envoyé sous peu</li>
-              <li>• Vous recevrez un rappel 24h avant votre rendez-vous</li>
-              <li>• Merci d'arriver 10 minutes en avance</li>
-              <li>• Pour toute modification, contactez directement le salon</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Button 
-            asChild 
-            className="flex-1 bg-purple-600 hover:bg-purple-700"
-          >
-            <Link href="/salon-search">
-              Nouvelle réservation
-            </Link>
-          </Button>
-          <Button 
-            variant="outline" 
-            className="flex-1 border-purple-200 hover:bg-purple-50"
-            onClick={() => window.print()}
-          >
-            Imprimer la confirmation
-          </Button>
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg">
+                <MapPin className="w-5 h-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-medium text-gray-900">Bonhomme</p>
+                <p className="text-sm text-gray-500">Paris Archives</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Booking ID for reference */}
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-500">
-            Numéro de réservation: #{bookingDetails.id}
-          </p>
+        {/* Service et paiement */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Service réservé
+          </h3>
+          
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <p className="font-medium text-gray-900">Coupe Bonhomme</p>
+              <p className="text-sm text-gray-500">30 minutes</p>
+            </div>
+            <span className="text-lg font-bold text-violet-600">39,00 €</span>
+          </div>
+          
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-green-800">Acompte payé</p>
+                <p className="text-sm text-green-600">Le reste sera réglé sur place</p>
+              </div>
+              <span className="text-lg font-bold text-green-700">11,70 €</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Informations importantes */}
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 mb-8">
+          <h3 className="text-lg font-semibold text-amber-800 mb-3">
+            Informations importantes
+          </h3>
+          
+          <ul className="space-y-2 text-sm text-amber-700">
+            <li>• Merci d'arriver 5 minutes avant votre rendez-vous</li>
+            <li>• En cas d'empêchement, prévenez au moins 24h à l'avance</li>
+            <li>• Votre confirmation a été envoyée par email</li>
+            <li>• Le solde de 27,30 € sera à régler sur place</li>
+          </ul>
+        </div>
+
+        {/* Actions */}
+        <div className="space-y-3">
+          <Button
+            onClick={handleBackToHome}
+            className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl"
+          >
+            Retour à l'accueil
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={() => setLocation('/client-dashboard')}
+            className="w-full h-12 border-violet-200 text-violet-600 hover:bg-violet-50 rounded-xl"
+          >
+            Voir mes rendez-vous
+          </Button>
         </div>
       </div>
     </div>

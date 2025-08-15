@@ -827,6 +827,15 @@ function Router() {
     );
   }
 
+  // Page de succès de réservation
+  if (location === '/booking-success') {
+    return (
+      <div className="h-full">
+        <BookingSuccess />
+      </div>
+    );
+  }
+
   // Pages de salon dynamiques (/salon/[slug])
   if (location.startsWith('/salon/')) {
     const salonSlug = location.substring(7); // Remove '/salon/'

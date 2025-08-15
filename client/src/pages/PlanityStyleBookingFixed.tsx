@@ -4,13 +4,86 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Eye, EyeOff, X } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, X, CreditCard, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Configuration Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
+
+// Composant de formulaire de paiement
+function PaymentForm({ clientSecret, onSuccess }: { clientSecret: string, onSuccess: () => void }) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/booking-success`,
+      },
+    });
+
+    if (error) {
+      toast({
+        title: "Erreur de paiement",
+        description: error.message || "Une erreur est survenue",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    } else {
+      toast({
+        title: "Paiement réussi",
+        description: "Votre réservation est confirmée !",
+      });
+      onSuccess();
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
+        <PaymentElement />
+      </div>
+
+      <Button
+        type="submit"
+        disabled={!stripe || isProcessing}
+        className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl"
+      >
+        {isProcessing ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Traitement en cours...
+          </>
+        ) : (
+          <>
+            <CreditCard className="mr-2 h-4 w-4" />
+            Payer 11,70 € (acompte 30%)
+          </>
+        )}
+      </Button>
+    </form>
+  );
+}
 
 export default function PlanityStyleBookingFixed() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [clientSecret, setClientSecret] = useState<string>('');
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -28,6 +101,47 @@ export default function PlanityStyleBookingFixed() {
   // Récupérer les données des étapes précédentes
   const selectedProfessional = localStorage.getItem('selectedProfessional');
   const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
+
+  const createPaymentIntent = async () => {
+    try {
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: 1170, // 39€ * 30% = 11,70€ en centimes
+          currency: 'eur',
+          metadata: {
+            salonName: 'Bonhomme - Paris Archives',
+            serviceName: 'Coupe Bonhomme',
+            clientEmail: loginData.email || formData.email,
+            appointmentDate: selectedDateTime?.date || 'Jeudi 20 février',
+            appointmentTime: selectedDateTime?.time || '11:00',
+            professional: selectedProfessional || 'any'
+          }
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.client_secret) {
+        setClientSecret(data.client_secret);
+        setShowPaymentModal(true);
+      } else {
+        toast({
+          title: "Erreur",
+          description: "Impossible de créer le paiement",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Erreur création paiement:', error);
+      toast({
+        title: "Erreur",
+        description: "Erreur de connexion au service de paiement",
+        variant: "destructive"
+      });
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,9 +162,11 @@ export default function PlanityStyleBookingFixed() {
         localStorage.setItem('clientToken', data.client.token);
         toast({
           title: "Connexion réussie !",
-          description: "Bon retour parmi nous !"
+          description: "Redirection vers le paiement..."
         });
-        setLocation('/client-dashboard');
+        setShowLoginModal(false);
+        // Ouvrir le shell de paiement après connexion
+        setTimeout(() => createPaymentIntent(), 500);
       } else {
         toast({
           title: "Erreur de connexion",
@@ -100,9 +216,10 @@ export default function PlanityStyleBookingFixed() {
         localStorage.setItem('clientToken', data.client.token);
         toast({
           title: "Compte créé avec succès !",
-          description: "Bienvenue chez Avyento !"
+          description: "Redirection vers le paiement..."
         });
-        setLocation('/client-dashboard');
+        // Ouvrir le shell de paiement après inscription
+        setTimeout(() => createPaymentIntent(), 500);
       } else {
         toast({
           title: "Erreur d'inscription",
@@ -388,6 +505,90 @@ export default function PlanityStyleBookingFixed() {
                   </Button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom sheet de paiement */}
+      {showPaymentModal && clientSecret && (
+        <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
+          <div className="bg-white w-full max-w-lg rounded-t-3xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
+            {/* Header avec poignée */}
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-4 rounded-t-3xl">
+              <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Paiement sécurisé</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowPaymentModal(false)}
+                  className="h-8 w-8"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Résumé de la réservation */}
+            <div className="p-6 border-b border-gray-100">
+              <div className="bg-violet-50 p-4 rounded-xl">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold text-gray-900">Coupe Bonhomme</h3>
+                  <span className="text-lg font-bold text-violet-600">39,00 €</span>
+                </div>
+                <div className="text-sm text-gray-600 space-y-1">
+                  <p>📅 {selectedDateTime?.date || "Jeudi 20 février"} à {selectedDateTime?.time || "11:00"}</p>
+                  <p>💇‍♂️ {selectedProfessional === 'any' ? 'Aucune préférence' : selectedProfessional}</p>
+                  <p>📍 Bonhomme - Paris Archives</p>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-amber-800">Acompte 30%</p>
+                    <p className="text-sm text-amber-600">Le reste sera réglé sur place</p>
+                  </div>
+                  <span className="text-xl font-bold text-amber-700">11,70 €</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Formulaire de paiement */}
+            <div className="p-6">
+              <Elements 
+                stripe={stripePromise} 
+                options={{ 
+                  clientSecret,
+                  appearance: {
+                    theme: 'stripe',
+                    variables: {
+                      colorPrimary: '#7c3aed',
+                      colorBackground: '#ffffff',
+                      colorText: '#1f2937',
+                      fontFamily: 'system-ui, sans-serif',
+                      borderRadius: '12px',
+                    }
+                  }
+                }}
+              >
+                <PaymentForm 
+                  clientSecret={clientSecret} 
+                  onSuccess={() => {
+                    setShowPaymentModal(false);
+                    setLocation('/booking-success');
+                  }}
+                />
+              </Elements>
+
+              {/* Sécurité */}
+              <div className="mt-6 flex items-center justify-center text-sm text-gray-500">
+                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                Paiement sécurisé par Stripe
+              </div>
             </div>
           </div>
         </div>
