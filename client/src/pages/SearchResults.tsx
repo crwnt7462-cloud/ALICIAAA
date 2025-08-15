@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, MapPin, Star, Clock, ArrowLeft, 
-  Sparkles, ChevronRight, Heart,
+  Sparkles, ChevronRight, Heart, LogIn,
   SlidersHorizontal, TrendingUp, Award
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -409,9 +409,9 @@ export default function SearchResults() {
 
   return (
     <div className="heroSlash">
-      <div className="heroSlash__inner" style={{ display: 'block' }}>
+      <div style={{ display: 'block' }}>
         {/* Header identique à PublicLanding */}
-        <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95 mb-8">
+        <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center" style={{ gap: '2px' }}>
@@ -449,10 +449,77 @@ export default function SearchResults() {
                 >
                   Réserver
                 </button>
+                <button 
+                  className="glass-button text-black p-3 rounded-2xl shadow-xl hover:shadow-2xl"
+                  onClick={() => setLocation("/pro-login")}
+                >
+                  <LogIn className="w-5 h-5" />
+                </button>
               </div>
             </div>
           </div>
         </header>
+
+        {/* Section héroïque identique à PublicLanding */}
+        <div className="heroSlash__inner">
+          <div className="heroSlash__left">
+            <div className="heroSlash__badge">
+              <span className="dot"></span>
+              Test de synchronisation temps réel
+            </div>
+            
+            <h1 className="heroSlash__title">
+              Trouvez votre salon de <span className="light">beauté idéal</span>
+            </h1>
+            
+            <p className="heroSlash__subtitle">
+              Découvrez les meilleurs professionnels de la beauté près de chez vous et réservez en quelques clics
+            </p>
+            
+            <div className="heroSlash__search heroSlash__search--double">
+              <div className="field">
+                <input 
+                  value={searchQuery} 
+                  placeholder="Soins visage" 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <span className="icon">
+                  <Search />
+                </span>
+              </div>
+              
+              <div className="field">
+                <input 
+                  value={searchLocation} 
+                  placeholder="Paris, Lyon, Marseille..." 
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                />
+                <span className="icon location">
+                  <MapPin />
+                </span>
+              </div>
+              
+              <button onClick={handleSearch} className="heroSlash__cta">
+                Rechercher
+              </button>
+            </div>
+            
+            <ul className="heroSlash__kpis">
+              <li><strong>50 000+</strong><span>Rendez-vous / mois</span></li>
+              <li><strong>2 500+</strong><span>Salons partenaires</span></li>
+              <li><strong>4,9/5</strong><span>Satisfaction client</span></li>
+              <li><strong>24h/24</strong><span>Réservation dispo</span></li>
+            </ul>
+          </div>
+          
+          <div className="heroSlash__right">
+            <div className="heroPhone">
+              <div className="heroPhone__screen">
+                <div className="heroPhone__pill" />
+              </div>
+            </div>
+          </div>
+        </div>
           
         {/* Notification de mise à jour temps réel */}
         <AnimatePresence>
@@ -507,45 +574,7 @@ export default function SearchResults() {
           </div>
         </div>
 
-        {/* Barre de recherche optimisée desktop avec grille 3 colonnes */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 lg:gap-3 max-w-5xl mx-auto">
-            {/* Service - Mobile : 1 ligne, Desktop : 4 colonnes */}
-            <div className="lg:col-span-4">
-              <div className="field">
-                <input 
-                  value={searchQuery} 
-                  placeholder={servicePlaceholder || "Coiffure, manucure, barbier..."} 
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="icon">
-                  <Search />
-                </div>
-              </div>
-            </div>
-            
-            {/* Ville - Mobile : 1 ligne, Desktop : 4 colonnes */}
-            <div className="lg:col-span-4">
-              <div className="field">
-                <input 
-                  value={searchLocation} 
-                  placeholder={locationPlaceholder || "Paris, Lyon, Marseille..."} 
-                  onChange={(e) => setSearchLocation(e.target.value)}
-                />
-                <div className="icon location">
-                  <MapPin />
-                </div>
-              </div>
-            </div>
-            
-            {/* Bouton - Mobile : 1 ligne, Desktop : 2 colonnes */}
-            <div className="lg:col-span-2">
-              <button onClick={handleSearch} className="heroSlash__cta w-full">
-                Rechercher
-              </button>
-            </div>
-          </div>
-        </div>
+
 
         {/* Filtres par catégorie style iOS */}
         <div className="mb-8">
