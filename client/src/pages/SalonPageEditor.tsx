@@ -420,29 +420,8 @@ export default function SalonPageEditor() {
   };
 
   // Auto-sauvegarde en temps réel pour toutes les modifications
-  useAutoSave({
-    data: {
-      ...salonData,
-      serviceCategories,
-      professionals
-    },
-    endpoint: salonData?.id ? `/api/salon/${salonData.id}` : '',
-    delay: 500, // Sauvegarde très rapide après 0.5 secondes d'inactivité
-    enabled: !!salonData?.id && !salonLoading,
-    queryClient, // Passer directement le queryClient pour invalidation immédiate
-    onStartSaving: () => {
-      setIsAutoSaving(true);
-    },
-    onSave: (data) => {
-      console.log('🔄 Auto-sauvegarde réussie:', data.id);
-      setIsAutoSaving(false);
-      // Pas de toast pour éviter le spam - L'indicateur visuel suffit
-    },
-    onError: (error) => {
-      console.error('❌ Erreur auto-sauvegarde:', error);
-      setIsAutoSaving(false);
-    }
-  });
+  // Auto-sauvegarde désactivée temporairement pour éviter les boucles infinies
+  // L'utilisateur peut sauvegarder manuellement avec le bouton "Enregistrer"
 
   return (
     <div className="min-h-screen bg-white">
