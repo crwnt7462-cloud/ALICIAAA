@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -10,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { X, CreditCard } from "lucide-react";
+import { X, CreditCard, ArrowLeft, Building, CheckCircle2, Star, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import logoImage from "@assets/3_1753714421825.png";
 
 // Configuration Stripe
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
@@ -324,54 +326,132 @@ export default function BusinessRegistration() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header */}
-      <header className="bg-white/40 backdrop-blur-md border-b border-white/30">
-        <div className="max-w-md mx-auto px-4">
-          <div className="flex justify-between items-center h-14">
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">Avyento</h1>
-              <p className="text-xs text-gray-600">Inscription</p>
+    <div className="min-h-screen" style={{ background: 'radial-gradient(1600px 800px at 18% -10%, #F3EFFF 0%, #FFFFFF 58%)' }}>
+      {/* Header - même style que page d'accueil */}
+      <header className="relative bg-white/30 backdrop-blur-lg border-b border-white/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <img src={logoImage} alt="Avyento" className="h-8 w-auto" />
+              <div className="hidden sm:block">
+                <h1 className="text-xl font-bold text-gray-900">Avyento</h1>
+                <p className="text-xs text-gray-600">Inscription Professionnelle</p>
+              </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation("/professional-plans")}
-              className="text-black glass-button hover:glass-effect transition-all duration-300"
+
+            {/* Bouton retour */}
+            <motion.button
+              onClick={() => setLocation('/')}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex items-center gap-2 glass-button text-black px-6 py-2 rounded-2xl text-sm font-semibold shadow-xl hover:shadow-2xl"
             >
+              <ArrowLeft className="h-4 w-4" />
               Retour
-            </Button>
+            </motion.button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-md mx-auto px-4 py-6">
-        <div className="space-y-6">
-          {/* Formulaire */}
-          <div className="glass-card rounded-lg shadow-sm">
-            <div className="p-4 border-b border-white/30">
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">
-                Informations entreprise
+      {/* Hero Section avec animation */}
+      <div className="relative pt-8 pb-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-6"
+            >
+              <div className="flex justify-center mb-4">
+                <div className="flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-medium">
+                  <Sparkles className="h-4 w-4" />
+                  Rejoignez 2500+ salons partenaires
+                </div>
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
+                Créez votre
+                <span className="block bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                  espace professionnel
+                </span>
+              </h1>
+              
+              <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                Démarrez votre transformation digitale en moins de 5 minutes. 
+                Gestion complète, réservations automatisées, paiements sécurisés.
+              </p>
+            </motion.div>
+
+            {/* Stats rapides */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex justify-center gap-8 mb-8"
+            >
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">+35%</div>
+                <div className="text-sm text-gray-600">CA moyen</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">24h/24</div>
+                <div className="text-sm text-gray-600">Réservations</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-gray-900">4,9/5</div>
+                <div className="text-sm text-gray-600">Satisfaction</div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Formulaire principal */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 overflow-hidden"
+        >
+          <div className="p-8 sm:p-10">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Informations de votre salon
               </h2>
-              <p className="text-sm text-gray-700">
-                Complétez votre inscription
+              <p className="text-gray-600">
+                Quelques détails pour personnaliser votre espace
               </p>
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="p-4 space-y-6">
-                {/* Établissement */}
-                <div className="space-y-4">
-                  <h3 className="text-base font-medium text-gray-900">Établissement</h3>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                {/* Section Établissement */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <Building className="h-5 w-5 text-violet-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Votre établissement</h3>
+                      <p className="text-sm text-gray-600">Informations principales</p>
+                    </div>
+                  </div>
                   
                   <FormField
                     control={form.control}
                     name="businessName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Nom de l'entreprise *</FormLabel>
+                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Nom de votre salon *</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Salon Excellence" className="h-10" />
+                          <Input 
+                            {...field} 
+                            placeholder="Ex: Salon Excellence Paris" 
+                            className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -383,16 +463,16 @@ export default function BusinessRegistration() {
                     name="businessType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Type d'établissement *</FormLabel>
+                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Type d'établissement *</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Sélectionnez..." />
+                            <SelectTrigger className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all">
+                              <SelectValue placeholder="Choisissez votre spécialité..." />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent>
+                          <SelectContent className="bg-white/95 backdrop-blur-xl border-white/30 rounded-xl">
                             {businessTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
+                              <SelectItem key={type.value} value={type.value} className="focus:bg-violet-50">
                                 {type.label}
                               </SelectItem>
                             ))}
@@ -403,73 +483,95 @@ export default function BusinessRegistration() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="siret"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Numéro SIRET *</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="12345678901234" className="h-10" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="legalForm"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Forme juridique *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="siret"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">SIRET (optionnel)</FormLabel>
                           <FormControl>
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Sélectionnez..." />
-                            </SelectTrigger>
+                            <Input 
+                              {...field} 
+                              placeholder="123 456 789 01234" 
+                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            />
                           </FormControl>
-                          <SelectContent>
-                            {legalForms.map((form) => (
-                              <SelectItem key={form.value} value={form.value}>
-                                {form.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="legalForm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Statut juridique *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all">
+                                <SelectValue placeholder="Votre statut..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-white/95 backdrop-blur-xl border-white/30 rounded-xl">
+                              {legalForms.map((form) => (
+                                <SelectItem key={form.value} value={form.value} className="focus:bg-violet-50">
+                                  {form.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
-                {/* Adresse */}
-                <div className="space-y-4">
-                  <h3 className="text-base font-medium text-gray-900">Adresse</h3>
+                {/* Section Adresse */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <Star className="h-5 w-5 text-violet-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Localisation</h3>
+                      <p className="text-sm text-gray-600">Où se trouve votre salon</p>
+                    </div>
+                  </div>
                   
                   <FormField
                     control={form.control}
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Adresse *</FormLabel>
+                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Adresse complète *</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="15 rue de la Paix" className="h-10" />
+                          <Input 
+                            {...field} 
+                            placeholder="15 rue de la Paix" 
+                            className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="city"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Ville *</FormLabel>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Ville *</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Paris" className="h-10" />
+                            <Input 
+                              {...field} 
+                              placeholder="Paris" 
+                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -481,9 +583,13 @@ export default function BusinessRegistration() {
                       name="postalCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">CP *</FormLabel>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Code postal *</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="75001" className="h-10" />
+                            <Input 
+                              {...field} 
+                              placeholder="75001" 
+                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -492,52 +598,31 @@ export default function BusinessRegistration() {
                   </div>
                 </div>
 
-                {/* Contact */}
-                <div className="space-y-4">
-                  <h3 className="text-base font-medium text-gray-900">Contact</h3>
+                {/* Section Contact */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <CheckCircle2 className="h-5 w-5 text-violet-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
+                      <p className="text-sm text-gray-600">Vos coordonnées</p>
+                    </div>
+                  </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Téléphone *</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="01 23 45 67 89" className="h-10" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Email *</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="email" placeholder="contact@salon.fr" className="h-10" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Responsable */}
-                <div className="space-y-4">
-                  <h3 className="text-base font-medium text-gray-900">Responsable</h3>
-                  
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="ownerFirstName"
+                      name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Prénom *</FormLabel>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Téléphone *</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Marie" className="h-10" />
+                            <Input 
+                              {...field} 
+                              placeholder="01 23 45 67 89" 
+                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -546,113 +631,84 @@ export default function BusinessRegistration() {
 
                     <FormField
                       control={form.control}
-                      name="ownerLastName"
+                      name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium text-gray-700">Nom *</FormLabel>
+                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Email professionnel *</FormLabel>
                           <FormControl>
-                            <Input {...field} placeholder="Dubois" className="h-10" />
+                            <Input 
+                              {...field} 
+                              type="email" 
+                              placeholder="contact@monsalon.fr" 
+                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-
-                  <FormField
-                    control={form.control}
-                    name="vatNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">TVA (optionnel)</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="FR12345678901" className="h-10" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
 
-                {/* Description */}
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Description (optionnel)</FormLabel>
-                        <FormControl>
-                          <Textarea 
-                            {...field} 
-                            placeholder="Décrivez votre salon..."
-                            className="min-h-[80px] resize-none"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                {/* Bouton de soumission */}
+                <motion.button
+                  type="submit"
+                  disabled={isLoading}
+                  whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                  className="w-full glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Building className="h-5 w-5" />
+                  {isLoading ? "Création en cours..." : "Créer mon espace professionnel"}
+                </motion.button>
 
-                {/* Mot de passe */}
-                <div className="space-y-4">
-                  <h3 className="text-base font-medium text-gray-900">Sécurité</h3>
-                  
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-medium text-gray-700">Mot de passe *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            type="password"
-                            placeholder="Minimum 6 caractères"
-                            className="h-10"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Bouton soumission */}
-                <div className="pt-4 border-t border-gray-100">
-                  <Button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full h-10 glass-button hover:glass-effect text-black font-medium transition-all duration-300"
-                  >
-                    {isLoading ? "Traitement..." : "Finaliser l'inscription"}
-                  </Button>
+                {/* Informations légales */}
+                <div className="text-center space-y-2 pt-4 border-t border-white/20">
+                  <p className="text-xs text-gray-600">
+                    En créant votre compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Inscription gratuite • Aucun engagement • Support 7j/7
+                  </p>
                 </div>
               </form>
             </Form>
           </div>
+        </motion.div>
+      </div>
 
-          {/* Plan sélectionné */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <h3 className="text-base font-medium text-gray-900 mb-3">Plan sélectionné</h3>
-            <div className={`p-3 rounded-lg bg-gradient-to-r ${currentPlan.color} text-white text-center`}>
-              <div className="font-semibold">{currentPlan.name}</div>
-              <div className="text-2xl font-bold">{currentPlan.price}€</div>
-              <div className="text-sm opacity-90">par mois</div>
+      {/* Section avantages supplémentaires */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center"
+        >
+          <div className="bg-white/50 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="h-6 w-6 text-violet-600" />
             </div>
-            <div className="mt-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setLocation("/professional-plans")}
-                className="w-full glass-button hover:glass-effect text-black transition-all duration-300"
-              >
-                Changer de plan
-              </Button>
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Configuration rapide</h3>
+            <p className="text-sm text-gray-600">Votre salon opérationnel en moins de 5 minutes</p>
           </div>
-        </div>
+          
+          <div className="bg-white/50 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Star className="h-6 w-6 text-violet-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Support premium</h3>
+            <p className="text-sm text-gray-600">Accompagnement personnalisé 7j/7</p>
+          </div>
+          
+          <div className="bg-white/50 backdrop-blur-md rounded-2xl p-6 border border-white/30">
+            <div className="w-12 h-12 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Sparkles className="h-6 w-6 text-violet-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">IA intégrée</h3>
+            <p className="text-sm text-gray-600">Optimisation automatique de votre planning</p>
+          </div>
+        </motion.div>
       </div>
 
       {/* Bottom Sheet de paiement business */}
