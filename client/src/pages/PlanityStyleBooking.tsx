@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function PlanityStyleBooking() {
   const [, setLocation] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -18,6 +18,10 @@ export default function PlanityStyleBooking() {
     phone: '',
     password: '',
     acceptCGU: false
+  });
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
   });
   const { toast } = useToast();
 

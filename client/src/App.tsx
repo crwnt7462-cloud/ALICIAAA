@@ -74,6 +74,7 @@ import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
 import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
+import PlanityStyleBookingFixed from "@/pages/PlanityStyleBookingFixed";
 import ProfessionalSelection from "@/pages/ProfessionalSelection";
 import BookingDateTime from "@/pages/BookingDateTime";
 import ProLogin from "@/pages/ProLogin";
@@ -803,7 +804,7 @@ function Router() {
   if (location === '/planity-booking') {
     return (
       <div className="h-full">
-        <PlanityStyleBooking />
+        <PlanityStyleBookingFixed />
       </div>
     );
   }
