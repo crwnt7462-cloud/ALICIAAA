@@ -1324,3 +1324,76 @@ export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+// Tables pour la galerie photo et albums avancée
+export const salonAlbums = pgTable("salon_albums", {
+  id: serial("id").primaryKey(),
+  salonId: varchar("salon_id").references(() => salons.id, { onDelete: "cascade" }),
+  name: varchar("name").notNull(),
+  description: text("description"),
+  coverImageUrl: varchar("cover_image_url"),
+  isPublic: boolean("is_public").default(true),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const salonPhotosAdvanced = pgTable("salon_photos_advanced", {
+  id: serial("id").primaryKey(),
+  salonId: varchar("salon_id").references(() => salons.id, { onDelete: "cascade" }),
+  albumId: integer("album_id").references(() => salonAlbums.id, { onDelete: "set null" }),
+  imageUrl: varchar("image_url").notNull(),
+  thumbnailUrl: varchar("thumbnail_url"),
+  highResUrl: varchar("high_res_url"), // URL haute résolution
+  title: varchar("title"),
+  description: text("description"),
+  tags: text("tags").array(),
+  isPublic: boolean("is_public").default(true),
+  sortOrder: integer("sort_order").default(0),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+  metadata: jsonb("metadata"), // EXIF, dimensions, etc.
+  fileSize: integer("file_size"), // Taille en bytes
+  width: integer("width"), // Largeur en pixels
+  height: integer("height"), // Hauteur en pixels
+});
+
+// Relations pour albums et photos
+export const albumRelations = relations(salonAlbums, ({ one, many }) => ({
+  salon: one(salons, {
+    fields: [salonAlbums.salonId],
+    references: [salons.id],
+  }),
+  photos: many(salonPhotosAdvanced),
+}));
+
+export const photoAdvancedRelations = relations(salonPhotosAdvanced, ({ one }) => ({
+  salon: one(salons, {
+    fields: [salonPhotosAdvanced.salonId],
+    references: [salons.id],
+  }),
+  album: one(salonAlbums, {
+    fields: [salonPhotosAdvanced.albumId],
+    references: [salonAlbums.id],
+  }),
+}));
+
+// Types pour les albums et photos avancées
+export type SalonAlbum = typeof salonAlbums.$inferSelect;
+export type NewSalonAlbum = typeof salonAlbums.$inferInsert;
+export type SalonPhotoAdvanced = typeof salonPhotosAdvanced.$inferSelect;
+export type NewSalonPhotoAdvanced = typeof salonPhotosAdvanced.$inferInsert;
+
+// Schémas de validation
+export const insertSalonAlbumSchema = createInsertSchema(salonAlbums).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertSalonPhotoAdvancedSchema = createInsertSchema(salonPhotosAdvanced).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+export type InsertSalonAlbumType = z.infer<typeof insertSalonAlbumSchema>;
+export type InsertSalonPhotoAdvancedType = z.infer<typeof insertSalonPhotoAdvancedSchema>;
