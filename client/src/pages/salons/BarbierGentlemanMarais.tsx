@@ -411,31 +411,25 @@ export default function BarbierGentlemanMarais() {
                   onClick={() => toggleCategory(category.id)}
                   className="w-full p-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
-                  <h3 className="font-semibold text-lg text-gray-900">{category.name}</h3>
-                  {category.expanded ? 
-                    <ChevronUp className="h-5 w-5 text-gray-400" /> : 
-                    <ChevronDown className="h-5 w-5 text-gray-400" />
-                  }
-                </button>
-                
-                {category.expanded && (
-                  <div className="border-t border-gray-100">
-                    {/* Description de la catégorie avec formatage */}
-                    {category.description && (
-                      <div className="p-5 border-b border-gray-100 bg-gray-50/30">
+                  <div className="text-left">
+                    <h3 className="font-semibold text-lg text-gray-900">{category.name}</h3>
+                    {/* Description affichée uniquement quand le volet est fermé */}
+                    {!category.expanded && category.description && (
+                      <div className="mt-2">
                         <div 
-                          className="text-sm text-gray-700 leading-relaxed"
+                          className="text-sm text-gray-600 leading-relaxed"
                           dangerouslySetInnerHTML={{ 
                             __html: expandedCategoryDescriptions.has(category.id) 
                               ? category.description 
-                              : category.description.length > 120 
-                                ? category.description.substring(0, 120) + '...'
+                              : category.description.length > 80 
+                                ? category.description.substring(0, 80) + '...'
                                 : category.description
                           }}
                         />
-                        {category.description.length > 120 && (
+                        {category.description.length > 80 && (
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setExpandedCategoryDescriptions(prev => {
                                 const newSet = new Set(prev);
                                 if (newSet.has(category.id)) {
@@ -446,23 +440,22 @@ export default function BarbierGentlemanMarais() {
                                 return newSet;
                               });
                             }}
-                            className="text-violet-600 text-sm font-medium hover:text-violet-700 mt-2 flex items-center gap-1"
+                            className="text-violet-600 hover:text-violet-700 text-sm font-medium mt-1 transition-colors"
                           >
-                            {expandedCategoryDescriptions.has(category.id) ? (
-                              <>
-                                <EyeOff className="h-3 w-3" />
-                                Voir moins
-                              </>
-                            ) : (
-                              <>
-                                <Eye className="h-3 w-3" />
-                                Voir plus
-                              </>
-                            )}
+                            {expandedCategoryDescriptions.has(category.id) ? 'Voir moins' : 'Voir +'}
                           </button>
                         )}
                       </div>
                     )}
+                  </div>
+                  {category.expanded ? 
+                    <ChevronUp className="h-5 w-5 text-gray-400 flex-shrink-0" /> : 
+                    <ChevronDown className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                  }
+                </button>
+                
+                {category.expanded && (
+                  <div className="border-t border-gray-100">
                     <div className="space-y-0">
                       {category.services.map((service: Service) => {
                         const { text: truncatedDescription, isTruncated } = service.description ? truncateDescription(service.description) : { text: '', isTruncated: false };
