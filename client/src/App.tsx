@@ -149,6 +149,7 @@ import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
+import BarbierCustomizer from "@/pages/BarbierCustomizer";
 import SalonBookingFlow from "@/pages/SalonBookingFlow";
 import StripeCheckout from "@/pages/StripeCheckout";
 import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
@@ -943,6 +944,7 @@ function Router() {
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />
           <Route path="/salon-page-editor" component={SalonPageEditor} />
+          <Route path="/barbier-customizer" component={BarbierCustomizer} />
           <Route path="/salon-booking" component={SalonBookingFlow} />
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />

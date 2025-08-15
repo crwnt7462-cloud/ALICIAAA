@@ -122,6 +122,7 @@ export interface IStorage {
   getSalonsByOwner(userId: string): Promise<any[]>;
   getSalonByUserId(userId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
+  updateSalonCustomColors(salonId: string, customColors: any): Promise<any>;
   
   // ✅ NOUVELLES MÉTHODES POUR LA CHECKLIST
   searchSalons?(params: { query: string; city: string; service: string; page: number }): Promise<any[]>;
@@ -829,6 +830,35 @@ export class DatabaseStorage implements IStorage {
     const updated = { ...existing, ...updateData };
     this.salons.set(salonId, updated);
     return updated;
+  }
+
+  async updateSalonCustomColors(salonId: string, customColors: any): Promise<any> {
+    try {
+      // Récupérer le salon existant
+      const existingSalon = this.salons.get(salonId);
+      if (!existingSalon) {
+        console.log('❌ Salon non trouvé:', salonId);
+        return null;
+      }
+
+      // Mettre à jour les couleurs personnalisées
+      const updatedSalon = {
+        ...existingSalon,
+        customColors: {
+          ...existingSalon.customColors,
+          ...customColors
+        }
+      };
+
+      // Sauvegarder en mémoire
+      this.salons.set(salonId, updatedSalon);
+
+      console.log('✅ Couleurs personnalisées mises à jour pour:', salonId, customColors);
+      return updatedSalon;
+    } catch (error) {
+      console.error('❌ Erreur mise à jour couleurs:', error);
+      return null;
+    }
   }
 
   // Méthodes pour gestion des photos de salon
