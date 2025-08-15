@@ -800,10 +800,10 @@ export default function PublicLanding() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <h2 className="heroSlash__title text-3xl mb-4">
-              Explorez nos <span className="light">services</span>
+              Découvrez nos <span className="light">partenaires</span>
             </h2>
             <p className="heroSlash__subtitle text-base max-w-2xl mx-auto">
-              Découvrez l'excellence dans chaque domaine de la beauté avec nos professionnels certifiés
+              Trouvez l'excellence dans chaque domaine de la beauté avec nos professionnels partenaires
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
