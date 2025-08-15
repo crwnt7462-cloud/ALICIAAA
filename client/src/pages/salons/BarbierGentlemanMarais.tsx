@@ -210,7 +210,7 @@ export default function BarbierGentlemanMarais() {
       </div>
 
       {/* Contenu des onglets - Style mobile exact */}
-      <div className="bg-white p-6 pb-32">
+      <div className="bg-white p-6 pb-6">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {displayServiceCategories.map((category: ServiceCategory) => (
