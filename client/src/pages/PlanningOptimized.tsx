@@ -1,14 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay, addWeeks, addMonths, subWeeks, subMonths, subDays } from 'date-fns';
+import { format, addDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isSameDay, addWeeks, addMonths, subWeeks, subMonths, subDays, eachDayOfInterval, getDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Users, TrendingUp, Target, Plus, ChevronLeft, ChevronRight,
-  Euro, BarChart3, Eye, CalendarDays, Calendar as CalendarIcon,
-  Filter, Download
+  Euro, Eye, CalendarDays
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -140,179 +139,218 @@ const PlanningOptimized: React.FC = () => {
     }
   };
 
-  // Rendu des icônes flottantes style Landing
+  // Rendu des icônes flottantes minimalistes
   const renderFloatingIcons = () => (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {/* Mobile - 3 emojis diffus */}
+      {/* Mobile - 2 emojis plus espacés */}
       <div className="lg:hidden">
-        <div className="absolute top-2 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/20 to-purple-300/15 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
-          <span className="text-lg opacity-60">📅</span>
+        <div className="absolute top-8 left-8 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/10 to-purple-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse">
+          <span className="text-sm opacity-40">📅</span>
         </div>
-        <div className="absolute top-6 right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/20 to-green-300/15 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-          <span className="text-lg opacity-60">⏰</span>
-        </div>
-        <div className="absolute top-12 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/20 to-cyan-300/15 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
-          <span className="text-lg opacity-60">✨</span>
+        <div className="absolute top-12 right-12 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/10 to-green-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
+          <span className="text-sm opacity-40">⏰</span>
         </div>
       </div>
       
-      {/* Desktop - 8 emojis diffus */}
+      {/* Desktop - 4 emojis bien espacés */}
       <div className="hidden lg:block">
-        <div className="absolute top-4 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/15 to-purple-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
-          <span className="text-lg opacity-40">📅</span>
+        <div className="absolute top-8 left-32 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/8 to-purple-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse">
+          <span className="text-sm opacity-30">📅</span>
         </div>
-        <div className="absolute top-8 right-24 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/15 to-rose-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-          <span className="text-lg opacity-40">⏰</span>
+        <div className="absolute top-12 right-48 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/8 to-green-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
+          <span className="text-sm opacity-30">⏰</span>
         </div>
-        <div className="absolute top-2 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/15 to-cyan-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
-          <span className="text-lg opacity-40">✨</span>
+        <div className="absolute top-16 left-2/3 w-10 h-10 rounded-full bg-gradient-to-br from-blue-200/8 to-cyan-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '4s' }}>
+          <span className="text-sm opacity-30">📊</span>
         </div>
-        <div className="absolute top-12 left-1/4 w-12 h-12 rounded-full bg-gradient-to-br from-amber-200/15 to-orange-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
-          <span className="text-lg opacity-40">📋</span>
-        </div>
-        <div className="absolute top-6 right-1/4 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/15 to-green-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-12" style={{ animationDelay: '1.5s' }}>
-          <span className="text-lg opacity-40">🎯</span>
-        </div>
-        <div className="absolute top-10 right-12 w-12 h-12 rounded-full bg-gradient-to-br from-teal-200/15 to-cyan-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-6" style={{ animationDelay: '3s', animationDuration: '5s' }}>
-          <span className="text-lg opacity-40">📊</span>
-        </div>
-        <div className="absolute top-1 left-2/3 w-12 h-12 rounded-full bg-gradient-to-br from-indigo-200/15 to-purple-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-3" style={{ animationDelay: '2.5s' }}>
-          <span className="text-lg opacity-40">🔔</span>
-        </div>
-        <div className="absolute top-14 right-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-rose-200/15 to-pink-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-18" style={{ animationDelay: '4s', animationDuration: '6s' }}>
-          <span className="text-lg opacity-40">💼</span>
+        <div className="absolute top-6 right-1/3 w-10 h-10 rounded-full bg-gradient-to-br from-amber-200/8 to-orange-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '6s' }}>
+          <span className="text-sm opacity-30">🎯</span>
         </div>
       </div>
     </div>
   );
 
-  // Rendu des KPIs style Landing
+  // Rendu des KPIs minimalistes
   const renderAnalytics = () => (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="space-y-6"
-    >
-      <h2 className="text-xl font-bold text-gray-900 text-center lg:text-left">
-        Chiffre d'Affaires - Aujourd'hui
-      </h2>
-      
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-        {/* CA Jour */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
+      className="space-y-4"
+    >      
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* CA selon vue actuelle */}
+        <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
-            </div>
-            <div className="text-sm text-gray-500 mb-1">CA Jour</div>
-            <div className="text-lg font-bold text-gray-900">
-              {analytics.daily.revenue}€
+            <div className="text-xs text-gray-500 mb-1">CA {viewMode === 'day' ? 'Jour' : viewMode === 'week' ? 'Semaine' : 'Mois'}</div>
+            <div className="text-xl font-bold text-gray-900">
+              {viewMode === 'day' ? analytics.daily.revenue : viewMode === 'week' ? analytics.weekly.revenue : analytics.monthly.revenue}€
             </div>
             <div className="text-xs text-gray-400">
-              {analytics.daily.appointments} RDV
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CA Semaine */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-          <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <CalendarDays className="w-5 h-5 text-green-600" />
-            </div>
-            <div className="text-sm text-gray-500 mb-1">CA Semaine</div>
-            <div className="text-lg font-bold text-gray-900">
-              {analytics.weekly.revenue}€
-            </div>
-            <div className="text-xs text-gray-400">
-              {analytics.weekly.appointments} RDV
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* CA Mois */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-          <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <CalendarIcon className="w-5 h-5 text-orange-600" />
-            </div>
-            <div className="text-sm text-gray-500 mb-1">CA Mois</div>
-            <div className="text-lg font-bold text-gray-900">
-              {analytics.monthly.revenue}€
-            </div>
-            <div className="text-xs text-gray-400">
-              {analytics.monthly.appointments} RDV
+              {viewMode === 'day' ? analytics.daily.appointments : viewMode === 'week' ? analytics.weekly.appointments : analytics.monthly.appointments} RDV
             </div>
           </CardContent>
         </Card>
 
         {/* Ticket Moyen */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
+        <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Euro className="w-5 h-5 text-pink-600" />
-            </div>
-            <div className="text-sm text-gray-500 mb-1">Ticket Moyen</div>
-            <div className="text-lg font-bold text-gray-900">
+            <div className="text-xs text-gray-500 mb-1">Ticket Moyen</div>
+            <div className="text-xl font-bold text-gray-900">
               {Math.round(analytics.avgTicket)}€
             </div>
             <div className="text-xs text-green-600">
-              +12% vs hier
+              +12%
             </div>
           </CardContent>
         </Card>
 
-        {/* Objectif Jour */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
+        {/* Objectif */}
+        <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-violet-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Target className="w-5 h-5 text-violet-600" />
-            </div>
-            <div className="text-sm text-gray-500 mb-1">Objectif Jour</div>
-            <div className="text-lg font-bold text-gray-900">
-              {analytics.objectives.daily}€
+            <div className="text-xs text-gray-500 mb-1">Objectif</div>
+            <div className="text-xl font-bold text-gray-900">
+              {viewMode === 'day' ? analytics.objectives.daily : viewMode === 'week' ? analytics.objectives.weekly : analytics.objectives.monthly}€
             </div>
             <div className="text-xs text-blue-600">
-              {Math.round((analytics.daily.revenue / analytics.objectives.daily) * 100)}% atteint
+              {Math.round(((viewMode === 'day' ? analytics.daily.revenue : viewMode === 'week' ? analytics.weekly.revenue : analytics.monthly.revenue) / (viewMode === 'day' ? analytics.objectives.daily : viewMode === 'week' ? analytics.objectives.weekly : analytics.objectives.monthly)) * 100)}%
             </div>
           </CardContent>
         </Card>
 
-        {/* Bouton Vue Avancée */}
-        <Card className="border-0 shadow-md bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer">
-          <CardContent className="p-4 text-center h-full flex flex-col justify-center">
-            <BarChart3 className="w-6 h-6 text-white mx-auto mb-2" />
-            <div className="text-sm font-semibold text-white">
-              Vue Avancée
-            </div>
-          </CardContent>
-        </Card>
+        {/* Nouveau RDV */}
+        <Button className="h-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600 rounded-xl">
+          <Plus className="w-4 h-4 mr-2" />
+          Nouveau
+        </Button>
       </div>
     </motion.div>
   );
 
+  // Vue semaine calendrier
+  const renderWeekView = () => {
+    const weekStart = startOfWeek(selectedDate, { locale: fr });
+    const weekDays = eachDayOfInterval({
+      start: weekStart,
+      end: endOfWeek(selectedDate, { locale: fr })
+    });
+
+    return (
+      <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
+        <CardContent className="p-6">
+          <div className="grid grid-cols-8 gap-2">
+            {/* Header horaires */}
+            <div className="text-center text-sm font-medium text-gray-500 py-2">Horaires</div>
+            
+            {/* Headers jours */}
+            {weekDays.map(day => (
+              <div key={day.toISOString()} className="text-center py-2">
+                <div className="text-sm font-medium text-gray-900">
+                  {format(day, 'EEE', { locale: fr })}
+                </div>
+                <div className="text-xs text-gray-500">
+                  {format(day, 'd')}
+                </div>
+              </div>
+            ))}
+            
+            {/* Grille horaires */}
+            {timeSlots.slice(2, 18).map(time => (
+              <React.Fragment key={time}>
+                <div className="text-xs text-gray-500 py-2 text-center">{time}</div>
+                {weekDays.map(day => (
+                  <div key={`${day.toISOString()}-${time}`} className="h-12 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
+                    <Plus className="w-3 h-3 text-gray-400" />
+                  </div>
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Vue mois calendrier
+  const renderMonthView = () => {
+    const monthStart = startOfMonth(selectedDate);
+    const monthEnd = endOfMonth(selectedDate);
+    const calendarStart = startOfWeek(monthStart, { locale: fr });
+    const calendarEnd = endOfWeek(monthEnd, { locale: fr });
+    const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+
+    return (
+      <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
+        <CardContent className="p-6">
+          {/* Header jours de la semaine */}
+          <div className="grid grid-cols-7 gap-2 mb-4">
+            {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(day => (
+              <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+                {day}
+              </div>
+            ))}
+          </div>
+          
+          {/* Grille du calendrier */}
+          <div className="grid grid-cols-7 gap-2">
+            {calendarDays.map(day => {
+              const isCurrentMonth = day.getMonth() === selectedDate.getMonth();
+              const isToday = isSameDay(day, new Date());
+              
+              return (
+                <div
+                  key={day.toISOString()}
+                  className={`h-20 rounded-lg border-2 border-dashed p-2 cursor-pointer transition-colors ${
+                    isCurrentMonth 
+                      ? 'border-gray-200 bg-gray-50 hover:bg-gray-100' 
+                      : 'border-gray-100 bg-gray-25'
+                  } ${
+                    isToday 
+                      ? 'border-purple-300 bg-purple-50' 
+                      : ''
+                  }`}
+                >
+                  <div className={`text-sm ${
+                    isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
+                  } ${
+                    isToday ? 'font-bold text-purple-600' : ''
+                  }`}>
+                    {format(day, 'd')}
+                  </div>
+                  <div className="mt-1 space-y-1">
+                    {/* Ici on pourrait afficher les RDV du jour */}
+                    <div className="w-full h-1 bg-purple-200 rounded"></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   // Vue jour par employé
   const renderStaffDayView = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
       {staffMembers.map(staff => (
-        <Card key={staff.id} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+        <Card key={staff.id} className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4">
             <div className="flex items-center gap-3 mb-4">
               <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold"
                 style={{ backgroundColor: staff.color }}
               >
                 {staff.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
-                <div className="font-semibold text-gray-900">{staff.name}</div>
-                <div className="text-sm text-gray-500">{staff.role}</div>
+                <div className="font-medium text-gray-900 text-sm">{staff.name}</div>
+                <div className="text-xs text-gray-500">{staff.role}</div>
               </div>
             </div>
             
-            <div className="space-y-2">
-              {timeSlots.slice(2, 20).map(time => {
+            <div className="space-y-1">
+              {timeSlots.slice(2, 18).map(time => {
                 const staffAppointments = appointments.filter((apt: Appointment) => 
                   apt.staffId === staff.id && 
                   apt.startTime === time &&
@@ -321,21 +359,20 @@ const PlanningOptimized: React.FC = () => {
                 
                 return (
                   <div key={time} className="flex items-center gap-2 py-1">
-                    <div className="text-xs text-gray-500 w-12">{time}</div>
+                    <div className="text-xs text-gray-500 w-10">{time}</div>
                     <div className="flex-1">
                       {staffAppointments.length > 0 ? (
                         staffAppointments.map((apt: Appointment) => (
                           <div
                             key={apt.id}
-                            className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg p-2 text-xs"
+                            className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-1 text-xs"
                           >
-                            <div className="font-semibold">{apt.clientName}</div>
-                            <div className="text-gray-600">{apt.serviceName}</div>
-                            <div className="text-purple-600 font-medium">{apt.price}€</div>
+                            <div className="font-medium">{apt.clientName}</div>
+                            <div className="text-gray-600 truncate">{apt.serviceName}</div>
                           </div>
                         ))
                       ) : (
-                        <div className="h-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 flex items-center justify-center">
+                        <div className="h-6 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                           <Plus className="w-3 h-3 text-gray-400" />
                         </div>
                       )}
@@ -350,36 +387,37 @@ const PlanningOptimized: React.FC = () => {
     </div>
   );
 
-  // Vue d'ensemble
-  const renderOverviewView = () => (
-    <div className="space-y-6">
-      {/* Planning principal */}
-      <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+  // Vue d'ensemble selon le mode
+  const renderOverviewView = () => {
+    if (viewMode === 'week') return renderWeekView();
+    if (viewMode === 'month') return renderMonthView();
+    
+    // Vue jour d'ensemble
+    return (
+      <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
         <CardContent className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
             {/* Colonne horaires */}
             <div className="lg:col-span-1">
-              <div className="space-y-4">
-                <div className="text-sm font-semibold text-gray-500 mb-4">Horaires</div>
-                {timeSlots.slice(2, 20).map(time => (
-                  <div key={time} className="text-sm text-gray-600 py-2">
-                    {time}
-                  </div>
-                ))}
-              </div>
+              <div className="text-sm font-medium text-gray-500 mb-4 text-center">Horaires</div>
+              {timeSlots.slice(2, 18).map(time => (
+                <div key={time} className="text-sm text-gray-600 py-2 text-center">
+                  {time}
+                </div>
+              ))}
             </div>
             
             {/* Colonnes employés */}
             {staffMembers.map(staff => (
               <div key={staff.id} className="lg:col-span-1">
                 <div 
-                  className="text-sm font-semibold text-white p-3 rounded-lg mb-4 text-center"
+                  className="text-sm font-medium text-white p-2 rounded-lg mb-4 text-center"
                   style={{ backgroundColor: staff.color }}
                 >
-                  {staff.name}
+                  {staff.name.split(' ')[0]}
                 </div>
-                <div className="space-y-4">
-                  {timeSlots.slice(2, 20).map(time => {
+                <div className="space-y-2">
+                  {timeSlots.slice(2, 18).map(time => {
                     const staffAppointments = appointments.filter((apt: Appointment) => 
                       apt.staffId === staff.id && 
                       apt.startTime === time &&
@@ -392,14 +430,13 @@ const PlanningOptimized: React.FC = () => {
                           staffAppointments.map((apt: Appointment) => (
                             <div
                               key={apt.id}
-                              className="bg-gradient-to-r from-purple-100 to-pink-100 rounded-md p-1 text-xs h-full flex flex-col justify-center"
+                              className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-1 text-xs h-full flex flex-col justify-center"
                             >
                               <div className="font-medium truncate">{apt.clientName}</div>
-                              <div className="text-gray-600 truncate">{apt.serviceName}</div>
                             </div>
                           ))
                         ) : (
-                          <div className="h-full bg-gray-50 rounded-md border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
+                          <div className="h-full bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
                             <Plus className="w-3 h-3 text-gray-400" />
                           </div>
                         )}
@@ -412,8 +449,8 @@ const PlanningOptimized: React.FC = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    );
+  };
 
   if (isLoading) {
     return (
@@ -467,21 +504,26 @@ const PlanningOptimized: React.FC = () => {
           className="space-y-4"
         >
           {/* Navigation de date */}
-          <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between lg:justify-start lg:space-x-8 lg:max-w-none">
+              <div className="flex items-center justify-between">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => navigateDate('prev')}
-                  className="h-10 w-10 p-0 bg-white/50 border-gray-200"
+                  className="h-8 w-8 p-0 bg-white/50 border-gray-200"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
                 
                 <div className="text-center">
-                  <div className="font-semibold text-gray-900">
-                    {format(selectedDate, 'EEEE d MMMM', { locale: fr })}
+                  <div className="font-medium text-gray-900">
+                    {viewMode === 'day' 
+                      ? format(selectedDate, 'EEEE d MMMM', { locale: fr })
+                      : viewMode === 'week'
+                      ? `Semaine du ${format(startOfWeek(selectedDate, { locale: fr }), 'd MMM', { locale: fr })}`
+                      : format(selectedDate, 'MMMM yyyy', { locale: fr })
+                    }
                   </div>
                   <div className="text-sm text-gray-500">
                     {appointments.length} rendez-vous
@@ -492,7 +534,7 @@ const PlanningOptimized: React.FC = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => navigateDate('next')}
-                  className="h-10 w-10 p-0 bg-white/50 border-gray-200"
+                  className="h-8 w-8 p-0 bg-white/50 border-gray-200"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -501,16 +543,16 @@ const PlanningOptimized: React.FC = () => {
           </Card>
 
           {/* Contrôles de vue */}
-          <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+          <div className="flex gap-3">
             {/* Mode de vue */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+            <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl overflow-hidden">
               <CardContent className="p-0">
-                <div className="grid grid-cols-3">
+                <div className="flex">
                   {(['day', 'week', 'month'] as const).map((mode) => (
                     <Button
                       key={mode}
                       variant={viewMode === mode ? 'default' : 'ghost'}
-                      className={`rounded-none h-12 text-xs font-medium ${
+                      className={`rounded-none h-10 text-sm font-medium px-4 ${
                         viewMode === mode
                           ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
                           : 'text-gray-600 hover:text-gray-900'
@@ -524,72 +566,39 @@ const PlanningOptimized: React.FC = () => {
               </CardContent>
             </Card>
 
-            {/* Type de vue */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-0">
-                <div className="grid grid-cols-2">
-                  <Button
-                    variant={viewType === 'overview' ? 'default' : 'ghost'}
-                    className={`rounded-none h-12 text-xs font-medium ${
-                      viewType === 'overview'
-                        ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                    onClick={() => setViewType('overview')}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Vue d'ensemble
-                  </Button>
-                  <Button
-                    variant={viewType === 'staff' ? 'default' : 'ghost'}
-                    className={`rounded-none h-12 text-xs font-medium ${
-                      viewType === 'staff'
-                        ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                    onClick={() => setViewType('staff')}
-                  >
-                    <Users className="w-4 h-4 mr-1" />
-                    Par employé
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Filtre employé */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-              <CardContent className="p-2">
-                <Select value={selectedStaff} onValueChange={setSelectedStaff}>
-                  <SelectTrigger className="h-8 border-0 bg-transparent">
-                    <SelectValue placeholder="Employé" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous les employés</SelectItem>
-                    {staffMembers.map(staff => (
-                      <SelectItem key={staff.id} value={staff.id}>
-                        {staff.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-
-            {/* Actions rapides */}
-            <Button className="h-12 bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600">
-              <Plus className="w-4 h-4 mr-2" />
-              Nouveau RDV
-            </Button>
-
-            <Button variant="outline" className="h-12 bg-white/50 border-gray-200">
-              <Filter className="w-4 h-4 mr-2" />
-              Filtres
-            </Button>
-
-            <Button variant="outline" className="h-12 bg-white/50 border-gray-200">
-              <Download className="w-4 h-4 mr-2" />
-              Export
-            </Button>
+            {/* Type de vue pour jour seulement */}
+            {viewMode === 'day' && (
+              <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm rounded-xl overflow-hidden">
+                <CardContent className="p-0">
+                  <div className="flex">
+                    <Button
+                      variant={viewType === 'overview' ? 'default' : 'ghost'}
+                      className={`rounded-none h-10 text-sm font-medium px-4 ${
+                        viewType === 'overview'
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                      onClick={() => setViewType('overview')}
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      Vue d'ensemble
+                    </Button>
+                    <Button
+                      variant={viewType === 'staff' ? 'default' : 'ghost'}
+                      className={`rounded-none h-10 text-sm font-medium px-4 ${
+                        viewType === 'staff'
+                          ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                      onClick={() => setViewType('staff')}
+                    >
+                      <Users className="w-4 h-4 mr-1" />
+                      Par employé
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </motion.div>
 
