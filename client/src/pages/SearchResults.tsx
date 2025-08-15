@@ -472,41 +472,57 @@ export default function SearchResults() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               onClick={() => setLocation('/salon-page-editor')}
-              className="neon-button text-white rounded-xl px-6 py-3 font-semibold"
+              className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
             >
               ✏️ Ouvrir l'éditeur
             </Button>
             <Button
               onClick={() => refetchSalons()}
-              className="glass-button px-6 py-3 rounded-xl"
+              className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
             >
               🔄 Actualiser
             </Button>
           </div>
         </div>
 
-        {/* Barre de recherche style PublicLanding */}
-        <div className="heroSlash__search heroSlash__search--double mb-8">
-          <div className="field">
-            <input 
-              value={searchQuery} 
-              placeholder={servicePlaceholder || "Service"} 
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-gray-800"
-            />
+        {/* Barre de recherche optimisée desktop avec grille 3 colonnes */}
+        <div className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 lg:gap-3 max-w-5xl mx-auto">
+            {/* Service - Mobile : 1 ligne, Desktop : 4 colonnes */}
+            <div className="lg:col-span-4">
+              <div className="field">
+                <input 
+                  value={searchQuery} 
+                  placeholder={servicePlaceholder || "Coiffure, manucure, barbier..."} 
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className="icon">
+                  <Search />
+                </div>
+              </div>
+            </div>
+            
+            {/* Ville - Mobile : 1 ligne, Desktop : 4 colonnes */}
+            <div className="lg:col-span-4">
+              <div className="field">
+                <input 
+                  value={searchLocation} 
+                  placeholder={locationPlaceholder || "Paris, Lyon, Marseille..."} 
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                />
+                <div className="icon location">
+                  <MapPin />
+                </div>
+              </div>
+            </div>
+            
+            {/* Bouton - Mobile : 1 ligne, Desktop : 2 colonnes */}
+            <div className="lg:col-span-2">
+              <button onClick={handleSearch} className="heroSlash__cta w-full">
+                Rechercher
+              </button>
+            </div>
           </div>
-          <div className="field">
-            <input 
-              value={searchLocation} 
-              placeholder={locationPlaceholder || "Ville"} 
-              onChange={(e) => setSearchLocation(e.target.value)}
-              className="text-gray-800"
-            />
-          </div>
-          <button onClick={handleSearch} className="cta-button">
-            <Search className="h-5 w-5 mr-2" />
-            Rechercher
-          </button>
         </div>
 
         {/* Filtres par catégorie style iOS */}
@@ -517,7 +533,7 @@ export default function SearchResults() {
               variant="ghost"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className="glass-button px-4 py-2 rounded-xl"
+              className="glass-button text-black px-4 py-2 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
             >
               <SlidersHorizontal className="h-4 w-4 mr-1" />
               {showFilters ? 'Masquer' : 'Plus'}
@@ -530,10 +546,10 @@ export default function SearchResults() {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  className={`px-4 py-3 rounded-2xl text-sm font-medium shadow-xl hover:shadow-2xl transition-all duration-300 ${
                     selectedCategory === category.id
-                      ? 'neon-button text-white'
-                      : 'ios-card text-gray-800 hover:bg-white/90'
+                      ? 'glass-button bg-violet-100 text-violet-800 border-2 border-violet-300'
+                      : 'glass-button text-black hover:bg-white/90'
                   }`}
                 >
                   {category.name}
@@ -581,13 +597,13 @@ export default function SearchResults() {
                         />
                         <div className="absolute top-3 right-3 flex gap-2">
                           {salon.verified && (
-                            <Badge className="glass-button bg-green-100 text-green-800 text-xs">
-                              Vérifié
+                            <Badge className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-green-400 text-white rounded-lg shadow-md border-2 border-white">
+                              ✓ Vérifié
                             </Badge>
                           )}
                           {salon.popular && (
-                            <Badge className="glass-button bg-orange-100 text-orange-800 text-xs">
-                              Populaire
+                            <Badge className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-orange-400 text-white rounded-lg shadow-md border-2 border-white">
+                              🔥 Populaire
                             </Badge>
                           )}
                         </div>
