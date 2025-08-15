@@ -122,14 +122,16 @@ export default function PlanityStyleBookingFixed() {
       });
 
       const data = await response.json();
+      console.log('Réponse paiement:', data);
       
-      if (data.client_secret) {
-        setClientSecret(data.client_secret);
+      if (data.clientSecret || data.client_secret) {
+        setClientSecret(data.clientSecret || data.client_secret);
         setShowPaymentModal(true);
       } else {
+        console.error('Erreur données paiement:', data);
         toast({
           title: "Erreur",
-          description: "Impossible de créer le paiement",
+          description: data.message || data.error || "Impossible de créer le paiement",
           variant: "destructive"
         });
       }
