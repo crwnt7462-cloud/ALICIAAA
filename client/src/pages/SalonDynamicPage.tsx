@@ -12,18 +12,20 @@ export default function SalonDynamicPage() {
   // Données par défaut si aucun salon trouvé
   const defaultData = getDefaultSalonData('Salon Dynamique', salonSlug);
   
-  // Utiliser les données du salon ou les données par défaut
-  const finalSalonData = salonData || {
-    ...defaultData.salonData,
-    name: 'Salon Personnalisé',
-    description: 'Salon de beauté professionnel',
-    address: 'Adresse du salon',
-    phone: 'Téléphone du salon',
-  };
-
-  const finalServices = services.length > 0 ? services : defaultData.services;
-  const finalStaff = staff.length > 0 ? staff : defaultData.staff;
-  const finalReviews = reviews.length > 0 ? reviews : defaultData.reviews;
+  // ✅ PRIORITÉ AUX DONNÉES RÉELLES avec customColors
+  console.log('🔍 SalonDynamicPage - Services reçus:', services.length);
+  console.log('🎨 SalonDynamicPage - CustomColors:', salonData?.customColors);
+  
+  // Utiliser prioritairement les vraies données du salon
+  const finalSalonData = salonData || defaultData.salonData;
+  const finalServices = services.length > 0 ? services : [];
+  const finalStaff = staff.length > 0 ? staff : [];  
+  const finalReviews = reviews.length > 0 ? reviews : [];
+  
+  // Si pas de services, afficher un message informatif
+  if (services.length === 0 && salonData) {
+    console.log('⚠️ Aucun service trouvé pour le salon:', salonData.name);
+  }
 
   if (loading) {
     return (

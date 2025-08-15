@@ -237,6 +237,38 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   storage.salons.set('demo-user', demoSalonData);
   console.log('🎯 SALON DÉMO RECRÉÉ avec customColors:', demoSalonData.customColors);
   
+  // ✅ ROUTE SYNCHRONISATION CUSTOMCOLORS GLOBALE
+  app.get('/api/salon/:salonSlug/custom-colors', async (req: any, res) => {
+    const { salonSlug } = req.params;
+    
+    try {
+      // Chercher le salon en mémoire d'abord
+      let salon = storage.salons?.get(salonSlug);
+      
+      if (!salon) {
+        // Fallback PostgreSQL
+        salon = await storage.getSalon(salonSlug);
+      }
+      
+      if (salon && salon.customColors) {
+        console.log('🎨 CustomColors synchronisées pour:', salonSlug, salon.customColors);
+        res.json({
+          success: true,
+          customColors: salon.customColors,
+          salonName: salon.name
+        });
+      } else {
+        res.json({
+          success: false,
+          customColors: null
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur sync customColors:', error);
+      res.status(500).json({ success: false, error: 'Erreur serveur' });
+    }
+  });
+
   // ============= ROUTES PRIORITAIRES SALON & SUBSCRIPTION =============
   
   // ============= ROUTES PROFESSIONAL SETTINGS - SAUVEGARDE PERSISTANTE =============

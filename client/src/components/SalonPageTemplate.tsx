@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useCustomColors } from '@/hooks/useCustomColors';
 import { 
   MapPin, 
   Phone, 
@@ -114,18 +115,39 @@ export function SalonPageTemplate({
   const [expandedCategoryDescriptions, setExpandedCategoryDescriptions] = useState<Set<number>>(new Set());
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
-  // Appliquer les couleurs personnalisées du salon
-  const customColors = salonData.customColors;
+  // ✅ Hook pour synchroniser les couleurs sur toutes les interfaces
+  const { customColors: hookColors } = useCustomColors(salonData.slug);
   
-  // Style dynamique pour les couleurs personnalisées
-  const customStyle = customColors ? {
-    '--salon-primary': customColors.primary,
-    '--salon-accent': customColors.accent,
-    '--salon-button-text': customColors.buttonText,
-    '--salon-price-color': customColors.priceColor,
-    '--salon-neon-frame': customColors.neonFrame,
-    '--salon-intensity': customColors.intensity / 100
-  } as React.CSSProperties : {};
+  // Priorité aux couleurs du salonData, fallback sur le hook
+  const customColors = salonData.customColors || hookColors;
+  
+  console.log('🎨 SalonPageTemplate - CustomColors appliquées:', customColors);
+  
+  // Appliquer les variables CSS dynamiquement
+  useEffect(() => {
+    if (customColors) {
+      const root = document.documentElement;
+      root.style.setProperty('--salon-primary', customColors.primary);
+      root.style.setProperty('--salon-accent', customColors.accent);
+      root.style.setProperty('--salon-button-text', customColors.buttonText);
+      root.style.setProperty('--salon-price-color', customColors.priceColor);
+      root.style.setProperty('--salon-neon-frame', customColors.neonFrame);
+      root.style.setProperty('--salon-intensity', (customColors.intensity / 100).toString());
+      
+      console.log('✅ Variables CSS salon appliquées globally');
+    }
+    
+    return () => {
+      // Cleanup au démontage
+      const root = document.documentElement;
+      root.style.removeProperty('--salon-primary');
+      root.style.removeProperty('--salon-accent');
+      root.style.removeProperty('--salon-button-text');
+      root.style.removeProperty('--salon-price-color');
+      root.style.removeProperty('--salon-neon-frame');
+      root.style.removeProperty('--salon-intensity');
+    };
+  }, [customColors]);
 
   // Grouper les services par catégorie avec descriptions
   const servicesByCategory = services.reduce((acc, service) => {

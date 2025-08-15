@@ -999,7 +999,44 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+    
+    /* ✅ VARIABLES COULEURS SALON PERSONNALISÉES */
+    --salon-primary: #cf079a;
+    --salon-accent: #171519;
+    --salon-button-text: #ffffff;
+    --salon-price-color: #7c3aed;
+    --salon-neon-frame: #a855f7;
+    --salon-intensity: 0.59;
   }
+
+/* ✅ STYLES CUSTOMISÉS SALON AVEC VARIABLES DYNAMIQUES */
+.salon-custom-button {
+  background: var(--salon-primary);
+  color: var(--salon-button-text);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.salon-custom-button:hover {
+  background: var(--salon-primary);
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.salon-custom-price {
+  color: var(--salon-price-color);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.salon-neon-border {
+  border: 2px solid var(--salon-neon-frame);
+  box-shadow: 0 0 10px rgba(168, 85, 247, var(--salon-intensity));
+}
 
   .dark {
     --background: 222.2 84% 4.9%;
