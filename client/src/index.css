@@ -773,6 +773,52 @@
   animation: click-bounce 0.3s ease-in-out;
 }
 
+/* SALON PAGE STYLES - Navigation par onglets responsive */
+.salon-tab-navigation {
+  @apply flex overflow-x-auto scrollbar-hide;
+  width: 100%;
+}
+
+.salon-tab-button {
+  @apply flex-shrink-0 min-w-max text-center border-b-2 border-transparent transition-all duration-200;
+  flex: 1 1 0%;
+  min-width: 20%;
+}
+
+.salon-tab-icon {
+  @apply flex-shrink-0;
+}
+
+.salon-tab-label {
+  @apply whitespace-nowrap overflow-hidden text-ellipsis;
+}
+
+/* Responsive breakpoints pour les onglets */
+@media (max-width: 640px) {
+  .salon-tab-button {
+    @apply text-xs px-1 py-2 gap-1;
+  }
+  
+  .salon-tab-icon {
+    @apply h-3 w-3;
+  }
+  
+  .salon-tab-label {
+    @apply text-xs truncate;
+    max-width: 60px;
+  }
+}
+
+@media (min-width: 641px) {
+  .salon-tab-button {
+    @apply text-sm px-4 py-3 gap-2;
+  }
+  
+  .salon-tab-icon {
+    @apply h-4 w-4;
+  }
+}
+
 /* Styles pour le carrousel horizontal de photos */
 .scrollbar-hide {
   -ms-overflow-style: none;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   MapPin, 
   Phone, 
@@ -101,6 +101,7 @@ export function SalonPageTemplate({
   const [activeTab, setActiveTab] = useState('services');
   const [isFavorite, setIsFavorite] = useState(false);
   const [expandedCategoryDescriptions, setExpandedCategoryDescriptions] = useState<Set<number>>(new Set());
+  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
   // Grouper les services par catégorie avec descriptions
   const servicesByCategory = services.reduce((acc, service) => {
@@ -112,13 +113,14 @@ export function SalonPageTemplate({
   }, {} as Record<string, SalonService[]>);
 
   // Créer les catégories de services avec descriptions
-  const displayServiceCategories: ServiceCategory[] = Object.entries(servicesByCategory).map(([categoryName, categoryServices], index) => ({
-    id: index + 1,
-    name: categoryName,
-    description: getCategoryDescription(categoryName),
-    services: categoryServices,
-    expanded: false,
-  }));
+  const displayServiceCategories: ServiceCategory[] = useMemo(() => 
+    Object.entries(servicesByCategory).map(([categoryName, categoryServices], index) => ({
+      id: index + 1,
+      name: categoryName,
+      description: getCategoryDescription(categoryName),
+      services: categoryServices,
+      expanded: expandedCategories.has(index + 1),
+    })), [servicesByCategory, expandedCategories]);
 
   // Fonction pour obtenir les descriptions de catégories avec formatage HTML
   function getCategoryDescription(categoryName: string): string | undefined {
@@ -132,12 +134,12 @@ export function SalonPageTemplate({
   }
 
   const toggleCategory = (categoryId: number) => {
-    displayServiceCategories.forEach(cat => {
-      if (cat.id === categoryId) {
-        cat.expanded = !cat.expanded;
-      } else {
-        cat.expanded = false;
+    setExpandedCategories(prev => {
+      const newSet = new Set();
+      if (!prev.has(categoryId)) {
+        newSet.add(categoryId);
       }
+      return newSet;
     });
   };
 
