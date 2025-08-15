@@ -276,12 +276,12 @@ export default function SearchResults() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center pt-4"
+          className="flex justify-center pt-2 pb-4"
         >
           <img 
             src={avyentoLogo} 
             alt="Avyento" 
-            className="h-12 w-auto object-contain"
+            className="h-20 w-auto object-contain"
           />
         </motion.div>
 
