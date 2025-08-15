@@ -297,7 +297,7 @@ export default function PublicLanding() {
     },
     {
       question: "Puis-je annuler ou modifier mon rendez-vous ?",
-      answer: "Oui, vous pouvez annuler ou modifier votre rendez-vous jusqu'à 2h avant l'heure prévue directement depuis l'application ou en contactant le salon."
+      answer: "Les annulations et modifications sont possibles selon les politiques de réservation de chaque salon partenaire. La plupart permettent les changements jusqu'à quelques heures avant le rendez-vous. Consultez les conditions spécifiques lors de votre réservation."
     },
     {
       question: "Les salons sont-ils vérifiés ?",
@@ -1231,9 +1231,9 @@ export default function PublicLanding() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
-              className="heroSlash__title text-3xl mb-4"
+              className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
             >
-              Tout ce que vous devez <span className="light">savoir</span>
+              Questions <span className="text-violet-600">fréquentes</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
