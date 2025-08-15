@@ -29,8 +29,29 @@ export default function SearchResults() {
   const [isServiceDeleting, setIsServiceDeleting] = useState(false);
   const [isLocationDeleting, setIsLocationDeleting] = useState(false);
 
-  const services = ["Coiffure", "Manucure", "Massage", "Esthétique", "Barbier", "Extensions"];
-  const locations = ["Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Bordeaux"];
+  const services = [
+    "Coiffure",
+    "Massage", 
+    "Manucure",
+    "Esthétique",
+    "Barbier",
+    "Extensions",
+    "Épilation",
+    "Soins visage"
+  ];
+  
+  const locations = [
+    "Paris",
+    "Lyon", 
+    "Marseille",
+    "Toulouse",
+    "Nice",
+    "Nantes",
+    "Bordeaux",
+    "Lille",
+    "Rennes",
+    "Strasbourg"
+  ];
 
   // Extract search params from URL
   useEffect(() => {
@@ -41,13 +62,13 @@ export default function SearchResults() {
     setSearchLocation(location);
   }, []);
 
-  // Animation typewriter pour les services
+  // Animation pour les services (EXACTEMENT comme PublicLanding)
   useEffect(() => {
     const currentService = services[serviceIndex];
     if (!currentService) return;
     
-    const typeSpeed = isServiceDeleting ? 50 : 100;
-    const pauseTime = isServiceDeleting ? 500 : 2000;
+    const typeSpeed = isServiceDeleting ? 60 : 120;
+    const pauseTime = isServiceDeleting ? 600 : 2500;
 
     const timeout = setTimeout(() => {
       if (!isServiceDeleting && serviceCharIndex < currentService.length) {
@@ -67,7 +88,7 @@ export default function SearchResults() {
     return () => clearTimeout(timeout);
   }, [servicePlaceholder, serviceCharIndex, serviceIndex, isServiceDeleting, services]);
 
-  // Animation typewriter pour les locations
+  // Animation pour les villes (EXACTEMENT comme PublicLanding)
   useEffect(() => {
     const currentLocation = locations[locationIndex];
     if (!currentLocation) return;
@@ -324,13 +345,13 @@ export default function SearchResults() {
             </Button>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="grid grid-cols-3 gap-2">
             {categories.map((category) => {
               return (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     selectedCategory === category.id
                       ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg'
                       : 'bg-white/80 text-gray-700 hover:bg-white/90 border border-gray-200/50'
