@@ -9,6 +9,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Header } from "@/components/Header";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import Landing from "@/pages/Landing";
+import HomeDesktop from "@/pages/HomeDesktop";
 import PublicLanding from "@/pages/PublicLanding";
 import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
@@ -376,11 +377,11 @@ function Router() {
     return <div className="h-full"><ClientParametres /></div>;
   }
 
-  // Page d'accueil publique (sans header/nav mobile)
+  // Page d'accueil desktop (sans header/nav mobile)
   if (location === '/' || location === '/home') {
     return (
       <div className="h-full">
-        <PublicLanding />
+        <HomeDesktop />
       </div>
     );
   }
@@ -896,7 +897,7 @@ function Router() {
           <Route path="/services/esthetique" component={ServiceEsthetique} />
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
-          <Route path="/pro" component={Landing} />
+          <Route path="/pro" component={HomeDesktop} />
           <Route path="/pro-pages" component={ProPagesManager} />
           <Route path="/salon-settings" component={SalonSettingsModern} />
           <Route path="/booking-customization" component={BookingCustomization} />
