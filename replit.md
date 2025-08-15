@@ -4,7 +4,6 @@
 Cette plateforme web vise à révolutionner la gestion des salons et instituts de beauté en offrant une solution complète et intuitive. Le projet intègre des fonctionnalités avancées pour la gestion des rendez-vous, de la clientèle, des services, et des stocks, le tout soutenu par une intelligence artificielle de pointe. L'objectif est d'améliorer l'expérience client, d'optimiser les opérations des professionnels de la beauté et de proposer des outils d'analyse prédictive et de marketing pour une différenciation concurrentielle maximale.
 
 ## Recent Changes
-- ✅ BUG SAUVEGARDE COULEURS CORRIGÉ + DA AVYENTO APPLIQUÉE (15/08/2025 00:40) : Error parseInt("salon-demo") → NaN résolu, updateSalonColors gère IDs/slugs, Dashboard transformé avec header violet + glassmorphism, classes CSS Avyento unifiées, boutons glass cohérents
 - ✅ COHÉRENCE VISUELLE GLOBALE AVYENTO IMPLÉMENTÉE (15/08/2025 00:05) : Classes CSS unifiées (.avyento-*) appliquées sur toute l'app, style glass uniforme, typographie harmonisée, espacements cohérents, fond blanc propre partout, buttons/cards/inputs standardisés
 - ✅ COHÉRENCE TYPOGRAPHIQUE TOTALE IMPLÉMENTÉE (14/08/2025 23:53) : Harmonisation tailles titres/sous-titres sur toute l'app, interligne optimisé section "Salons recommandés" (mb-1), 5 étoiles ajoutées, sous-titres réduits à text-lg uniformément
 - ✅ HEADER SPACING + BOUTON AVIS OPTIMISÉS (14/08/2025 23:41) : Espacement header légèrement augmenté pour cohérence visuelle, bouton "avis vérifiés" changé de jaune à vert clair pour design moderne

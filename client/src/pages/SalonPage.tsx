@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { motion } from "framer-motion";
 import { 
   MapPin, Phone, Mail, Clock, Star, Calendar, 
   CreditCard, Check, ArrowLeft, Sparkles 
@@ -52,7 +51,6 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
     pageData && pageData.selectedServices && Array.isArray(pageData.selectedServices) ? 
     pageData.selectedServices.includes(service.id) : false
   ) : [];
-
 
   const selectedService = availableServices.find((s: any) => s.id.toString() === formData.serviceId);
 
@@ -246,7 +244,7 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
 
       <div className="max-w-2xl mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8">
-          {/* Services disponibles + Notre équipe (Lucas ajouté) */}
+          {/* Services disponibles */}
           <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -275,34 +273,6 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
                     </div>
                   </div>
                 ))}
-              </div>
-
-              {/* Section Notre équipe avec Lucas */}
-              <div className="mt-8 pt-6 border-t">
-                <h4 className="font-semibold text-lg mb-4 flex items-center">
-                  <Star className="w-5 h-5 mr-2" style={{ color: primaryColor }} />
-                  Notre équipe
-                </h4>
-                
-                {/* Lucas - Employé fictif restauré */}
-                <div className="flex items-center gap-4 p-4 border border-gray-100 rounded-lg bg-gradient-to-r from-blue-50 to-purple-50">
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&auto=format"
-                    alt="Lucas Martin"
-                    className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
-                  />
-                  <div className="flex-1">
-                    <h5 className="font-semibold text-gray-900 mb-1">Lucas Martin</h5>
-                    <p className="text-sm text-gray-600 mb-2">8 ans d'expérience • Spécialiste coupe moderne</p>
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
-                        <span className="font-medium">4.8/5</span>
-                      </div>
-                      <span className="text-green-600 font-medium">Disponible à 14:30</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>
@@ -442,6 +412,26 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
                     </p>
                   </div>
                 )}
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-white font-medium rounded-lg"
+                  style={{ background: styles.buttonBg }}
+                  disabled={createBookingMutation.isPending}
+                >
+                  {createBookingMutation.isPending ? (
+                    <div className="flex items-center">
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                      Réservation...
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <Check className="w-5 h-5 mr-2" />
+                      Réserver maintenant
+                      {selectedService && pageData.requireDeposit && ` (${formData.depositAmount}€)`}
+                    </div>
+                  )}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -460,32 +450,6 @@ export default function SalonPage({ pageUrl }: SalonPageProps) {
           </p>
         </div>
       </div>
-
-      {/* Bouton flottant "Réserver maintenant" - MODIFICATION RENDLY */}
-      <motion.div 
-        className="fixed bottom-6 left-6 right-6 z-50"
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleSubmit}
-          className="w-full h-14 text-white font-semibold rounded-2xl transition-all duration-300 shadow-xl"
-          style={{ 
-            background: pageData?.customColors?.primary ? 
-              `linear-gradient(135deg, ${pageData.customColors.primary} 0%, ${pageData.customColors.accent || pageData.customColors.primary} 100%)` : 
-              styles.buttonBg,
-            boxShadow: pageData?.customColors?.primary ? 
-              `0 8px 25px ${pageData.customColors.primary}40` : 
-              '0 8px 25px rgba(139, 92, 246, 0.4)'
-          }}
-        >
-          Réserver maintenant
-          {selectedService && pageData?.requireDeposit && ` (${formData.depositAmount}€)`}
-        </motion.button>
-      </motion.div>
     </div>
   );
 }

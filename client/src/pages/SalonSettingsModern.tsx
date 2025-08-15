@@ -19,11 +19,6 @@ export default function SalonSettingsModern() {
     phone: '',
     email: '',
     description: '',
-    customColors: {
-      primaryColor: '#7c3aed',
-      intensity: 'medium',
-      variant: 'violet'
-    },
     openingHours: {
       monday: { open: '09:00', close: '18:00', closed: false },
       tuesday: { open: '09:00', close: '18:00', closed: false },
@@ -49,11 +44,6 @@ export default function SalonSettingsModern() {
         phone: salonData.phone || '',
         email: salonData.email || '',
         description: salonData.description || '',
-        customColors: salonData.customColors || {
-          primaryColor: '#7c3aed',
-          intensity: 'medium',
-          variant: 'violet'
-        },
         openingHours: salonData.openingHours || formData.openingHours
       });
     }
@@ -93,7 +83,6 @@ export default function SalonSettingsModern() {
 
   const tabs = [
     { id: 'info', label: 'Infos', icon: Settings },
-    { id: 'design', label: 'Design', icon: Star },
     { id: 'hours', label: 'Horaires', icon: Clock },
     { id: 'contact', label: 'Contact', icon: Phone }
   ];
@@ -195,98 +184,6 @@ export default function SalonSettingsModern() {
                       rows={4}
                       className="w-full px-4 py-3 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500 resize-none"
                     />
-                  </div>
-                </div>
-              )}
-
-              {/* Onglet Design */}
-              {activeTab === 'design' && (
-                <div className="space-y-4">
-                  <div className="glass-button rounded-2xl p-4">
-                    <h3 className="font-medium text-gray-900 mb-4">Couleurs de votre salon</h3>
-                    
-                    {/* Couleur principale */}
-                    <div className="space-y-3">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Couleur principale
-                      </label>
-                      <div className="flex items-center gap-3">
-                        <input
-                          type="color"
-                          value={formData.customColors.primaryColor}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            customColors: {
-                              ...prev.customColors,
-                              primaryColor: e.target.value
-                            }
-                          }))}
-                          className="w-12 h-12 rounded-xl border-2 border-gray-200 cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={formData.customColors.primaryColor}
-                          onChange={(e) => setFormData(prev => ({
-                            ...prev,
-                            customColors: {
-                              ...prev.customColors,
-                              primaryColor: e.target.value
-                            }
-                          }))}
-                          className="flex-1 h-12 px-4 glass-input rounded-xl text-sm"
-                          placeholder="#7c3aed"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Préréglages couleurs */}
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Préréglages populaires
-                      </label>
-                      <div className="grid grid-cols-5 gap-2">
-                        {[
-                          { color: '#7c3aed', name: 'Violet' },
-                          { color: '#ec4899', name: 'Rose' },
-                          { color: '#f59e0b', name: 'Ambre' },
-                          { color: '#10b981', name: 'Émeraude' },
-                          { color: '#3b82f6', name: 'Bleu' }
-                        ].map((preset) => (
-                          <button
-                            key={preset.color}
-                            onClick={() => setFormData(prev => ({
-                              ...prev,
-                              customColors: {
-                                ...prev.customColors,
-                                primaryColor: preset.color
-                              }
-                            }))}
-                            className="w-12 h-12 rounded-xl border-2 border-gray-200 hover:border-gray-300 transition-colors"
-                            style={{ backgroundColor: preset.color }}
-                            title={preset.name}
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Aperçu des boutons */}
-                    <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-                      <h4 className="text-sm font-medium text-gray-700 mb-3">Aperçu</h4>
-                      <div className="space-y-2">
-                        <button
-                          className="px-6 py-3 rounded-2xl font-semibold text-white shadow-lg"
-                          style={{
-                            backgroundColor: formData.customColors.primaryColor,
-                            boxShadow: `0 8px 32px ${formData.customColors.primaryColor}40`
-                          }}
-                        >
-                          Réserver maintenant
-                        </button>
-                        <div className="text-xs text-gray-500">
-                          Vos clients verront vos boutons dans cette couleur
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}

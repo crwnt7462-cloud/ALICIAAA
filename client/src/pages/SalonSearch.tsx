@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useSalonSync } from "@/hooks/useSalonSync";
-import { getSalonButtonClass, getCustomButtonStyle } from "@/lib/salonColors";
 import { 
   Search, 
   MapPin, 
@@ -19,7 +18,19 @@ import {
 } from "lucide-react";
 import avyentoLogo from "@assets/3_1753714421825.png";
 
-// Cette fonction est maintenant importée de @/lib/salonColors
+// Fonction pour obtenir la classe de couleur spécifique à chaque salon
+const getSalonButtonClass = (salonId: string) => {
+  const salonColors: Record<string, string> = {
+    'salon-1': 'glass-button-pink',        // Salon Excellence Paris
+    'salon-2': 'glass-button-rose',        // Institut Beauté Marais  
+    'salon-3': 'glass-button-emerald',     // Spa Wellness
+    'salon-4': 'glass-button-amber',       // Barbier Gentleman
+    'salon-5': 'glass-button-indigo',      // Beauty Lounge
+    'salon-6': 'glass-button-rose',        // Nail Art
+    'salon-7': 'glass-button-indigo'       // Salon Moderne
+  };
+  return salonColors[salonId] || 'glass-button-neutral';
+};
 
 export default function SalonSearch() {
   const [, setLocation] = useLocation();
@@ -58,11 +69,7 @@ export default function SalonSearch() {
       verified: true,
       distance: "800m",
       category: "coiffure",
-      image: "💇‍♀️",
-      customColors: {
-        primaryColor: '#ec4899',
-        variant: 'pink'
-      }
+      image: "💇‍♀️"
     },
     {
       id: "salon-2", 
@@ -76,11 +83,7 @@ export default function SalonSearch() {
       verified: true,
       distance: "1.2km",
       category: "esthetique",
-      image: "✨",
-      customColors: {
-        primaryColor: '#f43f5e',
-        variant: 'rose'
-      }
+      image: "✨"
     },
     {
       id: "salon-3",
@@ -263,10 +266,6 @@ export default function SalonSearch() {
                       ? 'ring-2 ring-green-200 ring-opacity-50' 
                       : ''
                   }`}
-                  style={salon.customColors?.primary ? {
-                    borderLeft: `4px solid ${salon.customColors.primary}`,
-                    background: `linear-gradient(135deg, ${salon.customColors.primary}08 0%, white 100%)`
-                  } : {}}
                   onClick={() => setLocation(`/salon/${salon.id}`)}
                 >
                   <CardContent className="p-4">
@@ -297,10 +296,7 @@ export default function SalonSearch() {
                           e.stopPropagation();
                           setLocation('/salon-booking');
                         }}
-                        className={`${getSalonButtonClass(salon.id, salon.customColors)} rounded-xl px-3 py-1.5 text-xs font-medium ${
-                          salon.customColors?.primaryColor ? 'text-white' : ''
-                        }`}
-                        style={salon.customColors?.primaryColor ? getCustomButtonStyle(salon.customColors) : {}}
+                        className={`${getSalonButtonClass(salon.id)} rounded-xl px-3 py-1.5 text-xs font-medium`}
                       >
                         Book
                       </Button>

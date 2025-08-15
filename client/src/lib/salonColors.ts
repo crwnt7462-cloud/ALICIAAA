@@ -3,14 +3,8 @@
 
 export type SalonColorVariant = 'pink' | 'indigo' | 'amber' | 'rose' | 'emerald' | 'neutral';
 
-// Mapping des salons vers leurs couleurs (avec support des couleurs custom)
-export const getSalonColor = (salonId?: string, customColors?: any): SalonColorVariant => {
-  // Si des couleurs personnalisées sont définies, les utiliser
-  if (customColors?.variant) {
-    return customColors.variant as SalonColorVariant;
-  }
-  
-  // Sinon, utiliser les couleurs par défaut
+// Mapping des salons vers leurs couleurs
+export const getSalonColor = (salonId?: string): SalonColorVariant => {
   const salonColors: Record<string, SalonColorVariant> = {
     'salon-excellence-paris': 'pink',
     'salon-moderne-republique': 'indigo', 
@@ -23,10 +17,8 @@ export const getSalonColor = (salonId?: string, customColors?: any): SalonColorV
   return salonColors[salonId || ''] || 'neutral';
 };
 
-// Fonction pour obtenir la classe CSS glassmorphism (avec support couleurs custom)
-export const getSalonButtonClass = (salonId?: string, customColors?: any, variant?: SalonColorVariant): string => {
-  const effectiveVariant = variant || getSalonColor(salonId, customColors);
-  
+// Fonction pour obtenir la classe CSS glassmorphism
+export const getSalonButtonClass = (salonId?: string, variant: SalonColorVariant = getSalonColor(salonId)): string => {
   const classMap: Record<SalonColorVariant, string> = {
     pink: 'glass-button-pink',
     indigo: 'glass-button-indigo',
@@ -35,19 +27,7 @@ export const getSalonButtonClass = (salonId?: string, customColors?: any, varian
     emerald: 'glass-button-emerald',
     neutral: 'glass-button-neutral'
   };
-  return classMap[effectiveVariant];
-};
-
-// Fonction pour obtenir le style inline custom (si défini)
-export const getCustomButtonStyle = (customColors?: any): any => {
-  if (!customColors?.primaryColor) return {};
-  
-  return {
-    backgroundColor: customColors.primaryColor,
-    borderColor: customColors.primaryColor,
-    boxShadow: `0 8px 32px ${customColors.primaryColor}40`,
-    color: 'white'
-  };
+  return classMap[variant];
 };
 
 // Fonction pour obtenir une couleur aléatoire (pour les cas génériques)

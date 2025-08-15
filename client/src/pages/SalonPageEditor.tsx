@@ -398,53 +398,6 @@ export default function SalonPageEditor() {
     });
   };
 
-  // Nouvelle mutation spécifique pour sauvegarder les couleurs
-  const saveColorsMutation = useMutation({
-    mutationFn: async () => {
-      if (!salonData?.id) throw new Error('ID salon manquant');
-      const response = await fetch(`/api/salon-settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          salonId: salonData.id,
-          customColors: salonData.customColors
-        })
-      });
-      if (!response.ok) throw new Error('Erreur lors de la sauvegarde des couleurs');
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Couleurs sauvegardées !",
-        description: "Vos couleurs personnalisées sont maintenant visibles sur votre profil public."
-      });
-      // Invalider les caches pour mettre à jour les résultats de recherche
-      queryClient.invalidateQueries({ queryKey: ['/api/search/salons'] });
-      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData?.id}`] });
-    },
-    onError: () => {
-      toast({
-        title: "Erreur de sauvegarde",
-        description: "Impossible de sauvegarder les couleurs personnalisées.",
-        variant: "destructive"
-      });
-    }
-  });
-
-  const handleSaveColors = () => {
-    saveColorsMutation.mutate();
-  };
-
-  // Couleurs prédéfinies pour la sélection rapide
-  const presetColors = [
-    { name: 'Violet Avyento', value: '#7c3aed' },
-    { name: 'Rose Élégant', value: '#ec4899' },
-    { name: 'Ambre Chaleureux', value: '#f59e0b' },
-    { name: 'Émeraude Moderne', value: '#10b981' },
-    { name: 'Bleu Professionnel', value: '#3b82f6' },
-    { name: 'Rouge Passion', value: '#ef4444' }
-  ];
-
   const handleCoverImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -811,9 +764,9 @@ export default function SalonPageEditor() {
                   <div className="flex items-start gap-4">
                     {/* Photo du professionnel */}
                     <div className="relative">
-                      {professional.photo_url ? (
+                      {professional.photoUrl ? (
                         <img
-                          src={professional.photo_url}
+                          src={professional.photoUrl}
                           alt={professional.name}
                           className="w-20 h-20 rounded-full object-cover border-2"
                           style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
@@ -823,7 +776,7 @@ export default function SalonPageEditor() {
                           className="w-20 h-20 rounded-full flex items-center justify-center text-4xl border-2"
                           style={{ borderColor: salonData.customColors?.primary || '#f59e0b' }}
                         >
-                          {professional.image || professional.name?.charAt(0) || 'P'}
+                          {professional.image}
                         </div>
                       )}
                       
@@ -1343,31 +1296,6 @@ export default function SalonPageEditor() {
                   </div>
                   <p className="text-center text-sm text-gray-600 mt-4">
                     ✨ Aperçu de vos boutons avec style moderne et couleurs personnalisées
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Bouton Sauvegarder les couleurs */}
-            <Card className="border-green-200 bg-green-50">
-              <CardContent className="p-6">
-                <div className="text-center space-y-4">
-                  <h3 className="font-semibold text-lg text-green-800">Sauvegarder votre identité visuelle</h3>
-                  <p className="text-sm text-green-700">
-                    Sauvegardez vos couleurs personnalisées pour qu'elles apparaissent dans les résultats de recherche et sur votre profil public.
-                  </p>
-                  <motion.button
-                    onClick={handleSaveColors}
-                    disabled={saveColorsMutation.isPending}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full px-6 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center gap-2"
-                  >
-                    <Save className="w-5 h-5" />
-                    {saveColorsMutation.isPending ? 'Sauvegarde en cours...' : 'Sauvegarder les couleurs'}
-                  </motion.button>
-                  <p className="text-xs text-green-600">
-                    💡 Vos couleurs seront visibles par les clients lors de leurs recherches
                   </p>
                 </div>
               </CardContent>
