@@ -106,50 +106,7 @@ export default function PlanityStyleBookingFixed() {
   const selectedProfessional = localStorage.getItem('selectedProfessional');
   const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
 
-  // Connexion démo pro
-  const handleDemoProLogin = async () => {
-    try {
-      const demoProData = {
-        email: 'marie.dubois@salonexcellence.fr',
-        password: 'demo123'
-      };
 
-      const response = await fetch('/api/business/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(demoProData)
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('userRole', 'professional');
-        localStorage.setItem('businessName', data.user.businessName || 'Salon Excellence Démo');
-        
-        setShowLoginModal(false);
-        await createPaymentIntent();
-        
-        toast({
-          title: "Connexion réussie !",
-          description: `Bienvenue ${data.user.firstName} ${data.user.lastName}`,
-        });
-      } else {
-        toast({
-          title: "Erreur de connexion",
-          description: data.error || "Impossible de se connecter",
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error('Erreur connexion démo pro:', error);
-      toast({
-        title: "Erreur",
-        description: "Problème de connexion au serveur",
-        variant: "destructive"
-      });
-    }
-  };
 
   const createPaymentIntent = async () => {
     try {
@@ -520,15 +477,6 @@ export default function PlanityStyleBookingFixed() {
                   className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl"
                 >
                   Se connecter
-                </Button>
-
-                {/* Bouton connexion démo pro */}
-                <Button
-                  type="button"
-                  onClick={handleDemoProLogin}
-                  className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-xl mt-3"
-                >
-                  🎭 Connexion Démo Pro
                 </Button>
 
                 {/* Separator */}
