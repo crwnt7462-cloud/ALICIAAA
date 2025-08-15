@@ -301,7 +301,7 @@ export default function PublicLanding() {
     },
     {
       question: "Les salons sont-ils vérifiés ?",
-      answer: "Tous nos salons partenaires sont vérifiés et certifiés. Nous contrôlons leurs licences, assurances et qualifications pour vous garantir un service professionnel."
+      answer: "Oui, tous nos salons partenaires sont vérifiés avant d'être référencés sur la plateforme pour vous garantir un service professionnel de qualité."
     },
     {
       question: "Comment sont calculés les prix affichés ?",
