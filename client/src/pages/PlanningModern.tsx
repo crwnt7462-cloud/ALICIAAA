@@ -383,7 +383,7 @@ export default function PlanningModern() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 lg:p-6"
     >
-      <div className="max-w-md lg:max-w-none lg:w-full mx-auto space-y-6">
+      <div className="max-w-md lg:max-w-none lg:w-full lg:mx-0 mx-auto space-y-6">
         {/* Header Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}

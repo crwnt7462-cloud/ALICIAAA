@@ -877,6 +877,19 @@ function Router() {
     );
   }
 
+  // Page Planning en plein écran desktop avec header
+  if (location === '/planning') {
+    return (
+      <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
+        <Header />
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
+          <PlanningModern />
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
+
 
 
   // Application principale avec navigation
@@ -887,7 +900,7 @@ function Router() {
         <Switch>
           <Route path="/dashboard" component={Dashboard} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
-          <Route path="/planning" component={PlanningModern} />
+          {/* Planning géré séparément pour plein écran desktop */}
           <Route path="/clients" component={ClientsModern} />
           <Route path="/staff-management" component={StaffManagement} />
           <Route path="/services-management" component={ServicesManagement} />
