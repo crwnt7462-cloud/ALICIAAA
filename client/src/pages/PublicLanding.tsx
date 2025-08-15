@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu, ChevronDown, HelpCircle } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -234,6 +234,7 @@ export default function PublicLanding() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
@@ -286,6 +287,33 @@ export default function PublicLanding() {
       content: "Enfin une solution complète ! Planning, paiements, suivi client... tout est centralisé. Un gain de temps énorme.",
       rating: 5,
       location: "Marseille"
+    }
+  ];
+
+  const faqData = [
+    {
+      question: "Comment fonctionne la réservation en ligne ?",
+      answer: "Recherchez un salon près de chez vous, choisissez votre service et votre créneau, puis confirmez votre réservation. Vous recevrez une confirmation immédiate par email et SMS."
+    },
+    {
+      question: "Puis-je annuler ou modifier mon rendez-vous ?",
+      answer: "Oui, vous pouvez annuler ou modifier votre rendez-vous jusqu'à 2h avant l'heure prévue directement depuis l'application ou en contactant le salon."
+    },
+    {
+      question: "Les salons sont-ils vérifiés ?",
+      answer: "Tous nos salons partenaires sont vérifiés et certifiés. Nous contrôlons leurs licences, assurances et qualifications pour vous garantir un service professionnel."
+    },
+    {
+      question: "Comment sont calculés les prix affichés ?",
+      answer: "Les prix sont fixés directement par chaque salon partenaire et mis à jour en temps réel. Aucun frais supplémentaire n'est ajouté à la réservation."
+    },
+    {
+      question: "Que faire en cas de problème avec un salon ?",
+      answer: "Notre service client est disponible 24h/24 pour résoudre tout problème. Vous pouvez nous contacter via l'application ou par email à support@avyento.com."
+    },
+    {
+      question: "L'application est-elle gratuite pour les clients ?",
+      answer: "Oui, l'utilisation d'Avyento est 100% gratuite pour les clients. Vous ne payez que le service reçu au salon, sans frais de réservation."
     }
   ];
 
@@ -1181,6 +1209,106 @@ export default function PublicLanding() {
           >
             Explorer tous les salons
           </button>
+        </div>
+      </section>
+
+      {/* Section FAQ */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-medium mb-4"
+            >
+              <HelpCircle className="w-4 h-4" />
+              Questions Fréquentes
+            </motion.div>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+              className="heroSlash__title text-3xl mb-4"
+            >
+              Tout ce que vous devez <span className="light">savoir</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="heroSlash__subtitle text-base max-w-2xl mx-auto"
+            >
+              Retrouvez les réponses aux questions les plus courantes sur Avyento
+            </motion.p>
+          </div>
+
+          <div className="space-y-4">
+            {faqData.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="group"
+              >
+                <button
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                  className="w-full text-left p-6 rounded-2xl transition-all duration-300 glass-button hover:shadow-lg"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-gray-900 text-lg pr-4">{faq.question}</span>
+                    <ChevronDown 
+                      className={`w-5 h-5 text-violet-600 transition-transform duration-300 flex-shrink-0 ${
+                        openFaqIndex === index ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </div>
+                  
+                  <AnimatePresence>
+                    {openFaqIndex === index && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-4 text-gray-700 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* CTA contact */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <p className="text-gray-600 mb-4">Vous ne trouvez pas la réponse à votre question ?</p>
+            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center">
+              Contactez notre support
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </button>
+          </motion.div>
         </div>
       </section>
 
