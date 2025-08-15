@@ -773,6 +773,33 @@
   animation: click-bounce 0.3s ease-in-out;
 }
 
+/* Styles pour le carrousel horizontal de photos */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Transition fluide pour le scroll du carrousel */
+#horizontal-carousel {
+  scroll-behavior: smooth;
+}
+
+/* Style pour les boutons de navigation du carrousel */
+.carousel-nav-button {
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.carousel-nav-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
 .animate-pulse-glow {
   animation: pulse-glow 2s infinite;
 }

@@ -263,78 +263,137 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
               </div>
             </div>
 
-            {/* Carrousel principal */}
-            <div className="space-y-4">
-              {albumPhotos.map((photo, index) => (
-                <div
-                  key={photo.id}
-                  className="avyento-card overflow-hidden"
+            {/* Carrousel horizontal avec flèches */}
+            <div className="relative">
+              {/* Flèche gauche */}
+              {albumPhotos.length > 1 && (
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('horizontal-carousel');
+                    if (container) {
+                      container.scrollBy({ left: -350, behavior: 'smooth' });
+                    }
+                  }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl rounded-full p-3 transition-all transform hover:scale-110"
+                  style={{ marginLeft: '-20px' }}
                 >
-                  {/* Image principale */}
-                  <div className="relative">
-                    <img
-                      src={photo.imageUrl}
-                      alt={photo.title}
-                      className="w-full h-96 object-cover cursor-pointer"
-                      onClick={() => openPhotoViewer(photo, index)}
-                      loading="lazy"
-                    />
-                    {isOwner && (
-                      <div className="absolute top-4 right-4">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setPhotoToEdit(photo);
-                            setEditPhotoDialog(true);
-                          }}
-                        >
-                          <Edit3 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Encadré descriptif AVYENTO */}
-                  {(photo.title || photo.description) && (
-                    <div className="p-6 bg-gradient-to-r from-violet-50 to-purple-50 border-l-4 border-violet-500">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          {photo.title && (
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                              {photo.title}
-                            </h3>
-                          )}
-                          {photo.description && (
-                            <p className="text-gray-700 leading-relaxed mb-3">
-                              {photo.description}
-                            </p>
-                          )}
-                          {photo.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {photo.tags.map((tag, i) => (
-                                <Badge 
-                                  key={i} 
-                                  variant="secondary" 
-                                  className="bg-violet-100 text-violet-800 border-violet-200"
-                                >
-                                  {tag}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
+                  <ChevronLeft className="h-6 w-6 text-gray-700" />
+                </button>
+              )}
+              
+              {/* Flèche droite */}
+              {albumPhotos.length > 1 && (
+                <button
+                  onClick={() => {
+                    const container = document.getElementById('horizontal-carousel');
+                    if (container) {
+                      container.scrollBy({ left: 350, behavior: 'smooth' });
+                    }
+                  }}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/95 backdrop-blur-sm hover:bg-white shadow-xl rounded-full p-3 transition-all transform hover:scale-110"
+                  style={{ marginRight: '-20px' }}
+                >
+                  <ChevronRight className="h-6 w-6 text-gray-700" />
+                </button>
+              )}
+              
+              {/* Container carrousel scrollable */}
+              <div 
+                id="horizontal-carousel"
+                className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 px-2"
+                style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  scrollBehavior: 'smooth'
+                }}
+              >
+                {albumPhotos.map((photo, index) => (
+                  <div
+                    key={photo.id}
+                    className="flex-shrink-0 w-80 avyento-card overflow-hidden"
+                  >
+                    {/* Image principale */}
+                    <div className="relative">
+                      <img
+                        src={photo.imageUrl}
+                        alt={photo.title}
+                        className="w-full h-64 object-cover cursor-pointer"
+                        onClick={() => openPhotoViewer(photo, index)}
+                        loading="lazy"
+                      />
+                      {isOwner && (
+                        <div className="absolute top-4 right-4">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPhotoToEdit(photo);
+                              setEditPhotoDialog(true);
+                            }}
+                          >
+                            <Edit3 className="h-3 w-3" />
+                          </Button>
                         </div>
-                        <div className="ml-4 text-right">
-                          <div className="text-xs text-gray-500">
-                            Photo {index + 1}/{albumPhotos.length}
+                      )}
+                    </div>
+
+                    {/* Encadré descriptif */}
+                    {(photo.title || photo.description) && (
+                      <div className="p-4 bg-gradient-to-r from-violet-50 to-purple-50 border-l-4 border-violet-500">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            {photo.title && (
+                              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                                {photo.title}
+                              </h3>
+                            )}
+                            {photo.description && (
+                              <p className="text-gray-700 text-sm leading-relaxed mb-2 line-clamp-2">
+                                {photo.description}
+                              </p>
+                            )}
+                            {photo.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {photo.tags.slice(0, 3).map((tag, i) => (
+                                  <Badge 
+                                    key={i} 
+                                    variant="secondary" 
+                                    className="text-xs bg-violet-100 text-violet-800 border-violet-200"
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))}
+                                {photo.tags.length > 3 && (
+                                  <Badge 
+                                    variant="secondary" 
+                                    className="text-xs bg-violet-100 text-violet-800 border-violet-200"
+                                  >
+                                    +{photo.tags.length - 3}
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          <div className="ml-2 text-right">
+                            <div className="text-xs text-gray-500">
+                              {index + 1}/{albumPhotos.length}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Indication swipe sur mobile */}
+              <div className="md:hidden text-center mt-2">
+                <p className="text-xs text-gray-500 flex items-center justify-center gap-2">
+                  <span>Balayez horizontalement</span>
+                  <ChevronRight className="h-3 w-3" />
+                </p>
+              </div>
             </div>
           </div>
         ) : (
