@@ -427,7 +427,7 @@ export default function SalonPageEditor() {
       professionals
     },
     endpoint: salonData?.id ? `/api/salon/${salonData.id}` : '',
-    delay: 800, // Sauvegarde rapide après 0.8 secondes d'inactivité
+    delay: 500, // Sauvegarde très rapide après 0.5 secondes d'inactivité
     enabled: !!salonData?.id && !salonLoading,
     queryClient, // Passer directement le queryClient pour invalidation immédiate
     onStartSaving: () => {
