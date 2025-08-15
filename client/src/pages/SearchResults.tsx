@@ -164,7 +164,7 @@ export default function SearchResults() {
     };
 
     // Écouter les événements de mise à jour salon
-    window.addEventListener('salon-updated', handleSalonUpdated as EventListener);
+    window.addEventListener('salon-updated', handleSalonUpdated as any);
     
     // Rafraîchissement automatique toutes les 2 secondes en cas d'activité d'édition
     const autoRefreshInterval = setInterval(async () => {
@@ -174,7 +174,7 @@ export default function SearchResults() {
     }, 2000);
     
     return () => {
-      window.removeEventListener('salon-updated', handleSalonUpdated as EventListener);
+      window.removeEventListener('salon-updated', handleSalonUpdated as any);
       clearInterval(autoRefreshInterval);
     };
   }, [queryClient, refetchSalons]);
