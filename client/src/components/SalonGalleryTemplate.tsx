@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-  Camera, 
   Plus, 
   Edit3, 
-  Trash2, 
   X, 
   ChevronLeft, 
   ChevronRight, 
@@ -35,7 +33,7 @@ interface Album {
 interface SalonGalleryTemplateProps {
   salonId: number;
   isOwner?: boolean;
-  salonSlug: string;
+  salonSlug?: string;
 }
 
 /**
@@ -47,7 +45,7 @@ interface SalonGalleryTemplateProps {
  * - Gestion des albums
  * - Upload de photos (propriétaires uniquement)
  */
-export function SalonGalleryTemplate({ salonId, isOwner = false, salonSlug }: SalonGalleryTemplateProps) {
+export function SalonGalleryTemplate({ salonId, isOwner = false }: SalonGalleryTemplateProps) {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [albumPhotos, setAlbumPhotos] = useState<Photo[]>([]);
@@ -106,7 +104,10 @@ export function SalonGalleryTemplate({ salonId, isOwner = false, salonSlug }: Sa
     if (photoIndex < albumPhotos.length - 1) {
       const newIndex = photoIndex + 1;
       setPhotoIndex(newIndex);
-      setSelectedPhoto(albumPhotos[newIndex] || null);
+      const nextPhotoData = albumPhotos[newIndex];
+      if (nextPhotoData) {
+        setSelectedPhoto(nextPhotoData);
+      }
     }
   }, [photoIndex, albumPhotos]);
 
@@ -114,7 +115,10 @@ export function SalonGalleryTemplate({ salonId, isOwner = false, salonSlug }: Sa
     if (photoIndex > 0) {
       const newIndex = photoIndex - 1;
       setPhotoIndex(newIndex);
-      setSelectedPhoto(albumPhotos[newIndex] || null);
+      const prevPhotoData = albumPhotos[newIndex];
+      if (prevPhotoData) {
+        setSelectedPhoto(prevPhotoData);
+      }
     }
   }, [photoIndex, albumPhotos]);
 

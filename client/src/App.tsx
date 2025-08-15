@@ -37,6 +37,8 @@ import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermai
 import NailArtOpera from "@/pages/salons/NailArtOpera";
 import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
+import InstitutBelleEpoque from "@/pages/salons/InstitutBelleEpoque";
+import ModernHairStudio from "@/pages/salons/ModernHairStudio";
 
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -902,6 +904,12 @@ function Router() {
 
           {/* Routes Salon Mobile */}
           <Route path="/salon/salon-excellence-demo" component={SalonExcellenceDemoMobile} />
+          
+          {/* Routes Salons Template - Nouvelle génération standardisée */}
+          <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
+          <Route path="/salons/barbier-gentleman-marais" component={BarbierGentlemanMarais} />
+          <Route path="/salons/institut-belle-epoque" component={InstitutBelleEpoque} />
+          <Route path="/salons/modern-hair-studio" component={ModernHairStudio} />
 
           <Route component={NotFound} />
         </Switch>
