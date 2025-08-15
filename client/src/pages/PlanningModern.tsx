@@ -389,22 +389,44 @@ export default function PlanningModern() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center space-y-4 pt-8 lg:pt-4"
+          className="text-center space-y-4 pt-8 lg:pt-4 relative"
         >
-          {/* Émojis Planning - Mobile */}
-          <div className="flex justify-center space-x-3 lg:hidden">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl">📅</span>
+          {/* Icônes flottantes diffuses - style FAQ */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Mobile - 3 emojis */}
+            <div className="lg:hidden">
+              <div className="absolute top-4 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+                <span className="text-lg">📅</span>
+              </div>
+              <div className="absolute top-8 right-12 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
+                <span className="text-lg">⏰</span>
+              </div>
+              <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
+                <span className="text-lg">✨</span>
+              </div>
             </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl">⏰</span>
-            </div>
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl">✨</span>
+            
+            {/* Desktop - 5 emojis */}
+            <div className="hidden lg:block">
+              <div className="absolute top-8 left-24 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+                <span className="text-lg">📅</span>
+              </div>
+              <div className="absolute top-4 right-32 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
+                <span className="text-lg">⏰</span>
+              </div>
+              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
+                <span className="text-lg">✨</span>
+              </div>
+              <div className="absolute top-6 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-amber-200/35 to-orange-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
+                <span className="text-lg">📋</span>
+              </div>
+              <div className="absolute top-2 right-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-12" style={{ animationDelay: '1.5s' }}>
+                <span className="text-lg">🎯</span>
+              </div>
             </div>
           </div>
           
-          <div className="lg:text-left lg:flex lg:items-center lg:justify-between">
+          <div className="lg:text-left lg:flex lg:items-center lg:justify-between relative z-10">
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight mb-2">
                 Planning
@@ -412,25 +434,6 @@ export default function PlanningModern() {
               <p className="text-gray-600 text-sm lg:text-base leading-relaxed">
                 Gérez vos rendez-vous avec intelligence
               </p>
-            </div>
-            
-            {/* Émojis Planning - Desktop */}
-            <div className="hidden lg:flex items-center space-x-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-md">
-                <span className="text-3xl">📅</span>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center shadow-md">
-                <span className="text-3xl">⏰</span>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center shadow-md">
-                <span className="text-3xl">✨</span>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl flex items-center justify-center shadow-md">
-                <span className="text-3xl">📋</span>
-              </div>
-              <div className="w-14 h-14 bg-gradient-to-br from-violet-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-md">
-                <span className="text-3xl">🎯</span>
-              </div>
             </div>
           </div>
         </motion.div>
