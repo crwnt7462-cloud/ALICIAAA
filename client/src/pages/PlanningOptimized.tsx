@@ -63,11 +63,38 @@ const PlanningOptimized: React.FC = () => {
     { id: '4', name: 'Julie Chen', role: 'Massothérapeute', color: '#10b981', activeHours: { start: '11:00', end: '20:00' } }
   ];
 
-  // Query pour récupérer les rendez-vous
-  const { data: appointments = [], isLoading } = useQuery<Appointment[]>({
+  // Données de démonstration pour les rendez-vous
+  const mockAppointments: Appointment[] = [
+    // Aujourd'hui
+    { id: '1', clientName: 'Sophie Dubois', serviceName: 'Coupe + Brushing', staffId: '1', date: format(new Date(), 'yyyy-MM-dd'), startTime: '09:00', endTime: '10:00', duration: 60, price: 45, status: 'confirmed' },
+    { id: '2', clientName: 'Marie Martin', serviceName: 'Coloration', staffId: '1', date: format(new Date(), 'yyyy-MM-dd'), startTime: '14:00', endTime: '16:00', duration: 120, price: 85, status: 'confirmed' },
+    { id: '3', clientName: 'Julie Chen', serviceName: 'Soin visage', staffId: '2', date: format(new Date(), 'yyyy-MM-dd'), startTime: '10:00', endTime: '11:00', duration: 60, price: 60, status: 'completed' },
+    { id: '4', clientName: 'Emma Rousseau', serviceName: 'Manucure', staffId: '3', date: format(new Date(), 'yyyy-MM-dd'), startTime: '11:00', endTime: '11:30', duration: 30, price: 25, status: 'confirmed' },
+    { id: '5', clientName: 'Léa Bernard', serviceName: 'Massage relaxant', staffId: '4', date: format(new Date(), 'yyyy-MM-dd'), startTime: '15:00', endTime: '16:00', duration: 60, price: 70, status: 'confirmed' },
+    
+    // Hier (rendez-vous complétés)
+    { id: '6', clientName: 'Anna Leroy', serviceName: 'Coupe femme', staffId: '1', date: format(addDays(new Date(), -1), 'yyyy-MM-dd'), startTime: '10:00', endTime: '11:00', duration: 60, price: 40, status: 'completed' },
+    { id: '7', clientName: 'Clara Morin', serviceName: 'Épilation jambes', staffId: '2', date: format(addDays(new Date(), -1), 'yyyy-MM-dd'), startTime: '14:00', endTime: '15:00', duration: 60, price: 35, status: 'completed' },
+    { id: '8', clientName: 'Océane Petit', serviceName: 'Pédicure', staffId: '3', date: format(addDays(new Date(), -1), 'yyyy-MM-dd'), startTime: '16:00', endTime: '17:00', duration: 60, price: 30, status: 'completed' },
+    
+    // Demain
+    { id: '9', clientName: 'Sarah Laurent', serviceName: 'Balayage', staffId: '1', date: format(addDays(new Date(), 1), 'yyyy-MM-dd'), startTime: '09:30', endTime: '11:30', duration: 120, price: 95, status: 'confirmed' },
+    { id: '10', clientName: 'Camille Durand', serviceName: 'Soins du visage', staffId: '2', date: format(addDays(new Date(), 1), 'yyyy-MM-dd'), startTime: '13:00', endTime: '14:00', duration: 60, price: 55, status: 'confirmed' },
+    
+    // Cette semaine
+    { id: '11', clientName: 'Chloé Garcia', serviceName: 'Coupe + Couleur', staffId: '1', date: format(addDays(new Date(), 2), 'yyyy-MM-dd'), startTime: '10:00', endTime: '12:00', duration: 120, price: 75, status: 'confirmed' },
+    { id: '12', clientName: 'Inès Moreau', serviceName: 'Extensions', staffId: '1', date: format(addDays(new Date(), 3), 'yyyy-MM-dd'), startTime: '14:00', endTime: '17:00', duration: 180, price: 150, status: 'confirmed' },
+    { id: '13', clientName: 'Luna Simon', serviceName: 'Massage dos', staffId: '4', date: format(addDays(new Date(), 4), 'yyyy-MM-dd'), startTime: '11:00', endTime: '12:00', duration: 60, price: 65, status: 'confirmed' },
+  ];
+
+  // Query pour récupérer les rendez-vous (avec fallback sur données de démo)
+  const { data: apiAppointments = [], isLoading } = useQuery<Appointment[]>({
     queryKey: ['/api/appointments', selectedDate, viewMode],
     enabled: true
   });
+
+  // Utilise les données de l'API si disponibles, sinon les données de démo
+  const appointments = apiAppointments.length > 0 ? apiAppointments : mockAppointments;
 
   // Calculs d'analytics
   const analytics: Analytics = useMemo(() => {
@@ -258,11 +285,23 @@ const PlanningOptimized: React.FC = () => {
             {timeSlots.slice(2, 18).map(time => (
               <React.Fragment key={time}>
                 <div className="text-xs text-gray-500 py-2 text-center">{time}</div>
-                {weekDays.map(day => (
-                  <div key={`${day.toISOString()}-${time}`} className="h-12 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
-                    <Plus className="w-3 h-3 text-gray-400" />
-                  </div>
-                ))}
+                {weekDays.map(day => {
+                  const dayAppointments = appointments.filter(apt => 
+                    isSameDay(new Date(apt.date), day) && apt.startTime === time
+                  );
+                  
+                  return (
+                    <div key={`${day.toISOString()}-${time}`} className="h-12 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
+                      {dayAppointments.length > 0 ? (
+                        <div className="text-xs font-medium text-purple-600 truncate px-1">
+                          {dayAppointments[0].clientName}
+                        </div>
+                      ) : (
+                        <Plus className="w-3 h-3 text-gray-400" />
+                      )}
+                    </div>
+                  );
+                })}
               </React.Fragment>
             ))}
           </div>
@@ -318,8 +357,17 @@ const PlanningOptimized: React.FC = () => {
                     {format(day, 'd')}
                   </div>
                   <div className="mt-1 space-y-1">
-                    {/* Ici on pourrait afficher les RDV du jour */}
-                    <div className="w-full h-1 bg-purple-200 rounded"></div>
+                    {/* Affichage des RDV du jour */}
+                    {appointments
+                      .filter(apt => isSameDay(new Date(apt.date), day))
+                      .slice(0, 2)
+                      .map((apt, index) => (
+                        <div key={apt.id} className="w-full h-1 bg-purple-400 rounded"></div>
+                      ))
+                    }
+                    {appointments.filter(apt => isSameDay(new Date(apt.date), day)).length > 2 && (
+                      <div className="text-xs text-purple-600 font-medium">+{appointments.filter(apt => isSameDay(new Date(apt.date), day)).length - 2}</div>
+                    )}
                   </div>
                 </div>
               );
