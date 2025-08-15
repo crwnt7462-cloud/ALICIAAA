@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { 
   ArrowLeft, 
   Star, 
@@ -21,8 +20,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
-  Eye,
-  EyeOff
+
 } from 'lucide-react';
 import { AdvancedGallery } from '../../components/AdvancedGallery';
 
@@ -427,7 +425,7 @@ export default function BarbierGentlemanMarais() {
                           }}
                         />
                         {category.description.length > 80 && (
-                          <button
+                          <span
                             onClick={(e) => {
                               e.stopPropagation();
                               setExpandedCategoryDescriptions(prev => {
@@ -440,10 +438,10 @@ export default function BarbierGentlemanMarais() {
                                 return newSet;
                               });
                             }}
-                            className="text-violet-600 hover:text-violet-700 text-sm font-medium mt-1 transition-colors"
+                            className="text-violet-600 hover:text-violet-700 text-sm font-medium mt-1 transition-colors cursor-pointer"
                           >
                             {expandedCategoryDescriptions.has(category.id) ? 'Voir moins' : 'Voir +'}
-                          </button>
+                          </span>
                         )}
                       </div>
                     )}
