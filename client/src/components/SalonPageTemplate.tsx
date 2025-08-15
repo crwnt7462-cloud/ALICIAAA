@@ -105,6 +105,7 @@ export function SalonPageTemplate({
   
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([1]));
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Appliquer les variables CSS dynamiquement
@@ -148,6 +149,58 @@ export function SalonPageTemplate({
       }
       return newSet;
     });
+  };
+
+  const toggleDescription = (categoryId: number) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(categoryId)) {
+        newSet.delete(categoryId);
+      } else {
+        newSet.add(categoryId);
+      }
+      return newSet;
+    });
+  };
+
+  // Générer des données d'avis par service (simulation)
+  const getServiceReviews = (serviceId: number) => {
+    const allReviews = [
+      { id: 1, rating: 5, comment: "Service impeccable !", clientName: "Marie L.", serviceId: 1 },
+      { id: 2, rating: 4, comment: "Très satisfait du résultat", clientName: "Paul M.", serviceId: 1 },
+      { id: 3, rating: 5, comment: "Rasage parfait, ambiance top", clientName: "Thomas K.", serviceId: 3 },
+      { id: 4, rating: 5, comment: "Antoine est un vrai pro", clientName: "Pierre D.", serviceId: 2 },
+      { id: 5, rating: 4, comment: "Excellent soin, très relaxant", clientName: "Jean R.", serviceId: 5 }
+    ];
+    return allReviews.filter(review => review.serviceId === serviceId);
+  };
+
+  // Générer des photos par service (simulation)
+  const getServicePhotos = (serviceId: number) => {
+    const photosByService: { [key: number]: string[] } = {
+      1: [
+        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400&h=300&fit=crop"
+      ],
+      2: [
+        "https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop"
+      ],
+      3: [
+        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop",
+        "https://images.unsplash.com/photo-1559599538-ecae83ba5934?w=400&h=300&fit=crop"
+      ]
+    };
+    return photosByService[serviceId] || [];
+  };
+
+  // Calculer la note moyenne d'un service
+  const getServiceRating = (serviceId: number) => {
+    const reviews = getServiceReviews(serviceId);
+    if (reviews.length === 0) return 4.5; // Note par défaut
+    return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
   };
 
   return (
@@ -243,47 +296,132 @@ export function SalonPageTemplate({
         {activeTab === 'services' && (
           <div className="space-y-6">
             {displayServiceCategories.map((category: any) => (
-              <div key={category.id} className="bg-gray-50 rounded-2xl overflow-hidden">
+              <div key={category.id} className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden shadow-lg shadow-purple-500/10">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-100 transition-colors"
+                  className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/60 transition-all duration-300"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
-                  {category.expanded ? 
-                    <ChevronUp className="h-5 w-5 text-gray-500" /> : 
-                    <ChevronDown className="h-5 w-5 text-gray-500" />
-                  }
+                  <div className="flex-1 text-left">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{category.name}</h3>
+                    <div className="flex items-center gap-2">
+                      <p className={`text-sm text-gray-600 ${expandedDescriptions.has(category.id) ? '' : 'truncate'}`}>
+                        {category.name === 'Coupe' && 'Services de coupe et styling professionnels'}
+                        {category.name === 'Rasage' && 'Rasage traditionnel et moderne au coupe-chou'}
+                        {category.name === 'Soins' && 'Soins du visage et de la barbe avec produits premium'}
+                      </p>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDescription(category.id);
+                        }}
+                        className="text-xs text-purple-600 hover:text-purple-800 font-medium whitespace-nowrap"
+                      >
+                        {expandedDescriptions.has(category.id) ? 'voir -' : '(voir +)'}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 ml-4">
+                    <span className="text-sm text-gray-500">{category.services.length} service{category.services.length > 1 ? 's' : ''}</span>
+                    {category.expanded ? 
+                      <ChevronUp className="h-5 w-5 text-gray-500" /> : 
+                      <ChevronDown className="h-5 w-5 text-gray-500" />
+                    }
+                  </div>
                 </button>
                 
                 {category.expanded && (
-                  <div className="border-t border-gray-200">
-                    {category.services.map((service: any) => (
-                      <div key={service.id} className="salon-service-card mx-4 my-3">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="salon-service-name font-medium">{service.name}</h4>
-                            {service.description && (
-                              <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                            )}
-                            <p className="text-xs text-gray-500 mt-1">{service.duration} min</p>
-                          </div>
-                          <div className="ml-4">
-                            <p className="salon-custom-price text-lg">
-                              {service.price}
-                              <span className="salon-currency-symbol ml-0.5">€</span>
-                            </p>
+                  <div className="border-t border-gray-200/50">
+                    {category.services.map((service: any) => {
+                      const serviceReviews = getServiceReviews(service.id);
+                      const serviceRating = getServiceRating(service.id);
+                      const servicePhotos = getServicePhotos(service.id);
+                      
+                      return (
+                        <div key={service.id} className="px-6 py-5 border-b border-gray-100/50 last:border-b-0">
+                          <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+                            {/* Info principale du service */}
+                            <div className="flex-1">
+                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-bold text-lg text-gray-900 truncate sm:whitespace-normal">{service.name}</h4>
+                                  <p className="text-sm text-gray-600 mt-1 leading-relaxed">{service.description}</p>
+                                  <div className="flex items-center gap-4 mt-2">
+                                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                                      <Clock className="h-3 w-3" />
+                                      {service.duration} min
+                                    </span>
+                                    <div className="flex items-center gap-1">
+                                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                      <span className="text-sm font-semibold text-gray-900">{serviceRating.toFixed(1)}</span>
+                                      <span className="text-xs text-gray-500">({serviceReviews.length} avis)</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
+                                  <div className="text-right">
+                                    <p className="text-2xl font-bold text-purple-600">
+                                      {service.price}€
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Avis clients pour ce service */}
+                              {serviceReviews.length > 0 && (
+                                <div className="mt-4 space-y-2">
+                                  <h5 className="text-sm font-semibold text-gray-700">Avis clients :</h5>
+                                  <div className="space-y-2">
+                                    {serviceReviews.slice(0, 2).map((review) => (
+                                      <div key={review.id} className="bg-gray-50/80 rounded-lg p-3">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <div className="flex">
+                                            {[...Array(5)].map((_, i) => (
+                                              <Star key={i} className={`h-3 w-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
+                                            ))}
+                                          </div>
+                                          <span className="text-xs font-medium text-gray-700">{review.clientName}</span>
+                                        </div>
+                                        <p className="text-xs text-gray-600 italic">"{review.comment}"</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Galerie photos du service */}
+                              {servicePhotos.length > 0 && (
+                                <div className="mt-4">
+                                  <h5 className="text-sm font-semibold text-gray-700 mb-2">Photos de ce service :</h5>
+                                  <div className="flex gap-2 overflow-x-auto pb-2">
+                                    {servicePhotos.slice(0, 4).map((photo, index) => (
+                                      <div key={index} className="flex-shrink-0">
+                                        <img 
+                                          src={photo}
+                                          alt={`${service.name} ${index + 1}`}
+                                          className="w-20 h-20 object-cover rounded-lg border-2 border-white/50 shadow-sm hover:scale-105 transition-transform cursor-pointer"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Bouton réservation avec style DA Avyento */}
+                              <div className="mt-4">
+                                <button 
+                                  className="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white transition-all duration-300 ease-in-out bg-gradient-to-r from-violet-600 to-amber-500 rounded-2xl hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25 active:scale-95 backdrop-blur-xl border border-white/20"
+                                  onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
+                                >
+                                  <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600 via-violet-600 to-amber-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                                  <Calendar className="h-4 w-4 mr-2 relative z-10" />
+                                  <span className="relative z-10 text-sm font-semibold">Réserver maintenant</span>
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        
-                        <button 
-                          className="salon-custom-button w-full mt-3 py-2 rounded-lg text-sm font-medium"
-                          onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
-                        >
-                          <Calendar className="h-4 w-4 inline mr-2" />
-                          Réserver maintenant
-                        </button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
