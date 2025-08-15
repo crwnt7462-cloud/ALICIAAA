@@ -6,6 +6,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom breakpoint for very small screens */
+@media (min-width: 480px) {
+  .xs\:inline { display: inline; }
+  .xs\:hidden { display: none; }
+}
+
+/* Hide scrollbar on mobile */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* === COHÉRENCE VISUELLE GLOBALE AVYENTO === */
 
 /* Typographie uniforme sur toute l'app */

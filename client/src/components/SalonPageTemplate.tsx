@@ -106,6 +106,7 @@ export function SalonPageTemplate({
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([1]));
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
+  const [selectedGalleryCategory, setSelectedGalleryCategory] = useState('Toutes');
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Appliquer les variables CSS dynamiquement
@@ -341,44 +342,47 @@ export function SalonPageTemplate({
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             {/* Info principale du service */}
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 truncate">{service.name}</h4>
+                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{service.name}</h4>
                               <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-xs text-gray-500">
                                 <span className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
-                                  {service.duration} min
+                                  <span className="whitespace-nowrap">{service.duration} min</span>
                                 </span>
                                 <button 
                                   onClick={() => setActiveTab('avis')}
-                                  className="flex items-center gap-1 hover:text-gray-700 transition-colors"
+                                  className="flex items-center gap-1 hover:text-gray-700 transition-colors whitespace-nowrap"
                                 >
                                   <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                                   <span>{serviceRating.toFixed(1)}</span>
-                                  <span>({serviceReviews.length} avis)</span>
+                                  <span className="hidden xs:inline">({serviceReviews.length} avis)</span>
+                                  <span className="xs:hidden">({serviceReviews.length})</span>
                                 </button>
                                 {servicePhotos.length > 0 && (
                                   <button 
                                     onClick={() => setActiveTab('galerie')}
-                                    className="flex items-center gap-1 hover:text-gray-700 transition-colors"
+                                    className="flex items-center gap-1 hover:text-gray-700 transition-colors whitespace-nowrap"
                                   >
                                     <Camera className="h-3 w-3" />
-                                    <span>{servicePhotos.length} photos</span>
+                                    <span className="hidden xs:inline">{servicePhotos.length} photos</span>
+                                    <span className="xs:hidden">{servicePhotos.length}</span>
                                   </button>
                                 )}
                               </div>
                             </div>
 
                             {/* Prix et bouton */}
-                            <div className="flex items-center gap-4 sm:flex-col sm:items-end">
-                              <div className="text-right">
-                                <p className="text-xl font-bold text-gray-900">{service.price}€</p>
+                            <div className="flex items-center justify-between sm:flex-col sm:items-end gap-3 sm:gap-2">
+                              <div className="text-left sm:text-right">
+                                <p className="text-lg sm:text-xl font-bold text-gray-900">{service.price}€</p>
                               </div>
                               <button 
-                                className="glass-button text-black px-4 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2"
+                                className="glass-button text-black px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-2"
                                 onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
                               >
-                                <Calendar className="h-4 w-4" />
-                                Réserver
+                                <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden xs:inline">Réserver</span>
+                                <span className="xs:hidden">RDV</span>
                               </button>
                             </div>
                           </div>
@@ -434,37 +438,62 @@ export function SalonPageTemplate({
         )}
 
         {activeTab === 'galerie' && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
-              'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
-            ].map((photo, index) => (
-              <div 
-                key={index}
-                className="relative aspect-square rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform"
-                style={{ 
-                  boxShadow: `0 4px 12px ${customColors?.primary || '#8b5cf6'}20` 
-                }}
-              >
-                <img 
-                  src={photo}
-                  alt={`Photo ${index + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+          <div className="space-y-6">
+            {/* Filtres par catégorie */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {['Toutes', 'Coupes', 'Rasages', 'Soins', 'Ambiance'].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedGalleryCategory(category)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    category === selectedGalleryCategory 
+                      ? 'bg-gray-900 text-white' 
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            {/* Galerie photos responsive */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {[
+                { url: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Ambiance' },
+                { url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' },
+                { url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' },
+                { url: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Rasages' },
+                { url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Ambiance' },
+                { url: 'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Soins' },
+                { url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Rasages' },
+                { url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' }
+              ]
+              .filter(photo => selectedGalleryCategory === 'Toutes' || photo.category === selectedGalleryCategory)
+              .map((photo, index) => (
                 <div 
-                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
+                  key={index}
+                  className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform"
                   style={{ 
-                    backgroundColor: `${customColors?.primary || '#8b5cf6'}80` 
+                    boxShadow: `0 2px 8px ${customColors?.primary || '#8b5cf6'}15` 
                   }}
                 >
-                  <Camera className="h-8 w-8 text-white" />
+                  <img 
+                    src={photo.url}
+                    alt={`${photo.category} ${index + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div 
+                    className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center"
+                    style={{ 
+                      backgroundColor: `${customColors?.primary || '#8b5cf6'}90` 
+                    }}
+                  >
+                    <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-1" />
+                    <span className="text-white text-xs font-medium">{photo.category}</span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
 
