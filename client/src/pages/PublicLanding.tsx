@@ -308,8 +308,8 @@ export default function PublicLanding() {
       answer: "Les prix sont fixés directement par chaque salon partenaire et mis à jour en temps réel. Aucun frais supplémentaire n'est ajouté à la réservation."
     },
     {
-      question: "Que faire en cas de problème avec un salon ?",
-      answer: "Notre service client est disponible 24h/24 pour résoudre tout problème. Vous pouvez nous contacter via l'application ou par email à support@avyento.com."
+      question: "Comment contacter le salon après ma réservation ?",
+      answer: "Une fois votre réservation confirmée, vous recevez les coordonnées du salon et pouvez le contacter directement via l'application ou par téléphone pour toute question spécifique."
     },
     {
       question: "L'application est-elle gratuite pour les clients ?",
