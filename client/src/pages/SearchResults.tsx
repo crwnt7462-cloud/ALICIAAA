@@ -708,9 +708,12 @@ export default function SearchResults() {
         </div>
       </div>
 
+      {/* Espace avant footer */}
+      <div className="py-12"></div>
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-8 w-full">
-        <div className="mx-auto px-6 lg:px-12 xl:px-20">
+        <div className="w-full px-6 lg:px-12 xl:px-20">
           <div className="grid md:grid-cols-5 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Avyento</h3>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu, ChevronDown, HelpCircle } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu, ChevronDown, HelpCircle, Cookie } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -235,6 +235,7 @@ export default function PublicLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [showCookiePopup, setShowCookiePopup] = useState(true);
 
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
@@ -1469,6 +1470,91 @@ export default function PublicLanding() {
           </div>
         </div>
       </footer>
+
+      {/* Popup Cookies */}
+      <AnimatePresence>
+        {showCookiePopup && (
+          <>
+            {/* Overlay avec backdrop blur */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setShowCookiePopup(false)}
+            >
+              {/* Popup centrale */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                transition={{ type: "spring", duration: 0.5 }}
+                className="relative max-w-md w-full mx-auto"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  borderRadius: '24px',
+                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+                }}
+              >
+                {/* Bouton fermer */}
+                <button
+                  onClick={() => setShowCookiePopup(false)}
+                  className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100/50 transition-colors duration-200"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+
+                <div className="p-8">
+                  {/* Icône et titre */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-3 rounded-full bg-gradient-to-r from-violet-500/10 to-purple-500/10">
+                      <Cookie className="w-6 h-6 text-violet-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      Cookies & Confidentialité
+                    </h3>
+                  </div>
+
+                  {/* Contenu */}
+                  <p className="text-gray-700 leading-relaxed mb-6">
+                    Nous utilisons des cookies pour améliorer votre expérience sur Avyento, 
+                    personnaliser nos recommandations IA et analyser l'utilisation de notre plateforme. 
+                    Vos données sont traitées de manière sécurisée selon notre politique de confidentialité.
+                  </p>
+
+                  {/* Boutons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={() => setShowCookiePopup(false)}
+                      className="flex-1 glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
+                      Accepter tous
+                    </button>
+                    <button
+                      onClick={() => setShowCookiePopup(false)}
+                      className="flex-1 px-6 py-3 rounded-2xl font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100/50 transition-all duration-300 border border-gray-200"
+                    >
+                      Paramètres
+                    </button>
+                  </div>
+
+                  {/* Lien politique */}
+                  <p className="text-xs text-gray-500 mt-4 text-center">
+                    En continuant, vous acceptez notre{" "}
+                    <a href="#" className="text-violet-600 hover:text-violet-700 underline">
+                      politique de confidentialité
+                    </a>
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
