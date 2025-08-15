@@ -3,20 +3,21 @@ import {
   Camera, 
   Plus, 
   Edit3, 
- 
   X, 
   ChevronLeft, 
   ChevronRight,
   Upload,
   Image as ImageIcon,
   Eye,
-  EyeOff
+  EyeOff,
+  User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ObjectUploader } from './ObjectUploader';
 
 interface Album {
@@ -39,14 +40,24 @@ interface Photo {
   tags: string[];
   width: number;
   height: number;
+  teamMemberId?: number;
+  teamMemberName?: string;
+}
+
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  avatar?: string;
 }
 
 interface AdvancedGalleryProps {
   salonId: string;
   isOwner?: boolean; // Si l'utilisateur peut éditer
+  teamMembers?: TeamMember[]; // Membres de l'équipe pour la sélection
 }
 
-export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryProps) {
+export function AdvancedGallery({ salonId, isOwner = false, teamMembers = [] }: AdvancedGalleryProps) {
   const [albums, setAlbums] = useState<Album[]>([]);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [albumPhotos, setAlbumPhotos] = useState<Photo[]>([]);
@@ -56,6 +67,7 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
   const [newAlbumDialog, setNewAlbumDialog] = useState(false);
   const [editPhotoDialog, setEditPhotoDialog] = useState(false);
   const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
+  const [selectedTeamMember, setSelectedTeamMember] = useState<number | null>(null);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
 
@@ -67,9 +79,45 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
         if (response.ok) {
           const data = await response.json();
           setAlbums(data);
+        } else {
+          // Données d'exemple pour démonstration avec attribution membres d'équipe
+          const mockAlbums: Album[] = [
+            {
+              id: 1,
+              name: "Nos Réalisations",
+              description: "Découvrez le savoir-faire de notre équipe",
+              coverImageUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+              photoCount: 8,
+              isPublic: true,
+              sortOrder: 1
+            },
+            {
+              id: 2,
+              name: "Coupes Signature",
+              description: "Nos coupes exclusives par nos maîtres barbiers",
+              coverImageUrl: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+              photoCount: 6,
+              isPublic: true,
+              sortOrder: 2
+            }
+          ];
+          setAlbums(mockAlbums);
         }
       } catch (error) {
         console.error('Erreur lors du chargement des albums:', error);
+        // Données d'exemple pour démonstration
+        const mockAlbums: Album[] = [
+          {
+            id: 1,
+            name: "Nos Réalisations",
+            description: "Découvrez le savoir-faire de notre équipe",
+            coverImageUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+            photoCount: 8,
+            isPublic: true,
+            sortOrder: 1
+          }
+        ];
+        setAlbums(mockAlbums);
       } finally {
         setLoading(false);
       }
@@ -86,9 +134,111 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
         const photos = await response.json();
         setAlbumPhotos(photos);
         setSelectedAlbum(album);
+      } else {
+        // Photos d'exemple avec attribution membres d'équipe
+        const mockPhotos: Photo[] = [
+          {
+            id: 1,
+            imageUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Coupe Gentleman Classique",
+            description: "Une coupe traditionnelle avec finition à l'ancienne, alliance parfaite entre élégance et modernité.",
+            tags: ["coupe", "classique", "gentleman"],
+            width: 800,
+            height: 600,
+            teamMemberId: 1,
+            teamMemberName: "Antoine Mercier"
+          },
+          {
+            id: 2,
+            imageUrl: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Dégradé Moderne",
+            description: "Dégradé précis avec barbe structurée, une création contemporaine pleine de caractère.",
+            tags: ["dégradé", "moderne", "barbe"],
+            width: 800,
+            height: 600,
+            teamMemberId: 2,
+            teamMemberName: "Julien Moreau"
+          },
+          {
+            id: 3,
+            imageUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Rasage Traditionnel",
+            description: "Rasage au coupe-chou, technique ancestrale maîtrisée avec précision et savoir-faire.",
+            tags: ["rasage", "coupe-chou", "traditionnel"],
+            width: 800,
+            height: 600,
+            teamMemberId: 1,
+            teamMemberName: "Antoine Mercier"
+          },
+          {
+            id: 4,
+            imageUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Styling & Finition",
+            description: "Mise en forme et styling final pour un résultat impeccable qui révèle votre personnalité.",
+            tags: ["styling", "finition", "produits"],
+            width: 800,
+            height: 600,
+            teamMemberId: 3,
+            teamMemberName: "Pierre Dubois"
+          },
+          {
+            id: 5,
+            imageUrl: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Coupe Créative",
+            description: "Design moderne et audacieux, pour ceux qui osent se démarquer avec style et originalité.",
+            tags: ["créatif", "moderne", "audacieux"],
+            width: 800,
+            height: 600,
+            teamMemberId: 2,
+            teamMemberName: "Julien Moreau"
+          },
+          {
+            id: 6,
+            imageUrl: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            thumbnailUrl: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+            highResUrl: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+            title: "Soin de Barbe",
+            description: "Taille et soin de barbe sur mesure, pour une barbe soignée et parfaitement entretenue.",
+            tags: ["barbe", "soin", "taille"],
+            width: 800,
+            height: 600,
+            teamMemberId: 3,
+            teamMemberName: "Pierre Dubois"
+          }
+        ];
+        setAlbumPhotos(mockPhotos);
+        setSelectedAlbum(album);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des photos:', error);
+      // Photos d'exemple en cas d'erreur
+      const mockPhotos: Photo[] = [
+        {
+          id: 1,
+          imageUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+          thumbnailUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80",
+          highResUrl: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+          title: "Réalisation Salon",
+          description: "Découvrez le travail de notre équipe",
+          tags: ["coupe", "salon"],
+          width: 800,
+          height: 600,
+          teamMemberId: 1,
+          teamMemberName: "Antoine Mercier"
+        }
+      ];
+      setAlbumPhotos(mockPhotos);
+      setSelectedAlbum(album);
     }
   };
 
@@ -353,6 +503,16 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                                 {photo.description}
                               </p>
                             )}
+                            {/* Membre d'équipe */}
+                            {photo.teamMemberName && (
+                              <div className="flex items-center gap-2 mt-2 mb-2">
+                                <User className="h-4 w-4 text-violet-600" />
+                                <span className="text-sm font-medium text-violet-700">
+                                  Réalisé par {photo.teamMemberName}
+                                </span>
+                              </div>
+                            )}
+                            
                             {photo.tags.length > 0 && (
                               <div className="flex flex-wrap gap-1">
                                 {photo.tags.slice(0, 3).map((tag, i) => (
@@ -433,6 +593,12 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                       <p className="text-sm opacity-90">
                         Photo {photoIndex + 1} sur {albumPhotos.length}
                       </p>
+                      {selectedPhoto.teamMemberName && (
+                        <p className="text-sm opacity-90 flex items-center gap-1 mt-1">
+                          <User className="h-3 w-3" />
+                          Réalisé par {selectedPhoto.teamMemberName}
+                        </p>
+                      )}
                       <p className="text-xs opacity-75 mt-1">
                         Balayez ou utilisez les flèches pour naviguer
                       </p>
@@ -534,6 +700,25 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
                     placeholder="Description de la photo"
                     rows={3}
                   />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Membre d'équipe</label>
+                  <Select 
+                    value={selectedTeamMember ? selectedTeamMember.toString() : photoToEdit.teamMemberId?.toString() || ""}
+                    onValueChange={(value) => setSelectedTeamMember(value ? parseInt(value) : null)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un membre d'équipe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Aucun membre spécifique</SelectItem>
+                      {teamMembers.map((member) => (
+                        <SelectItem key={member.id} value={member.id.toString()}>
+                          {member.name} - {member.role}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" onClick={() => setEditPhotoDialog(false)}>

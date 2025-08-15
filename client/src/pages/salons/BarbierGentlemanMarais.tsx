@@ -630,6 +630,7 @@ export default function BarbierGentlemanMarais() {
           <AdvancedGallery 
             salonId={salon.id.toString()} 
             isOwner={false} // Pour les visiteurs, pas d'édition
+            teamMembers={teamMembers}
           />
         )}
 
