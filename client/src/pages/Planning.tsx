@@ -168,6 +168,31 @@ export default function Planning() {
     );
   };
 
+  // Calcul du chiffre d'affaires
+  const calculateRevenue = () => {
+    const completedAppointments = filteredAppointments.filter(apt => 
+      apt.status === 'completed' || apt.status === 'confirmed'
+    );
+    
+    const revenue = completedAppointments.reduce((total, apt) => {
+      const service = (services as Service[]).find(s => s.id === apt.serviceId);
+      return total + (service?.price || 0);
+    }, 0);
+
+    const totalAppointments = completedAppointments.length;
+    const averageTicket = totalAppointments > 0 ? revenue / totalAppointments : 0;
+
+    return { revenue, totalAppointments, averageTicket };
+  };
+
+  const revenueStats = calculateRevenue();
+
+  // Statistiques par période
+  const getPeriodLabel = () => {
+    if (viewMode === 'day') return 'Aujourd\'hui';
+    return 'Cette semaine';
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       scheduled: { label: "Programmé", variant: "secondary" as const },
@@ -512,6 +537,89 @@ export default function Planning() {
                   </Form>
                 </DialogContent>
               </Dialog>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Encadré statistiques CA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="glass-card p-6 rounded-2xl mb-6"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+              <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+              Chiffre d'affaires - {getPeriodLabel()}
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* CA Total */}
+            <div className="glass-card-violet p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">CA Total</span>
+                <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
+                  <span className="text-violet-600 font-bold">€</span>
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-violet-700">
+                {revenueStats.revenue.toFixed(2)}€
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                {revenueStats.totalAppointments} RDV réalisés
+              </div>
+            </div>
+
+            {/* Ticket moyen */}
+            <div className="glass-card-violet p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Ticket moyen</span>
+                <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <span className="text-amber-600 font-bold">~</span>
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-amber-700">
+                {revenueStats.averageTicket.toFixed(2)}€
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                Par rendez-vous
+              </div>
+            </div>
+
+            {/* Objectif */}
+            <div className="glass-card-violet p-4 rounded-xl">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Objectif</span>
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <span className="text-emerald-600 font-bold">🎯</span>
+                </div>
+              </div>
+              <div className="text-2xl font-bold text-emerald-700">
+                {viewMode === 'day' ? '250' : '1500'}€
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                {((revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100).toFixed(0)}% atteint
+              </div>
+            </div>
+          </div>
+
+          {/* Barre de progression objectif */}
+          <div className="mt-4">
+            <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+              <span>Progression vers l'objectif</span>
+              <span>{((revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <motion.div
+                className="bg-gradient-to-r from-violet-500 to-purple-600 h-2 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ 
+                  width: `${Math.min(100, (revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100)}%` 
+                }}
+                transition={{ duration: 1, ease: "easeOut" }}
+              />
             </div>
           </div>
         </motion.div>
