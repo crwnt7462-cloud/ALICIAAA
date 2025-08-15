@@ -23,6 +23,23 @@
 
 /* === COHÉRENCE VISUELLE GLOBALE AVYENTO === */
 
+/* FORCE TEXTE NOIR POUR LISIBILITÉ */
+.salon-text-content {
+  color: #1f2937 !important; /* Force le texte gris-800 pour lisibilité */
+}
+
+.salon-text-muted {
+  color: #6b7280 !important; /* Force le texte gris-500 pour texte secondaire */
+}
+
+.salon-service-name {
+  color: #111827 !important; /* Force le texte gris-900 pour noms de services */
+}
+
+.salon-price {
+  color: #111827 !important; /* Force le prix en noir pour lisibilité */
+}
+
 /* Typographie uniforme sur toute l'app */
 .avyento-title {
   @apply text-3xl lg:text-4xl font-bold text-gray-900 mb-1;
@@ -65,10 +82,12 @@
 /* Boutons uniformes */
 .avyento-button-primary {
   @apply glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl;
+  color: black !important; /* Force le texte noir pour lisibilité */
 }
 
 .avyento-button-secondary {
   @apply glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl;
+  color: black !important; /* Force le texte noir pour lisibilité */
 }
 
 /* Cartes uniformes */
@@ -83,10 +102,12 @@
 /* Formulaires uniformes */
 .avyento-input {
   @apply glass-input w-full px-4 py-3 rounded-2xl text-gray-900 placeholder-gray-500;
+  color: black !important; /* Force le texte noir pour lisibilité */
 }
 
 .avyento-select {
   @apply glass-input w-full px-4 py-3 rounded-2xl text-gray-900 bg-white/10;
+  color: black !important; /* Force le texte noir pour lisibilité */
 }
 
 /* Badges uniformes */

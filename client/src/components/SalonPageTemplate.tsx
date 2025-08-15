@@ -342,8 +342,8 @@ export function SalonPageTemplate({
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             {/* Info principale du service */}
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{service.name}</h4>
-                              <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate salon-service-name">{service.name}</h4>
+                              <p className="text-sm text-gray-600 mt-1 salon-text-muted">{service.description}</p>
                               <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-xs text-gray-500">
                                 <span className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
@@ -374,7 +374,7 @@ export function SalonPageTemplate({
                             {/* Prix et bouton */}
                             <div className="flex items-center justify-between sm:flex-col sm:items-end gap-3 sm:gap-2">
                               <div className="text-left sm:text-right">
-                                <p className="text-lg sm:text-xl font-bold text-gray-900">{service.price}€</p>
+                                <p className="text-lg sm:text-xl font-bold text-gray-900 salon-price">{service.price}€</p>
                               </div>
                               <button 
                                 className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-2 transition-all duration-300"
@@ -611,7 +611,7 @@ export function SalonPageTemplate({
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-900">{review.clientName}</h4>
+                      <h4 className="font-medium text-gray-900 salon-text-content">{review.clientName}</h4>
                       {review.verified && <CheckCircle className="h-4 w-4 text-green-500" />}
                     </div>
                     <div className="flex items-center gap-1 mt-1">
@@ -627,7 +627,7 @@ export function SalonPageTemplate({
                   </div>
                   <span className="text-xs text-gray-500">{review.date}</span>
                 </div>
-                <p className="text-gray-700 mb-2">{review.comment}</p>
+                <p className="text-gray-700 mb-2 salon-text-content">{review.comment}</p>
                 <p className="text-xs text-gray-500">{review.service}</p>
                 
                 {review.ownerResponse && (
