@@ -384,7 +384,19 @@ export default function BarbierGentlemanMarais() {
                                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                                       <span className="text-sm font-medium text-gray-700">{service.rating}</span>
                                       {service.reviewCount && (
-                                        <span className="text-xs text-gray-500">({service.reviewCount})</span>
+                                        <button 
+                                          className="text-xs text-violet-600 hover:text-violet-700 font-medium underline"
+                                          onClick={() => {
+                                            setActiveTab('avis');
+                                            // Scroll vers l'avis de ce service après un délai
+                                            setTimeout(() => {
+                                              const avisSectionElement = document.getElementById(`avis-service-${service.id}`);
+                                              avisSectionElement?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }, 200);
+                                          }}
+                                        >
+                                          ({service.reviewCount} avis)
+                                        </button>
                                       )}
                                     </div>
                                   )}
@@ -528,7 +540,7 @@ export default function BarbierGentlemanMarais() {
         )}
 
         {activeTab === 'avis' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="text-center py-8">
               <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold mb-2">
@@ -539,25 +551,138 @@ export default function BarbierGentlemanMarais() {
               </p>
             </div>
             
-            {/* Avis exemple */}
-            <div className="avyento-card p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                    <User className="h-5 w-5 text-amber-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium">Pierre D.</span>
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        ))}
+            {/* Avis par service */}
+            {displayServiceCategories.map((category) => {
+              const servicesWithReviews = category.services.filter(service => 
+                service.rating && service.reviewCount && service.reviewCount > 0
+              );
+              
+              if (servicesWithReviews.length === 0) return null;
+              
+              return (
+                <div key={category.id} className="space-y-4">
+                  <h3 className="avyento-subtitle text-gray-900">{category.name}</h3>
+                  
+                  {servicesWithReviews.map((service) => (
+                    <div key={service.id} id={`avis-service-${service.id}`} className="avyento-card p-4">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        {service.name}
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">{service.rating}</span>
+                          <span className="text-xs text-gray-500">({service.reviewCount} avis)</span>
+                        </div>
+                      </h4>
+                      
+                      {/* Avis client exemple */}
+                      <div className="space-y-4">
+                        <div className="border-l-4 border-gray-200 pl-4">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <User className="h-4 w-4 text-violet-600" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">Marc L.</span>
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-600 mb-2">Il y a 3 jours</p>
+                              <p className="text-sm text-gray-800">
+                                {service.name === 'Coupe Gentleman Classique' ? 
+                                  '"Excellent service ! Ma coupe était parfaite et exactement ce que je voulais. Le barbier était très professionnel et attentif aux détails."' :
+                                service.name === 'Rasage Traditionnel' ?
+                                  '"Un rasage exceptionnel ! Technique parfaite avec le coupe-chou, peau douce et expérience très relaxante. Je recommande vivement !"' :
+                                service.name === 'Barbe + Moustache' ?
+                                  '"Très satisfait de ma taille de barbe. Le résultat est impeccable et le style correspond parfaitement à ce que je souhaitais."' :
+                                  '"Service de qualité, professionnel et résultat à la hauteur de mes attentes. Je reviendrai certainement !"'
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Réponse du salon */}
+                        <div className="border-l-4 border-violet-200 bg-violet-50 pl-4 py-3 ml-4">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center flex-shrink-0">
+                              <span className="text-white text-xs font-bold">B</span>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-sm text-violet-900">Barbier Gentleman Marais</span>
+                                <Badge variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                                  Propriétaire
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-violet-700 mb-2">Il y a 2 jours</p>
+                              <p className="text-sm text-violet-900">
+                                {service.name === 'Coupe Gentleman Classique' ? 
+                                  "Merci beaucoup Marc ! C'est toujours un plaisir d'accueillir des clients qui apprécient notre travail. À très bientôt pour votre prochaine coupe !" :
+                                service.name === 'Rasage Traditionnel' ?
+                                  "Nous sommes ravis que vous ayez apprécié notre rasage traditionnel ! L'art du coupe-chou est notre spécialité, merci pour votre confiance." :
+                                service.name === 'Barbe + Moustache' ?
+                                  "Parfait ! C'est exactement notre objectif : créer le style qui vous correspond. Merci pour ce retour positif !" :
+                                  "Merci pour votre confiance ! Votre satisfaction est notre priorité, au plaisir de vous revoir bientôt."
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">Il y a 1 semaine</p>
-                    <p className="text-sm">"Un vrai barbier à l'ancienne ! Le rasage au coupe-chou était parfait et l'ambiance du salon authentique. Je reviendrai sans hésitation."</p>
+                  ))}
+                </div>
+              );
+            })}
+            
+            {/* Avis général du salon */}
+            <div className="avyento-card p-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Avis général</h4>
+              
+              <div className="space-y-4">
+                <div className="border-l-4 border-gray-200 pl-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="h-4 w-4 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-sm">Pierre D.</span>
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-2">Il y a 1 semaine</p>
+                      <p className="text-sm text-gray-800">"Un vrai barbier à l'ancienne ! L'ambiance du salon est authentique et l'équipe très professionnelle. L'attention aux détails est remarquable. Je recommande vivement !"</p>
+                    </div>
                   </div>
                 </div>
+                
+                {/* Réponse du salon */}
+                <div className="border-l-4 border-violet-200 bg-violet-50 pl-4 py-3 ml-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-violet-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <span className="text-white text-xs font-bold">B</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-sm text-violet-900">Barbier Gentleman Marais</span>
+                        <Badge variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                          Propriétaire
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-violet-700 mb-2">Il y a 5 jours</p>
+                      <p className="text-sm text-violet-900">Merci Pierre pour ce magnifique commentaire ! Nous mettons un point d'honneur à préserver les traditions du barbier tout en offrant un service moderne. Votre fidélité nous va droit au cœur. À très bientôt !</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
