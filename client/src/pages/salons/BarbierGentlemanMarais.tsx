@@ -230,29 +230,31 @@ export default function BarbierGentlemanMarais() {
                   <div className="border-t border-gray-100">
                     <div className="space-y-0">
                       {category.services.map((service: Service) => (
-                        <div key={service.id} className="flex items-center justify-between p-5 border-b border-gray-50 last:border-b-0">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{service.name}</h4>
-                            {service.description && (
-                              <p className="text-sm text-gray-500 mt-1">{service.description}</p>
-                            )}
-                            <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-                              <Clock className="h-3 w-3" />
-                              {service.duration}
+                        <div key={service.id} className="p-5 border-b border-gray-50 last:border-b-0">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900">{service.name}</h4>
+                              {service.description && (
+                                <p className="text-sm text-gray-500 mt-1">{service.description}</p>
+                              )}
+                              <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                                <Clock className="h-3 w-3" />
+                                {service.duration}
+                              </div>
+                            </div>
+                            <div className="text-right ml-4">
+                              <p className="font-bold text-xl text-gray-900">{service.price}€</p>
                             </div>
                           </div>
-                          <div className="text-right ml-4 flex items-center gap-3">
-                            <p className="font-bold text-xl text-gray-900">{service.price}€</p>
-                            <button 
-                              className="avyento-button-secondary"
-                              onClick={() => {
-                                console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
-                                setLocation('/salon-booking/barbier-gentleman-marais');
-                              }}
-                            >
-                              Réserver
-                            </button>
-                          </div>
+                          <button 
+                            className="avyento-button-secondary w-full"
+                            onClick={() => {
+                              console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
+                              setLocation('/salon-booking/barbier-gentleman-marais');
+                            }}
+                          >
+                            Réserver
+                          </button>
                         </div>
                       ))}
                     </div>
