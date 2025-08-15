@@ -57,13 +57,50 @@ function updateUserSession(
 async function upsertUser(
   claims: any,
 ) {
-  await storage.upsertUser({
+  const user = await storage.upsertUser({
     id: claims["sub"],
     email: claims["email"],
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
   });
+
+  // Créer automatiquement un salon personnel si c'est la première connexion
+  await createPersonalSalonIfNeeded(user);
+  
+  return user;
+}
+
+async function createPersonalSalonIfNeeded(user: any) {
+  try {
+    // Vérifier si l'utilisateur a déjà un salon
+    const existingSalons = await storage.getSalonsByOwner(user.id);
+    
+    if (existingSalons.length === 0) {
+      console.log('🏗️ Création salon personnel pour nouvel utilisateur:', user.email);
+      
+      // Importer la fonction de création automatique
+      const { createAutomaticSalonPage } = await import('./autoSalonCreation');
+      
+      // Créer les données professionnelles par défaut
+      const professionalData = {
+        businessName: `Salon de ${user.firstName || 'Professionnel'}`,
+        email: user.email,
+        phone: '+33 1 XX XX XX XX',
+        address: 'À définir',
+        description: 'Votre salon de beauté professionnel',
+        subscriptionPlan: 'basic' as 'basic' | 'premium' | 'enterprise'
+      };
+      
+      // Créer le salon automatiquement
+      const newSalon = await createAutomaticSalonPage(professionalData);
+      console.log('✅ Salon personnel créé:', newSalon.id);
+      
+      return newSalon;
+    }
+  } catch (error) {
+    console.error('❌ Erreur création salon personnel:', error);
+  }
 }
 
 export async function setupAuth(app: Express) {
@@ -110,7 +147,7 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
+      successReturnToOrRedirect: "/pro-dashboard",
       failureRedirect: "/api/login",
     })(req, res, next);
   });

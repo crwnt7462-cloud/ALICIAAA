@@ -4,8 +4,46 @@ import {
   ObjectStorageService,
   ObjectNotFoundError,
 } from "./objectStorage";
+import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Route pour récupérer le salon personnel de l'utilisateur connecté
+  app.get('/api/salon/my-salon', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      console.log('🔍 Recherche salon pour utilisateur:', userId);
+      
+      // Récupérer le salon de l'utilisateur
+      const salon = await storage.getSalonByUserId(userId);
+      
+      if (salon) {
+        console.log('✅ Salon trouvé:', salon.name);
+        res.json({ salon });
+      } else {
+        console.log('❌ Aucun salon trouvé pour cet utilisateur');
+        res.status(404).json({ message: "Aucun salon trouvé" });
+      }
+    } catch (error) {
+      console.error("Error fetching user salon:", error);
+      res.status(500).json({ message: "Failed to fetch salon" });
+    }
+  });
   
   // This endpoint is used to serve public assets.
   app.get("/public-objects/:filePath(*)", async (req, res) => {

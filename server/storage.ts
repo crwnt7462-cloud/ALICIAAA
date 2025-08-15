@@ -119,6 +119,7 @@ export interface IStorage {
   getSalon(salonId: string): Promise<any>;
   getSalons(): Promise<any[]>;
   getSalonsByUserId(userId: string): Promise<any[]>;
+  getSalonsByOwner(userId: string): Promise<any[]>;
   getSalonByUserId(userId: string): Promise<any>;
   updateSalon(salonId: string, updateData: any): Promise<any>;
   
@@ -716,6 +717,11 @@ export class DatabaseStorage implements IStorage {
       console.error('❌ Erreur récupération salon principal utilisateur:', error);
       return null;
     }
+  }
+
+  // Alias pour getSalonsByUserId - cohérence avec le code auth
+  async getSalonsByOwner(userId: string): Promise<any[]> {
+    return this.getSalonsByUserId(userId);
   }
 
   async getSalon(salonId: string): Promise<any> {
