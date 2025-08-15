@@ -231,7 +231,7 @@ export function SalonPageTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-white" style={customStyle}>
+    <div className="min-h-screen bg-white">
       {/* Header avec photo de couverture - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
       <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
