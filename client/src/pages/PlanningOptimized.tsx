@@ -187,32 +187,32 @@ const PlanningOptimized: React.FC = () => {
     }
   };
 
-  // Rendu des icônes flottantes minimalistes
+  // Rendu des icônes flottantes avec bulles pastels
   const renderFloatingIcons = () => (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
       {/* Mobile - 2 emojis plus espacés */}
       <div className="lg:hidden">
-        <div className="absolute top-8 left-8 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/10 to-purple-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse">
-          <span className="text-sm opacity-40">📅</span>
+        <div className="absolute top-8 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-violet-100 to-purple-100 shadow-sm flex items-center justify-center animate-pulse">
+          <span className="text-lg">📅</span>
         </div>
-        <div className="absolute top-12 right-12 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/10 to-green-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
-          <span className="text-sm opacity-40">⏰</span>
+        <div className="absolute top-12 right-12 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 shadow-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
+          <span className="text-lg">⏰</span>
         </div>
       </div>
       
       {/* Desktop - 4 emojis bien espacés */}
       <div className="hidden lg:block">
-        <div className="absolute top-8 left-32 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/8 to-purple-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse">
-          <span className="text-sm opacity-30">📅</span>
+        <div className="absolute top-8 left-32 w-14 h-14 rounded-full bg-gradient-to-br from-violet-100 to-purple-100 shadow-md flex items-center justify-center animate-pulse">
+          <span className="text-xl">📅</span>
         </div>
-        <div className="absolute top-12 right-48 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/8 to-green-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
-          <span className="text-sm opacity-30">⏰</span>
+        <div className="absolute top-12 right-48 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-100 to-green-100 shadow-md flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
+          <span className="text-xl">⏰</span>
         </div>
-        <div className="absolute top-16 left-2/3 w-10 h-10 rounded-full bg-gradient-to-br from-blue-200/8 to-cyan-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '4s' }}>
-          <span className="text-sm opacity-30">📊</span>
+        <div className="absolute top-16 left-2/3 w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 shadow-md flex items-center justify-center animate-pulse" style={{ animationDelay: '4s' }}>
+          <span className="text-xl">📊</span>
         </div>
-        <div className="absolute top-6 right-1/3 w-10 h-10 rounded-full bg-gradient-to-br from-amber-200/8 to-orange-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '6s' }}>
-          <span className="text-sm opacity-30">🎯</span>
+        <div className="absolute top-6 right-1/3 w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 shadow-md flex items-center justify-center animate-pulse" style={{ animationDelay: '6s' }}>
+          <span className="text-xl">🎯</span>
         </div>
       </div>
     </div>
