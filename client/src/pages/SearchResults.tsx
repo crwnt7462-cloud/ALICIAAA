@@ -276,7 +276,7 @@ export default function SearchResults() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center pt-2 pb-4"
+          className="flex justify-center pt-2 pb-2"
         >
           <img 
             src={avyentoLogo} 
