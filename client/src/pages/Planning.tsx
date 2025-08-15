@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import WeeklyPlanningView from '@/components/WeeklyPlanningView';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, User, MapPin, Filter, CheckCircle, X } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, User, MapPin, Filter, CheckCircle, X, CalendarDays, MoreVertical } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -34,25 +34,18 @@ const timeSlots = [
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"
 ];
 
+const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
 export default function Planning() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: appointments = [], isLoading } = useQuery({
-    queryKey: ["/api/appointments", viewMode === 'day' ? selectedDate : 'all'],
-  });
-
-  // For month view, get all appointments for the current month
-  const currentMonth = new Date(selectedDate).getMonth();
-  const currentYear = new Date(selectedDate).getFullYear();
-  
-  const { data: monthlyAppointments = [] } = useQuery({
-    queryKey: ["/api/appointments/monthly", currentYear, currentMonth],
-    enabled: viewMode === 'month'
+    queryKey: ["/api/appointments"],
   });
 
   const { data: clients = [] } = useQuery({
@@ -108,17 +101,51 @@ export default function Planning() {
     },
   });
 
-  const filteredAppointments = (appointments || []).filter((appointment: any) => {
-    if (statusFilter === "all") return true;
-    return appointment.status === statusFilter;
-  });
+  // Fonction pour obtenir la semaine actuelle
+  const getCurrentWeek = () => {
+    const date = new Date(selectedDate);
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Ajuster pour commencer lundi
+    const monday = new Date(date.setDate(diff));
+    
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(monday);
+      day.setDate(monday.getDate() + i);
+      week.push(day.toISOString().split('T')[0]);
+    }
+    return week;
+  };
 
+  const currentWeek = getCurrentWeek();
+
+  // Filtrer les rendez-vous avec useMemo pour l'optimisation
+  const filteredAppointments = useMemo(() => {
+    if (!appointments || appointments.length === 0) return [];
+    
+    return (appointments as Appointment[]).filter(apt => {
+      if (statusFilter !== 'all' && apt.status !== statusFilter) return false;
+      
+      if (viewMode === 'day') {
+        return apt.appointmentDate === selectedDate;
+      } else {
+        return currentWeek.includes(apt.appointmentDate);
+      }
+    });
+  }, [appointments, statusFilter, selectedDate, viewMode, currentWeek]);
+
+  // Navigation de date
   const changeDate = (days: number) => {
     const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + days);
+    if (viewMode === 'week') {
+      newDate.setDate(newDate.getDate() + (days * 7));
+    } else {
+      newDate.setDate(newDate.getDate() + days);
+    }
     setSelectedDate(newDate.toISOString().split('T')[0]);
   };
 
+  // Formatage des dates
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('fr-FR', { 
@@ -126,6 +153,19 @@ export default function Planning() {
       day: 'numeric', 
       month: 'long' 
     });
+  };
+
+  const formatWeekRange = () => {
+    const start = new Date(currentWeek[0]);
+    const end = new Date(currentWeek[6]);
+    return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} - ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
+  };
+
+  // Obtenir les rendez-vous pour un créneau horaire spécifique
+  const getAppointmentsForSlot = (date: string, time: string) => {
+    return filteredAppointments.filter(apt => 
+      apt.appointmentDate === date && apt.startTime === time
+    );
   };
 
   const getStatusBadge = (status: string) => {
@@ -145,415 +185,368 @@ export default function Planning() {
     createMutation.mutate(data);
   };
 
-  // Generate calendar days for month view
-  const generateCalendarDays = () => {
-    const firstDay = new Date(currentYear, currentMonth, 1);
-    const lastDay = new Date(currentYear, currentMonth + 1, 0);
-    const firstDayOfWeek = firstDay.getDay();
-    const daysInMonth = lastDay.getDate();
-    
-    const days = [];
-    
-    // Add empty cells for days before the first day of the month
-    for (let i = 0; i < firstDayOfWeek; i++) {
-      days.push(null);
-    }
-    
-    // Add days of the month
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const dayAppointments = (monthlyAppointments || []).filter((apt: any) => 
-        apt.appointmentDate === dateStr
-      );
-      days.push({ day, dateStr, appointments: dayAppointments });
-    }
-    
-    return days;
-  };
-
-  const calendarDays = generateCalendarDays();
-
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="avyento-section-spacing">
-        <div className="max-w-md mx-auto space-y-4">
-          {/* Header avec navigation de date et toggle vue */}
-          <div className="avyento-glass-card space-y-4">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => viewMode === 'day' ? changeDate(-1) : changeDate(-30)}
-            className="avyento-button-secondary"
+  // Vue jour avec design Avyento
+  const renderDayView = () => (
+    <div className="space-y-4">
+      {timeSlots.map((time) => {
+        const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
+        
+        return (
+          <motion.div
+            key={time}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-4 rounded-xl border border-white/20"
           >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          
-          <div className="text-center">
-            <h1 className="text-lg font-semibold capitalize">
-              {viewMode === 'day' ? formatDate(selectedDate) : new Date(currentYear, currentMonth).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-            </h1>
-            <p className="text-sm text-gray-500">
-              {viewMode === 'day' ? `${filteredAppointments.length} rendez-vous` : `${(monthlyAppointments as any[]).length} rendez-vous ce mois`}
-            </p>
-          </div>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => viewMode === 'day' ? changeDate(1) : changeDate(30)}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Toggle vue jour/semaine/mois */}
-        <div className="flex items-center justify-center gap-2">
-          <button
-            onClick={() => setViewMode('day')}
-            className={`avyento-button-secondary ${
-              viewMode === 'day' ? 'bg-violet-600 text-white border-violet-700' : ''
-            }`}
-          >
-            Jour
-          </button>
-          <button
-            onClick={() => setViewMode('week')}
-            className={`avyento-button-secondary ${
-              viewMode === 'week' ? 'bg-violet-600 text-white border-violet-700' : ''
-            }`}
-          >
-            Semaine
-          </button>
-          <Button
-            variant={viewMode === 'month' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('month')}
-          >
-            Mois
-          </Button>
-        </div>
-      </div>
-
-      {/* Actions rapides */}
-      <div className="grid grid-cols-2 gap-2">
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <button className="avyento-button-primary inline-flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              Nouveau RDV
-            </button>
-          </DialogTrigger>
-          <DialogContent className="max-w-sm">
-            <DialogHeader>
-              <DialogTitle>Nouveau rendez-vous</DialogTitle>
-            </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="clientId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Client</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner un client" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(clients as Client[]).map((client: Client) => (
-                              <SelectItem key={client.id} value={client.id.toString()}>
-                                {client.firstName} {client.lastName}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="serviceId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Service</FormLabel>
-                      <FormControl>
-                        <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner un service" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {(services as Service[]).map((service: Service) => (
-                              <SelectItem key={service.id} value={service.id.toString()}>
-                                {service.name} - {service.price}€
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-2 gap-2">
-                  <FormField
-                    control={form.control}
-                    name="startTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Début</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="endTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Fin</FormLabel>
-                        <FormControl>
-                          <Input type="time" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <button type="submit" className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl w-full disabled:opacity-50" disabled={createMutation.isPending}>
-                  {createMutation.isPending ? "Création..." : "Créer le rendez-vous"}
-                </button>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="h-12">
-            <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4" />
-              <SelectValue />
-            </div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Tous</SelectItem>
-            <SelectItem value="confirmed">Confirmés</SelectItem>
-            <SelectItem value="scheduled">Programmés</SelectItem>
-            <SelectItem value="completed">Terminés</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Vue mois - Calendrier */}
-      {viewMode === 'month' && (
-        <div className="glass-card rounded-lg overflow-hidden">
-          {/* En-têtes des jours */}
-          <div className="grid grid-cols-7 bg-gray-50 border-b">
-            {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
-              <div key={day} className="p-3 text-center text-sm font-medium text-gray-600">
-                {day}
+            <div className="flex items-start gap-4">
+              <div className="text-sm font-medium text-violet-600 min-w-[60px]">
+                {time}
               </div>
-            ))}
-          </div>
-          
-          {/* Grille du calendrier */}
-          <div className="grid grid-cols-7">
-            {calendarDays.map((dayData, index) => (
-              <div
-                key={index}
-                className={`min-h-[80px] p-2 border-r border-b border-gray-100 ${
-                  dayData ? 'cursor-pointer hover:bg-gray-50' : ''
-                } ${
-                  dayData?.dateStr === selectedDate ? 'bg-purple-50 border-purple-200' : ''
-                }`}
-                onClick={() => dayData && setSelectedDate(dayData.dateStr)}
-              >
-                {dayData && (
-                  <>
-                    <div className={`text-sm font-medium mb-1 ${
-                      dayData.dateStr === selectedDate ? 'text-purple-600' : 'text-gray-700'
-                    }`}>
-                      {dayData.day}
-                    </div>
-                    
-                    {/* Mini indicateurs de rendez-vous */}
-                    <div className="space-y-1">
-                      {dayData.appointments.slice(0, 3).map((apt: any, aptIndex: number) => (
-                        <div
-                          key={aptIndex}
-                          className={`text-xs px-2 py-1 rounded truncate ${
-                            apt.status === 'confirmed' ? 'bg-green-100 text-green-700' :
-                            apt.status === 'completed' ? 'bg-blue-100 text-blue-700' :
-                            apt.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}
-                        >
-                          {apt.startTime} {apt.client?.firstName}
-                        </div>
-                      ))}
+              
+              <div className="flex-1">
+                {appointmentsAtTime.length > 0 ? (
+                  <div className="space-y-2">
+                    {appointmentsAtTime.map((appointment) => {
+                      const client = (clients as Client[]).find(c => c.id === appointment.clientId);
+                      const service = (services as Service[]).find(s => s.id === appointment.serviceId);
                       
-                      {dayData.appointments.length > 3 && (
-                        <div className="text-xs text-gray-500 text-center">
-                          +{dayData.appointments.length - 3} autres
-                        </div>
-                      )}
-                    </div>
-                  </>
+                      return (
+                        <motion.div
+                          key={appointment.id}
+                          whileHover={{ scale: 1.02 }}
+                          className="glass-card-violet p-3 rounded-lg cursor-pointer"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <User className="h-4 w-4 text-violet-600" />
+                                <span className="font-medium">
+                                  {client ? `${client.firstName} ${client.lastName}` : 'Client inconnu'}
+                                </span>
+                                {getStatusBadge(appointment.status)}
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                {service?.name} - {appointment.startTime} → {appointment.endTime}
+                              </div>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-gray-400 text-sm">Libre</div>
                 )}
               </div>
-            ))}
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
 
-      {/* Vue semaine - Planning hebdomadaire */}
-      {viewMode === 'week' && (
-        <WeeklyPlanningView
-          appointments={filteredAppointments.map(apt => ({
-            id: apt.id,
-            clientName: apt.client?.firstName + ' ' + (apt.client?.lastName || ''),
-            serviceName: apt.service?.name || '',
-            startTime: apt.startTime,
-            endTime: apt.endTime,
-            appointmentDate: apt.appointmentDate,
-            staffId: apt.staffId,
-            staffName: apt.staffId ? `Staff ${apt.staffId}` : undefined,
-            status: apt.status,
-            price: apt.service?.price
-          }))}
-          staff={[
-            { id: 1, firstName: 'Marie', lastName: 'Dubois', color: '#8B5CF6', specialties: ['Coiffure'] },
-            { id: 2, firstName: 'Sophie', lastName: 'Martin', color: '#06B6D4', specialties: ['Manucure'] },
-            { id: 3, firstName: 'Julie', lastName: 'Petit', color: '#10B981', specialties: ['Soins'] }
-          ]}
-          onNewAppointment={(date, time) => {
-            setSelectedDate(date);
-            form.setValue('appointmentDate', date);
-            form.setValue('startTime', time);
-            setIsDialogOpen(true);
-          }}
-          showStaffView={true}
-        />
-      )}
+  // Vue semaine avec design Avyento
+  const renderWeekView = () => (
+    <div className="space-y-4">
+      {/* En-têtes des jours */}
+      <div className="grid grid-cols-8 gap-2">
+        <div className="text-sm font-medium text-gray-500 p-2"></div>
+        {currentWeek.map((date, index) => {
+          const dayDate = new Date(date);
+          const isToday = date === new Date().toISOString().split('T')[0];
+          
+          return (
+            <div
+              key={date}
+              className={`text-center p-2 rounded-lg ${
+                isToday ? 'glass-card-violet text-violet-700' : 'glass-card'
+              }`}
+            >
+              <div className="text-xs text-gray-500 mb-1">
+                {weekDays[index]}
+              </div>
+              <div className="text-sm font-medium">
+                {dayDate.getDate()}
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
-      {/* Liste des rendez-vous - Vue jour */}
-      {viewMode === 'day' && (
-        <div className="space-y-3">
-        {isLoading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-gray-100 rounded-lg animate-pulse" />
-            ))}
-          </div>
-        ) : filteredAppointments.length === 0 ? (
-          <Card>
-            <CardContent className="p-6 text-center">
-              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-500">Aucun rendez-vous aujourd'hui</p>
-              <p className="text-sm text-gray-400">Profitez de cette journée libre !</p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredAppointments.map((appointment: any) => (
-            <Card key={appointment.id} className="overflow-hidden">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Clock className="h-4 w-4 text-gray-500" />
-                      <span className="font-medium">
-                        {appointment.startTime} - {appointment.endTime}
-                      </span>
-                      {getStatusBadge(appointment.status)}
-                    </div>
+      {/* Grille horaire */}
+      <div className="max-h-[500px] overflow-y-auto">
+        {timeSlots.map((time) => (
+          <div key={time} className="grid grid-cols-8 gap-2 mb-2">
+            <div className="text-sm font-medium text-violet-600 p-2 text-right">
+              {time}
+            </div>
+            {currentWeek.map((date) => {
+              const appointmentsAtTime = getAppointmentsForSlot(date, time);
+              
+              return (
+                <div
+                  key={`${date}-${time}`}
+                  className="min-h-[60px] glass-card p-1 rounded-lg border border-white/20 hover:border-violet-200 transition-colors"
+                >
+                  {appointmentsAtTime.map((appointment) => {
+                    const client = (clients as Client[]).find(c => c.id === appointment.clientId);
                     
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm">
-                          {appointment.client?.firstName} {appointment.client?.lastName}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">
-                          {appointment.service?.name}
-                        </span>
-                        <span className="text-sm font-medium text-green-600">
-                          {appointment.service?.price}€
-                        </span>
-                      </div>
-                    </div>
-
-                    {appointment.notes && (
-                      <p className="text-xs text-gray-500 mt-2 bg-gray-50 p-2 rounded">
-                        {appointment.notes}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-1 ml-2">
-                    {appointment.status === "scheduled" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => updateStatusMutation.mutate({ 
-                          id: appointment.id, 
-                          status: "confirmed" 
-                        })}
-                        className="h-8 w-8 p-0"
+                    return (
+                      <motion.div
+                        key={appointment.id}
+                        whileHover={{ scale: 1.05 }}
+                        className="glass-card-violet p-2 rounded text-xs cursor-pointer"
                       >
-                        <CheckCircle className="h-4 w-4" />
-                      </Button>
-                    )}
-                    
-                    {appointment.status !== "cancelled" && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => updateStatusMutation.mutate({ 
-                          id: appointment.id, 
-                          status: "cancelled" 
-                        })}
-                        className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
+                        <div className="font-medium truncate">
+                          {client ? `${client.firstName} ${client.lastName}` : 'Client'}
+                        </div>
+                        <div className="text-violet-600 truncate">
+                          {appointment.startTime}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
-      {/* Sélecteur de date - Vue jour uniquement */}
-      {viewMode === 'day' && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg">Changer de date</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full"
-            />
-          </CardContent>
-        </Card>
-      )}
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white flex items-center justify-center">
+        <div className="glass-card p-8 rounded-2xl">
+          <div className="animate-spin h-8 w-8 border-4 border-violet-200 border-t-violet-600 rounded-full mx-auto"></div>
+          <p className="text-gray-600 mt-4">Chargement du planning...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
+      <div className="container mx-auto p-4 max-w-7xl">
+        {/* Header avec navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-card p-6 rounded-2xl mb-6"
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            {/* Navigation de date */}
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => changeDate(-1)}
+                className="glass-button-secondary"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              
+              <div className="text-center min-w-[200px]">
+                <h1 className="text-xl font-bold text-gray-800">
+                  {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
+                </h1>
+                <p className="text-sm text-gray-500">
+                  {filteredAppointments.length} rendez-vous
+                </p>
+              </div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => changeDate(1)}
+                className="glass-button-secondary"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Toggle vue jour/semaine */}
+            <div className="flex items-center gap-2 bg-white/50 p-1 rounded-xl">
+              <Button
+                variant={viewMode === 'day' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('day')}
+                className={viewMode === 'day' ? 'glass-button-violet' : 'glass-button-secondary'}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Jour
+              </Button>
+              <Button
+                variant={viewMode === 'week' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('week')}
+                className={viewMode === 'week' ? 'glass-button-violet' : 'glass-button-secondary'}
+              >
+                <CalendarDays className="h-4 w-4 mr-2" />
+                Semaine
+              </Button>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-40 glass-input">
+                  <div className="flex items-center gap-2">
+                    <Filter className="h-4 w-4" />
+                    <SelectValue />
+                  </div>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous</SelectItem>
+                  <SelectItem value="confirmed">Confirmés</SelectItem>
+                  <SelectItem value="scheduled">Programmés</SelectItem>
+                  <SelectItem value="completed">Terminés</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="glass-button-violet">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nouveau RDV
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="glass-modal max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-bold">Nouveau rendez-vous</DialogTitle>
+                  </DialogHeader>
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="clientId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Client</FormLabel>
+                            <FormControl>
+                              <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                                <SelectTrigger className="glass-input">
+                                  <SelectValue placeholder="Sélectionner un client" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {(clients as Client[]).map((client: Client) => (
+                                    <SelectItem key={client.id} value={client.id.toString()}>
+                                      {client.firstName} {client.lastName}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="serviceId"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Service</FormLabel>
+                            <FormControl>
+                              <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                                <SelectTrigger className="glass-input">
+                                  <SelectValue placeholder="Sélectionner un service" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {(services as Service[]).map((service: Service) => (
+                                    <SelectItem key={service.id} value={service.id.toString()}>
+                                      {service.name} - {service.price}€
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="startTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Début</FormLabel>
+                              <FormControl>
+                                <Input type="time" {...field} className="glass-input" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="endTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Fin</FormLabel>
+                              <FormControl>
+                                <Input type="time" {...field} className="glass-input" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        className="w-full glass-button-violet"
+                        disabled={createMutation.isPending}
+                      >
+                        {createMutation.isPending ? "Création..." : "Créer le rendez-vous"}
+                      </Button>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Contenu principal */}
+        <motion.div
+          key={viewMode}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+        >
+          {viewMode === 'day' ? renderDayView() : renderWeekView()}
+        </motion.div>
+
+        {filteredAppointments.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-12"
+          >
+            <div className="glass-card p-8 rounded-2xl max-w-md mx-auto">
+              <Calendar className="h-16 w-16 text-violet-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                Aucun rendez-vous
+              </h3>
+              <p className="text-gray-500 text-sm">
+                {viewMode === 'day' 
+                  ? 'Aucun rendez-vous prévu pour cette journée'
+                  : 'Aucun rendez-vous prévu pour cette semaine'
+                }
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }
