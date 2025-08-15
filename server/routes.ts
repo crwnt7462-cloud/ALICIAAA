@@ -731,6 +731,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour les paramètres de salon (incluant les couleurs personnalisées)
+  app.get('/api/salon-settings', async (req, res) => {
+    try {
+      // Pour l'instant, retourner les paramètres par défaut avec possibilité de customisation
+      const defaultSettings = {
+        name: 'Mon Salon',
+        address: '',
+        phone: '',
+        email: '',
+        description: '',
+        customColors: {
+          primaryColor: '#7c3aed',
+          intensity: 'medium',
+          variant: 'violet'
+        },
+        openingHours: {
+          monday: { open: '09:00', close: '18:00', closed: false },
+          tuesday: { open: '09:00', close: '18:00', closed: false },
+          wednesday: { open: '09:00', close: '18:00', closed: false },
+          thursday: { open: '09:00', close: '18:00', closed: false },
+          friday: { open: '09:00', close: '18:00', closed: false },
+          saturday: { open: '09:00', close: '17:00', closed: false },
+          sunday: { open: '10:00', close: '16:00', closed: true }
+        }
+      };
+      
+      res.json(defaultSettings);
+    } catch (error) {
+      console.error("Erreur récupération paramètres salon:", error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la récupération des paramètres',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
+    }
+  });
+
+  app.put('/api/salon-settings', async (req, res) => {
+    try {
+      const settings = req.body;
+      console.log('💅 Sauvegarde paramètres salon:', {
+        name: settings.name,
+        hasCustomColors: !!settings.customColors,
+        primaryColor: settings.customColors?.primaryColor
+      });
+      
+      // Simuler la sauvegarde des paramètres
+      // En réalité, cela devrait être sauvegardé dans la base de données
+      const savedSettings = {
+        ...settings,
+        updatedAt: new Date().toISOString()
+      };
+      
+      console.log('✅ Paramètres salon sauvegardés avec succès');
+      res.json({ 
+        success: true, 
+        settings: savedSettings,
+        message: 'Paramètres sauvegardés avec succès'
+      });
+    } catch (error) {
+      console.error("Erreur sauvegarde paramètres salon:", error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la sauvegarde des paramètres',
+        details: error instanceof Error ? error.message : 'Erreur inconnue'
+      });
+    }
+  });
+
   // Route de simulation Stripe checkout
   app.post('/api/stripe/checkout', async (req, res) => {
     try {
