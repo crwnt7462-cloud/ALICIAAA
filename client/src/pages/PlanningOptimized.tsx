@@ -187,36 +187,8 @@ const PlanningOptimized: React.FC = () => {
     }
   };
 
-  // Rendu des icônes flottantes minimalistes
-  const renderFloatingIcons = () => (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {/* Mobile - 2 emojis plus espacés */}
-      <div className="lg:hidden">
-        <div className="absolute top-8 left-8 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/10 to-purple-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse">
-          <span className="text-sm opacity-40">📅</span>
-        </div>
-        <div className="absolute top-12 right-12 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/10 to-green-300/5 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
-          <span className="text-sm opacity-40">⏰</span>
-        </div>
-      </div>
-      
-      {/* Desktop - 4 emojis bien espacés */}
-      <div className="hidden lg:block">
-        <div className="absolute top-8 left-32 w-10 h-10 rounded-full bg-gradient-to-br from-violet-200/8 to-purple-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse">
-          <span className="text-sm opacity-30">📅</span>
-        </div>
-        <div className="absolute top-12 right-48 w-10 h-10 rounded-full bg-gradient-to-br from-emerald-200/8 to-green-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '2s' }}>
-          <span className="text-sm opacity-30">⏰</span>
-        </div>
-        <div className="absolute top-16 left-2/3 w-10 h-10 rounded-full bg-gradient-to-br from-blue-200/8 to-cyan-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '4s' }}>
-          <span className="text-sm opacity-30">📊</span>
-        </div>
-        <div className="absolute top-6 right-1/3 w-10 h-10 rounded-full bg-gradient-to-br from-amber-200/8 to-orange-300/4 backdrop-blur-sm flex items-center justify-center animate-pulse" style={{ animationDelay: '6s' }}>
-          <span className="text-sm opacity-30">🎯</span>
-        </div>
-      </div>
-    </div>
-  );
+  // Fonction vide pour les emojis (supprimés)
+  const renderFloatingIcons = () => null;
 
   // Rendu des KPIs minimalistes
   const renderAnalytics = () => (
@@ -573,16 +545,19 @@ const PlanningOptimized: React.FC = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-center space-y-4 pt-8 lg:pt-4 relative"
         >
-          {renderFloatingIcons()}
-          
           <div className="lg:text-left lg:flex lg:items-center lg:justify-between relative z-10">
             <div>
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight mb-2">
-                Planning Pro
+                Planning
               </h1>
-              <p className="text-gray-600 text-sm lg:text-base leading-relaxed">
-                Gérez votre salon avec intelligence artificielle
-              </p>
+              <div className="space-y-1">
+                <p className="text-lg font-medium text-gray-800">
+                  Studio Beauté Avyento
+                </p>
+                <p className="text-sm text-gray-600">
+                  15 Avenue des Champs-Élysées, 75008 Paris
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
