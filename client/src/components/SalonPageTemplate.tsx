@@ -263,15 +263,15 @@ export function SalonPageTemplate({
               <div key={category.id} className="avyento-card overflow-hidden">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full px-3 py-2 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-4 py-1.5 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="text-left">
-                    <h3 className="font-semibold text-lg text-gray-900">{category.name}</h3>
+                    <h3 className="font-semibold text-base text-gray-900">{category.name}</h3>
                     {/* Description affichée uniquement quand le volet est fermé */}
                     {!category.expanded && category.description && (
-                      <div className="mt-2">
+                      <div className="mt-1">
                         <div 
-                          className="text-sm text-gray-600 leading-relaxed"
+                          className="text-xs text-gray-600 leading-snug"
                           dangerouslySetInnerHTML={{ 
                             __html: expandedCategoryDescriptions.has(category.id) 
                               ? category.description 
@@ -294,7 +294,7 @@ export function SalonPageTemplate({
                                 return newSet;
                               });
                             }}
-                            className="text-violet-600 hover:text-violet-700 text-sm font-medium mt-1 transition-colors cursor-pointer"
+                            className="text-violet-600 hover:text-violet-700 text-xs font-medium mt-0.5 transition-colors cursor-pointer"
                           >
                             {expandedCategoryDescriptions.has(category.id) ? 'Voir moins' : 'Voir +'}
                           </span>
@@ -312,10 +312,10 @@ export function SalonPageTemplate({
                   <div className="border-t border-gray-100">
                     <div className="space-y-0">
                       {category.services.map((service: SalonService) => (
-                        <div key={service.id} className="px-3 py-2 border-b border-gray-50 last:border-b-0">
-                          <div className="flex items-start justify-between mb-2">
+                        <div key={service.id} className="px-4 py-2 border-b border-gray-50 last:border-b-0">
+                          <div className="flex items-start justify-between mb-1">
                             <div className="flex-1">
-                              <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center justify-between mb-1">
                                 <h4 className="font-medium text-gray-900">{service.name}</h4>
                                 {/* Notation du service - EXACTEMENT COMME BARBIER */}
                               {service.rating && (
