@@ -1346,9 +1346,9 @@ export default function PublicLanding() {
       </section>
 
       {/* Footer moderne avec effet glassmorphism */}
-      <footer className="bg-gradient-to-br from-gray-900/95 via-gray-800/90 to-gray-900/95 backdrop-blur-xl border-t border-white/10 py-8 w-full">
-        <div className="w-full px-8 lg:px-16 xl:px-24">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <footer className="bg-gray-900 text-white py-10 w-full">
+        <div className="w-full px-6 lg:px-12 xl:px-20">
+          <div className="grid md:grid-cols-5 gap-6">
             
             {/* Logo et description */}
             <div className="lg:flex-1">
