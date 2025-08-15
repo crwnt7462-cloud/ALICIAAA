@@ -709,17 +709,17 @@ export default function SearchResults() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-10 w-full">
-        <div className="w-full px-6 lg:px-12 xl:px-20">
-          <div className="grid md:grid-cols-5 gap-6">
+      <footer className="bg-gray-900 text-white py-16 w-full">
+        <div className="mx-auto px-6 lg:px-12 xl:px-20">
+          <div className="grid md:grid-cols-5 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-3">Avyento</h3>
+              <h3 className="text-xl font-bold mb-4">Avyento</h3>
               <p className="text-gray-400 text-sm">
                 La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-3">Services</h4>
+              <h4 className="font-semibold mb-4">Services</h4>
               <div className="space-y-2 text-sm text-gray-400">
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
@@ -748,7 +748,7 @@ export default function SearchResults() {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-3">Partenaires</h4>
+              <h4 className="font-semibold mb-4">Partenaires</h4>
               <div className="space-y-2 text-sm text-gray-400">
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
@@ -777,7 +777,7 @@ export default function SearchResults() {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-3">Support</h4>
+              <h4 className="font-semibold mb-4">Support</h4>
               <div className="space-y-2 text-sm text-gray-400">
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
@@ -808,7 +808,7 @@ export default function SearchResults() {
 
           </div>
 
-          <div className="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
               © 2024 Avyento. Tous droits réservés.
             </p>
