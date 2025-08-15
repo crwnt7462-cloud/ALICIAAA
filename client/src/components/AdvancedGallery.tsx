@@ -151,85 +151,150 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
   if (selectedAlbum) {
     return (
       <div className="space-y-6">
-        {/* Header album */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setSelectedAlbum(null);
-                setAlbumPhotos([]);
-              }}
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Retour aux albums
-            </Button>
-            <div>
-              <h2 className="avyento-title text-gray-900 mb-1">{selectedAlbum.name}</h2>
-              <p className="text-gray-600 text-sm">{selectedAlbum.description}</p>
-              <p className="text-gray-500 text-xs mt-1">{albumPhotos.length} photos</p>
-            </div>
+        {/* Header album avec design moderne */}
+        <div className="relative">
+          {/* Image de couverture en arrière-plan */}
+          <div className="h-48 relative overflow-hidden rounded-xl">
+            <img
+              src={selectedAlbum.coverImageUrl}
+              alt={selectedAlbum.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30" />
           </div>
           
-          {isOwner && (
-            <div className="flex items-center gap-2">
-              <ObjectUploader
-                maxNumberOfFiles={10}
-                maxFileSize={20971520} // 20MB
-                onGetUploadParameters={handleGetUploadParameters}
-                onComplete={handleUploadComplete}
-                buttonClassName="avyento-button-primary"
+          {/* Contenu superposé */}
+          <div className="absolute inset-0 flex items-center justify-between p-6">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSelectedAlbum(null);
+                  setAlbumPhotos([]);
+                }}
+                className="text-white hover:bg-white/20 backdrop-blur-sm"
               >
-                <Upload className="h-4 w-4 mr-2" />
-                Ajouter des photos
-              </ObjectUploader>
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Retour aux albums
+              </Button>
+              <div className="text-white">
+                <h2 className="text-3xl font-bold mb-2">{selectedAlbum.name}</h2>
+                <p className="text-white/90 text-lg">{selectedAlbum.description}</p>
+                <p className="text-white/70 text-sm mt-1">{albumPhotos.length} photos</p>
+              </div>
             </div>
-          )}
+            
+            {isOwner && (
+              <div className="flex items-center gap-2">
+                <ObjectUploader
+                  maxNumberOfFiles={10}
+                  maxFileSize={20971520} // 20MB
+                  onGetUploadParameters={handleGetUploadParameters}
+                  onComplete={handleUploadComplete}
+                  buttonClassName="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Ajouter des photos
+                </ObjectUploader>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Grille photos */}
+        {/* Carrousel de photos */}
         {albumPhotos.length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {albumPhotos.map((photo, index) => (
-              <div
-                key={photo.id}
-                className="avyento-card overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
-                onClick={() => openPhotoViewer(photo, index)}
-              >
-                <div className="aspect-square relative">
-                  <img
-                    src={photo.thumbnailUrl}
-                    alt={photo.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    loading="lazy"
-                  />
-                  {isOwner && (
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPhotoToEdit(photo);
-                          setEditPhotoDialog(true);
-                        }}
-                      >
-                        <Edit3 className="h-3 w-3" />
-                      </Button>
+          <div className="space-y-6">
+            {/* Navigation carrousel */}
+            <div className="flex items-center justify-between">
+              <p className="text-gray-600 text-sm">{albumPhotos.length} photos dans cet album</p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openPhotoViewer(albumPhotos[0], 0)}
+                >
+                  Voir en grand
+                </Button>
+              </div>
+            </div>
+
+            {/* Carrousel principal */}
+            <div className="space-y-4">
+              {albumPhotos.map((photo, index) => (
+                <div
+                  key={photo.id}
+                  className="avyento-card overflow-hidden"
+                >
+                  {/* Image principale */}
+                  <div className="relative">
+                    <img
+                      src={photo.imageUrl}
+                      alt={photo.title}
+                      className="w-full h-96 object-cover cursor-pointer"
+                      onClick={() => openPhotoViewer(photo, index)}
+                      loading="lazy"
+                    />
+                    {isOwner && (
+                      <div className="absolute top-4 right-4">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPhotoToEdit(photo);
+                            setEditPhotoDialog(true);
+                          }}
+                        >
+                          <Edit3 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Encadré descriptif AVYENTO */}
+                  {(photo.title || photo.description) && (
+                    <div className="p-6 bg-gradient-to-r from-violet-50 to-purple-50 border-l-4 border-violet-500">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          {photo.title && (
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                              {photo.title}
+                            </h3>
+                          )}
+                          {photo.description && (
+                            <p className="text-gray-700 leading-relaxed mb-3">
+                              {photo.description}
+                            </p>
+                          )}
+                          {photo.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {photo.tags.map((tag, i) => (
+                                <Badge 
+                                  key={i} 
+                                  variant="secondary" 
+                                  className="bg-violet-100 text-violet-800 border-violet-200"
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="ml-4 text-right">
+                          <div className="text-xs font-bold text-violet-600 tracking-wider">
+                            AVYENTO
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            Photo {index + 1}/{albumPhotos.length}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
-                {photo.title && (
-                  <div className="p-3">
-                    <h4 className="font-medium text-sm text-gray-900 mb-1">{photo.title}</h4>
-                    {photo.description && (
-                      <p className="text-xs text-gray-600 line-clamp-2">{photo.description}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : (
           <div className="text-center py-12">
@@ -419,27 +484,51 @@ export function AdvancedGallery({ salonId, isOwner = false }: AdvancedGalleryPro
         )}
       </div>
 
-      {/* Grille albums */}
+      {/* Albums en tiroir */}
       {albums.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-8">
           {albums.map((album) => (
-            <div
-              key={album.id}
-              className="avyento-card overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
-              onClick={() => loadAlbumPhotos(album)}
-            >
-              <div className="aspect-[4/3] relative">
-                <img
-                  src={album.coverImageUrl}
-                  alt={album.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 text-white">
-                  <h3 className="font-semibold text-lg mb-1">{album.name}</h3>
-                  <p className="text-sm opacity-90 line-clamp-2">{album.description}</p>
-                  <p className="text-xs opacity-75 mt-2">{album.photoCount} photos</p>
+            <div key={album.id} className="text-center">
+              {/* Photo de couverture */}
+              <div 
+                className="avyento-card overflow-hidden cursor-pointer group hover:shadow-xl transition-all duration-300 max-w-md mx-auto"
+                onClick={() => loadAlbumPhotos(album)}
+              >
+                <div className="aspect-[4/3] relative">
+                  <img
+                    src={album.coverImageUrl}
+                    alt={album.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-white/20 backdrop-blur-sm rounded-full p-3 border border-white/30">
+                      <ChevronRight className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Nom de l'album en dessous */}
+              <div className="mt-4 space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900 avyento-title">
+                  {album.name}
+                </h3>
+                <p className="text-gray-600 max-w-md mx-auto leading-relaxed">
+                  {album.description}
+                </p>
+                <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Camera className="h-4 w-4" />
+                    {album.photoCount} photos
+                  </span>
+                  {album.isPublic && (
+                    <Badge variant="secondary" className="bg-green-100 text-green-800">
+                      <Eye className="h-3 w-3 mr-1" />
+                      Public
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
