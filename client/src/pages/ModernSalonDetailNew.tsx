@@ -1,71 +1,133 @@
-import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  ArrowLeft,
-  Star,
-  MapPin,
-  Phone,
-  Clock,
-  CheckCircle,
-  Heart,
-  Share2
-} from "lucide-react";
+import { SalonPageTemplate } from "@/components/SalonPageTemplate";
 
-function ModernSalonDetailNew() {
-  const [location, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState('services');
-  const [isFavorite, setIsFavorite] = useState(false);
-  
-  // ✅ TOUS LES HOOKS DÉCLARÉS EN PREMIER pour éviter l'erreur "more hooks"
-  const defaultServices = [
-    {
-      id: 1,
-      name: 'Cheveux',
-      expanded: false,
-      services: [
-        { id: 1, name: 'Coupe Bonhomme', price: 39, duration: '30min' },
-        { id: 2, name: 'Coupe Dégradée', price: 46, duration: '45min' },
-        { id: 3, name: 'Coupe Transformation', price: 45, duration: '45min' }
-      ]
-    },
-    {
-      id: 2,
-      name: 'Barbe',
-      expanded: false,
-      services: [
-        { id: 7, name: 'Taille de barbe classique', price: 25, duration: '30min' },
-        { id: 8, name: 'Rasage traditionnel', price: 35, duration: '45min' }
-      ]
+// Import des données par défaut (simulé car le fichier server n'est pas accessible côté client)
+const defaultServices = [
+  {
+    id: 1,
+    name: 'Coupe homme classique',
+    description: 'Coupe traditionnelle avec finition soignée',
+    price: 35,
+    duration: 45,
+    category: 'Coupe & Styling',
+    rating: 4.9,
+    reviewCount: 87
+  },
+  {
+    id: 2,
+    name: 'Coupe moderne avec styling',
+    description: 'Coupe tendance avec mise en forme personnalisée',
+    price: 45,
+    duration: 60,
+    category: 'Coupe & Styling',
+    rating: 4.8,
+    reviewCount: 64
+  },
+  {
+    id: 3,
+    name: 'Taille de barbe complète',
+    description: 'Taille, mise en forme et soins de la barbe',
+    price: 25,
+    duration: 30,
+    category: 'Barbe & Moustache',
+    rating: 4.9,
+    reviewCount: 92
+  },
+  {
+    id: 4,
+    name: 'Rasage traditionnel',
+    description: 'Rasage au blaireau avec serviettes chaudes',
+    price: 30,
+    duration: 45,
+    category: 'Barbe & Moustache',
+    rating: 4.8,
+    reviewCount: 73
+  },
+  {
+    id: 5,
+    name: 'Soin capillaire hydratant',
+    description: 'Traitement en profondeur pour cheveux secs',
+    price: 40,
+    duration: 60,
+    category: 'Soins & Traitements',
+    rating: 4.7,
+    reviewCount: 45
+  }
+];
+
+const defaultStaff = [
+  {
+    id: 1,
+    name: 'Alexandre Martin',
+    role: 'Barbier Senior',
+    specialties: ['Coupes classiques', 'Rasage traditionnel', 'Soins barbe'],
+    rating: 4.9,
+    reviewsCount: 127,
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+  },
+  {
+    id: 2,
+    name: 'Sophie Dubois',
+    role: 'Styliste',
+    specialties: ['Coupes modernes', 'Colorations', 'Styling'],
+    rating: 4.8,
+    reviewsCount: 98,
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b811b147?w=150&h=150&fit=crop&crop=face'
+  }
+];
+
+const defaultReviews = [
+  {
+    id: 1,
+    clientName: 'Marc D.',
+    rating: 5,
+    comment: 'Excellent service, très professionnel. Je recommande vivement !',
+    date: '2024-01-15',
+    service: 'Coupe & Styling',
+    verified: true,
+    ownerResponse: {
+      message: 'Merci beaucoup Marc ! Nous sommes ravis de votre satisfaction.',
+      date: '2024-01-16'
     }
-  ];
+  },
+  {
+    id: 2,
+    clientName: 'Julie M.',
+    rating: 5,
+    comment: 'Salon très accueillant, personnel compétent. Résultat parfait !',
+    date: '2024-01-10',
+    service: 'Soins & Traitements',
+    verified: true
+  }
+];
 
-  const [serviceCategories, setServiceCategories] = useState(defaultServices);
+/**
+ * Page salon utilisant automatiquement le SalonPageTemplate
+ * Tous les nouveaux salons auront la même mise en page standardisée
+ */
+function ModernSalonDetailNew() {
+  const [location] = useLocation();
   
-  // ✅ STANDARDISATION: Extraction ID salon depuis route param
-  const salonId = location.split('/salon/')[1];
+  // Extraction du slug salon depuis l'URL
+  const salonSlug = location.split('/salon/')[1];
   
-  // ✅ SUPPRESSION FALLBACK: Uniquement données depuis API
-  const { data: salonData, isLoading, error } = useQuery({
-    queryKey: [`/api/salon/${salonId}`],
-    enabled: !!salonId,
-    retry: false,
-    staleTime: 0,
-    refetchOnMount: true
+  // Récupération des données salon depuis l'API
+  const { data: salonData, isLoading } = useQuery({
+    queryKey: [`/api/salon/${salonSlug}`],
+    enabled: !!salonSlug,
+    retry: false
   });
   
-  // ✅ GESTION DES ÉTATS D'ERREUR ET CHARGEMENT
-  if (!salonId) {
+  // États de chargement
+  if (!salonSlug) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Salon non spécifié</h1>
+          <h1 className="text-2xl font-bold mb-4 text-gray-900">Salon non spécifié</h1>
           <button 
-            onClick={() => setLocation('/search')}
-            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
+            onClick={() => window.location.href = '/search'}
+            className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
             Rechercher un salon
           </button>
@@ -76,10 +138,10 @@ function ModernSalonDetailNew() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-400">Chargement du salon {salonId}...</p>
+          <p className="text-gray-600">Chargement du salon...</p>
         </div>
       </div>
     );
@@ -87,13 +149,13 @@ function ModernSalonDetailNew() {
 
   if (!salonData) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Salon non trouvé</h1>
-          <p className="text-gray-400 mb-4">Le salon {salonId} n'existe pas.</p>
+          <h1 className="text-2xl font-bold mb-4 text-gray-900">Salon non trouvé</h1>
+          <p className="text-gray-600 mb-4">Le salon {salonSlug} n'existe pas.</p>
           <button 
-            onClick={() => setLocation('/search')}
-            className="bg-violet-600 hover:bg-violet-700 px-6 py-2 rounded-lg transition-colors"
+            onClick={() => window.location.href = '/search'}
+            className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg transition-colors"
           >
             Rechercher un salon
           </button>
@@ -102,181 +164,45 @@ function ModernSalonDetailNew() {
     );
   }
 
-  const salon = salonData;
-
-  const toggleServiceCategory = (index: number) => {
-    setServiceCategories(prev => prev.map((category, i) => 
-      i === index ? { ...category, expanded: !category.expanded } : category
-    ));
+  // Adapter les données API au format SalonPageTemplate
+  const templateData = {
+    id: salonData.id || Math.floor(Math.random() * 10000),
+    name: salonData.name || 'Salon',
+    slug: salonSlug,
+    description: salonData.description || 'Salon de beauté professionnel',
+    address: salonData.address || 'Adresse non renseignée',
+    phone: salonData.phone || 'Téléphone non renseigné',
+    rating: salonData.rating || 4.8,
+    reviewsCount: salonData.reviewsCount || 0,
+    coverImageUrl: salonData.coverImageUrl,
+    logo: salonData.logo,
+    openingHours: salonData.openingHours || {
+      'Lundi': { open: '09:00', close: '19:00' },
+      'Mardi': { open: '09:00', close: '19:00' },
+      'Mercredi': { open: '09:00', close: '19:00' },
+      'Jeudi': { open: '09:00', close: '19:00' },
+      'Vendredi': { open: '09:00', close: '20:00' },
+      'Samedi': { open: '08:00', close: '18:00' },
+      'Dimanche': { closed: true, open: '', close: '' }
+    },
+    amenities: salonData.amenities || ['Wi-Fi gratuit', 'Climatisation', 'Parking'],
+    priceRange: salonData.priceRange || '€€'
   };
 
+  // Utiliser les services de l'API ou les données par défaut
+  const services = salonData.services?.length > 0 ? salonData.services : defaultServices;
+  const staff = salonData.staff?.length > 0 ? salonData.staff : defaultStaff;
+  const reviews = salonData.reviews?.length > 0 ? salonData.reviews : defaultReviews;
+
+  // ✅ UTILISATION AUTOMATIQUE DU TEMPLATE STANDARDISÉ
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header avec retour */}
-      <div className="bg-white border-b border-gray-200 p-3">
-        <div className="flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/search')}
-            className="text-gray-600 hover:text-gray-900 -ml-2"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsFavorite(!isFavorite)}
-              className={`text-gray-600 hover:text-gray-900 ${isFavorite ? 'text-red-500' : ''}`}
-            >
-              <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-gray-600 hover:text-gray-900"
-            >
-              <Share2 className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Contenu principal */}
-      <div className="pb-20">
-        {/* En-tête salon */}
-        <div className="bg-white p-4 border-b border-gray-100">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-semibold text-gray-900 leading-tight">
-                {salon?.name || 'Salon'}
-              </h1>
-              {salon?.verified && (
-                <CheckCircle className="w-4 h-4 text-blue-500" />
-              )}
-            </div>
-          </div>
-          
-          <p className="text-sm text-gray-600 mt-1">
-            {salon?.subtitle || 'Salon de beauté professionnel'}
-          </p>
-          
-          <div className="flex items-center gap-4 mt-3">
-            <div className="flex items-center gap-1">
-              <Star className="w-4 h-4 text-amber-400 fill-current" />
-              <span className="text-sm font-medium text-gray-900">
-                {salon?.rating || '4.8'}
-              </span>
-              <span className="text-xs text-gray-500">
-                ({salon?.reviews || '127'} avis)
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-2 mt-3">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <MapPin className="w-4 h-4" />
-              <span>{salon?.location || 'Paris'}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Phone className="w-4 h-4" />
-              <span>{salon?.phone || '01 23 45 67 89'}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Clock className="w-4 h-4" />
-              <span>Ouvert • Ferme à 19h</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Onglets */}
-        <div className="bg-white border-b border-gray-100">
-          <div className="flex">
-            {['services', 'avis'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  activeTab === tab
-                    ? 'text-violet-600 border-b-2 border-violet-600'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {tab === 'services' ? 'Services' : 'Avis'}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Contenu des onglets */}
-        <div className="p-4">
-          {activeTab === 'services' && (
-            <div className="space-y-3">
-              {serviceCategories.map((category, index) => (
-                <Card key={category.id} className="overflow-hidden shadow-sm">
-                  <CardContent className="p-0">
-                    <div 
-                      className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
-                      onClick={() => toggleServiceCategory(index)}
-                    >
-                      <h3 className="font-medium text-gray-900 text-sm">{category.name}</h3>
-                      <div className="text-gray-400 text-lg">
-                        {category.expanded ? '−' : '+'}
-                      </div>
-                    </div>
-                    
-                    {category.expanded && (
-                      <div className="border-t border-gray-100">
-                        {category.services.map((service, serviceIndex) => (
-                          <div key={service.id} className={`p-4 flex items-center justify-between ${serviceIndex !== category.services.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900 text-sm mb-1">{service.name}</h4>
-                              <p className="text-xs text-gray-500">{service.price}€ • {service.duration}</p>
-                            </div>
-                            <Button 
-                              onClick={() => {
-                                console.log('🎯 NAVIGATION BOOKING: Redirection avec salon ID:', salonId);
-                                setLocation(`/salon-booking?salon=${salonId}`);
-                              }}
-                              className="bg-violet-600 text-white hover:bg-violet-700 h-8 px-4 text-xs font-medium transition-all duration-300"
-                            >
-                              Choisir
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'avis' && (
-            <div className="space-y-4">
-              <div className="text-center py-8">
-                <p className="text-gray-500">Aucun avis disponible pour le moment</p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Bouton de réservation fixe */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3">
-          <Button 
-            onClick={() => {
-              console.log('🎯 NAVIGATION BOOKING PRINCIPALE: Redirection avec salon ID:', salonId);
-              setLocation(`/salon-booking?salon=${salonId}`);
-            }}
-            className="w-full bg-violet-600 text-white hover:bg-violet-700 h-11 text-sm font-medium transition-all duration-300 hover:scale-[1.01] transform active:scale-95"
-          >
-            Réserver maintenant
-          </Button>
-        </div>
-      </div>
-    </div>
+    <SalonPageTemplate
+      salonData={templateData}
+      services={services}
+      staff={staff}
+      reviews={reviews}
+      isOwner={false}
+    />
   );
 }
 
