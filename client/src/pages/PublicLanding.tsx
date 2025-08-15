@@ -1346,8 +1346,8 @@ export default function PublicLanding() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-6xl mx-auto px-6">
+      <footer className="bg-gray-900 text-white py-16 w-full">
+        <div className="mx-auto px-6 lg:px-12 xl:px-20">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Avyento</h3>
