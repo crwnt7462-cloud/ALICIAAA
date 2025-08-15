@@ -803,7 +803,7 @@ export default function PublicLanding() {
               Découvrez nos <span className="light">partenaires</span>
             </h2>
             <p className="heroSlash__subtitle text-base max-w-2xl mx-auto">
-              Trouvez l'excellence dans chaque domaine de la beauté avec nos professionnels partenaires
+              Trouvez l'excellence dans chaque domaine de la beauté avec nos experts certifiés
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
