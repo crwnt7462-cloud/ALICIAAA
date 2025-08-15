@@ -30,13 +30,15 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Navigation**: BottomNavigation pour le menu principal, navigation intuitive avec accès rapide aux fonctionnalités essentielles.
 - **Design Philosophy**: Minimaliste, professionnel, mobile-first, avec des éléments visuels cohérents tels que des dégradés violets/amber, des icônes Lucide et des interactions fluides.
 - **Features**: IA Assistant (chat moderne, accès Premium Pro), système de mentions @, carrousel de galerie avec swipe, système d'avis avancé avec réponses salon, génération automatique de pages salon, gestion des profils d'équipe, affichage détaillé des services.
+- **Authentication**: Système d'authentification Replit Auth intégré avec pages de connexion stylées selon la DA Avyento (glassmorphism, gradients violet/amber, animations premium).
 
 ### Backend
 - **Framework**: Express.js + TypeScript
 - **Core Services**: AIService (optimisation planning, prédiction, chatbot), ConfirmationService (notifications auto emails/SMS, intégration calendriers), NotificationService (push notifications, alertes), ReceiptService (génération reçus/factures PDF).
 - **Advanced Features**: Gestion complète des stocks avec alertes, messagerie directe premium, système d'acompte et créateur de pages personnalisées.
-- **Security**: Authentification JWT PRO/CLIENT avec bcrypt et sessions sécurisées.
+- **Security**: Authentification Replit Auth avec middleware isAuthenticated, création automatique de salons personnels pour chaque propriétaire authentifié.
 - **Registration System**: Système d'inscription fonctionnel avec création automatique de salon personnel, validation des emails uniques.
+- **Salon Management**: Routes dynamiques /salon/[slug] avec vérification de propriété, dashboard professionnel, gestion des pages salon personnalisées.
 
 ### Database
 - **Type**: PostgreSQL avec Drizzle ORM
