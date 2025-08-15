@@ -45,7 +45,7 @@ import DashboardModern from "@/pages/DashboardModern";
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
 import InventoryModern from "@/pages/InventoryModern";
-import PlanningModern from "@/pages/PlanningModern";
+import PlanningOptimized from "@/pages/PlanningOptimized";
 import ClientsModern from "@/pages/ClientsModern";
 
 import QuickBooking from "@/pages/QuickBooking";
@@ -883,7 +883,7 @@ function Router() {
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
-          <PlanningModern />
+          <PlanningOptimized />
         </main>
         <BottomNavigation />
       </div>

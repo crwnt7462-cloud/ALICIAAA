@@ -60,7 +60,11 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
-- **Interface Unifiée Complétée**: Tous les salons démo utilisent maintenant SalonPageTemplate avec design Avyento cohérent
-- **Personnalisation Couleurs Corrigée**: Boutons de réservation appliquent maintenant correctement les couleurs personnalisées avec effet glassmorphism
+- **Planning Pro Optimisé Créé**: Page `/planning` complètement repensée avec vue employés + vue d'ensemble, navigation jour/semaine/mois, analytics CA temps réel
+- **Analytics Avancées Intégrées**: CA journalier/hebdomadaire/mensuel avec ticket moyen, objectifs et pourcentages d'atteinte en temps réel
+- **Layout Pleine Largeur Desktop**: Planning sort du container mobile (`max-w-md`) pour utiliser toute la largeur desktop avec `lg:max-w-none lg:w-full`
+- **Design Avyento Cohérent**: Émojis flottants diffus style page d'accueil, cards glassmorphism, animations motion fluides
+- **Interface Unifiée Complétée**: Tous les salons démo utilisent SalonPageTemplate avec design Avyento cohérent
+- **Personnalisation Couleurs Corrigée**: Boutons de réservation appliquent correctement les couleurs personnalisées avec effet glassmorphism
 - **Responsive Mobile Optimisé**: Navigation responsive parfaite avec noms services sur une ligne et galerie catégorisée
 - **Synchronisation Temps Réel**: Système de couleurs personnalisées synchronisé entre éditeur et pages publiques
