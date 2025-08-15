@@ -167,7 +167,7 @@ export default function BarbierGentlemanMarais() {
         {/* Informations salon en overlay - Style Avyento */}
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <div className="flex items-center gap-2 mb-3">
-            <h1 className="avyento-title text-white mb-0">Gentleman Barbier</h1>
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-0">Gentleman Barbier</h1>
             <CheckCircle className="h-6 w-6 text-blue-400" />
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -186,7 +186,7 @@ export default function BarbierGentlemanMarais() {
 
       {/* Navigation par onglets - Style Avyento */}
       <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="avyento-nav-tabs">
+        <div className="flex">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
             { id: 'info', label: 'Infos', icon: MapPin },
@@ -195,11 +195,12 @@ export default function BarbierGentlemanMarais() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`avyento-nav-tab ${
+              className={`flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
                 activeTab === tab.id
-                  ? 'avyento-nav-tab-active'
-                  : 'avyento-nav-tab-inactive'
+                  ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50/50'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
+              style={{ flex: '0 0 33.33%' }}
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -240,8 +241,8 @@ export default function BarbierGentlemanMarais() {
                               {service.duration}
                             </div>
                           </div>
-                          <div className="text-right ml-4">
-                            <p className="font-bold text-xl text-gray-900 mb-3">{service.price}€</p>
+                          <div className="text-right ml-4 flex items-center gap-3">
+                            <p className="font-bold text-xl text-gray-900">{service.price}€</p>
                             <button 
                               className="avyento-button-secondary"
                               onClick={() => {
@@ -347,18 +348,7 @@ export default function BarbierGentlemanMarais() {
         )}
       </div>
 
-      {/* Bouton réservation fixe en bas - Style Avyento */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
-        <button 
-          className="avyento-button-primary w-full"
-          onClick={() => {
-            console.log('[CLICK] type=main-booking, salon=barbier-gentleman-marais');
-            setLocation('/salon-booking/barbier-gentleman-marais');
-          }}
-        >
-          Réserver maintenant
-        </button>
-      </div>
+
     </div>
   );
 }
