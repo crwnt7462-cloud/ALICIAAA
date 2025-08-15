@@ -72,7 +72,15 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     
     try {
       console.log(`🎯 [PRIORITÉ] API Salon - retour salon démo directement`);
-      const demoSalon = await storage.getSalon('salon-demo');
+      
+      // Chercher d'abord dans le stockage en mémoire
+      let demoSalon = storage.salons?.get('demo-user');
+      
+      if (!demoSalon) {
+        // Si pas trouvé en mémoire, chercher en PostgreSQL
+        demoSalon = await storage.getSalon('demo-user');
+      }
+      
       if (demoSalon) {
         console.log(`✅ Salon démo trouvé: ${demoSalon.name}`);
         return res.status(200).json(demoSalon);
@@ -326,7 +334,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   app.get('/api/clients/real-data', async (req, res) => {
     try {
       // On récupère tous les clients du premier salon pour l'analyse
-      const allClients = await storage.getClients('salon-demo');
+      const allClients = await storage.getClients('demo-user');
       
       // Transformation des données client en format d'analyse
       const clientsForAnalysis = allClients.map(client => {
@@ -370,7 +378,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
   app.post('/api/clients/analyze-real-batch', async (req, res) => {
     try {
       // Récupération des clients réels
-      const allClients = await storage.getClients('salon-demo');
+      const allClients = await storage.getClients('demo-user');
       
       if (allClients.length === 0) {
         return res.status(404).json({
@@ -1195,10 +1203,10 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - ID reçu:', id);
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
-      // 🔧 CORRECTION SYNCHRONISATION : Mapper "auto-generated" vers "salon-demo"
+      // 🔧 CORRECTION SYNCHRONISATION : Mapper vers "demo-user" pour cohérence API
       let actualId = id;
-      if (id === 'auto-generated' || id === 'undefined' || !id) {
-        actualId = 'salon-demo';
+      if (id === 'auto-generated' || id === 'undefined' || !id || id === 'salon-demo') {
+        actualId = 'demo-user';
       }
       console.log('💾 ID corrigé pour sauvegarde:', actualId, '(ID original:', id, ')');
       
@@ -1333,25 +1341,27 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // Récupérer tous les salons publics
       let allSalons = Array.from(publicSalonsStorage.values());
       
-      // Ajouter salon démo
-      const demoSalon = {
-        id: "demo-user",
-        name: "Studio Élégance Paris",
-        rating: 4.8,
-        reviews: 247,
-        image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
-        location: "Paris 1er",
-        distance: "1.2 km",
-        nextSlot: "Aujourd'hui 14h30",
-        services: ["Coupe & Styling", "Coloration", "Soins Capillaires"],
-        priceRange: "€€€",
-        category: 'coiffure',
-        city: 'paris',
-        verified: true,
-        shareableUrl: '/salon/demo-user'
-      };
-      
-      allSalons.push(demoSalon);
+      // Ajouter salon démo depuis le stockage en mémoire (données temps réel)
+      const demoSalonData = storage.salons?.get('demo-user');
+      if (demoSalonData) {
+        const demoSalon = {
+          id: "demo-user",
+          name: demoSalonData.name || "Studio Élégance Paris",
+          rating: 4.8,
+          reviews: 247,
+          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
+          location: demoSalonData.address || "Paris 1er",
+          distance: "1.2 km",
+          nextSlot: "Aujourd'hui 14h30",
+          services: demoSalonData.serviceCategories?.[0]?.services?.map((s: any) => s.name) || ["Coupe & Styling", "Coloration", "Soins Capillaires"],
+          priceRange: "€€€",
+          category: demoSalonData.category || 'coiffure',
+          city: demoSalonData.city || 'paris',
+          verified: true,
+          shareableUrl: '/salon/demo-user'
+        };
+        allSalons.push(demoSalon);
+      }
       
       // Filtrer par catégorie et ville
       let salons = allSalons;
