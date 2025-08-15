@@ -53,9 +53,12 @@ function PaymentForm({ clientSecret, onSuccess }: { clientSecret: string, onSucc
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="p-4 border border-gray-200 rounded-xl bg-gray-50">
-        <PaymentElement />
-      </div>
+      <PaymentElement 
+        options={{
+          layout: 'tabs',
+          paymentMethodOrder: ['card', 'klarna', 'link']
+        }}
+      />
 
       <Button
         type="submit"
@@ -532,32 +535,7 @@ export default function PlanityStyleBookingFixed() {
               </div>
             </div>
 
-            {/* Résumé de la réservation */}
-            <div className="p-6 border-b border-gray-100">
-              <div className="bg-violet-50 p-4 rounded-xl">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900">Coupe Bonhomme</h3>
-                  <span className="text-lg font-bold text-violet-600">39,00 €</span>
-                </div>
-                <div className="text-sm text-gray-600 space-y-1">
-                  <p>📅 {selectedDateTime?.date || "Jeudi 20 février"} à {selectedDateTime?.time || "11:00"}</p>
-                  <p>💇‍♂️ {selectedProfessional === 'any' ? 'Aucune préférence' : selectedProfessional}</p>
-                  <p>📍 Bonhomme - Paris Archives</p>
-                </div>
-              </div>
-              
-              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-amber-800">Acompte 30%</p>
-                    <p className="text-sm text-amber-600">Le reste sera réglé sur place</p>
-                  </div>
-                  <span className="text-xl font-bold text-amber-700">11,70 €</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Formulaire de paiement */}
+            {/* Formulaire de paiement propre */}
             <div className="p-6">
               <Elements 
                 stripe={stripePromise} 
