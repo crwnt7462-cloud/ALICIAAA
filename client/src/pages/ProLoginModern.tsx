@@ -59,7 +59,7 @@ export default function ProLoginModern() {
           
           {/* Logo Avyento Pro centré */}
           <div className="text-center mb-8">
-            <img src={avyentoProLogo} alt="Avyento Pro" className="h-16 w-auto mx-auto mb-4" />
+            <img src={avyentoProLogo} alt="Avyento Pro" className="h-10 w-auto mx-auto mb-4" />
             <p className="text-gray-600">Accédez à votre espace professionnel</p>
           </div>
 
@@ -127,14 +127,35 @@ export default function ProLoginModern() {
               <div className="w-6 h-6 bg-violet-100 rounded-lg flex items-center justify-center">
                 <ShieldCheck className="h-3 w-3 text-violet-600" />
               </div>
-              <span>Sécurité garantie</span>
+              <span>Connexion sécurisée</span>
             </div>
           </div>
 
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-500">
-              Connexion sécurisée via Replit Auth
-            </p>
+          {/* Section inscription et offres */}
+          <div className="space-y-4 mt-6">
+            {/* Bouton pour les non-inscrits */}
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-3">Pas encore inscrit ?</p>
+              <motion.button
+                onClick={() => setLocation('/business-registration')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full bg-white/80 border border-violet-200 hover:border-violet-300 text-violet-700 px-6 py-3 rounded-2xl text-sm font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <Building className="h-4 w-4" />
+                Créer mon compte professionnel
+              </motion.button>
+            </div>
+
+            {/* Lien découvrir nos offres */}
+            <div className="text-center">
+              <button
+                onClick={() => setLocation('/subscription-plans')}
+                className="text-violet-600 hover:text-violet-700 text-sm font-medium underline decoration-violet-300 hover:decoration-violet-500 transition-colors"
+              >
+                Découvrir nos offres
+              </button>
+            </div>
           </div>
         </div>
       </div>
