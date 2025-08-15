@@ -132,7 +132,10 @@ export function useSalonPageTemplate(salonSlug: string): {
                         description: service.description || `Service ${service.name}`,
                         price: service.price,
                         duration: service.duration,
-                        category: category.name || 'Services'
+                        category: category.name || 'Services',
+                        rating: service.rating,
+                        reviewCount: service.reviewCount,
+                        photos: service.photos || []
                       });
                     });
                   }
@@ -140,6 +143,18 @@ export function useSalonPageTemplate(salonSlug: string): {
                 
                 setServices(extractedServices);
                 console.log('✅ Services propriétaire extraits:', extractedServices.length);
+              }
+              
+              // ✅ Extraire l'équipe
+              if (salon.professionals && salon.professionals.length > 0) {
+                setStaff(salon.professionals);
+                console.log('✅ Équipe extraite:', salon.professionals.length);
+              }
+              
+              // ✅ Extraire les avis
+              if (salon.reviews && salon.reviews.length > 0) {
+                setReviews(salon.reviews);
+                console.log('✅ Avis extraits:', salon.reviews.length);
               }
               
               setLoading(false);
@@ -196,7 +211,10 @@ export function useSalonPageTemplate(salonSlug: string): {
                     description: service.description || `Service ${service.name}`,
                     price: service.price,
                     duration: service.duration,
-                    category: category.name || 'Services'
+                    category: category.name || 'Services',
+                    rating: service.rating,
+                    reviewCount: service.reviewCount,
+                    photos: service.photos || []
                   });
                 });
               }
@@ -207,6 +225,18 @@ export function useSalonPageTemplate(salonSlug: string): {
           } else {
             console.log('Aucun service trouvé dans les catégories du salon');
             setServices([]);
+          }
+          
+          // ✅ Extraire l'équipe
+          if (salon.professionals && salon.professionals.length > 0) {
+            setStaff(salon.professionals);
+            console.log('✅ Équipe extraite:', salon.professionals.length);
+          }
+          
+          // ✅ Extraire les avis
+          if (salon.reviews && salon.reviews.length > 0) {
+            setReviews(salon.reviews);
+            console.log('✅ Avis extraits:', salon.reviews.length);
           }
           
           // Charger l'équipe (si disponible)

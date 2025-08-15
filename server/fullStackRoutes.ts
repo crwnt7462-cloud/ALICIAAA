@@ -65,10 +65,82 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
         name: 'Coiffure Homme',
         expanded: true,
         services: [
-          { id: 1, name: 'Coupe Classique', price: 25, duration: '30min', description: 'Coupe classique pour homme avec finition professionnelle' },
-          { id: 2, name: 'Coupe Dégradée', price: 30, duration: '45min', description: 'Coupe moderne avec dégradé sur les côtés' },
-          { id: 3, name: 'Coupe + Barbe', price: 40, duration: '60min', description: 'Coupe complète avec taille de barbe et finition' },
-          { id: 4, name: 'Coupe Enfant (-12 ans)', price: 20, duration: '25min', description: 'Coupe spécialement adaptée aux enfants' }
+          { 
+            id: 1, 
+            name: 'Coupe Classique', 
+            price: 25, 
+            duration: '30', 
+            description: 'Coupe classique pour homme avec finition professionnelle',
+            rating: 4.9,
+            reviewCount: 87,
+            photos: [
+              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&crop=face'
+            ]
+          },
+          { 
+            id: 2, 
+            name: 'Coupe Dégradée', 
+            price: 30, 
+            duration: '45', 
+            description: 'Coupe moderne avec dégradé sur les côtés',
+            rating: 4.8,
+            reviewCount: 124,
+            photos: [
+              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&h=300&fit=crop&crop=face'
+            ]
+          },
+          { 
+            id: 3, 
+            name: 'Coupe + Barbe', 
+            price: 40, 
+            duration: '60', 
+            description: 'Coupe complète avec taille de barbe et finition',
+            rating: 4.9,
+            reviewCount: 156,
+            photos: [
+              'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face'
+            ]
+          },
+          { 
+            id: 4, 
+            name: 'Coupe Enfant (-12 ans)', 
+            price: 20, 
+            duration: '25', 
+            description: 'Coupe spécialement adaptée aux enfants',
+            rating: 4.7,
+            reviewCount: 63,
+            photos: [
+              'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=300&fit=crop&crop=face'
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        name: 'Soins & Styling',
+        expanded: false,
+        services: [
+          { 
+            id: 5, 
+            name: 'Shampoing + Coiffage', 
+            price: 15, 
+            duration: '20', 
+            description: 'Lavage professionnel et coiffage personnalisé',
+            rating: 4.6,
+            reviewCount: 89
+          },
+          { 
+            id: 6, 
+            name: 'Soin Capillaire', 
+            price: 35, 
+            duration: '30', 
+            description: 'Soin restructurant pour cheveux abîmés',
+            rating: 4.8,
+            reviewCount: 72
+          }
         ]
       }
     ],
@@ -84,14 +156,82 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     reviewCount: 247,
     createdAt: new Date(),
     updatedAt: new Date(),
-    professionals: [],
-    reviews: [],
+    professionals: [
+      {
+        id: 'prof-1',
+        name: 'Alexandre Martin',
+        specialty: 'Coiffeur Expert',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+        rating: 4.9,
+        price: 45,
+        bio: 'Coiffeur passionné avec 8 ans d\'expérience, spécialisé dans les coupes modernes et classiques.',
+        experience: '8 ans d\'expérience',
+        certifications: ['CAP Coiffure', 'BP Coiffure', 'Formation L\'Oréal']
+      },
+      {
+        id: 'prof-2',
+        name: 'Sophie Dubois',
+        specialty: 'Styliste Créative',
+        avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+        rating: 4.8,
+        price: 50,
+        bio: 'Styliste créative spécialisée dans les coupes tendances et les colorations.',
+        experience: '6 ans d\'expérience',
+        certifications: ['CAP Coiffure', 'Formation Kérastase']
+      }
+    ],
+    reviews: [
+      {
+        id: 1,
+        clientName: 'Thomas L.',
+        rating: 5,
+        comment: 'Excellent service ! Alexandre a su parfaitement comprendre ce que je voulais. Coupe impeccable et accueil chaleureux.',
+        date: '2024-01-10',
+        service: 'Coupe + Barbe',
+        professional: 'Alexandre Martin',
+        verified: true,
+        photos: []
+      },
+      {
+        id: 2,
+        clientName: 'Marc R.',
+        rating: 5,
+        comment: 'Très satisfait de ma coupe dégradée. Sophie est une vraie professionnelle, je recommande vivement ce salon.',
+        date: '2024-01-08',
+        service: 'Coupe Dégradée',
+        professional: 'Sophie Dubois',
+        verified: true,
+        photos: []
+      },
+      {
+        id: 3,
+        clientName: 'Pierre M.',
+        rating: 4,
+        comment: 'Salon moderne avec une équipe compétente. Bon rapport qualité-prix.',
+        date: '2024-01-05',
+        service: 'Coupe Classique',
+        professional: 'Alexandre Martin',
+        verified: true,
+        photos: []
+      }
+    ],
     verified: true,
     category: 'mixte',
     city: '75008 Paris',
     services: ['Coupe Classique', 'Coupe Dégradée', 'Coupe + Barbe', 'Coupe Enfant (-12 ans)'],
     isActive: true,
-    nextSlot: 'Disponible aujourd\'hui'
+    nextSlot: 'Disponible aujourd\'hui',
+    openingHours: {
+      lundi: { open: '09:00', close: '19:00' },
+      mardi: { open: '09:00', close: '19:00' },
+      mercredi: { open: '09:00', close: '19:00' },
+      jeudi: { open: '09:00', close: '19:00' },
+      vendredi: { open: '09:00', close: '19:00' },
+      samedi: { open: '09:00', close: '18:00' },
+      dimanche: { closed: true, open: '', close: '' }
+    },
+    amenities: ['WiFi gratuit', 'Climatisation', 'Parking gratuit', 'Accessible PMR', 'Produits bio'],
+    priceRange: '€€'
   };
   
   storage.salons.set('demo-user', demoSalonData);
