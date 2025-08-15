@@ -73,6 +73,7 @@ import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
+import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
 import ProLogin from "@/pages/ProLogin";
 import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
@@ -792,6 +793,15 @@ function Router() {
     return (
       <div className="h-full">
         <SalonBookingFlow />
+      </div>
+    );
+  }
+
+  // Page de réservation style Planity
+  if (location === '/planity-booking') {
+    return (
+      <div className="h-full">
+        <PlanityStyleBooking />
       </div>
     );
   }
