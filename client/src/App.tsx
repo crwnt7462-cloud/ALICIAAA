@@ -958,8 +958,7 @@ function Router() {
           <Route path="/avyento-account" component={AvyentoStyleAccount} />
           <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
 
-          {/* Routes Salon Mobile */}
-          <Route path="/salon/salon-excellence-demo" component={SalonExcellenceDemoMobile} />
+          {/* Routes Salon Mobile - Composant supprimé */}
           
           {/* Routes Salons Template - Nouvelle génération standardisée */}
           <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
