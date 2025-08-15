@@ -118,6 +118,30 @@ export function useSalonPageTemplate(salonSlug: string): {
               };
               
               setSalonData(mappedSalonData);
+              
+              // ✅ Extraire les services des catégories pour propriétaire aussi
+              if (salon.serviceCategories && salon.serviceCategories.length > 0) {
+                const extractedServices: SalonService[] = [];
+                
+                salon.serviceCategories.forEach((category: any) => {
+                  if (category.services && category.services.length > 0) {
+                    category.services.forEach((service: any) => {
+                      extractedServices.push({
+                        id: service.id,
+                        name: service.name,
+                        description: service.description || `Service ${service.name}`,
+                        price: service.price,
+                        duration: service.duration,
+                        category: category.name || 'Services'
+                      });
+                    });
+                  }
+                });
+                
+                setServices(extractedServices);
+                console.log('✅ Services propriétaire extraits:', extractedServices.length);
+              }
+              
               setLoading(false);
               return;
             }
@@ -159,15 +183,30 @@ export function useSalonPageTemplate(salonSlug: string): {
           
           setSalonData(mappedSalonData);
           
-          // Charger les services (si disponibles)
-          try {
-            const servicesResponse = await fetch(`/api/salons/${salon.id}/services`);
-            if (servicesResponse.ok) {
-              const servicesData = await servicesResponse.json();
-              setServices(servicesData);
-            }
-          } catch (error) {
-            console.log('Services non disponibles pour ce salon');
+          // ✅ CORRECTION : Extraire les services depuis serviceCategories
+          if (salon.serviceCategories && salon.serviceCategories.length > 0) {
+            const extractedServices: SalonService[] = [];
+            
+            salon.serviceCategories.forEach((category: any) => {
+              if (category.services && category.services.length > 0) {
+                category.services.forEach((service: any) => {
+                  extractedServices.push({
+                    id: service.id,
+                    name: service.name,
+                    description: service.description || `Service ${service.name}`,
+                    price: service.price,
+                    duration: service.duration,
+                    category: category.name || 'Services'
+                  });
+                });
+              }
+            });
+            
+            setServices(extractedServices);
+            console.log('✅ Services extraits des catégories:', extractedServices.length);
+          } else {
+            console.log('Aucun service trouvé dans les catégories du salon');
+            setServices([]);
           }
           
           // Charger l'équipe (si disponible)
