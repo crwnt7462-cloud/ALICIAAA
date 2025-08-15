@@ -235,7 +235,21 @@ export default function PublicLanding() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [showCookiePopup, setShowCookiePopup] = useState(true);
+  const [showCookiePopup, setShowCookiePopup] = useState(false);
+
+  // Vérifier si l'utilisateur a déjà donné son consentement
+  useEffect(() => {
+    const cookieConsent = localStorage.getItem('avyento-cookie-consent');
+    if (!cookieConsent) {
+      setShowCookiePopup(true);
+    }
+  }, []);
+
+  // Gérer l'acceptation/refus des cookies
+  const handleCookieChoice = (accepted: boolean) => {
+    localStorage.setItem('avyento-cookie-consent', accepted ? 'accepted' : 'declined');
+    setShowCookiePopup(false);
+  };
 
   const stats = [
     { number: "50,000+", label: "Rendez-vous par mois" },
@@ -1481,7 +1495,7 @@ export default function PublicLanding() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-              onClick={() => setShowCookiePopup(false)}
+              onClick={() => handleCookieChoice(false)}
             >
               {/* Popup centrale */}
               <motion.div
@@ -1502,7 +1516,7 @@ export default function PublicLanding() {
               >
                 {/* Bouton fermer */}
                 <button
-                  onClick={() => setShowCookiePopup(false)}
+                  onClick={() => handleCookieChoice(false)}
                   className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100/50 transition-colors duration-200"
                 >
                   <X className="w-5 h-5 text-gray-500" />
@@ -1529,16 +1543,16 @@ export default function PublicLanding() {
                   {/* Boutons */}
                   <div className="flex flex-col sm:flex-row gap-3">
                     <button
-                      onClick={() => setShowCookiePopup(false)}
+                      onClick={() => handleCookieChoice(true)}
                       className="flex-1 glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       Accepter tous
                     </button>
                     <button
-                      onClick={() => setShowCookiePopup(false)}
+                      onClick={() => handleCookieChoice(false)}
                       className="flex-1 px-6 py-3 rounded-2xl font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100/50 transition-all duration-300 border border-gray-200"
                     >
-                      Paramètres
+                      Refuser
                     </button>
                   </div>
 
