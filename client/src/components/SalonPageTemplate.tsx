@@ -10,7 +10,8 @@ import {
   Users,
   Camera,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -166,87 +167,48 @@ export function SalonPageTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header avec image de couverture */}
-      <div className="relative h-80 md:h-96 overflow-hidden">
-        {salonData.coverImageUrl ? (
-          <img
-            src={salonData.coverImageUrl}
-            alt={salonData.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-r from-violet-600 to-purple-600"></div>
-        )}
+    <div className="min-h-screen bg-gray-50">
+      {/* Header avec photo de couverture - Style Barbier Gentleman Marais */}
+      <div className="relative h-64 bg-gradient-to-br from-rose-400 to-pink-500">
+        <img 
+          src={salonData.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'}
+          alt={salonData.name}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-25"></div>
         
-        {/* Overlay et contenu */}
-        <div className="absolute inset-0 bg-black/40">
-          <div className="container mx-auto px-4 h-full flex items-end pb-8">
-            <div className="flex items-end justify-between w-full">
-              <div className="flex items-end gap-6">
-                {/* Logo salon */}
-                {salonData.logo && (
-                  <div className="w-20 h-20 bg-white rounded-lg p-2 shadow-lg">
-                    <img
-                      src={salonData.logo}
-                      alt={`${salonData.name} logo`}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                )}
-                
-                {/* Infos principales */}
-                <div className="text-white">
-                  <h1 className="text-3xl md:text-4xl font-bold mb-2">{salonData.name}</h1>
-                  <p className="text-lg mb-3 opacity-90">{salonData.description}</p>
-                  
-                  <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{salonData.rating}</span>
-                      <span className="opacity-75">({salonData.reviewsCount} avis)</span>
-                    </div>
-                    
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      <span className="opacity-75">{salonData.address}</span>
-                    </div>
-                    
-                    <Badge variant="secondary" className="bg-white/20 text-white">
-                      {salonData.priceRange}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Actions */}
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsFavorite(!isFavorite)}
-                  className="text-white hover:bg-white/20"
-                >
-                  <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-                </Button>
-                
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleShare}
-                  className="text-white hover:bg-white/20"
-                >
-                  <Share2 className="h-5 w-5" />
-                </Button>
-                
-                <Button 
-                  onClick={() => handleBooking()}
-                  className="bg-violet-600 hover:bg-violet-700 text-white"
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Réserver
-                </Button>
-              </div>
+        {/* Bouton retour */}
+        <button 
+          onClick={() => {
+            console.log('🔙 Bouton retour cliqué - Navigation vers /search');
+            window.location.href = '/search';
+          }}
+          className="absolute top-4 left-4 p-3 bg-white bg-opacity-20 backdrop-blur-sm rounded-full hover:bg-opacity-30 transition-all z-20"
+        >
+          <ArrowLeft className="w-5 h-5 text-white" />
+        </button>
+        
+        {/* Contenu principal centré */}
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6 z-10">
+          <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-6 border border-white border-opacity-20">
+            <h1 className="text-3xl font-bold text-white mb-2">
+              {salonData.name}
+            </h1>
+            <div className="flex items-center justify-center gap-2 mb-3">
+              {salonData.rating && (
+                <>
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  <span className="text-white font-medium">{salonData.rating}</span>
+                  <span className="text-white text-sm">({salonData.reviewsCount || 0} avis)</span>
+                </>
+              )}
+            </div>
+            <p className="text-white text-opacity-90 text-sm mb-3">
+              {salonData.description}
+            </p>
+            <div className="flex items-center justify-center gap-1 text-white text-opacity-80 text-sm">
+              <MapPin className="w-3 h-3" />
+              <span>{salonData.address}</span>
             </div>
           </div>
         </div>
