@@ -1511,6 +1511,7 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           storage.salons.set(actualId, { ...savedSalon, ...publicSalonData });
         }
         console.log('🌟 Salon ajouté au système de recherche public AVEC PHOTOS:', actualId);
+        console.log('🚀 SYNCHRONISATION IMMÉDIATE: Le salon apparaîtra dans /search dès maintenant');
       }
       
       // 🔌 Diffuser la mise à jour via WebSocket pour synchronisation temps réel
@@ -1518,10 +1519,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       res.json({ 
         success: true, 
-        message: 'Salon sauvegardé et publié avec succès', 
+        message: 'Salon sauvegardé et synchronisé avec succès !', 
         salon: savedSalon,
         shareableUrl: `${req.protocol}://${req.get('host')}/salon/${actualId}`,
-        publicListing: true
+        publicListing: true,
+        syncStatus: 'immediate'
       });
     } catch (error: any) {
       console.error('❌ Erreur sauvegarde salon:', error);

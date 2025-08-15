@@ -438,6 +438,17 @@ export default function SalonPageEditor() {
       queryClient.invalidateQueries({ queryKey: ['/api/user/salon'] });
       queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] }); // ← IMPORTANT: Invalider la recherche publique
       
+      // FORCER LA SYNCHRONISATION: Appeler l'API publique pour rafraîchir immédiatement
+      try {
+        await fetch('/api/public/salons', { 
+          method: 'GET',
+          headers: { 'Cache-Control': 'no-cache' } 
+        });
+        console.log('🔄 API publique rafraîchie après sauvegarde');
+      } catch (error) {
+        console.error('⚠️ Erreur rafraîchissement API publique:', error);
+      }
+      
       toast({
         title: "✓ Salon sauvegardé !",
         description: "Vos modifications sont visibles immédiatement dans la recherche."
