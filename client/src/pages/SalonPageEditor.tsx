@@ -436,11 +436,7 @@ export default function SalonPageEditor() {
     onSave: (data) => {
       console.log('🔄 Auto-sauvegarde réussie:', data.id);
       setIsAutoSaving(false);
-      toast({
-        title: "✓ Modifications sauvegardées",
-        description: "Vos changements sont synchronisés en temps réel",
-        duration: 2000,
-      });
+      // Pas de toast pour éviter le spam - L'indicateur visuel suffit
     },
     onError: (error) => {
       console.error('❌ Erreur auto-sauvegarde:', error);
