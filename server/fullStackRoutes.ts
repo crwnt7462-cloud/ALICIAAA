@@ -90,15 +90,7 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           phone: '01 23 45 67 89',
           email: 'demo@avyento.fr',
           isPublished: true,
-          customColors: {
-            primary: '#8B5CF6',
-            accent: '#F59E0B', 
-            buttonText: '#FFFFFF',
-            priceColor: '#059669',
-            cardBackground: 'rgba(255, 255, 255, 0.1)',
-            neonFrame: '#8B5CF6',
-            intensity: 80
-          },
+          customColors: null, // Pas de couleurs par défaut - utilise le thème Avyento
           serviceCategories: [
             {
               id: 1,
