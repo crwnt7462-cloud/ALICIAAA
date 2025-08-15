@@ -73,6 +73,8 @@ import ClientDashboardNew from "@/pages/ClientDashboardNew";
 import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
+import ProLogin from "@/pages/ProLogin";
+import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
@@ -241,6 +243,15 @@ function Router() {
     return (
       <div className="h-full">
         <MessagingSearch />
+      </div>
+    );
+  }
+
+  // Page de connexion professionnelle avec Replit Auth
+  if (location === '/pro/login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
       </div>
     );
   }
@@ -781,6 +792,16 @@ function Router() {
     return (
       <div className="h-full">
         <SalonBookingFlow />
+      </div>
+    );
+  }
+
+  // Pages de salon dynamiques (/salon/[slug])
+  if (location.startsWith('/salon/')) {
+    const salonSlug = location.substring(7); // Remove '/salon/'
+    return (
+      <div className="h-full">
+        <SalonDynamicPage />
       </div>
     );
   }

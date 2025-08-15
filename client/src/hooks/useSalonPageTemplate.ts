@@ -68,12 +68,55 @@ export function useSalonPageTemplate(salonSlug: string): {
   const [staff, setStaff] = useState<SalonStaff[]>([]);
   const [reviews, setReviews] = useState<SalonReview[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isOwner] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     const loadSalonData = async () => {
       try {
-        // Charger les données du salon
+        // Vérifier d'abord la propriété du salon (si utilisateur connecté)
+        try {
+          const ownershipResponse = await fetch(`/api/salon/${salonSlug}/ownership`);
+          if (ownershipResponse.ok) {
+            const ownershipData = await ownershipResponse.json();
+            setIsOwner(ownershipData.isOwner);
+            
+            if (ownershipData.salon && ownershipData.isOwner) {
+              // Utiliser les données complètes si propriétaire
+              const salon = ownershipData.salon;
+              const mappedSalonData: SalonData = {
+                id: salon.id,
+                name: salon.name,
+                slug: salon.slug || salonSlug,
+                description: salon.description || `Salon de beauté professionnel ${salon.name}`,
+                address: salon.address || "Adresse non renseignée",
+                phone: salon.phone || "Téléphone non renseigné",
+                rating: salon.rating || 4.8,
+                reviewsCount: salon.reviewCount || 0,
+                coverImageUrl: salon.photos?.[0] || salon.coverImageUrl,
+                logo: salon.logoUrl,
+                openingHours: salon.openingHours || {
+                  lundi: { open: '09:00', close: '19:00' },
+                  mardi: { open: '09:00', close: '19:00' },
+                  mercredi: { open: '09:00', close: '19:00' },
+                  jeudi: { open: '09:00', close: '19:00' },
+                  vendredi: { open: '09:00', close: '19:00' },
+                  samedi: { open: '09:00', close: '18:00' },
+                  dimanche: { closed: true, open: '', close: '' }
+                },
+                amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
+                priceRange: salon.priceRange || '€€'
+              };
+              
+              setSalonData(mappedSalonData);
+              setLoading(false);
+              return;
+            }
+          }
+        } catch (error) {
+          console.log('Vérification propriété non disponible (utilisateur non connecté)');
+        }
+
+        // Charger les données du salon (méthode classique)
         const salonResponse = await fetch(`/api/salons/by-slug/${salonSlug}`);
         if (salonResponse.ok) {
           const salon = await salonResponse.json();

@@ -900,8 +900,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Auth middleware (désactivé temporairement)
-  // await setupAuth(app);
+  // Auth middleware (activé pour les pages salon)
+  await setupAuth(app);
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -912,6 +912,138 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     } catch (error: any) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // 🏢 ROUTES SALON AVEC AUTHENTIFICATION PRO
+  
+  // Récupérer le salon d'un propriétaire authentifié
+  app.get('/api/salon/my-salon', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      console.log('🏢 Récupération salon pour propriétaire:', userId);
+      
+      // Chercher le salon personnel de l'utilisateur authentifié
+      const userSalons = Array.from(storage.salons?.values() || []).filter(salon => 
+        salon.ownerId === userId || salon.ownerEmail === req.user.claims.email
+      );
+      
+      let userSalon = userSalons[0];
+      
+      if (!userSalon) {
+        // Création automatique d'un salon unique pour ce propriétaire
+        const uniqueSlug = `salon-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const salonName = `${req.user.claims.first_name || 'Mon'} Salon`;
+        
+        console.log('🏗️ Création salon automatique pour:', userId);
+        
+        userSalon = {
+          id: uniqueSlug,
+          ownerId: userId,
+          ownerEmail: req.user.claims.email,
+          name: salonName,
+          slug: uniqueSlug,
+          description: 'Nouveau salon - À personnaliser depuis votre dashboard',
+          longDescription: 'Bienvenue dans votre salon ! Modifiez cette description depuis votre tableau de bord professionnel.',
+          address: 'Adresse à renseigner',
+          phone: 'Téléphone à renseigner',
+          email: req.user.claims.email,
+          website: '',
+          photos: [
+            'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+            'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format'
+          ],
+          serviceCategories: [
+            {
+              id: 1,
+              name: 'Services',
+              expanded: false,
+              services: [
+                { 
+                  id: 1, 
+                  name: 'Consultation', 
+                  price: 0, 
+                  duration: '30min', 
+                  description: 'Consultation gratuite pour nouveaux clients' 
+                }
+              ]
+            }
+          ],
+          professionals: [
+            {
+              id: '1',
+              name: `${req.user.claims.first_name} ${req.user.claims.last_name}`,
+              specialty: 'Propriétaire',
+              avatar: req.user.claims.profile_image_url || 'https://images.unsplash.com/photo-1494790108755-2616b612b5c5?w=150&h=150&fit=crop&crop=face',
+              rating: 5.0,
+              price: 50,
+              bio: 'Professionnel de beauté',
+              experience: 'Expert confirmé'
+            }
+          ],
+          rating: 5.0,
+          reviewCount: 0,
+          verified: false,
+          certifications: [],
+          awards: [],
+          customColors: {
+            primary: '#06b6d4',
+            accent: '#06b6d4', 
+            buttonText: '#ffffff',
+            priceColor: '#ec4899',
+            neonFrame: '#ef4444'
+          },
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        storage.salons?.set(uniqueSlug, userSalon);
+        console.log('✅ Salon créé automatiquement:', salonName, 'URL:', `/salon/${uniqueSlug}`);
+      }
+      
+      res.json({
+        success: true,
+        salon: userSalon,
+        isOwner: true
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur récupération salon propriétaire:', error);
+      res.status(500).json({ message: 'Erreur récupération salon' });
+    }
+  });
+  
+  // Vérifier la propriété d'un salon spécifique
+  app.get('/api/salon/:salonSlug/ownership', isAuthenticated, async (req: any, res) => {
+    try {
+      const { salonSlug } = req.params;
+      const userId = req.user.claims.sub;
+      
+      console.log('🔍 Vérification propriété salon:', salonSlug, 'pour utilisateur:', userId);
+      
+      const salon = storage.salons?.get(salonSlug);
+      
+      if (!salon) {
+        return res.status(404).json({ 
+          success: false, 
+          message: 'Salon non trouvé',
+          isOwner: false 
+        });
+      }
+      
+      const isOwner = salon.ownerId === userId || salon.ownerEmail === req.user.claims.email;
+      
+      res.json({
+        success: true,
+        isOwner,
+        salon: isOwner ? salon : { id: salon.id, name: salon.name }
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur vérification propriété:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erreur vérification propriété',
+        isOwner: false 
+      });
     }
   });
 
@@ -2091,8 +2223,22 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
   });
 
   // API pour récupérer le salon courant
+  // Route salon actuel (redirigée vers my-salon pour les pros authentifiés)
   app.get('/api/salon/current', async (req, res) => {
     try {
+      // Vérifier si l'utilisateur est authentifié
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        // Rediriger vers la route authentifiée
+        const ownerResponse = await fetch(`${req.protocol}://${req.hostname}/api/salon/my-salon`, {
+          headers: { authorization: authHeader }
+        });
+        if (ownerResponse.ok) {
+          const data = await ownerResponse.json();
+          return res.json(data.salon);
+        }
+      }
+      
       // Pour les tests, retourner le salon demo
       const salon = {
         id: 'salon-demo',
