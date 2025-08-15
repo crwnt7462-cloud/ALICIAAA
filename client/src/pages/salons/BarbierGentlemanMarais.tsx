@@ -78,7 +78,7 @@ export default function BarbierGentlemanMarais() {
           price: 35, 
           duration: '30min', 
           description: 'Coupe traditionnelle aux ciseaux et tondeuse, réalisée avec précision selon les techniques barbier authentiques. Notre expert vous conseille sur la coupe la mieux adaptée à votre morphologie et votre style de vie.',
-          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400']
+          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80']
         },
         { 
           id: 2, 
@@ -93,7 +93,7 @@ export default function BarbierGentlemanMarais() {
           price: 55, 
           duration: '45min', 
           description: 'Forfait complet alliant coupe de cheveux professionnelle et taille de barbe experte. Un service premium qui inclut l\'entretien de votre barbe avec des produits de qualité supérieure pour un résultat impeccable.',
-          photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+          photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80']
         },
         { 
           id: 4, 
@@ -122,7 +122,7 @@ export default function BarbierGentlemanMarais() {
           price: 45, 
           duration: '40min', 
           description: 'Rasage complet au coupe-chou avec serviettes chaudes dans la pure tradition barbier. Une expérience relaxante et authentique avec des produits de soin haut de gamme pour une peau douce et apaisée.',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80']
         },
         { 
           id: 7, 
@@ -137,7 +137,7 @@ export default function BarbierGentlemanMarais() {
           price: 65, 
           duration: '1h', 
           description: 'Expérience complète avec soins visage premium, rasage traditionnel et finitions luxueuses. Un moment de détente absolue avec masque hydratant, serviettes chaudes et massage du visage pour une expérience sensorielle unique.',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80']
         }
       ]
     },
@@ -340,10 +340,12 @@ export default function BarbierGentlemanMarais() {
                                     {service.photos.slice(0, 3).map((photo, index) => (
                                       <div key={index} className="relative">
                                         <img 
-                                          src={photo} 
+                                          src={photo.replace('w=1200', 'w=200')} 
                                           alt={`${service.name} ${index + 1}`}
                                           className="w-12 h-12 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
                                           onClick={() => openPhotoGallery(service.photos || [], index)}
+                                          loading="lazy"
+                                          style={{ imageRendering: 'auto' }}
                                         />
                                         {index === 2 && service.photos.length > 3 && (
                                           <div 
@@ -521,6 +523,8 @@ export default function BarbierGentlemanMarais() {
                 src={selectedPhotos[currentPhotoIndex]}
                 alt={`Photo ${currentPhotoIndex + 1}`}
                 className="w-full h-96 object-cover"
+                loading="eager"
+                style={{ imageRendering: 'auto' }}
               />
               
               {/* Boutons navigation */}
@@ -566,7 +570,7 @@ export default function BarbierGentlemanMarais() {
                   {selectedPhotos.map((photo, index) => (
                     <img
                       key={index}
-                      src={photo}
+                      src={photo.replace('w=1200', 'w=300')}
                       alt={`Miniature ${index + 1}`}
                       onClick={() => setCurrentPhotoIndex(index)}
                       className={`w-16 h-16 object-cover rounded-lg cursor-pointer transition-all flex-shrink-0 ${
@@ -574,6 +578,8 @@ export default function BarbierGentlemanMarais() {
                           ? 'ring-2 ring-violet-500 opacity-100'
                           : 'opacity-70 hover:opacity-100'
                       }`}
+                      loading="lazy"
+                      style={{ imageRendering: 'auto' }}
                     />
                   ))}
                 </div>
