@@ -17,7 +17,7 @@ export default function SearchResults() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // États pour l'effet typewriter sur les placeholders
