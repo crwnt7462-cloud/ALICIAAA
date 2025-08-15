@@ -410,27 +410,49 @@ export default function SearchResults() {
   return (
     <div className="heroSlash">
       <div className="heroSlash__inner" style={{ display: 'block' }}>
-        {/* Header minimaliste avec retour */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setLocation('/')}
-            className="glass-button p-3 rounded-xl hover:bg-white/20 text-gray-800 transition-all duration-300"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          
-          <div className="flex items-center gap-4">
-            <img src={avyentoLogo} alt="Avyento" className="h-8 w-auto" />
-            <div className="flex items-center gap-2">
-              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-xs text-gray-600">
-                {isConnected ? 'Temps réel' : 'Hors ligne'}
-              </span>
+        {/* Header identique à PublicLanding */}
+        <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95 mb-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center" style={{ gap: '2px' }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLocation('/')}
+                  className="relative p-3 hover:bg-gray-100/80 rounded-xl transition-colors duration-200 mr-2"
+                >
+                  <ArrowLeft className="h-5 w-5 text-gray-700" />
+                </Button>
+                
+                <div>
+                  <img src={avyentoLogo} alt="Logo" className="h-24 w-auto" />
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3 md:gap-5">
+                <div className="flex items-center gap-2">
+                  <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span className="text-xs text-gray-600 hidden sm:inline">
+                    {isConnected ? 'Temps réel' : 'Hors ligne'}
+                  </span>
+                </div>
+                <button 
+                  className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
+                  onClick={() => setLocation("/client-login-modern")}
+                >
+                  <span className="hidden md:inline">Se connecter</span>
+                  <span className="md:hidden">Connexion</span>
+                </button>
+                <button 
+                  className="glass-button text-black px-6 py-3 rounded-2xl font-semibold shadow-xl hover:shadow-2xl hidden lg:flex"
+                  onClick={() => setLocation("/salon/demo-user")}
+                >
+                  Réserver
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </header>
           
         {/* Notification de mise à jour temps réel */}
         <AnimatePresence>
@@ -595,24 +617,11 @@ export default function SearchResults() {
                           alt={salon.name}
                           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 right-3 flex gap-2">
-                          {salon.verified && (
-                            <Badge className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-green-400 text-white rounded-lg shadow-md border-2 border-white">
-                              ✓ Vérifié
-                            </Badge>
-                          )}
-                          {salon.popular && (
-                            <Badge className="inline-flex items-center px-2 py-1 text-xs font-semibold bg-orange-400 text-white rounded-lg shadow-md border-2 border-white">
-                              🔥 Populaire
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="absolute bottom-3 left-3 right-3">
-                          <div className="glass-button bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
-                            <div className="flex items-center gap-1 text-gray-800 text-xs font-medium">
-                              <Clock className="h-3 w-3" />
-                              {salon.nextSlot}
-                            </div>
+
+                        <div className="absolute bottom-3 left-3">
+                          <div className="inline-flex items-center gap-1 bg-emerald-500 text-white px-2 py-1 rounded-md text-xs font-medium shadow-sm">
+                            <Clock className="h-3 w-3" />
+                            {salon.nextSlot}
                           </div>
                         </div>
                       </div>
