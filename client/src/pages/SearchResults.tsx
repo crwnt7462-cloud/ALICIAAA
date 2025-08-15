@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import { Badge } from "@/components/ui/badge";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import avyentoLogo from "@assets/3_1753714421825.png";
@@ -408,245 +408,132 @@ export default function SearchResults() {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-amber-600"
-    >
-      {/* Header avec retour - Style Avyento responsive */}
-      <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/10 border-b border-white/20">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-3">
-          <div className="flex items-center gap-3 lg:gap-6">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setLocation('/')}
-              className="p-2 lg:p-3 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-all duration-300 hover:scale-105"
-            >
-              <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6" />
-            </Button>
-            
-            {/* Logo desktop */}
-            <div className="hidden lg:flex items-center gap-4">
-              <img src={avyentoLogo} alt="Avyento" className="h-10 w-auto" />
-              <h1 className="text-xl font-bold text-white">Recherche</h1>
-            </div>
-            
-            {/* Titre mobile */}
-            <h1 className="text-lg font-semibold text-white lg:hidden">Recherche</h1>
-            
-            <div className="flex items-center gap-2 ml-auto">
-              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
-              <span className="text-xs text-white/70 hidden sm:inline">
+    <div className="heroSlash">
+      <div className="heroSlash__inner" style={{ display: 'block' }}>
+        {/* Header minimaliste avec retour */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/')}
+            className="glass-button p-3 rounded-xl hover:bg-white/20 text-gray-800 transition-all duration-300"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          
+          <div className="flex items-center gap-4">
+            <img src={avyentoLogo} alt="Avyento" className="h-8 w-auto" />
+            <div className="flex items-center gap-2">
+              <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className="text-xs text-gray-600">
                 {isConnected ? 'Temps réel' : 'Hors ligne'}
               </span>
             </div>
           </div>
-          
-          {/* Notification de mise à jour temps réel */}
-          <AnimatePresence>
-            {showUpdateNotification && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="bg-green-500 text-white text-xs px-3 py-1 rounded-full text-center"
-              >
-                ✨ Salon mis à jour en temps réel
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
-        {/* Logo Avyento - Mobile seulement */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-center py-1 lg:hidden"
-        >
-          <img 
-            src={avyentoLogo} 
-            alt="Avyento" 
-            className="h-32 w-auto object-contain mx-auto"
-          />
-          <p className="text-white/80 text-sm mt-1 px-4">
-            Toutes vos réservations beauté en un clic
-          </p>
-        </motion.div>
-
-        {/* Hero section desktop */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="hidden lg:block text-center py-8"
-        >
-          <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+          
+        {/* Notification de mise à jour temps réel */}
+        <AnimatePresence>
+          {showUpdateNotification && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="ios-card bg-green-50 border-green-200 text-green-800 text-sm px-4 py-2 rounded-xl text-center mb-6"
+            >
+              ✨ Salon mis à jour en temps réel
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {/* Titre principal minimaliste */}
+        <div className="text-center mb-8">
+          <h1 className="heroSlash__title mb-4">
             Trouvez votre salon de beauté idéal
           </h1>
-          <p className="text-white/80 text-lg max-w-2xl mx-auto">
+          <p className="heroSlash__subtitle max-w-2xl mx-auto">
             Découvrez les meilleurs professionnels de la beauté près de chez vous et réservez en quelques clics
           </p>
-        </motion.div>
+        </div>
 
-        {/* Instructions pour le test de synchronisation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-4 lg:p-6 text-center"
-        >
-          <p className="text-sm lg:text-base text-white font-medium">
+        {/* Instructions pour le test de synchronisation - Style iOS */}
+        <div className="ios-card p-6 text-center mb-8">
+          <p className="text-gray-800 font-semibold mb-2">
             🚀 Test de synchronisation temps réel
           </p>
-          <p className="text-xs lg:text-sm text-white/70 mt-1">
+          <p className="text-gray-600 text-sm mb-4">
             Modifiez un salon dans l'éditeur et voyez les changements apparaître instantanément ici
           </p>
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`} />
-            <span className="text-xs text-white/70">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-xs text-gray-600">
               WebSocket: {isConnected ? 'Connecté' : 'Déconnecté'}
             </span>
           </div>
-          <div className="flex flex-col sm:flex-row gap-2 lg:gap-3 mt-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               onClick={() => setLocation('/salon-page-editor')}
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl px-4 lg:px-6 py-2 text-xs lg:text-sm transition-all duration-300 transform hover:scale-105"
+              className="neon-button text-white rounded-xl px-6 py-3 font-semibold"
             >
               ✏️ Ouvrir l'éditeur
             </Button>
             <Button
               onClick={() => refetchSalons()}
-              variant="outline"
-              className="bg-white/10 border-white/30 text-white hover:bg-white/20 rounded-xl px-4 lg:px-6 py-2 text-xs lg:text-sm transition-all duration-300"
+              className="glass-button px-6 py-3 rounded-xl"
             >
               🔄 Actualiser
             </Button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Barre de recherche glassmorphism responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="space-y-4 lg:space-y-6"
-        >
-          <Card className="border-0 shadow-2xl bg-white/10 backdrop-blur-lg rounded-2xl lg:rounded-3xl overflow-hidden border border-white/20">
-            <CardContent className="p-4 lg:p-6 space-y-3 lg:space-y-4">
-              {/* Version mobile (existante) */}
-              <div className="lg:hidden space-y-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
-                  <Input
-                    placeholder={servicePlaceholder + (servicePlaceholder ? '|' : '')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 border-0 bg-white/10 rounded-xl h-11 text-sm text-white placeholder:text-white/60 focus:bg-white/20 transition-all duration-300"
-                  />
-              </div>
-              
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/60" />
-                  <Input
-                    placeholder={locationPlaceholder + (locationPlaceholder ? '|' : '')}
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="pl-10 border-0 bg-white/10 rounded-xl h-11 text-sm text-white placeholder:text-white/60 focus:bg-white/20 transition-all duration-300"
-                  />
-                </div>
-              </div>
+        {/* Barre de recherche style PublicLanding */}
+        <div className="heroSlash__search heroSlash__search--double mb-8">
+          <div className="field">
+            <input 
+              value={searchQuery} 
+              placeholder={servicePlaceholder || "Service"} 
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="text-gray-800"
+            />
+          </div>
+          <div className="field">
+            <input 
+              value={searchLocation} 
+              placeholder={locationPlaceholder || "Ville"} 
+              onChange={(e) => setSearchLocation(e.target.value)}
+              className="text-gray-800"
+            />
+          </div>
+          <button onClick={handleSearch} className="cta-button">
+            <Search className="h-5 w-5 mr-2" />
+            Rechercher
+          </button>
+        </div>
 
-              {/* Version desktop */}
-              <div className="hidden lg:flex gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
-                  <Input
-                    placeholder={servicePlaceholder + (servicePlaceholder ? '|' : '')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 py-3 border-0 bg-white/10 rounded-xl text-white placeholder:text-white/60 focus:bg-white/20 transition-all duration-300 text-base"
-                  />
-                </div>
-
-                <div className="flex-1 relative">
-                  <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-white/60" />
-                  <Input
-                    placeholder={locationPlaceholder + (locationPlaceholder ? '|' : '')}
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="pl-12 py-3 border-0 bg-white/10 rounded-xl text-white placeholder:text-white/60 focus:bg-white/20 transition-all duration-300 text-base"
-                  />
-                </div>
-
-                <motion.button
-                  onClick={handleSearch}
-                  whileHover={{ 
-                    scale: 1.05,
-                    y: -2,
-                    transition: { duration: 0.2 }
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl font-medium transition-all duration-300 transform shadow-lg hover:shadow-xl"
-                >
-                  <Search className="h-5 w-5 mr-2 inline" />
-                  Rechercher
-                </motion.button>
-              </div>
-
-              {/* Bouton recherche mobile seulement */}
-              <motion.button
-                onClick={handleSearch}
-                whileHover={{ 
-                  scale: 1.02,
-                  y: -2,
-                  transition: { duration: 0.2 }
-                }}
-                whileTap={{ scale: 0.98 }}
-                className="lg:hidden relative w-full h-11 rounded-xl overflow-hidden group font-medium bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 transition-all duration-300"
-              >
-                <div className="relative flex items-center justify-center h-full text-white">
-                  <Search className="h-4 w-4 mr-2" />
-                  Rechercher
-                </div>
-              </motion.button>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Filtres par catégorie responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-4 lg:space-y-6"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg lg:text-xl font-semibold text-white">Catégories</h2>
+        {/* Filtres par catégorie style iOS */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Catégories</h2>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowFilters(!showFilters)}
-              className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
+              className="glass-button px-4 py-2 rounded-xl"
             >
               <SlidersHorizontal className="h-4 w-4 mr-1" />
               {showFilters ? 'Masquer' : 'Plus'}
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 lg:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {categories.map((category) => {
               return (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-3 lg:px-4 py-2 lg:py-3 rounded-xl text-sm lg:text-base font-medium transition-all duration-300 ${
+                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                     selectedCategory === category.id
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg transform scale-105'
-                      : 'bg-white/10 backdrop-blur-md text-white/80 hover:bg-white/20 border border-white/20 hover:text-white'
+                      ? 'neon-button text-white'
+                      : 'ios-card text-gray-800 hover:bg-white/90'
                   }`}
                 >
                   {category.name}
@@ -654,29 +541,24 @@ export default function SearchResults() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
-        {/* Résultats responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-4 lg:space-y-6"
-        >
+        {/* Résultats style iOS */}
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg lg:text-xl font-semibold text-white">
+            <h2 className="text-xl font-bold text-gray-900">
               {filteredResults.length} salon{filteredResults.length > 1 ? 's' : ''} trouvé{filteredResults.length > 1 ? 's' : ''}
             </h2>
           </div>
 
           {isLoading && (
-            <div className="text-center py-8 lg:py-12">
-              <div className="animate-spin rounded-full h-8 w-8 lg:h-10 lg:w-10 border-b-2 border-amber-400 mx-auto"></div>
-              <p className="text-white/70 mt-3 lg:mt-4">Recherche de salons...</p>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-violet-500 mx-auto"></div>
+              <p className="text-gray-600 mt-4">Recherche de salons...</p>
             </div>
           )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             <AnimatePresence>
               {filteredResults.map((salon: any, index: number) => (
                 <motion.div
@@ -687,7 +569,7 @@ export default function SearchResults() {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Card 
-                    className="border-0 shadow-2xl bg-white/10 backdrop-blur-lg rounded-2xl lg:rounded-3xl overflow-hidden hover:bg-white/15 transition-all duration-300 cursor-pointer group border border-white/20 hover:border-white/30 hover:transform hover:scale-105"
+                    className="ios-card overflow-hidden cursor-pointer group"
                     onClick={() => handleSalonClick(salon)}
                   >
                     <CardContent className="p-0">
@@ -695,23 +577,23 @@ export default function SearchResults() {
                         <img 
                           src={salon.image} 
                           alt={salon.name}
-                          className="w-full h-32 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute top-3 right-3 flex gap-2">
                           {salon.verified && (
-                            <Badge className="bg-green-500/90 text-white text-xs">
+                            <Badge className="glass-button bg-green-100 text-green-800 text-xs">
                               Vérifié
                             </Badge>
                           )}
                           {salon.popular && (
-                            <Badge className="bg-orange-500/90 text-white text-xs">
+                            <Badge className="glass-button bg-orange-100 text-orange-800 text-xs">
                               Populaire
                             </Badge>
                           )}
                         </div>
                         <div className="absolute bottom-3 left-3 right-3">
-                          <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1">
-                            <div className="flex items-center gap-1 text-white text-xs">
+                          <div className="glass-button bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1">
+                            <div className="flex items-center gap-1 text-gray-800 text-xs font-medium">
                               <Clock className="h-3 w-3" />
                               {salon.nextSlot}
                             </div>
@@ -719,53 +601,52 @@ export default function SearchResults() {
                         </div>
                       </div>
 
-                      <div className="p-4 lg:p-5 space-y-3 lg:space-y-4">
+                      <div className="p-5 space-y-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <h3 
-                              className="font-semibold text-white text-sm lg:text-base group-hover:transition-colors"
+                              className="font-bold text-gray-900 text-base group-hover:transition-colors"
                               style={{
-                                color: salon.customColors?.primary ? salon.customColors.primary : '#ffffff'
+                                color: salon.customColors?.primary || '#1f2937'
                               }}
                             >
                               {salon.name}
                             </h3>
-                            <div className="flex items-center gap-1 text-xs lg:text-sm text-white/70 mt-1">
-                              <MapPin className="h-3 w-3 lg:h-4 lg:w-4" />
+                            <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
+                              <MapPin className="h-4 w-4" />
                               {salon.location} • {salon.distance}
                             </div>
                           </div>
                           <ChevronRight 
-                            className="h-4 w-4 lg:h-5 lg:w-5 text-white/60 group-hover:text-amber-400 transition-colors" 
+                            className="h-5 w-5 text-gray-400 group-hover:text-violet-500 transition-colors" 
                           />
                         </div>
 
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-amber-400 fill-current" />
-                            <span className="text-sm lg:text-base font-medium text-white">{salon.rating}</span>
-                            <span className="text-xs lg:text-sm text-white/70">({salon.reviews} avis)</span>
+                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                            <span className="text-base font-semibold text-gray-900">{salon.rating}</span>
+                            <span className="text-sm text-gray-600">({salon.reviews} avis)</span>
                           </div>
                           <span 
-                            className="text-sm lg:text-base font-medium text-amber-400"
+                            className="text-base font-bold"
                             style={{
-                              color: salon.customColors?.priceColor || '#fbbf24'
+                              color: salon.customColors?.priceColor || '#8b5cf6'
                             }}
                           >
                             {salon.priceRange}
                           </span>
                         </div>
 
-                        <div className="flex flex-wrap gap-1 lg:gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {salon.services.slice(0, 3).map((service: string, idx: number) => (
                             <Badge 
                               key={idx} 
-                              variant="secondary" 
-                              className="text-xs lg:text-sm bg-white/10 text-white/80 border-white/20 hover:bg-white/15"
+                              className="glass-button text-xs font-medium"
                               style={{
-                                backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}20` : 'rgba(255, 255, 255, 0.1)',
-                                color: salon.customColors?.primary || 'rgba(255, 255, 255, 0.8)',
-                                borderColor: salon.customColors?.primary ? `${salon.customColors.primary}40` : 'rgba(255, 255, 255, 0.2)'
+                                backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}15` : '#f3f4f6',
+                                color: salon.customColors?.primary || '#6b7280',
+                                borderColor: salon.customColors?.primary ? `${salon.customColors.primary}30` : '#e5e7eb'
                               }}
                             >
                               {service}
@@ -779,27 +660,19 @@ export default function SearchResults() {
               ))}
             </AnimatePresence>
           </div>
-        </motion.div>
 
-        {/* Message si aucun résultat */}
-        {filteredResults.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-12"
-          >
-            <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-lg mx-auto mb-4">
-              <Search className="w-8 h-8 text-white" />
+          {/* Message si aucun résultat */}
+          {filteredResults.length === 0 && (
+            <div className="text-center py-16">
+              <div className="ios-card w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <Search className="w-10 h-10 text-gray-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Aucun salon trouvé</h3>
+              <p className="text-gray-600 mb-6">Essayez de modifier vos critères de recherche</p>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Aucun salon trouvé
-            </h3>
-            <p className="text-gray-600 text-sm">
-              Essayez de modifier vos critères de recherche
-            </p>
-          </motion.div>
-        )}
+          )}
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
