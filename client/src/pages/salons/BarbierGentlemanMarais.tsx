@@ -18,7 +18,9 @@ import {
   ChevronUp,
   Camera,
   X,
-  MoreHorizontal
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface Service {
@@ -62,6 +64,7 @@ export default function BarbierGentlemanMarais() {
   const [activeTab, setActiveTab] = useState('services');
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [photoGalleryOpen, setPhotoGalleryOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
     {
@@ -196,9 +199,18 @@ export default function BarbierGentlemanMarais() {
     );
   };
 
-  const openPhotoGallery = (photos: string[]) => {
+  const openPhotoGallery = (photos: string[], startIndex: number = 0) => {
     setSelectedPhotos(photos);
+    setCurrentPhotoIndex(startIndex);
     setPhotoGalleryOpen(true);
+  };
+
+  const nextPhoto = () => {
+    setCurrentPhotoIndex((prev) => (prev + 1) % selectedPhotos.length);
+  };
+
+  const prevPhoto = () => {
+    setCurrentPhotoIndex((prev) => (prev - 1 + selectedPhotos.length) % selectedPhotos.length);
   };
 
   const toggleDescription = (serviceId: number) => {
@@ -335,12 +347,12 @@ export default function BarbierGentlemanMarais() {
                                           src={photo} 
                                           alt={`${service.name} ${index + 1}`}
                                           className="w-12 h-12 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
-                                          onClick={() => openPhotoGallery(service.photos || [])}
+                                          onClick={() => openPhotoGallery(service.photos || [], index)}
                                         />
                                         {index === 2 && service.photos.length > 3 && (
                                           <div 
                                             className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-pointer"
-                                            onClick={() => openPhotoGallery(service.photos || [])}
+                                            onClick={() => openPhotoGallery(service.photos || [], index)}
                                           >
                                             <span className="text-white text-xs font-semibold">+{service.photos.length - 3}</span>
                                           </div>
@@ -349,7 +361,7 @@ export default function BarbierGentlemanMarais() {
                                     ))}
                                     {service.photos.length > 0 && (
                                       <button
-                                        onClick={() => openPhotoGallery(service.photos || [])}
+                                        onClick={() => openPhotoGallery(service.photos || [], 0)}
                                         className="w-12 h-12 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-violet-400 transition-colors"
                                       >
                                         <Camera className="h-4 w-4 text-gray-400" />
@@ -490,12 +502,15 @@ export default function BarbierGentlemanMarais() {
         )}
       </div>
 
-      {/* Modal Galerie Photos - Style Avyento */}
-      {photoGalleryOpen && (
+      {/* Modal Carrousel Photos - Style Avyento */}
+      {photoGalleryOpen && selectedPhotos.length > 0 && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="avyento-card max-w-4xl w-full max-h-[90vh] overflow-auto">
+          <div className="avyento-card max-w-4xl w-full max-h-[90vh] relative">
+            {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h3 className="avyento-subtitle text-gray-900 mb-0">Galerie photos</h3>
+              <h3 className="avyento-subtitle text-gray-900 mb-0">
+                Photo {currentPhotoIndex + 1} sur {selectedPhotos.length}
+              </h3>
               <button
                 onClick={() => setPhotoGalleryOpen(false)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -503,18 +518,71 @@ export default function BarbierGentlemanMarais() {
                 <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {selectedPhotos.map((photo, index) => (
-                  <img
-                    key={index}
-                    src={photo}
-                    alt={`Photo ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer"
-                  />
-                ))}
-              </div>
+            
+            {/* Carrousel */}
+            <div className="relative bg-gray-100">
+              <img
+                src={selectedPhotos[currentPhotoIndex]}
+                alt={`Photo ${currentPhotoIndex + 1}`}
+                className="w-full h-96 object-cover"
+              />
+              
+              {/* Boutons navigation */}
+              {selectedPhotos.length > 1 && (
+                <>
+                  <button
+                    onClick={prevPhoto}
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all"
+                  >
+                    <ChevronLeft className="h-6 w-6 text-gray-700" />
+                  </button>
+                  <button
+                    onClick={nextPhoto}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all"
+                  >
+                    <ChevronRight className="h-6 w-6 text-gray-700" />
+                  </button>
+                </>
+              )}
+              
+              {/* Indicateurs */}
+              {selectedPhotos.length > 1 && (
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                  {selectedPhotos.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentPhotoIndex(index)}
+                      className={`w-3 h-3 rounded-full transition-all ${
+                        index === currentPhotoIndex 
+                          ? 'bg-white' 
+                          : 'bg-white/50 hover:bg-white/75'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
+            
+            {/* Miniatures */}
+            {selectedPhotos.length > 1 && (
+              <div className="p-4 border-t border-gray-200">
+                <div className="flex gap-2 overflow-x-auto">
+                  {selectedPhotos.map((photo, index) => (
+                    <img
+                      key={index}
+                      src={photo}
+                      alt={`Miniature ${index + 1}`}
+                      onClick={() => setCurrentPhotoIndex(index)}
+                      className={`w-16 h-16 object-cover rounded-lg cursor-pointer transition-all flex-shrink-0 ${
+                        index === currentPhotoIndex
+                          ? 'ring-2 ring-violet-500 opacity-100'
+                          : 'opacity-70 hover:opacity-100'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
