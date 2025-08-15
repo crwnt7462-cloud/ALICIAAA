@@ -191,7 +191,7 @@ export default function PlanningModern() {
 
   // Vue jour avec design Landing 
   const renderDayView = () => (
-    <div className="space-y-3 lg:grid lg:grid-cols-3 lg:gap-4 lg:space-y-0">
+    <div className="space-y-3 lg:grid lg:grid-cols-4 lg:gap-3 lg:space-y-0">
       {timeSlots.map((time, index) => {
         const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
         
@@ -383,7 +383,7 @@ export default function PlanningModern() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
     >
-      <div className="max-w-md lg:max-w-full lg:px-8 mx-auto space-y-6">
+      <div className="max-w-md lg:max-w-none lg:px-6 mx-auto space-y-6">
         {/* Header Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -392,36 +392,45 @@ export default function PlanningModern() {
           className="text-center space-y-4 pt-8 lg:pt-4 relative"
         >
           {/* Icônes flottantes diffuses - style FAQ */}
-          <div className="absolute inset-0 pointer-events-none">
-            {/* Mobile - 3 emojis */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {/* Mobile - 3 emojis plus diffus */}
             <div className="lg:hidden">
-              <div className="absolute top-4 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
-                <span className="text-lg">📅</span>
+              <div className="absolute top-2 left-4 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/20 to-purple-300/15 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+                <span className="text-lg opacity-60">📅</span>
               </div>
-              <div className="absolute top-8 right-12 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-                <span className="text-lg">⏰</span>
+              <div className="absolute top-6 right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/20 to-green-300/15 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
+                <span className="text-lg opacity-60">⏰</span>
               </div>
-              <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
-                <span className="text-lg">✨</span>
+              <div className="absolute top-12 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/20 to-cyan-300/15 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
+                <span className="text-lg opacity-60">✨</span>
               </div>
             </div>
             
-            {/* Desktop - 5 emojis */}
+            {/* Desktop - 8 emojis plus diffus et répartis */}
             <div className="hidden lg:block">
-              <div className="absolute top-8 left-24 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
-                <span className="text-lg">📅</span>
+              <div className="absolute top-4 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/15 to-purple-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+                <span className="text-lg opacity-40">📅</span>
               </div>
-              <div className="absolute top-4 right-32 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-                <span className="text-lg">⏰</span>
+              <div className="absolute top-8 right-24 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/15 to-rose-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
+                <span className="text-lg opacity-40">⏰</span>
               </div>
-              <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
-                <span className="text-lg">✨</span>
+              <div className="absolute top-2 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/15 to-cyan-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
+                <span className="text-lg opacity-40">✨</span>
               </div>
-              <div className="absolute top-6 left-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-amber-200/35 to-orange-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
-                <span className="text-lg">📋</span>
+              <div className="absolute top-12 left-1/4 w-12 h-12 rounded-full bg-gradient-to-br from-amber-200/15 to-orange-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
+                <span className="text-lg opacity-40">📋</span>
               </div>
-              <div className="absolute top-2 right-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-12" style={{ animationDelay: '1.5s' }}>
-                <span className="text-lg">🎯</span>
+              <div className="absolute top-6 right-1/4 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/15 to-green-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-12" style={{ animationDelay: '1.5s' }}>
+                <span className="text-lg opacity-40">🎯</span>
+              </div>
+              <div className="absolute top-10 right-12 w-12 h-12 rounded-full bg-gradient-to-br from-teal-200/15 to-cyan-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-6" style={{ animationDelay: '3s', animationDuration: '5s' }}>
+                <span className="text-lg opacity-40">📊</span>
+              </div>
+              <div className="absolute top-1 left-2/3 w-12 h-12 rounded-full bg-gradient-to-br from-indigo-200/15 to-purple-300/10 backdrop-blur-sm flex items-center justify-center animate-pulse transform -rotate-3" style={{ animationDelay: '2.5s' }}>
+                <span className="text-lg opacity-40">🔔</span>
+              </div>
+              <div className="absolute top-14 right-1/3 w-12 h-12 rounded-full bg-gradient-to-br from-rose-200/15 to-pink-300/10 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-18" style={{ animationDelay: '4s', animationDuration: '6s' }}>
+                <span className="text-lg opacity-40">💼</span>
               </div>
             </div>
           </div>
@@ -737,9 +746,9 @@ export default function PlanningModern() {
               </CardContent>
             </Card>
           ) : (
-            <div className="lg:grid lg:grid-cols-4 lg:gap-8 lg:space-y-0 space-y-4">
+            <div className="lg:grid lg:grid-cols-5 lg:gap-6 lg:space-y-0 space-y-4">
               {/* Colonne principale - Planning */}
-              <div className="lg:col-span-3">
+              <div className="lg:col-span-4">
                 {viewMode === 'day' ? renderDayView() : renderWeekView()}
               </div>
               
