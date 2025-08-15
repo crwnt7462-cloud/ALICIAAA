@@ -393,8 +393,14 @@ export default function SearchResults() {
     window.history.pushState({}, '', `/search?${params.toString()}`);
   };
 
-  const handleSalonClick = (salon: { route: string }) => {
-    setLocation(salon.route);
+  const handleSalonClick = (salon: { route?: string; shareableUrl?: string }) => {
+    const url = salon.shareableUrl || salon.route;
+    console.log('🔗 Salon cliqué:', salon.name || salon.id, 'URL:', url);
+    if (url) {
+      setLocation(url);
+    } else {
+      console.error('❌ Aucune URL trouvée pour le salon:', salon);
+    }
   };
 
   return (
