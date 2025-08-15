@@ -1216,45 +1216,34 @@ export default function PublicLanding() {
       <section className="py-16 bg-gradient-to-br from-gray-50 to-white relative overflow-hidden">
         {/* Icônes flottantes diffuses */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Bulle pastel violette - coin supérieur gauche */}
-          <div className="absolute top-12 left-16 md:top-12 md:left-16 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm items-center justify-center animate-pulse transform rotate-12">
+          {/* Bulle pastel violette - cachée sur mobile car proche du titre */}
+          <div className="absolute top-20 left-24 md:top-20 md:left-24 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm items-center justify-center animate-pulse transform rotate-12">
             <span className="text-lg">💡</span>
           </div>
           
-          {/* Bulle pastel rose - milieu droite */}
-          <div className="absolute top-40 right-12 md:top-40 md:right-12 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
+          {/* Bulle pastel rose - cachée sur mobile car proche du titre */}
+          <div className="absolute top-32 right-32 md:top-32 md:right-32 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '1s', animationDuration: '3s' }}>
             <span className="text-lg">❓</span>
           </div>
           
-          {/* Bulle pastel bleue - centre gauche */}
-          <div className="absolute top-64 left-8 md:top-64 md:left-8 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
+          {/* Bulle pastel bleue - cachée sur mobile pour éviter les conflits */}
+          <div className="absolute top-80 left-48 md:top-80 md:left-48 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '2s' }}>
             <span className="text-lg">✨</span>
           </div>
           
-          {/* Bulle pastel verte - bas droite */}
-          <div className="absolute bottom-28 right-16 md:bottom-28 md:right-16 sm:bottom-20 sm:right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-bounce transform -rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
+          {/* Bulle pastel verte - uniquement en bas sur mobile */}
+          <div className="absolute bottom-40 right-24 md:bottom-40 md:right-24 sm:bottom-20 sm:right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-bounce transform -rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
             <span className="text-lg">📱</span>
           </div>
           
-          {/* Bulle pastel orange - bas gauche */}
-          <div className="absolute bottom-12 left-32 md:bottom-12 md:left-32 sm:bottom-8 sm:left-8 w-12 h-12 rounded-full bg-gradient-to-br from-orange-200/40 to-amber-300/30 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-pulse transform rotate-30" style={{ animationDelay: '1.5s' }}>
+          {/* Bulle pastel orange - uniquement en bas sur mobile */}
+          <div className="absolute bottom-80 left-20 md:bottom-80 md:left-20 sm:bottom-8 sm:left-8 w-12 h-12 rounded-full bg-gradient-to-br from-orange-200/40 to-amber-300/30 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-pulse transform rotate-30" style={{ animationDelay: '1.5s' }}>
             <span className="text-lg">💬</span>
           </div>
           
-          {/* Bulle pastel jaune - milieu haut droite */}
-          <div className="absolute top-24 right-40 md:top-24 md:right-40 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-yellow-200/35 to-amber-300/25 backdrop-blur-sm items-center justify-center animate-bounce transform -rotate-24" style={{ animationDelay: '3s', animationDuration: '2.5s' }}>
+          {/* Bulle pastel jaune - cachée sur mobile */}
+          <div className="absolute top-56 right-48 md:top-56 md:right-48 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-yellow-200/35 to-amber-300/25 backdrop-blur-sm items-center justify-center animate-bounce transform -rotate-24" style={{ animationDelay: '3s', animationDuration: '2.5s' }}>
             <span className="text-lg">⭐</span>
-          </div>
-          
-          {/* Bulles supplémentaires pour meilleur éparpillement */}
-          {/* Bulle pastel cyan - milieu gauche */}
-          <div className="absolute top-96 left-24 md:top-96 md:left-24 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-cyan-200/35 to-teal-300/25 backdrop-blur-sm items-center justify-center animate-pulse transform rotate-18" style={{ animationDelay: '2.5s' }}>
-            <span className="text-lg">🌟</span>
-          </div>
-          
-          {/* Bulle pastel indigo - centre droite */}
-          <div className="absolute top-80 right-32 md:top-80 md:right-32 hidden sm:flex w-12 h-12 rounded-full bg-gradient-to-br from-indigo-200/40 to-purple-300/30 backdrop-blur-sm items-center justify-center animate-bounce transform -rotate-15" style={{ animationDelay: '4s', animationDuration: '3.5s' }}>
-            <span className="text-lg">🎭</span>
           </div>
         </div>
         
