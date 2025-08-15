@@ -195,15 +195,15 @@ export function SalonPageTemplate({
             <h1 className="text-3xl lg:text-4xl font-bold text-white mb-0">{salonData.name}</h1>
             <CheckCircle className="h-6 w-6 text-blue-400" />
           </div>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">{salonData.rating || 4.8}</span>
               <span className="opacity-90">({salonData.reviewsCount || 0} avis)</span>
             </div>
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4 opacity-90" />
-              <span className="opacity-90">{salonData.address}</span>
+            <div className="flex items-start gap-1">
+              <MapPin className="h-4 w-4 opacity-90 mt-0.5 flex-shrink-0" />
+              <span className="opacity-90 leading-tight">{salonData.address}</span>
             </div>
           </div>
         </div>
@@ -298,47 +298,72 @@ export function SalonPageTemplate({
                             <div className="flex-1">
                               <div className="flex items-center justify-between mb-2">
                                 <h4 className="font-medium text-gray-900">{service.name}</h4>
-                                {/* Notation du service */}
-                                {service.rating && (
-                                  <div className="flex items-center gap-1">
-                                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                    <span className="text-sm font-medium text-gray-700">{service.rating}</span>
-                                    {service.reviewCount && (
-                                      <button 
-                                        className="text-xs text-violet-600 hover:text-violet-700 font-medium underline"
-                                        onClick={() => setActiveTab('reviews')}
-                                      >
-                                        ({service.reviewCount} avis)
-                                      </button>
+                                {/* Notation du service - EXACTEMENT COMME BARBIER */}
+                              {service.rating && (
+                                <div className="flex items-center gap-1">
+                                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-sm font-medium text-gray-700">{service.rating}</span>
+                                  {service.reviewCount && (
+                                    <button 
+                                      className="text-xs text-violet-600 hover:text-violet-700 font-medium underline"
+                                      onClick={() => setActiveTab('avis')}
+                                    >
+                                      ({service.reviewCount} avis)
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            
+                            {/* Galerie photos - EXACTEMENT COMME BARBIER */}
+                            {service.photos && service.photos.length > 0 && (
+                              <div className="flex gap-2 mt-2 mb-2">
+                                {service.photos.slice(0, 3).map((photo, index) => (
+                                  <div key={index} className="relative">
+                                    <img 
+                                      src={photo.replace('w=1200', 'w=200')} 
+                                      alt={`${service.name} ${index + 1}`}
+                                      className="w-12 h-12 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
+                                      loading="lazy"
+                                      style={{ imageRendering: 'auto' }}
+                                    />
+                                    {index === 2 && service.photos.length > 3 && (
+                                      <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-pointer">
+                                        <span className="text-white text-xs font-semibold">+{service.photos.length - 3}</span>
+                                      </div>
                                     )}
                                   </div>
+                                ))}
+                                {service.photos.length > 0 && (
+                                  <button className="w-12 h-12 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-violet-400 transition-colors">
+                                    <Camera className="h-4 w-4 text-gray-400" />
+                                  </button>
                                 )}
                               </div>
-                              
-                              {/* Description service */}
-                              {service.description && (
-                                <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                                  {service.description}
-                                </p>
-                              )}
-                              
-                              <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-500">
-                                  Durée : {service.duration} min
-                                </div>
-                                <div className="text-lg font-semibold text-violet-600">
-                                  {service.price}€
-                                </div>
+                            )}
+                            
+                            {/* Description avec voir plus - EXACTEMENT COMME BARBIER */}
+                            {service.description && (
+                              <div className="mt-1">
+                                <p className="text-sm text-gray-500">{service.description}</p>
                               </div>
+                            )}
+                            
+                            <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                              <Clock className="h-3 w-3" />
+                              {service.duration}
                             </div>
                           </div>
-                          
-                          <button 
-                            onClick={() => handleBooking(service.id)}
-                            className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 px-4 rounded-lg transition-colors font-medium"
-                          >
-                            Réserver ce service
-                          </button>
+                          <div className="text-right ml-4">
+                            <p className="font-bold text-xl text-gray-900">{service.price}€</p>
+                          </div>
+                        </div>
+                        <button 
+                          className="avyento-button-secondary w-full"
+                          onClick={() => handleBooking(service.id)}
+                        >
+                          Réserver
+                        </button>
                         </div>
                       ))}
                     </div>
@@ -349,60 +374,47 @@ export function SalonPageTemplate({
           </div>
         )}
 
-        {/* Onglet Équipe */}
+        {/* Onglet Équipe - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
         {activeTab === 'equipe' && (
-          <div className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {staff.map((member) => (
-                <div key={member.id} className="avyento-card">
-                  <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-                      {member.avatar ? (
-                        <img 
-                          src={member.avatar} 
-                          alt={member.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-violet-200 flex items-center justify-center">
-                          <Users className="h-6 w-6 text-violet-600" />
-                        </div>
-                      )}
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">Notre Équipe</h2>
+              <p className="text-gray-600">Rencontrez nos experts passionnés</p>
+            </div>
+            
+            {staff.map((member) => (
+              <div key={member.id} className="avyento-card">
+                <div className="flex items-start gap-4">
+                  {member.avatar && (
+                    <img 
+                      src={member.avatar} 
+                      alt={member.name}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-semibold text-lg text-gray-900">{member.name}</h3>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm font-medium text-gray-700">{member.rating}</span>
+                        <span className="text-xs text-gray-500">({member.reviewsCount} avis)</span>
+                      </div>
                     </div>
                     
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                      <p className="text-sm text-gray-600 mb-2">{member.role}</p>
-                      
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`h-4 w-4 ${i < Math.floor(member.rating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} 
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm text-gray-600">
-                          {member.rating} ({member.reviewsCount} avis)
-                        </span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1">
-                        {member.specialties.map((specialty, index) => (
-                          <span 
-                            key={index}
-                            className="text-xs bg-violet-100 text-violet-700 px-2 py-1 rounded-full"
-                          >
-                            {specialty}
-                          </span>
-                        ))}
-                      </div>
+                    <p className="text-violet-600 font-medium mb-3">{member.role}</p>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {member.specialties.map((specialty, index) => (
+                        <Badge key={index} variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                          {specialty}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         )}
 
@@ -413,53 +425,119 @@ export function SalonPageTemplate({
           </div>
         )}
 
-        {/* Onglet Infos */}
+        {/* Onglet Infos - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
         {activeTab === 'info' && (
-          <div className="space-y-8">
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Informations de contact */}
-              <div className="avyento-card">
-                <h3 className="text-xl font-semibold mb-4">Informations</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-5 w-5 text-violet-600" />
-                    <span>{salonData.address}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-violet-600" />
-                    <span>{salonData.phone}</span>
-                  </div>
+          <div className="space-y-6">
+            <div className="avyento-card">
+              <h3 className="avyento-subtitle text-gray-900 mb-4">À propos</h3>
+              <p className="text-gray-700 mb-6">{salonData.description || salonData.longDescription || 'Découvrez notre salon de beauté et nos services personnalisés.'}</p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-5 w-5 text-gray-400" />
+                  <span>{salonData.address}</span>
                 </div>
-              </div>
-
-              {/* Horaires d'ouverture */}
-              <div className="avyento-card">
-                <h3 className="text-xl font-semibold mb-4">Horaires</h3>
-                <div className="space-y-2">
-                  {Object.entries(salonData.openingHours).map(([day, hours]) => (
-                    <div key={day} className="flex justify-between">
-                      <span className="font-medium">{day}</span>
-                      <span className="text-gray-600">
-                        {hours.closed ? 'Fermé' : `${hours.open} - ${hours.close}`}
-                      </span>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-gray-400" />
+                  <span>{salonData.phone}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-gray-400" />
+                  <span>Mar-Sam: 9h-19h • Lun: Fermé • Dim: 10h-17h</span>
                 </div>
               </div>
             </div>
 
-            {/* Équipements */}
             <div className="avyento-card">
-              <h3 className="text-xl font-semibold mb-4">Équipements</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {salonData.amenities.map((amenity, index) => (
+              <h3 className="avyento-subtitle text-gray-900 mb-4">Spécialités & Expertise</h3>
+              <div className="space-y-3">
+                {(salonData.certifications || salonData.specialties || []).map((cert, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-violet-600 rounded-full"></div>
-                    <span className="text-sm">{amenity}</span>
+                    <Star className="h-4 w-4 text-amber-500" />
+                    <span className="text-sm">{cert}</span>
                   </div>
                 ))}
               </div>
+              
+              {(salonData.awards || []).length > 0 && (
+                <div className="mt-6">
+                  <h4 className="font-medium mb-3">Distinctions</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {(salonData.awards || []).map((award, index) => (
+                      <Badge key={index} variant="secondary" className="bg-amber-100 text-amber-800">
+                        {award}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+        )}
+
+        {/* Onglet Avis - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
+        {activeTab === 'avis' && (
+          <div className="space-y-6">
+            <div className="text-center py-8">
+              <Star className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold mb-2">
+                {salonData.rating || 4.8}/5 étoiles
+              </h3>
+              <p className="text-gray-600">
+                Basé sur {salonData.reviewsCount || 0} avis clients
+              </p>
+            </div>
+            
+            {/* Avis par service */}
+            {displayServiceCategories.map((category) => {
+              const servicesWithReviews = category.services.filter(service => 
+                service.rating && service.reviewCount && service.reviewCount > 0
+              );
+              
+              if (servicesWithReviews.length === 0) return null;
+              
+              return (
+                <div key={category.id} className="space-y-4">
+                  <h3 className="avyento-subtitle text-gray-900">{category.name}</h3>
+                  
+                  {servicesWithReviews.map((service) => (
+                    <div key={service.id} id={`avis-service-${service.id}`} className="avyento-card p-4">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        {service.name}
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">{service.rating}</span>
+                          <span className="text-xs text-gray-500">({service.reviewCount} avis)</span>
+                        </div>
+                      </h4>
+                      
+                      {/* Avis client exemple */}
+                      <div className="space-y-4">
+                        <div className="border-l-4 border-gray-200 pl-4">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center flex-shrink-0">
+                              <Users className="h-4 w-4 text-violet-600" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">Marc L.</span>
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-1">Service impeccable, très professionnel !</p>
+                              <span className="text-xs text-gray-400">Il y a 2 jours</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         )}
 
