@@ -1,39 +1,22 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Search, MapPin, Star, Clock, Filter, SlidersHorizontal, ArrowLeft, 
-  CheckCircle, Heart, Share2, Navigation, TrendingUp, Award, Users,
-  Sparkles, Calendar, ChevronRight, Eye, Verified
+  Search, MapPin, Star, Clock, Filter, ArrowLeft, 
+  Sparkles, Calendar, ChevronRight, Eye, Heart,
+  SlidersHorizontal, TrendingUp, Award
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-
-// Fonction pour obtenir la classe de couleur spécifique à chaque salon
-const getSalonButtonClass = (salonId: string) => {
-  const salonColors: Record<string, string> = {
-    'salon-excellence-paris': 'glass-button-pink',
-    'salon-moderne-republique': 'glass-button-indigo', 
-    'barbier-gentleman-marais': 'glass-button-amber',
-    'institut-beaute-saint-germain': 'glass-button-rose',
-    'nail-art-opera': 'glass-button-rose',
-    'spa-wellness-bastille': 'glass-button-emerald',
-    'beauty-lounge-montparnasse': 'glass-button-indigo'
-  };
-  return salonColors[salonId] || 'glass-button-neutral';
-};
 
 export default function SearchResults() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [sortBy, setSortBy] = useState("rating");
-  const [priceRange, setPriceRange] = useState("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Extract search params from URL
   useEffect(() => {
@@ -44,81 +27,109 @@ export default function SearchResults() {
     setSearchLocation(location);
   }, []);
 
-  // 🔥 RECHERCHE SALONS TEMPS RÉEL depuis l'API
-  const { data: apiResults, isLoading } = useQuery({
-    queryKey: ['/api/public/salons', searchQuery, searchLocation],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      if (searchQuery) params.set('category', searchQuery.toLowerCase());
-      if (searchLocation) params.set('city', searchLocation.toLowerCase());
-      
-      const response = await fetch(`/api/public/salons?${params.toString()}`);
-      const data = await response.json();
-      return data.success ? data.salons : [];
-    },
-    refetchOnWindowFocus: false
-  });
+  const categories = [
+    { id: "all", name: "Tous", icon: Sparkles },
+    { id: "coiffure", name: "Coiffure", icon: Sparkles },
+    { id: "esthetique", name: "Esthétique", icon: Heart },
+    { id: "massage", name: "Massage", icon: TrendingUp },
+    { id: "onglerie", name: "Onglerie", icon: Award }
+  ];
 
-  // Combiner les résultats API avec des salons de démo
-  const searchResults = apiResults || [
+  // Salons de démonstration avec liens vers les vraies pages
+  const searchResults = [
     {
-      id: "demo-user",
-      name: "Studio Élégance Paris",
+      id: "barbier-gentleman-marais",
+      name: "Barbier Gentleman Marais",
       rating: 4.8,
-      reviews: 247,
-      image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
-      location: "Paris 1er",
+      reviews: 156,
+      image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=200&fit=crop",
+      location: "Le Marais, Paris 4ème",
       distance: "1.2 km",
       nextSlot: "Aujourd'hui 14h30",
-      services: ["Coupe & Styling", "Coloration", "Soins Capillaires"],
-      priceRange: "€€€",
-      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Soins du visage'],
+      services: ["Coupe Classique", "Barbe & Moustache", "Soins Visage"],
+      priceRange: "€€",
+      category: "coiffure",
       verified: true,
       popular: true,
-      newClient: false,
-      responseTime: "2h",
-      awards: ["Prix Excellence 2024"]
+      route: "/salon/barbier-gentleman-marais"
     },
     {
-      id: "salon-2",
-      name: "Beauty Studio Emma",
+      id: "beauty-lash-studio",
+      name: "Beauty Lash Studio",
       rating: 4.9,
-      reviews: 189,
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
-      location: "Paris 12ème",
+      reviews: 78,
+      image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=200&fit=crop",
+      location: "République, Paris 3ème",
       distance: "2.1 km",
       nextSlot: "Demain 10h00",
-      services: ["Ongles", "Extensions", "Maquillage"],
+      services: ["Extensions Volume", "Lifting de Cils", "Épilation Sourcils"],
       priceRange: "€€€",
-      specialties: searchQuery.toLowerCase().includes('ongle') ? ['Ongles'] : ['Maquillage']
+      category: "esthetique",
+      verified: true,
+      route: "/salon/beauty-lash-studio"
     },
     {
-      id: "salon-3",
-      name: "Wellness Center Spa",
-      rating: 4.7,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
-      location: "Paris 8ème",
-      distance: "3.5 km",
+      id: "salon-excellence-paris",
+      name: "Salon Excellence Paris",
+      rating: 4.8,
+      reviews: 127,
+      image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=300&h=200&fit=crop",
+      location: "Champs-Élysées, Paris 8ème",
+      distance: "3.2 km",
       nextSlot: "Aujourd'hui 16h00",
-      services: ["Massage", "Spa", "Relaxation"],
-      priceRange: "€€€€",
-      specialties: searchQuery.toLowerCase().includes('massage') ? ['Massage'] : ['Spa']
+      services: ["Coupe Premium", "Coloration Expert", "Soin Restructurant"],
+      priceRange: "€€€",
+      category: "coiffure",
+      popular: true,
+      route: "/salon/salon-excellence-paris"
     },
     {
-      id: "salon-4",
-      name: "Coiffure Moderne",
-      rating: 4.6,
-      reviews: 203,
-      image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=200&fit=crop",
-      location: "Paris 11ème",
-      distance: "1.8 km",
+      id: "institut-beaute-saint-germain",
+      name: "Institut Beauté Saint-Germain",
+      rating: 4.7,
+      reviews: 89,
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
+      location: "Saint-Germain, Paris 6ème",
+      distance: "2.8 km",
       nextSlot: "Demain 15h30",
-      services: ["Coiffure", "Barbier", "Coloration"],
+      services: ["Soins Visage", "Épilation", "Massage Relaxant"],
+      priceRange: "€€€",
+      category: "esthetique",
+      route: "/salon/institut-beaute-saint-germain"
+    },
+    {
+      id: "beauty-lounge-montparnasse",
+      name: "Beauty Lounge Montparnasse",
+      rating: 4.6,
+      reviews: 94,
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
+      location: "Montparnasse, Paris 14ème",
+      distance: "4.1 km",
+      nextSlot: "Aujourd'hui 18h00",
+      services: ["Manucure", "Pédicure", "Nail Art"],
       priceRange: "€€",
-      specialties: searchQuery.toLowerCase().includes('coiffure') ? ['Coiffure'] : ['Barbier']
+      category: "onglerie",
+      route: "/salon/beauty-lounge-montparnasse"
+    },
+    {
+      id: "salon-moderne-republique",
+      name: "Salon Moderne République",
+      rating: 4.5,
+      reviews: 67,
+      image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=200&fit=crop",
+      location: "République, Paris 11ème",
+      distance: "1.8 km",
+      nextSlot: "Demain 11h00",
+      services: ["Coupe Tendance", "Coloration", "Brushing"],
+      priceRange: "€€",
+      category: "coiffure",
+      route: "/salon/salon-moderne-republique"
     }
   ];
+
+  const filteredResults = selectedCategory === "all" 
+    ? searchResults 
+    : searchResults.filter(salon => salon.category === selectedCategory);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -127,234 +138,231 @@ export default function SearchResults() {
     window.history.pushState({}, '', `/search?${params.toString()}`);
   };
 
-  const filteredAndSortedResults = (searchResults || [])
-    .filter((salon: any) => {
-      if (priceRange !== 'all' && salon.priceRange !== priceRange) return false;
-      return true;
-    })
-    .sort((a: any, b: any) => {
-      switch (sortBy) {
-        case 'rating':
-          return b.rating - a.rating;
-        case 'distance':
-          return parseFloat(a.distance) - parseFloat(b.distance);
-        case 'price':
-          return a.priceRange.length - b.priceRange.length;
-        default:
-          return 0;
-      }
-    });
+  const handleSalonClick = (salon: any) => {
+    setLocation(salon.route);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30"
+    >
+      {/* Header avec retour */}
+      <div className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-white/20">
+        <div className="max-w-md mx-auto px-4 py-3">
+          <div className="flex items-center gap-3">
             <Button
               variant="ghost"
+              size="sm"
               onClick={() => setLocation('/')}
-              className="text-purple-600 hover:text-purple-700"
+              className="p-2 rounded-xl hover:bg-black/5"
             >
-              ← Retour à l'accueil
+              <ArrowLeft className="h-5 w-5" />
             </Button>
-            
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-2">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                  <Input
-                    placeholder="Rechercher..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-9 w-64"
-                  />
-                </div>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
-                  <Input
-                    placeholder="Où ?"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="pl-9 w-48"
-                  />
-                </div>
-                <Button onClick={handleSearch} className="bg-purple-600 hover:bg-purple-700">
-                  <Search className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
+            <h1 className="text-lg font-semibold text-gray-900">Recherche</h1>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Results Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {searchQuery ? `Résultats pour "${searchQuery}"` : 'Tous les salons'}
-            </h1>
-            <p className="text-gray-600">
-              {filteredAndSortedResults.length} établissement(s) trouvé(s)
-              {searchLocation && ` près de ${searchLocation}`}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 mt-4 md:mt-0">
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Filtres
-            </Button>
-
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trier par" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="rating">Mieux notés</SelectItem>
-                <SelectItem value="distance">Plus proches</SelectItem>
-                <SelectItem value="price">Prix croissant</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Filters Panel */}
-        {showFilters && (
-          <Card className="mb-6">
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Gamme de prix
-                  </label>
-                  <Select value={priceRange} onValueChange={setPriceRange}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tous les prix</SelectItem>
-                      <SelectItem value="€">€ (Économique)</SelectItem>
-                      <SelectItem value="€€">€€ (Modéré)</SelectItem>
-                      <SelectItem value="€€€">€€€ (Élevé)</SelectItem>
-                      <SelectItem value="€€€€">€€€€ (Luxe)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+      <div className="max-w-md mx-auto p-4 space-y-6">
+        {/* Barre de recherche glassmorphism */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-3"
+        >
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden">
+            <CardContent className="p-4 space-y-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Service recherché..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm"
+                />
               </div>
+              
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Localisation..."
+                  value={searchLocation}
+                  onChange={(e) => setSearchLocation(e.target.value)}
+                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm"
+                />
+              </div>
+
+              <Button
+                onClick={handleSearch}
+                className="w-full h-11 rounded-xl font-medium"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%)',
+                  boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)'
+                }}
+              >
+                <Search className="h-4 w-4 mr-2" />
+                Rechercher
+              </Button>
             </CardContent>
           </Card>
-        )}
+        </motion.div>
 
-        {/* Results Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredAndSortedResults.map((salon: any) => (
-            <Card 
-              key={salon.id}
-              className="overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
-              onClick={() => setLocation(`/salon/${salon.id}`)}
+        {/* Filtres par catégorie */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">Catégories</h2>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="p-2 rounded-xl hover:bg-black/5"
             >
-              <div className="flex">
-                <div className="w-40 h-32 flex-shrink-0">
-                  <img 
-                    src={salon.image} 
-                    alt={salon.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                
-                <CardContent className="flex-1 p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
-                      {salon.name}
-                    </h3>
-                    <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-semibold">{salon.rating}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mb-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{salon.location}</span>
-                    <span className="text-sm text-gray-400">• {salon.distance}</span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-3">
-                    <Clock className="w-4 h-4 text-green-500" />
-                    <span className="text-sm text-green-600 font-medium">{salon.nextSlot}</span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {salon.specialties?.map((specialty: any) => (
-                      <span 
-                        key={specialty}
-                        className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full font-medium"
-                      >
-                        {specialty}
-                      </span>
-                    ))}
-                    {salon.services?.slice(0, 2).map((service: any) => (
-                      <span 
-                        key={service}
-                        className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-                      >
-                        {service}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-500">{salon.reviews} avis</span>
-                      <span className="text-sm font-medium text-gray-700">{salon.priceRange}</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      className={getSalonButtonClass(salon.id)}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log('[NAV] router=wouter, action=navigate, from=/search, to=/salon-booking/' + salon.slug, 'salon=' + salon.name);
-                        setLocation(`/salon-booking/${salon.slug}`);
-                      }}
-                    >
-                      Réserver
-                    </Button>
-                  </div>
-                </CardContent>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* No Results */}
-        {filteredAndSortedResults.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-12 h-12 text-gray-400" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Aucun résultat trouvé
-            </h3>
-            <p className="text-gray-600 mb-4">
-              Essayez de modifier vos critères de recherche
-            </p>
-            <Button 
-              onClick={() => window.history.back()}
-              className="glass-button-neutral"
-            >
-              Retour
+              <SlidersHorizontal className="h-4 w-4" />
             </Button>
           </div>
+
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    selectedCategory === category.id
+                      ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg'
+                      : 'bg-white/80 text-gray-700 hover:bg-white/90 border border-gray-200/50'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {category.name}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Résultats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-4"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              {filteredResults.length} salon{filteredResults.length > 1 ? 's' : ''} trouvé{filteredResults.length > 1 ? 's' : ''}
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            <AnimatePresence>
+              {filteredResults.map((salon, index) => (
+                <motion.div
+                  key={salon.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card 
+                    className="border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                    onClick={() => handleSalonClick(salon)}
+                  >
+                    <CardContent className="p-0">
+                      <div className="relative">
+                        <img 
+                          src={salon.image} 
+                          alt={salon.name}
+                          className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-3 right-3 flex gap-2">
+                          {salon.verified && (
+                            <Badge className="bg-green-500/90 text-white text-xs">
+                              Vérifié
+                            </Badge>
+                          )}
+                          {salon.popular && (
+                            <Badge className="bg-orange-500/90 text-white text-xs">
+                              Populaire
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="absolute bottom-3 left-3 right-3">
+                          <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1">
+                            <div className="flex items-center gap-1 text-white text-xs">
+                              <Clock className="h-3 w-3" />
+                              {salon.nextSlot}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 text-sm group-hover:text-violet-600 transition-colors">
+                              {salon.name}
+                            </h3>
+                            <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
+                              <MapPin className="h-3 w-3" />
+                              {salon.location} • {salon.distance}
+                            </div>
+                          </div>
+                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-violet-600 transition-colors" />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                            <span className="text-sm font-medium text-gray-900">{salon.rating}</span>
+                            <span className="text-xs text-gray-600">({salon.reviews} avis)</span>
+                          </div>
+                          <span className="text-sm font-medium text-violet-600">{salon.priceRange}</span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1">
+                          {salon.services.slice(0, 3).map((service, idx) => (
+                            <Badge key={idx} variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                              {service}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Message si aucun résultat */}
+        {filteredResults.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-12"
+          >
+            <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-lg mx-auto mb-4">
+              <Search className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Aucun salon trouvé
+            </h3>
+            <p className="text-gray-600 text-sm">
+              Essayez de modifier vos critères de recherche
+            </p>
+          </motion.div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

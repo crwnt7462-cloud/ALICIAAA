@@ -423,7 +423,7 @@ function Router() {
   if (location.startsWith('/search')) {
     return (
       <div className="h-full">
-        <SalonSearchComplete />
+        <SearchResults />
       </div>
     );
   }
