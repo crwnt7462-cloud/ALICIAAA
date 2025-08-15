@@ -1232,12 +1232,12 @@ export default function PublicLanding() {
           </div>
           
           {/* Bulle pastel verte - uniquement en bas sur mobile */}
-          <div className="absolute bottom-40 right-24 md:bottom-40 md:right-24 sm:bottom-20 sm:right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
+          <div className="absolute bottom-40 right-24 md:bottom-40 md:right-24 sm:bottom-20 sm:right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-bounce transform -rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
             <span className="text-lg">📱</span>
           </div>
           
           {/* Bulle pastel orange - uniquement en bas sur mobile */}
-          <div className="absolute bottom-80 left-20 md:bottom-80 md:left-20 sm:bottom-8 sm:left-8 w-12 h-12 rounded-full bg-gradient-to-br from-orange-200/40 to-amber-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-30" style={{ animationDelay: '1.5s' }}>
+          <div className="absolute bottom-80 left-20 md:bottom-80 md:left-20 sm:bottom-8 sm:left-8 w-12 h-12 rounded-full bg-gradient-to-br from-orange-200/40 to-amber-300/30 backdrop-blur-sm flex items-center justify-center sm:animate-none animate-pulse transform rotate-30" style={{ animationDelay: '1.5s' }}>
             <span className="text-lg">💬</span>
           </div>
           
