@@ -15,7 +15,10 @@ import {
   CheckCircle,
   Award,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Camera,
+  X,
+  MoreHorizontal
 } from 'lucide-react';
 
 interface Service {
@@ -24,6 +27,7 @@ interface Service {
   price: number;
   duration: string;
   description?: string;
+  photos?: string[];
 }
 
 interface ServiceCategory {
@@ -56,16 +60,47 @@ export default function BarbierGentlemanMarais() {
   // TOUS LES HOOKS DOIVENT ÊTRE EN PREMIER, AVANT TOUTE CONDITION
   const [location, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
+  const [photoGalleryOpen, setPhotoGalleryOpen] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
   const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([
     {
       id: 1,
       name: 'Coupes Homme',
       expanded: true,
       services: [
-        { id: 1, name: 'Coupe Classique', price: 35, duration: '30min', description: 'Coupe traditionnelle aux ciseaux et tondeuse' },
-        { id: 2, name: 'Coupe Dégradée', price: 40, duration: '35min', description: 'Dégradé moderne et personnalisé' },
-        { id: 3, name: 'Coupe + Barbe', price: 55, duration: '45min', description: 'Forfait coupe + taille de barbe' },
-        { id: 4, name: 'Coupe Enfant (-12 ans)', price: 25, duration: '25min', description: 'Coupe spéciale pour les petits messieurs' }
+        { 
+          id: 1, 
+          name: 'Coupe Classique', 
+          price: 35, 
+          duration: '30min', 
+          description: 'Coupe traditionnelle aux ciseaux et tondeuse, réalisée avec précision selon les techniques barbier authentiques. Notre expert vous conseille sur la coupe la mieux adaptée à votre morphologie et votre style de vie.',
+          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400']
+        },
+        { 
+          id: 2, 
+          name: 'Coupe Dégradée', 
+          price: 40, 
+          duration: '35min', 
+          description: 'Dégradé moderne et personnalisé avec finitions impeccables',
+          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+        },
+        { 
+          id: 3, 
+          name: 'Coupe + Barbe', 
+          price: 55, 
+          duration: '45min', 
+          description: 'Forfait complet alliant coupe de cheveux professionnelle et taille de barbe experte. Un service premium qui inclut l\'entretien de votre barbe avec des produits de qualité supérieure pour un résultat impeccable.',
+          photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+        },
+        { 
+          id: 4, 
+          name: 'Coupe Enfant (-12 ans)', 
+          price: 25, 
+          duration: '25min', 
+          description: 'Coupe spéciale pour les petits messieurs avec attention particulière',
+          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+        }
       ]
     },
     {
@@ -73,10 +108,38 @@ export default function BarbierGentlemanMarais() {
       name: 'Barbe & Rasage',
       expanded: false,
       services: [
-        { id: 5, name: 'Taille de Barbe', price: 25, duration: '20min', description: 'Taille et mise en forme de barbe' },
-        { id: 6, name: 'Rasage Traditionnel', price: 45, duration: '40min', description: 'Rasage complet au coupe-chou avec serviettes chaudes' },
-        { id: 7, name: 'Barbe + Moustache', price: 30, duration: '25min', description: 'Entretien barbe et moustache' },
-        { id: 8, name: 'Rasage de Luxe', price: 65, duration: '1h', description: 'Expérience complète avec soins visage' }
+        { 
+          id: 5, 
+          name: 'Taille de Barbe', 
+          price: 25, 
+          duration: '20min', 
+          description: 'Taille et mise en forme de barbe avec précision et style',
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+        },
+        { 
+          id: 6, 
+          name: 'Rasage Traditionnel', 
+          price: 45, 
+          duration: '40min', 
+          description: 'Rasage complet au coupe-chou avec serviettes chaudes dans la pure tradition barbier. Une expérience relaxante et authentique avec des produits de soin haut de gamme pour une peau douce et apaisée.',
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+        },
+        { 
+          id: 7, 
+          name: 'Barbe + Moustache', 
+          price: 30, 
+          duration: '25min', 
+          description: 'Entretien complet barbe et moustache',
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+        },
+        { 
+          id: 8, 
+          name: 'Rasage de Luxe', 
+          price: 65, 
+          duration: '1h', 
+          description: 'Expérience complète avec soins visage premium, rasage traditionnel et finitions luxueuses. Un moment de détente absolue avec masque hydratant, serviettes chaudes et massage du visage pour une expérience sensorielle unique.',
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+        }
       ]
     },
     {
@@ -131,6 +194,30 @@ export default function BarbierGentlemanMarais() {
           : cat
       )
     );
+  };
+
+  const openPhotoGallery = (photos: string[]) => {
+    setSelectedPhotos(photos);
+    setPhotoGalleryOpen(true);
+  };
+
+  const toggleDescription = (serviceId: number) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(serviceId)) {
+        newSet.delete(serviceId);
+      } else {
+        newSet.add(serviceId);
+      }
+      return newSet;
+    });
+  };
+
+  const truncateDescription = (text: string, maxLength: number = 80): { text: string; isTruncated: boolean } => {
+    if (text.length <= maxLength) {
+      return { text, isTruncated: false };
+    }
+    return { text: text.slice(0, maxLength) + '...', isTruncated: true };
   };
 
   // Loading state
@@ -229,34 +316,87 @@ export default function BarbierGentlemanMarais() {
                 {category.expanded && (
                   <div className="border-t border-gray-100">
                     <div className="space-y-0">
-                      {category.services.map((service: Service) => (
-                        <div key={service.id} className="p-5 border-b border-gray-50 last:border-b-0">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h4 className="font-medium text-gray-900">{service.name}</h4>
-                              {service.description && (
-                                <p className="text-sm text-gray-500 mt-1">{service.description}</p>
-                              )}
-                              <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-                                <Clock className="h-3 w-3" />
-                                {service.duration}
+                      {category.services.map((service: Service) => {
+                        const { text: truncatedDescription, isTruncated } = service.description ? truncateDescription(service.description) : { text: '', isTruncated: false };
+                        const isExpanded = expandedDescriptions.has(service.id);
+                        
+                        return (
+                          <div key={service.id} className="p-5 border-b border-gray-50 last:border-b-0">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-gray-900">{service.name}</h4>
+                                
+                                {/* Galerie photos */}
+                                {service.photos && service.photos.length > 0 && (
+                                  <div className="flex gap-2 mt-2 mb-2">
+                                    {service.photos.slice(0, 3).map((photo, index) => (
+                                      <div key={index} className="relative">
+                                        <img 
+                                          src={photo} 
+                                          alt={`${service.name} ${index + 1}`}
+                                          className="w-12 h-12 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
+                                          onClick={() => openPhotoGallery(service.photos || [])}
+                                        />
+                                        {index === 2 && service.photos.length > 3 && (
+                                          <div 
+                                            className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-pointer"
+                                            onClick={() => openPhotoGallery(service.photos || [])}
+                                          >
+                                            <span className="text-white text-xs font-semibold">+{service.photos.length - 3}</span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                    {service.photos.length > 0 && (
+                                      <button
+                                        onClick={() => openPhotoGallery(service.photos || [])}
+                                        className="w-12 h-12 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-violet-400 transition-colors"
+                                      >
+                                        <Camera className="h-4 w-4 text-gray-400" />
+                                      </button>
+                                    )}
+                                  </div>
+                                )}
+                                
+                                {/* Description avec voir plus */}
+                                {service.description && (
+                                  <div className="mt-1">
+                                    <p className="text-sm text-gray-500">
+                                      {isExpanded ? service.description : truncatedDescription}
+                                    </p>
+                                    {isTruncated && (
+                                      <button
+                                        onClick={() => toggleDescription(service.id)}
+                                        className="text-violet-600 text-sm font-medium hover:text-violet-700 mt-1 flex items-center gap-1"
+                                      >
+                                        {isExpanded ? 'Voir moins' : 'Voir plus'}
+                                        <MoreHorizontal className="h-3 w-3" />
+                                      </button>
+                                    )}
+                                  </div>
+                                )}
+                                
+                                <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
+                                  <Clock className="h-3 w-3" />
+                                  {service.duration}
+                                </div>
+                              </div>
+                              <div className="text-right ml-4">
+                                <p className="font-bold text-xl text-gray-900">{service.price}€</p>
                               </div>
                             </div>
-                            <div className="text-right ml-4">
-                              <p className="font-bold text-xl text-gray-900">{service.price}€</p>
-                            </div>
+                            <button 
+                              className="avyento-button-secondary w-full"
+                              onClick={() => {
+                                console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
+                                setLocation('/salon-booking/barbier-gentleman-marais');
+                              }}
+                            >
+                              Réserver
+                            </button>
                           </div>
-                          <button 
-                            className="avyento-button-secondary w-full"
-                            onClick={() => {
-                              console.log('[CLICK] type=service-booking, salon=barbier-gentleman-marais, service=' + service.name);
-                              setLocation('/salon-booking/barbier-gentleman-marais');
-                            }}
-                          >
-                            Réserver
-                          </button>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   </div>
                 )}
@@ -350,6 +490,34 @@ export default function BarbierGentlemanMarais() {
         )}
       </div>
 
+      {/* Modal Galerie Photos - Style Avyento */}
+      {photoGalleryOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="avyento-card max-w-4xl w-full max-h-[90vh] overflow-auto">
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <h3 className="avyento-subtitle text-gray-900 mb-0">Galerie photos</h3>
+              <button
+                onClick={() => setPhotoGalleryOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {selectedPhotos.map((photo, index) => (
+                  <img
+                    key={index}
+                    src={photo}
+                    alt={`Photo ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg hover:scale-105 transition-transform cursor-pointer"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
