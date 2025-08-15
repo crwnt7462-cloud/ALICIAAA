@@ -124,6 +124,158 @@ export default function Landing() {
         </Card>
         </motion.div>
 
+        {/* Salons de Démonstration */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="space-y-4"
+        >
+          <h2 className="text-xl font-bold text-gray-900 text-center mb-4">
+            Salons de Démonstration
+          </h2>
+          
+          <div className="space-y-3">
+            {/* Barbier Gentleman Marais */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/barbier-gentleman-marais')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-amber-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Barbier Gentleman Marais</h3>
+                    <p className="text-xs text-gray-600">Barbier traditionnel - Le Marais</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.8 • 156 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Beauty Lash Studio */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/beauty-lash-studio')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-purple-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Beauty Lash Studio</h3>
+                    <p className="text-xs text-gray-600">Extensions de cils - République</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.9 • 78 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Salon Excellence Paris */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/salon-excellence-paris')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-purple-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-violet-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Salon Excellence Paris</h3>
+                    <p className="text-xs text-gray-600">Coiffure haut de gamme - Champs-Élysées</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.8 • 127 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Institut Beauté Saint-Germain */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/institut-beaute-saint-germain')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-emerald-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Institut Beauté Saint-Germain</h3>
+                    <p className="text-xs text-gray-600">Soins & esthétique - Saint-Germain</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.7 • 89 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Beauty Lounge Montparnasse */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/beauty-lounge-montparnasse')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-rose-100 to-pink-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-rose-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Beauty Lounge Montparnasse</h3>
+                    <p className="text-xs text-gray-600">Salon moderne - Montparnasse</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.6 • 94 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Salon Moderne République */}
+            <Card 
+              className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
+              onClick={() => setLocation('/salon/salon-moderne-republique')}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-blue-700" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">Salon Moderne République</h3>
+                    <p className="text-xs text-gray-600">Salon tendance - République</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs text-gray-600">4.5 • 67 avis</span>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </motion.div>
+
         {/* CTA Buttons with Glassmorphism */}
         <div className="space-y-4">
           {/* Bouton Glassmorphism Principal - Rechercher un salon */}
