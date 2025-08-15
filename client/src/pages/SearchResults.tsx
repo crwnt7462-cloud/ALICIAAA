@@ -281,7 +281,7 @@ export default function SearchResults() {
           <img 
             src={avyentoLogo} 
             alt="Avyento" 
-            className="h-20 w-auto object-contain"
+            className="h-40 w-auto object-contain"
           />
         </motion.div>
 
