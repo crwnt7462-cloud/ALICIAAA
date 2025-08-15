@@ -21,6 +21,10 @@ export default function PlanityStyleBooking() {
   });
   const { toast } = useToast();
 
+  // Récupérer les données des étapes précédentes
+  const selectedProfessional = localStorage.getItem('selectedProfessional');
+  const selectedDateTime = JSON.parse(localStorage.getItem('selectedDateTime') || '{}');
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     

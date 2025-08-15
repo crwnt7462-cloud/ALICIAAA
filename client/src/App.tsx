@@ -74,6 +74,8 @@ import AIAssistantSimple from "@/pages/AIAssistantSimple";
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
 import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
+import ProfessionalSelection from "@/pages/ProfessionalSelection";
+import BookingDateTime from "@/pages/BookingDateTime";
 import ProLogin from "@/pages/ProLogin";
 import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
@@ -802,6 +804,24 @@ function Router() {
     return (
       <div className="h-full">
         <PlanityStyleBooking />
+      </div>
+    );
+  }
+
+  // Page de sélection des professionnels
+  if (location === '/professional-selection') {
+    return (
+      <div className="h-full">
+        <ProfessionalSelection />
+      </div>
+    );
+  }
+
+  // Page de choix date/heure
+  if (location === '/booking-datetime') {
+    return (
+      <div className="h-full">
+        <BookingDateTime />
       </div>
     );
   }
