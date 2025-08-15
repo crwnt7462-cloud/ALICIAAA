@@ -31,6 +31,7 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Design Philosophy**: Minimaliste, professionnel, mobile-first, avec des éléments visuels cohérents tels que des dégradés violets/amber, des icônes Lucide et des interactions fluides.
 - **Features**: IA Assistant (chat moderne, accès Premium Pro), système de mentions @, carrousel de galerie avec swipe, système d'avis avancé avec réponses salon, génération automatique de pages salon, gestion des profils d'équipe, affichage détaillé des services.
 - **Authentication**: Système d'authentification Replit Auth intégré avec pages de connexion stylées selon la DA Avyento (glassmorphism, gradients violet/amber, animations premium).
+- **Salon Templates**: Interface unifiée SalonPageTemplate avec personnalisation complète des couleurs (primary, accent, intensity, buttonText) appliquée dynamiquement aux boutons, onglets, et éléments d'interface. Tous les salons démo utilisent cette interface standardisée.
 
 ### Backend
 - **Framework**: Express.js + TypeScript
@@ -57,3 +58,9 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Templating/Styling**: Tailwind CSS, shadcn/ui
 - **Calendars**: Google Calendar, Outlook
 - **Communication**: Services d'envoi d'emails et SMS
+
+## Recent Changes (Août 2025)
+- **Interface Unifiée Complétée**: Tous les salons démo utilisent maintenant SalonPageTemplate avec design Avyento cohérent
+- **Personnalisation Couleurs Corrigée**: Boutons de réservation appliquent maintenant correctement les couleurs personnalisées avec effet glassmorphism
+- **Responsive Mobile Optimisé**: Navigation responsive parfaite avec noms services sur une ligne et galerie catégorisée
+- **Synchronisation Temps Réel**: Système de couleurs personnalisées synchronisé entre éditeur et pages publiques
