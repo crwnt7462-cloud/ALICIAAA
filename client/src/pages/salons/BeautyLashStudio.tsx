@@ -120,7 +120,7 @@ export default function BeautyLashStudio() {
       id: 3,
       name: "Luna Chen",
       role: "Artiste du Regard",
-      avatar: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80",
+      // Pas d'avatar pour tester l'affichage sans photo
       specialties: ["Volume Hybride", "Soins du Regard", "Épilation"],
       rating: 4.7,
       reviewsCount: 43

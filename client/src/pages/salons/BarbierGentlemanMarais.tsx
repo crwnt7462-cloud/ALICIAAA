@@ -580,12 +580,12 @@ export default function BarbierGentlemanMarais() {
             
             {teamMembers.map((member) => (
               <div key={member.id} className="avyento-card">
-                <div className="flex items-start gap-4">
+                <div className={`flex items-start ${member.avatar ? 'gap-4' : 'gap-0'}`}>
                   {member.avatar && (
                     <img 
                       src={member.avatar} 
                       alt={member.name}
-                      className="w-16 h-16 rounded-full object-cover"
+                      className="w-16 h-16 rounded-full object-cover flex-shrink-0"
                     />
                   )}
                   <div className="flex-1">

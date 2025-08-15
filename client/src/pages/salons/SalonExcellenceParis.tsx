@@ -111,6 +111,7 @@ export default function SalonExcellenceParis() {
       id: 2,
       name: "Alexandre Dubois",
       role: "Coloriste Expert",
+      // Pas d'avatar pour tester l'affichage sans photo
       specialties: ["Balayage", "Coloration", "Conseil"],
       rating: 4.8,
       reviewsCount: 76
