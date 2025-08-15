@@ -449,15 +449,15 @@ export default function SalonPageEditor() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header avec photo de couverture */}
-      <div className="relative h-64 bg-gradient-to-br from-amber-600 to-orange-700">
+    <div className="min-h-screen bg-white">
+      {/* Header avec photo de couverture - MÊME STYLE QUE PAGE PUBLIQUE */}
+      <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
           src={salonData.coverImageUrl} 
           alt={salonData.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
         
         {/* Boutons d'action dans le header */}
         <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-10">
@@ -561,9 +561,9 @@ export default function SalonPageEditor() {
         </div>
       </div>
 
-      {/* Navigation par onglets */}
-      <div className="bg-white border-b">
-        <div className="flex">
+      {/* Navigation par onglets - RESPONSIVE */}
+      <div className="bg-white border-b sticky top-0 z-40">
+        <div className="flex overflow-x-auto scrollbar-hide">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
             { id: 'professionnels', label: 'Équipe', icon: User },
@@ -574,25 +574,25 @@ export default function SalonPageEditor() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
+              className={`flex-shrink-0 flex items-center justify-center gap-1 sm:gap-2 py-3 px-3 sm:px-6 text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'border-b-2'
-                  : 'glass-button-secondary'
+                  ? 'border-b-2 text-black'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
               style={activeTab === tab.id ? {
-                ...getCustomButtonStyle(),
-                borderBottomColor: salonData.customColors?.primary || '#f59e0b'
+                borderBottomColor: salonData.customColors?.primary || '#69d3c2',
+                color: salonData.customColors?.primary || '#69d3c2'
               } : {}}
             >
               <tab.icon className="h-4 w-4" />
-              {tab.label}
+              <span className="hidden sm:block">{tab.label}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Contenu des onglets */}
-      <div className="p-4">
+      {/* Contenu des onglets - MÊME DESIGN QUE PAGE PUBLIQUE */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
         {activeTab === 'services' && (
           <div className="space-y-4">
             {/* Bouton ajouter catégorie en mode édition */}
