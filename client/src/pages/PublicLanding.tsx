@@ -785,7 +785,7 @@ export default function PublicLanding() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="text-center mt-8"
           >
             <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center">
               Voir tous les avis
@@ -796,9 +796,9 @@ export default function PublicLanding() {
       </section>
 
       {/* Section services moderne glassmorphism */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="heroSlash__title text-3xl mb-4">
               Explorez nos <span className="light">services</span>
             </h2>
