@@ -1324,6 +1324,10 @@ export class DatabaseStorage implements IStorage {
         }
       ];
       
+      console.log('🔧 DEBUG: serviceCategories avant retour:', serviceCategories);
+      console.log('🔧 DEBUG: professionals avant retour:', professionals);
+      console.log('🔧 DEBUG: reviews avant retour:', reviews);
+      
       // ✅ Retourner toutes les données complètes
       return {
         ...salon,
