@@ -167,11 +167,60 @@ function HeroSlash() {
         <div className="heroSlash__right">
           <div className="heroPhone">
             <div className="heroPhone__screen">
-              <div className="heroPhone__pill" />
-              <div className="heroPhone__row" />
-              <div className="heroPhone__row" />
-              <div className="heroPhone__stat" />
-              <div className="heroPhone__cta" />
+              {/* Mockup interface Avyento */}
+              <div className="w-full h-full bg-gradient-to-b from-gray-50 to-white flex flex-col text-xs">
+                {/* Header app */}
+                <div className="flex items-center justify-between p-3 bg-white shadow-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">A</span>
+                    </div>
+                    <span className="font-semibold text-gray-900">Avyento</span>
+                  </div>
+                  <div className="text-gray-500 text-xs">14:30</div>
+                </div>
+                
+                {/* Contenu booking */}
+                <div className="flex-1 p-3 space-y-3">
+                  {/* Salon sélectionné */}
+                  <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                      <div>
+                        <div className="font-medium text-gray-900 text-xs">Salon Excellence</div>
+                        <div className="text-gray-500 text-xs">Paris 8ème • 1.2 km</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
+                      <span className="text-xs font-medium">4.8</span>
+                      <span className="text-gray-400 text-xs">(247 avis)</span>
+                    </div>
+                  </div>
+                  
+                  {/* Service sélectionné */}
+                  <div className="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-medium text-gray-900 text-xs">Coupe + Shampooing</div>
+                      <div className="text-violet-600 font-semibold text-xs">45€</div>
+                    </div>
+                    <div className="text-gray-500 text-xs">Durée : 1h00</div>
+                  </div>
+                  
+                  {/* Créneau sélectionné */}
+                  <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-xl p-3 border border-violet-200">
+                    <div className="text-violet-900 font-medium text-xs mb-1">Aujourd'hui</div>
+                    <div className="text-violet-700 text-xs">14:30 - 15:30</div>
+                  </div>
+                </div>
+                
+                {/* Bouton confirmation */}
+                <div className="p-3">
+                  <div className="bg-gradient-to-r from-violet-600 to-purple-600 rounded-xl py-3 px-4 text-center">
+                    <span className="text-white font-semibold text-xs">Confirmer le rendez-vous</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="heroSlash__pad" />
