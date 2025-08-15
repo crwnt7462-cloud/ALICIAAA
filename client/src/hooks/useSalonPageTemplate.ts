@@ -49,6 +49,15 @@ interface SalonData {
   };
   amenities: string[];
   priceRange: string;
+  customColors?: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+    buttonClass: string;
+    priceColor: string;
+    neonFrame: string;
+    intensity: number;
+  };
 }
 
 /**
@@ -104,7 +113,8 @@ export function useSalonPageTemplate(salonSlug: string): {
                   dimanche: { closed: true, open: '', close: '' }
                 },
                 amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
-                priceRange: salon.priceRange || '€€'
+                priceRange: salon.priceRange || '€€',
+                customColors: salon.customColors
               };
               
               setSalonData(mappedSalonData);
@@ -143,7 +153,8 @@ export function useSalonPageTemplate(salonSlug: string): {
               dimanche: { closed: true, open: '', close: '' }
             },
             amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
-            priceRange: salon.priceRange || '€€'
+            priceRange: salon.priceRange || '€€',
+            customColors: salon.customColors
           };
           
           setSalonData(mappedSalonData);

@@ -78,6 +78,15 @@ interface SalonData {
   };
   amenities: string[];
   priceRange: string;
+  customColors?: {
+    primary: string;
+    accent: string;
+    buttonText: string;
+    buttonClass: string;
+    priceColor: string;
+    neonFrame: string;
+    intensity: number;
+  };
 }
 
 interface SalonPageTemplateProps {
@@ -104,6 +113,19 @@ export function SalonPageTemplate({
   const [isFavorite, setIsFavorite] = useState(false);
   const [expandedCategoryDescriptions, setExpandedCategoryDescriptions] = useState<Set<number>>(new Set());
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
+
+  // Appliquer les couleurs personnalisées du salon
+  const customColors = salonData.customColors;
+  
+  // Style dynamique pour les couleurs personnalisées
+  const customStyle = customColors ? {
+    '--salon-primary': customColors.primary,
+    '--salon-accent': customColors.accent,
+    '--salon-button-text': customColors.buttonText,
+    '--salon-price-color': customColors.priceColor,
+    '--salon-neon-frame': customColors.neonFrame,
+    '--salon-intensity': customColors.intensity / 100
+  } as React.CSSProperties : {};
 
   // Grouper les services par catégorie avec descriptions
   const servicesByCategory = services.reduce((acc, service) => {
@@ -187,7 +209,7 @@ export function SalonPageTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={customStyle}>
       {/* Header avec photo de couverture - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
       <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
@@ -197,13 +219,17 @@ export function SalonPageTemplate({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
         
-        {/* Bouton retour - Style Avyento */}
+        {/* Bouton retour - Style Avyento avec couleurs personnalisées */}
         <button 
           onClick={() => {
             console.log('🔙 Bouton retour cliqué - Navigation vers /search');
             window.location.href = '/search';
           }}
-          className="absolute top-8 left-4 avyento-button-secondary w-10 h-10 rounded-full backdrop-blur-sm flex items-center justify-center z-10"
+          className="absolute top-8 left-4 w-10 h-10 rounded-full backdrop-blur-sm flex items-center justify-center z-10 transition-all duration-300 hover:scale-105"
+          style={{ 
+            backgroundColor: customColors?.primary ? `${customColors.primary}20` : 'rgba(255,255,255,0.1)',
+            border: customColors?.primary ? `1px solid ${customColors.primary}` : '1px solid rgba(255,255,255,0.2)'
+          }}
         >
           <ArrowLeft className="h-5 w-5 text-white" />
         </button>
@@ -318,7 +344,7 @@ export function SalonPageTemplate({
                               <div className="flex items-start justify-between mb-1">
                                 <h4 className="font-medium text-gray-900 flex-1 truncate pr-2">{service.name}</h4>
                                 <div className="text-right flex-shrink-0">
-                                  <p className="font-bold text-lg text-gray-900">{service.price}€</p>
+                                  <p className="font-bold text-lg" style={{ color: customColors?.priceColor || '#1f2937' }}>{service.price}€</p>
                                 </div>
                               </div>
                               
