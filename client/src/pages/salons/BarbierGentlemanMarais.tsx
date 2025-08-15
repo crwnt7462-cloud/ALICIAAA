@@ -30,6 +30,8 @@ interface Service {
   duration: string;
   description?: string;
   photos?: string[];
+  rating?: number;
+  reviewCount?: number;
 }
 
 interface ServiceCategory {
@@ -78,14 +80,18 @@ export default function BarbierGentlemanMarais() {
           price: 35, 
           duration: '30min', 
           description: 'Coupe traditionnelle aux ciseaux et tondeuse, réalisée avec précision selon les techniques barbier authentiques. Notre expert vous conseille sur la coupe la mieux adaptée à votre morphologie et votre style de vie.',
-          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80']
+          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80'],
+          rating: 4.8,
+          reviewCount: 89
         },
         { 
           id: 2, 
           name: 'Coupe Dégradée', 
           price: 40, 
           duration: '35min', 
-          description: 'Dégradé moderne et personnalisé avec finitions impeccables'
+          description: 'Dégradé moderne et personnalisé avec finitions impeccables',
+          rating: 4.9,
+          reviewCount: 67
         },
         { 
           id: 3, 
@@ -93,14 +99,18 @@ export default function BarbierGentlemanMarais() {
           price: 55, 
           duration: '45min', 
           description: 'Forfait complet alliant coupe de cheveux professionnelle et taille de barbe experte. Un service premium qui inclut l\'entretien de votre barbe avec des produits de qualité supérieure pour un résultat impeccable.',
-          photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80']
+          photos: ['https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80', 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80'],
+          rating: 4.9,
+          reviewCount: 134
         },
         { 
           id: 4, 
           name: 'Coupe Enfant (-12 ans)', 
           price: 25, 
           duration: '25min', 
-          description: 'Coupe spéciale pour les petits messieurs avec attention particulière'
+          description: 'Coupe spéciale pour les petits messieurs avec attention particulière',
+          rating: 4.7,
+          reviewCount: 23
         }
       ]
     },
@@ -114,7 +124,9 @@ export default function BarbierGentlemanMarais() {
           name: 'Taille de Barbe', 
           price: 25, 
           duration: '20min', 
-          description: 'Taille et mise en forme de barbe avec précision et style'
+          description: 'Taille et mise en forme de barbe avec précision et style',
+          rating: 4.6,
+          reviewCount: 45
         },
         { 
           id: 6, 
@@ -122,14 +134,18 @@ export default function BarbierGentlemanMarais() {
           price: 45, 
           duration: '40min', 
           description: 'Rasage complet au coupe-chou avec serviettes chaudes dans la pure tradition barbier. Une expérience relaxante et authentique avec des produits de soin haut de gamme pour une peau douce et apaisée.',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80']
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80'],
+          rating: 5.0,
+          reviewCount: 78
         },
         { 
           id: 7, 
           name: 'Barbe + Moustache', 
           price: 30, 
           duration: '25min', 
-          description: 'Entretien complet barbe et moustache'
+          description: 'Entretien complet barbe et moustache',
+          rating: 4.8,
+          reviewCount: 34
         },
         { 
           id: 8, 
@@ -137,7 +153,9 @@ export default function BarbierGentlemanMarais() {
           price: 65, 
           duration: '1h', 
           description: 'Expérience complète avec soins visage premium, rasage traditionnel et finitions luxueuses. Un moment de détente absolue avec masque hydratant, serviettes chaudes et massage du visage pour une expérience sensorielle unique.',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80']
+          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=1200&q=80', 'https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=1200&q=80', 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1200&q=80'],
+          rating: 4.9,
+          reviewCount: 56
         }
       ]
     },
@@ -146,9 +164,33 @@ export default function BarbierGentlemanMarais() {
       name: 'Soins Homme',
       expanded: false,
       services: [
-        { id: 9, name: 'Soin Visage Homme', price: 50, duration: '45min', description: 'Nettoyage et hydratation du visage' },
-        { id: 10, name: 'Masque Purifiant', price: 35, duration: '30min', description: 'Masque spécial peau masculine' },
-        { id: 11, name: 'Épilation Sourcils', price: 15, duration: '15min', description: 'Épilation et mise en forme des sourcils' }
+        { 
+          id: 9, 
+          name: 'Soin Visage Homme', 
+          price: 50, 
+          duration: '45min', 
+          description: 'Nettoyage et hydratation du visage',
+          rating: 4.7,
+          reviewCount: 42
+        },
+        { 
+          id: 10, 
+          name: 'Masque Purifiant', 
+          price: 35, 
+          duration: '30min', 
+          description: 'Masque spécial peau masculine',
+          rating: 4.5,
+          reviewCount: 18
+        },
+        { 
+          id: 11, 
+          name: 'Épilation Sourcils', 
+          price: 15, 
+          duration: '15min', 
+          description: 'Épilation et mise en forme des sourcils',
+          rating: 4.6,
+          reviewCount: 31
+        }
       ]
     }
   ]);
@@ -333,7 +375,19 @@ export default function BarbierGentlemanMarais() {
                           <div key={service.id} className="p-5 border-b border-gray-50 last:border-b-0">
                             <div className="flex items-start justify-between mb-4">
                               <div className="flex-1">
-                                <h4 className="font-medium text-gray-900">{service.name}</h4>
+                                <div className="flex items-center justify-between mb-2">
+                                  <h4 className="font-medium text-gray-900">{service.name}</h4>
+                                  {/* Notation du service */}
+                                  {service.rating && (
+                                    <div className="flex items-center gap-1">
+                                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                      <span className="text-sm font-medium text-gray-700">{service.rating}</span>
+                                      {service.reviewCount && (
+                                        <span className="text-xs text-gray-500">({service.reviewCount})</span>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
                                 
                                 {/* Galerie photos */}
                                 {service.photos && service.photos.length > 0 && (
@@ -421,17 +475,17 @@ export default function BarbierGentlemanMarais() {
             <h2 className="avyento-title text-gray-900 mb-4">Galerie photos</h2>
             
             {/* Photos du salon */}
-            {currentSalonData.photos && currentSalonData.photos.length > 0 && (
+            {salon.photos && salon.photos.length > 0 && (
               <div className="mb-8">
                 <h3 className="avyento-subtitle text-gray-800 mb-4">Photos du salon</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {currentSalonData.photos.map((photo, index) => (
+                  {salon.photos.map((photo, index) => (
                     <img
                       key={index}
                       src={photo.replace('w=800', 'w=600&q=80')}
-                      alt={`${currentSalonData.name} ${index + 1}`}
+                      alt={`${salon.name} ${index + 1}`}
                       className="w-full h-48 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
-                      onClick={() => openPhotoGallery(currentSalonData.photos || [], index)}
+                      onClick={() => openPhotoGallery(salon.photos || [], index)}
                       loading="lazy"
                       style={{ imageRendering: 'auto' }}
                     />
@@ -473,7 +527,7 @@ export default function BarbierGentlemanMarais() {
             })}
             
             {/* Message si aucune photo */}
-            {(!currentSalonData.photos || currentSalonData.photos.length === 0) && 
+            {(!salon.photos || salon.photos.length === 0) && 
              displayServiceCategories.every(cat => cat.services.every(service => !service.photos || service.photos.length === 0)) && (
               <div className="text-center py-12">
                 <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
