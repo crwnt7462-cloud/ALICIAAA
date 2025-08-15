@@ -11,7 +11,8 @@ import {
   Camera,
   ChevronDown,
   ChevronUp,
-  ArrowLeft
+  ArrowLeft,
+  CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -167,48 +168,42 @@ export function SalonPageTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header avec photo de couverture - Style Barbier Gentleman Marais */}
-      <div className="relative h-64 bg-gradient-to-br from-rose-400 to-pink-500">
+    <div className="min-h-screen bg-white">
+      {/* Header avec photo de couverture - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
+      <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
         <img 
           src={salonData.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'}
           alt={salonData.name}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-25"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
         
-        {/* Bouton retour */}
+        {/* Bouton retour - Style Avyento */}
         <button 
           onClick={() => {
             console.log('🔙 Bouton retour cliqué - Navigation vers /search');
             window.location.href = '/search';
           }}
-          className="absolute top-4 left-4 p-3 bg-white bg-opacity-20 backdrop-blur-sm rounded-full hover:bg-opacity-30 transition-all z-20"
+          className="absolute top-8 left-4 avyento-button-secondary w-10 h-10 rounded-full backdrop-blur-sm flex items-center justify-center z-10"
         >
-          <ArrowLeft className="w-5 h-5 text-white" />
+          <ArrowLeft className="h-5 w-5 text-white" />
         </button>
         
-        {/* Contenu principal centré */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6 z-10">
-          <div className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl p-6 border border-white border-opacity-20">
-            <h1 className="text-3xl font-bold text-white mb-2">
-              {salonData.name}
-            </h1>
-            <div className="flex items-center justify-center gap-2 mb-3">
-              {salonData.rating && (
-                <>
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  <span className="text-white font-medium">{salonData.rating}</span>
-                  <span className="text-white text-sm">({salonData.reviewsCount || 0} avis)</span>
-                </>
-              )}
+        {/* Informations salon en overlay - Style Avyento */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <div className="flex items-center gap-2 mb-3">
+            <h1 className="text-3xl lg:text-4xl font-bold text-white mb-0">{salonData.name}</h1>
+            <CheckCircle className="h-6 w-6 text-blue-400" />
+          </div>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-semibold">{salonData.rating || 4.8}</span>
+              <span className="opacity-90">({salonData.reviewsCount || 0} avis)</span>
             </div>
-            <p className="text-white text-opacity-90 text-sm mb-3">
-              {salonData.description}
-            </p>
-            <div className="flex items-center justify-center gap-1 text-white text-opacity-80 text-sm">
-              <MapPin className="w-3 h-3" />
-              <span>{salonData.address}</span>
+            <div className="flex items-center gap-1">
+              <MapPin className="h-4 w-4 opacity-90" />
+              <span className="opacity-90">{salonData.address}</span>
             </div>
           </div>
         </div>
@@ -219,10 +214,10 @@ export function SalonPageTemplate({
         <div className="flex salon-tab-navigation">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
-            { id: 'team', label: 'Équipe', icon: Users },
-            { id: 'gallery', label: 'Galerie', icon: Camera },
+            { id: 'equipe', label: 'Équipe', icon: Users },
+            { id: 'galerie', label: 'Galerie', icon: Camera },
             { id: 'info', label: 'Infos', icon: MapPin },
-            { id: 'reviews', label: 'Avis', icon: Star }
+            { id: 'avis', label: 'Avis', icon: Star }
           ].map(tab => (
             <button
               key={tab.id}
@@ -355,7 +350,7 @@ export function SalonPageTemplate({
         )}
 
         {/* Onglet Équipe */}
-        {activeTab === 'team' && (
+        {activeTab === 'equipe' && (
           <div className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               {staff.map((member) => (
@@ -412,7 +407,7 @@ export function SalonPageTemplate({
         )}
 
         {/* Onglet Galerie */}
-        {activeTab === 'gallery' && (
+        {activeTab === 'galerie' && (
           <div>
             <SalonGalleryTemplate salonId={salonData.id} />
           </div>
@@ -469,7 +464,7 @@ export function SalonPageTemplate({
         )}
 
         {/* Onglet Avis */}
-        {activeTab === 'reviews' && (
+        {activeTab === 'avis' && (
           <div className="space-y-6">
             <div className="grid gap-6">
               {reviews.map((review) => (
