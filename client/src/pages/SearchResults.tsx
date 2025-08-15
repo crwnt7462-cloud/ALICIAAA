@@ -19,6 +19,19 @@ export default function SearchResults() {
   const [, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
+  // États pour l'effet typewriter sur les placeholders
+  const [servicePlaceholder, setServicePlaceholder] = useState("");
+  const [locationPlaceholder, setLocationPlaceholder] = useState("");
+  const [serviceIndex, setServiceIndex] = useState(0);
+  const [locationIndex, setLocationIndex] = useState(0);
+  const [serviceCharIndex, setServiceCharIndex] = useState(0);
+  const [locationCharIndex, setLocationCharIndex] = useState(0);
+  const [isServiceDeleting, setIsServiceDeleting] = useState(false);
+  const [isLocationDeleting, setIsLocationDeleting] = useState(false);
+
+  const services = ["Coiffure", "Manucure", "Massage", "Esthétique", "Barbier", "Extensions"];
+  const locations = ["Paris", "Lyon", "Marseille", "Toulouse", "Nice", "Bordeaux"];
+
   // Extract search params from URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -27,6 +40,58 @@ export default function SearchResults() {
     setSearchQuery(query);
     setSearchLocation(location);
   }, []);
+
+  // Animation typewriter pour les services
+  useEffect(() => {
+    const currentService = services[serviceIndex];
+    if (!currentService) return;
+    
+    const typeSpeed = isServiceDeleting ? 50 : 100;
+    const pauseTime = isServiceDeleting ? 500 : 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isServiceDeleting && serviceCharIndex < currentService.length) {
+        setServicePlaceholder(currentService.slice(0, serviceCharIndex + 1));
+        setServiceCharIndex(serviceCharIndex + 1);
+      } else if (isServiceDeleting && serviceCharIndex > 0) {
+        setServicePlaceholder(currentService.slice(0, serviceCharIndex - 1));
+        setServiceCharIndex(serviceCharIndex - 1);
+      } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
+        setTimeout(() => setIsServiceDeleting(true), pauseTime);
+      } else if (isServiceDeleting && serviceCharIndex === 0) {
+        setIsServiceDeleting(false);
+        setServiceIndex((serviceIndex + 1) % services.length);
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [servicePlaceholder, serviceCharIndex, serviceIndex, isServiceDeleting, services]);
+
+  // Animation typewriter pour les locations
+  useEffect(() => {
+    const currentLocation = locations[locationIndex];
+    if (!currentLocation) return;
+    
+    const typeSpeed = isLocationDeleting ? 50 : 100;
+    const pauseTime = isLocationDeleting ? 500 : 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isLocationDeleting && locationCharIndex < currentLocation.length) {
+        setLocationPlaceholder(currentLocation.slice(0, locationCharIndex + 1));
+        setLocationCharIndex(locationCharIndex + 1);
+      } else if (isLocationDeleting && locationCharIndex > 0) {
+        setLocationPlaceholder(currentLocation.slice(0, locationCharIndex - 1));
+        setLocationCharIndex(locationCharIndex - 1);
+      } else if (!isLocationDeleting && locationCharIndex === currentLocation.length) {
+        setTimeout(() => setIsLocationDeleting(true), pauseTime);
+      } else if (isLocationDeleting && locationCharIndex === 0) {
+        setIsLocationDeleting(false);
+        setLocationIndex((locationIndex + 1) % locations.length);
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [locationPlaceholder, locationCharIndex, locationIndex, isLocationDeleting, locations]);
 
   const categories = [
     { id: "all", name: "Tous", icon: Sparkles },
@@ -195,7 +260,7 @@ export default function SearchResults() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Coiffure, manucure, massage..."
+                  placeholder={servicePlaceholder + (servicePlaceholder ? '|' : '')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm focus:bg-white/70 transition-colors duration-200"
@@ -205,7 +270,7 @@ export default function SearchResults() {
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Paris, Marseille, Lyon..."
+                  placeholder={locationPlaceholder + (locationPlaceholder ? '|' : '')}
                   value={searchLocation}
                   onChange={(e) => setSearchLocation(e.target.value)}
                   className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm focus:bg-white/70 transition-colors duration-200"
@@ -261,18 +326,16 @@ export default function SearchResults() {
 
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {categories.map((category) => {
-              const Icon = category.icon;
               return (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     selectedCategory === category.id
                       ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg'
                       : 'bg-white/80 text-gray-700 hover:bg-white/90 border border-gray-200/50'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
                   {category.name}
                 </button>
               );
