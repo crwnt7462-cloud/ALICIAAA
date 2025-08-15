@@ -246,7 +246,7 @@
   border:1px solid var(--glass-border);
   backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 22px 50px rgba(20,0,60,.22);
-  transform: rotate(-8deg);
+  transform: rotate(8deg);
 }
 .heroPhone__screen{
   position:absolute; inset: 14px; border-radius: 30px; overflow:hidden;

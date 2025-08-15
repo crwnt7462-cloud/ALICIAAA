@@ -22,32 +22,22 @@ export default function SearchResults() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // États pour l'effet typewriter sur les placeholders
-  const [servicePlaceholder, setServicePlaceholder] = useState("");
-  const [locationPlaceholder, setLocationPlaceholder] = useState("");
+  // États pour l'effet typewriter identique à PublicLanding
+  const [cityText, setCityText] = useState("");
+  const [cityIndex, setCityIndex] = useState(0);
+  const [cityCharIndex, setCityCharIndex] = useState(0);
+  const [isCityDeleting, setIsCityDeleting] = useState(false);
+
+  const [serviceText, setServiceText] = useState("");
   const [serviceIndex, setServiceIndex] = useState(0);
-  const [locationIndex, setLocationIndex] = useState(0);
   const [serviceCharIndex, setServiceCharIndex] = useState(0);
-  const [locationCharIndex, setLocationCharIndex] = useState(0);
   const [isServiceDeleting, setIsServiceDeleting] = useState(false);
-  const [isLocationDeleting, setIsLocationDeleting] = useState(false);
 
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
-  const services = [
-    "Coiffure",
-    "Massage", 
-    "Manucure",
-    "Esthétique",
-    "Barbier",
-    "Extensions",
-    "Épilation",
-    "Soins visage"
-  ];
-  
-  const locations = [
+  const frenchCities = [
     "Paris",
-    "Lyon", 
+    "Lyon",
     "Marseille",
     "Toulouse",
     "Nice",
@@ -56,6 +46,17 @@ export default function SearchResults() {
     "Lille",
     "Rennes",
     "Strasbourg"
+  ];
+
+  const beautyServices = [
+    "Coiffure",
+    "Massage", 
+    "Manucure",
+    "Esthétique",
+    "Barbier",
+    "Extensions",
+    "Épilation",
+    "Soins visage"
   ];
 
   // Extract search params from URL
@@ -67,9 +68,35 @@ export default function SearchResults() {
     setSearchLocation(location);
   }, []);
 
-  // Animation pour les services (EXACTEMENT comme PublicLanding)
+  // Animation pour les villes (identique à PublicLanding)
   useEffect(() => {
-    const currentService = services[serviceIndex];
+    const currentCity = frenchCities[cityIndex];
+    if (!currentCity) return;
+    
+    const typeSpeed = isCityDeleting ? 50 : 100;
+    const pauseTime = isCityDeleting ? 500 : 2000;
+
+    const timeout = setTimeout(() => {
+      if (!isCityDeleting && cityCharIndex < currentCity.length) {
+        setCityText(currentCity.slice(0, cityCharIndex + 1));
+        setCityCharIndex(cityCharIndex + 1);
+      } else if (isCityDeleting && cityCharIndex > 0) {
+        setCityText(currentCity.slice(0, cityCharIndex - 1));
+        setCityCharIndex(cityCharIndex - 1);
+      } else if (!isCityDeleting && cityCharIndex === currentCity.length) {
+        setTimeout(() => setIsCityDeleting(true), pauseTime);
+      } else if (isCityDeleting && cityCharIndex === 0) {
+        setIsCityDeleting(false);
+        setCityIndex((cityIndex + 1) % frenchCities.length);
+      }
+    }, typeSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [cityText, cityCharIndex, cityIndex, isCityDeleting, frenchCities]);
+
+  // Animation pour les services (identique à PublicLanding)
+  useEffect(() => {
+    const currentService = beautyServices[serviceIndex];
     if (!currentService) return;
     
     const typeSpeed = isServiceDeleting ? 60 : 120;
@@ -77,47 +104,23 @@ export default function SearchResults() {
 
     const timeout = setTimeout(() => {
       if (!isServiceDeleting && serviceCharIndex < currentService.length) {
-        setServicePlaceholder(currentService.slice(0, serviceCharIndex + 1));
+        setServiceText(currentService.slice(0, serviceCharIndex + 1));
         setServiceCharIndex(serviceCharIndex + 1);
       } else if (isServiceDeleting && serviceCharIndex > 0) {
-        setServicePlaceholder(currentService.slice(0, serviceCharIndex - 1));
+        setServiceText(currentService.slice(0, serviceCharIndex - 1));
         setServiceCharIndex(serviceCharIndex - 1);
       } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
         setTimeout(() => setIsServiceDeleting(true), pauseTime);
       } else if (isServiceDeleting && serviceCharIndex === 0) {
         setIsServiceDeleting(false);
-        setServiceIndex((serviceIndex + 1) % services.length);
+        setServiceIndex((serviceIndex + 1) % beautyServices.length);
       }
     }, typeSpeed);
 
     return () => clearTimeout(timeout);
-  }, [servicePlaceholder, serviceCharIndex, serviceIndex, isServiceDeleting, services]);
+  }, [serviceText, serviceCharIndex, serviceIndex, isServiceDeleting, beautyServices]);
 
-  // Animation pour les villes (EXACTEMENT comme PublicLanding)
-  useEffect(() => {
-    const currentLocation = locations[locationIndex];
-    if (!currentLocation) return;
-    
-    const typeSpeed = isLocationDeleting ? 50 : 100;
-    const pauseTime = isLocationDeleting ? 500 : 2000;
 
-    const timeout = setTimeout(() => {
-      if (!isLocationDeleting && locationCharIndex < currentLocation.length) {
-        setLocationPlaceholder(currentLocation.slice(0, locationCharIndex + 1));
-        setLocationCharIndex(locationCharIndex + 1);
-      } else if (isLocationDeleting && locationCharIndex > 0) {
-        setLocationPlaceholder(currentLocation.slice(0, locationCharIndex - 1));
-        setLocationCharIndex(locationCharIndex - 1);
-      } else if (!isLocationDeleting && locationCharIndex === currentLocation.length) {
-        setTimeout(() => setIsLocationDeleting(true), pauseTime);
-      } else if (isLocationDeleting && locationCharIndex === 0) {
-        setIsLocationDeleting(false);
-        setLocationIndex((locationIndex + 1) % locations.length);
-      }
-    }, typeSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [locationPlaceholder, locationCharIndex, locationIndex, isLocationDeleting, locations]);
 
   const categories = [
     { id: "all", name: "Tous", icon: Sparkles },
@@ -479,9 +482,10 @@ export default function SearchResults() {
             <div className="heroSlash__search heroSlash__search--double">
               <div className="field">
                 <input 
-                  value={searchQuery} 
-                  placeholder="Soins visage" 
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={serviceText} 
+                  placeholder={serviceText || "Service"} 
+                  readOnly
+                  style={{ cursor: 'pointer' }}
                 />
                 <span className="icon">
                   <Search />
@@ -490,9 +494,10 @@ export default function SearchResults() {
               
               <div className="field">
                 <input 
-                  value={searchLocation} 
-                  placeholder="Paris, Lyon, Marseille..." 
-                  onChange={(e) => setSearchLocation(e.target.value)}
+                  value={cityText} 
+                  placeholder={cityText || "Ville"} 
+                  readOnly
+                  style={{ cursor: 'pointer' }}
                 />
                 <span className="icon location">
                   <MapPin />
