@@ -374,9 +374,9 @@ export default function BarbierGentlemanMarais() {
         </div>
       </div>
 
-      {/* Navigation par onglets - Style Avyento */}
+      {/* Navigation par onglets - Style Avyento Responsive */}
       <div className="bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="flex">
+        <div className="flex salon-tab-navigation">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
             { id: 'equipe', label: 'Équipe', icon: Users },
@@ -387,15 +387,15 @@ export default function BarbierGentlemanMarais() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
+              className={`salon-tab-button flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-all ${
                 activeTab === tab.id
                   ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50/50'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
-              style={{ flex: '0 0 20%' }}
+              style={{ flex: '1 1 0px', minWidth: '20%' }}
             >
-              <tab.icon className="h-4 w-4" />
-              {tab.label}
+              <tab.icon className="salon-tab-icon h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+              <span className="salon-tab-label truncate">{tab.label}</span>
             </button>
           ))}
         </div>
