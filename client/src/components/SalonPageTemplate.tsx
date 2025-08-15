@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { SalonGalleryTemplate } from '@/components/SalonGalleryTemplate';
+import { AdvancedGallery } from '@/components/AdvancedGallery';
 
 interface SalonService {
   id: number;
@@ -441,9 +441,11 @@ export function SalonPageTemplate({
 
         {/* Onglet Galerie */}
         {activeTab === 'galerie' && (
-          <div>
-            <SalonGalleryTemplate salonId={salonData.id} />
-          </div>
+          <AdvancedGallery 
+            salonId={salonData.id.toString()} 
+            isOwner={isOwner} 
+            teamMembers={staff}
+          />
         )}
 
         {/* Onglet Infos - EXACTEMENT COMME BARBIER GENTLEMAN MARAIS */}
