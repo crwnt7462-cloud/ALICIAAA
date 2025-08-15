@@ -462,7 +462,7 @@ export default function PublicLanding() {
       <header className="bg-white border-b border-gray-100 sticky top-0 z-40 backdrop-blur-lg bg-white/95">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center" style={{ gap: '0.125rem' }}>
+            <div className="flex items-center" style={{ gap: '2px' }}>
               {/* Bouton hamburger animé avec Framer Motion */}
               <motion.button
                 id="hamburger-button"
