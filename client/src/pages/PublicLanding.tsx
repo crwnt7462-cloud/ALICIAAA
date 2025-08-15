@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu, ChevronDown, HelpCircle, Cookie } from "lucide-react";
+import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles, Menu } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -364,13 +364,13 @@ export default function PublicLanding() {
     { 
       id: 'coiffeur', 
       label: 'Coiffeur', 
-      icon: <ScissorsIcon className="w-5 h-5" />,
+      icon: <Scissors className="w-5 h-5" />,
       action: () => handleSearch()
     },
     { 
       id: 'barbier', 
       label: 'Barbier', 
-      icon: <UsersIcon className="w-5 h-5" />,
+      icon: <Users className="w-5 h-5" />,
       action: () => handleSearch()
     },
     { 
@@ -382,7 +382,7 @@ export default function PublicLanding() {
     { 
       id: 'institut', 
       label: 'Institut de beauté', 
-      icon: <SparklesIcon className="w-5 h-5" />,
+      icon: <Sparkles className="w-5 h-5" />,
       action: () => handleSearch()
     }
   ];
