@@ -30,15 +30,10 @@ import Register from "@/pages/Register";
 import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
 import SalonExcellenceParis from "@/pages/salons/SalonExcellenceParis";
-import SalonExcellenceDemoMobile from "@/pages/salons/SalonExcellenceDemoMobile";
 import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
-import NailArtOpera from "@/pages/salons/NailArtOpera";
-import SpaWellnessBastille from "@/pages/salons/SpaWellnessBastille";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
-import InstitutBelleEpoque from "@/pages/salons/InstitutBelleEpoque";
-import ModernHairStudio from "@/pages/salons/ModernHairStudio";
 
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -458,18 +453,8 @@ function Router() {
     );
   }
 
-  // ✅ SUPPRIMÉ: Redirection parasite vers /search - cause du bug critique
-
-  // ✅ ROUTE SPÉCIFIQUE POUR BARBIER GENTLEMAN MARAIS
-  if (location === '/salon/barbier-gentleman-marais') {
-    return (
-      <div className="h-full">
-        <BarbierGentlemanMarais />
-      </div>
-    );
-  }
-
-  // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES SALONS - /salon/:id
+  // ✅ ROUTE DYNAMIQUE UNIVERSELLE POUR TOUS LES SALONS - /salon/:slug
+  // Utilise automatiquement SalonPageTemplate via ModernSalonDetailNew
   if (location.startsWith('/salon/') && location !== '/salon') {
     return (
       <div className="h-full">
