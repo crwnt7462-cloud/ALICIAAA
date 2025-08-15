@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import avyentoLogo from "@assets/3_1753714421825.png";
 
 export default function SearchResults() {
   const [, setLocation] = useLocation();
@@ -270,10 +271,25 @@ export default function SearchResults() {
       </div>
 
       <div className="max-w-md mx-auto p-4 space-y-6">
+        {/* Logo Avyento */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="flex justify-center pt-4"
+        >
+          <img 
+            src={avyentoLogo} 
+            alt="Avyento" 
+            className="h-12 w-auto object-contain"
+          />
+        </motion.div>
+
         {/* Barre de recherche glassmorphism */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="space-y-3"
         >
           <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-2xl overflow-hidden">
