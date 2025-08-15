@@ -345,10 +345,10 @@ export function AdvancedGallery({ salonId, isOwner = false, teamMembers = [] }: 
   if (selectedAlbum) {
     return (
       <div className="space-y-6">
-        {/* Header album avec design moderne */}
+        {/* Header album - Design Avyento minimaliste centré */}
         <div className="relative">
           {/* Image de couverture en arrière-plan */}
-          <div className="h-48 relative overflow-hidden rounded-xl">
+          <div className="h-40 relative overflow-hidden rounded-2xl">
             <img
               src={selectedAlbum.coverImageUrl}
               alt={selectedAlbum.name}
@@ -357,39 +357,40 @@ export function AdvancedGallery({ salonId, isOwner = false, teamMembers = [] }: 
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/30" />
           </div>
           
-          {/* Contenu superposé */}
-          <div className="absolute inset-0 flex items-center justify-between p-6">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setSelectedAlbum(null);
-                  setAlbumPhotos([]);
-                }}
-                className="text-white hover:bg-white/20 backdrop-blur-sm"
-              >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                Retour aux albums
-              </Button>
-              <div className="text-white">
-                <h2 className="text-3xl font-bold mb-2">{selectedAlbum.name}</h2>
-                <p className="text-white/90 text-lg">{selectedAlbum.description}</p>
-                <p className="text-white/70 text-sm mt-1">{albumPhotos.length} photos</p>
-              </div>
+          {/* Contenu centré */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+            {/* Bouton retour compact en haut à gauche */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSelectedAlbum(null);
+                setAlbumPhotos([]);
+              }}
+              className="absolute top-3 left-3 text-white hover:bg-white/20 backdrop-blur-sm text-xs px-2 py-1"
+            >
+              <ChevronLeft className="h-3 w-3 mr-1" />
+              Retour
+            </Button>
+            
+            {/* Contenu centré */}
+            <div className="text-white">
+              <h2 className="text-2xl font-bold mb-2">{selectedAlbum.name}</h2>
+              <p className="text-white/90 text-sm mb-1">{selectedAlbum.description}</p>
+              <p className="text-white/70 text-xs">{albumPhotos.length} photos</p>
             </div>
             
             {isOwner && (
-              <div className="flex items-center gap-2">
+              <div className="absolute top-3 right-3">
                 <ObjectUploader
                   maxNumberOfFiles={10}
                   maxFileSize={20971520} // 20MB
                   onGetUploadParameters={handleGetUploadParameters}
                   onComplete={handleUploadComplete}
-                  buttonClassName="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                  buttonClassName="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-xs px-2 py-1"
                 >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Ajouter des photos
+                  <Upload className="h-3 w-3 mr-1" />
+                  Ajouter
                 </ObjectUploader>
               </div>
             )}

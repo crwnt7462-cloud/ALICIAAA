@@ -257,41 +257,42 @@ export function SalonGalleryTemplate({ salonId, isOwner = false }: SalonGalleryT
   // Vue album avec carrousel horizontal
   return (
     <div className="space-y-6">
-      {/* Header album */}
-      <div className="relative h-48 bg-gradient-to-r from-violet-600 to-purple-600 rounded-lg overflow-hidden">
+      {/* Header album - Design Avyento minimaliste */}
+      <div className="relative h-40 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative h-full flex items-center justify-between p-6">
-          <div className="flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setSelectedAlbum(null);
-                setAlbumPhotos([]);
-              }}
-              className="text-white hover:bg-white/20 backdrop-blur-sm"
-            >
-              <ChevronLeft className="h-4 w-4 mr-2" />
-              Retour aux albums
-            </Button>
-            <div className="text-white ml-4">
-              <h2 className="text-3xl font-bold mb-2">{selectedAlbum.name}</h2>
-              <p className="text-white/90 text-lg">{selectedAlbum.description}</p>
-              <p className="text-white/70 text-sm mt-1">{albumPhotos.length} photos</p>
-            </div>
+        <div className="relative h-full flex flex-col items-center justify-center text-center p-4">
+          {/* Bouton retour compact en haut à gauche */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setSelectedAlbum(null);
+              setAlbumPhotos([]);
+            }}
+            className="absolute top-3 left-3 text-white hover:bg-white/20 backdrop-blur-sm text-xs px-2 py-1"
+          >
+            <ChevronLeft className="h-3 w-3 mr-1" />
+            Retour
+          </Button>
+          
+          {/* Contenu centré */}
+          <div className="text-white">
+            <h2 className="text-2xl font-bold mb-2">{selectedAlbum.name}</h2>
+            <p className="text-white/90 text-sm mb-1">{selectedAlbum.description}</p>
+            <p className="text-white/70 text-xs">{albumPhotos.length} photos</p>
           </div>
           
           {isOwner && (
-            <div className="flex items-center gap-2">
+            <div className="absolute top-3 right-3">
               <ObjectUploader
                 maxNumberOfFiles={10}
                 maxFileSize={20971520}
                 onGetUploadParameters={handleGetUploadParameters}
                 onComplete={handleUploadComplete}
-                buttonClassName="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                buttonClassName="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 text-xs px-2 py-1"
               >
-                <Upload className="h-4 w-4 mr-2" />
-                Ajouter des photos
+                <Upload className="h-3 w-3 mr-1" />
+                Ajouter
               </ObjectUploader>
             </div>
           )}
