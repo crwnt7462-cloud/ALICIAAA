@@ -1451,12 +1451,33 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       console.log('💾 SAUVEGARDE SALON - ID reçu:', id);
       console.log('💾 SAUVEGARDE SALON - Données:', Object.keys(salonData));
       
-      // 🔧 CORRECTION SYNCHRONISATION : Mapper vers "demo-user" pour cohérence API
+      // 🔧 GÉNÉRATION ID UNIQUE : Créer un slug unique pour chaque salon
       let actualId = id;
-      if (id === 'auto-generated' || id === 'undefined' || !id || id === 'salon-demo') {
+      
+      // CAS SPÉCIAL: Conserver demo-user pour le salon de démonstration existant
+      if (id === 'demo-user') {
         actualId = 'demo-user';
       }
-      console.log('💾 ID corrigé pour sauvegarde:', actualId, '(ID original:', id, ')');
+      // NOUVEAUX SALONS: Générer des slugs uniques
+      else if (id === 'auto-generated' || id === 'undefined' || !id || id === 'salon-demo') {
+        // Générer un slug unique basé sur le nom du salon
+        const salonName = salonData.name || 'nouveau-salon';
+        const baseSlug = salonName
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+          .replace(/[^a-z0-9\s-]/g, '') // Garder seulement lettres, chiffres, espaces et tirets
+          .replace(/\s+/g, '-') // Remplacer espaces par tirets
+          .replace(/-+/g, '-') // Éviter les doubles tirets
+          .replace(/^-|-$/g, ''); // Supprimer tirets en début/fin
+        
+        // Ajouter un identifiant unique court pour éviter les collisions
+        const uniqueId = Math.random().toString(36).substring(2, 8);
+        actualId = `${baseSlug}-${uniqueId}`;
+        
+        console.log('🆔 NOUVEAU SALON - Slug généré:', actualId, 'basé sur:', salonName);
+      }
+      console.log('💾 ID final pour sauvegarde:', actualId, '(ID original:', id, ')');
       
       // Sauvegarder avec l'ID corrigé - FORCER LA SAUVEGARDE DIRECTE
       let savedSalon;
@@ -1523,7 +1544,8 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         salon: savedSalon,
         shareableUrl: `${req.protocol}://${req.get('host')}/salon/${actualId}`,
         publicListing: true,
-        syncStatus: 'immediate'
+        syncStatus: 'immediate',
+        newSlug: actualId !== id ? actualId : null // Indiquer si l'ID a changé
       });
     } catch (error: any) {
       console.error('❌ Erreur sauvegarde salon:', error);
@@ -1837,80 +1859,51 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       // ÉTAPE 3: Ajouter OBLIGATOIREMENT le salon demo-user depuis storage.salons
       let allSalons = [...formattedProSalons];
       
-      // PRIORITÉ ABSOLUE: Récupérer salon demo-user depuis storage.salons
-      const demoSalonData = storage.salons?.get('demo-user');
-      console.log('🔍 Vérification salon demo-user:', demoSalonData ? 'TROUVÉ' : 'NON TROUVÉ');
+      // RÉCUPÉRATION DE TOUS LES SALONS UTILISATEURS depuis storage.salons
       console.log('📊 Storage.salons disponible:', storage.salons ? `OUI (${storage.salons.size} salons)` : 'NON');
+      
       if (storage.salons && storage.salons.size > 0) {
         console.log('📋 Salons en mémoire:', Array.from(storage.salons.keys()));
-      }
-      
-      if (demoSalonData) {
-        const demoSalon = {
-          id: "demo-user",
-          name: demoSalonData.name || "Salon Excellence Démo",
-          slug: "demo-user",
-          description: demoSalonData.description || "Salon de beauté moderne",
-          address: demoSalonData.address || "123 Avenue des Champs-Élysées, 75008 Paris",
-          phone: demoSalonData.phone || "01 42 96 00 00",
-          email: demoSalonData.email || "contact@salon-excellence.fr",
-          rating: 4.8,
-          reviews: 247,
-          reviewsCount: 247,
-          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
-          photos: demoSalonData.photos || [],
-          services: demoSalonData.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe"],
-          nextSlot: "Disponible aujourd'hui",
-          category: "coiffure",
-          city: "Paris",
-          priceRange: "€€€",
-          verified: true,
-          popular: true,
-          shareableUrl: "/salon/demo-user",
-          route: "/salon/demo-user",
-          customColors: demoSalonData.customColors || {},
-          distance: "0.5 km",
-          location: demoSalonData.address?.split(',')[0] || "Champs-Élysées"
-        };
-        allSalons.unshift(demoSalon); // Ajouter en premier
-        console.log(`✅ Salon demo-user ajouté: ${demoSalon.name}`);
-      } else {
-        console.log('⚠️ Salon demo-user non trouvé dans storage.salons');
         
-        // SOLUTION ALTERNATIVE: Créer salon demo-user avec données de base si non trouvé
-        const fallbackDemoSalon = {
-          id: "demo-user",
-          name: "Salon Excellence Démo", // Nom par défaut si salon non trouvé
-          slug: "demo-user",
-          description: "Salon de beauté moderne spécialisé dans les coupes tendances",
-          address: "123 Avenue des Champs-Élysées, 75008 Paris",
-          phone: "01 42 96 00 00",
-          email: "contact@salon-excellence.fr",
-          rating: 4.8,
-          reviews: 247,
-          reviewsCount: 247,
-          image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
-          photos: [],
-          services: ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe", "Coupe Enfant"],
-          nextSlot: "Disponible aujourd'hui",
-          category: "coiffure",
-          city: "Paris",
-          priceRange: "€€€",
-          verified: true,
-          popular: true,
-          shareableUrl: "/salon/demo-user",
-          route: "/salon/demo-user",
-          customColors: {
-            primary: '#cf079a',
-            accent: '#171519',
-            buttonText: '#ffffff',
-            priceColor: '#7c3aed'
-          },
-          distance: "0.5 km",
-          location: "Champs-Élysées"
-        };
-        allSalons.unshift(fallbackDemoSalon);
-        console.log(`🔧 FALLBACK: Salon demo-user créé avec données de base`);
+        // Traiter TOUS les salons du storage, pas seulement demo-user
+        const memoryBasedSalons = Array.from(storage.salons.values()).map(salonData => {
+          return {
+            id: salonData.id,
+            name: salonData.name || "Salon sans nom",
+            slug: salonData.slug || salonData.id,
+            description: salonData.description || "Salon de beauté moderne",
+            address: salonData.address || "Adresse à renseigner",
+            phone: salonData.phone || "Téléphone à renseigner",
+            email: salonData.email || "contact@salon.fr",
+            rating: 4.8,
+            reviews: salonData.reviewCount || 0,
+            reviewsCount: salonData.reviewCount || 0,
+            image: salonData.coverImageUrl || salonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+            photos: salonData.photos || [],
+            services: salonData.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ["Service professionnel"],
+            nextSlot: "Disponible aujourd'hui",
+            category: "coiffure",
+            city: salonData.city || extractCity(salonData.address || ''),
+            priceRange: "€€€",
+            verified: true,
+            popular: salonData.id === 'demo-user', // Demo salon en featured
+            shareableUrl: `/salon/${salonData.id}`,
+            route: `/salon/${salonData.id}`,
+            customColors: salonData.customColors || {},
+            distance: "0.5 km",
+            location: salonData.address?.split(',')[0] || "Paris"
+          };
+        });
+        
+        // Mettre demo-user en premier si présent
+        const demoIndex = memoryBasedSalons.findIndex(s => s.id === 'demo-user');
+        if (demoIndex > 0) {
+          const demoSalon = memoryBasedSalons.splice(demoIndex, 1)[0];
+          memoryBasedSalons.unshift(demoSalon);
+        }
+        
+        allSalons = [...memoryBasedSalons, ...formattedProSalons];
+        console.log(`✅ ${memoryBasedSalons.length} salons utilisateurs ajoutés depuis storage`);
       }
       
       // Ajouter salons démo supplémentaires si nécessaire

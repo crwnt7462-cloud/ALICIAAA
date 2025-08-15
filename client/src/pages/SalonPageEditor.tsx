@@ -433,6 +433,16 @@ export default function SalonPageEditor() {
       
       if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
       
+      const result = await response.json();
+      
+      // REDIRECTION AUTOMATIQUE si nouveau slug généré
+      if (result.newSlug && result.newSlug !== salonData?.id) {
+        console.log('🔄 Redirection vers nouveau slug:', result.newSlug);
+        setTimeout(() => {
+          setLocation(`/salon-editor/${result.newSlug}`);
+        }, 1500);
+      }
+      
       // Invalider le cache pour forcer le rafraîchissement
       queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData.id}`] });
       queryClient.invalidateQueries({ queryKey: ['/api/user/salon'] });
