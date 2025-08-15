@@ -9,6 +9,8 @@ interface AutoSaveOptions {
   onSave?: (data: any) => void;
   onError?: (error: Error) => void;
   enabled?: boolean;
+  queryClient?: any; // Pour invalidation directe
+  onStartSaving?: () => void; // Callback quand la sauvegarde commence
 }
 
 export function useAutoSave({
@@ -17,7 +19,9 @@ export function useAutoSave({
   delay = 2000, // Délai de 2 secondes par défaut
   onSave,
   onError,
-  enabled = true
+  enabled = true,
+  queryClient,
+  onStartSaving
 }: AutoSaveOptions) {
   const { toast } = useToast();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -44,17 +48,24 @@ export function useAutoSave({
       try {
         isSavingRef.current = true;
         
-        // Simuler une sauvegarde API (remplacer par vraie API)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Notifier le début de la sauvegarde
+        if (onStartSaving) {
+          onStartSaving();
+        }
+        
+        // Sauvegarde réelle vers l'API
+        const response = await fetch(endpoint, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Erreur API: ${response.status}`);
+        }
         
         // Sauvegarder en localStorage comme backup
         localStorage.setItem(`salon-${data.id}`, JSON.stringify(data));
-        
-        // TODO: Remplacer par un vrai appel API
-        // await apiRequest(endpoint, {
-        //   method: 'PUT',
-        //   body: JSON.stringify(data),
-        // });
 
         previousDataRef.current = data;
         
@@ -77,6 +88,17 @@ export function useAutoSave({
             timestamp: Date.now()
           } 
         }));
+        
+        // Invalider les caches pour synchronisation temps réel
+        const qClient = queryClient || (typeof window !== 'undefined' && (window as any).queryClient);
+        if (qClient) {
+          await Promise.all([
+            qClient.invalidateQueries({ queryKey: ['/api/public/salons'] }),
+            qClient.invalidateQueries({ queryKey: [`/api/salon/${data.id}`] }),
+            qClient.invalidateQueries({ queryKey: ['/api/user/salon'] }),
+            qClient.refetchQueries({ queryKey: ['/api/public/salons'] })
+          ]);
+        }
 
       } catch (error) {
         console.error('Erreur de sauvegarde automatique:', error);

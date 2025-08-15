@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -83,6 +84,7 @@ export default function SalonPageEditor() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState('services');
   const [isEditing, setIsEditing] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -154,6 +156,13 @@ export default function SalonPageEditor() {
       });
     }
   }, [userSalon, salonLoading]);
+
+  // Rendre queryClient accessible globalement pour l'invalidation des caches
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).queryClient = queryClient;
+    }
+  }, [queryClient]);
 
   // État des professionnels
   const [professionals, setProfessionals] = useState<Professional[]>([
@@ -410,6 +419,35 @@ export default function SalonPageEditor() {
     }
   };
 
+  // Auto-sauvegarde en temps réel pour toutes les modifications
+  useAutoSave({
+    data: {
+      ...salonData,
+      serviceCategories,
+      professionals
+    },
+    endpoint: salonData?.id ? `/api/salon/${salonData.id}` : '',
+    delay: 800, // Sauvegarde rapide après 0.8 secondes d'inactivité
+    enabled: !!salonData?.id && !salonLoading,
+    queryClient, // Passer directement le queryClient pour invalidation immédiate
+    onStartSaving: () => {
+      setIsAutoSaving(true);
+    },
+    onSave: (data) => {
+      console.log('🔄 Auto-sauvegarde réussie:', data.id);
+      setIsAutoSaving(false);
+      toast({
+        title: "✓ Modifications sauvegardées",
+        description: "Vos changements sont synchronisés en temps réel",
+        duration: 2000,
+      });
+    },
+    onError: (error) => {
+      console.error('❌ Erreur auto-sauvegarde:', error);
+      setIsAutoSaving(false);
+    }
+  });
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header avec photo de couverture */}
@@ -434,6 +472,13 @@ export default function SalonPageEditor() {
           </button>
 
           <div className="flex items-center gap-2">
+            {/* Indicateur d'auto-sauvegarde */}
+            {isAutoSaving && (
+              <div className="flex items-center gap-1 text-white bg-white/20 px-2 py-1 rounded-lg backdrop-blur-sm">
+                <div className="animate-spin w-3 h-3 border border-white/60 border-t-white rounded-full"></div>
+                <span className="text-xs">Sauvegarde...</span>
+              </div>
+            )}
             <Button
               variant="ghost"
               size="sm"

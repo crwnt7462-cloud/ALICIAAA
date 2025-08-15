@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, MapPin, Star, Clock, ArrowLeft, 
@@ -15,6 +15,7 @@ import avyentoLogo from "@assets/3_1753714421825.png";
 
 export default function SearchResults() {
   const [, setLocation] = useLocation();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [showFilters, setShowFilters] = useState(false);
@@ -124,7 +125,7 @@ export default function SearchResults() {
   ];
 
   // Recherche salons temps réel depuis l'API
-  const { data: apiResults } = useQuery({
+  const { data: apiResults, refetch: refetchSalons } = useQuery({
     queryKey: ['/api/public/salons', searchQuery, searchLocation],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -135,8 +136,26 @@ export default function SearchResults() {
       const data = await response.json();
       return data.success ? data.salons : [];
     },
-    refetchOnWindowFocus: false
+    refetchOnWindowFocus: false,
+    staleTime: 30000
   });
+
+  // Écoute des événements de synchronisation en temps réel
+  useEffect(() => {
+    const handleSalonUpdated = (event: CustomEvent) => {
+      console.log('🔄 Salon mis à jour détecté dans SearchResults:', event.detail);
+      
+      // Rafraîchir immédiatement les données de la page de recherche
+      queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] });
+      refetchSalons();
+    };
+
+    window.addEventListener('salon-updated', handleSalonUpdated as EventListener);
+    
+    return () => {
+      window.removeEventListener('salon-updated', handleSalonUpdated as EventListener);
+    };
+  }, [queryClient, refetchSalons]);
 
 
 
