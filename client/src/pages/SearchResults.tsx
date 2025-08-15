@@ -31,6 +31,8 @@ export default function SearchResults() {
   const [locationCharIndex, setLocationCharIndex] = useState(0);
   const [isServiceDeleting, setIsServiceDeleting] = useState(false);
   const [isLocationDeleting, setIsLocationDeleting] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
+  const [showUpdateNotification, setShowUpdateNotification] = useState(false);
 
   const services = [
     "Coiffure",
@@ -155,6 +157,10 @@ export default function SearchResults() {
     onSalonUpdate: async (salonId: string, salonData: any) => {
       console.log('🔄 Mise à jour salon reçue via WebSocket:', salonId, salonData?.name);
       
+      // Afficher notification de mise à jour
+      setLastUpdateTime(new Date());
+      setShowUpdateNotification(true);
+      
       // FORCER le rafraîchissement immédiat sans cache
       queryClient.removeQueries({ queryKey: ['/api/public/salons'] }); // Supprimer tout cache
       
@@ -162,6 +168,9 @@ export default function SearchResults() {
       await refetchSalons();
       
       console.log('✅ SearchResults mis à jour via WebSocket');
+      
+      // Masquer notification après 3 secondes
+      setTimeout(() => setShowUpdateNotification(false), 3000);
     },
     onConnect: () => {
       console.log('✅ SearchResults connecté au WebSocket');
@@ -414,6 +423,20 @@ export default function SearchResults() {
               </span>
             </div>
           </div>
+          
+          {/* Notification de mise à jour temps réel */}
+          <AnimatePresence>
+            {showUpdateNotification && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="bg-green-500 text-white text-xs px-3 py-1 rounded-full text-center"
+              >
+                ✨ Salon mis à jour en temps réel
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
@@ -433,6 +456,34 @@ export default function SearchResults() {
           <p className="text-gray-600 text-sm mt-1 px-4">
             Toutes vos réservations beauté en un clic
           </p>
+        </motion.div>
+
+        {/* Instructions pour le test de synchronisation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.15 }}
+          className="bg-gradient-to-r from-purple-500/10 to-amber-500/10 border border-purple-200 rounded-2xl p-4 text-center"
+        >
+          <p className="text-sm text-gray-700 font-medium">
+            🚀 Test de synchronisation temps réel
+          </p>
+          <p className="text-xs text-gray-600 mt-1">
+            Modifiez un salon dans l'éditeur et voyez les changements apparaître instantanément ici
+          </p>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <div className={`h-2 w-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+            <span className="text-xs text-gray-600">
+              WebSocket: {isConnected ? 'Connecté' : 'Déconnecté'}
+            </span>
+          </div>
+          <Button
+            onClick={() => setLocation('/salon-page-editor')}
+            size="sm"
+            className="mt-3 bg-gradient-to-r from-purple-500 to-amber-500 text-white rounded-full px-4 py-2 text-xs"
+          >
+            ✏️ Ouvrir l'éditeur de salon
+          </Button>
         </motion.div>
 
         {/* Barre de recherche glassmorphism */}
