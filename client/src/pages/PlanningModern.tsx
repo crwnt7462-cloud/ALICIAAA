@@ -191,7 +191,7 @@ export default function PlanningModern() {
 
   // Vue jour avec design Landing 
   const renderDayView = () => (
-    <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
+    <div className="space-y-3 lg:grid lg:grid-cols-3 lg:gap-4 lg:space-y-0">
       {timeSlots.map((time, index) => {
         const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
         
@@ -383,7 +383,7 @@ export default function PlanningModern() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
     >
-      <div className="max-w-md lg:max-w-6xl mx-auto space-y-6">
+      <div className="max-w-md lg:max-w-full lg:px-8 mx-auto space-y-6">
         {/* Header Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -391,8 +391,17 @@ export default function PlanningModern() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-center space-y-4 pt-8 lg:pt-4"
         >
-          <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto lg:hidden">
-            <Calendar className="w-8 h-8 text-white" />
+          {/* Émojis Planning - Mobile */}
+          <div className="flex justify-center space-x-3 lg:hidden">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
+              <span className="text-2xl">📅</span>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center">
+              <span className="text-2xl">⏰</span>
+            </div>
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center">
+              <span className="text-2xl">✨</span>
+            </div>
           </div>
           
           <div className="lg:text-left lg:flex lg:items-center lg:justify-between">
@@ -404,9 +413,23 @@ export default function PlanningModern() {
                 Gérez vos rendez-vous avec intelligence
               </p>
             </div>
+            
+            {/* Émojis Planning - Desktop */}
             <div className="hidden lg:flex items-center space-x-4">
-              <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury">
-                <Calendar className="w-6 h-6 text-white" />
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-md">
+                <span className="text-3xl">📅</span>
+              </div>
+              <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center shadow-md">
+                <span className="text-3xl">⏰</span>
+              </div>
+              <div className="w-14 h-14 bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl flex items-center justify-center shadow-md">
+                <span className="text-3xl">✨</span>
+              </div>
+              <div className="w-14 h-14 bg-gradient-to-br from-pink-100 to-rose-100 rounded-2xl flex items-center justify-center shadow-md">
+                <span className="text-3xl">📋</span>
+              </div>
+              <div className="w-14 h-14 bg-gradient-to-br from-violet-100 to-purple-100 rounded-2xl flex items-center justify-center shadow-md">
+                <span className="text-3xl">🎯</span>
               </div>
             </div>
           </div>
@@ -711,9 +734,9 @@ export default function PlanningModern() {
               </CardContent>
             </Card>
           ) : (
-            <div className="lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 space-y-4">
+            <div className="lg:grid lg:grid-cols-4 lg:gap-8 lg:space-y-0 space-y-4">
               {/* Colonne principale - Planning */}
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-3">
                 {viewMode === 'day' ? renderDayView() : renderWeekView()}
               </div>
               
