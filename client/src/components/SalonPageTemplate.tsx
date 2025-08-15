@@ -406,7 +406,12 @@ export function SalonPageTemplate({
                           </div>
                           
                           <button 
-                            className="avyento-button-secondary w-full mt-2"
+                            className="avyento-button-secondary w-full mt-2 text-sm px-4 py-2 rounded-lg hover:scale-105 transition-transform"
+                            style={{
+                              backgroundColor: customColors?.primary ? `${customColors.primary}15` : '#7c3aed15',
+                              color: customColors?.primary || '#7c3aed',
+                              border: `1px solid ${customColors?.primary || '#7c3aed'}20`
+                            }}
                             onClick={() => handleBooking(service.id)}
                           >
                             Réserver
@@ -449,11 +454,24 @@ export function SalonPageTemplate({
                       </div>
                     </div>
                     
-                    <p className="text-violet-600 font-medium mb-3">{member.role}</p>
+                    <p 
+                      className="font-medium mb-3"
+                      style={{ color: customColors?.primary || '#7c3aed' }}
+                    >
+                      {member.role}
+                    </p>
                     
                     <div className="flex flex-wrap gap-2">
                       {member.specialties.map((specialty, index) => (
-                        <Badge key={index} variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                        <Badge 
+                          key={index} 
+                          variant="secondary" 
+                          className="text-xs"
+                          style={{
+                            backgroundColor: customColors?.primary ? `${customColors.primary}15` : '#f3f4f6',
+                            color: customColors?.primary || '#6b7280'
+                          }}
+                        >
                           {specialty}
                         </Badge>
                       ))}

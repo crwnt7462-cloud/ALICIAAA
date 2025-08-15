@@ -1349,16 +1349,17 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
           name: demoSalonData.name || "Studio Élégance Paris",
           rating: 4.8,
           reviews: 247,
-          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=200&fit=crop",
-          location: demoSalonData.address || "Paris 1er",
+          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          location: demoSalonData.address || "123 Avenue des Champs-Élysées, 75008 Paris",
           distance: "1.2 km",
           nextSlot: "Aujourd'hui 14h30",
-          services: demoSalonData.serviceCategories?.[0]?.services?.map((s: any) => s.name) || ["Coupe & Styling", "Coloration", "Soins Capillaires"],
+          services: demoSalonData.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe", "Coupe Enfant (-12 ans)"],
           priceRange: "€€€",
-          category: demoSalonData.category || 'coiffure',
-          city: demoSalonData.city || 'paris',
+          category: demoSalonData.category || "mixte",
+          city: demoSalonData.city || "75008 Paris",
           verified: true,
-          shareableUrl: '/salon/demo-user'
+          shareableUrl: '/salon/demo-user',
+          customColors: demoSalonData.customColors // ✅ AJOUT ESSENTIEL: Inclure les couleurs personnalisées
         };
         allSalons.push(demoSalon);
       }

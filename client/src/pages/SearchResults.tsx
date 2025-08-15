@@ -667,7 +667,22 @@ export default function SearchResults() {
                       <div className="p-4 space-y-3">
                         <div className="flex items-start justify-between">
                           <div>
-                            <h3 className="font-semibold text-gray-900 text-sm group-hover:text-violet-600 transition-colors">
+                            <h3 
+                              className="font-semibold text-gray-900 text-sm group-hover:transition-colors"
+                              style={{
+                                color: salon.customColors?.primary ? salon.customColors.primary : undefined
+                              }}
+                              onMouseEnter={(e) => {
+                                if (salon.customColors?.primary) {
+                                  e.currentTarget.style.color = salon.customColors.primary;
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (!salon.customColors?.primary) {
+                                  e.currentTarget.style.color = '';
+                                }
+                              }}
+                            >
                               {salon.name}
                             </h3>
                             <div className="flex items-center gap-1 text-xs text-gray-600 mt-1">
@@ -675,7 +690,12 @@ export default function SearchResults() {
                               {salon.location} • {salon.distance}
                             </div>
                           </div>
-                          <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-violet-600 transition-colors" />
+                          <ChevronRight 
+                            className="h-4 w-4 text-gray-400 group-hover:transition-colors" 
+                            style={{
+                              color: salon.customColors?.primary ? `${salon.customColors.primary}80` : undefined
+                            }}
+                          />
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -684,12 +704,28 @@ export default function SearchResults() {
                             <span className="text-sm font-medium text-gray-900">{salon.rating}</span>
                             <span className="text-xs text-gray-600">({salon.reviews} avis)</span>
                           </div>
-                          <span className="text-sm font-medium text-violet-600">{salon.priceRange}</span>
+                          <span 
+                            className="text-sm font-medium"
+                            style={{
+                              color: salon.customColors?.priceColor || salon.customColors?.primary || '#7c3aed'
+                            }}
+                          >
+                            {salon.priceRange}
+                          </span>
                         </div>
 
                         <div className="flex flex-wrap gap-1">
                           {salon.services.slice(0, 3).map((service: string, idx: number) => (
-                            <Badge key={idx} variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
+                            <Badge 
+                              key={idx} 
+                              variant="secondary" 
+                              className="text-xs border"
+                              style={{
+                                backgroundColor: salon.customColors?.primary ? `${salon.customColors.primary}15` : '#f3f4f6',
+                                color: salon.customColors?.primary || '#6b7280',
+                                borderColor: salon.customColors?.primary ? `${salon.customColors.primary}30` : '#e5e7eb'
+                              }}
+                            >
                               {service}
                             </Badge>
                           ))}
