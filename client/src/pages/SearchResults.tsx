@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, MapPin, Star, Clock, ArrowLeft, 
   Sparkles, ChevronRight, Heart, LogIn,
-  SlidersHorizontal, TrendingUp, Award
+  SlidersHorizontal, TrendingUp, Award, Scissors, Palette
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -124,10 +124,10 @@ export default function SearchResults() {
 
   const categories = [
     { id: "all", name: "Tous", icon: Sparkles },
-    { id: "coiffure", name: "Coiffure", icon: Sparkles },
+    { id: "coiffure", name: "Coiffure", icon: Scissors },
     { id: "esthetique", name: "Esthétique", icon: Heart },
     { id: "massage", name: "Massage", icon: TrendingUp },
-    { id: "onglerie", name: "Onglerie", icon: Award }
+    { id: "onglerie", name: "Onglerie", icon: Palette }
   ];
 
   // Recherche salons temps réel depuis l'API - SANS CACHE pour données fraîches
@@ -530,35 +530,60 @@ export default function SearchResults() {
 
 
 
-        {/* Filtres par catégorie style iOS */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Catégories</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="glass-button text-black px-4 py-2 rounded-2xl font-semibold shadow-xl hover:shadow-2xl"
-            >
-              <SlidersHorizontal className="h-4 w-4 mr-1" />
-              {showFilters ? 'Masquer' : 'Plus'}
-            </Button>
+        {/* Section catégories moderne glassmorphism */}
+        <div className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="heroSlash__title text-2xl mb-3">
+              Explorez par <span className="light">catégorie</span>
+            </h2>
+            <p className="heroSlash__subtitle text-sm max-w-lg mx-auto">
+              Découvrez nos services spécialisés adaptés à vos besoins
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
             {categories.map((category) => {
+              const IconComponent = category.icon;
               return (
-                <button
+                <motion.button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-3 rounded-2xl text-sm font-medium shadow-xl hover:shadow-2xl transition-all duration-300 ${
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`group relative p-6 rounded-3xl text-center transition-all duration-300 ${
                     selectedCategory === category.id
-                      ? 'glass-button bg-violet-100 text-violet-800 border-2 border-violet-300'
-                      : 'glass-button text-black hover:bg-white/90'
+                      ? 'bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-300 shadow-xl'
+                      : 'glass-button hover:shadow-xl'
                   }`}
+                  style={{
+                    background: selectedCategory === category.id 
+                      ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.05))'
+                      : 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: selectedCategory === category.id 
+                      ? '2px solid rgba(139, 92, 246, 0.3)'
+                      : '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
                 >
-                  {category.name}
-                </button>
+                  <div className={`w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+                    selectedCategory === category.id
+                      ? 'bg-violet-100 text-violet-600 shadow-lg'
+                      : 'bg-gray-50 text-gray-600 group-hover:bg-violet-50 group-hover:text-violet-500'
+                  }`}>
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <span className={`font-semibold text-sm transition-colors duration-300 ${
+                    selectedCategory === category.id
+                      ? 'text-violet-800'
+                      : 'text-gray-800 group-hover:text-violet-700'
+                  }`}>
+                    {category.name}
+                  </span>
+                  
+                  {/* Effet de brillance au survol */}
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12" />
+                </motion.button>
               );
             })}
           </div>
