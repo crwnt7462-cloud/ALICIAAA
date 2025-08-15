@@ -1832,18 +1832,94 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       
       console.log(`✅ ${formattedProSalons.length} salons pros formatés pour recherche`);
       
-      // ÉTAPE 3: Ajouter les salons démo SEULEMENT si nécessaire
+      // ÉTAPE 3: Ajouter OBLIGATOIREMENT le salon demo-user depuis storage.salons
       let allSalons = [...formattedProSalons];
       
-      // Charger salons démo uniquement si peu de salons pros
+      // PRIORITÉ ABSOLUE: Récupérer salon demo-user depuis storage.salons
+      const demoSalonData = storage.salons?.get('demo-user');
+      console.log('🔍 Vérification salon demo-user:', demoSalonData ? 'TROUVÉ' : 'NON TROUVÉ');
+      console.log('📊 Storage.salons disponible:', storage.salons ? `OUI (${storage.salons.size} salons)` : 'NON');
+      if (storage.salons && storage.salons.size > 0) {
+        console.log('📋 Salons en mémoire:', Array.from(storage.salons.keys()));
+      }
+      
+      if (demoSalonData) {
+        const demoSalon = {
+          id: "demo-user",
+          name: demoSalonData.name || "Salon Excellence Démo",
+          slug: "demo-user",
+          description: demoSalonData.description || "Salon de beauté moderne",
+          address: demoSalonData.address || "123 Avenue des Champs-Élysées, 75008 Paris",
+          phone: demoSalonData.phone || "01 42 96 00 00",
+          email: demoSalonData.email || "contact@salon-excellence.fr",
+          rating: 4.8,
+          reviews: 247,
+          reviewsCount: 247,
+          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          photos: demoSalonData.photos || [],
+          services: demoSalonData.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe"],
+          nextSlot: "Disponible aujourd'hui",
+          category: "coiffure",
+          city: "Paris",
+          priceRange: "€€€",
+          verified: true,
+          popular: true,
+          shareableUrl: "/salon/demo-user",
+          route: "/salon/demo-user",
+          customColors: demoSalonData.customColors || {},
+          distance: "0.5 km",
+          location: demoSalonData.address?.split(',')[0] || "Champs-Élysées"
+        };
+        allSalons.unshift(demoSalon); // Ajouter en premier
+        console.log(`✅ Salon demo-user ajouté: ${demoSalon.name}`);
+      } else {
+        console.log('⚠️ Salon demo-user non trouvé dans storage.salons');
+        
+        // SOLUTION ALTERNATIVE: Créer salon demo-user avec données de base si non trouvé
+        const fallbackDemoSalon = {
+          id: "demo-user",
+          name: "Salon Excellence Démo", // Nom par défaut si salon non trouvé
+          slug: "demo-user",
+          description: "Salon de beauté moderne spécialisé dans les coupes tendances",
+          address: "123 Avenue des Champs-Élysées, 75008 Paris",
+          phone: "01 42 96 00 00",
+          email: "contact@salon-excellence.fr",
+          rating: 4.8,
+          reviews: 247,
+          reviewsCount: 247,
+          image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          photos: [],
+          services: ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe", "Coupe Enfant"],
+          nextSlot: "Disponible aujourd'hui",
+          category: "coiffure",
+          city: "Paris",
+          priceRange: "€€€",
+          verified: true,
+          popular: true,
+          shareableUrl: "/salon/demo-user",
+          route: "/salon/demo-user",
+          customColors: {
+            primary: '#cf079a',
+            accent: '#171519',
+            buttonText: '#ffffff',
+            priceColor: '#7c3aed'
+          },
+          distance: "0.5 km",
+          location: "Champs-Élysées"
+        };
+        allSalons.unshift(fallbackDemoSalon);
+        console.log(`🔧 FALLBACK: Salon demo-user créé avec données de base`);
+      }
+      
+      // Ajouter salons démo supplémentaires si nécessaire
       if (formattedProSalons.length < 3) {
         if (publicSalonsStorage.size === 0) {
           console.log('💿 Chargement salons démo depuis PostgreSQL...');
           await loadSalonsFromDatabase();
         }
         const demoSalons = Array.from(publicSalonsStorage.values());
-        allSalons = [...formattedProSalons, ...demoSalons];
-        console.log(`📊 ${demoSalons.length} salons démo ajoutés`);
+        allSalons = [...allSalons, ...demoSalons];
+        console.log(`📊 ${demoSalons.length} salons démo supplémentaires ajoutés`);
       }
       
       // ÉTAPE 4: Filtrage intelligent
