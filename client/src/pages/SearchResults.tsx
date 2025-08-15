@@ -3,8 +3,8 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Search, MapPin, Star, Clock, Filter, ArrowLeft, 
-  Sparkles, Calendar, ChevronRight, Eye, Heart,
+  Search, MapPin, Star, Clock, ArrowLeft, 
+  Sparkles, ChevronRight, Heart,
   SlidersHorizontal, TrendingUp, Award
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,7 +16,7 @@ export default function SearchResults() {
   const [, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+  const [, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Extract search params from URL
@@ -37,7 +37,7 @@ export default function SearchResults() {
   ];
 
   // Recherche salons temps réel depuis l'API
-  const { data: apiResults, isLoading } = useQuery({
+  const { data: apiResults } = useQuery({
     queryKey: ['/api/public/salons', searchQuery, searchLocation],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -51,97 +51,7 @@ export default function SearchResults() {
     refetchOnWindowFocus: false
   });
 
-  // Salons de démonstration avec liens vers les vraies pages
-  const searchResults = [
-    {
-      id: "barbier-gentleman-marais",
-      name: "Barbier Gentleman Marais",
-      rating: 4.8,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=200&fit=crop",
-      location: "Le Marais, Paris 4ème",
-      distance: "1.2 km",
-      nextSlot: "Aujourd'hui 14h30",
-      services: ["Coupe Classique", "Barbe & Moustache", "Soins Visage"],
-      priceRange: "€€",
-      category: "coiffure",
-      verified: true,
-      popular: true,
-      route: "/salon/barbier-gentleman-marais"
-    },
-    {
-      id: "beauty-lash-studio",
-      name: "Beauty Lash Studio",
-      rating: 4.9,
-      reviews: 78,
-      image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=200&fit=crop",
-      location: "République, Paris 3ème",
-      distance: "2.1 km",
-      nextSlot: "Demain 10h00",
-      services: ["Extensions Volume", "Lifting de Cils", "Épilation Sourcils"],
-      priceRange: "€€€",
-      category: "esthetique",
-      verified: true,
-      route: "/salon/beauty-lash-studio"
-    },
-    {
-      id: "salon-excellence-paris",
-      name: "Salon Excellence Paris",
-      rating: 4.8,
-      reviews: 127,
-      image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=300&h=200&fit=crop",
-      location: "Champs-Élysées, Paris 8ème",
-      distance: "3.2 km",
-      nextSlot: "Aujourd'hui 16h00",
-      services: ["Coupe Premium", "Coloration Expert", "Soin Restructurant"],
-      priceRange: "€€€",
-      category: "coiffure",
-      popular: true,
-      route: "/salon/salon-excellence-paris"
-    },
-    {
-      id: "institut-beaute-saint-germain",
-      name: "Institut Beauté Saint-Germain",
-      rating: 4.7,
-      reviews: 89,
-      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
-      location: "Saint-Germain, Paris 6ème",
-      distance: "2.8 km",
-      nextSlot: "Demain 15h30",
-      services: ["Soins Visage", "Épilation", "Massage Relaxant"],
-      priceRange: "€€€",
-      category: "esthetique",
-      route: "/salon/institut-beaute-saint-germain"
-    },
-    {
-      id: "beauty-lounge-montparnasse",
-      name: "Beauty Lounge Montparnasse",
-      rating: 4.6,
-      reviews: 94,
-      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
-      location: "Montparnasse, Paris 14ème",
-      distance: "4.1 km",
-      nextSlot: "Aujourd'hui 18h00",
-      services: ["Manucure", "Pédicure", "Nail Art"],
-      priceRange: "€€",
-      category: "onglerie",
-      route: "/salon/beauty-lounge-montparnasse"
-    },
-    {
-      id: "salon-moderne-republique",
-      name: "Salon Moderne République",
-      rating: 4.5,
-      reviews: 67,
-      image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=200&fit=crop",
-      location: "République, Paris 11ème",
-      distance: "1.8 km",
-      nextSlot: "Demain 11h00",
-      services: ["Coupe Tendance", "Coloration", "Brushing"],
-      priceRange: "€€",
-      category: "coiffure",
-      route: "/salon/salon-moderne-republique"
-    }
-  ];
+
 
   // Combiner les résultats API avec des salons de démo
   const allResults = apiResults || [
@@ -246,7 +156,7 @@ export default function SearchResults() {
     window.history.pushState({}, '', `/search?${params.toString()}`);
   };
 
-  const handleSalonClick = (salon: any) => {
+  const handleSalonClick = (salon: { route: string }) => {
     setLocation(salon.route);
   };
 
@@ -285,34 +195,47 @@ export default function SearchResults() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Service recherché..."
+                  placeholder="Coiffure, manucure, massage..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm"
+                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm focus:bg-white/70 transition-colors duration-200"
                 />
               </div>
               
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Localisation..."
+                  placeholder="Paris, Marseille, Lyon..."
                   value={searchLocation}
                   onChange={(e) => setSearchLocation(e.target.value)}
-                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm"
+                  className="pl-10 border-0 bg-gray-50/50 rounded-xl h-11 text-sm focus:bg-white/70 transition-colors duration-200"
                 />
               </div>
 
-              <Button
+              <motion.button
                 onClick={handleSearch}
-                className="w-full h-11 rounded-xl font-medium"
+                whileHover={{ 
+                  scale: 1.02,
+                  y: -2,
+                  transition: { duration: 0.2 }
+                }}
+                whileTap={{ scale: 0.98 }}
+                className="relative w-full h-11 rounded-2xl overflow-hidden group font-medium"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%)',
-                  boxShadow: '0 4px 20px rgba(168, 85, 247, 0.3)'
+                  background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
                 }}
               >
-                <Search className="h-4 w-4 mr-2" />
-                Rechercher
-              </Button>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center h-full text-white">
+                  <Search className="h-4 w-4 mr-2" />
+                  Rechercher
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+              </motion.button>
             </CardContent>
           </Card>
         </motion.div>
@@ -372,7 +295,7 @@ export default function SearchResults() {
 
           <div className="space-y-3">
             <AnimatePresence>
-              {filteredResults.map((salon, index) => (
+              {filteredResults.map((salon: any, index: number) => (
                 <motion.div
                   key={salon.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -437,7 +360,7 @@ export default function SearchResults() {
                         </div>
 
                         <div className="flex flex-wrap gap-1">
-                          {salon.services.slice(0, 3).map((service, idx) => (
+                          {salon.services.slice(0, 3).map((service: string, idx: number) => (
                             <Badge key={idx} variant="secondary" className="bg-violet-100 text-violet-800 text-xs">
                               {service}
                             </Badge>
