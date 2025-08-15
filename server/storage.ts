@@ -1243,21 +1243,40 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log(`🎨 Mise à jour couleurs salon: ${salonId}`, data.customColors);
       
-      // Mettre à jour dans la table business_registrations
-      const [updatedSalon] = await db.update(businessRegistrations)
-        .set({
-          customColors: JSON.stringify(data.customColors),
-          updatedAt: new Date()
-        })
-        .where(eq(businessRegistrations.id, parseInt(salonId)))
-        .returning();
+      // Vérifier si salonId est numérique ou slug
+      const isNumeric = !isNaN(Number(salonId));
+      
+      if (isNumeric) {
+        // Mettre à jour par ID numérique
+        const [updatedSalon] = await db.update(businessRegistrations)
+          .set({
+            customColors: JSON.stringify(data.customColors),
+            updatedAt: new Date()
+          })
+          .where(eq(businessRegistrations.id, parseInt(salonId)))
+          .returning();
 
-      if (updatedSalon) {
-        console.log(`✅ Couleurs salon ${salonId} mises à jour avec succès`);
-        return updatedSalon;
+        if (updatedSalon) {
+          console.log(`✅ Couleurs salon ${salonId} mises à jour avec succès`);
+          return updatedSalon;
+        }
       } else {
-        throw new Error(`Salon avec ID ${salonId} non trouvé`);
+        // Mettre à jour par slug
+        const [updatedSalon] = await db.update(businessRegistrations)
+          .set({
+            customColors: JSON.stringify(data.customColors),
+            updatedAt: new Date()
+          })
+          .where(eq(businessRegistrations.slug, salonId))
+          .returning();
+
+        if (updatedSalon) {
+          console.log(`✅ Couleurs salon ${salonId} mises à jour avec succès (par slug)`);
+          return updatedSalon;
+        }
       }
+      
+      throw new Error(`Salon avec ID/slug ${salonId} non trouvé`);
     } catch (error) {
       console.error(`❌ Erreur mise à jour couleurs salon ${salonId}:`, error);
       throw error;
