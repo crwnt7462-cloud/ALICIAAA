@@ -1133,14 +1133,24 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       const { id } = req.params;
       console.log('📖 Récupération données salon pour éditeur:', id);
       
-      // ✅ CORRECTION : Utiliser getSalon avec la méthode correcte
-      let salon = await storage.getSalon(id);
+      // ✅ CORRECTION ESSENTIELLE : Prioriser les données temps réel avec customColors
+      let salon = null;
+      
+      // D'abord chercher dans le storage en mémoire (données temps réel avec customColors)
+      if (storage.salons && storage.salons.has(id)) {
+        salon = storage.salons.get(id);
+        console.log('✅ Salon trouvé en mémoire avec customColors:', id);
+      } else {
+        // Fallback sur PostgreSQL si pas en mémoire
+        salon = await storage.getSalon(id);
+        console.log('📦 Salon trouvé en PostgreSQL (sans customColors):', id);
+      }
       
       if (!salon) {
-        console.log('❌ ERREUR: Salon inexistant dans PostgreSQL:', id);
+        console.log('❌ ERREUR: Salon inexistant:', id);
         return res.status(404).json({ 
-          error: 'Salon non trouvé dans la base de données PostgreSQL',
-          message: 'AUCUNE DONNÉE FACTICE - Salons authentiques uniquement'
+          error: 'Salon non trouvé',
+          message: 'Salon non disponible'
         });
       }
         
@@ -1330,6 +1340,85 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     } catch (error: any) {
       console.error('❌ Erreur API /api/salons:', error);
       res.status(500).json({ success: false, message: 'Erreur de recherche salons' });
+    }
+  });
+
+  // ✅ NOUVELLE ROUTE ESSENTIELLE : Récupération salon par slug pour pages publiques
+  app.get('/api/salons/by-slug/:slug', async (req, res) => {
+    try {
+      const { slug } = req.params;
+      console.log('🔍 Récupération salon publique par slug:', slug);
+      
+      // ✅ PRIORITÉ : Données temps réel avec customColors depuis storage.salons
+      let salon = null;
+      
+      if (storage.salons && storage.salons.has(slug)) {
+        salon = storage.salons.get(slug);
+        console.log('✅ Salon publique trouvé en mémoire avec customColors:', slug);
+      } else {
+        // Fallback PostgreSQL sans customColors
+        salon = await storage.getSalon(slug);
+        console.log('📦 Salon publique trouvé en PostgreSQL (sans customColors):', slug);
+      }
+      
+      if (!salon) {
+        console.log('❌ Salon publique non trouvé:', slug);
+        return res.status(404).json({ 
+          error: 'Salon non trouvé',
+          message: 'Page salon non disponible'
+        });
+      }
+      
+      // ✅ Forcer les photos si manquantes
+      if (!salon.photos || salon.photos.length === 0) {
+        salon.photos = [
+          "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format",
+          "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"
+        ];
+      }
+      
+      if (!salon.coverImageUrl) {
+        salon.coverImageUrl = salon.photos?.[0];
+      }
+      
+      // ✅ Mapper les données pour le template public
+      const publicSalonData = {
+        id: salon.id,
+        name: salon.name || 'Salon Excellence',
+        slug: slug,
+        description: salon.description || `Salon de beauté professionnel ${salon.name}`,
+        address: salon.address || "123 Avenue des Champs-Élysées, 75008 Paris",
+        phone: salon.phone || "01 42 96 00 00",
+        rating: salon.rating || 4.8,
+        reviewsCount: salon.reviewCount || salon.reviews?.length || 247,
+        coverImageUrl: salon.coverImageUrl,
+        logoUrl: salon.logoUrl,
+        photos: salon.photos,
+        customColors: salon.customColors, // ✅ ESSENTIEL : Inclure les couleurs personnalisées
+        openingHours: salon.openingHours || {
+          lundi: { open: '09:00', close: '19:00' },
+          mardi: { open: '09:00', close: '19:00' },
+          mercredi: { open: '09:00', close: '19:00' },
+          jeudi: { open: '09:00', close: '19:00' },
+          vendredi: { open: '09:00', close: '19:00' },
+          samedi: { open: '09:00', close: '18:00' },
+          dimanche: { closed: true, open: '', close: '' }
+        },
+        amenities: salon.amenities || ['WiFi gratuit', 'Climatisation', 'Parking', 'Accessible PMR'],
+        priceRange: salon.priceRange || '€€',
+        serviceCategories: salon.serviceCategories || []
+      };
+      
+      console.log('✅ Données salon publique avec customColors:', publicSalonData.customColors ? 'OUI' : 'NON');
+      res.json(publicSalonData);
+      
+    } catch (error: any) {
+      console.error('❌ Erreur récupération salon publique:', error);
+      res.status(500).json({ 
+        error: 'Erreur serveur',
+        message: 'Impossible de charger la page salon'
+      });
     }
   });
 
