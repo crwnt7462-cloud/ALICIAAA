@@ -377,7 +377,17 @@ export function SalonPageTemplate({
                                 <p className="text-lg sm:text-xl font-bold text-gray-900">{service.price}€</p>
                               </div>
                               <button 
-                                className="glass-button text-black px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-2"
+                                className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-2 transition-all duration-300"
+                                style={{
+                                  background: customColors?.primary ? 
+                                    `linear-gradient(135deg, ${customColors.primary}${Math.round((customColors.intensity || 35) * 2.55).toString(16).padStart(2, '0')}, ${customColors.primary}${Math.round((customColors.intensity || 35) * 1.5).toString(16).padStart(2, '0')})` :
+                                    'linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(139, 92, 246, 0.6))',
+                                  backdropFilter: 'blur(12px)',
+                                  WebkitBackdropFilter: 'blur(12px)',
+                                  border: `1px solid ${customColors?.primary ? `${customColors.primary}40` : 'rgba(139, 92, 246, 0.3)'}`,
+                                  color: customColors?.buttonText || '#ffffff',
+                                  boxShadow: `0 6px 20px ${customColors?.primary ? `${customColors.primary}25` : 'rgba(139, 92, 246, 0.25)'}`
+                                }}
                                 onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
                               >
                                 <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
