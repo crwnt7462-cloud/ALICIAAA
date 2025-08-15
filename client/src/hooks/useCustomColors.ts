@@ -51,7 +51,15 @@ export function useCustomColors(salonSlug?: string) {
     root.style.setProperty('--salon-price-color', colors.priceColor);
     root.style.setProperty('--salon-neon-frame', colors.neonFrame);
     
-    console.log('✅ Variables CSS appliquées:', colors);
+    // ✅ Nouvelles variables pour personnalisation avancée
+    root.style.setProperty('--salon-currency-symbol', colors.primary);
+    root.style.setProperty('--salon-selection-bg', `${colors.primary}10`);
+    root.style.setProperty('--salon-selection-border', colors.primary);
+    root.style.setProperty('--salon-selection-text', colors.primary);
+    root.style.setProperty('--salon-selection-active-bg', `${colors.primary}20`);
+    root.style.setProperty('--salon-price-highlight', colors.priceColor);
+    
+    console.log('✅ Variables CSS appliquées avec personnalisation avancée:', colors);
   };
 
   const resetCustomColors = () => {
@@ -61,6 +69,12 @@ export function useCustomColors(salonSlug?: string) {
     root.style.removeProperty('--salon-button-text');
     root.style.removeProperty('--salon-price-color');
     root.style.removeProperty('--salon-neon-frame');
+    root.style.removeProperty('--salon-currency-symbol');
+    root.style.removeProperty('--salon-selection-bg');
+    root.style.removeProperty('--salon-selection-border');
+    root.style.removeProperty('--salon-selection-text');
+    root.style.removeProperty('--salon-selection-active-bg');
+    root.style.removeProperty('--salon-price-highlight');
     
     setCustomColors(null);
   };

@@ -360,13 +360,16 @@ export function SalonPageTemplate({
                   <div className="border-t border-gray-100">
                     <div className="space-y-0">
                       {category.services.map((service: SalonService) => (
-                        <div key={service.id} className="px-4 py-2 border-b border-gray-50 last:border-b-0">
+                        <div key={service.id} className="salon-service-card mx-4 my-2 border-b border-gray-50 last:border-b-0">
                           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between mb-1">
-                                <h4 className="font-medium text-gray-900 flex-1 truncate pr-2">{service.name}</h4>
+                                <h4 className="salon-service-name text-gray-900 flex-1 truncate pr-2">{service.name}</h4>
                                 <div className="text-right flex-shrink-0">
-                                  <p className="font-bold text-lg" style={{ color: customColors?.priceColor || '#1f2937' }}>{service.price}€</p>
+                                  <p className="salon-custom-price text-lg">
+                                    {service.price}
+                                    <span className="salon-currency-symbol ml-0.5">€</span>
+                                  </p>
                                 </div>
                               </div>
                               

@@ -1038,6 +1038,41 @@
   box-shadow: 0 0 10px rgba(168, 85, 247, var(--salon-intensity));
 }
 
+/* ✅ Styles pour symbole € personnalisé */
+.salon-currency-symbol {
+  color: var(--salon-currency-symbol, var(--salon-primary, #8b5cf6));
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* ✅ Styles pour sélection de services personnalisés */
+.salon-service-card {
+  background: var(--salon-selection-bg, rgba(139, 92, 246, 0.1));
+  border: 2px solid var(--salon-selection-border, #e5e7eb);
+  transition: all 0.2s ease;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.salon-service-card:hover {
+  border-color: var(--salon-primary, #8b5cf6);
+  background: var(--salon-selection-active-bg, rgba(139, 92, 246, 0.15));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.salon-service-card.selected {
+  border-color: var(--salon-primary, #8b5cf6);
+  background: var(--salon-selection-active-bg, rgba(139, 92, 246, 0.2));
+  box-shadow: 0 0 0 1px var(--salon-primary, #8b5cf6), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.salon-service-name {
+  color: var(--salon-selection-text, var(--salon-primary, #8b5cf6));
+  font-weight: 600;
+}
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
