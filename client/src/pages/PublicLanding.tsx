@@ -292,8 +292,8 @@ export default function PublicLanding() {
 
   const faqData = [
     {
-      question: "Comment fonctionne la réservation en ligne ?",
-      answer: "Recherchez un salon près de chez vous, choisissez votre service et votre créneau, puis confirmez votre réservation. Vous recevrez une confirmation immédiate par email et SMS."
+      question: "Qui est Avyento ?",
+      answer: "Avyento est la première plateforme de beauté powered by IA qui révolutionne l'expérience salon. Notre technologie avancée propose des recommandations personnalisées basées sur vos préférences, un système de réservation instantané 24h/24, et des outils de gestion intelligents pour les professionnels. Nos fonctionnalités uniques incluent : l'IA assistant pour des conseils beauté sur-mesure, la synchronisation temps réel entre tous vos appareils, la génération automatique de pages salon personnalisées, un système d'acompte flexible, et des analytics prédictifs pour optimiser le planning. Notre mission : transformer chaque rendez-vous beauté en expérience exceptionnelle grâce à l'innovation technologique."
     },
     {
       question: "Puis-je annuler ou modifier mon rendez-vous ?",
