@@ -87,6 +87,7 @@ export default function PlanityStyleBookingFixed() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [clientSecret, setClientSecret] = useState<string>('');
+  const [elementsKey, setElementsKey] = useState(0); // Force re-mount Elements
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -129,6 +130,7 @@ export default function PlanityStyleBookingFixed() {
       
       if (data.clientSecret || data.client_secret) {
         setClientSecret(data.clientSecret || data.client_secret);
+        setElementsKey(prev => prev + 1); // Force nouveau mount Elements
         setShowPaymentModal(true);
       } else {
         console.error('Erreur données paiement:', data);
@@ -518,9 +520,9 @@ export default function PlanityStyleBookingFixed() {
       {/* Bottom sheet de paiement */}
       {showPaymentModal && clientSecret && (
         <div className="fixed inset-0 bg-black/50 flex items-end justify-center z-50">
-          <div className="bg-white w-full max-w-lg rounded-t-3xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom duration-300">
-            {/* Header avec poignée */}
-            <div className="sticky top-0 bg-white border-b border-gray-100 p-4 rounded-t-3xl">
+          <div className="bg-white w-full max-w-lg rounded-t-3xl max-h-[90vh] animate-in slide-in-from-bottom duration-300 flex flex-col">
+            {/* Header STATIQUE - ne bouge jamais */}
+            <div className="bg-white border-b border-gray-100 p-4 rounded-t-3xl flex-shrink-0">
               <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Paiement sécurisé</h2>
@@ -534,40 +536,45 @@ export default function PlanityStyleBookingFixed() {
                 </Button>
               </div>
             </div>
+            
+            {/* Contenu scrollable */}
+            <div className="flex-1 overflow-y-auto">
 
-            {/* Formulaire de paiement propre */}
-            <div className="p-6">
-              <Elements 
-                stripe={stripePromise} 
-                options={{ 
-                  clientSecret,
-                  appearance: {
-                    theme: 'stripe',
-                    variables: {
-                      colorPrimary: '#7c3aed',
-                      colorBackground: '#ffffff',
-                      colorText: '#1f2937',
-                      fontFamily: 'system-ui, sans-serif',
-                      borderRadius: '12px',
+              {/* Formulaire de paiement dans la zone scrollable */}
+              <div className="p-6">
+                <Elements 
+                  key={elementsKey}
+                  stripe={stripePromise} 
+                  options={{ 
+                    clientSecret,
+                    appearance: {
+                      theme: 'stripe',
+                      variables: {
+                        colorPrimary: '#7c3aed',
+                        colorBackground: '#ffffff',
+                        colorText: '#1f2937',
+                        fontFamily: 'system-ui, sans-serif',
+                        borderRadius: '12px',
+                      }
                     }
-                  }
-                }}
-              >
-                <PaymentForm 
-                  clientSecret={clientSecret} 
-                  onSuccess={() => {
-                    setShowPaymentModal(false);
-                    setLocation('/booking-success');
                   }}
-                />
-              </Elements>
+                >
+                  <PaymentForm 
+                    clientSecret={clientSecret} 
+                    onSuccess={() => {
+                      setShowPaymentModal(false);
+                      setLocation('/booking-success');
+                    }}
+                  />
+                </Elements>
 
-              {/* Sécurité */}
-              <div className="mt-6 flex items-center justify-center text-sm text-gray-500">
-                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-                Paiement sécurisé par Stripe
+                {/* Sécurité */}
+                <div className="mt-6 flex items-center justify-center text-sm text-gray-500">
+                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                  Paiement sécurisé par Stripe
+                </div>
               </div>
             </div>
           </div>
