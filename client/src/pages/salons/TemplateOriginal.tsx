@@ -271,23 +271,27 @@ export default function TemplateOriginal() {
           {[
             { id: 'services', label: 'Services', icon: Calendar },
             { id: 'equipe', label: 'Équipe', icon: Users },
+            { id: 'galerie', label: 'Galerie', icon: Camera },
+            { id: 'infos', label: 'Infos', icon: MapPin },
             { id: 'avis', label: 'Avis', icon: Star }
           ].map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 py-4 px-4 text-sm font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 text-xs sm:text-sm font-medium transition-all ${
                 activeTab === tab.id
                   ? 'border-b-2 text-gray-900'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
               style={{ 
                 borderColor: activeTab === tab.id ? (customColors?.primary || '#8b5cf6') : 'transparent',
-                color: activeTab === tab.id ? (customColors?.primary || '#1f2937') : undefined
+                color: activeTab === tab.id ? (customColors?.primary || '#1f2937') : undefined,
+                backgroundColor: activeTab === tab.id ? `${customColors?.primary || '#8b5cf6'}10` : 'transparent'
               }}
             >
-              <tab.icon className="h-4 w-4" />
-              <span>{tab.label}</span>
+              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="sm:hidden">{tab.label.slice(0, 3)}</span>
             </button>
           ))}
         </div>
@@ -333,12 +337,12 @@ export default function TemplateOriginal() {
                         <button 
                           className="salon-custom-button w-full mt-3 py-2 rounded-lg text-sm font-medium"
                           onClick={() => {
-                            // Action de réservation
-                            window.location.href = '#booking';
+                            // Action de réservation avec redirection vers booking
+                            window.location.href = `/booking/${salonSlug}?service=${service.id}`;
                           }}
                         >
                           <Calendar className="h-4 w-4 inline mr-2" />
-                          Réserver
+                          Réserver maintenant
                         </button>
                       </div>
                     ))}
@@ -387,6 +391,141 @@ export default function TemplateOriginal() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'galerie' && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {/* Galerie photos avec couleurs personnalisées */}
+            {[
+              'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+              'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+            ].map((photo, index) => (
+              <div 
+                key={index}
+                className="relative aspect-square rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform"
+                style={{ 
+                  boxShadow: `0 4px 12px ${customColors?.primary || '#8b5cf6'}20` 
+                }}
+              >
+                <img 
+                  src={photo}
+                  alt={`Photo ${index + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div 
+                  className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
+                  style={{ 
+                    backgroundColor: `${customColors?.primary || '#8b5cf6'}80` 
+                  }}
+                >
+                  <Camera className="h-8 w-8 text-white" />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {activeTab === 'infos' && (
+          <div className="space-y-6">
+            {/* Informations salon avec couleurs personnalisées */}
+            <div className="bg-white rounded-2xl p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold mb-4" style={{ color: customColors?.primary || '#1f2937' }}>
+                Informations pratiques
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="p-2 rounded-lg"
+                    style={{ 
+                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
+                      color: customColors?.primary || '#8b5cf6'
+                    }}
+                  >
+                    <MapPin className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Adresse</p>
+                    <p className="text-sm text-gray-600">{customizedSalonData.address}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="p-2 rounded-lg"
+                    style={{ 
+                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
+                      color: customColors?.primary || '#8b5cf6'
+                    }}
+                  >
+                    <Phone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Téléphone</p>
+                    <a 
+                      href={`tel:${customizedSalonData.phone}`} 
+                      className="text-sm hover:underline"
+                      style={{ color: customColors?.primary || '#3b82f6' }}
+                    >
+                      {customizedSalonData.phone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div 
+                    className="p-2 rounded-lg"
+                    style={{ 
+                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
+                      color: customColors?.primary || '#8b5cf6'
+                    }}
+                  >
+                    <Clock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-medium mb-2">Horaires d'ouverture</p>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      {customizedSalonData.openingHours && Object.entries(customizedSalonData.openingHours).map(([day, hours]: [string, any]) => (
+                        <div key={day} className="flex justify-between">
+                          <span className="capitalize font-medium">{day}</span>
+                          <span>
+                            {hours.closed ? 'Fermé' : `${hours.open} - ${hours.close}`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Équipements avec couleurs personnalisées */}
+            {customizedSalonData.amenities && (
+              <div className="bg-white rounded-2xl p-6 border border-gray-200">
+                <h3 className="text-lg font-semibold mb-4" style={{ color: customColors?.primary || '#1f2937' }}>
+                  Équipements et services
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {customizedSalonData.amenities.map((amenity: string) => (
+                    <span 
+                      key={amenity} 
+                      className="px-3 py-2 text-sm rounded-full font-medium"
+                      style={{ 
+                        backgroundColor: `${customColors?.primary || '#8b5cf6'}15`,
+                        color: customColors?.primary || '#374151',
+                        border: `1px solid ${customColors?.primary || '#8b5cf6'}30`
+                      }}
+                    >
+                      {amenity}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
