@@ -191,7 +191,7 @@ export default function PlanningModern() {
 
   // Vue jour avec design Landing 
   const renderDayView = () => (
-    <div className="space-y-3 lg:grid lg:grid-cols-4 lg:gap-3 lg:space-y-0">
+    <div className="space-y-3 lg:grid lg:grid-cols-5 lg:gap-3 lg:space-y-0">
       {timeSlots.map((time, index) => {
         const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
         
@@ -381,9 +381,9 @@ export default function PlanningModern() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 lg:p-6"
     >
-      <div className="max-w-md lg:max-w-none lg:px-6 mx-auto space-y-6">
+      <div className="max-w-md lg:max-w-none lg:w-full mx-auto space-y-6">
         {/* Header Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -457,7 +457,7 @@ export default function PlanningModern() {
           {/* Navigation de date */}
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between lg:justify-center lg:space-x-8">
+              <div className="flex items-center justify-between lg:justify-start lg:space-x-8 lg:max-w-none">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -489,7 +489,7 @@ export default function PlanningModern() {
           </Card>
 
           {/* Toggle vues et actions */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
               <CardContent className="p-0">
                 <div className="grid grid-cols-2">
@@ -639,7 +639,7 @@ export default function PlanningModern() {
             Chiffre d'Affaires - {getPeriodLabel()}
           </h2>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
             {/* CA Total */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
               <CardContent className="p-4 text-center">
@@ -746,9 +746,9 @@ export default function PlanningModern() {
               </CardContent>
             </Card>
           ) : (
-            <div className="lg:grid lg:grid-cols-5 lg:gap-6 lg:space-y-0 space-y-4">
+            <div className="lg:grid lg:grid-cols-6 lg:gap-4 lg:space-y-0 space-y-4">
               {/* Colonne principale - Planning */}
-              <div className="lg:col-span-4">
+              <div className="lg:col-span-5">
                 {viewMode === 'day' ? renderDayView() : renderWeekView()}
               </div>
               
