@@ -71,79 +71,25 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     res.setHeader('Cache-Control', 'no-cache');
     
     try {
-      const userId = 'demo-user';
-      console.log(`🎯 [PRIORITÉ] API Salon - recherche salon persistant pour: ${userId}`);
+      console.log(`🎯 [PRIORITÉ] API Salon - retour salon démo directement`);
       
-      // Chercher le salon en base PostgreSQL
-      let demoSalon = await storage.getSalonByUserId(userId);
+      // Chercher d'abord dans le stockage en mémoire
+      let demoSalon = storage.salons?.get('demo-user');
       
       if (!demoSalon) {
-        console.log(`📋 Création du salon démo persistant avec couleurs personnalisées...`);
-        
-        // Créer un salon démo persistant avec des couleurs personnalisées par défaut
-        const newSalon = {
-          id: `salon-${userId}`,
-          userId: userId,
-          name: 'Salon Démo Avyento',
-          description: 'Votre salon de beauté avec l\'expertise Avyento. Modifiez vos couleurs et services dans l\'éditeur.',
-          address: '123 Rue de la Beauté, 75001 Paris',
-          phone: '01 23 45 67 89',
-          email: 'demo@avyento.fr',
-          isPublished: true,
-          customColors: null, // Pas de couleurs par défaut - utilise le thème Avyento
-          serviceCategories: [
-            {
-              id: 1,
-              name: 'Coiffure',
-              description: 'Services de coiffure professionnels',
-              services: [
-                {
-                  id: 1,
-                  name: 'Coupe Classique',
-                  description: 'Coupe personnalisée selon vos envies',
-                  price: 35,
-                  duration: 45,
-                  category: 'Coiffure'
-                },
-                {
-                  id: 2,
-                  name: 'Coupe & Styling',
-                  description: 'Coupe avec mise en forme professionnelle',
-                  price: 55,
-                  duration: 60,
-                  category: 'Coiffure'
-                }
-              ]
-            },
-            {
-              id: 2,
-              name: 'Colorations',
-              description: 'Colorations et mèches professionnelles',
-              services: [
-                {
-                  id: 3,
-                  name: 'Coloration Complète',
-                  description: 'Nouvelle couleur avec soin professionnel',
-                  price: 75,
-                  duration: 120,
-                  category: 'Colorations'
-                }
-              ]
-            }
-          ]
-        };
-        
-        // Sauvegarder le salon en base
-        demoSalon = await storage.createSalon(newSalon);
-        console.log(`✅ Salon démo persistant créé: ${demoSalon.name}`);
-      } else {
-        console.log(`✅ Salon démo trouvé en base: ${demoSalon.name}`);
+        // Si pas trouvé en mémoire, chercher en PostgreSQL
+        demoSalon = await storage.getSalon('demo-user');
       }
       
-      return res.status(200).json(demoSalon);
-      
+      if (demoSalon) {
+        console.log(`✅ Salon démo trouvé: ${demoSalon.name}`);
+        return res.status(200).json(demoSalon);
+      } else {
+        console.log(`❌ Salon démo non trouvé`);
+        return res.status(404).json({ error: 'Salon démo non disponible' });
+      }
     } catch (error: any) {
-      console.error("❌ Erreur récupération/création salon démo:", error);
+      console.error("Error fetching user salon:", error);
       return res.status(500).json({ message: "Failed to fetch user salon" });
     }
   });
