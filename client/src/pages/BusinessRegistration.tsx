@@ -154,9 +154,52 @@ const legalForms = [
 ];
 
 const plans = [
-  { id: 'essentiel', name: 'ESSENTIEL', price: 29, color: 'from-green-500 to-emerald-600' },
-  { id: 'professionnel', name: 'PROFESSIONNEL', price: 79, color: 'from-blue-500 to-purple-600' },
-  { id: 'premium', name: 'PREMIUM', price: 149, color: 'from-purple-500 to-pink-600' }
+  { 
+    id: 'essentiel', 
+    name: 'ESSENTIEL', 
+    price: 29, 
+    color: 'from-green-500 to-emerald-600',
+    description: 'Pour débuter votre transformation digitale',
+    features: [
+      'Réservation en ligne 24h/24',
+      'Gestion des clients et RDV',
+      'Notifications automatiques',
+      'Support par email'
+    ],
+    popular: false
+  },
+  { 
+    id: 'professionnel', 
+    name: 'PROFESSIONNEL', 
+    price: 79, 
+    color: 'from-blue-500 to-purple-600',
+    description: 'La solution complète pour pros ambitieux',
+    features: [
+      'Tout ESSENTIEL +',
+      'IA prédictive avancée',
+      'Gestion multi-employés',
+      'Analytics et reporting',
+      'Chat en temps réel',
+      'Support prioritaire'
+    ],
+    popular: true
+  },
+  { 
+    id: 'premium', 
+    name: 'PREMIUM', 
+    price: 149, 
+    color: 'from-purple-500 to-pink-600',
+    description: 'Excellence maximale avec IA révolutionnaire',
+    features: [
+      'Tout PROFESSIONNEL +',
+      'IA GPT-4 personnalisée',
+      'Marketing automation',
+      'API personnalisées',
+      'Formation dédiée 1-to-1',
+      'Manager success dédié'
+    ],
+    popular: false
+  }
 ];
 
 export default function BusinessRegistration() {
@@ -408,93 +451,186 @@ export default function BusinessRegistration() {
         </div>
       </div>
 
-      {/* Formulaire principal */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+      {/* Section Aperçu des Offres */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Choisissez votre offre
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Des solutions adaptées à chaque étape de votre développement
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 + index * 0.1 }}
+              className={`relative bg-white/60 backdrop-blur-xl rounded-2xl p-6 border transition-all duration-300 hover:scale-105 cursor-pointer ${
+                plan.popular 
+                  ? 'border-violet-300 shadow-2xl ring-2 ring-violet-200' 
+                  : 'border-white/30 shadow-xl hover:border-violet-200'
+              }`}
+              onClick={() => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('plan', plan.id);
+                window.history.replaceState({}, '', url.toString());
+                setLocation(`/business-registration?plan=${plan.id}`);
+              }}
+            >
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                    PLUS POPULAIRE
+                  </div>
+                </div>
+              )}
+              
+              <div className="text-center mb-6">
+                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${plan.color} mb-4`}>
+                  <Building className="h-8 w-8 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <p className="text-sm text-gray-600 mb-4">{plan.description}</p>
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-3xl font-bold text-gray-900">{plan.price}€</span>
+                  <span className="text-sm text-gray-600">/mois</span>
+                </div>
+              </div>
+
+              <ul className="space-y-3 mb-6">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-sm text-gray-700">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className={`w-full py-3 px-4 rounded-xl text-center font-semibold transition-all ${
+                currentPlan?.id === plan.id
+                  ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}>
+                {currentPlan?.id === plan.id ? 'SÉLECTIONNÉ' : 'SÉLECTIONNER'}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Formulaire principal */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
           className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/30 overflow-hidden"
         >
           <div className="p-8 sm:p-10">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="mb-10">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3 text-left">
                 Informations de votre salon
               </h2>
-              <p className="text-gray-600">
-                Quelques détails pour personnaliser votre espace
+              <p className="text-gray-600 text-left">
+                Quelques détails pour personnaliser votre espace professionnel
               </p>
+              <div className="mt-4 p-4 bg-violet-50 rounded-2xl border border-violet-200">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${currentPlan?.color} flex items-center justify-center`}>
+                    <Building className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-violet-700 font-medium">
+                      Plan sélectionné : {currentPlan?.name}
+                    </p>
+                    <p className="text-xs text-violet-600">
+                      {currentPlan?.price}€/mois • {currentPlan?.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
                 {/* Section Établissement */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                      <Building className="h-5 w-5 text-violet-600" />
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <Building className="h-6 w-6 text-violet-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Votre établissement</h3>
-                      <p className="text-sm text-gray-600">Informations principales</p>
+                      <h3 className="text-xl font-semibold text-gray-900">Votre établissement</h3>
+                      <p className="text-sm text-gray-600">Informations principales de votre salon</p>
                     </div>
                   </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="businessName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Nom de votre salon *</FormLabel>
-                        <FormControl>
-                          <Input 
-                            {...field} 
-                            placeholder="Ex: Salon Excellence Paris" 
-                            className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="businessType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Type d'établissement *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="businessName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Nom de votre salon *</FormLabel>
                           <FormControl>
-                            <SelectTrigger className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all">
-                              <SelectValue placeholder="Choisissez votre spécialité..." />
-                            </SelectTrigger>
+                            <Input 
+                              {...field} 
+                              placeholder="Ex: Salon Excellence Paris" 
+                              className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500 text-left" 
+                            />
                           </FormControl>
-                          <SelectContent className="bg-white/95 backdrop-blur-xl border-white/30 rounded-xl">
-                            {businessTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value} className="focus:bg-violet-50">
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="businessType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Type d'établissement *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-left">
+                                <SelectValue placeholder="Choisissez votre spécialité..." />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="bg-white/95 backdrop-blur-xl border-white/30 rounded-xl">
+                              {businessTypes.map((type) => (
+                                <SelectItem key={type.value} value={type.value} className="focus:bg-violet-50">
+                                  {type.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="siret"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">SIRET (optionnel)</FormLabel>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">SIRET (optionnel)</FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               placeholder="123 456 789 01234" 
-                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                              className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500 text-left" 
                             />
                           </FormControl>
                           <FormMessage />
@@ -507,10 +643,10 @@ export default function BusinessRegistration() {
                       name="legalForm"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Statut juridique *</FormLabel>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Statut juridique *</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all">
+                              <SelectTrigger className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-left">
                                 <SelectValue placeholder="Votre statut..." />
                               </SelectTrigger>
                             </FormControl>
@@ -531,13 +667,13 @@ export default function BusinessRegistration() {
 
                 {/* Section Adresse */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                      <Star className="h-5 w-5 text-violet-600" />
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <Star className="h-6 w-6 text-violet-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Localisation</h3>
-                      <p className="text-sm text-gray-600">Où se trouve votre salon</p>
+                      <h3 className="text-xl font-semibold text-gray-900">Localisation</h3>
+                      <p className="text-sm text-gray-600">Adresse de votre salon</p>
                     </div>
                   </div>
                   
@@ -546,12 +682,12 @@ export default function BusinessRegistration() {
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Adresse complète *</FormLabel>
+                        <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Adresse complète *</FormLabel>
                         <FormControl>
                           <Input 
                             {...field} 
                             placeholder="15 rue de la Paix" 
-                            className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                            className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500 text-left" 
                           />
                         </FormControl>
                         <FormMessage />
@@ -559,18 +695,18 @@ export default function BusinessRegistration() {
                     )}
                   />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
                       name="city"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Ville *</FormLabel>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Ville *</FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               placeholder="Paris" 
-                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                              className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500 text-left" 
                             />
                           </FormControl>
                           <FormMessage />
@@ -583,12 +719,12 @@ export default function BusinessRegistration() {
                       name="postalCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-semibold text-gray-700 mb-2 block">Code postal *</FormLabel>
+                          <FormLabel className="text-base font-semibold text-gray-700 mb-3 block">Code postal *</FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               placeholder="75001" 
-                              className="h-12 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500" 
+                              className="h-14 bg-white/80 border-white/30 rounded-xl backdrop-blur-sm focus:bg-white/90 focus:border-violet-300 transition-all text-gray-900 placeholder-gray-500 text-left" 
                             />
                           </FormControl>
                           <FormMessage />
@@ -600,13 +736,13 @@ export default function BusinessRegistration() {
 
                 {/* Section Contact */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                      <CheckCircle2 className="h-5 w-5 text-violet-600" />
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center">
+                      <CheckCircle2 className="h-6 w-6 text-violet-600" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">Contact</h3>
-                      <p className="text-sm text-gray-600">Vos coordonnées</p>
+                      <h3 className="text-xl font-semibold text-gray-900">Contact & Connexion</h3>
+                      <p className="text-sm text-gray-600">Vos coordonnées et accès</p>
                     </div>
                   </div>
                   
@@ -651,25 +787,29 @@ export default function BusinessRegistration() {
                 </div>
 
                 {/* Bouton de soumission */}
-                <motion.button
-                  type="submit"
-                  disabled={isLoading}
-                  whileHover={{ scale: isLoading ? 1 : 1.02 }}
-                  whileTap={{ scale: isLoading ? 1 : 0.98 }}
-                  className="w-full glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Building className="h-5 w-5" />
-                  {isLoading ? "Création en cours..." : "Créer mon espace professionnel"}
-                </motion.button>
+                <div className="pt-6">
+                  <motion.button
+                    type="submit"
+                    disabled={isLoading}
+                    whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                    whileTap={{ scale: isLoading ? 1 : 0.98 }}
+                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-8 py-5 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  >
+                    <Building className="h-6 w-6" />
+                    {isLoading ? "Création en cours..." : `Créer mon salon • ${currentPlan?.price}€/mois`}
+                  </motion.button>
 
-                {/* Informations légales */}
-                <div className="text-center space-y-2 pt-4 border-t border-white/20">
-                  <p className="text-xs text-gray-600">
-                    En créant votre compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Inscription gratuite • Aucun engagement • Support 7j/7
-                  </p>
+                  {/* Informations légales */}
+                  <div className="text-center space-y-3 pt-6 border-t border-white/20 mt-8">
+                    <div className="flex items-center justify-center gap-2 text-sm text-green-600">
+                      <CheckCircle2 className="h-4 w-4" />
+                      <span>Inscription gratuite • Aucun engagement</span>
+                    </div>
+                    <p className="text-xs text-gray-600 leading-relaxed">
+                      En créant votre compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.
+                      Support premium 7j/7 inclus.
+                    </p>
+                  </div>
                 </div>
               </form>
             </Form>
