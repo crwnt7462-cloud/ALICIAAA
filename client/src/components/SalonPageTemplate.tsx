@@ -388,7 +388,7 @@ export function SalonPageTemplate({
                                   color: customColors?.buttonText || '#ffffff',
                                   boxShadow: `0 6px 20px ${customColors?.primary ? `${customColors.primary}25` : 'rgba(139, 92, 246, 0.25)'}`
                                 }}
-                                onClick={() => window.location.href = '/salon-booking'}
+                                onClick={() => window.location.href = '/quick-booking'}
                               >
                                 <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span className="hidden xs:inline">Réserver</span>
