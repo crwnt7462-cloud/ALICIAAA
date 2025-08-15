@@ -394,13 +394,20 @@ export default function PlanningModern() {
             <Calendar className="w-8 h-8 text-white" />
           </div>
           
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
-              Planning
-            </h1>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Gérez vos rendez-vous avec intelligence
-            </p>
+          <div className="flex items-center justify-center gap-3">
+            <img 
+              src="/attached_assets/Capture d'écran 2025-08-15 à 21.28.08_1755286092889.png" 
+              alt="Avyento Pro"
+              className="w-10 h-10 object-contain"
+            />
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                Avyento Pro
+              </h1>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Gérez vos rendez-vous avec intelligence
+              </p>
+            </div>
           </div>
         </motion.div>
 
