@@ -284,6 +284,7 @@ export default function BarbierGentlemanMarais() {
         <div className="flex">
           {[
             { id: 'services', label: 'Services', icon: Calendar },
+            { id: 'galerie', label: 'Galerie', icon: Camera },
             { id: 'info', label: 'Infos', icon: MapPin },
             { id: 'avis', label: 'Avis', icon: Star }
           ].map(tab => (
@@ -295,7 +296,7 @@ export default function BarbierGentlemanMarais() {
                   ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50/50'
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
-              style={{ flex: '0 0 33.33%' }}
+              style={{ flex: '0 0 25%' }}
             >
               <tab.icon className="h-4 w-4" />
               {tab.label}
@@ -412,6 +413,74 @@ export default function BarbierGentlemanMarais() {
                 )}
               </div>
             ))}
+          </div>
+        )}
+
+        {activeTab === 'galerie' && (
+          <div className="space-y-6">
+            <h2 className="avyento-title text-gray-900 mb-4">Galerie photos</h2>
+            
+            {/* Photos du salon */}
+            {currentSalonData.photos && currentSalonData.photos.length > 0 && (
+              <div className="mb-8">
+                <h3 className="avyento-subtitle text-gray-800 mb-4">Photos du salon</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {currentSalonData.photos.map((photo, index) => (
+                    <img
+                      key={index}
+                      src={photo.replace('w=800', 'w=600&q=80')}
+                      alt={`${currentSalonData.name} ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
+                      onClick={() => openPhotoGallery(currentSalonData.photos || [], index)}
+                      loading="lazy"
+                      style={{ imageRendering: 'auto' }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Photos des services */}
+            {displayServiceCategories.map((category: ServiceCategory) => {
+              const servicesWithPhotos = category.services.filter(service => service.photos && service.photos.length > 0);
+              if (servicesWithPhotos.length === 0) return null;
+              
+              return (
+                <div key={category.id} className="mb-8">
+                  <h3 className="avyento-subtitle text-gray-800 mb-4">{category.name}</h3>
+                  <div className="space-y-6">
+                    {servicesWithPhotos.map((service: Service) => (
+                      <div key={service.id} className="avyento-card p-4">
+                        <h4 className="font-semibold text-gray-900 mb-3">{service.name}</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {service.photos?.map((photo, photoIndex) => (
+                            <img
+                              key={photoIndex}
+                              src={photo.replace('w=1200', 'w=400&q=80')}
+                              alt={`${service.name} ${photoIndex + 1}`}
+                              className="w-full h-32 object-cover rounded-lg cursor-pointer hover:scale-105 transition-transform"
+                              onClick={() => openPhotoGallery(service.photos || [], photoIndex)}
+                              loading="lazy"
+                              style={{ imageRendering: 'auto' }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* Message si aucune photo */}
+            {(!currentSalonData.photos || currentSalonData.photos.length === 0) && 
+             displayServiceCategories.every(cat => cat.services.every(service => !service.photos || service.photos.length === 0)) && (
+              <div className="text-center py-12">
+                <Camera className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucune photo disponible</h3>
+                <p className="text-gray-500">Le salon n'a pas encore ajouté de photos.</p>
+              </div>
+            )}
           </div>
         )}
 
