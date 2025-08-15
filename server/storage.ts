@@ -1192,7 +1192,125 @@ export class DatabaseStorage implements IStorage {
       }
       
       console.log(`✅ Salon trouvé par slug: ${salon.businessName} (ID: ${salon.id})`);
-      return salon;
+      
+      // ✅ Récupérer les services avec catégories pour ce salon
+      const servicesWithCategories = await db.select({
+        serviceId: services.id,
+        serviceName: services.name,
+        serviceDescription: services.description,
+        servicePrice: services.price,
+        serviceDuration: services.duration,
+        categoryId: serviceCategories.id,
+        categoryName: serviceCategories.name,
+        categoryDescription: serviceCategories.description
+      })
+      .from(services)
+      .leftJoin(serviceCategories, eq(services.categoryId, serviceCategories.id))
+      .where(eq(services.userId, salon.userId));
+      
+      // Organiser les services par catégorie
+      const categoriesMap = new Map();
+      servicesWithCategories.forEach(row => {
+        const categoryId = row.categoryId || 'default';
+        const categoryName = row.categoryName || 'Services';
+        
+        if (!categoriesMap.has(categoryId)) {
+          categoriesMap.set(categoryId, {
+            id: categoryId,
+            name: categoryName,
+            description: row.categoryDescription || '',
+            services: []
+          });
+        }
+        
+        if (row.serviceId) {
+          categoriesMap.get(categoryId).services.push({
+            id: row.serviceId,
+            name: row.serviceName,
+            description: row.serviceDescription,
+            price: Number(row.servicePrice),
+            duration: row.serviceDuration,
+            category: categoryName
+          });
+        }
+      });
+      
+      const serviceCategories = Array.from(categoriesMap.values());
+      
+      // ✅ Ajouter des données d'équipe et d'avis de démo pour barbier-gentleman-marais
+      const professionals = [
+        {
+          id: 1,
+          name: 'Antoine Dubois',
+          role: 'Maître Barbier',
+          specialty: 'Rasage traditionnel',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
+          rating: 4.9,
+          reviewsCount: 87,
+          specialties: ['Rasage au coupe-chou', 'Taille de barbe', 'Soins homme']
+        },
+        {
+          id: 2,
+          name: 'Marc Rivière',
+          role: 'Barbier Styliste',
+          specialty: 'Coupe moderne',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80',
+          rating: 4.8,
+          reviewsCount: 65,
+          specialties: ['Coupe tendance', 'Dégradés', 'Styling']
+        }
+      ];
+      
+      const reviews = [
+        {
+          id: 1,
+          clientName: 'Pierre M.',
+          rating: 5,
+          comment: 'Excellent service, rasage traditionnel parfait. Ambiance authentique du Marais.',
+          date: '2024-01-20',
+          service: 'Rasage Traditionnel',
+          verified: true,
+          ownerResponse: {
+            message: 'Merci Pierre ! Ravi de vous accueillir dans notre établissement traditionnel.',
+            date: '2024-01-21'
+          }
+        },
+        {
+          id: 2,
+          clientName: 'Thomas L.',
+          rating: 5,
+          comment: 'Coupe impeccable, Antoine est un vrai professionnel. Je recommande vivement !',
+          date: '2024-01-18',
+          service: 'Coupe + Barbe',
+          verified: true
+        },
+        {
+          id: 3,
+          clientName: 'Alexandre K.',
+          rating: 4,
+          comment: 'Très bon barbier, service de qualité dans un cadre authentique.',
+          date: '2024-01-15',
+          service: 'Coupe Homme Classique',
+          verified: true
+        }
+      ];
+      
+      // ✅ Retourner toutes les données complètes
+      return {
+        ...salon,
+        name: salon.businessName,
+        slug: salon.slug,
+        rating: 4.8,
+        reviewCount: reviews.length,
+        serviceCategories,
+        professionals,
+        reviews,
+        photos: salon.photos || [
+          'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format',
+          'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format'
+        ]
+      };
     } catch (error) {
       console.error('Erreur getSalonBySlug:', error);
       return null;

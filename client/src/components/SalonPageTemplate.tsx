@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useCustomColors } from '@/hooks/useCustomColors';
 import { 
   MapPin, 
@@ -96,8 +96,7 @@ export function SalonPageTemplate({
   salonData, 
   services = [], 
   staff = [], 
-  reviews = [], 
-  isOwner = false 
+  reviews = []
 }: SalonPageTemplateProps) {
   console.log('🎨 SalonPageTemplate - CustomColors appliquées:', salonData?.customColors);
   
