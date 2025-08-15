@@ -31,6 +31,72 @@ if (!SUPABASE_CONFIG.USE_SUPABASE && !SUPABASE_CONFIG.hasSupabaseSecrets()) {
 
 export async function registerFullStackRoutes(app: Express): Promise<Server> {
   
+  // ✅ INITIALISATION CRITIQUE : Recréer le salon démo avec customColors au démarrage
+  if (!storage.salons) {
+    storage.salons = new Map();
+  }
+  
+  const demoSalonData = {
+    id: 'demo-user',
+    name: 'Salon Excellence Démo',
+    slug: 'demo-user',
+    ownerId: 'demo-user',
+    ownerEmail: 'demo@beautyapp.co',
+    address: '123 Avenue des Champs-Élysées, 75008 Paris',
+    phone: '01 42 96 00 00',
+    email: 'contact@salon-excellence.fr',
+    description: 'Salon de beauté moderne spécialisé dans les coupes et colorations tendances',
+    longDescription: 'Notre salon vous accueille dans un cadre moderne et chaleureux pour tous vos soins de beauté.',
+    subscriptionPlan: 'premium',
+    shareableUrl: '/salon/demo-user',
+    isPublished: true,
+    customColors: {
+      primary: '#cf079a',
+      accent: '#171519',
+      buttonText: '#ffffff',
+      buttonClass: 'glass-button-purple',
+      priceColor: '#7c3aed',
+      neonFrame: '#a855f7',
+      intensity: 59
+    },
+    serviceCategories: [
+      {
+        id: 1,
+        name: 'Coiffure Homme',
+        expanded: true,
+        services: [
+          { id: 1, name: 'Coupe Classique', price: 25, duration: '30min', description: 'Coupe classique pour homme avec finition professionnelle' },
+          { id: 2, name: 'Coupe Dégradée', price: 30, duration: '45min', description: 'Coupe moderne avec dégradé sur les côtés' },
+          { id: 3, name: 'Coupe + Barbe', price: 40, duration: '60min', description: 'Coupe complète avec taille de barbe et finition' },
+          { id: 4, name: 'Coupe Enfant (-12 ans)', price: 20, duration: '25min', description: 'Coupe spécialement adaptée aux enfants' }
+        ]
+      }
+    ],
+    certifications: ['Salon labellisé L\'Oréal Professionnel', 'Formation continue Kérastase', 'Certification bio Shu Uemura'],
+    awards: ['Élu Meilleur Salon 2023', 'Prix de l\'Innovation Beauté 2022', 'Certification Éco-responsable'],
+    photos: [
+      'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&h=600&fit=crop&auto=format',
+      'https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format'
+    ],
+    coverImageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+    rating: 4.8,
+    reviewCount: 247,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    professionals: [],
+    reviews: [],
+    verified: true,
+    category: 'mixte',
+    city: '75008 Paris',
+    services: ['Coupe Classique', 'Coupe Dégradée', 'Coupe + Barbe', 'Coupe Enfant (-12 ans)'],
+    isActive: true,
+    nextSlot: 'Disponible aujourd\'hui'
+  };
+  
+  storage.salons.set('demo-user', demoSalonData);
+  console.log('🎯 SALON DÉMO RECRÉÉ avec customColors:', demoSalonData.customColors);
+  
   // ============= ROUTES PRIORITAIRES SALON & SUBSCRIPTION =============
   
   // ============= ROUTES PROFESSIONAL SETTINGS - SAUVEGARDE PERSISTANTE =============
