@@ -1,197 +1,189 @@
-import { useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { useLocation } from 'wouter';
-import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import avyentoLogo from "@assets/3_1753714421825.png";
-// import backgroundImage from "@assets/Sans titre (Votre story)_1754235595606.png";
-import { getGenericGlassButton } from "@/lib/salonColors";
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { LogIn, Sparkles, Calendar, BarChart3, Users, Shield, Crown, Star } from 'lucide-react';
 
 export default function ProLoginModern() {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.email || !formData.password) {
-      toast({
-        title: "Champs requis",
-        description: "Veuillez remplir tous les champs",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        credentials: 'include'
-      });
-      
-      const responseText = await response.text();
-      
-      if (response.ok) {
-        try {
-          const data = JSON.parse(responseText);
-          
-          if (data.success && data.user) {
-            localStorage.setItem('proToken', data.user.id);
-            localStorage.setItem('proData', JSON.stringify(data.user));
-            
-            toast({
-              title: "Connexion réussie",
-              description: `Bienvenue ${data.user.firstName} !`,
-            });
-            
-            window.location.href = '/business-features';
-          } else {
-            throw new Error('Format de réponse invalide');
-          }
-        } catch (parseError) {
-          toast({
-            title: "Erreur de connexion",
-            description: "Réponse serveur invalide",
-            variant: "destructive"
-          });
-        }
-      } else {
-        toast({
-          title: "Erreur de connexion",
-          description: `Erreur ${response.status}: Identifiants incorrects`,
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Erreur de réseau",
-        description: "Impossible de se connecter au serveur",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleLogin = () => {
+    window.location.href = '/api/login';
   };
 
-
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-white relative overflow-hidden">
-      {/* Motifs géométriques subtils en arrière-plan */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-20 w-32 h-32 bg-purple-200 rounded-full blur-xl"></div>
-        <div className="absolute top-40 right-32 w-24 h-24 bg-blue-200 rounded-full blur-lg"></div>
-        <div className="absolute bottom-32 left-1/3 w-40 h-40 bg-rose-200 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 right-20 w-28 h-28 bg-amber-200 rounded-full blur-xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-amber-900 relative overflow-hidden">
+      {/* Arrière-plan animé avec particules */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 via-purple-500/10 to-amber-500/20"></div>
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white/20 rounded-full"
+            initial={{
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
+            }}
+            animate={{
+              y: [null, Math.random() * -100 - 100],
+              opacity: [0, 1, 0],
+            }}
+            transition={{
+              duration: Math.random() * 3 + 2,
+              repeat: Infinity,
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
       </div>
-      {/* Layout ultra-minimaliste - même style que page recherche */}
-      <div className="relative">
-        
-        {/* Bouton retour en haut à gauche */}
-        <button
-          onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 p-2"
-        >
-          <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
 
-        {/* Container principal - même style que page recherche */}
-        <div className="px-6 pt-16 pb-6 flex items-center justify-center min-h-screen">
-          <div className="w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm border border-gray-200/50 p-10 rounded-3xl shadow-2xl relative z-10">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-lg w-full">
+          {/* Logo et branding Avyento */}
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-8"
+          >
+            <div className="relative mb-6">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="w-24 h-24 mx-auto relative"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-400 via-purple-500 to-amber-400 rounded-3xl blur-sm"></div>
+                <div className="relative w-full h-full bg-gradient-to-br from-violet-500 via-purple-600 to-amber-500 rounded-3xl flex items-center justify-center">
+                  <Crown className="h-12 w-12 text-white" />
+                </div>
+              </motion.div>
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute -top-2 -right-2 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center"
+              >
+                <Star className="h-3 w-3 text-amber-900" />
+              </motion.div>
+            </div>
             
-            {/* Logo Avyento centré */}
-            <div className="text-center mb-6">
-              <img src={avyentoLogo} alt="Avyento" className="h-32 w-auto mx-auto" />
-            </div>
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-4xl font-bold mb-2"
+            >
+              <span className="bg-gradient-to-r from-white via-violet-200 to-amber-200 bg-clip-text text-transparent">
+                Avyento
+              </span>
+              <span className="text-amber-300 ml-2 text-2xl">Pro</span>
+            </motion.h1>
+            <p className="text-white/80 text-lg font-medium">
+              Plateforme professionnelle de beauté
+            </p>
+            <p className="text-white/60 text-sm mt-1">
+              L'excellence technologique au service de votre salon
+            </p>
+          </motion.div>
 
-            {/* Titre - même style */}
-            <div className="text-center mb-8">
-              <h2 className="text-2xl text-gray-800 font-normal">Sign in to your salon</h2>
-            </div>
-          
-            {/* Champs de connexion - même style que recherche */}
-            <form onSubmit={handleSubmit} className="space-y-5 mb-6">
-              <div className="relative">
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="Email professionnel"
-                  className="w-full h-14 px-6 bg-gray-50 border border-gray-300 rounded-2xl text-lg text-gray-800 placeholder:text-gray-500"
-                  required
-                />
-              </div>
-              
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                  placeholder="Mot de passe"
-                  className="w-full h-14 px-6 pr-12 bg-gray-50 border border-gray-300 rounded-2xl text-lg text-gray-800 placeholder:text-gray-500"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"
+          {/* Carte de connexion glassmorphism */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl p-8 rounded-3xl">
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-white mb-2">
+                    Espace Professionnel
+                  </h2>
+                  <p className="text-white/70">
+                    Connectez-vous pour accéder à votre dashboard
+                  </p>
+                </div>
+
+                {/* Fonctionnalités premium */}
+                <div className="grid grid-cols-2 gap-3">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
+                  >
+                    <Calendar className="h-6 w-6 text-violet-300 mx-auto mb-2" />
+                    <p className="text-white/80 text-sm font-medium">Planning IA</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
+                  >
+                    <BarChart3 className="h-6 w-6 text-amber-300 mx-auto mb-2" />
+                    <p className="text-white/80 text-sm font-medium">Analytics</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
+                  >
+                    <Users className="h-6 w-6 text-purple-300 mx-auto mb-2" />
+                    <p className="text-white/80 text-sm font-medium">Clientèle</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
+                  >
+                    <Shield className="h-6 w-6 text-emerald-300 mx-auto mb-2" />
+                    <p className="text-white/80 text-sm font-medium">Sécurisé</p>
+                  </motion.div>
+                </div>
+
+                {/* Bouton de connexion premium */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
+                  <Button
+                    onClick={handleLogin}
+                    className="w-full h-14 bg-gradient-to-r from-violet-500 via-purple-600 to-amber-500 hover:from-violet-600 hover:via-purple-700 hover:to-amber-600 text-white font-bold text-lg rounded-2xl transition-all duration-500 shadow-2xl hover:shadow-amber-500/25 border border-white/20"
+                  >
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      className="mr-3"
+                    >
+                      <Sparkles className="h-6 w-6" />
+                    </motion.div>
+                    Se connecter avec Replit
+                    <LogIn className="h-5 w-5 ml-2" />
+                  </Button>
+                </motion.div>
+
+                {/* Badge sécurité */}
+                <div className="text-center">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+                    <Shield className="h-4 w-4 text-emerald-300" />
+                    <span className="text-white/70 text-xs font-medium">
+                      Authentification sécurisée Replit
+                    </span>
+                  </div>
+                </div>
               </div>
+            </Card>
+          </motion.div>
 
-              {/* Bouton connexion - même style que "Search" */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full h-14 ${getGenericGlassButton(0)} rounded-2xl text-lg font-medium`}
-              >
-                {isLoading ? "Connexion..." : "Sign in"}
-              </button>
-            </form>
-
-            {/* Navigation liens */}
-            <div className="mt-6 flex justify-between items-center">
-              <button
-                type="button"
-                onClick={() => setLocation('/')}
-                className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour à l'accueil
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => setLocation('/business-registration')}
-                className="text-gray-600 hover:text-gray-800 text-sm transition-colors"
-              >
-                Pas encore inscrit ? Créer un compte →
-              </button>
-            </div>
-            
-            {/* Lien vers les comptes de test */}
-            <div className="mt-4 text-center border-t border-gray-200 pt-4">
-              <button
-                type="button"
-                onClick={() => setLocation('/test-subscription-accounts')}
-                className="text-xs text-gray-500 hover:text-violet-600 transition-colors"
-              >
-                🧪 Tester les 3 plans d'abonnement (comptes démo)
-              </button>
-            </div>
-
-          </div>
+          {/* Lien retour stylisé */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="text-center mt-8"
+          >
+            <Button
+              variant="ghost"
+              onClick={() => setLocation('/')}
+              className="text-white/60 hover:text-white/90 hover:bg-white/5 rounded-xl transition-all duration-300"
+            >
+              ← Retour à l'accueil
+            </Button>
+          </motion.div>
         </div>
       </div>
     </div>
