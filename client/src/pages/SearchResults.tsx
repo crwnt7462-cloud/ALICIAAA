@@ -141,7 +141,7 @@ export default function SearchResults() {
 
 
   // Combiner les résultats API avec des salons de démo
-  const allResults = apiResults || [
+  const demoSalons = [
     {
       id: "barbier-gentleman-marais",
       name: "Barbier Gentleman Marais",
@@ -336,6 +336,9 @@ export default function SearchResults() {
       route: "/salon/nails-express-chatelet"
     }
   ];
+
+  // Combiner API et démo pour avoir plus de résultats
+  const allResults = [...(apiResults || []), ...demoSalons];
 
   const filteredResults = selectedCategory === "all" 
     ? allResults 
