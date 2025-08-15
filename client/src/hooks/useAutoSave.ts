@@ -80,25 +80,42 @@ export function useAutoSave({
           onSave(data);
         }
 
+        // Invalider TOUS les caches pour synchronisation temps réel
+        const qClient = queryClient || (typeof window !== 'undefined' && (window as any).queryClient);
+        if (qClient) {
+          // Supprimer complètement les caches
+          qClient.removeQueries({ queryKey: ['/api/public/salons'] });
+          qClient.removeQueries({ queryKey: [`/api/salon/${data.id}`] });
+          qClient.removeQueries({ queryKey: ['/api/user/salon'] });
+          
+          // Refetch immédiat
+          await qClient.refetchQueries({ queryKey: ['/api/public/salons'] });
+        }
+
         // Déclencher l'événement de synchronisation pour les autres composants
+        console.log('📢 Émission événement salon-updated:', data.id);
         window.dispatchEvent(new CustomEvent('salon-updated', { 
           detail: { 
             salonId: data.id,
+            salonName: data.name,
             data: data,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            action: 'updated'
           } 
         }));
         
-        // Invalider les caches pour synchronisation temps réel
-        const qClient = queryClient || (typeof window !== 'undefined' && (window as any).queryClient);
-        if (qClient) {
-          await Promise.all([
-            qClient.invalidateQueries({ queryKey: ['/api/public/salons'] }),
-            qClient.invalidateQueries({ queryKey: [`/api/salon/${data.id}`] }),
-            qClient.invalidateQueries({ queryKey: ['/api/user/salon'] }),
-            qClient.refetchQueries({ queryKey: ['/api/public/salons'] })
-          ]);
-        }
+        // Double émission pour garantir la réception
+        setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('salon-updated', { 
+            detail: { 
+              salonId: data.id,
+              salonName: data.name,
+              data: data,
+              timestamp: Date.now(),
+              action: 'updated-delayed'
+            } 
+          }));
+        }, 100);
 
       } catch (error) {
         console.error('Erreur de sauvegarde automatique:', error);

@@ -124,36 +124,58 @@ export default function SearchResults() {
     { id: "onglerie", name: "Onglerie", icon: Award }
   ];
 
-  // Recherche salons temps réel depuis l'API
+  // Recherche salons temps réel depuis l'API - SANS CACHE pour données fraîches
   const { data: apiResults, refetch: refetchSalons } = useQuery({
-    queryKey: ['/api/public/salons', searchQuery, searchLocation],
+    queryKey: ['/api/public/salons', searchQuery, searchLocation], // Clé stable
     queryFn: async () => {
       const params = new URLSearchParams();
       if (searchQuery) params.set('category', searchQuery.toLowerCase());
       if (searchLocation) params.set('city', searchLocation.toLowerCase());
       
-      const response = await fetch(`/api/public/salons?${params.toString()}`);
+      // Ajouter timestamp pour éviter cache navigateur
+      const response = await fetch(`/api/public/salons?${params.toString()}&_t=${Date.now()}`, {
+        cache: 'no-store', // Forcer pas de cache
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       const data = await response.json();
+      console.log('📋 Données salons récupérées:', data.salons?.length || 0, 'salons');
       return data.success ? data.salons : [];
     },
-    refetchOnWindowFocus: false,
-    staleTime: 30000
+    refetchOnWindowFocus: true, // Refetch quand on revient sur la page
+    staleTime: 0, // Toujours considérer comme périmé
+    gcTime: 0 // Pas de cache en mémoire
   });
 
   // Écoute des événements de synchronisation en temps réel
   useEffect(() => {
-    const handleSalonUpdated = (event: CustomEvent) => {
+    const handleSalonUpdated = async (event: CustomEvent) => {
       console.log('🔄 Salon mis à jour détecté dans SearchResults:', event.detail);
       
-      // Rafraîchir immédiatement les données de la page de recherche
-      queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] });
-      refetchSalons();
+      // FORCER le rafraîchissement immédiat sans cache
+      queryClient.removeQueries({ queryKey: ['/api/public/salons'] }); // Supprimer tout cache
+      
+      // Refetch forcé avec nouvelles données
+      await refetchSalons();
+      
+      console.log('✅ SearchResults mis à jour suite à modification salon');
     };
 
+    // Écouter les événements de mise à jour salon
     window.addEventListener('salon-updated', handleSalonUpdated as EventListener);
+    
+    // Rafraîchissement automatique toutes les 2 secondes en cas d'activité d'édition
+    const autoRefreshInterval = setInterval(async () => {
+      if (document.visibilityState === 'visible') {
+        await refetchSalons();
+      }
+    }, 2000);
     
     return () => {
       window.removeEventListener('salon-updated', handleSalonUpdated as EventListener);
+      clearInterval(autoRefreshInterval);
     };
   }, [queryClient, refetchSalons]);
 
