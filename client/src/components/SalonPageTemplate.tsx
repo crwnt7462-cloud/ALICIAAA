@@ -297,18 +297,18 @@ export function SalonPageTemplate({
         {activeTab === 'services' && (
           <div className="space-y-4">
             {displayServiceCategories.map((category: any) => (
-              <div key={category.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div key={category.id} className="bg-white/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  className="w-full px-8 py-6 flex items-center justify-between hover:bg-gradient-to-r hover:from-gray-50/50 hover:to-white/80 transition-all duration-300"
                 >
                   <div className="flex-1 text-left">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{category.name}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 tracking-tight">{category.name}</h3>
                     <div className="flex items-center gap-2">
-                      <p className={`text-sm text-gray-600 ${expandedDescriptions.has(category.id) ? '' : 'truncate max-w-xs sm:max-w-md'}`}>
-                        {category.name === 'Coupe' && 'Services de coupe et styling professionnels'}
-                        {category.name === 'Rasage' && 'Rasage traditionnel et moderne au coupe-chou'}
-                        {category.name === 'Soins' && 'Soins du visage et de la barbe avec produits premium'}
+                      <p className={`text-sm text-gray-600 leading-relaxed ${expandedDescriptions.has(category.id) ? '' : 'truncate max-w-xs sm:max-w-md'}`}>
+                        {category.name === 'Coupe' && 'Services de coupe et styling professionnels avec techniques modernes'}
+                        {category.name === 'Rasage' && 'Rasage traditionnel et moderne au coupe-chou avec soins premium'}
+                        {category.name === 'Soins' && 'Soins du visage et de la barbe avec produits haut de gamme'}
                       </p>
                       <button
                         onClick={(e) => {
@@ -321,39 +321,41 @@ export function SalonPageTemplate({
                       </button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <span className="text-sm text-gray-500">{category.services.length} service{category.services.length > 1 ? 's' : ''}</span>
+                  <div className="flex items-center gap-3 ml-4">
+                    <div className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-xs font-semibold">
+                      {category.services.length} service{category.services.length > 1 ? 's' : ''}
+                    </div>
                     {category.expanded ? 
-                      <ChevronUp className="h-5 w-5 text-gray-400" /> : 
-                      <ChevronDown className="h-5 w-5 text-gray-400" />
+                      <ChevronUp className="h-6 w-6 text-violet-500 transition-transform duration-300" /> : 
+                      <ChevronDown className="h-6 w-6 text-violet-500 transition-transform duration-300" />
                     }
                   </div>
                 </button>
                 
                 {category.expanded && (
-                  <div className="border-t border-gray-100">
+                  <div className="border-t border-gradient-to-r from-gray-100 to-violet-100 bg-gradient-to-br from-gray-50/30 to-violet-50/30">
                     {category.services.map((service: any) => {
                       const serviceReviews = getServiceReviews(service.id);
                       const serviceRating = getServiceRating(service.id);
                       const servicePhotos = getServicePhotos(service.id);
                       
                       return (
-                        <div key={service.id} className="px-6 py-4 border-b border-gray-50 last:border-b-0">
+                        <div key={service.id} className="px-8 py-6 border-b border-gray-100/60 last:border-b-0 hover:bg-white/40 transition-all duration-300">
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             {/* Info principale du service */}
                             <div className="flex-1 min-w-0">
-                              <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate salon-service-name">{service.name}</h4>
-                              <p className="text-sm text-gray-600 mt-1 salon-text-muted">{service.description}</p>
-                              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-xs text-gray-500">
-                                <span className="flex items-center gap-1">
+                              <h4 className="font-bold text-gray-900 text-base sm:text-lg truncate salon-service-name mb-2">{service.name}</h4>
+                              <p className="text-sm text-gray-600 leading-relaxed salon-text-muted">{service.description}</p>
+                              <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-500">
+                                <span className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
                                   <Clock className="h-3 w-3" />
                                   <span className="whitespace-nowrap">{service.duration} min</span>
                                 </span>
                                 <button 
                                   onClick={() => setActiveTab('avis')}
-                                  className="flex items-center gap-1 hover:text-gray-700 transition-colors whitespace-nowrap"
+                                  className="flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1 rounded-full text-xs font-medium hover:bg-amber-100 transition-colors whitespace-nowrap"
                                 >
-                                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                                   <span>{serviceRating.toFixed(1)}</span>
                                   <span className="hidden xs:inline">({serviceReviews.length} avis)</span>
                                   <span className="xs:hidden">({serviceReviews.length})</span>
@@ -372,27 +374,29 @@ export function SalonPageTemplate({
                             </div>
 
                             {/* Prix et bouton */}
-                            <div className="flex items-center justify-between sm:flex-col sm:items-end gap-3 sm:gap-2">
+                            <div className="flex items-center justify-between sm:flex-col sm:items-end gap-4 sm:gap-3">
                               <div className="text-left sm:text-right">
-                                <p className="text-lg sm:text-xl font-bold text-gray-900 salon-price">{service.price}€</p>
+                                <div className="professional-price-badge text-white px-4 py-2 rounded-2xl shadow-lg">
+                                  <p className="text-xl font-extrabold" style={{ color: 'white' }}>{service.price}€</p>
+                                </div>
                               </div>
                               <button 
-                                className="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-1 sm:gap-2 transition-all duration-300"
+                                className="px-6 py-3 rounded-2xl text-sm font-bold shadow-2xl hover:shadow-3xl whitespace-nowrap flex items-center gap-2 transition-all duration-500 transform hover:scale-105 active:scale-95"
                                 style={{
                                   background: customColors?.primary ? 
-                                    `linear-gradient(135deg, ${customColors.primary}${Math.round((customColors.intensity || 35) * 2.55).toString(16).padStart(2, '0')}, ${customColors.primary}${Math.round((customColors.intensity || 35) * 1.5).toString(16).padStart(2, '0')})` :
-                                    'linear-gradient(135deg, rgba(139, 92, 246, 0.8), rgba(139, 92, 246, 0.6))',
-                                  backdropFilter: 'blur(12px)',
-                                  WebkitBackdropFilter: 'blur(12px)',
-                                  border: `1px solid ${customColors?.primary ? `${customColors.primary}40` : 'rgba(139, 92, 246, 0.3)'}`,
+                                    `linear-gradient(135deg, ${customColors.primary}f0, ${customColors.primary}d0, ${customColors.primary}f0)` :
+                                    'linear-gradient(135deg, #8b5cf6, #a855f7, #8b5cf6)',
+                                  backdropFilter: 'blur(20px) saturate(180%)',
+                                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                                  border: `2px solid ${customColors?.primary ? `${customColors.primary}60` : 'rgba(139, 92, 246, 0.6)'}`,
                                   color: customColors?.buttonText || '#ffffff',
-                                  boxShadow: `0 6px 20px ${customColors?.primary ? `${customColors.primary}25` : 'rgba(139, 92, 246, 0.25)'}`
+                                  boxShadow: `0 12px 32px ${customColors?.primary ? `${customColors.primary}40` : 'rgba(139, 92, 246, 0.4)'}, 
+                                             inset 0 1px 0 rgba(255, 255, 255, 0.3)`
                                 }}
                                 onClick={() => window.location.href = '/professional-selection'}
                               >
-                                <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden xs:inline">Réserver</span>
-                                <span className="xs:hidden">RDV</span>
+                                <Calendar className="h-4 w-4" />
+                                <span className="font-extrabold tracking-wide">RÉSERVER</span>
                               </button>
                             </div>
                           </div>
@@ -409,37 +413,38 @@ export function SalonPageTemplate({
         {activeTab === 'equipe' && (
           <div className="grid gap-4">
             {staff.map((member: any) => (
-              <div key={member.id} className="bg-white rounded-2xl p-4 border border-gray-200">
-                <div className="flex items-center gap-4">
-                  <img 
-                    src={member.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80`}
-                    alt={member.name}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{member.name}</h4>
-                    <p className="text-sm text-gray-600">{member.role}</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium">{member.rating}</span>
-                      <span className="text-xs text-gray-500">({member.reviewsCount} avis)</span>
+              <div key={member.id} className="professional-card rounded-3xl p-6 hover:shadow-2xl transition-all duration-300">
+                <div className="flex items-center gap-6">
+                  <div className="relative">
+                    <img 
+                      src={member.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80`}
+                      alt={member.name}
+                      className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
+                    />
+                    <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
                     </div>
                   </div>
-                </div>
-                <div className="mt-3">
-                  <div className="flex flex-wrap gap-2">
-                    {member.specialties.map((specialty: string) => (
-                      <span 
-                        key={specialty} 
-                        className="px-3 py-1 text-xs rounded-full"
-                        style={{ 
-                          backgroundColor: customColors?.primary ? `${customColors.primary}20` : '#f3f4f6',
-                          color: customColors?.primary || '#374151'
-                        }}
-                      >
-                        {specialty}
-                      </span>
-                    ))}
+                  <div className="flex-1">
+                    <h4 className="text-xl font-bold text-gray-900 salon-text-content">{member.name}</h4>
+                    <p className="text-violet-600 font-semibold text-sm mb-2">{member.role}</p>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full">
+                        <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                        <span className="text-sm font-bold text-amber-700">{member.rating}</span>
+                        <span className="text-xs text-amber-600">({member.reviewsCount} avis)</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {member.specialties.map((specialty: string) => (
+                        <span 
+                          key={specialty} 
+                          className="professional-badge text-violet-700 px-3 py-1 rounded-full text-xs font-medium"
+                        >
+                          {specialty}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
