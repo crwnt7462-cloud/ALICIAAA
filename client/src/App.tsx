@@ -964,7 +964,7 @@ function Router() {
           <Route path="/salons/salon-excellence-paris" component={SalonExcellenceParis} />
           <Route path="/salons/barbier-gentleman-marais" component={BarbierGentlemanMarais} />
           {/* Route désactivée temporairement - Composant InstitutBelleEpoque non disponible */}
-          <Route path="/salons/modern-hair-studio" component={ModernHairStudio} />
+          {/* Route désactivée temporairement - Composant ModernHairStudio non disponible */}
 
           <Route component={NotFound} />
         </Switch>
