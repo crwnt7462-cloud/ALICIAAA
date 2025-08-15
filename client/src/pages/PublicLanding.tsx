@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight } from "lucide-react";
+import { Star, Clock, CheckCircle2, Sparkles, Heart, Scissors, X, LogIn, UserCheck, Scissors as ScissorsIcon, Users as UsersIcon, Palette, Sparkles as SparklesIcon, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, Orbit, Menu } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
@@ -746,31 +746,54 @@ export default function PublicLanding() {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="py-12 bg-white">
+      {/* Section services moderne glassmorphism */}
+      <section className="py-16 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
-            Nos services
-          </h2>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="text-center mb-12">
+            <h2 className="heroSlash__title text-3xl mb-4">
+              Explorez nos <span className="light">services</span>
+            </h2>
+            <p className="heroSlash__subtitle text-base max-w-2xl mx-auto">
+              Découvrez l'excellence dans chaque domaine de la beauté avec nos professionnels certifiés
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { name: "Coiffure", icon: <Scissors className="w-6 h-6" /> },
-              { name: "Esthétique", icon: <Sparkles className="w-6 h-6" /> },
-              { name: "Massage", icon: <Heart className="w-6 h-6" /> },
-              { name: "Onglerie", icon: <Star className="w-6 h-6" /> }
-            ].map((service, index) => (
-              <div 
-                key={index} 
-                className="text-center p-4 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                onClick={() => {
-                  setSearchQuery(service.name.toLowerCase());
-                  handleSearch();
-                }}
-              >
-                <div className="text-violet-600 mb-2 flex justify-center">{service.icon}</div>
-                <div className="text-sm text-gray-700 font-medium">{service.name}</div>
-              </div>
-            ))}
+              { name: "Coiffure", icon: Zap, category: "coiffure" },
+              { name: "Esthétique", icon: Crown, category: "esthetique" },
+              { name: "Massage", icon: Waves, category: "massage" },
+              { name: "Onglerie", icon: Flame, category: "onglerie" }
+            ].map((service, index) => {
+              const IconComponent = service.icon;
+              return (
+                <motion.button
+                  key={index}
+                  onClick={() => {
+                    setSearchQuery(service.category);
+                    setLocation(`/search?q=${service.category}`);
+                  }}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative p-6 rounded-3xl text-center transition-all duration-300 glass-button hover:shadow-xl"
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
+                  }}
+                >
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-2xl flex items-center justify-center bg-gray-50 text-gray-600 group-hover:bg-violet-50 group-hover:text-violet-500 transition-all duration-300">
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <span className="font-semibold text-sm text-gray-800 group-hover:text-violet-700 transition-colors duration-300">
+                    {service.name}
+                  </span>
+                  
+                  {/* Effet de brillance au survol */}
+                  <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12" />
+                </motion.button>
+              );
+            })}
           </div>
         </div>
       </section>
