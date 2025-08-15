@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 export default function TemplateOriginal() {
-  const salonSlug = 'barbier-gentleman-marais';
+  const salonSlug = 'demo-user'; // Salon démo par défaut
   const { salonData, services, staff, reviews, loading, isOwner } = useSalonPageTemplate(salonSlug);
   const { customColors } = useCustomColors(salonSlug);
   
