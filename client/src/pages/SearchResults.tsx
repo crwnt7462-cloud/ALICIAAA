@@ -276,13 +276,16 @@ export default function SearchResults() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center py-1"
+          className="text-center py-1"
         >
           <img 
             src={avyentoLogo} 
             alt="Avyento" 
-            className="h-32 w-auto object-contain"
+            className="h-32 w-auto object-contain mx-auto"
           />
+          <p className="text-gray-600 text-sm mt-2 px-4">
+            Toutes vos réservations beauté en un clic
+          </p>
         </motion.div>
 
         {/* Barre de recherche glassmorphism */}
