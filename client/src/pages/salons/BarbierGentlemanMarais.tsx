@@ -85,8 +85,7 @@ export default function BarbierGentlemanMarais() {
           name: 'Coupe Dégradée', 
           price: 40, 
           duration: '35min', 
-          description: 'Dégradé moderne et personnalisé avec finitions impeccables',
-          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+          description: 'Dégradé moderne et personnalisé avec finitions impeccables'
         },
         { 
           id: 3, 
@@ -101,8 +100,7 @@ export default function BarbierGentlemanMarais() {
           name: 'Coupe Enfant (-12 ans)', 
           price: 25, 
           duration: '25min', 
-          description: 'Coupe spéciale pour les petits messieurs avec attention particulière',
-          photos: ['https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400']
+          description: 'Coupe spéciale pour les petits messieurs avec attention particulière'
         }
       ]
     },
@@ -116,8 +114,7 @@ export default function BarbierGentlemanMarais() {
           name: 'Taille de Barbe', 
           price: 25, 
           duration: '20min', 
-          description: 'Taille et mise en forme de barbe avec précision et style',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+          description: 'Taille et mise en forme de barbe avec précision et style'
         },
         { 
           id: 6, 
@@ -132,8 +129,7 @@ export default function BarbierGentlemanMarais() {
           name: 'Barbe + Moustache', 
           price: 30, 
           duration: '25min', 
-          description: 'Entretien complet barbe et moustache',
-          photos: ['https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400']
+          description: 'Entretien complet barbe et moustache'
         },
         { 
           id: 8, 
