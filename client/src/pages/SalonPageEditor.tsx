@@ -400,11 +400,7 @@ export default function SalonPageEditor() {
   };
 
   const handleSave = () => {
-    saveMutation.mutate({
-      ...salonData,
-      serviceCategories,
-      professionals
-    });
+    handleManualSave();
   };
 
   const handleCoverImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -419,9 +415,45 @@ export default function SalonPageEditor() {
     }
   };
 
-  // Auto-sauvegarde en temps réel pour toutes les modifications
-  // Auto-sauvegarde désactivée temporairement pour éviter les boucles infinies
-  // L'utilisateur peut sauvegarder manuellement avec le bouton "Enregistrer"
+  // Sauvegarde manuelle seulement - évite les boucles infinies
+  const handleManualSave = async () => {
+    if (!salonData?.id) return;
+    
+    try {
+      setIsAutoSaving(true);
+      const response = await fetch(`/api/salon/${salonData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...salonData,
+          serviceCategories,
+          professionals
+        })
+      });
+      
+      if (!response.ok) throw new Error('Erreur lors de la sauvegarde');
+      
+      // Invalider le cache pour forcer le rafraîchissement
+      queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonData.id}`] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user/salon'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/public/salons'] }); // ← IMPORTANT: Invalider la recherche publique
+      
+      toast({
+        title: "✓ Salon sauvegardé !",
+        description: "Vos modifications sont visibles immédiatement dans la recherche."
+      });
+      
+      setIsAutoSaving(false);
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde:', error);
+      setIsAutoSaving(false);
+      toast({
+        title: "Erreur de sauvegarde",
+        description: "Impossible de sauvegarder les modifications.",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">

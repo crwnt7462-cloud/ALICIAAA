@@ -1785,56 +1785,108 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
-  // Route pour rechercher les salons publics par catégorie et ville
+  // Route PRINCIPALE pour récupérer les salons publics - SALONS PROS EN TEMPS RÉEL
   app.get('/api/public/salons', async (req, res) => {
     try {
       const { category, city, q } = req.query;
+      console.log('🔍 RECHERCHE PUBLIQUE COMPLÈTE:', { category, city, q });
       
-      // Récupérer tous les salons publics
-      let allSalons = Array.from(publicSalonsStorage.values());
+      // ÉTAPE 1: Récupérer TOUS les salons pros depuis PostgreSQL (temps réel)
+      let realProSalons = [];
+      try {
+        realProSalons = await storage.getSalons();
+        console.log(`👔 ${realProSalons.length} salons pros PostgreSQL récupérés`);
+      } catch (error) {
+        console.error('❌ Erreur récupération salons PostgreSQL:', error);
+      }
       
-      // Ajouter salon démo depuis le stockage en mémoire (données temps réel)
-      const demoSalonData = storage.salons?.get('demo-user');
-      if (demoSalonData) {
-        const demoSalon = {
-          id: "demo-user",
-          name: demoSalonData.name || "Studio Élégance Paris",
-          rating: 4.8,
-          reviews: 247,
-          image: demoSalonData.coverImageUrl || demoSalonData.photos?.[0] || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
-          location: demoSalonData.address || "123 Avenue des Champs-Élysées, 75008 Paris",
-          distance: "1.2 km",
-          nextSlot: "Aujourd'hui 14h30",
-          services: demoSalonData.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ["Coupe Classique", "Coupe Dégradée", "Coupe + Barbe", "Coupe Enfant (-12 ans)"],
-          priceRange: "€€€",
-          category: demoSalonData.category || "mixte",
-          city: demoSalonData.city || "75008 Paris",
+      // ÉTAPE 2: Transformer les salons pros au format recherche publique
+      const formattedProSalons = realProSalons
+        .filter(salon => salon.isPublished !== false)
+        .map(salon => ({
+          id: salon.id,
+          name: salon.name,
+          slug: salon.slug,
+          description: salon.description,
+          address: salon.address,
+          phone: salon.phone,
+          email: salon.email,
+          rating: salon.rating || 4.8,
+          reviews: salon.reviewCount || 0,
+          reviewsCount: salon.reviewCount || 0,
+          image: salon.photos?.[0] || salon.coverImageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format',
+          photos: salon.photos || [],
+          services: salon.serviceCategories?.flatMap((cat: any) => cat.services?.map((s: any) => s.name) || []).slice(0, 4) || ['Service professionnel'],
+          nextSlot: 'Disponible aujourd\'hui',
+          category: salon.category || 'coiffure',
+          city: salon.city || salon.address?.split(',').pop()?.trim() || 'Paris',
+          priceRange: '€€€',
           verified: true,
-          shareableUrl: '/salon/demo-user',
-          customColors: demoSalonData.customColors // ✅ AJOUT ESSENTIEL: Inclure les couleurs personnalisées
-        };
-        allSalons.push(demoSalon);
+          popular: salon.subscriptionPlan === 'premium',
+          shareableUrl: `/salon/${salon.slug}`,
+          route: `/salon/${salon.slug}`,
+          customColors: salon.customColors || {},
+          distance: '0.5 km',
+          location: salon.address?.split(',')[0] || salon.address
+        }));
+      
+      console.log(`✅ ${formattedProSalons.length} salons pros formatés pour recherche`);
+      
+      // ÉTAPE 3: Ajouter les salons démo SEULEMENT si nécessaire
+      let allSalons = [...formattedProSalons];
+      
+      // Charger salons démo uniquement si peu de salons pros
+      if (formattedProSalons.length < 3) {
+        if (publicSalonsStorage.size === 0) {
+          console.log('💿 Chargement salons démo depuis PostgreSQL...');
+          await loadSalonsFromDatabase();
+        }
+        const demoSalons = Array.from(publicSalonsStorage.values());
+        allSalons = [...formattedProSalons, ...demoSalons];
+        console.log(`📊 ${demoSalons.length} salons démo ajoutés`);
       }
       
-      // Filtrer par catégorie et ville
+      // ÉTAPE 4: Filtrage intelligent
       let salons = allSalons;
-      if (category && typeof category === 'string') {
-        salons = salons.filter(salon => salon.category === category.toLowerCase());
-      }
-      if (city && typeof city === 'string') {
-        salons = salons.filter(salon => salon.city === city.toLowerCase() || salon.location?.toLowerCase().includes(city.toLowerCase()));
-      }
-      if (q) {
-        const queryLower = (q as string).toLowerCase();
+      
+      // Filtrage par recherche générale
+      if (q && typeof q === 'string') {
+        const queryLower = q.toLowerCase();
         salons = salons.filter(salon => 
           salon?.name.toLowerCase().includes(queryLower) ||
+          salon?.description?.toLowerCase().includes(queryLower) ||
+          salon?.address?.toLowerCase().includes(queryLower) ||
           salon.services?.some((service: string) => service.toLowerCase().includes(queryLower))
         );
+        console.log(`🔍 Après filtrage recherche "${q}": ${salons.length} salons`);
       }
+      
+      // Filtrage par ville
+      if (city && typeof city === 'string') {
+        const cityLower = city.toLowerCase();
+        salons = salons.filter(salon => 
+          salon.city?.toLowerCase().includes(cityLower) || 
+          salon.location?.toLowerCase().includes(cityLower) ||
+          salon.address?.toLowerCase().includes(cityLower)
+        );
+        console.log(`🏙️ Après filtrage ville "${city}": ${salons.length} salons`);
+      }
+      
+      // Filtrage par catégorie
+      if (category && typeof category === 'string') {
+        const categoryLower = category.toLowerCase();
+        salons = salons.filter(salon => 
+          salon.category?.toLowerCase() === categoryLower ||
+          salon.services?.some((service: string) => service.toLowerCase().includes(categoryLower))
+        );
+        console.log(`🏷️ Après filtrage catégorie "${category}": ${salons.length} salons`);
+      }
+      
+      console.log(`✅ RÉSULTATS FINAUX: ${salons.length} salons (${formattedProSalons.length} pros + ${salons.length - formattedProSalons.length} démo)`);
       
       res.json({ success: true, salons });
     } catch (error: any) {
-      console.error('Erreur recherche salons:', error);
+      console.error('❌ Erreur recherche salons publique:', error);
       res.status(500).json({ success: false, message: 'Erreur de recherche' });
     }
   });
