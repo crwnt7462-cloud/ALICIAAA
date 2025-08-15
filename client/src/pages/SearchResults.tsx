@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, MapPin, Star, Clock, Filter, ArrowLeft, 
@@ -34,6 +35,21 @@ export default function SearchResults() {
     { id: "massage", name: "Massage", icon: TrendingUp },
     { id: "onglerie", name: "Onglerie", icon: Award }
   ];
+
+  // Recherche salons temps réel depuis l'API
+  const { data: apiResults, isLoading } = useQuery({
+    queryKey: ['/api/public/salons', searchQuery, searchLocation],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchQuery) params.set('category', searchQuery.toLowerCase());
+      if (searchLocation) params.set('city', searchLocation.toLowerCase());
+      
+      const response = await fetch(`/api/public/salons?${params.toString()}`);
+      const data = await response.json();
+      return data.success ? data.salons : [];
+    },
+    refetchOnWindowFocus: false
+  });
 
   // Salons de démonstration avec liens vers les vraies pages
   const searchResults = [
@@ -127,9 +143,101 @@ export default function SearchResults() {
     }
   ];
 
+  // Combiner les résultats API avec des salons de démo
+  const allResults = apiResults || [
+    {
+      id: "barbier-gentleman-marais",
+      name: "Barbier Gentleman Marais",
+      rating: 4.8,
+      reviews: 156,
+      image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=200&fit=crop",
+      location: "Le Marais, Paris 4ème",
+      distance: "1.2 km",
+      nextSlot: "Aujourd'hui 14h30",
+      services: ["Coupe Classique", "Barbe & Moustache", "Soins Visage"],
+      priceRange: "€€",
+      category: "coiffure",
+      verified: true,
+      popular: true,
+      route: "/salon/barbier-gentleman-marais"
+    },
+    {
+      id: "beauty-lash-studio",
+      name: "Beauty Lash Studio",
+      rating: 4.9,
+      reviews: 78,
+      image: "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=200&fit=crop",
+      location: "République, Paris 3ème",
+      distance: "2.1 km",
+      nextSlot: "Demain 10h00",
+      services: ["Extensions Volume", "Lifting de Cils", "Épilation Sourcils"],
+      priceRange: "€€€",
+      category: "esthetique",
+      verified: true,
+      route: "/salon/beauty-lash-studio"
+    },
+    {
+      id: "salon-excellence-paris",
+      name: "Salon Excellence Paris",
+      rating: 4.8,
+      reviews: 127,
+      image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=300&h=200&fit=crop",
+      location: "Champs-Élysées, Paris 8ème",
+      distance: "3.2 km",
+      nextSlot: "Aujourd'hui 16h00",
+      services: ["Coupe Premium", "Coloration Expert", "Soin Restructurant"],
+      priceRange: "€€€",
+      category: "coiffure",
+      popular: true,
+      route: "/salon/salon-excellence-paris"
+    },
+    {
+      id: "institut-beaute-saint-germain",
+      name: "Institut Beauté Saint-Germain",
+      rating: 4.7,
+      reviews: 89,
+      image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300&h=200&fit=crop",
+      location: "Saint-Germain, Paris 6ème",
+      distance: "2.8 km",
+      nextSlot: "Demain 15h30",
+      services: ["Soins Visage", "Épilation", "Massage Relaxant"],
+      priceRange: "€€€",
+      category: "esthetique",
+      route: "/salon/institut-beaute-saint-germain"
+    },
+    {
+      id: "beauty-lounge-montparnasse",
+      name: "Beauty Lounge Montparnasse",
+      rating: 4.6,
+      reviews: 94,
+      image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=200&fit=crop",
+      location: "Montparnasse, Paris 14ème",
+      distance: "4.1 km",
+      nextSlot: "Aujourd'hui 18h00",
+      services: ["Manucure", "Pédicure", "Nail Art"],
+      priceRange: "€€",
+      category: "onglerie",
+      route: "/salon/beauty-lounge-montparnasse"
+    },
+    {
+      id: "salon-moderne-republique",
+      name: "Salon Moderne République",
+      rating: 4.5,
+      reviews: 67,
+      image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=200&fit=crop",
+      location: "République, Paris 11ème",
+      distance: "1.8 km",
+      nextSlot: "Demain 11h00",
+      services: ["Coupe Tendance", "Coloration", "Brushing"],
+      priceRange: "€€",
+      category: "coiffure",
+      route: "/salon/salon-moderne-republique"
+    }
+  ];
+
   const filteredResults = selectedCategory === "all" 
-    ? searchResults 
-    : searchResults.filter(salon => salon.category === selectedCategory);
+    ? allResults 
+    : allResults.filter(salon => salon.category === selectedCategory);
 
   const handleSearch = () => {
     const params = new URLSearchParams();
