@@ -2400,9 +2400,9 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         user: {
           id: user.id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          businessName: user.businessName,
+          firstName: user.first_name || user.firstName,
+          lastName: user.last_name || user.lastName,
+          businessName: user.business_name || user.businessName,
           role: 'professional'
         },
         token: `business-token-${user.id}`,
