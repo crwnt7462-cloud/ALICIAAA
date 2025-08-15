@@ -124,21 +124,35 @@ export function SalonPageTemplate({
     }
   }, [customColors]);
 
-  // Organiser les services par catégorie
-  const servicesByCategory = services.reduce((acc: any, service: any) => {
-    if (!acc[service.category]) {
-      acc[service.category] = [];
+  // ✅ UTILISER DIRECTEMENT LES SERVICE CATEGORIES DU SALON
+  // Récupérer les catégories depuis les props salonData ou créer à partir des services
+  const displayServiceCategories = (() => {
+    // Si on a accès aux serviceCategories directes du salon, les utiliser
+    if (salonData && (salonData as any).serviceCategories) {
+      return (salonData as any).serviceCategories.map((cat: any) => ({
+        ...cat,
+        expanded: expandedCategories.has(cat.id)
+      }));
     }
-    acc[service.category].push(service);
-    return acc;
-  }, {});
+    
+    // Sinon, organiser les services par catégorie (fallback)
+    const servicesByCategory = services.reduce((acc: any, service: any) => {
+      if (!acc[service.category]) {
+        acc[service.category] = [];
+      }
+      acc[service.category].push(service);
+      return acc;
+    }, {});
 
-  const displayServiceCategories = Object.keys(servicesByCategory).map((categoryName, index) => ({
-    id: index + 1,
-    name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
-    services: servicesByCategory[categoryName],
-    expanded: expandedCategories.has(index + 1)
-  }));
+    return Object.keys(servicesByCategory).map((categoryName, index) => ({
+      id: index + 1,
+      name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
+      services: servicesByCategory[categoryName],
+      expanded: expandedCategories.has(index + 1)
+    }));
+  })();
+
+  console.log('🎯 Services à afficher:', displayServiceCategories);
 
   const toggleCategory = (categoryId: number) => {
     setExpandedCategories(prev => {

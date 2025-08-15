@@ -84,7 +84,7 @@ export function useSalonPageTemplate(salonSlug: string): {
       try {
         // ✅ CORRECTION : Utiliser directement la route publique qui contient toutes les données
         console.log('🔍 Chargement salon public:', salonSlug);
-        const salonResponse = await fetch(`/api/salons/by-slug/${salonSlug}`);
+        const salonResponse = await fetch(`/api/salon/${salonSlug}`);
         
         if (salonResponse.ok) {
           const salonResponseData = await salonResponse.json();
@@ -118,7 +118,14 @@ export function useSalonPageTemplate(salonSlug: string): {
             };
             
             console.log('🎨 CustomColors récupérées:', salon.customColors);
-            setSalonData(mappedSalonData);
+            
+            // ✅ INCLURE les serviceCategories complètes dans salonData
+            const enrichedSalonData = {
+              ...mappedSalonData,
+              serviceCategories: salon.serviceCategories || []
+            };
+            
+            setSalonData(enrichedSalonData);
             
             // ✅ Extraire les services des catégories
             if (salon.serviceCategories && salon.serviceCategories.length > 0) {
@@ -129,13 +136,13 @@ export function useSalonPageTemplate(salonSlug: string): {
                   category.services.forEach((service: any) => {
                     extractedServices.push({
                       id: service.id,
-                      name: service.name,
-                      description: service.description || `Service ${service.name}`,
-                      price: service.price,
-                      duration: service.duration,
+                      name: service.name || 'Service sans nom',
+                      description: service.description || `Service ${service.name || 'professionnel'}`,
+                      price: service.price || 0,
+                      duration: parseInt(service.duration) || 30,
                       category: category.name || 'Services',
-                      rating: service.rating,
-                      reviewCount: service.reviewCount,
+                      rating: service.rating || 4.5,
+                      reviewCount: service.reviewCount || 0,
                       photos: service.photos || []
                     });
                   });
@@ -144,6 +151,8 @@ export function useSalonPageTemplate(salonSlug: string): {
               
               setServices(extractedServices);
               console.log('✅ Services extraits:', extractedServices.length, extractedServices);
+            } else {
+              console.log('⚠️ Aucune catégorie de services trouvée');
             }
             
             // ✅ Extraire l'équipe
