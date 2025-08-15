@@ -206,7 +206,12 @@ export default function SearchResults() {
       category: "coiffure",
       verified: true,
       popular: true,
-      route: "/salon/barbier-gentleman-marais"
+      route: "/salon/barbier-gentleman-marais",
+      customColors: {
+        primary: "#cf079a",
+        accent: "#171519",
+        priceColor: "#7c3aed"
+      }
     },
     {
       id: "beauty-lash-studio",
