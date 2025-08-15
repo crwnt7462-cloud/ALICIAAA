@@ -294,17 +294,17 @@ export function SalonPageTemplate({
       {/* Contenu des onglets avec couleurs personnalisées */}
       <div className="p-6">
         {activeTab === 'services' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {displayServiceCategories.map((category: any) => (
-              <div key={category.id} className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden shadow-lg shadow-purple-500/10">
+              <div key={category.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <button
                   onClick={() => toggleCategory(category.id)}
-                  className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/60 transition-all duration-300"
+                  className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
                 >
                   <div className="flex-1 text-left">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{category.name}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{category.name}</h3>
                     <div className="flex items-center gap-2">
-                      <p className={`text-sm text-gray-600 ${expandedDescriptions.has(category.id) ? '' : 'truncate'}`}>
+                      <p className={`text-sm text-gray-600 ${expandedDescriptions.has(category.id) ? '' : 'truncate max-w-xs sm:max-w-md'}`}>
                         {category.name === 'Coupe' && 'Services de coupe et styling professionnels'}
                         {category.name === 'Rasage' && 'Rasage traditionnel et moderne au coupe-chou'}
                         {category.name === 'Soins' && 'Soins du visage et de la barbe avec produits premium'}
@@ -314,7 +314,7 @@ export function SalonPageTemplate({
                           e.stopPropagation();
                           toggleDescription(category.id);
                         }}
-                        className="text-xs text-purple-600 hover:text-purple-800 font-medium whitespace-nowrap"
+                        className="text-xs text-gray-500 hover:text-gray-700 font-medium whitespace-nowrap"
                       >
                         {expandedDescriptions.has(category.id) ? 'voir -' : '(voir +)'}
                       </button>
@@ -323,100 +323,63 @@ export function SalonPageTemplate({
                   <div className="flex items-center gap-2 ml-4">
                     <span className="text-sm text-gray-500">{category.services.length} service{category.services.length > 1 ? 's' : ''}</span>
                     {category.expanded ? 
-                      <ChevronUp className="h-5 w-5 text-gray-500" /> : 
-                      <ChevronDown className="h-5 w-5 text-gray-500" />
+                      <ChevronUp className="h-5 w-5 text-gray-400" /> : 
+                      <ChevronDown className="h-5 w-5 text-gray-400" />
                     }
                   </div>
                 </button>
                 
                 {category.expanded && (
-                  <div className="border-t border-gray-200/50">
+                  <div className="border-t border-gray-100">
                     {category.services.map((service: any) => {
                       const serviceReviews = getServiceReviews(service.id);
                       const serviceRating = getServiceRating(service.id);
                       const servicePhotos = getServicePhotos(service.id);
                       
                       return (
-                        <div key={service.id} className="px-6 py-5 border-b border-gray-100/50 last:border-b-0">
-                          <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+                        <div key={service.id} className="px-6 py-4 border-b border-gray-50 last:border-b-0">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             {/* Info principale du service */}
-                            <div className="flex-1">
-                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                                <div className="flex-1 min-w-0">
-                                  <h4 className="font-bold text-lg text-gray-900 truncate sm:whitespace-normal">{service.name}</h4>
-                                  <p className="text-sm text-gray-600 mt-1 leading-relaxed">{service.description}</p>
-                                  <div className="flex items-center gap-4 mt-2">
-                                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
-                                      {service.duration} min
-                                    </span>
-                                    <div className="flex items-center gap-1">
-                                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                      <span className="text-sm font-semibold text-gray-900">{serviceRating.toFixed(1)}</span>
-                                      <span className="text-xs text-gray-500">({serviceReviews.length} avis)</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-3 sm:flex-col sm:items-end">
-                                  <div className="text-right">
-                                    <p className="text-2xl font-bold text-purple-600">
-                                      {service.price}€
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Avis clients pour ce service */}
-                              {serviceReviews.length > 0 && (
-                                <div className="mt-4 space-y-2">
-                                  <h5 className="text-sm font-semibold text-gray-700">Avis clients :</h5>
-                                  <div className="space-y-2">
-                                    {serviceReviews.slice(0, 2).map((review) => (
-                                      <div key={review.id} className="bg-gray-50/80 rounded-lg p-3">
-                                        <div className="flex items-center gap-2 mb-1">
-                                          <div className="flex">
-                                            {[...Array(5)].map((_, i) => (
-                                              <Star key={i} className={`h-3 w-3 ${i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`} />
-                                            ))}
-                                          </div>
-                                          <span className="text-xs font-medium text-gray-700">{review.clientName}</span>
-                                        </div>
-                                        <p className="text-xs text-gray-600 italic">"{review.comment}"</p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Galerie photos du service */}
-                              {servicePhotos.length > 0 && (
-                                <div className="mt-4">
-                                  <h5 className="text-sm font-semibold text-gray-700 mb-2">Photos de ce service :</h5>
-                                  <div className="flex gap-2 overflow-x-auto pb-2">
-                                    {servicePhotos.slice(0, 4).map((photo, index) => (
-                                      <div key={index} className="flex-shrink-0">
-                                        <img 
-                                          src={photo}
-                                          alt={`${service.name} ${index + 1}`}
-                                          className="w-20 h-20 object-cover rounded-lg border-2 border-white/50 shadow-sm hover:scale-105 transition-transform cursor-pointer"
-                                        />
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Bouton réservation avec style DA Avyento */}
-                              <div className="mt-4">
+                            <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 truncate">{service.name}</h4>
+                              <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                              <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                                <span className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3" />
+                                  {service.duration} min
+                                </span>
                                 <button 
-                                  className="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-bold text-white transition-all duration-300 ease-in-out bg-gradient-to-r from-violet-600 to-amber-500 rounded-2xl hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25 active:scale-95 backdrop-blur-xl border border-white/20"
-                                  onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
+                                  onClick={() => setActiveTab('avis')}
+                                  className="flex items-center gap-1 hover:text-gray-700 transition-colors"
                                 >
-                                  <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-purple-600 via-violet-600 to-amber-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
-                                  <Calendar className="h-4 w-4 mr-2 relative z-10" />
-                                  <span className="relative z-10 text-sm font-semibold">Réserver maintenant</span>
+                                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                  <span>{serviceRating.toFixed(1)}</span>
+                                  <span>({serviceReviews.length} avis)</span>
                                 </button>
+                                {servicePhotos.length > 0 && (
+                                  <button 
+                                    onClick={() => setActiveTab('galerie')}
+                                    className="flex items-center gap-1 hover:text-gray-700 transition-colors"
+                                  >
+                                    <Camera className="h-3 w-3" />
+                                    <span>{servicePhotos.length} photos</span>
+                                  </button>
+                                )}
                               </div>
+                            </div>
+
+                            {/* Prix et bouton */}
+                            <div className="flex items-center gap-4 sm:flex-col sm:items-end">
+                              <div className="text-right">
+                                <p className="text-xl font-bold text-gray-900">{service.price}€</p>
+                              </div>
+                              <button 
+                                className="glass-button text-black px-4 py-2 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl whitespace-nowrap flex items-center gap-2"
+                                onClick={() => window.location.href = `/booking/${salonData.slug}?service=${service.id}`}
+                              >
+                                <Calendar className="h-4 w-4" />
+                                Réserver
+                              </button>
                             </div>
                           </div>
                         </div>
