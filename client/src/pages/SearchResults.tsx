@@ -270,13 +270,13 @@ export default function SearchResults() {
         </div>
       </div>
 
-      <div className="max-w-md mx-auto p-4 space-y-6">
+      <div className="max-w-md mx-auto p-4 space-y-3">
         {/* Logo Avyento */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex justify-center pt-2 pb-2"
+          className="flex justify-center"
         >
           <img 
             src={avyentoLogo} 
