@@ -263,6 +263,10 @@ export default function SalonSearch() {
                       ? 'ring-2 ring-green-200 ring-opacity-50' 
                       : ''
                   }`}
+                  style={salon.customColors?.primary ? {
+                    borderLeft: `4px solid ${salon.customColors.primary}`,
+                    background: `linear-gradient(135deg, ${salon.customColors.primary}08 0%, white 100%)`
+                  } : {}}
                   onClick={() => setLocation(`/salon/${salon.id}`)}
                 >
                   <CardContent className="p-4">

@@ -73,6 +73,9 @@ export interface IStorage {
   // Business operations
   createBusiness(businessData: any): Promise<any>;
   createBusinessRegistration(registration: InsertBusinessRegistration): Promise<BusinessRegistration>;
+  
+  // Salon operations
+  updateSalonColors(salonId: string, data: { customColors: any }): Promise<any>;
 
   // Notification operations
   getNotifications?(userId: string): Promise<any[]>;
@@ -1233,6 +1236,31 @@ export class DatabaseStorage implements IStorage {
     } catch (error) {
       console.error('Erreur getAllProfessionals:', error);
       return [];
+    }
+  }
+
+  async updateSalonColors(salonId: string, data: { customColors: any }): Promise<any> {
+    try {
+      console.log(`🎨 Mise à jour couleurs salon: ${salonId}`, data.customColors);
+      
+      // Mettre à jour dans la table business_registrations
+      const [updatedSalon] = await db.update(businessRegistrations)
+        .set({
+          customColors: JSON.stringify(data.customColors),
+          updatedAt: new Date()
+        })
+        .where(eq(businessRegistrations.id, parseInt(salonId)))
+        .returning();
+
+      if (updatedSalon) {
+        console.log(`✅ Couleurs salon ${salonId} mises à jour avec succès`);
+        return updatedSalon;
+      } else {
+        throw new Error(`Salon avec ID ${salonId} non trouvé`);
+      }
+    } catch (error) {
+      console.error(`❌ Erreur mise à jour couleurs salon ${salonId}:`, error);
+      throw error;
     }
   }
 }

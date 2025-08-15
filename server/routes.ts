@@ -769,30 +769,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put('/api/salon-settings', async (req, res) => {
     try {
-      const settings = req.body;
-      console.log('💅 Sauvegarde paramètres salon:', {
-        name: settings.name,
-        hasCustomColors: !!settings.customColors,
-        primaryColor: settings.customColors?.primaryColor
+      const { salonId, customColors } = req.body;
+      console.log('💅 Sauvegarde couleurs salon:', {
+        salonId,
+        hasCustomColors: !!customColors,
+        primaryColor: customColors?.primary,
+        accentColor: customColors?.accent,
+        intensity: customColors?.intensity
       });
       
-      // Simuler la sauvegarde des paramètres
-      // En réalité, cela devrait être sauvegardé dans la base de données
-      const savedSettings = {
-        ...settings,
-        updatedAt: new Date().toISOString()
-      };
+      if (!salonId) {
+        return res.status(400).json({ error: 'ID salon requis' });
+      }
       
-      console.log('✅ Paramètres salon sauvegardés avec succès');
+      // Sauvegarder les couleurs personnalisées en base de données
+      const updatedSalon = await storage.updateSalonColors(salonId, {
+        customColors: customColors
+      });
+      
+      console.log('✅ Couleurs salon sauvegardées avec succès en BDD');
       res.json({ 
         success: true, 
-        settings: savedSettings,
-        message: 'Paramètres sauvegardés avec succès'
+        salon: updatedSalon,
+        message: 'Couleurs sauvegardées avec succès'
       });
     } catch (error) {
-      console.error("Erreur sauvegarde paramètres salon:", error);
+      console.error("Erreur sauvegarde couleurs salon:", error);
       res.status(500).json({ 
-        error: 'Erreur lors de la sauvegarde des paramètres',
+        error: 'Erreur lors de la sauvegarde des couleurs',
         details: error instanceof Error ? error.message : 'Erreur inconnue'
       });
     }
