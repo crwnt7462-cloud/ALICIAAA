@@ -453,8 +453,49 @@ function Router() {
     );
   }
 
-  // ✅ ROUTE DYNAMIQUE UNIVERSELLE POUR TOUS LES SALONS - /salon/:slug
-  // Utilise automatiquement SalonPageTemplate via ModernSalonDetailNew
+  // ✅ ROUTE SPÉCIFIQUE POUR BARBIER GENTLEMAN MARAIS - GARDE LA MISE EN PAGE ORIGINALE
+  if (location === '/salon/barbier-gentleman-marais') {
+    return (
+      <div className="h-full">
+        <BarbierGentlemanMarais />
+      </div>
+    );
+  }
+
+  // ✅ ROUTES SPÉCIFIQUES POUR LES SALONS DÉMO - UTILISENT LE TEMPLATE STANDARDISÉ
+  if (location === '/salon/institut-beaute-saint-germain') {
+    return (
+      <div className="h-full">
+        <InstitutBeauteSaintGermain />
+      </div>
+    );
+  }
+
+  if (location === '/salon/salon-moderne-republique') {
+    return (
+      <div className="h-full">
+        <SalonModerneRepublique />
+      </div>
+    );
+  }
+
+  if (location === '/salon/beauty-lounge-montparnasse') {
+    return (
+      <div className="h-full">
+        <BeautyLoungeMontparnasse />
+      </div>
+    );
+  }
+
+  if (location === '/salon/salon-excellence-paris') {
+    return (
+      <div className="h-full">
+        <SalonExcellenceParis />
+      </div>
+    );
+  }
+
+  // ✅ ROUTE DYNAMIQUE POUR TOUS LES AUTRES NOUVEAUX SALONS - UTILISE LE TEMPLATE
   if (location.startsWith('/salon/') && location !== '/salon') {
     return (
       <div className="h-full">
