@@ -51,13 +51,11 @@ export function Header() {
               });
             }}
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-              <img 
-                src="/attached_assets/Capture d'écran 2025-08-15 à 21.28.08_1755286092889.png" 
-                alt="Avyento Pro"
-                className="w-5 h-5 object-contain"
-              />
-            </div>
+            <img 
+              src="/attached_assets/avyento. (1)_1755286272417.png" 
+              alt="Avyento Pro"
+              className="w-8 h-8 object-contain rounded-lg"
+            />
           </Button>
           <div>
             <h1 className="font-semibold text-gray-900 text-sm">{getPageTitle()}</h1>
