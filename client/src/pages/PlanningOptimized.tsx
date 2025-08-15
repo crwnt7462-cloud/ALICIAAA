@@ -166,6 +166,27 @@ const PlanningOptimized: React.FC = () => {
     }
   };
 
+  // Fonction pour créer un nouveau rendez-vous
+  const handleCreateAppointment = (staffId: string, time: string, date?: Date) => {
+    const appointmentDate = date || selectedDate;
+    const staff = staffMembers.find(s => s.id === staffId);
+    
+    const newAppointment = {
+      clientName: prompt('Nom du client :') || '',
+      serviceName: prompt('Nom du service :') || '',
+      staffId: staffId,
+      date: format(appointmentDate, 'yyyy-MM-dd'),
+      startTime: time,
+      endTime: time, // Simplifier pour la démo
+      price: parseInt(prompt('Prix (€) :') || '0')
+    };
+
+    if (newAppointment.clientName && newAppointment.serviceName) {
+      alert(`RDV créé pour ${newAppointment.clientName} ${staff ? `avec ${staff.name}` : ''} le ${format(appointmentDate, 'd MMMM', { locale: fr })} à ${time}`);
+      // Ici on pourrait envoyer à l'API
+    }
+  };
+
   // Rendu des icônes flottantes minimalistes
   const renderFloatingIcons = () => (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -291,13 +312,23 @@ const PlanningOptimized: React.FC = () => {
                   );
                   
                   return (
-                    <div key={`${day.toISOString()}-${time}`} className="h-12 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
+                    <div 
+                      key={`${day.toISOString()}-${time}`} 
+                      className="h-12 bg-gray-50 rounded border border-dashed border-gray-200 flex flex-col items-center justify-center hover:bg-purple-50 hover:border-purple-300 cursor-pointer transition-colors group p-1"
+                      onClick={() => dayAppointments.length === 0 && handleCreateAppointment('', time, day)}
+                      title={dayAppointments.length > 0 ? `${dayAppointments[0].clientName} - ${dayAppointments[0].serviceName}` : `Créer un RDV le ${format(day, 'd MMM')} à ${time}`}
+                    >
                       {dayAppointments.length > 0 ? (
-                        <div className="text-xs font-medium text-purple-600 truncate px-1">
-                          {dayAppointments[0].clientName}
+                        <div className="text-center">
+                          <div className="text-xs font-medium text-purple-600 truncate">
+                            {dayAppointments[0].clientName}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate">
+                            {dayAppointments[0].serviceName}
+                          </div>
                         </div>
                       ) : (
-                        <Plus className="w-3 h-3 text-gray-400" />
+                        <Plus className="w-3 h-3 text-gray-400 group-hover:text-purple-500" />
                       )}
                     </div>
                   );
@@ -413,15 +444,21 @@ const PlanningOptimized: React.FC = () => {
                         staffAppointments.map((apt: Appointment) => (
                           <div
                             key={apt.id}
-                            className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-1 text-xs"
+                            className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-2 text-xs cursor-pointer hover:from-purple-200 hover:to-pink-200 transition-colors"
+                            title={`${apt.clientName} - ${apt.serviceName} (${apt.price}€)`}
                           >
-                            <div className="font-medium">{apt.clientName}</div>
+                            <div className="font-medium text-gray-900">{apt.clientName}</div>
                             <div className="text-gray-600 truncate">{apt.serviceName}</div>
+                            <div className="text-purple-600 font-medium">{apt.price}€</div>
                           </div>
                         ))
                       ) : (
-                        <div className="h-6 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
-                          <Plus className="w-3 h-3 text-gray-400" />
+                        <div 
+                          className="h-6 bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-purple-50 hover:border-purple-300 cursor-pointer transition-colors group"
+                          onClick={() => handleCreateAppointment(staff.id, time)}
+                          title={`Créer un RDV avec ${staff.name} à ${time}`}
+                        >
+                          <Plus className="w-3 h-3 text-gray-400 group-hover:text-purple-500" />
                         </div>
                       )}
                     </div>
@@ -478,14 +515,20 @@ const PlanningOptimized: React.FC = () => {
                           staffAppointments.map((apt: Appointment) => (
                             <div
                               key={apt.id}
-                              className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-1 text-xs h-full flex flex-col justify-center"
+                              className="bg-gradient-to-r from-purple-100 to-pink-100 rounded p-1 text-xs h-full flex flex-col justify-center cursor-pointer hover:from-purple-200 hover:to-pink-200 transition-colors"
+                              title={`${apt.clientName} - ${apt.serviceName} (${apt.price}€)`}
                             >
                               <div className="font-medium truncate">{apt.clientName}</div>
+                              <div className="text-gray-600 truncate text-xs">{apt.serviceName}</div>
                             </div>
                           ))
                         ) : (
-                          <div className="h-full bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-gray-100 cursor-pointer">
-                            <Plus className="w-3 h-3 text-gray-400" />
+                          <div 
+                            className="h-full bg-gray-50 rounded border border-dashed border-gray-200 flex items-center justify-center hover:bg-purple-50 hover:border-purple-300 cursor-pointer transition-colors group"
+                            onClick={() => handleCreateAppointment(staff.id, time)}
+                            title={`Créer un RDV avec ${staff.name} à ${time}`}
+                          >
+                            <Plus className="w-3 h-3 text-gray-400 group-hover:text-purple-500" />
                           </div>
                         )}
                       </div>
