@@ -191,7 +191,7 @@ export default function PlanningModern() {
 
   // Vue jour avec design Landing 
   const renderDayView = () => (
-    <div className="space-y-3">
+    <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-4 lg:space-y-0">
       {timeSlots.map((time, index) => {
         const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
         
@@ -201,11 +201,12 @@ export default function PlanningModern() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.02 }}
+            className="lg:col-span-1"
           >
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-4">
+              <CardContent className="p-4 lg:p-3">
                 <div className="flex items-center gap-4">
-                  <div className="text-sm font-semibold text-purple-600 min-w-[50px]">
+                  <div className="text-sm font-semibold text-purple-600 min-w-[50px] lg:min-w-[45px]">
                     {time}
                   </div>
                   
@@ -382,25 +383,32 @@ export default function PlanningModern() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
     >
-      <div className="max-w-md mx-auto space-y-6">
+      <div className="max-w-md lg:max-w-6xl mx-auto space-y-6">
         {/* Header Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center space-y-4 pt-8"
+          className="text-center space-y-4 pt-8 lg:pt-4"
         >
-          <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
+          <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto lg:hidden">
             <Calendar className="w-8 h-8 text-white" />
           </div>
           
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
-              Planning
-            </h1>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              Gérez vos rendez-vous avec intelligence
-            </p>
+          <div className="lg:text-left lg:flex lg:items-center lg:justify-between">
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+                Planning
+              </h1>
+              <p className="text-gray-600 text-sm lg:text-base leading-relaxed">
+                Gérez vos rendez-vous avec intelligence
+              </p>
+            </div>
+            <div className="hidden lg:flex items-center space-x-4">
+              <div className="w-12 h-12 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury">
+                <Calendar className="w-6 h-6 text-white" />
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -414,7 +422,7 @@ export default function PlanningModern() {
           {/* Navigation de date */}
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
             <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between lg:justify-center lg:space-x-8">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -425,10 +433,10 @@ export default function PlanningModern() {
                 </Button>
                 
                 <div className="text-center">
-                  <div className="font-semibold text-gray-900 text-sm">
+                  <div className="font-semibold text-gray-900 text-sm lg:text-base">
                     {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs lg:text-sm text-gray-500">
                     {filteredAppointments.length} rendez-vous
                   </div>
                 </div>
@@ -446,7 +454,7 @@ export default function PlanningModern() {
           </Card>
 
           {/* Toggle vues et actions */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
               <CardContent className="p-0">
                 <div className="grid grid-cols-2">
@@ -592,11 +600,11 @@ export default function PlanningModern() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="space-y-4"
         >
-          <h2 className="text-xl font-bold text-gray-900 text-center">
+          <h2 className="text-xl font-bold text-gray-900 text-center lg:text-left">
             Chiffre d'Affaires - {getPeriodLabel()}
           </h2>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {/* CA Total */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
               <CardContent className="p-4 text-center">
@@ -681,20 +689,20 @@ export default function PlanningModern() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="space-y-4"
         >
-          <h2 className="text-xl font-bold text-gray-900 text-center">
+          <h2 className="text-xl font-bold text-gray-900 text-center lg:text-left">
             {viewMode === 'day' ? 'Planning du jour' : 'Aperçu de la semaine'}
           </h2>
           
           {filteredAppointments.length === 0 ? (
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-gray-600" />
+              <CardContent className="p-8 text-center lg:p-12">
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="w-8 h-8 lg:w-10 lg:h-10 text-gray-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                <h3 className="text-lg lg:text-xl font-semibold text-gray-700 mb-2">
                   Aucun rendez-vous
                 </h3>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 text-sm lg:text-base">
                   {viewMode === 'day' 
                     ? 'Aucun rendez-vous prévu pour cette journée'
                     : 'Aucun rendez-vous prévu pour cette semaine'
@@ -703,8 +711,67 @@ export default function PlanningModern() {
               </CardContent>
             </Card>
           ) : (
-            <div>
-              {viewMode === 'day' ? renderDayView() : renderWeekView()}
+            <div className="lg:grid lg:grid-cols-3 lg:gap-6 lg:space-y-0 space-y-4">
+              {/* Colonne principale - Planning */}
+              <div className="lg:col-span-2">
+                {viewMode === 'day' ? renderDayView() : renderWeekView()}
+              </div>
+              
+              {/* Sidebar desktop - Informations supplémentaires */}
+              <div className="hidden lg:block space-y-4">
+                <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Résumé du jour</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">Total RDV</span>
+                        <span className="font-semibold">{filteredAppointments.length}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">CA estimé</span>
+                        <span className="font-semibold text-purple-600">{revenueStats.revenue.toFixed(0)}€</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600">Ticket moyen</span>
+                        <span className="font-semibold text-emerald-600">{revenueStats.averageTicket.toFixed(0)}€</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Actions rapides</h3>
+                    <div className="space-y-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start rounded-xl"
+                        onClick={() => setIsDialogOpen(true)}
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Nouveau RDV
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start rounded-xl"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Vue mensuelle
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full justify-start rounded-xl"
+                      >
+                        <Filter className="w-4 h-4 mr-2" />
+                        Filtres avancés
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           )}
         </motion.div>
