@@ -313,15 +313,20 @@ export function SalonPageTemplate({
                     <div className="space-y-0">
                       {category.services.map((service: SalonService) => (
                         <div key={service.id} className="px-4 py-2 border-b border-gray-50 last:border-b-0">
-                          <div className="flex items-start justify-between mb-1">
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-1">
-                                <h4 className="font-medium text-gray-900">{service.name}</h4>
-                                {/* Notation du service - EXACTEMENT COMME BARBIER */}
+                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between mb-1">
+                                <h4 className="font-medium text-gray-900 flex-1 truncate pr-2">{service.name}</h4>
+                                <div className="text-right flex-shrink-0">
+                                  <p className="font-bold text-lg text-gray-900">{service.price}€</p>
+                                </div>
+                              </div>
+                              
+                              {/* Notation du service - RESPONSIVE */}
                               {service.rating && (
-                                <div className="flex items-center gap-1">
-                                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                  <span className="text-sm font-medium text-gray-700">{service.rating}</span>
+                                <div className="flex items-center gap-1 mb-1">
+                                  <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                  <span className="text-xs font-medium text-gray-700">{service.rating}</span>
                                   {service.reviewCount && (
                                     <button 
                                       className="text-xs text-violet-600 hover:text-violet-700 font-medium underline"
@@ -332,57 +337,54 @@ export function SalonPageTemplate({
                                   )}
                                 </div>
                               )}
-                            </div>
                             
-                            {/* Galerie photos - EXACTEMENT COMME BARBIER */}
-                            {service.photos && service.photos.length > 0 && (
-                              <div className="flex gap-2 mt-2 mb-2">
-                                {service.photos.slice(0, 3).map((photo, index) => (
-                                  <div key={index} className="relative">
-                                    <img 
-                                      src={photo.replace('w=1200', 'w=200')} 
-                                      alt={`${service.name} ${index + 1}`}
-                                      className="w-12 h-12 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
-                                      loading="lazy"
-                                      style={{ imageRendering: 'auto' }}
-                                    />
-                                    {index === 2 && service.photos.length > 3 && (
-                                      <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-pointer">
-                                        <span className="text-white text-xs font-semibold">+{service.photos.length - 3}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                                {service.photos.length > 0 && (
-                                  <button className="w-12 h-12 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-violet-400 transition-colors">
-                                    <Camera className="h-4 w-4 text-gray-400" />
-                                  </button>
-                                )}
+                              {/* Galerie photos - MOBILE RESPONSIVE */}
+                              {service.photos && service.photos.length > 0 && (
+                                <div className="flex gap-1.5 mt-2 mb-2 overflow-x-auto">
+                                  {service.photos.slice(0, 3).map((photo, index) => (
+                                    <div key={index} className="relative flex-shrink-0">
+                                      <img 
+                                        src={photo.replace('w=1200', 'w=200')} 
+                                        alt={`${service.name} ${index + 1}`}
+                                        className="w-10 h-10 rounded-lg object-cover cursor-pointer hover:scale-105 transition-transform"
+                                        loading="lazy"
+                                        style={{ imageRendering: 'auto' }}
+                                      />
+                                      {index === 2 && service.photos.length > 3 && (
+                                        <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center cursor-pointer">
+                                          <span className="text-white text-xs font-semibold">+{service.photos.length - 3}</span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                  {service.photos.length > 0 && (
+                                    <button className="w-10 h-10 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center hover:border-violet-400 transition-colors flex-shrink-0">
+                                      <Camera className="h-3 w-3 text-gray-400" />
+                                    </button>
+                                  )}
+                                </div>
+                              )}
+                              
+                              {/* Description responsive */}
+                              {service.description && (
+                                <div className="mt-1">
+                                  <p className="text-xs text-gray-500 line-clamp-2">{service.description}</p>
+                                </div>
+                              )}
+                              
+                              <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
+                                <Clock className="h-3 w-3" />
+                                <span>{service.duration} min</span>
                               </div>
-                            )}
-                            
-                            {/* Description avec voir plus - EXACTEMENT COMME BARBIER */}
-                            {service.description && (
-                              <div className="mt-1">
-                                <p className="text-sm text-gray-500">{service.description}</p>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center gap-1 mt-2 text-sm text-gray-500">
-                              <Clock className="h-3 w-3" />
-                              {service.duration}
                             </div>
                           </div>
-                          <div className="text-right ml-4">
-                            <p className="font-bold text-xl text-gray-900">{service.price}€</p>
-                          </div>
-                        </div>
-                        <button 
-                          className="avyento-button-secondary w-full"
-                          onClick={() => handleBooking(service.id)}
-                        >
-                          Réserver
-                        </button>
+                          
+                          <button 
+                            className="avyento-button-secondary w-full mt-2"
+                            onClick={() => handleBooking(service.id)}
+                          >
+                            Réserver
+                          </button>
                         </div>
                       ))}
                     </div>
