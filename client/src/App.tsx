@@ -34,6 +34,7 @@ import BarbierGentlemanMarais from "@/pages/salons/BarbierGentlemanMarais";
 import SalonModerneRepublique from "@/pages/salons/SalonModerneRepublique";
 import InstitutBeauteSaintGermain from "@/pages/salons/InstitutBeauteSaintGermain";
 import BeautyLoungeMontparnasse from "@/pages/salons/BeautyLoungeMontparnasse";
+import BeautyLashStudio from "@/pages/salons/BeautyLashStudio";
 
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
@@ -491,6 +492,14 @@ function Router() {
     return (
       <div className="h-full">
         <SalonExcellenceParis />
+      </div>
+    );
+  }
+
+  if (location === '/salon/beauty-lash-studio') {
+    return (
+      <div className="h-full">
+        <BeautyLashStudio />
       </div>
     );
   }
