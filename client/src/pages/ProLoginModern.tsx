@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, LogIn, Building, Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react';
+import { ArrowLeft, LogIn, Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react';
 import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
 
 export default function ProLoginModern() {
@@ -65,9 +65,9 @@ export default function ProLoginModern() {
           <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:max-h-[80vh]">
             
             {/* Section gauche - Branding (desktop uniquement) */}
-            <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-12 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
-              <div className="text-center">
-                <div className="mb-8">
+            <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
+              <div className="text-center max-w-xs">
+                <div className="mb-6">
                   <img 
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
@@ -75,24 +75,24 @@ export default function ProLoginModern() {
                     style={{ height: '60px' }}
                   />
                 </div>
-                <h1 className="text-4xl font-bold mb-4 text-gray-900">
+                <h1 className="text-3xl font-bold mb-3 text-gray-900">
                   Avyento Pro
                 </h1>
-                <p className="text-gray-600 text-lg mb-8">
-                  La plateforme révolutionnaire<br />
+                <p className="text-gray-600 text-base mb-6 leading-relaxed">
+                  La plateforme révolutionnaire
                   pour professionnels de la beauté
                 </p>
-                <div className="space-y-4 text-left max-w-sm">
+                <div className="space-y-3 text-left">
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
                     <span className="text-gray-700 text-sm">Planning IA optimisé</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
                     <span className="text-gray-700 text-sm">Analytics en temps réel</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
                     <span className="text-gray-700 text-sm">Gestion clientèle avancée</span>
                   </div>
                 </div>
@@ -100,7 +100,7 @@ export default function ProLoginModern() {
             </div>
 
             {/* Section droite - Formulaire */}
-            <div className="p-8 lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center">
+            <div className="p-8 lg:w-1/2 lg:p-8 lg:flex lg:flex-col lg:justify-center">
               {/* En-tête mobile */}
               <div className="text-center mb-8 lg:hidden">
                 <div className="mb-6">
@@ -118,15 +118,15 @@ export default function ProLoginModern() {
               </div>
 
               {/* En-tête desktop */}
-              <div className="hidden lg:block text-center mb-8">
+              <div className="hidden lg:block text-center mb-6">
                 <h2 className="text-2xl font-bold mb-2 text-gray-900">
                   Connexion
                 </h2>
-                <p className="text-gray-600">Accédez à votre espace professionnel</p>
+                <p className="text-gray-600 text-sm">Accédez à votre espace professionnel</p>
               </div>
 
               {/* Formulaire avec vrai style /home */}
-              <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-4">
                 {/* Email */}
                 <div className="space-y-2">
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
