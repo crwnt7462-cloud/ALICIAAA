@@ -159,7 +159,7 @@ export default function ClientRegister() {
                   />
                 </div>
                 <h1 className="text-3xl font-bold mb-3 text-gray-900">
-                  Inscription Client
+                  Inscription
                 </h1>
                 <p className="text-gray-600 text-lg">Créez votre compte client</p>
               </div>
