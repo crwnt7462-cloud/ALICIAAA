@@ -66,7 +66,7 @@ export default function DashboardPeymen() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar - Style Peymen - Responsive : caché mobile, visible desktop */}
+      {/* Sidebar - Style Peymen exact */}
       <div className="hidden lg:flex lg:w-60 bg-white shadow-lg border-r border-gray-200">
         <div className="flex flex-col w-full">
           {/* Logo section - Style Peymen */}
@@ -165,24 +165,24 @@ export default function DashboardPeymen() {
         </div>
       </div>
 
-      {/* Main Content - Responsive padding */}
+      {/* Main Content */}
       <div className="flex-1 overflow-hidden">
-        <div className="h-full p-4 lg:p-8">
-          {/* Header - Style Peymen - Responsive */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 lg:mb-8">
+        <div className="h-full p-8">
+          {/* Header - Style Peymen */}
+          <div className="flex items-center justify-between mb-8">
             <div>
               <p className="text-gray-500 text-sm mb-1">Hi Nanas,</p>
               <h1 className="text-3xl font-bold text-gray-800">Welcome to Avyento</h1>
             </div>
             
-            <div className="flex items-center space-x-4 mt-4 lg:mt-0">
+            <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Bell className="w-5 h-5 text-gray-400" />
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
               </div>
-              <div className="relative hidden lg:block">
+              <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input 
                   type="text" 
@@ -196,7 +196,7 @@ export default function DashboardPeymen() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Stats Cards Row - Style Peymen */}
             <div className="lg:col-span-8">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 {/* Transfer via Card */}
                 <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
                   <CardContent className="p-6">
@@ -325,7 +325,7 @@ export default function DashboardPeymen() {
         </div>
       </div>
 
-      {/* Bottom Navigation - Visible sur mobile uniquement */}
+      {/* Bottom Navigation Mobile */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
         <div className="flex items-center justify-around">
           <Button variant="ghost" size="sm" className="flex flex-col items-center p-2">
