@@ -482,11 +482,7 @@ export default function ProfessionalPlans() {
                     <div className="text-xs text-gray-500">Précision</div>
                   </div>
                 </div>
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-xs text-gray-600">
-                    <strong>Exclusif Avyento</strong> - Nos concurrents n'ont que des outils basiques
-                  </p>
-                </div>
+
               </div>
             </div>
           </div>
