@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import avyentoLogo from "@assets/avyento. (1)_1755286272417.png";
 
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
@@ -91,7 +92,7 @@ export default function ProfessionalPlans() {
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-3">
                 <img 
-                  src="/attached_assets/avyento. (1)_1755286272417.png" 
+                  src={avyentoLogo} 
                   alt="Avyento Logo" 
                   className="h-10 w-auto"
                 />
