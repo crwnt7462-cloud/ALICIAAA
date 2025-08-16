@@ -73,13 +73,8 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-white relative">
       
-      {/* Émojis flottants diffus comme sur la page d'accueil */}
+      {/* Emoji flottant discret */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-10 text-6xl opacity-10 animate-float">💄</div>
-        <div className="absolute top-32 right-16 text-5xl opacity-8 animate-float-delayed">✨</div>
-        <div className="absolute top-64 left-1/4 text-4xl opacity-12 animate-bounce-slow">💅</div>
-        <div className="absolute bottom-40 right-10 text-7xl opacity-6 animate-float">🌸</div>
-        <div className="absolute bottom-20 left-20 text-5xl opacity-10 animate-float-delayed">💆</div>
         <div className="absolute top-1/2 right-1/3 text-6xl opacity-8 animate-bounce-slow">💖</div>
       </div>
 
