@@ -156,35 +156,36 @@ export default function ProfessionalPlans() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
-          {plans.map((plan, index) => (
+        <div className="flex flex-col lg:flex-row items-end justify-center gap-8 max-w-6xl mx-auto mb-16">
+          {plans.map((plan) => (
             <Card 
               key={plan.id} 
               className={`
                 ${plan.bgColor} 
-                ${plan.popular ? 'ring-2 ring-blue-400 shadow-2xl scale-105' : 'shadow-lg'} 
+                ${plan.popular ? 'ring-2 ring-blue-400 shadow-2xl lg:scale-110 lg:-translate-y-8' : 'shadow-lg'} 
                 rounded-3xl border-0 overflow-hidden transition-all duration-300 hover:shadow-xl
-                ${index === 1 ? 'transform lg:-mt-4' : ''}
+                ${plan.popular ? 'lg:w-80 w-full' : 'lg:w-72 w-full'}
+                ${plan.popular ? 'h-auto' : 'lg:h-96'}
               `}
             >
               {plan.popular && (
-                <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-white/20 text-white px-4 py-2 rounded-full border border-white/20">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
                     The Most Popular
                   </Badge>
                 </div>
               )}
               
-              <CardContent className="p-8 text-center">
-                <div className={`${plan.textColor} mb-6 ${plan.popular ? 'pt-6' : ''}`}>
+              <CardContent className={`${plan.popular ? 'p-10' : 'p-8'} text-center`}>
+                <div className={`${plan.textColor} mb-6 ${plan.popular ? 'pt-8' : 'pt-4'}`}>
                   <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-4xl font-light">€</span>
-                    <span className="text-6xl font-bold">{plan.price}</span>
-                    <span className="text-lg font-normal ml-2">/ {plan.period}</span>
+                    <span className={`${plan.popular ? 'text-5xl' : 'text-4xl'} font-light`}>€</span>
+                    <span className={`${plan.popular ? 'text-7xl' : 'text-6xl'} font-bold`}>{plan.price}</span>
+                    <span className={`${plan.popular ? 'text-xl' : 'text-lg'} font-normal ml-2`}>/ {plan.period}</span>
                   </div>
                 </div>
                 
-                <h3 className={`text-2xl font-bold ${plan.textColor} mb-2`}>
+                <h3 className={`${plan.popular ? 'text-3xl' : 'text-2xl'} font-bold ${plan.textColor} mb-2`}>
                   {plan.name}
                 </h3>
                 
