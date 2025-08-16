@@ -538,6 +538,90 @@ export default function ProfessionalPlans() {
         </div>
       </section>
 
+      {/* FAQ Professionnels */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions fréquentes</h2>
+            <p className="text-gray-600">Tout ce que vous devez savoir avant de vous lancer</p>
+          </div>
+          
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Combien de temps faut-il pour configurer Avyento ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">La configuration initiale prend environ 30 minutes. Notre équipe vous accompagne pour importer vos données existantes et former votre équipe.</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Mes données actuelles peuvent-elles être récupérées ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">Oui, nous importons gratuitement vos clients, historique des rendez-vous et services depuis la plupart des logiciels existants (Planity, Shedul, etc.).</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Que se passe-t-il si je veux changer d'abonnement ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">Vous pouvez passer d'un plan à l'autre à tout moment. Le changement est immédiat et proratisé selon votre période de facturation.</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">L'IA fonctionne-t-elle dès le premier jour ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">L'IA commence à apprendre dès le premier jour et s'améliore avec le temps. Les recommandations de base sont disponibles immédiatement, les prédictions avancées après 2-3 semaines.</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Y a-t-il des frais de transaction sur les paiements ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">Aucun frais de transaction. Vous payez uniquement votre abonnement mensuel, quel que soit le nombre de paiements traités par votre salon.</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200">
+              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
+                <span className="font-medium text-gray-900">Comment fonctionne la formation de mon équipe ?</span>
+                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="px-6 pb-6">
+                <p className="text-gray-600 text-sm">Formation en visioconférence incluse + tutoriels vidéo + support prioritaire pendant 30 jours. Votre équipe sera opérationnelle rapidement.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer - Identique à la page / */}
       <footer className="bg-gray-900 text-white py-8 w-full">
         <div className="mx-auto px-6 lg:px-12 xl:px-20">
