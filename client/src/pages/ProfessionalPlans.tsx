@@ -540,12 +540,20 @@ export default function ProfessionalPlans() {
 
       {/* FAQ Professionnels - Design exact */}
       <section className="py-20 bg-white relative overflow-hidden">
-        {/* Émojis flottants */}
+        {/* Émojis flottants dans bulles pastelles */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-12 left-16 text-6xl opacity-10 animate-pulse">⚡</div>
-          <div className="absolute top-32 right-24 text-4xl opacity-20 animate-bounce" style={{ animationDelay: '2s' }}>💡</div>
-          <div className="absolute bottom-32 left-12 text-5xl opacity-15 animate-pulse" style={{ animationDelay: '4s' }}>❓</div>
-          <div className="absolute bottom-16 right-16 text-6xl opacity-10 animate-bounce" style={{ animationDelay: '6s' }}>🔧</div>
+          <div className="absolute top-12 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+            <span className="text-lg">⚡</span>
+          </div>
+          <div className="absolute top-32 right-24 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '2s', animationDuration: '3s' }}>
+            <span className="text-lg">💡</span>
+          </div>
+          <div className="absolute bottom-32 left-12 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '4s' }}>
+            <span className="text-lg">❓</span>
+          </div>
+          <div className="absolute bottom-16 right-16 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-12" style={{ animationDelay: '6s', animationDuration: '4s' }}>
+            <span className="text-lg">🔧</span>
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto px-6 relative z-10">
