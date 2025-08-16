@@ -67,7 +67,7 @@ export default function ProLoginModern() {
             {/* Section gauche - Branding (desktop uniquement) */}
             <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
               <div className="text-center w-full max-w-sm px-4">
-                <div className="mb-6">
+                <div className="mb-3">
                   <img 
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
