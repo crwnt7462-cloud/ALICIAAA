@@ -307,28 +307,56 @@ export default function PublicLanding() {
 
   const faqData = [
     {
-      question: "Qui est Avyento ?",
-      answer: "Avyento est la première plateforme de beauté powered by IA qui révolutionne l'expérience salon. Notre technologie avancée propose des recommandations personnalisées basées sur vos préférences, un système de réservation instantané 24h/24, et des outils de gestion intelligents pour les professionnels. Nos fonctionnalités uniques incluent : l'IA assistant pour des conseils beauté sur-mesure, la synchronisation temps réel entre tous vos appareils, la génération automatique de pages salon personnalisées, un système d'acompte flexible, et des analytics prédictifs pour optimiser le planning. Notre mission : transformer chaque rendez-vous beauté en expérience exceptionnelle grâce à l'innovation technologique."
+      question: "Qu'est-ce qu'Avyento ?",
+      answer: "Avyento est une application dédiée à la beauté et au bien-être qui vous permet de trouver facilement les meilleurs salons et professionnels près de chez vous, consulter leurs avis, vérifier leurs disponibilités en temps réel et réserver instantanément. Mais Avyento, c'est plus qu'une simple app : c'est une solution pensée par une ancienne professionnelle de la beauté qui connaît parfaitement les défis du secteur comme les attentes des clientes. Notre mission est simple : rendre vos rendez-vous beauté plus accessibles, plus fluides et surtout plus agréables."
     },
     {
-      question: "Puis-je annuler ou modifier mon rendez-vous ?",
-      answer: "Les annulations et modifications sont possibles selon les politiques de réservation de chaque salon partenaire. La plupart permettent les changements jusqu'à quelques heures avant le rendez-vous. Consultez les conditions spécifiques lors de votre réservation."
+      question: "Comment fonctionne l'application ?",
+      answer: "Il vous suffit de créer un compte, de rechercher un salon ou un professionnel, puis de réserver directement en ligne."
     },
     {
-      question: "Les salons sont-ils vérifiés ?",
-      answer: "Oui, tous nos salons partenaires sont vérifiés avant d'être référencés sur la plateforme pour vous garantir un service professionnel de qualité."
+      question: "Dois-je appeler le salon pour confirmer ma réservation ?",
+      answer: "Non. Votre réservation est confirmée instantanément depuis l'application et vous recevez un rappel automatique avant votre rendez-vous."
     },
     {
-      question: "Comment sont calculés les prix affichés ?",
-      answer: "Les prix sont fixés directement par chaque salon partenaire et mis à jour en temps réel. Aucun frais supplémentaire n'est ajouté à la réservation."
+      question: "Puis-je annuler ou modifier ma réservation ?",
+      answer: "Oui, depuis votre espace personnel, dans les délais indiqués par le professionnel."
     },
     {
-      question: "Comment contacter le salon après ma réservation ?",
-      answer: "Une fois votre réservation confirmée, vous recevez les coordonnées du salon et pouvez le contacter directement via l'application ou par téléphone pour toute question spécifique."
+      question: "Dois-je payer en avance ?",
+      answer: "Vous avez le choix : régler en ligne via l'application, ou bien sur place le jour du rendez-vous."
     },
     {
-      question: "L'application est-elle gratuite pour les clients ?",
-      answer: "Oui, l'utilisation d'Avyento est 100% gratuite pour les clients. Vous ne payez que le service reçu au salon, sans frais de réservation."
+      question: "Les prix affichés sont-ils définitifs ?",
+      answer: "Oui, les tarifs indiqués sont transparents et fixés par le salon/professionnel."
+    },
+    {
+      question: "Mon paiement est-il sécurisé ?",
+      answer: "100 %. Nous utilisons des systèmes conformes aux normes bancaires internationales."
+    },
+    {
+      question: "Tous les professionnels sont-ils vérifiés ?",
+      answer: "Oui, chaque professionnel est validé avant d'apparaître sur Avyento pour garantir sérieux et qualité."
+    },
+    {
+      question: "Puis-je laisser un avis après mon rendez-vous ?",
+      answer: "Bien sûr. Votre avis aide la communauté et valorise le travail des professionnels."
+    },
+    {
+      question: "Comment savoir si un salon est disponible ?",
+      answer: "Le calendrier en temps réel vous montre uniquement les créneaux libres."
+    },
+    {
+      question: "Dois-je créer un compte pour réserver ?",
+      answer: "Oui, afin de gérer vos rendez-vous et recevoir vos confirmations."
+    },
+    {
+      question: "Que faire si j'ai un problème avec ma réservation ?",
+      answer: "Vous pouvez contacter directement le professionnel via l'app ou notre support client disponible 7j/7."
+    },
+    {
+      question: "L'application est-elle gratuite ?",
+      answer: "Oui, Avyento est 100 % gratuit à télécharger et à utiliser. Vous ne payez que vos prestations."
     }
   ];
 
