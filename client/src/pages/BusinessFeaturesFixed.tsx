@@ -567,7 +567,7 @@ export default function BusinessFeaturesFixed() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-r from-purple-600/80 to-violet-600/80 backdrop-blur-sm text-white shadow-lg border border-white/20'
+                      ? 'glass-button-purple text-white'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                   }`}
                 >
@@ -596,7 +596,7 @@ export default function BusinessFeaturesFixed() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`p-4 rounded-xl border-0 shadow-md backdrop-blur-sm overflow-hidden transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'gradient-bg text-white transform scale-105'
+                    ? 'glass-button-purple text-white transform scale-105'
                     : 'bg-white/80 text-gray-700 hover:scale-105'
                 }`}
               >
@@ -624,7 +624,7 @@ export default function BusinessFeaturesFixed() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`p-3 rounded-xl border-0 shadow-md backdrop-blur-sm overflow-hidden transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'gradient-bg text-white transform scale-105'
+                      ? 'glass-button-purple text-white transform scale-105'
                       : 'bg-white/80 text-gray-700 hover:scale-105'
                   }`}
                 >
