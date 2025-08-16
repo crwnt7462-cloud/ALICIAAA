@@ -15,6 +15,8 @@ export default function BusinessFeaturesFixed() {
   const { toast } = useToast();
   const [activeSheet, setActiveSheet] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [monthTarget, setMonthTarget] = useState(12000);
 
   // Stats complètes pour le dashboard professionnel
   const stats = {
@@ -22,7 +24,7 @@ export default function BusinessFeaturesFixed() {
     todayRevenue: 650,
     weekRevenue: 2340,
     monthRevenue: 8950,
-    monthTarget: 12000,
+    monthTarget: monthTarget,
     pendingAppointments: 3,
     pendingPayments: 2,
     totalClients: 156,
@@ -148,7 +150,36 @@ export default function BusinessFeaturesFixed() {
             </div>
             <span className="text-sm text-gray-500">Objectif mois</span>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{Math.round((stats.monthRevenue / stats.monthTarget) * 100)}%</div>
+          <div className="flex items-center space-x-2">
+            {editingTarget ? (
+              <div className="flex items-center space-x-2">
+                <input
+                  type="number"
+                  value={monthTarget}
+                  onChange={(e) => setMonthTarget(Number(e.target.value))}
+                  className="text-2xl font-bold bg-transparent border-b-2 border-purple-500 text-gray-900 w-24 focus:outline-none"
+                  autoFocus
+                />
+                <span className="text-2xl font-bold text-gray-900">€</span>
+                <button
+                  onClick={() => setEditingTarget(false)}
+                  className="text-green-600 hover:text-green-700"
+                >
+                  <CheckCircle className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <span className="text-2xl font-bold text-gray-900">{Math.round((stats.monthRevenue / stats.monthTarget) * 100)}%</span>
+                <button
+                  onClick={() => setEditingTarget(true)}
+                  className="text-purple-600 hover:text-purple-700"
+                >
+                  <Target className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+          </div>
           <div className="text-sm text-gray-600 mb-3">{stats.monthRevenue}€ / {stats.monthTarget}€</div>
           
           {/* Jauge de progression */}
