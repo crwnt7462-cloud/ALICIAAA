@@ -80,20 +80,20 @@ export default function ProLoginModern() {
                 </p>
                 <div className="space-y-4 text-left max-w-xs mx-auto">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex-shrink-0 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
+                      <div className="w-2 h-2 bg-violet-600 rounded-full"></div>
                     </div>
                     <span className="text-gray-700 text-base leading-relaxed">Planning IA optimisé</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex-shrink-0 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
+                      <div className="w-2 h-2 bg-violet-600 rounded-full"></div>
                     </div>
                     <span className="text-gray-700 text-base leading-relaxed">Analytics en temps réel</span>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex-shrink-0 flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
+                      <div className="w-2 h-2 bg-violet-600 rounded-full"></div>
                     </div>
                     <span className="text-gray-700 text-base leading-relaxed">Gestion clientèle avancée</span>
                   </div>
