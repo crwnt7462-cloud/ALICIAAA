@@ -115,7 +115,6 @@ export default function ClientDashboard() {
   ];
 
   const quickActions = [
-    { name: "Calendrier", icon: Calendar, action: () => setLocation('/planning-client') },
     { name: "Mes Avis", icon: Star, action: () => setLocation('/mes-avis') },
     { name: "Fidélité", icon: Gift, action: () => setLocation('/fidelite') },
     { name: "Profil", icon: User, action: () => setLocation('/profil') }
@@ -128,6 +127,40 @@ export default function ClientDashboard() {
     { name: "Fidélité", icon: Gift, path: "/fidelite" },
     { name: "Profil", icon: User, path: "/profil" },
     { name: "Notifications", icon: Bell, path: "/notifications" }
+  ];
+
+  // Données pour les prochains RDV
+  const upcomingAppointments = [
+    {
+      id: 1,
+      date: "25 août",
+      time: "14:30",
+      service: "Coupe & Brushing",
+      salon: "Beauty Lash Studio",
+      professional: "Marie Dubois",
+      status: "confirmé",
+      color: "bg-green-50 border-green-200"
+    },
+    {
+      id: 2,
+      date: "2 sept",
+      time: "10:00",
+      service: "Manucure",
+      salon: "Excellence Paris",
+      professional: "Sophie Martin",
+      status: "en attente",
+      color: "bg-amber-50 border-amber-200"
+    },
+    {
+      id: 3,
+      date: "8 sept",
+      time: "16:30",
+      service: "Soin visage",
+      salon: "Salon Moderne",
+      professional: "Laura Chen",
+      status: "confirmé",
+      color: "bg-green-50 border-green-200"
+    }
   ];
 
   return (
@@ -275,7 +308,7 @@ export default function ClientDashboard() {
               </div>
 
               {/* Actions rapides - Style page d'accueil */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="grid grid-cols-3 gap-4 mb-8">
                 {quickActions.map((action, index) => {
                   const Icon = action.icon;
                   return (
@@ -295,10 +328,10 @@ export default function ClientDashboard() {
                     >
                       <div className="absolute inset-0 bg-gradient-to-br from-violet-400/10 to-pink-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <div className="relative flex flex-col items-center text-center">
-                        <div className="w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-2 lg:mb-3 group-hover:scale-110 transition-transform">
-                          <Icon className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
+                        <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                          <Icon className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
                         </div>
-                        <span className="text-xs lg:text-sm font-semibold text-gray-700">{action.name}</span>
+                        <span className="text-sm lg:text-base font-semibold text-gray-700">{action.name}</span>
                       </div>
                     </motion.button>
                   );
@@ -334,6 +367,61 @@ export default function ClientDashboard() {
                             <span className="text-xs text-gray-500">{salon.rating}</span>
                             <span className="text-xs text-gray-400">•</span>
                             <span className="text-xs text-gray-500">{salon.nextAvailable}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section Prochains RDV */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Prochains rendez-vous</h3>
+                  <button className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+                    Voir tout
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  {upcomingAppointments.slice(0, 3).map((appointment) => (
+                    <motion.div
+                      key={appointment.id}
+                      whileHover={{ scale: 1.02, y: -1 }}
+                      className={`bg-white/80 backdrop-blur-sm rounded-xl p-4 border ${appointment.color} shadow-sm hover:shadow-md transition-all cursor-pointer`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <div className="flex flex-col">
+                              <span className="text-sm font-semibold text-gray-900">{appointment.date}</span>
+                              <span className="text-xs text-violet-600 font-medium">{appointment.time}</span>
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900 text-sm">{appointment.service}</h4>
+                              <p className="text-xs text-gray-600">{appointment.salon}</p>
+                              <p className="text-xs text-gray-500">{appointment.professional}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end space-y-1">
+                          <Badge 
+                            className={`text-xs ${
+                              appointment.status === 'confirmé' 
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-amber-100 text-amber-700'
+                            }`}
+                          >
+                            {appointment.status}
+                          </Badge>
+                          <div className="flex space-x-1">
+                            <button className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                              Modifier
+                            </button>
+                            <span className="text-xs text-gray-400">•</span>
+                            <button className="text-xs text-red-600 hover:text-red-700 font-medium">
+                              Annuler
+                            </button>
                           </div>
                         </div>
                       </div>
