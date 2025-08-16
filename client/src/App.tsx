@@ -62,7 +62,7 @@ import SalonSearchComplete from "@/pages/SalonSearchComplete";
 import BookingPageSimple from "@/pages/BookingPageSimple";
 import SubscriptionSignup from "@/pages/SubscriptionSignup";
 import MultiStepSubscription from "@/pages/MultiStepSubscription";
-import SubscriptionPayment from "@/pages/SubscriptionPayment";
+
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
@@ -334,13 +334,10 @@ function Router() {
     );
   }
 
-  // Page de paiement d'abonnement
+  // Redirection de subscription-payment vers register
   if (location === '/subscription-payment') {
-    return (
-      <div className="h-full">
-        <SubscriptionPayment />
-      </div>
-    );
+    setLocation('/register');
+    return null;
   }
   
 
