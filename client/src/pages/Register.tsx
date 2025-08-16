@@ -100,13 +100,9 @@ export default function Register() {
           <img 
             src={avyentoProLogo} 
             alt="Avyento Pro" 
-            className="mx-auto mb-4"
-            style={{ height: '120px' }}
+            className="mx-auto"
+            style={{ height: '130px' }}
           />
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900">
-            Inscription Pro
-          </h1>
-          <p className="text-gray-600 text-lg">Créez votre salon professionnel</p>
         </motion.div>
       </div>
 
@@ -125,6 +121,14 @@ export default function Register() {
               
               {/* Section gauche - Premiers champs du formulaire */}
               <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
+
+                {/* Titre et sous-titre dans la colonne de gauche */}
+                <div className="text-center mb-6">
+                  <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold mb-2 text-gray-900">
+                    Inscription Salon
+                  </h1>
+                  <p className="text-gray-600 text-base lg:text-lg">Créez votre salon professionnel</p>
+                </div>
 
                 {/* Partie gauche du formulaire */}
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
