@@ -19,7 +19,8 @@ import {
   ChevronDown,
   MapPin,
   Activity,
-  Globe
+  Globe,
+  Sparkles
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -72,7 +73,7 @@ export default function Dashboard() {
         }}>
           {/* Logo */}
           <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-gray-300/50">
-            <Bell className="w-6 h-6 text-gray-600" />
+            <Sparkles className="w-6 h-6 text-gray-600" />
           </div>
           
           {/* Navigation Icons */}
