@@ -430,83 +430,61 @@ export default function ProfessionalPlans() {
       </section>
 
       {/* Section IA - Différenciateur majeur */}
-      <section className="py-20 bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-violet-600/20 to-purple-600/20"></div>
-        <div className="max-w-6xl mx-auto px-6 relative z-10">
+      <section className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-4">
-              <span className="w-2 h-2 bg-violet-400 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-violet-200">EXCLUSIVITÉ AVYENTO</span>
+            <div className="inline-flex items-center gap-2 bg-violet-50 rounded-full px-3 py-1 mb-4">
+              <span className="w-1.5 h-1.5 bg-violet-600 rounded-full"></span>
+              <span className="text-xs font-medium text-violet-700">EXCLUSIF</span>
             </div>
-            <h2 className="text-4xl font-bold mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               La première IA beauté au monde
             </h2>
-            <p className="text-xl text-violet-100 max-w-3xl mx-auto">
-              Nous sommes les premiers et les seuls à avoir intégré une intelligence artificielle spécialement conçue pour les salons de beauté
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Nous sommes les seuls à proposer une intelligence artificielle spécialisée pour les salons
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
             {/* Fonctionnalités IA */}
-            <div className="space-y-6">
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-                <h3 className="text-xl font-semibold mb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  Optimisation intelligente
-                </h3>
-                <p className="text-violet-100 text-sm">L'IA analyse vos données en temps réel pour optimiser automatiquement votre planning et maximiser votre chiffre d'affaires</p>
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Optimisation intelligente</h3>
+                <p className="text-gray-600 text-sm">L'IA analyse vos données pour optimiser automatiquement votre planning et maximiser vos revenus</p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-                <h3 className="text-xl font-semibold mb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                  </div>
-                  Recommandations personnalisées
-                </h3>
-                <p className="text-violet-100 text-sm">Des suggestions de services et produits basées sur l'historique et les préférences de chaque client</p>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Recommandations personnalisées</h3>
+                <p className="text-gray-600 text-sm">Suggestions de services adaptées à chaque client basées sur son historique et ses préférences</p>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-white/10">
-                <h3 className="text-xl font-semibold mb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-violet-400 to-purple-400 rounded-lg flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m0 0V1a1 1 0 011-1h2a1 1 0 011 1v3M7 4H5a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1V5a1 1 0 00-1-1h-2M7 4h10M9 9h6m-6 4h6m-3 4h3" />
-                    </svg>
-                  </div>
-                  Prédictions avancées
-                </h3>
-                <p className="text-violet-100 text-sm">Anticipation des tendances, prévision de la demande et détection automatique des créneaux optimaux</p>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Prédictions avancées</h3>
+                <p className="text-gray-600 text-sm">Anticipation des tendances et détection automatique des créneaux les plus rentables</p>
               </div>
             </div>
 
             {/* Impact chiffres */}
             <div className="text-center">
-              <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-                <h3 className="text-2xl font-bold mb-6">Impact sur votre business</h3>
-                <div className="space-y-6">
+              <div className="bg-gray-50 rounded-lg p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-8">Impact mesuré</h3>
+                <div className="grid grid-cols-3 gap-6">
                   <div>
-                    <div className="text-4xl font-bold text-violet-300 mb-1">+35%</div>
-                    <div className="text-sm text-violet-100">Augmentation CA moyenne</div>
+                    <div className="text-2xl font-bold text-violet-600 mb-1">+35%</div>
+                    <div className="text-xs text-gray-500">CA moyen</div>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold text-violet-300 mb-1">-70%</div>
-                    <div className="text-sm text-violet-100">Temps de gestion administrative</div>
+                    <div className="text-2xl font-bold text-violet-600 mb-1">-70%</div>
+                    <div className="text-xs text-gray-500">Temps admin</div>
                   </div>
                   <div>
-                    <div className="text-4xl font-bold text-violet-300 mb-1">98%</div>
-                    <div className="text-sm text-violet-100">Précision des recommandations</div>
+                    <div className="text-2xl font-bold text-violet-600 mb-1">98%</div>
+                    <div className="text-xs text-gray-500">Précision</div>
                   </div>
                 </div>
-                <div className="mt-6 p-4 bg-gradient-to-r from-violet-500/20 to-purple-500/20 rounded-lg border border-violet-400/20">
-                  <p className="text-xs text-violet-100">
-                    <strong>Exclusif :</strong> Seul Avyento propose une IA spécialisée beauté. Nos concurrents n'ont que des outils basiques.
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <p className="text-xs text-gray-600">
+                    <strong>Exclusif Avyento</strong> - Nos concurrents n'ont que des outils basiques
                   </p>
                 </div>
               </div>
