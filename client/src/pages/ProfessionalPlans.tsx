@@ -242,21 +242,21 @@ export default function ProfessionalPlans() {
                   Professionnel
                 </h3>
                 
-                <p className="text-violet-100 text-sm mb-4">
+                <p className="text-white/90 text-sm mb-4 font-medium">
                   Le plus populaire
                 </p>
 
                 {/* 3 éléments descriptifs */}
                 <div className="space-y-2 mb-6 text-center">
-                  <div className="flex items-center justify-center text-sm text-violet-100">
+                  <div className="flex items-center justify-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Tout de l'Essentiel</span>
                   </div>
-                  <div className="flex items-center justify-center text-sm text-violet-100">
+                  <div className="flex items-center justify-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Analytics avancés</span>
                   </div>
-                  <div className="flex items-center justify-center text-sm text-violet-100">
+                  <div className="flex items-center justify-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Jusqu'à 1000 RDV/mois</span>
                   </div>
@@ -386,21 +386,21 @@ export default function ProfessionalPlans() {
                   Professionnel
                 </h3>
                 
-                <p className="text-violet-100 text-sm mb-6">
+                <p className="text-white/90 text-sm mb-6 font-medium">
                   Le plus populaire
                 </p>
 
                 {/* 3 éléments descriptifs */}
                 <div className="space-y-2 mb-6 text-left">
-                  <div className="flex items-center text-sm text-violet-100">
+                  <div className="flex items-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Tout de l'Essentiel</span>
                   </div>
-                  <div className="flex items-center text-sm text-violet-100">
+                  <div className="flex items-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Analytics avancés</span>
                   </div>
-                  <div className="flex items-center text-sm text-violet-100">
+                  <div className="flex items-center text-sm text-white font-medium">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Jusqu'à 1000 RDV/mois</span>
                   </div>
