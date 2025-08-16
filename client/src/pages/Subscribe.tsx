@@ -164,7 +164,7 @@ export default function Subscribe() {
                 Commencez votre essai gratuit
               </h2>
               <p className="text-gray-600">
-                14 jours gratuits • Aucune carte bancaire requise
+                Essai gratuit 7 jours - sans engagement • Aucune carte bancaire requise
               </p>
             </div>
 
@@ -310,7 +310,7 @@ export default function Subscribe() {
                   ) : (
                     <>
                       <CreditCard className="w-4 h-4 mr-2" />
-                      Commencer mon essai gratuit de 14 jours
+                      Essai gratuit 7 jours - sans engagement
                     </>
                   )}
                 </Button>
@@ -370,7 +370,7 @@ export default function Subscribe() {
                 <div className="flex items-center gap-3">
                   <Clock className="w-5 h-5 text-violet-500" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">14 jours d'essai gratuit</h3>
+                    <h3 className="font-semibold text-gray-900">Essai gratuit 7 jours - sans engagement</h3>
                     <p className="text-sm text-gray-600">Testez toutes les fonctionnalités sans engagement</p>
                   </div>
                 </div>

@@ -157,7 +157,7 @@ export default function FreeTrialSignup() {
                 Compte créé avec succès !
               </h1>
               <p className="text-gray-600">
-                Votre essai gratuit de 14 jours a commencé
+                Votre essai gratuit 7 jours - sans engagement a commencé
               </p>
             </div>
 
@@ -169,7 +169,7 @@ export default function FreeTrialSignup() {
                       <Clock className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="text-left">
-                      <div className="font-medium">14 jours d'essai gratuit</div>
+                      <div className="font-medium">Essai gratuit 7 jours - sans engagement</div>
                       <div className="text-gray-500">Accès complet à toutes les fonctionnalités</div>
                     </div>
                   </div>
@@ -238,7 +238,7 @@ export default function FreeTrialSignup() {
               Créer un compte professionnel
             </h1>
             <p className="text-gray-600">
-              Essai gratuit 14 jours · Sans engagement
+              Essai gratuit 7 jours - sans engagement
             </p>
           </div>
 

@@ -8,6 +8,7 @@ import avyentoLogo from "@assets/avyento. (1)_1755286272417.png";
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
   const [, setSelectedPlan] = useState<string | null>(null);
+  const [isYearly, setIsYearly] = useState(false);
 
   const plans = [
     {
@@ -142,20 +143,31 @@ export default function ProfessionalPlans() {
             Choisissez l'excellence pour votre salon
           </h1>
           <p className="text-gray-600 text-base sm:text-lg px-4">
-            Essai gratuit de 30 jours - Aucun engagement
+            Essai gratuit 7 jours - sans engagement
           </p>
         </div>
 
         {/* Plan Toggle Buttons */}
         <div className="flex items-center justify-center mb-12 sm:mb-20 space-x-2 sm:space-x-4">
           <Button 
-            className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base"
+            onClick={() => setIsYearly(false)}
+            className={`px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-200 ${
+              !isYearly 
+                ? 'bg-violet-600 hover:bg-violet-700 text-white' 
+                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+            }`}
+            variant={!isYearly ? "default" : "outline"}
           >
             Mensuel
           </Button>
           <Button 
-            variant="outline" 
-            className="border-gray-200 text-gray-600 hover:bg-gray-50 px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base"
+            onClick={() => setIsYearly(true)}
+            className={`px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-200 ${
+              isYearly 
+                ? 'bg-violet-600 hover:bg-violet-700 text-white' 
+                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+            }`}
+            variant={isYearly ? "default" : "outline"}
           >
             Annuel (-20%)
           </Button>
@@ -204,7 +216,7 @@ export default function ProfessionalPlans() {
                 onClick={() => handleSelectPlan('essentiel')}
                 className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                Commencer l'essai gratuit
+                Essai gratuit 7 jours - sans engagement
               </button>
             </CardContent>
           </Card>
@@ -254,7 +266,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('professionnel')}
                   className="w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours - sans engagement
                 </Button>
               </CardContent>
             </Card>
@@ -299,7 +311,7 @@ export default function ProfessionalPlans() {
                 onClick={() => handleSelectPlan('premium')}
                 className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                Commencer l'essai gratuit
+                Essai gratuit 7 jours - sans engagement
               </button>
             </CardContent>
           </Card>
@@ -347,7 +359,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('essentiel')}
                   className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours - sans engagement
                 </button>
               </CardContent>
             </Card>
@@ -398,7 +410,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('professionnel')}
                   className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours - sans engagement
                 </Button>
               </CardContent>
             </Card>
@@ -444,7 +456,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('premium')}
                   className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
-                  Commencer l'essai gratuit
+                  Essai gratuit 7 jours - sans engagement
                 </button>
               </CardContent>
             </Card>

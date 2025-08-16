@@ -143,7 +143,7 @@ export default function SubscriptionPaymentPage() {
                 <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                   <div className="flex items-center gap-2 text-green-800 mb-2">
                     <Check className="w-4 h-4" />
-                    <span className="font-medium">14 jours d'essai gratuit</span>
+                    <span className="font-medium">Essai gratuit 7 jours - sans engagement</span>
                   </div>
                   <p className="text-sm text-green-700">
                     Votre premier paiement aura lieu le {new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString()}
@@ -233,7 +233,7 @@ export default function SubscriptionPaymentPage() {
                   </div>
                   <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
                     <Clock className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-800">Essai 14 jours</span>
+                    <span className="text-sm font-medium text-green-800">Essai 7 jours</span>
                   </div>
                 </div>
 
@@ -262,7 +262,7 @@ export default function SubscriptionPaymentPage() {
                   ) : (
                     <>
                       <CreditCard className="w-4 h-4 mr-2" />
-                      Commencer l'essai gratuit
+                      Essai gratuit 7 jours - sans engagement
                     </>
                   )}
                 </Button>

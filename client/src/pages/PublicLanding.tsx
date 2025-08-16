@@ -715,7 +715,7 @@ export default function PublicLanding() {
               Découvrir nos offres IA
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>
-            <p className="text-sm text-gray-500 mt-3">Essai gratuit 14 jours • Sans engagement</p>
+            <p className="text-sm text-gray-500 mt-3">Essai gratuit 7 jours - sans engagement</p>
           </motion.div>
         </div>
       </section>

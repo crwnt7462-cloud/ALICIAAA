@@ -279,7 +279,7 @@ export default function SalonPayment() {
                     <span className="font-medium text-green-800">Garanties incluses</span>
                   </div>
                   <div className="space-y-1 text-sm text-green-700">
-                    <p>✓ 14 jours d'essai gratuit</p>
+                    <p>✓ Essai gratuit 7 jours - sans engagement</p>
                     <p>✓ Résiliation sans engagement</p>
                     <p>✓ Remboursement intégral si insatisfait</p>
                   </div>

@@ -114,7 +114,7 @@ export default function StripeSuccess() {
             </CardTitle>
             <p className="text-gray-600 mt-2">
               {(sessionData as any)?.metadata?.type === 'subscription' 
-                ? 'Votre essai gratuit de 14 jours a commencé' 
+                ? 'Votre essai gratuit 7 jours - sans engagement a commencé' 
                 : 'Votre réservation est confirmée'}
             </p>
           </CardHeader>
@@ -158,7 +158,7 @@ export default function StripeSuccess() {
                 <ul className="space-y-1 text-sm text-blue-700">
                   <li>• Accès immédiat à votre dashboard professionnel</li>
                   <li>• Configuration de votre salon</li>
-                  <li>• Première facturation dans 14 jours</li>
+                  <li>• Première facturation dans 7 jours</li>
                   <li>• Support disponible 7j/7</li>
                 </ul>
               ) : (

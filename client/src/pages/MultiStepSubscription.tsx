@@ -666,7 +666,7 @@ export default function MultiStepSubscription({ selectedPlan = "basic-pro" }: Mu
 
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-sm text-blue-800">
-                      <strong>Essai gratuit de 14 jours</strong> - Aucun prélèvement immédiat.
+                      <strong>Essai gratuit 7 jours - sans engagement</strong> - Aucun prélèvement immédiat.
                       Vous pourrez annuler à tout moment pendant la période d'essai.
                     </p>
                   </div>
