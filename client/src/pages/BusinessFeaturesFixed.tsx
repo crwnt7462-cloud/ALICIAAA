@@ -78,7 +78,7 @@ export default function BusinessFeaturesFixed() {
   const navigationTabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: Home },
     { id: 'planning', label: 'Planning & RDV', icon: Calendar },
-    { id: 'finance', label: 'Performance & CA', icon: DollarSign },
+    { id: 'finance', label: 'Performance & €', icon: TrendingUp },
     { id: 'clients', label: 'Clients & Relation', icon: Users },
     { id: 'services', label: 'Services & Offres', icon: Package },
     { id: 'employees', label: 'Employés', icon: UserCheck },
@@ -565,7 +565,7 @@ export default function BusinessFeaturesFixed() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
+                  className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
                     activeTab === tab.id
                       ? 'gradient-bg text-white shadow-md'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
