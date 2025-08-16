@@ -35,9 +35,10 @@ export default function Register() {
       price: 29,
       features: [
         "Gestion des rendez-vous",
-        "Base de données clients",
+        "Base de données clients", 
         "Calendrier intégré",
-        "Support email"
+        "Support email",
+        "Design par défaut uniquement"
       ],
       icon: User,
       popular: false
@@ -48,6 +49,7 @@ export default function Register() {
       price: 79,
       features: [
         "Tout du plan Basic Pro",
+        "Personnalisation des couleurs",
         "Gestion des stocks",
         "Notifications SMS",
         "Système de fidélité",

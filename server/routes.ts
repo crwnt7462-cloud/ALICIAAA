@@ -55,6 +55,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Middleware pour vérifier l'accès Advanced Pro ou Premium Pro
+  const requireColorCustomization = async (req: any, res: any, next: any) => {
+    try {
+      const userId = req.user.claims.sub;
+      const hasAccess = await storage.hasColorCustomizationAccess(userId);
+      
+      if (!hasAccess) {
+        return res.status(403).json({ 
+          message: "Accès Advanced Pro ou Premium Pro requis",
+          error: "La personnalisation des couleurs nécessite un abonnement Advanced Pro (79€) ou Premium Pro (149€)"
+        });
+      }
+      
+      next();
+    } catch (error) {
+      console.error("Erreur vérification personnalisation couleurs:", error);
+      res.status(500).json({ message: "Erreur de vérification d'accès" });
+    }
+  };
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -85,6 +105,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Erreur chat IA:", error);
       res.status(500).json({ message: "Erreur lors de la communication avec l'IA" });
+    }
+  });
+
+  // Route pour mettre à jour les couleurs personnalisées (Advanced Pro + Premium Pro uniquement)
+  app.patch('/api/salon/colors', isAuthenticated, requireColorCustomization, async (req: any, res) => {
+    try {
+      const { customColors } = req.body;
+      const userId = req.user.claims.sub;
+      
+      if (!customColors) {
+        return res.status(400).json({ message: "Données de couleurs requises" });
+      }
+
+      // Mettre à jour les couleurs du salon de l'utilisateur
+      const salon = await storage.getSalonByUserId(userId);
+      if (!salon) {
+        return res.status(404).json({ message: "Salon non trouvé" });
+      }
+
+      const updatedSalon = await storage.updateSalon(salon.id, { customColors });
+      res.json({ salon: updatedSalon });
+    } catch (error) {
+      console.error("Erreur mise à jour couleurs:", error);
+      res.status(500).json({ message: "Erreur lors de la mise à jour des couleurs" });
     }
   });
 

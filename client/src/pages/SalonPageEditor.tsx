@@ -89,6 +89,9 @@ export default function SalonPageEditor() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // Vérification d'accès personnalisation couleurs (Advanced Pro + Premium Pro uniquement)
+  const hasColorAccess = user?.subscriptionPlan === 'advanced-pro' || user?.subscriptionPlan === 'premium-pro';
+
   // Données du salon - salon démo par défaut avec chargement différé
   const [salonData, setSalonData] = useState<SalonData | null>({
     id: 'salon-demo',
@@ -1188,48 +1191,67 @@ export default function SalonPageEditor() {
 
         {activeTab === 'couleurs' && (
           <div className="space-y-6">
-            {/* Header avec description */}
+            {/* Header avec description et contrôle d'accès */}
             <Card className="glass-card-amber">
               <CardContent className="p-6 text-center">
                 <Palette className="h-12 w-12 text-amber-600 mx-auto mb-4" />
                 <h2 className="text-xl font-bold mb-2">Personnalisation des couleurs</h2>
-                <p className="text-gray-600">
+                <p className="text-gray-600 mb-4">
                   Changez les couleurs de vos boutons de réservation pour correspondre à votre identité visuelle.
                   L'effet glassmorphism sera conservé avec vos couleurs personnalisées.
                 </p>
+                
+                {/* Affichage du blocage pour Basic Pro */}
+                {!hasColorAccess && (
+                  <div className="mt-4 p-4 bg-violet-50 border border-violet-200 rounded-lg">
+                    <div className="flex items-center justify-center gap-3 mb-3">
+                      <div className="w-8 h-8 bg-violet-100 rounded-full flex items-center justify-center">
+                        🎨
+                      </div>
+                      <div className="text-left">
+                        <h3 className="font-semibold text-violet-800">Personnalisation Premium</h3>
+                        <p className="text-sm text-violet-600">Advanced Pro (79€) ou Premium Pro (149€) requis</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-violet-700">
+                      Débloquez la personnalisation des couleurs avec un abonnement Advanced Pro ou Premium Pro pour créer une identité visuelle unique à votre salon.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
-            {/* Sélecteurs de couleur */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-3">Couleur principale</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={salonData.customColors?.primary || '#f59e0b'}
-                        onChange={(e) => updateField('customColors', {
-                          ...salonData.customColors,
-                          primary: e.target.value
-                        })}
-                        className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
-                      />
-                      <Input
-                        value={salonData.customColors?.primary || '#f59e0b'}
-                        onChange={(e) => updateField('customColors', {
-                          ...salonData.customColors,
-                          primary: e.target.value
-                        })}
-                        className="flex-1 text-sm font-mono"
-                        placeholder="#f59e0b"
-                      />
+            {/* Sélecteurs de couleur - Seulement si l'utilisateur a l'accès */}
+            {hasColorAccess ? (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-3">Couleur principale</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            primary: e.target.value
+                          })}
+                          className="w-16 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                        />
+                        <Input
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          onChange={(e) => updateField('customColors', {
+                            ...salonData.customColors,
+                            primary: e.target.value
+                          })}
+                          className="flex-1 text-sm font-mono"
+                          placeholder="#f59e0b"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les boutons de réservation</p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les boutons de réservation</p>
-                  </div>
                   
                   <div>
                     <label className="block text-sm font-medium mb-3">Couleur accent</label>
@@ -1253,81 +1275,127 @@ export default function SalonPageEditor() {
                         placeholder="#d97706"
                       />
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
+                      <p className="text-xs text-gray-500 mt-1">Couleur utilisée pour les bordures et effets</p>
+                    </div>
                   </div>
-                </div>
-                
-                {/* Contrôle d'intensité */}
-                <div className="mt-6">
-                  <label className="block text-sm font-medium mb-3">
-                    Intensité de couleur : {salonData.customColors?.intensity || 35}%
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs text-gray-500 w-16">Subtile</span>
-                    <input
-                      type="range"
-                      min="5"
-                      max="80"
-                      value={salonData.customColors?.intensity || 35}
-                      onChange={(e) => updateField('customColors', {
-                        ...salonData.customColors,
-                        intensity: parseInt(e.target.value)
-                      })}
-                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                      style={{
-                        background: `linear-gradient(to right, ${salonData.customColors?.primary || '#f59e0b'}40 0%, ${salonData.customColors?.primary || '#f59e0b'}80 100%)`
-                      }}
-                    />
-                    <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
+                  
+                  {/* Contrôle d'intensité */}
+                  <div className="mt-6">
+                    <label className="block text-sm font-medium mb-3">
+                      Intensité de couleur : {salonData.customColors?.intensity || 35}%
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs text-gray-500 w-16">Subtile</span>
+                      <input
+                        type="range"
+                        min="5"
+                        max="80"
+                        value={salonData.customColors?.intensity || 35}
+                        onChange={(e) => updateField('customColors', {
+                          ...salonData.customColors,
+                          intensity: parseInt(e.target.value)
+                        })}
+                        className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                        style={{
+                          background: `linear-gradient(to right, ${salonData.customColors?.primary || '#f59e0b'}40 0%, ${salonData.customColors?.primary || '#f59e0b'}80 100%)`
+                        }}
+                      />
+                      <span className="text-xs text-gray-500 w-16 text-right">Intense</span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Ajuste la visibilité de votre couleur dans les boutons (5% = très subtil, 80% = très visible)
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Ajuste la visibilité de votre couleur dans les boutons (5% = très subtil, 80% = très visible)
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Couleurs prédéfinies */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-4">Thèmes prédéfinis</h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[
-                    { name: 'Ambre Classique', primary: '#f59e0b', accent: '#d97706', desc: 'Chaleureux et professionnel' },
-                    { name: 'Bleu Moderne', primary: '#3b82f6', accent: '#2563eb', desc: 'Confiance et sérénité' },
-                    { name: 'Rose Élégant', primary: '#ec4899', accent: '#db2777', desc: 'Féminité et douceur' },
-                    { name: 'Vert Nature', primary: '#10b981', accent: '#059669', desc: 'Naturel et apaisant' },
-                    { name: 'Violet Royal', primary: '#8b5cf6', accent: '#7c3aed', desc: 'Luxe et créativité' },
-                    { name: 'Rouge Passion', primary: '#ef4444', accent: '#dc2626', desc: 'Énergie et dynamisme' }
-                  ].map((theme) => (
-                    <button
-                      key={theme.name}
-                      onClick={() => updateField('customColors', {
-                        ...salonData.customColors,
-                        primary: theme.primary,
-                        accent: theme.accent
-                      })}
-                      className="p-4 border rounded-lg hover:shadow-lg transition-all text-left group"
-                      style={{ 
-                        borderColor: theme.primary,
-                        background: `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.accent}08 100%)`
-                      }}
-                    >
-                      <div className="flex items-center gap-3 mb-2">
-                        <div 
-                          className="w-6 h-6 rounded-full border"
-                          style={{ backgroundColor: theme.primary, borderColor: theme.accent }}
-                        />
-                        <h4 className="font-medium text-sm">{theme.name}</h4>
+                </CardContent>
+              </Card>
+            ) : (
+              /* Interface de blocage pour utilisateurs Basic Pro */
+              <Card className="opacity-60 pointer-events-none">
+                <CardContent className="p-6 relative">
+                  <div className="absolute inset-0 bg-white/90 rounded-lg flex items-center justify-center z-10">
+                    <div className="text-center p-6">
+                      <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Palette className="h-8 w-8 text-violet-600" />
                       </div>
-                      <p className="text-xs text-gray-600">{theme.desc}</p>
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                      <h3 className="font-semibold text-lg mb-2">Personnalisation verrouillée</h3>
+                      <p className="text-gray-600 mb-4">
+                        La modification des couleurs nécessite un abonnement Advanced Pro (79€) ou Premium Pro (149€).
+                      </p>
+                      <Button 
+                        className="bg-violet-600 hover:bg-violet-700 text-white"
+                        onClick={() => setLocation('/pricing')}
+                      >
+                        Voir les plans
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-semibold text-lg mb-6">Choisir vos couleurs</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-3">Couleur principale</label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="color"
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          disabled
+                          className="w-16 h-12 rounded-lg border border-gray-300"
+                        />
+                        <Input
+                          value={salonData.customColors?.primary || '#f59e0b'}
+                          disabled
+                          className="flex-1 text-sm font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
-            {/* Aperçu en temps réel */}
+            {/* Couleurs prédéfinies - Seulement pour Advanced Pro + Premium Pro */}
+            {hasColorAccess && (
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-4">Thèmes prédéfinis</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {[
+                      { name: 'Ambre Classique', primary: '#f59e0b', accent: '#d97706', desc: 'Chaleureux et professionnel' },
+                      { name: 'Bleu Moderne', primary: '#3b82f6', accent: '#2563eb', desc: 'Confiance et sérénité' },
+                      { name: 'Rose Élégant', primary: '#ec4899', accent: '#db2777', desc: 'Féminité et douceur' },
+                      { name: 'Vert Nature', primary: '#10b981', accent: '#059669', desc: 'Naturel et apaisant' },
+                      { name: 'Violet Royal', primary: '#8b5cf6', accent: '#7c3aed', desc: 'Luxe et créativité' },
+                      { name: 'Rouge Passion', primary: '#ef4444', accent: '#dc2626', desc: 'Énergie et dynamisme' }
+                    ].map((theme) => (
+                      <button
+                        key={theme.name}
+                        onClick={() => updateField('customColors', {
+                          ...salonData.customColors,
+                          primary: theme.primary,
+                          accent: theme.accent
+                        })}
+                        className="p-4 border rounded-lg hover:shadow-lg transition-all text-left group"
+                        style={{ 
+                          borderColor: theme.primary,
+                          background: `linear-gradient(135deg, ${theme.primary}15 0%, ${theme.accent}08 100%)`
+                        }}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <div 
+                            className="w-6 h-6 rounded-full border"
+                            style={{ backgroundColor: theme.primary, borderColor: theme.accent }}
+                          />
+                          <h4 className="font-medium text-sm">{theme.name}</h4>
+                        </div>
+                        <p className="text-xs text-gray-600">{theme.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Aperçu en temps réel - Toujours visible */}
             <Card>
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-4">Aperçu en temps réel</h3>
@@ -1368,7 +1436,10 @@ export default function SalonPageEditor() {
                     </motion.button>
                   </div>
                   <p className="text-center text-sm text-gray-600 mt-4">
-                    ✨ Aperçu de vos boutons avec style moderne et couleurs personnalisées
+                    {hasColorAccess 
+                      ? "✨ Aperçu de vos boutons avec style moderne et couleurs personnalisées"
+                      : "👑 Débloquez la personnalisation avec Advanced Pro (79€) ou Premium Pro (149€)"
+                    }
                   </p>
                 </div>
               </CardContent>

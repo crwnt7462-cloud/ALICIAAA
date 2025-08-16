@@ -1614,6 +1614,20 @@ export class DatabaseStorage implements IStorage {
       return false;
     }
   }
+
+  // Vérification d'accès personnalisation couleurs (Advanced Pro + Premium Pro)
+  async hasColorCustomizationAccess(userId: string): Promise<boolean> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user) return false;
+      
+      const allowedPlans = ['advanced-pro', 'premium-pro'];
+      return allowedPlans.includes(user.subscriptionPlan || '') && user.subscriptionStatus === 'active';
+    } catch (error) {
+      console.error('Erreur hasColorCustomizationAccess:', error);
+      return false;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();
