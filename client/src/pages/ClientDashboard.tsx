@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Calendar, 
   Clock, 
   Star, 
   Gift, 
   Bell, 
   User, 
-  Wallet,
   TrendingUp,
-  MapPin,
   Plus,
-  CalendarCheck,
-  Award,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Calendar
 } from "lucide-react";
 
 export default function ClientDashboard() {
@@ -28,13 +22,6 @@ export default function ClientDashboard() {
   
   // Données simulées pour la démo
   const userName = "Sophie";
-  const nextAppointment = {
-    date: "25 août 2025",
-    time: "14:30",
-    service: "Coupe & Brushing",
-    salon: "Beauty Lash Studio",
-    address: "15 Rue de République, Paris"
-  };
 
   const favoriteSalons = [
     {
@@ -268,13 +255,13 @@ export default function ClientDashboard() {
                 <span className="text-sm text-gray-500">Aujourd'hui</span>
               </div>
             </div>
-            <Button 
+            <button 
               onClick={() => setLocation('/search')}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl flex items-center space-x-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl flex items-center space-x-2 transition-colors"
             >
               <Plus className="w-4 h-4" />
               <span>Nouveau RDV</span>
-            </Button>
+            </button>
           </div>
 
           <div className="flex gap-6 h-[600px]">
