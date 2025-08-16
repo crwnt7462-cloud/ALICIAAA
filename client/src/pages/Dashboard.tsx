@@ -92,14 +92,6 @@ export default function Dashboard() {
             </div>
             
             <button 
-              onClick={() => setLocation('/profile')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
-            >
-              <User className="w-5 h-5" />
-              <span>Profil</span>
-            </button>
-            
-            <button 
               onClick={() => setLocation('/planning')}
               className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
             >
@@ -108,35 +100,51 @@ export default function Dashboard() {
             </button>
             
             <button 
+              onClick={() => setLocation('/clients')}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
+            >
+              <Users className="w-5 h-5" />
+              <span>Clients</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/services')}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
+            >
+              <Settings className="w-5 h-5" />
+              <span>Services</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/staff')}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
+            >
+              <User className="w-5 h-5" />
+              <span>Équipe</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/inventory')}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>Stock</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/salon-policies')}
+              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
+            >
+              <MessageSquare className="w-5 h-5" />
+              <span>Politiques</span>
+            </button>
+            
+            <button 
               onClick={() => setLocation('/settings')}
               className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
             >
               <Settings className="w-5 h-5" />
               <span>Paramètres</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/messages')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
-            >
-              <MessageSquare className="w-5 h-5" />
-              <span>Messages</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/analytics')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
-            >
-              <BarChart3 className="w-5 h-5" />
-              <span>Analytics</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/support')}
-              className="w-full flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl transition-colors"
-            >
-              <HelpCircle className="w-5 h-5" />
-              <span>Support</span>
             </button>
           </nav>
           
@@ -274,6 +282,24 @@ export default function Dashboard() {
                 <Users className="w-4 h-4 mr-3" />
                 Clients
               </Button>
+              
+              <Button 
+                variant="ghost" 
+                onClick={() => setLocation('/inventory')}
+                className="w-full justify-start text-gray-700 hover:bg-gray-50"
+              >
+                <BarChart3 className="w-4 h-4 mr-3" />
+                Gérer le stock
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                onClick={() => setLocation('/analytics-dashboard')}
+                className="w-full justify-start text-gray-700 hover:bg-gray-50"
+              >
+                <TrendingUp className="w-4 h-4 mr-3" />
+                Analytics
+              </Button>
             </CardContent>
           </Card>
 
@@ -318,13 +344,13 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Mon salon */}
+          {/* Gestion salon */}
           <Card className="bg-white rounded-2xl shadow-sm border-0">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Mon salon</CardTitle>
+              <CardTitle className="text-lg font-semibold text-gray-900">Gestion du salon</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/salon-page-editor')}>
                 <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
                   <Settings className="w-5 h-5 text-blue-600" />
                 </div>
@@ -332,16 +358,10 @@ export default function Dashboard() {
                   <p className="font-medium text-gray-900">Modifier mon salon</p>
                   <p className="text-sm text-gray-500">Personnaliser votre salon</p>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setLocation('/salon-editor')}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
               </div>
               
-              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/salon/demo-user')}>
                 <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center">
                   <Share2 className="w-5 h-5 text-green-600" />
                 </div>
@@ -349,26 +369,100 @@ export default function Dashboard() {
                   <p className="font-medium text-gray-900">Voir ma page publique</p>
                   <p className="text-sm text-gray-500">Page visible par vos clients</p>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setLocation('/salon/demo-user')}
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+              
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/salon-policies')}>
+                <div className="w-10 h-10 bg-purple-50 rounded-full flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-purple-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Politiques du salon</p>
+                  <p className="text-sm text-gray-500">CGU, confidentialité, annulations</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+              
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/staff-management')}>
+                <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
+                  <Users className="w-5 h-5 text-amber-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Gestion équipe</p>
+                  <p className="text-sm text-gray-500">Gérer les professionnels</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
               </div>
             </CardContent>
           </Card>
 
-          {/* Activité récente */}
+          {/* Outils avancés */}
           <Card className="bg-white rounded-2xl shadow-sm border-0">
             <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">Activité récente</CardTitle>
+              <CardTitle className="text-lg font-semibold text-gray-900">Outils avancés</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <Heart className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">Aucune activité récente</p>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/promo-code-management')}>
+                <div className="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center">
+                  <Award className="w-5 h-5 text-yellow-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Codes promo</p>
+                  <p className="text-sm text-gray-500">Gérer les promotions</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+              
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/stock-alerts')}>
+                <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                  <Bell className="w-5 h-5 text-red-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Alertes stock</p>
+                  <p className="text-sm text-gray-500">Gérer les alertes de stock</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+              
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/notification-center')}>
+                <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center">
+                  <Bell className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Centre notifications</p>
+                  <p className="text-sm text-gray-500">Toutes les notifications</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Support et aide */}
+          <Card className="bg-white rounded-2xl shadow-sm border-0">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900">Support et aide</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/support')}>
+                <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center">
+                  <HelpCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Centre d'aide</p>
+                  <p className="text-sm text-gray-500">FAQ et support technique</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
+              </div>
+              
+              <div className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer" onClick={() => setLocation('/contact')}>
+                <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-gray-900">Contacter le support</p>
+                  <p className="text-sm text-gray-500">Aide personnalisée</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-400" />
               </div>
             </CardContent>
           </Card>
