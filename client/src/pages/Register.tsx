@@ -92,7 +92,7 @@ export default function Register() {
       </button>
 
       {/* Logo Avyento centré au-dessus du conteneur */}
-      <div className="text-center pt-8 pb-6">
+      <div className="text-center pt-6 pb-3">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
