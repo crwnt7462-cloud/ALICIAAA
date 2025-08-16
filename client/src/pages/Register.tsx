@@ -152,14 +152,17 @@ export default function Register() {
                   {/* Nom */}
                   <div className="space-y-1">
                     <Label htmlFor="lastName" className="text-xs font-medium text-gray-900 text-left block">Nom *</Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Martin"
-                      value={formData.lastName}
-                      onChange={(e) => updateField("lastName", e.target.value)}
-                      className="glass-input"
-                      required
-                    />
+                    <div className="relative">
+                      <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="lastName"
+                        placeholder="Martin"
+                        value={formData.lastName}
+                        onChange={(e) => updateField("lastName", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                      />
+                    </div>
                   </div>
 
                   {/* Nom du salon */}
@@ -181,15 +184,18 @@ export default function Register() {
                   {/* SIRET */}
                   <div className="space-y-1">
                     <Label htmlFor="siret" className="text-xs font-medium text-gray-900 text-left block">Numéro SIRET *</Label>
-                    <Input
-                      id="siret"
-                      placeholder="12345678901234"
-                      value={formData.siret}
-                      onChange={(e) => updateField("siret", e.target.value)}
-                      className="glass-input"
-                      required
-                      maxLength={14}
-                    />
+                    <div className="relative">
+                      <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="siret"
+                        placeholder="12345678901234"
+                        value={formData.siret}
+                        onChange={(e) => updateField("siret", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                        maxLength={14}
+                      />
+                    </div>
                   </div>
 
                   {/* Email professionnel */}
@@ -233,14 +239,17 @@ export default function Register() {
                     {/* Ville */}
                     <div className="space-y-1">
                       <Label htmlFor="city" className="text-xs font-medium text-gray-900 text-left block">Ville *</Label>
-                      <Input
-                        id="city"
-                        placeholder="Paris"
-                        value={formData.city}
-                        onChange={(e) => updateField("city", e.target.value)}
-                        className="glass-input"
-                        required
-                      />
+                      <div className="relative">
+                        <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="city"
+                          placeholder="Paris"
+                          value={formData.city}
+                          onChange={(e) => updateField("city", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
                     </div>
 
                     {/* Adresse complète */}
