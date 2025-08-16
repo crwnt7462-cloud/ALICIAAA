@@ -83,7 +83,7 @@ export default function ProfessionalPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-2 md:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Navigation Header - Style Landing */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
@@ -93,7 +93,7 @@ export default function ProfessionalPlans() {
                 <img 
                   src="/attached_assets/avyento. (1)_1755286272417.png" 
                   alt="Avyento Logo" 
-                  className="h-8 md:h-10 w-auto"
+                  className="h-10 w-auto"
                 />
               </div>
               
@@ -112,13 +112,12 @@ export default function ProfessionalPlans() {
                 </button>
               </nav>
               
-              <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="flex items-center space-x-4">
                 <Button 
                   onClick={() => setLocation('/register')}
-                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-3 md:px-6 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200 text-sm md:text-base"
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
                 >
-                  <span className="hidden sm:inline">Inscription Gratuite</span>
-                  <span className="sm:hidden">Inscription</span>
+                  Inscription Gratuite
                 </Button>
               </div>
             </div>
@@ -135,36 +134,36 @@ export default function ProfessionalPlans() {
           </Badge>
         </div>
 
-        {/* Main Title - Mobile responsive */}
-        <div className="text-center mb-8 md:mb-12 px-4">
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+        {/* Main Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">
             Choisissez l'excellence pour votre salon
           </h1>
-          <p className="text-gray-600 text-base md:text-lg">
+          <p className="text-gray-600 text-lg">
             Essai gratuit de 30 jours - Aucun engagement
           </p>
         </div>
 
-        {/* Plan Toggle Buttons - Mobile responsive */}
-        <div className="flex items-center justify-center mb-8 md:mb-20 space-x-4">
+        {/* Plan Toggle Buttons */}
+        <div className="flex items-center justify-center mb-20 space-x-4">
           <Button 
-            className="bg-violet-600 hover:bg-violet-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-full font-medium text-sm md:text-base"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full font-medium"
           >
             Mensuel
           </Button>
           <Button 
             variant="outline" 
-            className="border-gray-200 text-gray-600 hover:bg-gray-50 px-4 md:px-8 py-2 md:py-3 rounded-full font-medium text-sm md:text-base"
+            className="border-gray-200 text-gray-600 hover:bg-gray-50 px-8 py-3 rounded-full font-medium"
           >
             Annuel (-20%)
           </Button>
         </div>
 
-        {/* Pricing Cards - Responsive Layout */}
-        <div className="relative flex flex-col md:flex-row md:items-start md:justify-center min-h-auto md:min-h-[500px] mb-8 md:mb-20 space-y-6 md:space-y-0">
-          {/* Carte de gauche - Stack sur mobile, inclinée sur desktop */}
-          <div className="relative md:absolute md:left-0 md:top-16 mx-auto md:mx-0" style={{transform: 'md:rotate(-5deg)'}}>
-            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 max-w-full overflow-hidden">
+        {/* Pricing Cards - Exact Slay Layout */}
+        <div className="relative flex items-start justify-center min-h-[500px] mb-20">
+          {/* Carte de gauche - décalée vers le bas et inclinée */}
+          <div className="absolute left-0 top-16" style={{transform: 'rotate(-5deg)'}}>
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
                   <div className="flex items-baseline justify-center mb-2">
@@ -192,14 +191,14 @@ export default function ProfessionalPlans() {
             </Card>
           </div>
 
-          {/* Carte centrale - Stack sur mobile, surélevée sur desktop */}
-          <div className="relative md:z-10 mx-auto md:mx-0">
-            <div className="md:absolute md:-top-3 md:left-1/2 md:transform md:-translate-x-1/2 mb-4 md:mb-0 text-center">
+          {/* Carte centrale - surélevée */}
+          <div className="relative z-10">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
                 Le plus populaire
               </Badge>
             </div>
-            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 w-96 max-w-full overflow-hidden">
+            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
               <CardContent className="p-10 text-center">
                 <div className="text-white mb-6 pt-6">
                   <div className="flex items-baseline justify-center mb-2">
@@ -227,9 +226,9 @@ export default function ProfessionalPlans() {
             </Card>
           </div>
 
-          {/* Carte de droite - Stack sur mobile, inclinée sur desktop */}
-          <div className="relative md:absolute md:right-0 md:top-16 mx-auto md:mx-0" style={{transform: 'md:rotate(5deg)'}}>
-            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 max-w-full overflow-hidden">
+          {/* Carte de droite - décalée vers le bas et inclinée */}
+          <div className="absolute right-0 top-16" style={{transform: 'rotate(5deg)'}}>
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
                   <div className="flex items-baseline justify-center mb-2">
