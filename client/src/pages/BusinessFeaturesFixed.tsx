@@ -100,15 +100,17 @@ export default function BusinessFeaturesFixed() {
           whileHover={{ scale: 1.02 }}
           className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
         >
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-sm text-gray-500">Aujourd'hui</span>
+          <div className="p-4 text-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Calendar className="w-5 h-5 text-gray-700" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats.todayAppointments}</div>
-            <div className="text-sm text-gray-600">Rendez-vous</div>
+            <h3 className="font-semibold text-gray-900 text-sm mb-1">
+              Aujourd'hui
+            </h3>
+            <p className="text-xl font-bold text-gray-900 mb-1">{stats.todayAppointments}</p>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Rendez-vous
+            </p>
           </div>
         </motion.div>
 
@@ -116,15 +118,17 @@ export default function BusinessFeaturesFixed() {
           whileHover={{ scale: 1.02 }}
           className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
         >
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-emerald-600" />
-              </div>
-              <span className="text-sm text-gray-500">CA jour</span>
+          <div className="p-4 text-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <DollarSign className="w-5 h-5 text-gray-700" />
             </div>
-            <div className="text-2xl font-bold text-gray-900">{stats.todayRevenue}€</div>
-            <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+            <h3 className="font-semibold text-gray-900 text-sm mb-1">
+              CA jour
+            </h3>
+            <p className="text-xl font-bold text-gray-900 mb-1">{stats.todayRevenue}€</p>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Chiffre d'affaires
+            </p>
           </div>
         </motion.div>
 
@@ -521,8 +525,9 @@ export default function BusinessFeaturesFixed() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30"
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
     >
+      <div className="max-w-md mx-auto space-y-8">
       {/* Hero Section avec logo Avyento */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
@@ -654,15 +659,11 @@ export default function BusinessFeaturesFixed() {
         {renderContent()}
       </motion.div>
 
-      {/* Footer */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
-        className="text-center text-xs text-gray-500 pb-4 mt-16"
-      >
-        <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-      </motion.div>
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-500 pb-4">
+          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+        </div>
+      </div>
     </motion.div>
   );
 }
