@@ -15,6 +15,8 @@ import {
   professionals,
   appointments,
   reviews,
+  subscriptionPlans,
+  userSubscriptions,
   type User,
   type ClientAccount,
   type Service,
@@ -30,7 +32,11 @@ import {
   type InsertSalonRegistration,
   type InsertSubscription,
   type ProfessionalSettings,
-  type InsertProfessionalSettings
+  type InsertProfessionalSettings,
+  type SubscriptionPlan,
+  type UserSubscription,
+  type InsertSubscriptionPlan,
+  type InsertUserSubscription
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -156,6 +162,16 @@ export interface IStorage {
   deleteStaff(staffId: string): Promise<void>;
   createSubscription(subscriptionData: any): Promise<any>;
   getSubscriptionsByUserId(userId: string): Promise<any[]>;
+  
+  // Subscription Plans operations
+  getSubscriptionPlans(): Promise<SubscriptionPlan[]>;
+  getSubscriptionPlan(planId: string): Promise<SubscriptionPlan | undefined>;
+  createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan>;
+  
+  // User Subscriptions operations
+  getUserSubscription(userId: string): Promise<UserSubscription | undefined>;
+  createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
+  updateUserSubscription(userId: string, data: Partial<UserSubscription>): Promise<UserSubscription>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1530,6 +1546,60 @@ export class DatabaseStorage implements IStorage {
       console.error('Erreur getAllProfessionals:', error);
       return [];
     }
+  }
+
+  // =============================================
+  // SUBSCRIPTION OPERATIONS
+  // =============================================
+
+  async getSubscriptionPlans(): Promise<SubscriptionPlan[]> {
+    try {
+      const plans = await db.select().from(subscriptionPlans);
+      return plans;
+    } catch (error) {
+      console.error('Erreur getSubscriptionPlans:', error);
+      return [];
+    }
+  }
+
+  async getSubscriptionPlan(planId: string): Promise<SubscriptionPlan | undefined> {
+    try {
+      const [plan] = await db.select().from(subscriptionPlans).where(eq(subscriptionPlans.id, planId));
+      return plan;
+    } catch (error) {
+      console.error('Erreur getSubscriptionPlan:', error);
+      return undefined;
+    }
+  }
+
+  async createSubscriptionPlan(planData: InsertSubscriptionPlan): Promise<SubscriptionPlan> {
+    const [plan] = await db.insert(subscriptionPlans).values(planData).returning();
+    return plan;
+  }
+
+  async getUserSubscription(userId: string): Promise<UserSubscription | undefined> {
+    try {
+      const [subscription] = await db.select()
+        .from(userSubscriptions)
+        .where(eq(userSubscriptions.userId, userId));
+      return subscription;
+    } catch (error) {
+      console.error('Erreur getUserSubscription:', error);
+      return undefined;
+    }
+  }
+
+  async createUserSubscription(subscriptionData: InsertUserSubscription): Promise<UserSubscription> {
+    const [subscription] = await db.insert(userSubscriptions).values(subscriptionData).returning();
+    return subscription;
+  }
+
+  async updateUserSubscription(userId: string, data: Partial<UserSubscription>): Promise<UserSubscription> {
+    const [subscription] = await db.update(userSubscriptions)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(userSubscriptions.userId, userId))
+      .returning();
+    return subscription;
   }
 }
 

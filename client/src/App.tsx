@@ -552,7 +552,7 @@ function Router() {
   if (location === '/client/dashboard') {
     return (
       <div className="h-full">
-        <ClientDashboard />
+        <ClientProDashboard />
       </div>
     );
   }
@@ -696,7 +696,7 @@ function Router() {
     const subscriptionId = location.split('/')[3];
     return (
       <div className="h-full">
-        <SubscriptionPayment subscriptionId={subscriptionId || ""} />
+        <ModernSubscriptionPlans />
       </div>
     );
   }

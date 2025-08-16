@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft } from "lucide-react";
+import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft, Check, Star, Crown } from "lucide-react";
 import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
@@ -26,6 +26,51 @@ export default function Register() {
     city: ""
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string>("basic-pro");
+
+  const subscriptionPlans = [
+    {
+      id: "basic-pro",
+      name: "Basic Pro",
+      price: 29,
+      features: [
+        "Gestion des rendez-vous",
+        "Base de données clients",
+        "Calendrier intégré",
+        "Support email"
+      ],
+      icon: User,
+      popular: false
+    },
+    {
+      id: "advanced-pro",
+      name: "Advanced Pro",
+      price: 79,
+      features: [
+        "Tout du plan Basic Pro",
+        "Gestion des stocks",
+        "Notifications SMS",
+        "Système de fidélité",
+        "Statistiques détaillées"
+      ],
+      icon: Star,
+      popular: true
+    },
+    {
+      id: "premium-pro",
+      name: "Premium Pro",
+      price: 149,
+      features: [
+        "Tout du plan Advanced Pro",
+        "Intelligence Artificielle",
+        "Messagerie directe clients",
+        "Analytics avancés",
+        "Support prioritaire"
+      ],
+      icon: Crown,
+      popular: false
+    }
+  ];
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,14 +98,17 @@ export default function Register() {
     try {
       const { confirmPassword, ...registerData } = formData;
       
-      // Inscription directe sans vérification par code
-      const response = await apiRequest("POST", "/api/register/professional", registerData);
+      // Inscription avec plan d'abonnement sélectionné
+      const response = await apiRequest("POST", "/api/register/professional", {
+        ...registerData,
+        subscriptionPlan: selectedPlan
+      });
       const data = await response.json();
 
       if (response.ok) {
         toast({
           title: "Salon créé avec succès !",
-          description: "Vous pouvez maintenant vous connecter et gérer votre salon"
+          description: `Abonnement ${subscriptionPlans.find(p => p.id === selectedPlan)?.name} activé`
         });
         setLocation("/pro-login");
       } else {
@@ -303,25 +351,101 @@ export default function Register() {
                         />
                       </div>
                     </div>
+                </div>
+              </div>
+            </div>
 
-                    {/* Case à cocher CGU */}
-                    <div className="flex items-start space-x-3 mt-4">
-                      <input
-                        type="checkbox"
-                        id="acceptTerms"
-                        checked={acceptTerms}
-                        onChange={(e) => setAcceptTerms(e.target.checked)}
-                        className="mt-1 w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
-                        required
-                      />
-                      <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
-                        J'accepte les{" "}
-                        <span className="text-violet-600 hover:text-violet-700 underline cursor-pointer">
-                          CGU Avyento
-                        </span>
-                        {" "}*
-                      </label>
-                    </div>
+            {/* Section Plans d'Abonnement - séparée en dessous */}
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-6">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold mb-2 text-gray-900">Choisissez votre plan</h2>
+                <p className="text-gray-600">Sélectionnez l'abonnement qui correspond à vos besoins</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-4">
+                {subscriptionPlans.map((plan) => {
+                  const IconComponent = plan.icon;
+                  const isSelected = selectedPlan === plan.id;
+                  
+                  return (
+                    <motion.div
+                      key={plan.id}
+                      whileHover={{ scale: 1.02, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`relative cursor-pointer rounded-2xl border-2 p-6 transition-all duration-300 ${
+                        isSelected 
+                          ? 'border-violet-500 bg-violet-50 shadow-lg' 
+                          : 'border-gray-200 bg-white hover:border-violet-300 hover:shadow-md'
+                      } ${plan.popular ? 'ring-2 ring-violet-200' : ''}`}
+                      onClick={() => setSelectedPlan(plan.id)}
+                    >
+                      {plan.popular && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <span className="bg-gradient-to-r from-violet-600 to-purple-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                            Populaire
+                          </span>
+                        </div>
+                      )}
+                      
+                      <div className="text-center mb-4">
+                        <div className={`inline-flex p-3 rounded-2xl mb-3 ${
+                          isSelected ? 'bg-violet-100' : 'bg-gray-100'
+                        }`}>
+                          <IconComponent className={`h-6 w-6 ${
+                            isSelected ? 'text-violet-600' : 'text-gray-600'
+                          }`} />
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                        <div className="mt-2">
+                          <span className="text-3xl font-bold text-gray-900">{plan.price}€</span>
+                          <span className="text-gray-600">/mois</span>
+                        </div>
+                      </div>
+
+                      <ul className="space-y-2 mb-4">
+                        {plan.features.map((feature, index) => (
+                          <li key={index} className="flex items-start text-sm">
+                            <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                            <span className="text-gray-700">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {isSelected && (
+                        <div className="absolute inset-0 rounded-2xl border-2 border-violet-500 bg-violet-500/5 pointer-events-none">
+                          <div className="absolute top-3 right-3">
+                            <div className="bg-violet-500 rounded-full p-1">
+                              <Check className="h-3 w-3 text-white" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* CGU et bouton d'inscription */}
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-6">
+              <div className="max-w-md mx-auto">
+                <div className="flex items-start space-x-3 mb-6">
+                  <input
+                    type="checkbox"
+                    id="acceptTerms"
+                    checked={acceptTerms}
+                    onChange={(e) => setAcceptTerms(e.target.checked)}
+                    className="mt-1 w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
+                    required
+                  />
+                  <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
+                    J'accepte les{" "}
+                    <span className="text-violet-600 hover:text-violet-700 underline cursor-pointer">
+                      CGU Avyento
+                    </span>
+                    {" "}*
+                  </label>
+                </div>
 
                 {/* Bouton d'inscription avec le même style que la page d'accueil */}
                 <motion.button
@@ -329,20 +453,20 @@ export default function Register() {
                   disabled={isLoading || !acceptTerms}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4`}
+                  className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
-                  {isLoading ? "Création..." : "Créer mon salon"}
+                  {isLoading ? "Création..." : `Créer mon salon ${subscriptionPlans.find(p => p.id === selectedPlan)?.name} (${subscriptionPlans.find(p => p.id === selectedPlan)?.price}€/mois)`}
                 </motion.button>
 
                 {/* Lien connexion */}
                 <div className="mt-3 text-center">
                   <button
+                    type="button"
                     onClick={() => setLocation("/pro-login")}
                     className="text-xs text-violet-600 hover:text-violet-700 transition-colors"
                   >
                     Déjà un compte ? Se connecter
                   </button>
-                </div>
                 </div>
               </div>
             </div>

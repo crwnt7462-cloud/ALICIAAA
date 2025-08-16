@@ -36,6 +36,71 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
     storage.salons = new Map();
   }
   
+  // ✅ INITIALISATION DES PLANS D'ABONNEMENT
+  try {
+    const existingPlans = await storage.getSubscriptionPlans();
+    if (existingPlans.length === 0) {
+      console.log('🔧 Initialisation des plans d\'abonnement...');
+      
+      const defaultPlans = [
+        {
+          id: 'basic-pro',
+          name: 'Basic Pro',
+          price: '29.00',
+          currency: 'EUR',
+          billingCycle: 'monthly',
+          features: [
+            'Gestion des rendez-vous',
+            'Base de données clients',
+            'Calendrier intégré',
+            'Support email'
+          ],
+          isPopular: false,
+          isActive: true
+        },
+        {
+          id: 'advanced-pro',
+          name: 'Advanced Pro',
+          price: '79.00',
+          currency: 'EUR',
+          billingCycle: 'monthly',
+          features: [
+            'Tout du plan Basic Pro',
+            'Gestion des stocks',
+            'Notifications SMS',
+            'Système de fidélité',
+            'Statistiques détaillées'
+          ],
+          isPopular: true,
+          isActive: true
+        },
+        {
+          id: 'premium-pro',
+          name: 'Premium Pro',
+          price: '149.00',
+          currency: 'EUR',
+          billingCycle: 'monthly',
+          features: [
+            'Tout du plan Advanced Pro',
+            'Intelligence Artificielle',
+            'Messagerie directe clients',
+            'Analytics avancés',
+            'Support prioritaire'
+          ],
+          isPopular: false,
+          isActive: true
+        }
+      ];
+
+      for (const plan of defaultPlans) {
+        await storage.createSubscriptionPlan(plan);
+      }
+      console.log('✅ Plans d\'abonnement initialisés');
+    }
+  } catch (error) {
+    console.error('❌ Erreur initialisation plans:', error);
+  }
+  
   const demoSalonData = {
     id: 'demo-user',
     name: 'Salon Excellence Démo',
@@ -3862,11 +3927,11 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
 
   // INSCRIPTION DIRECTE SANS VERIFICATION PAR CODE
 
-  // ROUTE D'INSCRIPTION DIRECTE POUR PROFESSIONNELS
+  // ROUTE D'INSCRIPTION DIRECTE POUR PROFESSIONNELS AVEC ABONNEMENTS
   app.post('/api/register/professional', async (req, res) => {
     try {
       const userData = req.body;
-      console.log('✅ Inscription professionnelle directe pour:', userData.email);
+      console.log('✅ Inscription professionnelle directe pour:', userData.email, 'Plan:', userData.subscriptionPlan);
       
       if (!userData.email || !userData.firstName || !userData.businessName) {
         return res.status(400).json({ 
@@ -3874,10 +3939,27 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         });
       }
 
+      // Valider le plan d'abonnement
+      const validPlans = ['basic-pro', 'advanced-pro', 'premium-pro'];
+      const selectedPlan = userData.subscriptionPlan || 'basic-pro';
+      
+      if (!validPlans.includes(selectedPlan)) {
+        return res.status(400).json({ 
+          error: 'Plan d\'abonnement invalide' 
+        });
+      }
+
+      // Préparer les données utilisateur avec abonnement
+      const userDataWithSubscription = {
+        ...userData,
+        subscriptionPlan: selectedPlan,
+        subscriptionStatus: 'active' // Pour la démo, on active directement
+      };
+
       // Créer directement le compte professionnel
       let createdAccount = null;
       try {
-        createdAccount = await storage.createUser(userData);
+        createdAccount = await storage.createUser(userDataWithSubscription);
         console.log('✅ Compte professionnel créé avec succès:', userData.email);
       } catch (error: any) {
         console.error('❌ Erreur création compte pro:', error);
@@ -3889,11 +3971,30 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
         throw error;
       }
 
+      // Créer l'abonnement utilisateur dans la table dédiée
+      try {
+        await storage.createUserSubscription({
+          userId: createdAccount.id,
+          planId: selectedPlan,
+          status: 'active',
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 jours
+        });
+        console.log('✅ Abonnement créé pour:', createdAccount.id, 'Plan:', selectedPlan);
+      } catch (error) {
+        console.error('❌ Erreur création abonnement:', error);
+        // Continue sans bloquer l'inscription
+      }
+
       res.json({ 
         success: true, 
-        message: 'Compte professionnel créé avec succès',
+        message: `Salon créé avec succès! Abonnement ${selectedPlan.replace('-', ' ').toUpperCase()} activé`,
         userType: 'professional',
-        account: createdAccount
+        account: createdAccount,
+        subscription: {
+          plan: selectedPlan,
+          status: 'active'
+        }
       });
 
     } catch (error: any) {
@@ -3943,6 +4044,42 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
       res.status(500).json({ 
         error: 'Erreur serveur lors de l\'inscription' 
       });
+    }
+  });
+
+  // ============= SUBSCRIPTION PLANS API =============
+  
+  // Route pour récupérer les plans d'abonnement
+  app.get('/api/subscription-plans', async (req, res) => {
+    try {
+      const plans = await storage.getSubscriptionPlans();
+      res.json(plans);
+    } catch (error) {
+      console.error('❌ Erreur récupération plans:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // Route pour récupérer l'abonnement d'un utilisateur
+  app.get('/api/user/subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const subscription = await storage.getUserSubscription(userId);
+      
+      if (!subscription) {
+        return res.status(404).json({ error: 'Aucun abonnement trouvé' });
+      }
+      
+      // Récupérer les détails du plan
+      const plan = await storage.getSubscriptionPlan(subscription.planId);
+      
+      res.json({
+        subscription,
+        plan
+      });
+    } catch (error) {
+      console.error('❌ Erreur récupération abonnement:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
     }
   });
 

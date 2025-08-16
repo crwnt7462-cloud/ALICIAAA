@@ -1,216 +1,183 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useLocation } from 'wouter';
-import { useSubscription } from '@/hooks/useSubscription';
-import { SUBSCRIPTION_PLANS } from '../../shared/subscriptionPlans';
-import { 
-  ArrowLeft, 
-  Check, 
-  Crown, 
-  Sparkles, 
-  Users, 
-  Calendar,
-  BarChart3,
-  MessageCircle,
-  Brain,
-  Zap,
-  Star
-} from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Check, Crown, Star, Zap } from "lucide-react";
+import { useLocation } from "wouter";
 
-const iconMapping = {
-  'Gestion des rendez-vous': Calendar,
-  'Fiche client complète': Users,
-  'Planning professionnel': Calendar,
-  'Notifications automatiques': MessageCircle,
-  'Statistiques de base': BarChart3,
-  '🤖 IA Assistant intégrée': Brain,
-  '📊 Analyse prédictive avancée': BarChart3,
-  '💬 Chatbot intelligent pour clients': MessageCircle,
-  '⚡ Optimisation automatique planning': Zap,
-  '🎯 Recommendations personnalisées': Star,
-};
+interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: string;
+  currency: string;
+  billingCycle: string;
+  features: string[];
+  isPopular: boolean;
+  isActive: boolean;
+}
 
-export default function SubscriptionPlans() {
+const SubscriptionPlans = () => {
+  const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
+  const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
-  const { currentPlan, isActive, isBasicPro, isAdvancedPro, isPremiumPro } = useSubscription();
 
-  const handlePlanSelect = (planId: string) => {
-    if (planId === currentPlan && isActive) {
-      return; // Déjà abonné à ce plan
+  useEffect(() => {
+    fetchPlans();
+  }, []);
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch('/api/subscription-plans');
+      if (response.ok) {
+        const data = await response.json();
+        setPlans(data);
+      }
+    } catch (error) {
+      console.error('Erreur récupération plans:', error);
+    } finally {
+      setLoading(false);
     }
-    
-    // Rediriger vers le processus de paiement Stripe
-    setLocation(`/subscribe/${planId}`);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white/40 backdrop-blur-md border-b border-white/30">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                onClick={() => setLocation('/dashboard')}
-                className="glass-button"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Plans d'abonnement</h1>
-                <p className="text-gray-600">Choisissez le plan qui correspond à vos besoins</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  const getPlanIcon = (planId: string) => {
+    switch (planId) {
+      case 'basic-pro':
+        return <Star className="h-6 w-6 text-blue-500" />;
+      case 'advanced-pro':
+        return <Zap className="h-6 w-6 text-purple-500" />;
+      case 'premium-pro':
+        return <Crown className="h-6 w-6 text-amber-500" />;
+      default:
+        return <Star className="h-6 w-6 text-gray-500" />;
+    }
+  };
 
-      {/* Plans */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-6">
-          {SUBSCRIPTION_PLANS.map((plan, index) => {
-            const isCurrentPlan = plan.id === currentPlan;
-            const isPremium = plan.id === 'premium-pro';
-            const isAdvanced = plan.id === 'advanced-pro';
-            
-            return (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`relative ${isPremium ? 'lg:scale-105' : ''}`}
+  const getPlanGradient = (planId: string) => {
+    switch (planId) {
+      case 'basic-pro':
+        return 'from-blue-500 to-cyan-500';
+      case 'advanced-pro':
+        return 'from-purple-500 to-pink-500';
+      case 'premium-pro':
+        return 'from-amber-500 to-orange-500';
+      default:
+        return 'from-gray-500 to-gray-600';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="animate-pulse text-gray-600">Chargement des plans...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4"
+          >
+            Plans d'Abonnement
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
+            Choisissez le plan qui correspond le mieux aux besoins de votre salon
+          </motion.p>
+        </div>
+
+        {/* Plans Grid */}
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              className={`relative backdrop-blur-md bg-white/30 rounded-3xl shadow-2xl p-8 hover:shadow-3xl transition-all duration-300 ${
+                plan.isPopular 
+                  ? 'ring-2 ring-purple-400 scale-105 transform hover:scale-110' 
+                  : 'hover:scale-105 transform'
+              }`}
+            >
+              {/* Badge populaire */}
+              {plan.isPopular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+                    Plus Populaire
+                  </div>
+                </div>
+              )}
+
+              {/* Header plan */}
+              <div className="text-center mb-8">
+                <div className="flex justify-center mb-4">
+                  {getPlanIcon(plan.id)}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <div className="flex items-center justify-center">
+                  <span className="text-4xl font-bold text-gray-900">{plan.price}€</span>
+                  <span className="text-gray-500 ml-1">/mois</span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="space-y-4 mb-8">
+                {plan.features.map((feature, featureIndex) => (
+                  <div key={featureIndex} className="flex items-start">
+                    <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setLocation(`/register?plan=${plan.id}`)}
+                className={`w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r ${getPlanGradient(plan.id)} shadow-lg hover:shadow-xl transition-all duration-300`}
               >
-                <Card className={`h-full ${
-                  isPremium ? 'ring-2 ring-violet-200 bg-gradient-to-br from-violet-50/50 to-purple-50/50' :
-                  isAdvanced ? 'ring-2 ring-amber-200 bg-gradient-to-br from-amber-50/50 to-orange-50/50' :
-                  'bg-white/50'
-                } backdrop-blur-md border-white/40`}>
-                  {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-gradient-to-r from-violet-500 to-purple-600 text-white px-4 py-1">
-                        <Crown className="w-3 h-3 mr-1" />
-                        Le plus populaire
-                      </Badge>
-                    </div>
-                  )}
-                  
-                  <CardHeader className="text-center pb-4">
-                    <div className="flex items-center justify-center mb-4">
-                      {isPremium ? (
-                        <Crown className="w-8 h-8 text-violet-500" />
-                      ) : isAdvanced ? (
-                        <Star className="w-8 h-8 text-amber-500" />
-                      ) : (
-                        <Sparkles className="w-8 h-8 text-blue-500" />
-                      )}
-                    </div>
-                    
-                    <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
-                    
-                    <div className="mt-3">
-                      <span className="text-4xl font-bold text-gray-900">{plan.price}€</span>
-                      <span className="text-gray-600 ml-2">/{plan.interval === 'month' ? 'mois' : 'an'}</span>
-                    </div>
-                    
-                    {isCurrentPlan && isActive && (
-                      <Badge variant="outline" className="mt-3">
-                        Plan actuel
-                      </Badge>
-                    )}
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="space-y-4 mb-6">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-3">✅ Fonctionnalités incluses :</h4>
-                        <ul className="space-y-2">
-                          {plan.features.map((feature, idx) => {
-                            const IconComponent = iconMapping[feature] || Check;
-                            return (
-                              <li key={idx} className="flex items-start space-x-3">
-                                <IconComponent className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-700">{feature}</span>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                      
-                      {plan.restrictions.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold text-gray-900 mb-3">❌ Limitations :</h4>
-                          <ul className="space-y-2">
-                            {plan.restrictions.map((restriction, idx) => (
-                              <li key={idx} className="flex items-start space-x-3">
-                                <div className="w-4 h-4 border border-gray-300 rounded-sm mt-0.5 flex-shrink-0" />
-                                <span className="text-sm text-gray-600">{restriction}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <Button
-                      onClick={() => handlePlanSelect(plan.id)}
-                      disabled={isCurrentPlan && isActive}
-                      className={`w-full ${isPremium ? 'bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700' : ''} glass-button`}
-                    >
-                      {isCurrentPlan && isActive ? (
-                        'Plan actuel'
-                      ) : (
-                        <>
-                          {isPremium ? <Crown className="w-4 h-4 mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                          Choisir ce plan
-                        </>
-                      )}
-                    </Button>
-                    
-                    {isPremium && (
-                      <p className="text-center text-xs text-gray-500 mt-3">
-                        🚀 Toutes les fonctionnalités IA incluses
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            );
-          })}
+                Choisir ce Plan
+              </motion.button>
+            </motion.div>
+          ))}
         </div>
-        
-        {/* Comparaison rapide */}
-        <div className="mt-12 bg-white/30 backdrop-blur-md rounded-lg p-6 border border-white/40">
-          <h3 className="text-lg font-semibold text-center mb-6">🤔 Quelle différence entre les plans ?</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="text-center">
-              <div className="bg-amber-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                <Sparkles className="w-8 h-8 text-amber-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Basic Pro - 29€/mois</h4>
-              <p className="text-sm text-gray-600">
-                Parfait pour débuter avec toutes les fonctionnalités essentielles de gestion de salon
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="bg-violet-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                <Crown className="w-8 h-8 text-violet-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Premium Pro - 149€/mois</h4>
-              <p className="text-sm text-gray-600">
-                Pour les professionnels qui veulent l'IA et des fonctionnalités avancées
-              </p>
-            </div>
+
+        {/* CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-16"
+        >
+          <div className="backdrop-blur-md bg-white/30 rounded-3xl shadow-xl p-8 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">
+              Besoin d'aide pour choisir ?
+            </h3>
+            <p className="text-gray-600 mb-6 text-lg">
+              Notre équipe est là pour vous accompagner dans le choix du plan qui convient le mieux à votre salon.
+            </p>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Contacter un Expert
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
-}
+};
+
+export default SubscriptionPlans;

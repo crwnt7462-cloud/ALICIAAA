@@ -54,6 +54,36 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Table des abonnements disponibles
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: varchar("id").primaryKey(),
+  name: varchar("name").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  currency: varchar("currency").default("EUR"),
+  billingCycle: varchar("billing_cycle").default("monthly"), // monthly, yearly
+  features: jsonb("features").notNull(), // Array of features
+  isPopular: boolean("is_popular").default(false),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Table des souscriptions actives des utilisateurs
+export const userSubscriptions = pgTable("user_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  planId: varchar("plan_id").notNull().references(() => subscriptionPlans.id),
+  status: varchar("status").default("active"), // active, inactive, cancelled, trial
+  startDate: timestamp("start_date").defaultNow(),
+  endDate: timestamp("end_date"),
+  trialEndDate: timestamp("trial_end_date"),
+  cancelledAt: timestamp("cancelled_at"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  stripeCustomerId: varchar("stripe_customer_id"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Client accounts table for customer authentication
 export const clientAccounts = pgTable("client_accounts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1410,3 +1440,24 @@ export const insertSalonPhotoAdvancedSchema = createInsertSchema(salonPhotosAdva
 
 export type InsertSalonAlbumType = z.infer<typeof insertSalonAlbumSchema>;
 export type InsertSalonPhotoAdvancedType = z.infer<typeof insertSalonPhotoAdvancedSchema>;
+
+// Types pour les abonnements
+export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
+export type InsertSubscriptionPlan = typeof subscriptionPlans.$inferInsert;
+export type UserSubscription = typeof userSubscriptions.$inferSelect;
+export type InsertUserSubscription = typeof userSubscriptions.$inferInsert;
+
+// Schémas de validation pour les abonnements
+export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertUserSubscriptionSchema = createInsertSchema(userSubscriptions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertSubscriptionPlanType = z.infer<typeof insertSubscriptionPlanSchema>;
+export type InsertUserSubscriptionType = z.infer<typeof insertUserSubscriptionSchema>;
