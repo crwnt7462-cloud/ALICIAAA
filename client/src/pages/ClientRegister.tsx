@@ -363,127 +363,123 @@ export default function ClientRegister() {
       </div>
 
       {/* Footer identique à la page d'accueil */}
-      <footer className="bg-gray-900 text-white py-16">
-        <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div className="md:col-span-1">
-              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-violet-400 to-purple-300 bg-clip-text text-transparent">
-                Avyento
-              </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                La plateforme IA qui révolutionne la beauté et optimise vos revenus professionnels.
+      <footer className="bg-gray-900 text-white py-8 w-full">
+        <div className="mx-auto px-6 lg:px-12 xl:px-20">
+          <div className="grid md:grid-cols-5 gap-8">
+            <div>
+              <h3 className="text-xl font-bold mb-4">Avyento</h3>
+              <p className="text-gray-400 text-sm">
+                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4 text-white">Services</h4>
-              <div className="space-y-2">
-                <button
+              <h4 className="font-semibold mb-4">Services</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/search')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Coiffure
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/search')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Esthétique
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/search')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Manucure
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/search')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Massage
-                </button>
+                </div>
               </div>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4 text-white">Partenaires</h4>
-              <div className="space-y-2">
-                <button
+              <h4 className="font-semibold mb-4">Partenaires</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/devenir-partenaire')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Devenir partenaire
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/tarifs-pros')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Tarifs professionnels
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/formation')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Formation & Support
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/success-stories')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Témoignages
-                </button>
+                </div>
               </div>
             </div>
-            
             <div>
-              <h4 className="font-semibold mb-4 text-white">Support</h4>
-              <div className="space-y-2">
-                <button
+              <h4 className="font-semibold mb-4">Support</h4>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/centre-aide')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Centre d'aide
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/contact')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Contact
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/cgu')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   CGU
-                </button>
-                <button
+                </div>
+                <div 
+                  className="cursor-pointer hover:text-white transition-colors"
                   onClick={() => setLocation('/confidentialite')}
-                  className="block text-gray-400 hover:text-white transition-colors text-sm"
                 >
                   Confidentialité
-                </button>
+                </div>
               </div>
             </div>
+
           </div>
           
-          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
               © 2024 Avyento. Tous droits réservés.
             </p>
-            <div className="flex space-x-4">
-              <a href="https://twitter.com/avyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            <div className="flex gap-3 mt-4 md:mt-0">
+              <a href="https://twitter.com/avyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84" />
                 </svg>
               </a>
-              <a href="https://instagram.com/useavyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.004 5.367 18.637.001 12.017.001zM8.449 4.267c.77 0 1.398.628 1.398 1.398s-.628 1.398-1.398 1.398-1.398-.628-1.398-1.398.628-1.398 1.398-1.398zm7.718 0c4.209 0 7.718 3.509 7.718 7.718s-3.509 7.718-7.718 7.718-7.718-3.509-7.718-7.718 3.509-7.718 7.718-7.718zm0 2.325c-2.977 0-5.393 2.416-5.393 5.393s2.416 5.393 5.393 5.393 5.393-2.416 5.393-5.393-2.416-5.393-5.393-5.393z" clipRule="evenodd"/>
+              <a href="https://instagram.com/useavyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 0C7.284 0 6.944.012 5.877.06 2.246.227.227 2.242.06 5.877.012 6.944 0 7.284 0 10s.012 3.056.06 4.123c.167 3.632 2.182 5.65 5.817 5.817C6.944 19.988 7.284 20 10 20s3.056-.012 4.123-.06c3.629-.167 5.65-2.182 5.817-5.817C19.988 13.056 20 12.716 20 10s-.012-3.056-.06-4.123C19.833 2.246 17.818.227 14.183.06 13.056.012 12.716 0 10 0zm0 1.802c2.67 0 2.987.01 4.042.059 2.71.123 3.975 1.409 4.099 4.099.048 1.054.057 1.37.057 4.04 0 2.672-.01 2.988-.057 4.042-.124 2.687-1.387 3.975-4.1 4.099-1.054.048-1.37.058-4.041.058-2.67 0-2.987-.01-4.04-.058-2.717-.124-3.977-1.416-4.1-4.1-.048-1.054-.058-1.369-.058-4.041 0-2.67.01-2.986.058-4.04.124-2.69 1.387-3.977 4.1-4.1 1.054-.048 1.37-.058 4.04-.058zM10 4.865a5.135 5.135 0 100 10.27 5.135 5.135 0 000-10.27zm0 8.468a3.333 3.333 0 110-6.666 3.333 3.333 0 010 6.666zm5.338-9.87a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z" clipRule="evenodd" />
                 </svg>
               </a>
-              <a href="https://tiktok.com/@avyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+              <a href="https://tiktok.com/@avyento" target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.197 10.157v4.841c0 2.13-1.72 3.85-3.85 3.85s-3.85-1.72-3.85-3.85 1.72-3.85 3.85-3.85c.212 0 .424.017.63.052v2.08c-.2-.035-.408-.052-.63-.052-1.02 0-1.85.83-1.85 1.85s.83 1.85 1.85 1.85 1.85-.83 1.85-1.85V2h2v2.9c0 1.61 1.31 2.92 2.92 2.92V9.9c-1.61 0-2.92-1.31-2.92-2.92v-.74zm4.18-3.22c-.78-.78-1.26-1.85-1.26-3.04V2h1.89c.13 1.19.61 2.26 1.39 3.04.78.78 1.85 1.26 3.04 1.26v1.89c-1.19-.13-2.26-.61-3.04-1.39z"/>
                 </svg>
               </a>
             </div>
