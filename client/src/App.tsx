@@ -849,9 +849,9 @@ function Router() {
     );
   }
 
-  // Page Dashboard desktop - Plein écran sans contraintes
+  // Page Dashboard desktop - Style Peymen
   if (location === '/dashboard-desktop') {
-    return <Dashboard />;
+    return <DashboardPeymen />;
   }
 
   // Page Business Features en plein écran desktop avec navigation mobile conservée
