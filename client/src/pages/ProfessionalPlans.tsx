@@ -367,7 +367,7 @@ export default function ProfessionalPlans() {
 
           {/* Carte CENTRALE - Professionnel (LE PLUS POPULAIRE) surélevée AU CENTRE */}
           <div className="absolute left-1/2 transform -translate-x-1/2 top-0 z-20">
-            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
               <Badge className="bg-white/90 text-violet-800 px-6 py-2 rounded-full border border-white/30 text-sm font-bold shadow-lg">
                 Le plus populaire
               </Badge>
