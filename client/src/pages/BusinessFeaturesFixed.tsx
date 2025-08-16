@@ -149,7 +149,15 @@ export default function BusinessFeaturesFixed() {
             <span className="text-sm text-gray-500">Objectif mois</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{Math.round((stats.monthRevenue / stats.monthTarget) * 100)}%</div>
-          <div className="text-sm text-gray-600">{stats.monthRevenue}€ / {stats.monthTarget}€</div>
+          <div className="text-sm text-gray-600 mb-3">{stats.monthRevenue}€ / {stats.monthTarget}€</div>
+          
+          {/* Jauge de progression */}
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div 
+              className="bg-gradient-to-r from-purple-500 to-violet-600 h-2.5 rounded-full transition-all duration-500"
+              style={{ width: `${Math.min((stats.monthRevenue / stats.monthTarget) * 100, 100)}%` }}
+            ></div>
+          </div>
         </motion.div>
       </div>
 
