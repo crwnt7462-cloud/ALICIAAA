@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { 
   Calendar, 
   Users, 
-  TrendingUp, 
   Clock, 
   Settings, 
-  Bell, 
   Search, 
   ChevronRight,
   Home,
   User,
   BarChart3,
   MessageSquare,
-  HelpCircle,
-  Menu,
   ChevronDown,
   MapPin,
   Activity,
@@ -25,14 +21,9 @@ import {
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
-  const [selectedPeriod, setSelectedPeriod] = useState('Monthly');
   
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
-  });
-
-  const { data: revenueChart = [], isLoading: revenueLoading } = useQuery({
-    queryKey: ["/api/dashboard/revenue-chart"],
   });
 
   const { data: popularServices = [], isLoading: servicesLoading } = useQuery({
@@ -47,7 +38,7 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/weekly-new-clients"],
   });
 
-  if (statsLoading || revenueLoading) {
+  if (statsLoading) {
     return (
       <div className="flex h-screen bg-gray-50">
         <div className="w-20 bg-gradient-to-b from-purple-600 to-purple-700"></div>
@@ -65,17 +56,11 @@ export default function Dashboard() {
     );
   }
 
-  const clients = [
-    { name: "Sophie Martin", service: "Coupe & Brushing", time: "10h30", avatar: "SM" },
-    { name: "Marie Dubois", service: "Couleur", time: "14h00", avatar: "MD" },
-    { name: "Julie Leroy", service: "Manucure", time: "15h30", avatar: "JL" },
-    { name: "Emma Rousseau", service: "Soin Visage", time: "16h45", avatar: "ER" },
-    { name: "Laura Bernard", service: "Balayage", time: "9h15", avatar: "LB" },
-  ];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
-      <div className="flex h-screen overflow-hidden">
+      <div className="flex min-h-screen">
         {/* Sidebar Glass */}
         <div className="w-20 flex flex-col items-center py-6" style={{
           backdropFilter: 'blur(20px) saturate(180%)',
@@ -158,7 +143,7 @@ export default function Dashboard() {
         {/* Contenu principal */}
         <div className="flex-1 flex">
           {/* Zone principale */}
-          <div className="flex-1 p-8 bg-gray-50">
+          <div className="flex-1 p-8 bg-gray-50 overflow-y-auto max-h-screen">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -243,7 +228,7 @@ export default function Dashboard() {
                 {/* Montant principal */}
                 <div className="mb-8">
                   <h2 className="text-4xl font-bold text-gray-900 mb-1">
-                    {statsLoading ? "..." : `${stats?.monthlyRevenue || 0}€`}
+                    {statsLoading ? "..." : `${(stats as any)?.monthlyRevenue || 0}€`}
                   </h2>
                 </div>
                 
@@ -303,8 +288,8 @@ export default function Dashboard() {
                       <h3 className="font-semibold text-lg">Services Populaires</h3>
                       <p className="text-sm opacity-75">
                         {servicesLoading ? "Chargement..." : 
-                         popularServices.length > 0 ? 
-                         `${popularServices[0]?.serviceName} (${popularServices[0]?.bookingCount} réservations)` : 
+                         (popularServices as any[]).length > 0 ? 
+                         `${(popularServices as any)[0]?.serviceName} (${(popularServices as any)[0]?.bookingCount} réservations)` : 
                          "Aucun service encore"}
                       </p>
                     </div>
@@ -327,7 +312,7 @@ export default function Dashboard() {
                         <h3 className="font-semibold text-lg">Planning Aujourd'hui</h3>
                         <p className="text-sm opacity-75">Objectif: 100% rempli</p>
                         <p className="text-2xl font-bold mt-1">
-                          {appointmentsLoading ? "..." : `${todayAppointments?.length || 0} RDV`}
+                          {appointmentsLoading ? "..." : `${(todayAppointments as any[])?.length || 0} RDV`}
                         </p>
                         <p className="text-xs opacity-75">Août 2025</p>
                       </div>
@@ -350,7 +335,7 @@ export default function Dashboard() {
                 <Users className="w-6 h-6 text-gray-700" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
-              <p className="text-sm text-gray-500 mb-4">{statsLoading ? "Chargement..." : `${stats?.totalClients || 0} clients actifs`}</p>
+              <p className="text-sm text-gray-500 mb-4">{statsLoading ? "Chargement..." : `${(stats as any)?.totalClients || 0} clients actifs`}</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Fidélité</span>
@@ -362,7 +347,7 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Nouveaux cette semaine</span>
-                <span className="text-gray-700">{weeklyNewClients?.count || 0} clients</span>
+                <span className="text-gray-700">{(weeklyNewClients as any)?.count || 0} clients</span>
               </div>
             </div>
             
