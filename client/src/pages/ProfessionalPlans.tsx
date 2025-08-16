@@ -431,28 +431,19 @@ export default function ProfessionalPlans() {
 
       {/* Section fonctionnalités */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="space-y-8">
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Marketing automatisé</h3>
-                <p className="text-gray-600">Campagnes de fidélisation et promotions personnalisées pour augmenter votre chiffre d'affaires</p>
-              </div>
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white rounded-lg p-6 border border-gray-100 hover:border-violet-200 transition-colors">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Marketing automatisé</h3>
+              <p className="text-gray-600 text-sm">Campagnes de fidélisation et promotions personnalisées pour augmenter votre chiffre d'affaires</p>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Gestion complète</h3>
-                <p className="text-gray-600">Clients, agendas, équipe et statistiques centralisés dans une interface simple</p>
-              </div>
+            <div className="bg-white rounded-lg p-6 border border-gray-100 hover:border-violet-200 transition-colors">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Gestion complète</h3>
+              <p className="text-gray-600 text-sm">Clients, agendas, équipe et statistiques centralisés dans une interface simple</p>
             </div>
-            <div className="flex items-start gap-4">
-              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Analyses détaillées</h3>
-                <p className="text-gray-600">Rapports et insights pour optimiser vos performances et prendre les bonnes décisions</p>
-              </div>
+            <div className="bg-white rounded-lg p-6 border border-gray-100 hover:border-violet-200 transition-colors">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">Analyses détaillées</h3>
+              <p className="text-gray-600 text-sm">Rapports et insights pour optimiser vos performances et prendre les bonnes décisions</p>
             </div>
           </div>
         </div>
