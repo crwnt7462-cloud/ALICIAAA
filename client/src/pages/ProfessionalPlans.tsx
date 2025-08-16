@@ -192,11 +192,11 @@ export default function ProfessionalPlans() {
                 </div>
                 <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Gestion clientèle</span>
+                  <span>Jusqu'à 200 RDV/mois</span>
                 </div>
                 <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Jusqu'à 200 RDV/mois</span>
+                  <span>Gestion clientèle</span>
                 </div>
               </div>
               
@@ -335,11 +335,11 @@ export default function ProfessionalPlans() {
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Gestion clientèle</span>
+                    <span>Jusqu'à 200 RDV/mois</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
-                    <span>Jusqu'à 200 RDV/mois</span>
+                    <span>Gestion clientèle</span>
                   </div>
                 </div>
                 
@@ -354,7 +354,7 @@ export default function ProfessionalPlans() {
           </div>
 
           {/* Carte CENTRALE - Professionnel (LE PLUS POPULAIRE) surélevée AU CENTRE */}
-          <div className="relative z-10">
+          <div className="absolute left-1/2 transform -translate-x-1/2 top-0 z-20">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
                 Le plus populaire
@@ -457,7 +457,7 @@ export default function ProfessionalPlans() {
 
       {/* Footer - Identique à la page / */}
       <footer className="bg-gray-900 text-white py-8 w-full">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 xl:px-20">
+        <div className="mx-auto px-6 lg:px-12 xl:px-20">
           <div className="grid md:grid-cols-5 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Avyento</h3>
