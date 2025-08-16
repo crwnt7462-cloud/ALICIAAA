@@ -98,46 +98,40 @@ export default function BusinessFeaturesFixed() {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <motion.div 
           whileHover={{ scale: 1.02 }}
-          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
-        >
-          <div className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Calendar className="w-5 h-5 text-gray-700" />
-            </div>
-            <h3 className="font-semibold text-gray-900 text-sm mb-1">
-              Aujourd'hui
-            </h3>
-            <p className="text-xl font-bold text-gray-900 mb-1">{stats.todayAppointments}</p>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Rendez-vous
-            </p>
-          </div>
-        </motion.div>
-
-        <motion.div 
-          whileHover={{ scale: 1.02 }}
-          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
-        >
-          <div className="p-4 text-center">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <DollarSign className="w-5 h-5 text-gray-700" />
-            </div>
-            <h3 className="font-semibold text-gray-900 text-sm mb-1">
-              CA jour
-            </h3>
-            <p className="text-xl font-bold text-gray-900 mb-1">{stats.todayRevenue}€</p>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Chiffre d'affaires
-            </p>
-          </div>
-        </motion.div>
-
-        <motion.div 
-          whileHover={{ scale: 1.02 }}
-          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
         >
           <div className="flex items-center justify-between mb-3">
-            <Star className="w-8 h-8 text-yellow-500" />
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+              <Calendar className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="text-sm text-gray-500">Aujourd'hui</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">{stats.todayAppointments}</div>
+          <div className="text-sm text-gray-600">Rendez-vous</div>
+        </motion.div>
+
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-emerald-600" />
+            </div>
+            <span className="text-sm text-gray-500">CA jour</span>
+          </div>
+          <div className="text-2xl font-bold text-gray-900">{stats.todayRevenue}€</div>
+          <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+        </motion.div>
+
+        <motion.div 
+          whileHover={{ scale: 1.02 }}
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-xl flex items-center justify-center">
+              <Star className="w-6 h-6 text-yellow-600" />
+            </div>
             <span className="text-sm text-gray-500">Satisfaction</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{stats.averageRating}</div>
@@ -149,7 +143,9 @@ export default function BusinessFeaturesFixed() {
           className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
         >
           <div className="flex items-center justify-between mb-3">
-            <Target className="w-8 h-8 text-purple-500" />
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 rounded-xl flex items-center justify-center">
+              <Target className="w-6 h-6 text-purple-600" />
+            </div>
             <span className="text-sm text-gray-500">Objectif mois</span>
           </div>
           <div className="text-2xl font-bold text-gray-900">{Math.round((stats.monthRevenue / stats.monthTarget) * 100)}%</div>
@@ -525,9 +521,8 @@ export default function BusinessFeaturesFixed() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30"
     >
-      <div className="max-w-md mx-auto space-y-8">
       {/* Hero Section avec logo Avyento */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
@@ -659,11 +654,32 @@ export default function BusinessFeaturesFixed() {
         {renderContent()}
       </motion.div>
 
-        {/* Footer */}
-        <div className="text-center text-xs text-gray-500 pb-4">
-          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+      {/* Footer Avyento */}
+      <motion.footer 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="mt-16 border-t border-white/20 bg-white/40 backdrop-blur-sm"
+      >
+        <div className="max-w-7xl mx-auto p-6 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold text-gray-900">Avyento</span>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            La plateforme intelligente pour les professionnels de la beauté
+          </p>
+          <div className="flex items-center justify-center space-x-6 text-xs text-gray-500">
+            <span>© 2025 Avyento</span>
+            <span>•</span>
+            <span>Support 24/7</span>
+            <span>•</span>
+            <span>Made with ❤️</span>
+          </div>
         </div>
-      </div>
+      </motion.footer>
     </motion.div>
   );
 }
