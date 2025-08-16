@@ -349,7 +349,7 @@ function Router() {
 
   // Pages client spécifiques
   if (location === '/client-login') {
-    return <div className="h-full"><ClientLogin /></div>;
+    return <div className="h-full"><ClientLoginModern /></div>;
   }
   
   if (location === '/client-login-modern') {
