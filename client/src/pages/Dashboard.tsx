@@ -275,23 +275,67 @@ export default function Dashboard() {
               border: '1px solid rgba(255, 255, 255, 0.18)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
-              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <TrendingUp className="w-6 h-6 text-gray-700" />
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Chiffre d'Affaires</h3>
-              <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
-              <div className="mb-2">
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-600">Objectif</span>
-                  <span className="font-medium">73%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{width: '73%'}}></div>
+              {/* Header avec dropdown */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">My Scheduled Events</h3>
+                <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-sm font-medium flex items-center space-x-1">
+                  <span>Today</span>
+                  <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
-                <span>Objectif: 5000€</span>
-                <span className="text-green-500">+12% vs mois dernier</span>
+
+              {/* Layout avec graphique circulaire et statistiques */}
+              <div className="flex items-center space-x-6">
+                {/* Graphique circulaire */}
+                <div className="relative">
+                  <svg className="w-24 h-24 transform -rotate-90">
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      stroke="#e5e7eb"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="48"
+                      cy="48"
+                      r="40"
+                      stroke="url(#gradient)"
+                      strokeWidth="8"
+                      fill="none"
+                      strokeDasharray={`${95 * 2.51} ${(100 - 95) * 2.51}`}
+                      strokeLinecap="round"
+                    />
+                    <defs>
+                      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#f59e0b" />
+                        <stop offset="50%" stopColor="#ec4899" />
+                        <stop offset="100%" stopColor="#8b5cf6" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-2xl font-bold text-gray-900">95%</span>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">BUSYNESS</span>
+                  </div>
+                </div>
+
+                {/* Statistiques */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">25</div>
+                    <div className="text-sm text-gray-500">Consultations</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">10</div>
+                    <div className="text-sm text-gray-500">Laboratory analyzes</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold text-gray-900">3</div>
+                    <div className="text-sm text-gray-500">Meetings</div>
+                  </div>
+                </div>
               </div>
             </div>
             
