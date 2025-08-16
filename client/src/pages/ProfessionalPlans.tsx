@@ -18,24 +18,8 @@ export default function ProfessionalPlans() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50/30 p-2 sm:p-4 relative overflow-hidden">
-      {/* Émojis flottants globaux avec bulles pastelles */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/30 to-purple-300/20 backdrop-blur-sm hidden lg:flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '1s', animationDuration: '3s' }}>
-          <span className="text-lg">💼</span>
-        </div>
-        <div className="absolute top-32 right-24 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/25 to-rose-300/15 backdrop-blur-sm hidden lg:flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '2.5s', animationDuration: '4s' }}>
-          <span className="text-lg">✨</span>
-        </div>
-        <div className="absolute top-1/2 left-8 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/30 to-cyan-300/20 backdrop-blur-sm hidden lg:flex items-center justify-center animate-bounce transform rotate-45" style={{ animationDelay: '0.5s', animationDuration: '3.5s' }}>
-          <span className="text-lg">🎯</span>
-        </div>
-        <div className="absolute bottom-32 right-16 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/25 to-green-300/15 backdrop-blur-sm hidden lg:flex items-center justify-center animate-bounce transform -rotate-12" style={{ animationDelay: '3s', animationDuration: '4s' }}>
-          <span className="text-lg">🚀</span>
-        </div>
-      </div>
-      
-      <div className="max-w-6xl mx-auto relative z-10">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-2 sm:p-4">
+      <div className="max-w-6xl mx-auto">
         {/* Navigation Header - Style Landing */}
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,78 +63,56 @@ export default function ProfessionalPlans() {
         {/* Spacer for fixed header */}
         <div className="h-16"></div>
 
-        {/* Trial Badge avec glassmorphism */}
+        {/* Trial Badge */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style={{
-            background: 'rgba(139, 92, 246, 0.1)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
-            color: '#8b5cf6'
-          }}>
-            <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></span>
+          <Badge className="bg-violet-100 text-violet-600 px-4 py-2 rounded-full border border-violet-200">
             ✨ RÉVOLUTIONNEZ VOTRE SALON
-          </div>
+          </Badge>
         </div>
 
-        {/* Main Title optimisé mobile/desktop */}
+        {/* Main Title */}
         <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 mb-6 px-2 leading-tight">
-            Choisissez l'<span className="text-violet-600">excellence</span> <br className="hidden sm:block"/>pour votre salon
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 px-2">
+            Choisissez l'excellence pour votre salon
           </h1>
-          <p className="text-gray-600 text-base sm:text-xl px-4 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-gray-600 text-base sm:text-lg px-4">
             Essai gratuit 7 jours - sans engagement
           </p>
         </div>
 
-        {/* Plan Toggle Buttons avec glassmorphism */}
+        {/* Plan Toggle Buttons */}
         <div className="flex items-center justify-center mb-12 sm:mb-20 space-x-2 sm:space-x-4">
-          <button 
+          <Button 
             onClick={() => setIsYearly(false)}
-            className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-medium text-sm sm:text-base transition-all duration-300 ${
+            className={`px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-200 ${
               !isYearly 
-                ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg hover:shadow-xl' 
-                : 'glass-button text-gray-700 hover:text-violet-600'
+                ? 'bg-violet-600 hover:bg-violet-700 text-white' 
+                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
-            style={!isYearly ? {} : {
-              background: 'rgba(255, 255, 255, 0.8)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}
+            variant={!isYearly ? "default" : "outline"}
           >
             Mensuel
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={() => setIsYearly(true)}
-            className={`px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-medium text-sm sm:text-base transition-all duration-300 ${
+            className={`px-4 py-2 sm:px-8 sm:py-3 rounded-full font-medium text-sm sm:text-base transition-all duration-200 ${
               isYearly 
-                ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-lg hover:shadow-xl' 
-                : 'glass-button text-gray-700 hover:text-violet-600'
+                ? 'bg-violet-600 hover:bg-violet-700 text-white' 
+                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
             }`}
-            style={isYearly ? {} : {
-              background: 'rgba(255, 255, 255, 0.8)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}
+            variant={isYearly ? "default" : "outline"}
           >
             Annuel (-20%)
-          </button>
+          </Button>
         </div>
 
         {/* Pricing Cards - Responsive: Stack on mobile, Asymmetric Slay layout on desktop */}
         
         {/* Mobile Layout - Stack vertical */}
         <div className="block lg:hidden space-y-6 mb-20 px-2">
-          {/* Plan Essentiel avec glassmorphism */}
-          <div className="glass-button rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300" style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)'
-          }}>
-            <div className="p-6 text-center">
+          {/* Plan Essentiel */}
+          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
+            <CardContent className="p-6 text-center">
               <div className="text-gray-800 mb-4">
                 <div className="flex items-baseline justify-center mb-2">
                   <span className="text-3xl font-light">€</span>
@@ -185,12 +147,12 @@ export default function ProfessionalPlans() {
               
               <button 
                 onClick={() => handleSelectPlan('essentiel')}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 Commencer l'essai gratuit
               </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Plan Professionnel - Populaire au milieu */}
           <div className="relative">
@@ -199,13 +161,8 @@ export default function ProfessionalPlans() {
                 Le plus populaire
               </Badge>
             </div>
-            <div className="shadow-2xl rounded-3xl overflow-hidden" style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(124, 58, 237, 0.9) 100%)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(139, 92, 246, 0.3)'
-            }}>
-              <div className="p-6 text-center">
+            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 overflow-hidden">
+              <CardContent className="p-6 text-center">
                 <div className="text-white mb-4 pt-4">
                   <div className="flex items-baseline justify-center mb-2">
                     <span className="text-3xl font-light">€</span>
@@ -238,24 +195,19 @@ export default function ProfessionalPlans() {
                   </div>
                 </div>
                 
-                <button 
+                <Button 
                   onClick={() => handleSelectPlan('professionnel')}
-                  className="w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20 transition-all duration-300 hover:shadow-lg"
+                  className="w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
                   Commencer l'essai gratuit
-                </button>
-              </div>
-            </div>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Plan Premium avec glassmorphism */}
-          <div className="rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300" style={{
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)'
-          }}>
-            <div className="p-6 text-center">
+          {/* Plan Premium */}
+          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
+            <CardContent className="p-6 text-center">
               <div className="text-gray-800 mb-4">
                 <div className="flex items-baseline justify-center mb-2">
                   <span className="text-3xl font-light">€</span>
@@ -290,25 +242,20 @@ export default function ProfessionalPlans() {
               
               <button 
                 onClick={() => handleSelectPlan('premium')}
-                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 Commencer l'essai gratuit
               </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Desktop Layout - Exact Slay asymmetric layout avec Professionnel AU CENTRE */}
         <div className="hidden lg:block relative flex items-start justify-center min-h-[500px] mb-20">
           {/* Carte de gauche - Essentiel décalée vers le bas et inclinée */}
           <div className="absolute left-0 top-16" style={{transform: 'rotate(-5deg)'}}>
-            <div className="w-80 overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300" style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}>
-              <div className="p-8 text-center">
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
+              <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
                   <div className="flex items-baseline justify-center mb-2">
                     <span className="text-4xl font-light">€</span>
@@ -343,12 +290,12 @@ export default function ProfessionalPlans() {
                 
                 <button 
                   onClick={() => handleSelectPlan('essentiel')}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
                   Commencer l'essai gratuit
                 </button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Carte CENTRALE - Professionnel (LE PLUS POPULAIRE) surélevée AU CENTRE */}
@@ -358,13 +305,8 @@ export default function ProfessionalPlans() {
                 Le plus populaire
               </Badge>
             </div>
-            <div className="w-96 overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-300" style={{
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(124, 58, 237, 0.9) 100%)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(139, 92, 246, 0.3)'
-            }}>
-              <div className="p-10 text-center">
+            <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
+              <CardContent className="p-10 text-center">
                 <div className="text-white mb-6 pt-6">
                   <div className="flex items-baseline justify-center mb-2">
                     <span className="text-5xl font-light">€</span>
@@ -397,25 +339,20 @@ export default function ProfessionalPlans() {
                   </div>
                 </div>
                 
-                <button 
+                <Button 
                   onClick={() => handleSelectPlan('professionnel')}
-                  className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20 transition-all duration-300 hover:shadow-lg"
+                  className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
                   Commencer l'essai gratuit
-                </button>
-              </div>
-            </div>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Carte de droite - Premium décalée vers le bas et inclinée avec glassmorphism */}
+          {/* Carte de droite - Premium décalée vers le bas et inclinée */}
           <div className="absolute right-0 top-16" style={{transform: 'rotate(5deg)'}}>
-            <div className="w-80 overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300" style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}>
-              <div className="p-8 text-center">
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
+              <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
                   <div className="flex items-baseline justify-center mb-2">
                     <span className="text-4xl font-light">€</span>
@@ -450,12 +387,12 @@ export default function ProfessionalPlans() {
                 
                 <button 
                   onClick={() => handleSelectPlan('premium')}
-                  className="w-full bg-violet-600 hover:bg-violet-700 text-white py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
                   Commencer l'essai gratuit
                 </button>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
