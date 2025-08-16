@@ -286,19 +286,20 @@ export default function Register() {
                 >
                   {isLoading ? "Création..." : "Créer mon salon"}
                 </button>
-              </form>
 
-              {/* Lien connexion */}
-              <div className="mt-4 text-center">
-                <button
-                  onClick={() => setLocation("/pro-login")}
-                  className="text-xs text-violet-600 hover:text-violet-700 transition-colors"
-                >
-                  Déjà un compte ? Se connecter
-                </button>
+                {/* Lien connexion */}
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={() => setLocation("/pro-login")}
+                    className="text-xs text-violet-600 hover:text-violet-700 transition-colors"
+                  >
+                    Déjà un compte ? Se connecter
+                  </button>
+                </div>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </motion.div>
       </div>
 
