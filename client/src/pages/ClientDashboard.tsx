@@ -48,7 +48,7 @@ export default function ClientDashboard() {
       name: "Beauty Lash Studio",
       category: "Institut de beauté",
       rating: 4.8,
-      image: "🌸",
+      image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=300&fit=crop",
       lastVisit: "Il y a 2 semaines",
       nextAvailable: "Demain 14h"
     },
@@ -57,7 +57,7 @@ export default function ClientDashboard() {
       name: "Excellence Paris",
       category: "Coiffure",
       rating: 4.9,
-      image: "✨",
+      image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop",
       lastVisit: "Il y a 1 mois",
       nextAvailable: "Lundi 10h"
     },
@@ -66,9 +66,30 @@ export default function ClientDashboard() {
       name: "Salon Moderne",
       category: "Coiffure & Beauté",
       rating: 4.7,
-      image: "💎",
+      image: "https://images.unsplash.com/photo-1522336572468-97b06e8ef143?w=400&h=300&fit=crop",
       lastVisit: "Il y a 3 semaines",
       nextAvailable: "Jeudi 16h"
+    }
+  ];
+
+  const upcomingAppointments = [
+    {
+      id: 1,
+      date: "25 août 2025",
+      time: "14:30",
+      service: "Coupe & Brushing",
+      salon: "Beauty Lash Studio",
+      professional: "Marie Dubois",
+      status: "confirmé"
+    },
+    {
+      id: 2,
+      date: "2 sept 2025",
+      time: "10:00",
+      service: "Manucure",
+      salon: "Excellence Paris",
+      professional: "Sophie Martin",
+      status: "en attente"
     }
   ];
 
@@ -284,16 +305,16 @@ export default function ClientDashboard() {
                 transition={{ duration: 0.6 }}
               >
                 <Card className="border-0 shadow-lg bg-gradient-to-br from-violet-50 via-white to-pink-50 rounded-3xl overflow-hidden">
-                  <CardContent className="p-8 lg:p-12 flex flex-col lg:flex-row items-center space-y-6 lg:space-y-0 lg:space-x-8">
-                    <div className="flex-1 text-center lg:text-left">
-                      <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+                  <CardContent className="p-6 lg:p-16 flex flex-col lg:flex-row items-center space-y-8 lg:space-y-0 lg:space-x-16">
+                    <div className="flex-1 text-center lg:text-left lg:max-w-4xl">
+                      <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">
                         Salut, {userName}!
                       </h1>
-                      <p className="text-gray-600 text-lg mb-6">
+                      <p className="text-gray-600 text-lg lg:text-xl mb-8 lg:mb-12">
                         Prête pour votre prochain moment beauté ?
                       </p>
                       
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                         {quickActions.map((action, index) => {
                           const Icon = action.icon;
                           return (
@@ -302,7 +323,7 @@ export default function ClientDashboard() {
                               onClick={action.action}
                               whileHover={{ scale: 1.05, y: -2 }}
                               whileTap={{ scale: 0.95 }}
-                              className="relative overflow-hidden rounded-2xl p-4 group"
+                              className="relative overflow-hidden rounded-2xl p-4 lg:p-6 group"
                               style={{
                                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%)',
                                 backdropFilter: 'blur(20px)',
@@ -313,10 +334,10 @@ export default function ClientDashboard() {
                             >
                               <div className="absolute inset-0 bg-gradient-to-br from-violet-400/10 to-pink-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               <div className="relative flex flex-col items-center text-center">
-                                <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                  <Icon className="w-5 h-5 text-white" />
+                                <div className="w-10 h-10 lg:w-14 lg:h-14 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-2 lg:mb-3 group-hover:scale-110 transition-transform">
+                                  <Icon className="w-5 h-5 lg:w-7 lg:h-7 text-white" />
                                 </div>
-                                <span className="text-xs font-semibold text-gray-700">{action.name}</span>
+                                <span className="text-xs lg:text-sm font-semibold text-gray-700">{action.name}</span>
                               </div>
                             </motion.button>
                           );
@@ -324,19 +345,19 @@ export default function ClientDashboard() {
                       </div>
                       
                       {/* Section Salons Favoris */}
-                      <div className="mt-8">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-semibold text-gray-900">Mes salons favoris</h3>
-                          <button className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+                      <div className="mt-12 lg:mt-16">
+                        <div className="flex items-center justify-between mb-6 lg:mb-8">
+                          <h3 className="text-lg lg:text-xl font-semibold text-gray-900">Mes salons favoris</h3>
+                          <button className="text-sm lg:text-base text-violet-600 hover:text-violet-700 font-medium">
                             Voir tout
                           </button>
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
                           {favoriteSalons.map((salon) => (
                             <motion.div
                               key={salon.id}
                               whileHover={{ scale: 1.02, y: -2 }}
-                              className="relative overflow-hidden rounded-2xl p-4 cursor-pointer group"
+                              className="relative overflow-hidden rounded-2xl cursor-pointer group"
                               style={{
                                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
                                 backdropFilter: 'blur(20px)',
@@ -347,36 +368,117 @@ export default function ClientDashboard() {
                             >
                               <div className="absolute inset-0 bg-gradient-to-br from-violet-400/5 to-pink-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                               <div className="relative">
-                                <div className="flex items-center space-x-3 mb-3">
-                                  <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-pink-100 rounded-xl flex items-center justify-center text-2xl">
-                                    {salon.image}
+                                {/* Image du salon */}
+                                <div className="w-full h-32 lg:h-40 rounded-t-2xl overflow-hidden mb-4">
+                                  <img 
+                                    src={salon.image} 
+                                    alt={salon.name}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                  />
+                                </div>
+                                <div className="p-4 lg:p-5">
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className="flex-1 min-w-0">
+                                      <h4 className="font-semibold text-gray-900 truncate lg:text-lg">{salon.name}</h4>
+                                      <p className="text-xs lg:text-sm text-gray-500">{salon.category}</p>
+                                    </div>
+                                    <div className="flex items-center space-x-1 ml-2">
+                                      <Star className="w-3 h-3 lg:w-4 lg:h-4 text-amber-400 fill-current" />
+                                      <span className="text-xs lg:text-sm font-medium text-gray-600">{salon.rating}</span>
+                                    </div>
                                   </div>
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-gray-900 truncate">{salon.name}</h4>
-                                    <p className="text-xs text-gray-500">{salon.category}</p>
+                                  <div className="space-y-2 mb-4">
+                                    <div className="flex items-center justify-between text-xs lg:text-sm">
+                                      <span className="text-gray-500">Dernière visite</span>
+                                      <span className="text-gray-700">{salon.lastVisit}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs lg:text-sm">
+                                      <span className="text-gray-500">Prochain créneau</span>
+                                      <span className="text-violet-600 font-medium">{salon.nextAvailable}</span>
+                                    </div>
                                   </div>
-                                  <div className="flex items-center space-x-1">
-                                    <Star className="w-3 h-3 text-amber-400 fill-current" />
-                                    <span className="text-xs font-medium text-gray-600">{salon.rating}</span>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="w-full py-2.5 lg:py-3 text-xs lg:text-sm font-medium text-white bg-gradient-to-r from-violet-400 to-pink-400 rounded-lg hover:shadow-lg transition-all duration-200"
+                                  >
+                                    Réserver maintenant
+                                  </motion.button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                      
+                      {/* Section Gestion des RDV */}
+                      <div className="mt-12 lg:mt-16">
+                        <div className="flex items-center justify-between mb-6 lg:mb-8">
+                          <h3 className="text-lg lg:text-xl font-semibold text-gray-900">Mes rendez-vous à venir</h3>
+                          <button className="text-sm lg:text-base text-violet-600 hover:text-violet-700 font-medium">
+                            Voir tout
+                          </button>
+                        </div>
+                        <div className="space-y-4 lg:space-y-6">
+                          {upcomingAppointments.map((appointment) => (
+                            <motion.div
+                              key={appointment.id}
+                              whileHover={{ scale: 1.01, y: -2 }}
+                              className="relative overflow-hidden rounded-2xl p-4 lg:p-6"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
+                                backdropFilter: 'blur(20px)',
+                                WebkitBackdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255, 255, 255, 0.5)',
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
+                              }}
+                            >
+                              <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-4 lg:space-y-0">
+                                <div className="flex-1">
+                                  <div className="flex items-start space-x-4">
+                                    <div className="flex-shrink-0">
+                                      <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-violet-100 to-pink-100 rounded-xl flex items-center justify-center">
+                                        <Calendar className="w-6 h-6 lg:w-8 lg:h-8 text-violet-600" />
+                                      </div>
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center space-x-2 mb-1">
+                                        <h4 className="font-semibold text-gray-900 lg:text-lg">{appointment.service}</h4>
+                                        <Badge className={`text-xs ${appointment.status === 'confirmé' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                                          {appointment.status}
+                                        </Badge>
+                                      </div>
+                                      <p className="text-sm lg:text-base text-gray-600">{appointment.salon}</p>
+                                      <p className="text-xs lg:text-sm text-gray-500">Avec {appointment.professional}</p>
+                                      <div className="flex items-center space-x-4 mt-2">
+                                        <div className="flex items-center space-x-1">
+                                          <Calendar className="w-4 h-4 text-gray-400" />
+                                          <span className="text-sm text-gray-600">{appointment.date}</span>
+                                        </div>
+                                        <div className="flex items-center space-x-1">
+                                          <Clock className="w-4 h-4 text-gray-400" />
+                                          <span className="text-sm text-gray-600">{appointment.time}</span>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="space-y-1">
-                                  <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Dernière visite</span>
-                                    <span className="text-gray-700">{salon.lastVisit}</span>
-                                  </div>
-                                  <div className="flex items-center justify-between text-xs">
-                                    <span className="text-gray-500">Prochain créneau</span>
-                                    <span className="text-violet-600 font-medium">{salon.nextAvailable}</span>
-                                  </div>
+                                <div className="flex space-x-3 lg:ml-6">
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="px-4 py-2 text-sm font-medium text-violet-600 border border-violet-200 rounded-lg hover:bg-violet-50 transition-all duration-200"
+                                  >
+                                    Déplacer
+                                  </motion.button>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="px-4 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-200"
+                                  >
+                                    Annuler
+                                  </motion.button>
                                 </div>
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  className="w-full mt-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-violet-400 to-pink-400 rounded-lg hover:shadow-lg transition-all duration-200"
-                                >
-                                  Réserver maintenant
-                                </motion.button>
                               </div>
                             </motion.div>
                           ))}
@@ -385,8 +487,8 @@ export default function ClientDashboard() {
                     </div>
                     
                     {/* Cute illustration placeholder */}
-                    <div className="w-48 h-48 lg:w-64 lg:h-64 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full flex items-center justify-center">
-                      <div className="text-6xl">🐻</div>
+                    <div className="w-48 h-48 lg:w-80 lg:h-80 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="text-6xl lg:text-8xl">🐻</div>
                     </div>
                   </CardContent>
                 </Card>
