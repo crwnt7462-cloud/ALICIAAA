@@ -218,10 +218,10 @@ export default function Dashboard() {
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-sm text-gray-500 font-medium">Revenus - Cette Semaine</span>
                   <div className="flex items-center space-x-3 text-xs text-gray-400">
-                    <span>Day</span>
-                    <span className="font-semibold text-gray-900">Week</span>
-                    <span>Month</span>
-                    <span>Year</span>
+                    <span>Jour</span>
+                    <span className="font-semibold text-gray-900">Semaine</span>
+                    <span>Mois</span>
+                    <span>Année</span>
                   </div>
                 </div>
                 
@@ -254,19 +254,19 @@ export default function Dashboard() {
                 
                 {/* Jours de la semaine */}
                 <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                  <span>Mon</span>
-                  <span>Tue</span>
-                  <span>Wed</span>
-                  <span>Thu</span>
-                  <span>Fri</span>
-                  <span>Sat</span>
-                  <span>Sun</span>
+                  <span>Lun</span>
+                  <span>Mar</span>
+                  <span>Mer</span>
+                  <span>Jeu</span>
+                  <span>Ven</span>
+                  <span>Sam</span>
+                  <span>Dim</span>
                 </div>
                 
-                {/* Bouton View */}
+                {/* Bouton Voir */}
                 <div className="absolute bottom-6 right-6">
                   <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
-                    View
+                    Voir
                   </button>
                 </div>
               </div>
@@ -359,9 +359,9 @@ export default function Dashboard() {
             }}>
               {/* Header avec dropdown */}
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">My Scheduled Events</h3>
+                <h3 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Événements Programmés</h3>
                 <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-sm font-medium flex items-center space-x-1">
-                  <span>Today</span>
+                  <span>Aujourd'hui</span>
                   <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
@@ -399,7 +399,7 @@ export default function Dashboard() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-2xl font-bold text-gray-900">95%</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">BUSYNESS</span>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">ACTIVITÉ</span>
                   </div>
                 </div>
 
@@ -411,11 +411,11 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-gray-900">10</div>
-                    <div className="text-sm text-gray-500">Laboratory analyzes</div>
+                    <div className="text-sm text-gray-500">Analyses</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-gray-900">3</div>
-                    <div className="text-sm text-gray-500">Meetings</div>
+                    <div className="text-sm text-gray-500">Réunions</div>
                   </div>
                 </div>
               </div>
