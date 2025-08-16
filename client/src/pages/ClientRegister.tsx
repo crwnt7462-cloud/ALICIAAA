@@ -362,7 +362,134 @@ export default function ClientRegister() {
         </motion.div>
       </div>
 
-
+      {/* Footer identique à la page d'accueil */}
+      <footer className="bg-gray-900 text-white py-16">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8 mb-12">
+            <div className="md:col-span-1">
+              <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-violet-400 to-purple-300 bg-clip-text text-transparent">
+                Avyento
+              </h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                La plateforme IA qui révolutionne la beauté et optimise vos revenus professionnels.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Services</h4>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setLocation('/search')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Coiffure
+                </button>
+                <button
+                  onClick={() => setLocation('/search')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Esthétique
+                </button>
+                <button
+                  onClick={() => setLocation('/search')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Manucure
+                </button>
+                <button
+                  onClick={() => setLocation('/search')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Massage
+                </button>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Partenaires</h4>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setLocation('/devenir-partenaire')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Devenir partenaire
+                </button>
+                <button
+                  onClick={() => setLocation('/tarifs-pros')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Tarifs professionnels
+                </button>
+                <button
+                  onClick={() => setLocation('/formation')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Formation & Support
+                </button>
+                <button
+                  onClick={() => setLocation('/success-stories')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Témoignages
+                </button>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Support</h4>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setLocation('/centre-aide')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Centre d'aide
+                </button>
+                <button
+                  onClick={() => setLocation('/contact')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Contact
+                </button>
+                <button
+                  onClick={() => setLocation('/cgu')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  CGU
+                </button>
+                <button
+                  onClick={() => setLocation('/confidentialite')}
+                  className="block text-gray-400 hover:text-white transition-colors text-sm"
+                >
+                  Confidentialité
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm mb-4 md:mb-0">
+              © 2024 Avyento. Tous droits réservés.
+            </p>
+            <div className="flex space-x-4">
+              <a href="https://twitter.com/avyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+              <a href="https://instagram.com/useavyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987s11.987-5.367 11.987-11.987C24.004 5.367 18.637.001 12.017.001zM8.449 4.267c.77 0 1.398.628 1.398 1.398s-.628 1.398-1.398 1.398-1.398-.628-1.398-1.398.628-1.398 1.398-1.398zm7.718 0c4.209 0 7.718 3.509 7.718 7.718s-3.509 7.718-7.718 7.718-7.718-3.509-7.718-7.718 3.509-7.718 7.718-7.718zm0 2.325c-2.977 0-5.393 2.416-5.393 5.393s2.416 5.393 5.393 5.393 5.393-2.416 5.393-5.393-2.416-5.393-5.393-5.393z" clipRule="evenodd"/>
+                </svg>
+              </a>
+              <a href="https://tiktok.com/@avyento" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg glass-button text-gray-400 hover:text-white transition-all duration-300 flex items-center justify-center">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
