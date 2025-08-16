@@ -123,7 +123,7 @@ export default function Register() {
               <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
 
                 {/* Titre et sous-titre dans la colonne de gauche */}
-                <div className="text-center mb-6">
+                <div className="text-center mb-8">
                   <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold mb-2 text-gray-900">
                     Inscription Salon
                   </h1>
@@ -132,34 +132,33 @@ export default function Register() {
 
                 {/* Partie gauche du formulaire */}
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
-                  {/* Prénom et Nom côte à côte */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label htmlFor="firstName" className="text-xs font-medium text-gray-900 text-left block">Prénom *</Label>
-                      <div className="relative">
-                        <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                        <Input
-                          id="firstName"
-                          placeholder="Sarah"
-                          value={formData.firstName}
-                          onChange={(e) => updateField("firstName", e.target.value)}
-                          className="pl-10 glass-input"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <Label htmlFor="lastName" className="text-xs font-medium text-gray-900 text-left block">Nom *</Label>
+                  {/* Prénom */}
+                  <div className="space-y-1">
+                    <Label htmlFor="firstName" className="text-xs font-medium text-gray-900 text-left block">Prénom *</Label>
+                    <div className="relative">
+                      <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
-                        id="lastName"
-                        placeholder="Martin"
-                        value={formData.lastName}
-                        onChange={(e) => updateField("lastName", e.target.value)}
-                        className="glass-input"
+                        id="firstName"
+                        placeholder="Sarah"
+                        value={formData.firstName}
+                        onChange={(e) => updateField("firstName", e.target.value)}
+                        className="pl-10 glass-input"
                         required
                       />
                     </div>
+                  </div>
+
+                  {/* Nom */}
+                  <div className="space-y-1">
+                    <Label htmlFor="lastName" className="text-xs font-medium text-gray-900 text-left block">Nom *</Label>
+                    <Input
+                      id="lastName"
+                      placeholder="Martin"
+                      value={formData.lastName}
+                      onChange={(e) => updateField("lastName", e.target.value)}
+                      className="glass-input"
+                      required
+                    />
                   </div>
 
                   {/* Nom du salon */}
