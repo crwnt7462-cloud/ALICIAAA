@@ -120,7 +120,7 @@ export default function ClientRegister() {
                     style={{ height: '145px' }}
                   />
                 </div>
-                <p className="text-gray-600 text-base mb-10 leading-relaxed px-2">
+                <p className="text-gray-600 text-base mb-6 leading-relaxed px-2">
                   Rejoignez des milliers d'utilisateurs satisfaits
                 </p>
                 <div className="space-y-4 text-left max-w-xs mx-auto">
@@ -323,7 +323,7 @@ export default function ClientRegister() {
                       onClick={() => setLocation('/cgu')}
                       className="text-violet-600 hover:text-violet-700 font-medium transition-colors"
                     >
-                      CGU
+                      CGU Avyento
                     </button>
                   </span>
                 </div>
