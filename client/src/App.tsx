@@ -164,8 +164,39 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 function Router() {
   const [location, setLocation] = useLocation();
   
-  // Pages qui ne doivent pas avoir la barre violette en bas
-  const hideBottomNavPages = ['/salon-page-editor'];
+  // Pages qui ne doivent pas avoir la barre violette en bas + toutes les pages pro
+  const hideBottomNavPages = [
+    '/salon-page-editor',
+    '/dashboard',
+    '/ai',
+    '/planning-responsive',
+    '/planning',
+    '/salon-booking-editor',
+    '/direct-messaging',
+    '/client-register',
+    '/pro-pages',
+    '/salon-settings',
+    '/business-features',
+    '/staff-management',
+    '/services-management',
+    '/messaging-system',
+    '/analytics-dashboard',
+    '/stock-alerts',
+    '/booking-pages',
+    '/promo-codes',
+    '/client-reliability',
+    '/ai-pro',
+    '/ai-pro-complete',
+    '/pro-messaging-search',
+    '/client-management',
+    '/admin-dashboard',
+    '/dashboard-old',
+    '/pro-messaging',
+    '/services',
+    '/staff',
+    '/inventory',
+    '/professional-settings-demo'
+  ];
   
   // Page de paiement Stripe
   if (location === '/stripe-payment') {
@@ -852,7 +883,7 @@ function Router() {
     );
   }
 
-  // Page Planning en plein écran desktop avec header
+  // Page Planning en plein écran desktop avec header - SANS menu en bas pour les pros
   if (location === '/planning') {
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
@@ -860,7 +891,7 @@ function Router() {
         <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
           <Planning />
         </main>
-        <BottomNavigation />
+        {/* Menu BottomNavigation supprimé pour les professionnels */}
       </div>
     );
   }
