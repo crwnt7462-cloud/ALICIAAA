@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft } from "lucide-react";
 import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 export default function Register() {
   const [, setLocation] = useLocation();
@@ -313,14 +314,16 @@ export default function Register() {
                       </label>
                     </div>
 
-                {/* Bouton d'inscription avec vrai style glass-button */}
-                <button
+                {/* Bouton d'inscription avec le même style que la page d'accueil */}
+                <motion.button
                   type="submit"
                   disabled={isLoading || !acceptTerms}
-                  className="w-full glass-button text-black px-4 py-3 rounded-2xl text-base font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4`}
                 >
                   {isLoading ? "Création..." : "Créer mon salon"}
-                </button>
+                </motion.button>
 
                 {/* Lien connexion */}
                 <div className="mt-3 text-center">
