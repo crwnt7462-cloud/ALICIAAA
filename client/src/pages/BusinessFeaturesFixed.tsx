@@ -536,19 +536,19 @@ export default function BusinessFeaturesFixed() {
         
         <div className="lg:hidden">
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
-            Business Hub
+            Mon Espace Pro Avyento
           </h1>
           <p className="text-gray-600 text-sm leading-relaxed">
-            Centre de gestion professionnel avec analytics avancés
+            Votre tableau de bord intelligent pour optimiser votre business beauté
           </p>
         </div>
 
         <div className="hidden lg:block">
           <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">
-            Dashboard Professionnel Avyento
+            Mon Espace Pro Avyento
           </h1>
           <p className="text-gray-600 text-lg leading-relaxed max-w-2xl mx-auto">
-            Centre de gestion et analytics avancés pour optimiser votre salon de beauté
+            Votre tableau de bord intelligent pour piloter, analyser et développer votre salon de beauté
           </p>
         </div>
 
