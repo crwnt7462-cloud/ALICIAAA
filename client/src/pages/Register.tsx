@@ -97,46 +97,15 @@ export default function Register() {
           {/* Card principale avec orientation paysage sur desktop */}
           <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:h-[85vh] overflow-hidden">
             
-            {/* Section gauche - Branding professionnel (desktop uniquement) */}
+            {/* Section gauche - Logo centré (desktop uniquement) */}
             <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
-              <div className="text-center w-full max-w-sm px-4">
-                <div className="mb-2">
-                  <img 
-                    src={avyentoProLogo} 
-                    alt="Avyento Pro" 
-                    className="mx-auto"
-                    style={{ height: '145px' }}
-                  />
-                </div>
-                <p className="text-gray-600 text-base mb-8 leading-relaxed px-2">
-                  Rejoignez plus de 2500 salons partenaires
-                </p>
-                <div className="space-y-4 text-left max-w-xs mx-auto">
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
-                      <Crown className="w-3 h-3 text-violet-500" />
-                    </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Plateforme premium</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
-                      <Users className="w-3 h-3 text-violet-500" />
-                    </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Gestion clients avancée</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
-                      <Sparkles className="w-3 h-3 text-violet-500" />
-                    </div>
-                    <span className="text-gray-700 text-base leading-relaxed">IA d'optimisation</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
-                      <CheckCircle2 className="w-3 h-3 text-violet-500" />
-                    </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Support dédié 24/7</span>
-                  </div>
-                </div>
+              <div className="text-center">
+                <img 
+                  src={avyentoProLogo} 
+                  alt="Avyento Pro" 
+                  className="mx-auto"
+                  style={{ height: '180px' }}
+                />
               </div>
             </div>
 
@@ -164,12 +133,12 @@ export default function Register() {
                 <p className="text-gray-600">Rejoignez la plateforme professionnelle</p>
               </div>
 
-              {/* Formulaire avec espacement optimisé */}
+              {/* Formulaire avec répartition uniforme en 2 colonnes */}
               <form onSubmit={handleRegister} className="space-y-3 lg:space-y-2">
-                {/* Informations personnelles */}
-                <div className="grid grid-cols-2 gap-3 lg:gap-2">
+                {/* Première ligne : Prénom + Nom */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
                   <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="firstName" className="text-xs lg:text-xs">Prénom</Label>
+                    <Label htmlFor="firstName" className="text-sm">Prénom</Label>
                     <div className="relative">
                       <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -183,7 +152,7 @@ export default function Register() {
                     </div>
                   </div>
                   <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="lastName" className="text-xs lg:text-xs">Nom</Label>
+                    <Label htmlFor="lastName" className="text-sm">Nom</Label>
                     <Input
                       id="lastName"
                       placeholder="Martin"
@@ -195,57 +164,71 @@ export default function Register() {
                   </div>
                 </div>
 
-                {/* Salon */}
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="businessName" className="text-xs lg:text-xs">Nom du salon</Label>
-                  <div className="relative">
-                    <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                {/* Deuxième ligne : Salon + Email */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="businessName" className="text-sm">Nom du salon</Label>
+                    <div className="relative">
+                      <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="businessName"
+                        placeholder="Salon Beautiful"
+                        value={formData.businessName}
+                        onChange={(e) => updateField("businessName", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="email" className="text-sm">Email professionnel</Label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="contact@salonbeautiful.fr"
+                        value={formData.email}
+                        onChange={(e) => updateField("email", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Troisième ligne : Téléphone + Ville */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="phone" className="text-sm">Téléphone</Label>
+                    <div className="relative">
+                      <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="phone"
+                        placeholder="01 23 45 67 89"
+                        value={formData.phone}
+                        onChange={(e) => updateField("phone", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="city" className="text-sm">Ville</Label>
                     <Input
-                      id="businessName"
-                      placeholder="Salon Beautiful"
-                      value={formData.businessName}
-                      onChange={(e) => updateField("businessName", e.target.value)}
-                      className="pl-10 glass-input"
+                      id="city"
+                      placeholder="Paris"
+                      value={formData.city}
+                      onChange={(e) => updateField("city", e.target.value)}
+                      className="glass-input"
                       required
                     />
                   </div>
                 </div>
 
-                {/* Contact */}
+                {/* Quatrième ligne : Adresse sur toute la largeur */}
                 <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="email" className="text-xs lg:text-xs">Email professionnel</Label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="contact@salonbeautiful.fr"
-                      value={formData.email}
-                      onChange={(e) => updateField("email", e.target.value)}
-                      className="pl-10 glass-input"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="phone" className="text-xs lg:text-xs">Téléphone</Label>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                    <Input
-                      id="phone"
-                      placeholder="01 23 45 67 89"
-                      value={formData.phone}
-                      onChange={(e) => updateField("phone", e.target.value)}
-                      className="pl-10 glass-input"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Adresse */}
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="address" className="text-xs lg:text-xs">Adresse complète</Label>
+                  <Label htmlFor="address" className="text-sm">Adresse complète</Label>
                   <div className="relative">
                     <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                     <Input
@@ -259,50 +242,39 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="city" className="text-xs lg:text-xs">Ville</Label>
-                  <Input
-                    id="city"
-                    placeholder="Paris"
-                    value={formData.city}
-                    onChange={(e) => updateField("city", e.target.value)}
-                    className="glass-input"
-                    required
-                  />
-                </div>
-
-                {/* Mot de passe */}
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="password" className="text-xs lg:text-xs">Mot de passe</Label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={formData.password}
-                      onChange={(e) => updateField("password", e.target.value)}
-                      className="pl-10 glass-input"
-                      required
-                      minLength={6}
-                    />
+                {/* Cinquième ligne : Mots de passe */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="password" className="text-sm">Mot de passe</Label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={formData.password}
+                        onChange={(e) => updateField("password", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                        minLength={6}
+                      />
+                    </div>
                   </div>
-                </div>
-
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="confirmPassword" className="text-xs lg:text-xs">Confirmer le mot de passe</Label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      placeholder="••••••••"
-                      value={formData.confirmPassword}
-                      onChange={(e) => updateField("confirmPassword", e.target.value)}
-                      className="pl-10 glass-input"
-                      required
-                      minLength={6}
-                    />
+                  <div className="space-y-2 lg:space-y-1">
+                    <Label htmlFor="confirmPassword" className="text-sm">Confirmer le mot de passe</Label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        placeholder="••••••••"
+                        value={formData.confirmPassword}
+                        onChange={(e) => updateField("confirmPassword", e.target.value)}
+                        className="pl-10 glass-input"
+                        required
+                        minLength={6}
+                      />
+                    </div>
                   </div>
                 </div>
 
