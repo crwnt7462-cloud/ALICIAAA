@@ -552,12 +552,7 @@ export default function BusinessFeaturesFixed() {
           </p>
         </div>
 
-        <div className="flex items-center justify-center space-x-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
-          ))}
-          <span className="text-sm text-gray-600 ml-2">Solution Business Pro</span>
-        </div>
+
       </motion.div>
 
       {/* Navigation par onglets - Desktop */}
