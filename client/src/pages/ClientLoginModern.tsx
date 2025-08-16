@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, LogIn, Eye, EyeOff, Mail, Lock } from 'lucide-react';
-import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
+import avyentoLogo from "@assets/Logo avyento._1755363678253.png";
 
 export default function ClientLoginModern() {
   const [, setLocation] = useLocation();
@@ -98,33 +98,33 @@ export default function ClientLoginModern() {
               <div className="text-center w-full max-w-sm px-4">
                 <div className="mb-0">
                   <img 
-                    src={avyentoProLogo} 
-                    alt="Avyento Pro" 
+                    src={avyentoLogo} 
+                    alt="Avyento" 
                     className="mx-auto"
                     style={{ height: '145px' }}
                   />
                 </div>
                 <p className="text-gray-600 text-base mb-10 leading-relaxed px-2">
-                  La plateforme révolutionnaire pour vos rendez-vous beauté
+                  Trouvez et réservez votre salon de beauté idéal
                 </p>
                 <div className="space-y-4 text-left max-w-xs mx-auto">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
                       <div className="w-2 h-2 bg-violet-400 rounded-full"></div>
                     </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Réservation instantanée</span>
+                    <span className="text-gray-700 text-base leading-relaxed">Réservation en 2 clics</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
                       <div className="w-2 h-2 bg-violet-400 rounded-full"></div>
                     </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Paiements sécurisés</span>
+                    <span className="text-gray-700 text-base leading-relaxed">Disponibilités temps réel</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center glass-button">
                       <div className="w-2 h-2 bg-violet-400 rounded-full"></div>
                     </div>
-                    <span className="text-gray-700 text-base leading-relaxed">Suivi de vos rendez-vous</span>
+                    <span className="text-gray-700 text-base leading-relaxed">Historique de vos soins</span>
                   </div>
                 </div>
               </div>
@@ -136,8 +136,8 @@ export default function ClientLoginModern() {
               <div className="text-center mb-8 lg:hidden">
                 <div className="mb-0">
                   <img 
-                    src={avyentoProLogo} 
-                    alt="Avyento Pro" 
+                    src={avyentoLogo} 
+                    alt="Avyento" 
                     className="mx-auto"
                     style={{ height: '120px' }}
                   />
