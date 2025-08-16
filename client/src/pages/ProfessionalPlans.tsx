@@ -85,41 +85,48 @@ export default function ProfessionalPlans() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Navigation Bar - Style Slay */}
-        <div className="flex items-center justify-between mb-12 pt-4">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">A</span>
+        {/* Navigation Header - Style Landing */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <span className="text-white font-bold text-lg">A</span>
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                  Avyento
+                </span>
+              </div>
+              
+              <nav className="hidden md:flex items-center space-x-8">
+                <button onClick={() => setLocation('/')} className="text-gray-600 hover:text-violet-600 transition-colors font-medium">
+                  Accueil
+                </button>
+                <button onClick={() => setLocation('/search')} className="text-gray-600 hover:text-violet-600 transition-colors font-medium">
+                  Rechercher
+                </button>
+                <button onClick={() => setLocation('/professional-plans')} className="text-violet-600 font-semibold">
+                  Tarifs Pro
+                </button>
+                <button onClick={() => setLocation('/pro-login')} className="text-gray-600 hover:text-violet-600 transition-colors font-medium">
+                  Connexion Pro
+                </button>
+              </nav>
+              
+              <div className="flex items-center space-x-4">
+                <Button 
+                  onClick={() => setLocation('/register')}
+                  className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-2 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                >
+                  Inscription Gratuite
+                </Button>
+              </div>
             </div>
-            <span className="text-xl font-bold text-gray-900">Avyento</span>
           </div>
-          
-          <div className="hidden lg:flex items-center space-x-8 text-gray-600">
-            <button className="hover:text-gray-900">Personal</button>
-            <button className="hover:text-gray-900">Company</button>
-            <button className="hover:text-gray-900 font-medium">Business</button>
-            <button className="hover:text-gray-900">Holders</button>
-            <button className="hover:text-gray-900">Banks</button>
-            <button className="hover:text-gray-900">Blog</button>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <button className="text-gray-600 hover:text-gray-900">Help</button>
-            <div className="flex items-center space-x-2 text-gray-600">
-              <span>🇫🇷</span>
-              <span>EN</span>
-            </div>
-            <Button 
-              variant="outline" 
-              className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700 px-6"
-            >
-              Sign up
-            </Button>
-            <Button variant="outline" className="border-gray-300 text-gray-600 hover:bg-gray-50 px-6">
-              Log in
-            </Button>
-          </div>
-        </div>
+        </header>
+        
+        {/* Spacer for fixed header */}
+        <div className="h-16"></div>
 
         {/* Trial Badge */}
         <div className="text-center mb-8">
@@ -156,7 +163,7 @@ export default function ProfessionalPlans() {
         {/* Pricing Cards - Exact Slay Layout */}
         <div className="relative flex items-start justify-center min-h-[500px] mb-20">
           {/* Carte de gauche - décalée vers le bas et inclinée */}
-          <div className="absolute left-0 top-16 transform -rotate-3">
+          <div className="absolute left-0 top-16" style={{transform: 'rotate(-5deg)'}}>
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
@@ -221,7 +228,7 @@ export default function ProfessionalPlans() {
           </div>
 
           {/* Carte de droite - décalée vers le bas et inclinée */}
-          <div className="absolute right-0 top-16 transform rotate-3">
+          <div className="absolute right-0 top-16" style={{transform: 'rotate(5deg)'}}>
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
