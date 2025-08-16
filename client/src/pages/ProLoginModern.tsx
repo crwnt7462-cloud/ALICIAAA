@@ -53,147 +53,194 @@ export default function ProLoginModern() {
         <ArrowLeft className="h-5 w-5 text-gray-700" />
       </button>
 
-      {/* Contenu principal avec vrai style /home */}
-      <div className="flex items-center justify-center min-h-screen px-4">
+      {/* Contenu principal optimisé desktop */}
+      <div className="flex items-center justify-center min-h-screen px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-full max-w-lg lg:max-w-xl"
+          className="w-full max-w-md lg:max-w-4xl"
         >
-          {/* Card principale avec vrai glassmorphism Avyento */}
-          <div className="glass-card rounded-3xl p-8 lg:p-12 shadow-2xl transition-all duration-300 hover:shadow-3xl">
-            {/* En-tête avec logo Avyento Pro */}
-            <div className="text-center mb-10">
-              <div className="mb-6">
-                <img 
-                  src={avyentoProLogo} 
-                  alt="Avyento Pro" 
-                  className="mx-auto"
-                  style={{ height: '50px' }}
-                />
-              </div>
-              <h1 className="text-3xl lg:text-4xl font-bold mb-3 text-gray-900">
-                Connexion Pro
-              </h1>
-              <p className="text-gray-600 text-lg">Accédez à votre dashboard Avyento</p>
-            </div>
-
-            {/* Formulaire avec vrai style /home */}
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Email */}
-              <div className="space-y-3">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email professionnel
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
-                    placeholder="votre@email.com"
-                    required
+          {/* Card principale avec orientation paysage sur desktop */}
+          <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:max-h-[80vh]">
+            
+            {/* Section gauche - Branding (desktop uniquement) */}
+            <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-12 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
+              <div className="text-center">
+                <div className="mb-8">
+                  <img 
+                    src={avyentoProLogo} 
+                    alt="Avyento Pro" 
+                    className="mx-auto"
+                    style={{ height: '60px' }}
                   />
                 </div>
+                <h1 className="text-4xl font-bold mb-4 text-gray-900">
+                  Avyento Pro
+                </h1>
+                <p className="text-gray-600 text-lg mb-8">
+                  La plateforme révolutionnaire<br />
+                  pour professionnels de la beauté
+                </p>
+                <div className="space-y-4 text-left max-w-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <span className="text-gray-700 text-sm">Planning IA optimisé</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <span className="text-gray-700 text-sm">Analytics en temps réel</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+                    <span className="text-gray-700 text-sm">Gestion clientèle avancée</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section droite - Formulaire */}
+            <div className="p-8 lg:w-1/2 lg:p-12 lg:flex lg:flex-col lg:justify-center">
+              {/* En-tête mobile */}
+              <div className="text-center mb-8 lg:hidden">
+                <div className="mb-6">
+                  <img 
+                    src={avyentoProLogo} 
+                    alt="Avyento Pro" 
+                    className="mx-auto"
+                    style={{ height: '50px' }}
+                  />
+                </div>
+                <h1 className="text-3xl font-bold mb-3 text-gray-900">
+                  Connexion Pro
+                </h1>
+                <p className="text-gray-600 text-lg">Accédez à votre dashboard Avyento</p>
               </div>
 
-              {/* Mot de passe */}
-              <div className="space-y-3">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Mot de passe
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full pl-12 pr-14 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
-                    placeholder="••••••••"
-                    required
-                  />
+              {/* En-tête desktop */}
+              <div className="hidden lg:block text-center mb-8">
+                <h2 className="text-2xl font-bold mb-2 text-gray-900">
+                  Connexion
+                </h2>
+                <p className="text-gray-600">Accédez à votre espace professionnel</p>
+              </div>
+
+              {/* Formulaire avec vrai style /home */}
+              <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-5">
+                {/* Email */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email professionnel
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full pl-12 pr-4 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      placeholder="votre@email.com"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Mot de passe */}
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    Mot de passe
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="w-full pl-12 pr-14 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4 text-gray-400" />
+                      ) : (
+                        <Eye className="w-4 h-4 text-gray-400" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Options */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
+                    />
+                    <span className="ml-3 text-sm text-gray-600">Se souvenir de moi</span>
+                  </label>
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="text-sm text-violet-600 hover:text-violet-700 font-medium transition-colors"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4 text-gray-400" />
-                    ) : (
-                      <Eye className="w-4 h-4 text-gray-400" />
-                    )}
+                    Mot de passe oublié ?
                   </button>
                 </div>
-              </div>
 
-              {/* Options */}
-              <div className="flex items-center justify-between">
-                <label className="flex items-center">
-                  <input 
-                    type="checkbox" 
-                    className="w-4 h-4 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
-                  />
-                  <span className="ml-3 text-sm text-gray-600">Se souvenir de moi</span>
-                </label>
+                {/* Bouton de connexion avec vrai style glass-button */}
                 <button
-                  type="button"
-                  className="text-sm text-violet-600 hover:text-violet-700 font-medium transition-colors"
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full glass-button text-black font-medium py-3 lg:py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl"
                 >
-                  Mot de passe oublié ?
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <LogIn className="w-5 h-5 text-gray-900" />
+                      <span className="text-gray-900 font-semibold">Se connecter</span>
+                    </>
+                  )}
                 </button>
+              </form>
+
+              {/* Divider */}
+              <div className="flex items-center my-6 lg:my-5">
+                <div className="flex-1 border-t border-gray-200"></div>
+                <span className="px-4 text-sm text-gray-500">ou</span>
+                <div className="flex-1 border-t border-gray-200"></div>
               </div>
 
-              {/* Bouton de connexion avec vrai style glass-button */}
+              {/* Connexion avec Google avec vrai style glass-button */}
               <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full glass-button text-black font-medium py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl"
+                onClick={() => {
+                  // Redirection vers Google OAuth (à configurer côté serveur)
+                  window.location.href = '/api/auth/google';
+                }}
+                className="w-full glass-button text-black font-medium py-3 lg:py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105 hover:shadow-xl"
               >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <LogIn className="w-5 h-5 text-gray-900" />
-                    <span className="text-gray-900 font-semibold">Se connecter</span>
-                  </>
-                )}
+                <Chrome className="w-5 h-5 text-gray-900" />
+                <span className="text-gray-900">Continuer avec Google</span>
               </button>
-            </form>
 
-            {/* Divider */}
-            <div className="flex items-center my-8">
-              <div className="flex-1 border-t border-gray-200"></div>
-              <span className="px-4 text-sm text-gray-500">ou</span>
-              <div className="flex-1 border-t border-gray-200"></div>
-            </div>
-
-            {/* Connexion avec Google avec vrai style glass-button */}
-            <button
-              onClick={() => {
-                // Redirection vers Google OAuth (à configurer côté serveur)
-                window.location.href = '/api/auth/google';
-              }}
-              className="w-full glass-button text-black font-medium py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105 hover:shadow-xl"
-            >
-              <Chrome className="w-5 h-5 text-gray-900" />
-              <span className="text-gray-900">Continuer avec Google</span>
-            </button>
-
-            {/* Lien d'inscription */}
-            <div className="text-center mt-8">
-              <p className="text-sm text-gray-600">
-                Pas encore de compte ?{' '}
-                <button
-                  onClick={() => setLocation('/register')}
-                  className="text-violet-600 hover:text-violet-700 font-medium transition-colors"
-                >
-                  Créer un compte
-                </button>
-              </p>
+              {/* Lien d'inscription */}
+              <div className="text-center mt-6 lg:mt-5">
+                <p className="text-sm text-gray-600">
+                  Pas encore de compte ?{' '}
+                  <button
+                    onClick={() => setLocation('/register')}
+                    className="text-violet-600 hover:text-violet-700 font-medium transition-colors"
+                  >
+                    Créer un compte
+                  </button>
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
