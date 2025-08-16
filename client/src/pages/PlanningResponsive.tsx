@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, User, MapPin, Filter, CheckCircle, X, CalendarDays, MoreVertical, TrendingUp, Sparkles, Euro, Target, TrendingDown, Users, Grid } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, ChevronLeft, ChevronRight, Plus, User, Filter, Sparkles, Euro, Target } from "lucide-react";
+import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -80,16 +80,18 @@ export default function PlanningResponsive() {
   const form = useForm<InsertAppointmentForm>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
-      appointmentDate: selectedDate,
+      appointmentDate: selectedDate || "",
       startTime: "",
       endTime: "",
       notes: "",
+      clientId: 0,
+      serviceId: 0,
     },
   });
 
   // Calcul de la semaine actuelle
   const currentWeek = useMemo(() => {
-    const start = new Date(selectedDate);
+    const start = new Date(selectedDate || new Date().toISOString().split('T')[0]);
     start.setDate(start.getDate() - start.getDay() + 1); // Start from Monday
     const week = [];
     for (let i = 0; i < 7; i++) {
@@ -102,7 +104,7 @@ export default function PlanningResponsive() {
 
   // Filtrage des rendez-vous
   const filteredAppointments = useMemo(() => {
-    if (!appointments || appointments.length === 0) return [];
+    if (!appointments || !Array.isArray(appointments) || appointments.length === 0) return [];
     
     return (appointments as Appointment[]).filter(apt => {
       if (statusFilter !== 'all' && apt.status !== statusFilter) return false;
@@ -110,14 +112,14 @@ export default function PlanningResponsive() {
       if (viewMode === 'day') {
         return apt.appointmentDate === selectedDate;
       } else {
-        return currentWeek.includes(apt.appointmentDate);
+        return currentWeek.includes(apt.appointmentDate || '');
       }
     });
   }, [appointments, statusFilter, selectedDate, viewMode, currentWeek]);
 
   // Navigation de date
   const changeDate = (days: number) => {
-    const newDate = new Date(selectedDate);
+    const newDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
     if (viewMode === 'week') {
       newDate.setDate(newDate.getDate() + (days * 7));
     } else {
@@ -137,8 +139,8 @@ export default function PlanningResponsive() {
   };
 
   const formatWeekRange = () => {
-    const start = new Date(currentWeek[0]);
-    const end = new Date(currentWeek[6]);
+    const start = new Date(currentWeek[0] || new Date().toISOString().split('T')[0]);
+    const end = new Date(currentWeek[6] || new Date().toISOString().split('T')[0]);
     return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} - ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
   };
 
@@ -157,7 +159,7 @@ export default function PlanningResponsive() {
     
     const revenue = completedAppointments.reduce((total, apt) => {
       const service = (services as Service[]).find(s => s.id === apt.serviceId);
-      return total + (service?.price || 0);
+      return total + (Number(service?.price) || 0);
     }, 0);
 
     const totalAppointments = completedAppointments.length;
@@ -195,7 +197,7 @@ export default function PlanningResponsive() {
   const renderDayView = () => (
     <div className="space-y-3">
       {timeSlots.map((time, index) => {
-        const appointmentsAtTime = getAppointmentsForSlot(selectedDate, time);
+        const appointmentsAtTime = getAppointmentsForSlot(selectedDate || '', time);
         
         return (
           <motion.div
@@ -205,9 +207,9 @@ export default function PlanningResponsive() {
             transition={{ delay: index * 0.02 }}
           >
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <div className="text-sm font-semibold text-purple-600 min-w-[50px]">
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex items-center gap-4 lg:gap-6">
+                  <div className="text-sm lg:text-base font-semibold text-purple-600 min-w-[50px] lg:min-w-[70px]">
                     {time}
                   </div>
                   
@@ -222,22 +224,22 @@ export default function PlanningResponsive() {
                             <motion.div
                               key={appointment.id}
                               whileHover={{ scale: 1.02 }}
-                              className="bg-gradient-to-r from-gray-50 to-purple-50/30 p-3 rounded-xl cursor-pointer"
+                              className="bg-gradient-to-r from-gray-50 to-purple-50/30 p-3 lg:p-4 rounded-xl cursor-pointer"
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                    <span className="font-medium text-gray-900 text-sm">
+                                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-purple-500 rounded-full"></div>
+                                    <span className="font-medium text-gray-900 text-sm lg:text-base">
                                       {client ? `${client.firstName} ${client.lastName}` : 'Client'}
                                     </span>
                                     {getStatusBadge(appointment.status)}
                                   </div>
-                                  <div className="text-xs text-gray-600">
+                                  <div className="text-xs lg:text-sm text-gray-600">
                                     {service?.name} • {appointment.endTime}
                                   </div>
                                 </div>
-                                <div className="text-sm font-bold text-purple-600">
+                                <div className="text-sm lg:text-lg font-bold text-purple-600">
                                   {service?.price}€
                                 </div>
                               </div>
@@ -246,7 +248,7 @@ export default function PlanningResponsive() {
                         })}
                       </div>
                     ) : (
-                      <div className="text-gray-400 text-sm py-2">
+                      <div className="text-gray-400 text-sm lg:text-base py-2">
                         Créneaux libre
                       </div>
                     )}
@@ -265,8 +267,8 @@ export default function PlanningResponsive() {
     <div className="space-y-4">
       {/* En-têtes des jours - responsive grid */}
       <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-        <CardContent className="p-4">
-          <div className="grid grid-cols-7 gap-2">
+        <CardContent className="p-4 lg:p-6">
+          <div className="grid grid-cols-7 gap-2 lg:gap-4">
             {currentWeek.map((date, index) => {
               const dayDate = new Date(date);
               const isToday = date === new Date().toISOString().split('T')[0];
@@ -275,20 +277,20 @@ export default function PlanningResponsive() {
               return (
                 <div
                   key={date}
-                  className={`text-center p-3 rounded-xl transition-all cursor-pointer ${
+                  className={`text-center p-3 lg:p-4 rounded-xl transition-all cursor-pointer ${
                     isToday 
                       ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white' 
                       : 'hover:bg-gray-50'
                   }`}
                   onClick={() => setSelectedDate(date)}
                 >
-                  <div className="text-xs font-medium mb-1">
+                  <div className="text-xs lg:text-sm font-medium mb-1">
                     {weekDays[index]}
                   </div>
-                  <div className="text-lg font-bold">
+                  <div className="text-lg lg:text-2xl font-bold">
                     {dayDate.getDate()}
                   </div>
-                  <div className="text-xs opacity-75">
+                  <div className="text-xs lg:text-sm opacity-75">
                     {dayAppointments.length} RDV
                   </div>
                 </div>
@@ -575,20 +577,20 @@ export default function PlanningResponsive() {
             Chiffre d'Affaires - {getPeriodLabel()}
           </h2>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {/* CA Total */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 text-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Euro className="w-5 h-5 text-gray-700" />
+              <CardContent className="p-4 lg:p-6 text-center">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Euro className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
                   CA Total
                 </h3>
-                <p className="text-lg font-bold text-purple-600">
+                <p className="text-lg lg:text-2xl font-bold text-purple-600">
                   {revenueStats.revenue.toFixed(0)}€
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs lg:text-sm text-gray-600">
                   {revenueStats.totalAppointments} RDV
                 </p>
               </CardContent>
@@ -596,17 +598,17 @@ export default function PlanningResponsive() {
 
             {/* Ticket moyen */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 text-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <User className="w-5 h-5 text-gray-700" />
+              <CardContent className="p-4 lg:p-6 text-center">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <User className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
                   Ticket moyen
                 </h3>
-                <p className="text-lg font-bold text-emerald-600">
+                <p className="text-lg lg:text-2xl font-bold text-emerald-600">
                   {revenueStats.averageTicket.toFixed(0)}€
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs lg:text-sm text-gray-600">
                   Par client
                 </p>
               </CardContent>
@@ -614,17 +616,17 @@ export default function PlanningResponsive() {
 
             {/* Objectif */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 text-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-5 h-5 text-gray-700" />
+              <CardContent className="p-4 lg:p-6 text-center">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <Target className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
                   Objectif
                 </h3>
-                <p className="text-lg font-bold text-amber-600">
+                <p className="text-lg lg:text-2xl font-bold text-amber-600">
                   {viewMode === 'day' ? '250' : '1500'}€
                 </p>
-                <p className="text-xs text-gray-600">
+                <p className="text-xs lg:text-sm text-gray-600">
                   {((revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100).toFixed(0)}% atteint
                 </p>
               </CardContent>
@@ -632,11 +634,11 @@ export default function PlanningResponsive() {
 
             {/* Filtre */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-4">
+              <CardContent className="p-4 lg:p-6">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="border-0 shadow-none">
                     <div className="flex items-center gap-2">
-                      <Filter className="h-4 w-4" />
+                      <Filter className="h-4 w-4 lg:h-5 lg:w-5" />
                       <SelectValue />
                     </div>
                   </SelectTrigger>

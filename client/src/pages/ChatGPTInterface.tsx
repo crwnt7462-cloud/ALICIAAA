@@ -34,7 +34,7 @@ export default function ChatGPTInterface() {
     retry: false,
   });
 
-  const hasAIAccess = user?.subscriptionPlan === 'premium-pro' && user?.subscriptionStatus === 'active';
+  const hasAIAccess = (user as any)?.subscriptionPlan === 'premium-pro' && (user as any)?.subscriptionStatus === 'active';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -101,36 +101,36 @@ export default function ChatGPTInterface() {
 
   return (
     <div className="h-screen bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex flex-col">
-      {/* Header violet intense */}
-      <div className="flex items-center justify-between p-4 bg-violet-700/90 border-b border-violet-500/50">
+      {/* Header violet intense - Responsive */}
+      <div className="flex items-center justify-between p-4 lg:p-6 bg-violet-700/90 border-b border-violet-500/50">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setLocation('/dashboard')}
-            className="h-8 w-8 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
+            className="h-8 w-8 lg:h-10 lg:w-10 p-0 rounded-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-4 w-4 lg:h-5 lg:w-5" />
           </Button>
           <div>
-            <h1 className="text-lg font-semibold text-white">Assistant IA</h1>
+            <h1 className="text-lg lg:text-xl font-semibold text-white">Assistant IA</h1>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-              <span className="text-sm text-white/90">En ligne</span>
+              <div className="w-2 h-2 lg:w-3 lg:h-3 bg-green-400 rounded-full"></div>
+              <span className="text-sm lg:text-base text-white/90">En ligne</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Zone de conversation */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      {/* Zone de conversation - Responsive */}
+      <div className="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
         {/* Message de blocage pour utilisateurs sans Premium Pro */}
         {!userLoading && !hasAIAccess && (
           <div className="flex justify-center mb-6">
-            <div className="max-w-md bg-white/10 backdrop-blur-md rounded-3xl p-6 text-center border border-white/20">
-              <Lock className="h-12 w-12 text-amber-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">Assistant IA Premium</h3>
-              <p className="text-white/80 mb-4">
+            <div className="max-w-md lg:max-w-lg bg-white/10 backdrop-blur-md rounded-3xl p-6 lg:p-8 text-center border border-white/20">
+              <Lock className="h-12 w-12 lg:h-16 lg:w-16 text-amber-400 mx-auto mb-4" />
+              <h3 className="text-xl lg:text-2xl font-bold text-white mb-2">Assistant IA Premium</h3>
+              <p className="text-white/80 lg:text-lg mb-4">
                 L'assistant IA est exclusivement disponible avec l'abonnement Premium Pro à 149€/mois.
               </p>
               <div className="flex items-center justify-center gap-2 mb-4">

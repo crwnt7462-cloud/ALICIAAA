@@ -40,25 +40,25 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4"
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
     >
-      <div className="max-w-md mx-auto space-y-8">
+      <div className="max-w-md mx-auto lg:max-w-6xl space-y-8 lg:space-y-16">
         {/* Hero Section */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-center space-y-6 pt-8"
+          className="text-center space-y-6 pt-8 lg:pt-16"
         >
-          <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="w-16 h-16 lg:w-24 lg:h-24 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
+            <Sparkles className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
           </div>
           
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
+            <h1 className="text-3xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-4">
               Beauty Pro
             </h1>
-            <p className="text-gray-600 text-sm leading-relaxed">
+            <p className="text-gray-600 text-sm lg:text-xl leading-relaxed max-w-3xl mx-auto">
               La plateforme complète pour gérer votre salon de beauté avec intelligence artificielle
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function Landing() {
             {[1, 2, 3, 4, 5].map((star) => (
               <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
             ))}
-            <span className="text-sm text-gray-600 ml-2">4.9/5 - 2,847 salons</span>
+            <span className="text-sm lg:text-base text-gray-600 ml-2">4.9/5 - 2,847 salons</span>
           </div>
         </motion.div>
 
@@ -76,20 +76,20 @@ export default function Landing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="grid grid-cols-2 gap-4"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8"
         >
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <Card key={index} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-                <CardContent className="p-4 text-center">
-                  <div className={`w-10 h-10 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mx-auto mb-3`}>
-                    <Icon className="w-5 h-5 text-gray-700" />
+                <CardContent className="p-4 lg:p-6 text-center">
+                  <div className={`w-10 h-10 lg:w-16 lg:h-16 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mx-auto mb-3`}>
+                    <Icon className="w-5 h-5 lg:w-8 lg:h-8 text-gray-700" />
                   </div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                  <h3 className="font-semibold text-gray-900 text-sm lg:text-lg mb-1 lg:mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">
+                  <p className="text-xs lg:text-sm text-gray-600 leading-relaxed">
                     {feature.description}
                   </p>
                 </CardContent>
@@ -105,19 +105,19 @@ export default function Landing() {
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-3 gap-4 text-center">
+          <CardContent className="p-4 lg:p-6">
+            <div className="grid grid-cols-3 gap-4 lg:gap-8 text-center">
               <div>
-                <p className="text-xl font-bold text-gray-900">2,847</p>
-                <p className="text-xs text-gray-600">Salons actifs</p>
+                <p className="text-xl lg:text-3xl font-bold text-gray-900">2,847</p>
+                <p className="text-xs lg:text-sm text-gray-600">Salons actifs</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-gray-900">150k+</p>
-                <p className="text-xs text-gray-600">RDV gérés</p>
+                <p className="text-xl lg:text-3xl font-bold text-gray-900">150k+</p>
+                <p className="text-xs lg:text-sm text-gray-600">RDV gérés</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-gray-900">98%</p>
-                <p className="text-xs text-gray-600">Satisfaction</p>
+                <p className="text-xl lg:text-3xl font-bold text-gray-900">98%</p>
+                <p className="text-xs lg:text-sm text-gray-600">Satisfaction</p>
               </div>
             </div>
           </CardContent>
@@ -129,32 +129,32 @@ export default function Landing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
-          className="space-y-4"
+          className="space-y-4 lg:space-y-8"
         >
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-4">
+          <h2 className="text-xl lg:text-3xl font-bold text-gray-900 text-center mb-4 lg:mb-8">
             Salons de Démonstration
           </h2>
           
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-6">
             {/* Barbier Gentleman Marais */}
             <Card 
               className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={() => setLocation('/salon/barbier-gentleman-marais')}
             >
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-amber-700" />
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex items-center gap-3 lg:gap-4">
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-amber-700" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-sm">Barbier Gentleman Marais</h3>
-                    <p className="text-xs text-gray-600">Barbier traditionnel - Le Marais</p>
+                    <h3 className="font-semibold text-gray-900 text-sm lg:text-lg">Barbier Gentleman Marais</h3>
+                    <p className="text-xs lg:text-sm text-gray-600">Barbier traditionnel - Le Marais</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs text-gray-600">4.8 • 156 avis</span>
+                      <Star className="w-3 h-3 lg:w-4 lg:h-4 text-yellow-400 fill-current" />
+                      <span className="text-xs lg:text-sm text-gray-600">4.8 • 156 avis</span>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                  <ArrowRight className="w-4 h-4 lg:w-6 lg:h-6 text-gray-400" />
                 </div>
               </CardContent>
             </Card>
@@ -164,20 +164,20 @@ export default function Landing() {
               className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200 cursor-pointer"
               onClick={() => setLocation('/salon/beauty-lash-studio')}
             >
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-200 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-6 h-6 text-purple-700" />
+              <CardContent className="p-4 lg:p-6">
+                <div className="flex items-center gap-3 lg:gap-4">
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-pink-100 to-purple-200 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-purple-700" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-sm">Beauty Lash Studio</h3>
-                    <p className="text-xs text-gray-600">Extensions de cils - République</p>
+                    <h3 className="font-semibold text-gray-900 text-sm lg:text-lg">Beauty Lash Studio</h3>
+                    <p className="text-xs lg:text-sm text-gray-600">Extensions de cils - République</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                      <span className="text-xs text-gray-600">4.9 • 78 avis</span>
+                      <Star className="w-3 h-3 lg:w-4 lg:h-4 text-yellow-400 fill-current" />
+                      <span className="text-xs lg:text-sm text-gray-600">4.9 • 78 avis</span>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-gray-400" />
+                  <ArrowRight className="w-4 h-4 lg:w-6 lg:h-6 text-gray-400" />
                 </div>
               </CardContent>
             </Card>

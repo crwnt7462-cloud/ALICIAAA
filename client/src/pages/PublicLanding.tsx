@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles, Menu } from "lucide-react";
+import { Star, Clock, CheckCircle2, X, LogIn, UserCheck, User, Bot, Zap, ArrowRight, Crown, Waves, Flame, ChevronDown, HelpCircle, Cookie, Scissors, Palette, Users, Sparkles } from "lucide-react";
 
 import { useLocation } from "wouter";
 import logoImage from "@assets/3_1753714421825.png";
