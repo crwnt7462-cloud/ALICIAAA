@@ -114,9 +114,9 @@ export default function ProLoginModern() {
                   />
                 </div>
                 <h1 className="text-3xl font-bold mb-3 text-gray-900">
-                  Connexion Pro
+                  Connexion
                 </h1>
-                <p className="text-gray-600 text-lg">Accédez à votre dashboard Avyento</p>
+                <p className="text-gray-600 text-lg">Accédez à votre espace pro</p>
               </div>
 
               {/* En-tête desktop */}
