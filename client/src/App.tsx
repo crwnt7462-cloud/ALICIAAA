@@ -849,6 +849,11 @@ function Router() {
     );
   }
 
+  // Page Dashboard desktop - Plein écran sans contraintes
+  if (location === '/dashboard-desktop') {
+    return <Dashboard />;
+  }
+
   // Page Business Features en plein écran desktop avec navigation mobile conservée
   if (location === '/business-features') {
     return (

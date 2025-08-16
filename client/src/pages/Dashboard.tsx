@@ -60,7 +60,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 hidden lg:block">
+    <div className="min-h-screen bg-gray-50 w-full">
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar violette */}
         <div className="w-20 bg-gradient-to-b from-purple-600 via-purple-600 to-purple-700 flex flex-col items-center py-6 shadow-xl">
@@ -367,19 +367,7 @@ export default function Dashboard() {
         </div>
       </div>
       
-      {/* Message pour mobile - redirection */}
-      <div className="lg:hidden flex items-center justify-center min-h-screen bg-gray-50 p-6">
-        <div className="text-center max-w-md">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Dashboard Desktop</h2>
-          <p className="text-gray-600 mb-6">Cette vue est optimisée pour les écrans desktop. Veuillez utiliser un ordinateur pour accéder au tableau de bord complet.</p>
-          <button 
-            onClick={() => setLocation('/business-features')}
-            className="bg-purple-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-purple-700 transition-colors"
-          >
-            Retour aux fonctionnalités
-          </button>
-        </div>
-      </div>
+
     </div>
   );
 }
