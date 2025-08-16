@@ -63,7 +63,12 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar Glass */}
-        <div className="w-20 bg-white/20 backdrop-blur-xl border-r border-white/30 flex flex-col items-center py-6 shadow-2xl">
+        <div className="w-20 flex flex-col items-center py-6" style={{
+          backdropFilter: 'blur(20px) saturate(180%)',
+          background: 'rgba(255, 255, 255, 0.09)',
+          border: '1px solid rgba(255, 255, 255, 0.18)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+        }}>
           {/* Logo */}
           <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/40">
             <Bell className="w-6 h-6 text-gray-700" />
@@ -130,7 +135,12 @@ export default function Dashboard() {
             {/* Layout principal en 2 colonnes - Dimensions exactes */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80 border border-white/30 shadow-2xl">
+              <div className="rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80" style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.09)',
+                border: '1px solid rgba(255, 255, 255, 0.18)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+              }}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
                   <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5">
@@ -204,7 +214,12 @@ export default function Dashboard() {
               {/* Colonne droite avec 2 cartes empilées */}
               <div className="flex flex-col gap-4 h-80">
                 {/* Services Populaires */}
-                <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden border border-white/30 shadow-xl">
+                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  background: 'rgba(255, 255, 255, 0.09)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+                }}>
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
                       <Calendar className="w-6 h-6 text-gray-700" />
@@ -217,7 +232,12 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden border border-white/30 shadow-xl">
+                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  background: 'rgba(255, 255, 255, 0.09)',
+                  border: '1px solid rgba(255, 255, 255, 0.18)',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+                }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
@@ -259,7 +279,12 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
+            <div className="rounded-2xl p-6" style={{
+              backdropFilter: 'blur(20px) saturate(180%)',
+              background: 'rgba(255, 255, 255, 0.09)',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+            }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
                 <TrendingUp className="w-6 h-6 text-gray-700" />
               </div>
@@ -280,7 +305,12 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
+            <div className="rounded-2xl p-6" style={{
+              backdropFilter: 'blur(20px) saturate(180%)',
+              background: 'rgba(255, 255, 255, 0.09)',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+            }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
                 <Settings className="w-6 h-6 text-gray-700" />
               </div>
@@ -304,7 +334,12 @@ export default function Dashboard() {
         </div>
 
           {/* Sidebar droite - Friends */}
-          <div className="w-80 bg-white/40 backdrop-blur-xl p-6 border-l border-white/20">
+          <div className="w-80 p-6" style={{
+            backdropFilter: 'blur(20px) saturate(180%)',
+            background: 'rgba(255, 255, 255, 0.09)',
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+          }}>
             {/* Header Clients */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-2">
