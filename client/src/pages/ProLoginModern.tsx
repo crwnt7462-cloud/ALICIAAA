@@ -72,10 +72,10 @@ export default function ProLoginModern() {
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
                     className="mx-auto"
-                    style={{ height: '70px' }}
+                    style={{ height: '45px' }}
                   />
                 </div>
-                <p className="text-gray-600 text-2xl mb-10 leading-relaxed px-2 font-medium">
+                <p className="text-gray-600 text-base mb-10 leading-relaxed px-2">
                   La plateforme révolutionnaire pour professionnels de la beauté
                 </p>
                 <div className="space-y-4 text-left max-w-xs mx-auto">
