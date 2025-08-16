@@ -632,6 +632,22 @@
   transition: all 0.3s ease;
 }
 
+/* Carte glassmorphism violette pour Professional Plans */
+.glass-card-violet {
+  background: linear-gradient(135deg, 
+    rgba(139, 92, 246, 0.4) 0%, 
+    rgba(168, 85, 247, 0.25) 50%,
+    rgba(236, 72, 153, 0.2) 100%
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 
+    0 16px 48px rgba(139, 92, 246, 0.25),
+    0 8px 24px rgba(168, 85, 247, 0.15),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
 /* Glassmorphism neutre - Garde les couleurs originales sans cadre */
 .glass-button-neutral {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
