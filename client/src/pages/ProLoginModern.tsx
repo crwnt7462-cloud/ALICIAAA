@@ -21,15 +21,15 @@ export default function ProLoginModern() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8">
-        {/* Container principal centré avec taille encore plus réduite */}
-        <div className="max-w-3xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
+        {/* Container principal centré avec max-width */}
+        <div className="max-w-6xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.3)'
         }}>
           {/* Côté gauche - Branding Avyento avec gradient violet clair glassmorphism */}
-          <div className="hidden lg:flex lg:w-3/5 relative">
+          <div className="hidden lg:flex lg:w-1/2 relative">
             {/* Gradient background plus clair et diffus */}
             <div className="absolute inset-0 bg-gradient-to-br from-violet-400/80 via-purple-500/70 to-violet-600/80" style={{
               backdropFilter: 'blur(15px)',
@@ -136,7 +136,7 @@ export default function ProLoginModern() {
           </div>
 
           {/* Côté droit - Formulaire glassmorphism Avyento */}
-          <div className="w-full lg:w-2/5 bg-white/50 flex items-center justify-center p-8">
+          <div className="w-full lg:w-1/2 bg-white/50 flex items-center justify-center p-12">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -146,16 +146,18 @@ export default function ProLoginModern() {
               {/* Formulaire glassmorphism */}
               <div className="p-8">
                 <div className="text-center mb-8">
-                  {/* Logo Avyento Pro agrandi */}
+                  {/* Logo Avyento Pro */}
                   <div className="mb-6">
                     <img 
                       src={avyentoProLogo} 
                       alt="Avyento Pro" 
-                      className="h-10 mx-auto"
-                      style={{ height: '40px' }}
+                      className="h-12 mx-auto"
                     />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Connexion</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Créez votre compte.</h2>
+                  <p className="text-gray-600 text-sm">
+                    Vous avez déjà un compte ? <button className="text-violet-600 hover:text-violet-700 font-medium">Se connecter</button>
+                  </p>
                 </div>
 
                 {/* Formulaire */}
