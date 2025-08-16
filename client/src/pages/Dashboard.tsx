@@ -18,7 +18,8 @@ import {
   Menu,
   ChevronDown,
   MapPin,
-  Activity
+  Activity,
+  Globe
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -95,6 +96,10 @@ export default function Dashboard() {
             <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
               <Clock className="w-6 h-6 text-white/70" />
             </div>
+            
+            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+              <Settings className="w-6 h-6 text-white/70" />
+            </div>
           </div>
           
           {/* User Avatar */}
@@ -125,6 +130,17 @@ export default function Dashboard() {
                     className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
+                
+                {/* Boutons d'action */}
+                <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                  <Globe className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm text-gray-700">Ma Page</span>
+                </button>
+                
+                <button className="flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors">
+                  <Settings className="w-4 h-4 text-purple-600" />
+                  <span className="text-sm text-purple-700">Settings</span>
+                </button>
                 
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
                   <span className="text-white font-semibold text-sm">AV</span>
