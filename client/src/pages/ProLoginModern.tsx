@@ -105,7 +105,7 @@ export default function ProLoginModern() {
             <div className="p-8 lg:w-1/2 lg:p-8 lg:flex lg:flex-col lg:justify-center">
               {/* En-tête mobile */}
               <div className="text-center mb-8 lg:hidden">
-                <div className="mb-6">
+                <div className="mb-0">
                   <img 
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
