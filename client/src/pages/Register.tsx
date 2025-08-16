@@ -142,7 +142,7 @@ export default function Register() {
                           placeholder="Sarah"
                           value={formData.firstName}
                           onChange={(e) => updateField("firstName", e.target.value)}
-                          className="pl-10 glass-input text-left"
+                          className="pl-10 glass-input"
                           required
                         />
                       </div>
@@ -155,7 +155,7 @@ export default function Register() {
                         placeholder="Martin"
                         value={formData.lastName}
                         onChange={(e) => updateField("lastName", e.target.value)}
-                        className="glass-input text-left"
+                        className="glass-input"
                         required
                       />
                     </div>
@@ -171,7 +171,7 @@ export default function Register() {
                         placeholder="Salon Beautiful"
                         value={formData.businessName}
                         onChange={(e) => updateField("businessName", e.target.value)}
-                        className="pl-10 glass-input text-left"
+                        className="pl-10 glass-input"
                         required
                       />
                     </div>
@@ -185,7 +185,7 @@ export default function Register() {
                       placeholder="12345678901234"
                       value={formData.siret}
                       onChange={(e) => updateField("siret", e.target.value)}
-                      className="glass-input text-left"
+                      className="glass-input"
                       required
                       maxLength={14}
                     />
@@ -202,7 +202,7 @@ export default function Register() {
                         placeholder="contact@salonbeautiful.fr"
                         value={formData.email}
                         onChange={(e) => updateField("email", e.target.value)}
-                        className="pl-10 glass-input text-left"
+                        className="pl-10 glass-input"
                         required
                       />
                     </div>
@@ -215,7 +215,7 @@ export default function Register() {
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
                     {/* Téléphone */}
                     <div className="space-y-1">
-                      <Label htmlFor="phone" className="text-xs font-medium text-gray-900 text-left block">Téléphone *</Label>
+                      <Label htmlFor="phone" className="text-xs font-medium text-gray-900 text-left block">Téléphone professionnel *</Label>
                       <div className="relative">
                         <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -223,7 +223,7 @@ export default function Register() {
                           placeholder="01 23 45 67 89"
                           value={formData.phone}
                           onChange={(e) => updateField("phone", e.target.value)}
-                          className="pl-10 glass-input text-left"
+                          className="pl-10 glass-input"
                           required
                         />
                       </div>
@@ -237,7 +237,7 @@ export default function Register() {
                         placeholder="Paris"
                         value={formData.city}
                         onChange={(e) => updateField("city", e.target.value)}
-                        className="glass-input text-left"
+                        className="glass-input"
                         required
                       />
                     </div>
@@ -252,7 +252,7 @@ export default function Register() {
                           placeholder="123 Rue de la Beauté"
                           value={formData.address}
                           onChange={(e) => updateField("address", e.target.value)}
-                          className="pl-10 glass-input text-left"
+                          className="pl-10 glass-input"
                           required
                         />
                       </div>
@@ -269,7 +269,7 @@ export default function Register() {
                           placeholder="••••••••"
                           value={formData.password}
                           onChange={(e) => updateField("password", e.target.value)}
-                          className="pl-10 glass-input text-left"
+                          className="pl-10 glass-input"
                           required
                           minLength={6}
                         />
@@ -287,7 +287,7 @@ export default function Register() {
                           placeholder="••••••••"
                           value={formData.confirmPassword}
                           onChange={(e) => updateField("confirmPassword", e.target.value)}
-                          className="pl-10 glass-input text-left"
+                          className="pl-10 glass-input"
                           required
                           minLength={6}
                         />
