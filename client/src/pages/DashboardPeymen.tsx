@@ -47,61 +47,61 @@ export default function DashboardPeymen() {
     <div className="min-h-screen bg-gray-50 w-full">
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar */}
-        <div className="w-64 bg-white shadow-lg flex flex-col">
+        <div className="w-60 bg-white shadow-sm flex flex-col border-r border-gray-100">
           {/* Logo */}
           <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">AV</span>
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                <span className="text-white font-bold text-xs">P</span>
               </div>
-              <span className="font-bold text-gray-900">Avyento</span>
+              <span className="font-bold text-gray-900 text-lg">Peymen</span>
             </div>
           </div>
           
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            <div className="flex items-center space-x-3 px-4 py-3 bg-blue-50 text-blue-600 rounded-xl">
-              <Home className="w-5 h-5" />
-              <span className="font-medium">Dashboard</span>
+          <nav className="flex-1 px-3 py-4 space-y-1">
+            <div className="flex items-center space-x-3 px-3 py-2.5 bg-blue-50 text-blue-600 rounded-lg">
+              <Home className="w-4 h-4" />
+              <span className="font-medium text-sm">Dashboard</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <User className="w-5 h-5" />
-              <span>Profile</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <User className="w-4 h-4" />
+              <span className="text-sm">Profile</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <Wallet className="w-5 h-5" />
-              <span>Wallet</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <Wallet className="w-4 h-4" />
+              <span className="text-sm">Wallet</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <BarChart3 className="w-5 h-5" />
-              <span>Analytics</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <BarChart3 className="w-4 h-4" />
+              <span className="text-sm">Analytics</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <MessageSquare className="w-5 h-5" />
-              <span>Messages</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <MessageSquare className="w-4 h-4" />
+              <span className="text-sm">Messages</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <Users className="w-5 h-5" />
-              <span>Clients</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <Users className="w-4 h-4" />
+              <span className="text-sm">Clients</span>
             </div>
             
-            <div className="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl cursor-pointer">
-              <Settings className="w-5 h-5" />
-              <span>Settings</span>
+            <div className="flex items-center space-x-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 rounded-lg cursor-pointer">
+              <Settings className="w-4 h-4" />
+              <span className="text-sm">Settings</span>
             </div>
           </nav>
           
           {/* Premium Account Card */}
-          <div className="p-4">
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 text-white">
-              <h3 className="font-semibold mb-2">Get a Premium Account</h3>
-              <p className="text-sm opacity-90 mb-4">Unlock advanced features for your salon</p>
-              <button className="bg-white text-blue-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-100 transition-colors">
+          <div className="p-3 mx-3 mb-6">
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-3 text-white">
+              <h3 className="font-semibold text-sm mb-1">Get a Premium Account</h3>
+              <p className="text-xs opacity-90 mb-3">Unlock advanced features</p>
+              <button className="bg-white text-blue-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors w-full">
                 Get Now
               </button>
             </div>
@@ -110,122 +110,121 @@ export default function DashboardPeymen() {
 
         {/* Main Content */}
         <div className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto p-8">
+          <div className="h-full overflow-y-auto p-6">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Welcome to Avyento</h1>
-                <p className="text-gray-600">Gérez votre salon efficacement</p>
+                <h1 className="text-xl font-bold text-gray-900">Welcome to Peymen</h1>
               </div>
               
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Search"
-                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-48"
                   />
                 </div>
                 
-                <button className="p-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50">
-                  <Settings className="w-5 h-5 text-gray-600" />
+                <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <Settings className="w-4 h-4 text-gray-600" />
                 </button>
                 
-                <button className="p-2 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 relative">
-                  <Bell className="w-5 h-5 text-gray-600" />
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                <button className="p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 relative">
+                  <Bell className="w-4 h-4 text-gray-600" />
+                  <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full"></div>
                 </button>
                 
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-semibold text-sm">AV</span>
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-semibold text-xs">AV</span>
                 </div>
               </div>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-4 gap-6 mb-8">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            {/* Stats Cards - Exact Layout */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Prestations</p>
-                    <p className="text-2xl font-bold text-gray-900">€{stats?.totalClients || 124}</p>
+                    <p className="text-gray-600 text-xs mb-1">Total Services</p>
+                    <p className="text-lg font-bold text-gray-900">$124</p>
                   </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-blue-600" />
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-4 h-4 text-blue-600" />
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Nouveaux Clients</p>
-                    <p className="text-2xl font-bold text-gray-900">€142</p>
+                    <p className="text-gray-600 text-xs mb-1">New Clients</p>
+                    <p className="text-lg font-bold text-gray-900">$142</p>
                   </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
-                    <Users className="w-6 h-6 text-green-600" />
+                  <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                    <Users className="w-4 h-4 text-green-600" />
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm mb-1">Revenus</p>
-                    <p className="text-2xl font-bold text-gray-900">€155</p>
+                    <p className="text-gray-600 text-xs mb-1">Revenue</p>
+                    <p className="text-lg font-bold text-gray-900">$155</p>
                   </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-purple-600" />
                   </div>
                 </div>
               </div>
               
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="text-right">
-                  <p className="text-gray-600 text-sm mb-1">Mois</p>
-                  <p className="text-3xl font-bold text-gray-900">€{stats?.monthlyRevenue || 3642}€</p>
+                  <p className="text-gray-600 text-xs mb-1">Month</p>
+                  <p className="text-2xl font-bold text-gray-900">$234.2</p>
                 </div>
               </div>
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-3 gap-8">
+            {/* Main Content Grid - Exact Layout */}
+            <div className="grid grid-cols-3 gap-6">
               {/* Left Column */}
-              <div className="col-span-2 space-y-8">
+              <div className="col-span-2 space-y-6">
                 {/* Reach Financial Goals Card */}
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Atteignez vos objectifs financiers plus rapidement</h3>
-                      <button className="bg-blue-600 text-white px-6 py-2 rounded-xl font-medium hover:bg-blue-700 transition-colors">
-                        En savoir plus
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Reach financial goals faster</h3>
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        Learn More
                       </button>
                     </div>
                     
-                    <div className="flex-1 mx-8">
+                    <div className="flex-1 flex justify-center">
                       {/* Credit Card */}
-                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 text-white relative max-w-xs ml-auto">
-                        <div className="flex items-center justify-between mb-8">
-                          <span className="text-sm opacity-90">Carte Professionnelle</span>
-                          <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                            <CreditCard className="w-4 h-4" />
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-4 text-white w-56">
+                        <div className="flex items-center justify-between mb-6">
+                          <span className="text-xs opacity-90">Universal Card</span>
+                          <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                            <div className="w-3 h-3 bg-white/40 rounded-full"></div>
                           </div>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-sm opacity-90">**** **** 3456 7892</p>
+                          <p className="text-xs opacity-90">**** **** 5678 5432</p>
                           <p className="text-xs opacity-75">Salon Avyento</p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="text-right">
-                      <div className="w-32 h-20 bg-gray-100 rounded-xl mb-4 flex items-center justify-center">
+                    <div className="flex-1 flex justify-end">
+                      <div className="w-20 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         {/* Simple chart representation */}
-                        <svg width="80" height="40" viewBox="0 0 80 40" className="text-gray-400">
-                          <path d="M5,30 Q20,10 40,20 T75,15" stroke="currentColor" strokeWidth="2" fill="none" />
-                          <circle cx="20" cy="15" r="2" fill="currentColor" />
-                          <circle cx="60" cy="18" r="2" fill="currentColor" />
+                        <svg width="60" height="30" viewBox="0 0 60 30" className="text-gray-400">
+                          <path d="M5,20 Q15,8 30,15 T55,10" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                          <circle cx="15" cy="12" r="1.5" fill="currentColor" />
+                          <circle cx="45" cy="13" r="1.5" fill="currentColor" />
                         </svg>
                       </div>
                     </div>
@@ -233,67 +232,67 @@ export default function DashboardPeymen() {
                 </div>
 
                 {/* Transactions Section */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4">
                   {/* Your Transaction */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-gray-900 mb-4">Vos Transactions</h3>
-                    <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Your Transaction</h3>
+                    <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                            <span className="text-green-600 text-sm">✂️</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                            <span className="text-green-600 text-xs">🛍️</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Coupe</p>
-                            <p className="text-sm text-gray-500">Aujourd'hui</p>
+                            <p className="font-medium text-gray-900 text-sm">Shopping</p>
+                            <p className="text-xs text-gray-500">Today</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-green-600">€45</span>
+                        <span className="font-semibold text-green-600 text-sm">$27</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <span className="text-purple-600 text-sm">💅</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                            <span className="text-red-600 text-xs">🎬</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Manucure</p>
-                            <p className="text-sm text-gray-500">Hier</p>
+                            <p className="font-medium text-gray-900 text-sm">Movie</p>
+                            <p className="text-xs text-gray-500">Yesterday</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-green-600">€25</span>
+                        <span className="font-semibold text-red-600 text-sm">$15</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Your Transfer */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-gray-900 mb-4">Prochains RDV</h3>
-                    <div className="space-y-3">
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Your Transfer</h3>
+                    <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-medium text-xs">SM</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                            <span className="text-gray-600 font-medium text-xs">JW</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Sophie Martin</p>
-                            <p className="text-sm text-gray-500">Aujourd'hui</p>
+                            <p className="font-medium text-gray-900 text-sm">Jenny Wilson</p>
+                            <p className="text-xs text-gray-500">Yesterday</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-blue-600">14h30</span>
+                        <span className="font-semibold text-green-600 text-sm">$45</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                            <span className="text-purple-600 font-medium text-xs">MD</span>
+                        <div className="flex items-center space-x-2">
+                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                            <span className="text-gray-600 font-medium text-xs">DR</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900">Marie Dubois</p>
-                            <p className="text-sm text-gray-500">Demain</p>
+                            <p className="font-medium text-gray-900 text-sm">Dianne Russell</p>
+                            <p className="text-xs text-gray-500">2 days ago</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-purple-600">10h00</span>
+                        <span className="font-semibold text-green-600 text-sm">$32</span>
                       </div>
                     </div>
                   </div>
@@ -301,22 +300,22 @@ export default function DashboardPeymen() {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Goals Completed Card */}
-                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 text-white">
+                <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-5 text-white">
                   <div className="text-center">
-                    <p className="text-sm opacity-75 mb-2">Objectifs pour Août 2025</p>
-                    <h2 className="text-2xl font-bold mb-4">Réalisé</h2>
+                    <p className="text-xs opacity-75 mb-1">Goals for 2023</p>
+                    <h2 className="text-lg font-bold mb-3">Completed</h2>
                     
                     {/* Circular Progress */}
-                    <div className="relative w-24 h-24 mx-auto mb-4">
-                      <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                    <div className="relative w-20 h-20 mx-auto mb-3">
+                      <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 100 100">
                         <circle
                           cx="50"
                           cy="50"
                           r="45"
                           stroke="rgba(255,255,255,0.2)"
-                          strokeWidth="8"
+                          strokeWidth="6"
                           fill="none"
                         />
                         <circle
@@ -324,21 +323,18 @@ export default function DashboardPeymen() {
                           cy="50"
                           r="45"
                           stroke="white"
-                          strokeWidth="8"
+                          strokeWidth="6"
                           fill="none"
-                          strokeDasharray={`${73 * 2.827} 283`}
+                          strokeDasharray={`${100 * 2.827} 283`}
                           strokeLinecap="round"
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-xl font-bold">73%</span>
+                        <span className="text-lg font-bold">100%</span>
                       </div>
                     </div>
-                    <p className="text-xs opacity-75">3642€ / 5000€</p>
                   </div>
                 </div>
-
-                {/* Additional cards can be added here */}
               </div>
             </div>
           </div>
