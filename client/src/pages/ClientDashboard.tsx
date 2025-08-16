@@ -193,29 +193,29 @@ export default function ClientDashboard() {
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:flex lg:w-80 bg-white shadow-sm border-r border-gray-100 h-screen sticky top-0">
-          <div className="p-6 w-full">
-            <div className="flex items-center space-x-3 mb-8">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+        <div className="hidden lg:flex lg:w-64 bg-white shadow-sm border-r border-gray-100 h-screen sticky top-0">
+          <div className="p-4 w-full">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-8 h-8 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Avyento</span>
+              <span className="text-lg font-bold text-gray-900">Avyento</span>
             </div>
             
-            <nav className="space-y-2">
+            <nav className="space-y-1">
               {sidebarItems.map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={index}
                     onClick={() => setLocation(item.path)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
+                    className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors text-sm ${
                       item.active 
                         ? 'bg-violet-50 text-violet-600 font-medium' 
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                     <span>{item.name}</span>
                   </button>
                 );
