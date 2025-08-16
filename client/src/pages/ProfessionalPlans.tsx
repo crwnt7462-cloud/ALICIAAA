@@ -565,12 +565,12 @@ export default function ProfessionalPlans() {
             </p>
           </div>
 
-          {/* FAQ avec design exact */}
+          {/* FAQ avec design exact et effets identiques */}
           <div className="space-y-6">
-            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
-              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-lg transition-all duration-300">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg hover:bg-violet-50 transition-colors">
                 Combien de temps faut-il pour configurer Avyento ?
-                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-violet-600 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
@@ -579,10 +579,10 @@ export default function ProfessionalPlans() {
               </div>
             </details>
 
-            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
-              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-lg transition-all duration-300">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg hover:bg-violet-50 transition-colors">
                 Mes données actuelles peuvent-elles être récupérées ?
-                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-violet-600 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
@@ -591,10 +591,10 @@ export default function ProfessionalPlans() {
               </div>
             </details>
 
-            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
-              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-lg transition-all duration-300">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg hover:bg-violet-50 transition-colors">
                 Que se passe-t-il si je veux changer d'abonnement ?
-                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-violet-600 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
@@ -603,10 +603,10 @@ export default function ProfessionalPlans() {
               </div>
             </details>
 
-            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
-              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-lg transition-all duration-300">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg hover:bg-violet-50 transition-colors">
                 L'IA fonctionne-t-elle dès le premier jour ?
-                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-violet-600 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
@@ -615,10 +615,10 @@ export default function ProfessionalPlans() {
               </div>
             </details>
 
-            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
-              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-lg transition-all duration-300">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg hover:bg-violet-50 transition-colors">
                 Y a-t-il des frais de transaction sur les paiements ?
-                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-violet-600 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
