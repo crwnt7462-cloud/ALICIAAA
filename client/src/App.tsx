@@ -12,6 +12,7 @@ import Landing from "@/pages/Landing";
 import PublicLanding from "@/pages/PublicLanding";
 import SearchResults from "@/pages/SearchResults";
 import Dashboard from "@/pages/Dashboard";
+import DashboardPeymen from "@/pages/DashboardPeymen";
 
 import Planning from "@/pages/Planning";
 import Clients from "@/pages/Clients";
@@ -918,7 +919,8 @@ function Router() {
       <Header />
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/dashboard" component={DashboardPeymen} />
+          <Route path="/dashboard-old" component={Dashboard} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
           {/* Planning géré séparément pour plein écran desktop */}
           <Route path="/clients" component={ClientsModern} />
