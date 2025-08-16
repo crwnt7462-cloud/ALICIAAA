@@ -132,147 +132,155 @@ export default function Register() {
                 <p className="text-gray-600">Rejoignez la plateforme professionnelle</p>
               </div>
 
-              {/* Formulaire avec répartition uniforme en 2 colonnes */}
-              <form onSubmit={handleRegister} className="space-y-3 lg:space-y-2">
-                {/* Première ligne : Prénom + Nom */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="firstName" className="text-sm">Prénom</Label>
-                    <div className="relative">
-                      <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                      <Input
-                        id="firstName"
-                        placeholder="Sarah"
-                        value={formData.firstName}
-                        onChange={(e) => updateField("firstName", e.target.value)}
-                        className="pl-10 glass-input"
-                        required
-                      />
+              {/* Formulaire avec colonne gauche (infos de base) et droite (reste) */}
+              <form onSubmit={handleRegister} className="space-y-4 lg:space-y-0">
+                <div className="lg:grid lg:grid-cols-2 lg:gap-8">
+                  {/* Colonne GAUCHE - Infos de base comme sur la photo */}
+                  <div className="space-y-3">
+                    {/* Prénom */}
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName" className="text-sm">Prénom</Label>
+                      <div className="relative">
+                        <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="firstName"
+                          placeholder="Sarah"
+                          value={formData.firstName}
+                          onChange={(e) => updateField("firstName", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="lastName" className="text-sm">Nom</Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Martin"
-                      value={formData.lastName}
-                      onChange={(e) => updateField("lastName", e.target.value)}
-                      className="glass-input"
-                      required
-                    />
-                  </div>
-                </div>
 
-                {/* Deuxième ligne : Salon + Email */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="businessName" className="text-sm">Nom du salon</Label>
-                    <div className="relative">
-                      <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                    {/* Nom */}
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName" className="text-sm">Nom</Label>
                       <Input
-                        id="businessName"
-                        placeholder="Salon Beautiful"
-                        value={formData.businessName}
-                        onChange={(e) => updateField("businessName", e.target.value)}
-                        className="pl-10 glass-input"
+                        id="lastName"
+                        placeholder="Martin"
+                        value={formData.lastName}
+                        onChange={(e) => updateField("lastName", e.target.value)}
+                        className="glass-input"
                         required
                       />
                     </div>
-                  </div>
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="email" className="text-sm">Email professionnel</Label>
-                    <div className="relative">
-                      <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="contact@salonbeautiful.fr"
-                        value={formData.email}
-                        onChange={(e) => updateField("email", e.target.value)}
-                        className="pl-10 glass-input"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                {/* Troisième ligne : Téléphone + Ville */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="phone" className="text-sm">Téléphone</Label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                    {/* Nom du salon */}
+                    <div className="space-y-2">
+                      <Label htmlFor="businessName" className="text-sm">Nom du salon</Label>
+                      <div className="relative">
+                        <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="businessName"
+                          placeholder="Salon Beautiful"
+                          value={formData.businessName}
+                          onChange={(e) => updateField("businessName", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Email professionnel */}
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-sm">Email professionnel</Label>
+                      <div className="relative">
+                        <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="contact@salonbeautiful.fr"
+                          value={formData.email}
+                          onChange={(e) => updateField("email", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Colonne DROITE - Reste du formulaire */}
+                  <div className="space-y-3 lg:mt-0 mt-4">
+                    {/* Téléphone */}
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-sm">Téléphone</Label>
+                      <div className="relative">
+                        <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="phone"
+                          placeholder="01 23 45 67 89"
+                          value={formData.phone}
+                          onChange={(e) => updateField("phone", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Ville */}
+                    <div className="space-y-2">
+                      <Label htmlFor="city" className="text-sm">Ville</Label>
                       <Input
-                        id="phone"
-                        placeholder="01 23 45 67 89"
-                        value={formData.phone}
-                        onChange={(e) => updateField("phone", e.target.value)}
-                        className="pl-10 glass-input"
+                        id="city"
+                        placeholder="Paris"
+                        value={formData.city}
+                        onChange={(e) => updateField("city", e.target.value)}
+                        className="glass-input"
                         required
                       />
                     </div>
-                  </div>
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="city" className="text-sm">Ville</Label>
-                    <Input
-                      id="city"
-                      placeholder="Paris"
-                      value={formData.city}
-                      onChange={(e) => updateField("city", e.target.value)}
-                      className="glass-input"
-                      required
-                    />
-                  </div>
-                </div>
 
-                {/* Quatrième ligne : Adresse sur toute la largeur */}
-                <div className="space-y-2 lg:space-y-1">
-                  <Label htmlFor="address" className="text-sm">Adresse complète</Label>
-                  <div className="relative">
-                    <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                    <Input
-                      id="address"
-                      placeholder="123 Rue de la Beauté"
-                      value={formData.address}
-                      onChange={(e) => updateField("address", e.target.value)}
-                      className="pl-10 glass-input"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Cinquième ligne : Mots de passe */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-3">
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="password" className="text-sm">Mot de passe</Label>
-                    <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                      <Input
-                        id="password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={formData.password}
-                        onChange={(e) => updateField("password", e.target.value)}
-                        className="pl-10 glass-input"
-                        required
-                        minLength={6}
-                      />
+                    {/* Adresse complète */}
+                    <div className="space-y-2">
+                      <Label htmlFor="address" className="text-sm">Adresse complète</Label>
+                      <div className="relative">
+                        <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="address"
+                          placeholder="123 Rue de la Beauté"
+                          value={formData.address}
+                          onChange={(e) => updateField("address", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-2 lg:space-y-1">
-                    <Label htmlFor="confirmPassword" className="text-sm">Confirmer le mot de passe</Label>
-                    <div className="relative">
-                      <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        placeholder="••••••••"
-                        value={formData.confirmPassword}
-                        onChange={(e) => updateField("confirmPassword", e.target.value)}
-                        className="pl-10 glass-input"
-                        required
-                        minLength={6}
-                      />
+
+                    {/* Mot de passe */}
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm">Mot de passe</Label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="••••••••"
+                          value={formData.password}
+                          onChange={(e) => updateField("password", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                          minLength={6}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Confirmer mot de passe */}
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="text-sm">Confirmer le mot de passe</Label>
+                      <div className="relative">
+                        <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="confirmPassword"
+                          type="password"
+                          placeholder="••••••••"
+                          value={formData.confirmPassword}
+                          onChange={(e) => updateField("confirmPassword", e.target.value)}
+                          className="pl-10 glass-input"
+                          required
+                          minLength={6}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
