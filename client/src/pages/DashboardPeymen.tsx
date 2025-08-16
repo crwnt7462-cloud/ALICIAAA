@@ -52,9 +52,9 @@ export default function DashboardPeymen() {
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-xs">A</span>
+                <span className="text-white font-bold text-xs">P</span>
               </div>
-              <span className="font-bold text-gray-900 text-lg">Avyento</span>
+              <span className="font-bold text-gray-900 text-lg">Peymen</span>
             </div>
           </div>
           
@@ -99,10 +99,10 @@ export default function DashboardPeymen() {
           {/* Premium Account Card */}
           <div className="p-3 mx-3 mb-6">
             <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-3 text-white">
-              <h3 className="font-semibold text-sm mb-1">Obtenez un Compte Premium</h3>
-              <p className="text-xs opacity-90 mb-3">Débloquez les fonctionnalités avancées</p>
+              <h3 className="font-semibold text-sm mb-1">Get a Premium Account</h3>
+              <p className="text-xs opacity-90 mb-3">Unlock advanced features</p>
               <button className="bg-white text-blue-600 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors w-full">
-                Obtenir
+                Get Now
               </button>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function DashboardPeymen() {
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Welcome to Avyento</h1>
+                <h1 className="text-xl font-bold text-gray-900">Welcome to Peymen</h1>
               </div>
               
               <div className="flex items-center space-x-3">
@@ -142,16 +142,16 @@ export default function DashboardPeymen() {
               </div>
             </div>
 
-            {/* Stats Cards - Exact Layout */}
+            {/* Stats Cards - Exact comme screenshot */}
             <div className="grid grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-xs mb-1">Prestations</p>
-                    <p className="text-lg font-bold text-gray-900">€124</p>
+                    <p className="text-gray-600 text-xs mb-1">Total Services</p>
+                    <p className="text-lg font-bold text-gray-900">$124</p>
                   </div>
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-4 h-4 text-blue-600" />
+                    <div className="w-4 h-4 bg-blue-600 rounded"></div>
                   </div>
                 </div>
               </div>
@@ -159,11 +159,11 @@ export default function DashboardPeymen() {
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-xs mb-1">Nouveaux Clients</p>
-                    <p className="text-lg font-bold text-gray-900">€142</p>
+                    <p className="text-gray-600 text-xs mb-1">New Clients</p>
+                    <p className="text-lg font-bold text-gray-900">$142</p>
                   </div>
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Users className="w-4 h-4 text-green-600" />
+                    <div className="w-4 h-4 bg-green-600 rounded"></div>
                   </div>
                 </div>
               </div>
@@ -171,19 +171,19 @@ export default function DashboardPeymen() {
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-xs mb-1">Revenus</p>
-                    <p className="text-lg font-bold text-gray-900">€155</p>
+                    <p className="text-gray-600 text-xs mb-1">Revenue</p>
+                    <p className="text-lg font-bold text-gray-900">$155</p>
                   </div>
                   <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-4 h-4 text-purple-600" />
+                    <div className="w-4 h-4 bg-purple-600 rounded"></div>
                   </div>
                 </div>
               </div>
               
               <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                 <div className="text-right">
-                  <p className="text-gray-600 text-xs mb-1">Mois</p>
-                  <p className="text-2xl font-bold text-gray-900">€3642.2</p>
+                  <p className="text-gray-600 text-xs mb-1">Month</p>
+                  <p className="text-2xl font-bold text-gray-900">$234.2</p>
                 </div>
               </div>
             </div>
@@ -196,9 +196,9 @@ export default function DashboardPeymen() {
                 <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3">Atteignez vos objectifs financiers plus rapidement</h3>
+                      <h3 className="text-lg font-bold text-gray-900 mb-3">Reach financial goals faster</h3>
                       <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                        En savoir plus
+                        Learn More
                       </button>
                     </div>
                     
@@ -206,14 +206,14 @@ export default function DashboardPeymen() {
                       {/* Credit Card */}
                       <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg p-4 text-white w-56">
                         <div className="flex items-center justify-between mb-6">
-                          <span className="text-xs opacity-90">Carte Professionnelle</span>
+                          <span className="text-xs opacity-90">Universal Card</span>
                           <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
                             <div className="w-3 h-3 bg-white/40 rounded-full"></div>
                           </div>
                         </div>
                         <div className="space-y-1">
-                          <p className="text-xs opacity-90">**** **** 3456 7892</p>
-                          <p className="text-xs opacity-75">Salon Avyento</p>
+                          <p className="text-xs opacity-90">**** **** 5678 5432</p>
+                          <p className="text-xs opacity-75">Peymen Ltd</p>
                         </div>
                       </div>
                     </div>
@@ -235,64 +235,64 @@ export default function DashboardPeymen() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Your Transaction */}
                   <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Vos Transactions</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Your Transaction</h3>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                            <span className="text-green-600 text-xs">✂️</span>
+                            <span className="text-green-600 text-xs">🛍️</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">Coupe</p>
-                            <p className="text-xs text-gray-500">Aujourd'hui</p>
+                            <p className="font-medium text-gray-900 text-sm">Shopping</p>
+                            <p className="text-xs text-gray-500">Today</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-green-600 text-sm">€45</span>
+                        <span className="font-semibold text-green-600 text-sm">$27</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <span className="text-purple-600 text-xs">💅</span>
+                          <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                            <span className="text-red-600 text-xs">🎬</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">Manucure</p>
-                            <p className="text-xs text-gray-500">Hier</p>
+                            <p className="font-medium text-gray-900 text-sm">Movie</p>
+                            <p className="text-xs text-gray-500">Yesterday</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-green-600 text-sm">€25</span>
+                        <span className="font-semibold text-red-600 text-sm">$15</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Your Transfer */}
                   <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Prochains RDV</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Your Transfer</h3>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span className="text-blue-600 font-medium text-xs">SM</span>
+                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                            <span className="text-gray-600 font-medium text-xs">JW</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">Sophie Martin</p>
-                            <p className="text-xs text-gray-500">Aujourd'hui</p>
+                            <p className="font-medium text-gray-900 text-sm">Jenny Wilson</p>
+                            <p className="text-xs text-gray-500">Yesterday</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-blue-600 text-sm">14h30</span>
+                        <span className="font-semibold text-green-600 text-sm">$45</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
-                          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                            <span className="text-purple-600 font-medium text-xs">MD</span>
+                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                            <span className="text-gray-600 font-medium text-xs">DR</span>
                           </div>
                           <div>
-                            <p className="font-medium text-gray-900 text-sm">Marie Dubois</p>
-                            <p className="text-xs text-gray-500">Demain</p>
+                            <p className="font-medium text-gray-900 text-sm">Dianne Russell</p>
+                            <p className="text-xs text-gray-500">2 days ago</p>
                           </div>
                         </div>
-                        <span className="font-semibold text-purple-600 text-sm">10h00</span>
+                        <span className="font-semibold text-green-600 text-sm">$32</span>
                       </div>
                     </div>
                   </div>
@@ -304,8 +304,8 @@ export default function DashboardPeymen() {
                 {/* Goals Completed Card */}
                 <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-5 text-white">
                   <div className="text-center">
-                    <p className="text-xs opacity-75 mb-1">Objectifs Août 2025</p>
-                    <h2 className="text-lg font-bold mb-3">Réalisé</h2>
+                    <p className="text-xs opacity-75 mb-1">Goals for 2023</p>
+                    <h2 className="text-lg font-bold mb-3">Completed</h2>
                     
                     {/* Circular Progress */}
                     <div className="relative w-20 h-20 mx-auto mb-3">
@@ -325,12 +325,12 @@ export default function DashboardPeymen() {
                           stroke="white"
                           strokeWidth="6"
                           fill="none"
-                          strokeDasharray={`${73 * 2.827} 283`}
+                          strokeDasharray={`${100 * 2.827} 283`}
                           strokeLinecap="round"
                         />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg font-bold">73%</span>
+                        <span className="text-lg font-bold">100%</span>
                       </div>
                     </div>
                   </div>
