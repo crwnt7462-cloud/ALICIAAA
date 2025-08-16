@@ -547,77 +547,80 @@ export default function ProfessionalPlans() {
           </div>
           
           <div className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Combien de temps faut-il pour configurer Avyento ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
+              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">⚡</span>
+                  Combien de temps faut-il pour configurer Avyento ?
+                </span>
+                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">La configuration initiale prend environ 30 minutes. Notre équipe vous accompagne pour importer vos données existantes et former votre équipe.</p>
+              </summary>
+              <div className="mt-4 text-gray-600 text-sm pl-8">
+                La prise en main est simple et intuitive, la configuration prend environ 30 minutes. Vous avez accès directement à votre espace après inscription et nous restons disponibles si vous avez besoin d'aide.
               </div>
-            </div>
+            </details>
 
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Mes données actuelles peuvent-elles être récupérées ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
+              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">📊</span>
+                  Mes données actuelles peuvent-elles être récupérées ?
+                </span>
+                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">Oui, nous importons gratuitement vos clients, historique des rendez-vous et services depuis la plupart des logiciels existants (Planity, Shedul, etc.).</p>
+              </summary>
+              <div className="mt-4 text-gray-600 text-sm pl-8">
+                Oui, nous importons gratuitement vos clients, historique des rendez-vous et services depuis la plupart des logiciels de gestion existants.
               </div>
-            </div>
+            </details>
 
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Que se passe-t-il si je veux changer d'abonnement ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
+              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">🔄</span>
+                  Que se passe-t-il si je veux changer d'abonnement ?
+                </span>
+                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">Vous pouvez passer d'un plan à l'autre à tout moment. Le changement est immédiat et proratisé selon votre période de facturation.</p>
+              </summary>
+              <div className="mt-4 text-gray-600 text-sm pl-8">
+                Vous pouvez passer d'un plan à l'autre à tout moment. Le changement est immédiat et proratisé selon votre période de facturation.
               </div>
-            </div>
+            </details>
 
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">L'IA fonctionne-t-elle dès le premier jour ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
+              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">🤖</span>
+                  L'IA fonctionne-t-elle dès le premier jour ?
+                </span>
+                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">L'IA commence à apprendre dès le premier jour et s'améliore avec le temps. Les recommandations de base sont disponibles immédiatement, les prédictions avancées après 2-3 semaines.</p>
+              </summary>
+              <div className="mt-4 text-gray-600 text-sm pl-8">
+                L'IA commence à apprendre dès le premier jour et s'améliore avec le temps. Les recommandations de base sont disponibles immédiatement, les prédictions avancées sont vraiment efficaces après quelques semaines d'utilisation.
               </div>
-            </div>
+            </details>
 
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Y a-t-il des frais de transaction sur les paiements ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
+              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
+                <span className="flex items-center gap-3">
+                  <span className="text-lg">💳</span>
+                  Y a-t-il des frais de transaction sur les paiements ?
+                </span>
+                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">Aucun frais de transaction. Vous payez uniquement votre abonnement mensuel, quel que soit le nombre de paiements traités par votre salon.</p>
+              </summary>
+              <div className="mt-4 text-gray-600 text-sm pl-8">
+                Aucun frais de transaction. Vous payez uniquement votre abonnement mensuel, quel que soit le nombre de paiements traités par votre salon.
               </div>
-            </div>
-
-            <div className="bg-white rounded-lg border border-gray-200">
-              <button className="w-full text-left p-6 flex justify-between items-center hover:bg-gray-50 transition-colors">
-                <span className="font-medium text-gray-900">Comment fonctionne la formation de mon équipe ?</span>
-                <svg className="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div className="px-6 pb-6">
-                <p className="text-gray-600 text-sm">Formation en visioconférence incluse + tutoriels vidéo + support prioritaire pendant 30 jours. Votre équipe sera opérationnelle rapidement.</p>
-              </div>
-            </div>
+            </details>
           </div>
         </div>
       </section>
