@@ -19,6 +19,7 @@ export default function Register() {
     firstName: "",
     lastName: "",
     businessName: "",
+    siret: "",
     phone: "",
     address: "",
     city: ""
@@ -130,38 +131,39 @@ export default function Register() {
 
                 {/* Partie gauche du formulaire */}
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
-                  {/* Prénom */}
-                  <div className="space-y-1">
-                    <Label htmlFor="firstName" className="text-xs font-medium text-gray-900">Prénom</Label>
-                    <div className="relative">
-                      <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                  {/* Prénom et Nom côte à côte */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label htmlFor="firstName" className="text-xs font-medium text-gray-900 text-left block">Prénom *</Label>
+                      <div className="relative">
+                        <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                        <Input
+                          id="firstName"
+                          placeholder="Sarah"
+                          value={formData.firstName}
+                          onChange={(e) => updateField("firstName", e.target.value)}
+                          className="pl-10 glass-input text-left"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <Label htmlFor="lastName" className="text-xs font-medium text-gray-900 text-left block">Nom *</Label>
                       <Input
-                        id="firstName"
-                        placeholder="Sarah"
-                        value={formData.firstName}
-                        onChange={(e) => updateField("firstName", e.target.value)}
-                        className="pl-10 glass-input"
+                        id="lastName"
+                        placeholder="Martin"
+                        value={formData.lastName}
+                        onChange={(e) => updateField("lastName", e.target.value)}
+                        className="glass-input text-left"
                         required
                       />
                     </div>
                   </div>
 
-                  {/* Nom */}
-                  <div className="space-y-1">
-                    <Label htmlFor="lastName" className="text-xs font-medium text-gray-900">Nom</Label>
-                    <Input
-                      id="lastName"
-                      placeholder="Martin"
-                      value={formData.lastName}
-                      onChange={(e) => updateField("lastName", e.target.value)}
-                      className="glass-input"
-                      required
-                    />
-                  </div>
-
                   {/* Nom du salon */}
                   <div className="space-y-1">
-                    <Label htmlFor="businessName" className="text-xs font-medium text-gray-900">Nom du salon</Label>
+                    <Label htmlFor="businessName" className="text-xs font-medium text-gray-900 text-left block">Nom du salon *</Label>
                     <div className="relative">
                       <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -169,15 +171,29 @@ export default function Register() {
                         placeholder="Salon Beautiful"
                         value={formData.businessName}
                         onChange={(e) => updateField("businessName", e.target.value)}
-                        className="pl-10 glass-input"
+                        className="pl-10 glass-input text-left"
                         required
                       />
                     </div>
                   </div>
 
+                  {/* SIRET */}
+                  <div className="space-y-1">
+                    <Label htmlFor="siret" className="text-xs font-medium text-gray-900 text-left block">Numéro SIRET *</Label>
+                    <Input
+                      id="siret"
+                      placeholder="12345678901234"
+                      value={formData.siret}
+                      onChange={(e) => updateField("siret", e.target.value)}
+                      className="glass-input text-left"
+                      required
+                      maxLength={14}
+                    />
+                  </div>
+
                   {/* Email professionnel */}
                   <div className="space-y-1">
-                    <Label htmlFor="email" className="text-xs font-medium text-gray-900">Email professionnel</Label>
+                    <Label htmlFor="email" className="text-xs font-medium text-gray-900 text-left block">Email professionnel *</Label>
                     <div className="relative">
                       <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -186,7 +202,7 @@ export default function Register() {
                         placeholder="contact@salonbeautiful.fr"
                         value={formData.email}
                         onChange={(e) => updateField("email", e.target.value)}
-                        className="pl-10 glass-input"
+                        className="pl-10 glass-input text-left"
                         required
                       />
                     </div>
@@ -199,7 +215,7 @@ export default function Register() {
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
                     {/* Téléphone */}
                     <div className="space-y-1">
-                      <Label htmlFor="phone" className="text-xs font-medium text-gray-900">Téléphone</Label>
+                      <Label htmlFor="phone" className="text-xs font-medium text-gray-900 text-left block">Téléphone *</Label>
                       <div className="relative">
                         <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -207,7 +223,7 @@ export default function Register() {
                           placeholder="01 23 45 67 89"
                           value={formData.phone}
                           onChange={(e) => updateField("phone", e.target.value)}
-                          className="pl-10 glass-input"
+                          className="pl-10 glass-input text-left"
                           required
                         />
                       </div>
@@ -215,20 +231,20 @@ export default function Register() {
 
                     {/* Ville */}
                     <div className="space-y-1">
-                      <Label htmlFor="city" className="text-xs font-medium text-gray-900">Ville</Label>
+                      <Label htmlFor="city" className="text-xs font-medium text-gray-900 text-left block">Ville *</Label>
                       <Input
                         id="city"
                         placeholder="Paris"
                         value={formData.city}
                         onChange={(e) => updateField("city", e.target.value)}
-                        className="glass-input"
+                        className="glass-input text-left"
                         required
                       />
                     </div>
 
                     {/* Adresse complète */}
                     <div className="space-y-1">
-                      <Label htmlFor="address" className="text-xs font-medium text-gray-900">Adresse complète</Label>
+                      <Label htmlFor="address" className="text-xs font-medium text-gray-900 text-left block">Adresse complète *</Label>
                       <div className="relative">
                         <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -236,7 +252,7 @@ export default function Register() {
                           placeholder="123 Rue de la Beauté"
                           value={formData.address}
                           onChange={(e) => updateField("address", e.target.value)}
-                          className="pl-10 glass-input"
+                          className="pl-10 glass-input text-left"
                           required
                         />
                       </div>
@@ -244,7 +260,7 @@ export default function Register() {
 
                     {/* Mot de passe */}
                     <div className="space-y-1">
-                      <Label htmlFor="password" className="text-xs font-medium text-gray-900">Mot de passe</Label>
+                      <Label htmlFor="password" className="text-xs font-medium text-gray-900 text-left block">Mot de passe *</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -253,7 +269,7 @@ export default function Register() {
                           placeholder="••••••••"
                           value={formData.password}
                           onChange={(e) => updateField("password", e.target.value)}
-                          className="pl-10 glass-input"
+                          className="pl-10 glass-input text-left"
                           required
                           minLength={6}
                         />
@@ -262,7 +278,7 @@ export default function Register() {
 
                     {/* Confirmer mot de passe */}
                     <div className="space-y-1">
-                      <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-900">Confirmer le mot de passe</Label>
+                      <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-900 text-left block">Confirmer le mot de passe *</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -271,7 +287,7 @@ export default function Register() {
                           placeholder="••••••••"
                           value={formData.confirmPassword}
                           onChange={(e) => updateField("confirmPassword", e.target.value)}
-                          className="pl-10 glass-input"
+                          className="pl-10 glass-input text-left"
                           required
                           minLength={6}
                         />

@@ -40,6 +40,7 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   businessName: varchar("business_name"),
+  siret: varchar("siret"),
   phone: varchar("phone"),
   address: text("address"),
   city: varchar("city"),
@@ -910,7 +911,7 @@ export const servicesRelations = relations(services, ({ one, many }) => ({
   appointments: many(appointments),
 }));
 
-export const staffMembersRelations = relations(staffMembers, ({ one, many }) => ({
+export const staffMembersRelations = relations(staffMembers, ({ many }) => ({
   appointments: many(appointments),
 }));
 
@@ -1077,6 +1078,7 @@ export const registerSchema = z.object({
   email: z.string().email("Email invalide"),
   password: z.string().min(6, "Mot de passe trop court"),
   businessName: z.string().min(2, "Nom du salon requis"),
+  siret: z.string().min(14, "Numéro SIRET requis (14 chiffres)").max(14, "Numéro SIRET invalide"),
   firstName: z.string().min(2, "Prénom requis"),
   lastName: z.string().min(2, "Nom requis"),
   phone: z.string().min(10, "Numéro de téléphone requis"),

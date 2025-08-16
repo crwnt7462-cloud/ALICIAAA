@@ -187,6 +187,7 @@ export class DatabaseStorage implements IStorage {
       lastName: userData.lastName,
       profileImageUrl: userData.profileImageUrl,
       businessName: userData.businessName,
+      siret: userData.siret,
       phone: userData.phone,
       address: userData.address,
       city: userData.city,
