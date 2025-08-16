@@ -180,9 +180,25 @@ export default function ProfessionalPlans() {
                 Essentiel
               </h3>
               
-              <p className="text-gray-500 text-sm mb-6">
+              <p className="text-gray-500 text-sm mb-4">
                 Pour commencer
               </p>
+
+              {/* 3 éléments descriptifs */}
+              <div className="space-y-2 mb-6 text-left">
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Planning et réservations</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Gestion clientèle</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Jusqu'à 200 RDV/mois</span>
+                </div>
+              </div>
               
               <Button 
                 onClick={() => handleSelectPlan('essentiel')}
@@ -214,9 +230,25 @@ export default function ProfessionalPlans() {
                   Professionnel
                 </h3>
                 
-                <p className="text-violet-100 text-sm mb-6">
+                <p className="text-violet-100 text-sm mb-4">
                   Le plus populaire
                 </p>
+
+                {/* 3 éléments descriptifs */}
+                <div className="space-y-2 mb-6 text-left">
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Tout de l'Essentiel</span>
+                  </div>
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Analytics avancés</span>
+                  </div>
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Jusqu'à 1000 RDV/mois</span>
+                  </div>
+                </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan('professionnel')}
@@ -243,9 +275,25 @@ export default function ProfessionalPlans() {
                 Premium
               </h3>
               
-              <p className="text-gray-500 text-sm mb-6">
+              <p className="text-gray-500 text-sm mb-4">
                 Fonctionnalités avancées
               </p>
+
+              {/* 3 éléments descriptifs */}
+              <div className="space-y-2 mb-6 text-left">
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Tout du Professionnel</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>Assistant IA intégré</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                  <span>RDV illimités</span>
+                </div>
+              </div>
               
               <Button 
                 onClick={() => handleSelectPlan('premium')}
@@ -275,9 +323,25 @@ export default function ProfessionalPlans() {
                   Essentiel
                 </h3>
                 
-                <p className="text-gray-500 text-sm mb-8">
+                <p className="text-gray-500 text-sm mb-6">
                   Pour commencer
                 </p>
+
+                {/* 3 éléments descriptifs */}
+                <div className="space-y-2 mb-6 text-left">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>Planning et réservations</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>Gestion clientèle</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>Jusqu'à 200 RDV/mois</span>
+                  </div>
+                </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan('essentiel')}
@@ -310,9 +374,25 @@ export default function ProfessionalPlans() {
                   Professionnel
                 </h3>
                 
-                <p className="text-violet-100 text-sm mb-8">
+                <p className="text-violet-100 text-sm mb-6">
                   Le plus populaire
                 </p>
+
+                {/* 3 éléments descriptifs */}
+                <div className="space-y-2 mb-6 text-left">
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Tout de l'Essentiel</span>
+                  </div>
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Analytics avancés</span>
+                  </div>
+                  <div className="flex items-center text-sm text-violet-100">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
+                    <span>Jusqu'à 1000 RDV/mois</span>
+                  </div>
+                </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan('professionnel')}
@@ -340,9 +420,25 @@ export default function ProfessionalPlans() {
                   Premium
                 </h3>
                 
-                <p className="text-gray-500 text-sm mb-8">
+                <p className="text-gray-500 text-sm mb-6">
                   Fonctionnalités avancées
                 </p>
+
+                {/* 3 éléments descriptifs */}
+                <div className="space-y-2 mb-6 text-left">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>Tout du Professionnel</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>Assistant IA intégré</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
+                    <span>RDV illimités</span>
+                  </div>
+                </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan('premium')}
