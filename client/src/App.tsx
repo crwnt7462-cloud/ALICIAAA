@@ -969,7 +969,7 @@ function Router() {
           <Route path="/ai-pro-complete" component={AIProComplete} />
           <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
           <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
-          <Route path="/messaging-test" component={() => <RealTimeMessaging currentUserId="demo" currentUserType="pro" currentUserName="Demo User" otherUserId="client" otherUserType="client" otherUserName="Client Demo" />} />
+          <Route path="/messaging-test" component={() => <RealTimeMessaging currentUserId="demo" currentUserType="professional" currentUserName="Demo User" otherUserId="client" otherUserType="client" otherUserName="Client Demo" />} />
           <Route path="/pro-messaging-search" component={ProMessaging} />
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/notifications" component={NotificationCenter} />
