@@ -310,7 +310,7 @@ export default function Subscribe() {
                   ) : (
                     <>
                       <CreditCard className="w-4 h-4 mr-2" />
-                      Essai gratuit 7 jours - sans engagement
+                      Commencer l'essai gratuit
                     </>
                   )}
                 </Button>

@@ -216,7 +216,7 @@ export default function ProfessionalPlans() {
                 onClick={() => handleSelectPlan('essentiel')}
                 className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                Essai gratuit 7 jours - sans engagement
+                Commencer l'essai gratuit
               </button>
             </CardContent>
           </Card>
@@ -266,7 +266,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('professionnel')}
                   className="w-full py-3 text-base font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
-                  Essai gratuit 7 jours - sans engagement
+                  Commencer l'essai gratuit
                 </Button>
               </CardContent>
             </Card>
@@ -311,7 +311,7 @@ export default function ProfessionalPlans() {
                 onClick={() => handleSelectPlan('premium')}
                 className="w-full glass-button text-black py-3 text-base font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
               >
-                Essai gratuit 7 jours - sans engagement
+                Commencer l'essai gratuit
               </button>
             </CardContent>
           </Card>
@@ -359,7 +359,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('essentiel')}
                   className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
-                  Essai gratuit 7 jours - sans engagement
+                  Commencer l'essai gratuit
                 </button>
               </CardContent>
             </Card>
@@ -410,7 +410,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('professionnel')}
                   className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
                 >
-                  Essai gratuit 7 jours - sans engagement
+                  Commencer l'essai gratuit
                 </Button>
               </CardContent>
             </Card>
@@ -456,7 +456,7 @@ export default function ProfessionalPlans() {
                   onClick={() => handleSelectPlan('premium')}
                   className="w-full glass-button text-black py-4 text-lg font-medium rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
-                  Essai gratuit 7 jours - sans engagement
+                  Commencer l'essai gratuit
                 </button>
               </CardContent>
             </Card>
