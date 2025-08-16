@@ -65,9 +65,9 @@ export default function Dashboard() {
         {/* Sidebar Glass */}
         <div className="w-20 flex flex-col items-center py-6" style={{
           backdropFilter: 'blur(20px) saturate(180%)',
-          background: 'rgba(139, 92, 246, 0.8)',
+          background: 'rgba(255, 255, 255, 0.09)',
           border: '1px solid rgba(255, 255, 255, 0.18)',
-          boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
         }}>
           {/* Logo */}
           <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/40">
@@ -135,11 +135,11 @@ export default function Dashboard() {
             {/* Layout principal en 2 colonnes - Dimensions exactes */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="rounded-3xl p-6 text-white relative overflow-hidden h-80" style={{
+              <div className="rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80" style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
-                background: 'rgba(139, 92, 246, 0.8)',
+                background: 'rgba(255, 255, 255, 0.09)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
-                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
               }}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
@@ -214,11 +214,11 @@ export default function Dashboard() {
               {/* Colonne droite avec 2 cartes empilées */}
               <div className="flex flex-col gap-4 h-80">
                 {/* Services Populaires */}
-                <div className="rounded-3xl p-6 text-white flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
-                  background: 'rgba(139, 92, 246, 0.8)',
+                  background: 'rgba(255, 255, 255, 0.09)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
-                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
                 }}>
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
@@ -232,11 +232,11 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="rounded-3xl p-6 text-white flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
-                  background: 'rgba(139, 92, 246, 0.8)',
+                  background: 'rgba(255, 255, 255, 0.09)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
-                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
                 }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -260,15 +260,15 @@ export default function Dashboard() {
           <div className="grid grid-cols-3 gap-6 mt-8">
             <div className="rounded-2xl p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
-              background: 'rgba(139, 92, 246, 0.8)',
+              background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Users className="w-6 h-6 text-white" />
+                <Users className="w-6 h-6 text-gray-700" />
               </div>
-              <h3 className="font-semibold text-white mb-1">Gestion Clients</h3>
-              <p className="text-sm text-white/80 mb-4">{stats?.totalClients || 0} clients actifs</p>
+              <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
+              <p className="text-sm text-gray-500 mb-4">{stats?.totalClients || 0} clients actifs</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Fidélité</span>
@@ -286,15 +286,15 @@ export default function Dashboard() {
             
             <div className="rounded-2xl p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
-              background: 'rgba(139, 92, 246, 0.8)',
+              background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <TrendingUp className="w-6 h-6 text-white" />
+                <TrendingUp className="w-6 h-6 text-gray-700" />
               </div>
-              <h3 className="font-semibold text-white mb-1">Chiffre d'Affaires</h3>
-              <p className="text-sm text-white/80 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
+              <h3 className="font-semibold text-gray-900 mb-1">Chiffre d'Affaires</h3>
+              <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Objectif</span>
@@ -312,15 +312,15 @@ export default function Dashboard() {
             
             <div className="rounded-2xl p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
-              background: 'rgba(139, 92, 246, 0.8)',
+              background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Settings className="w-6 h-6 text-white" />
+                <Settings className="w-6 h-6 text-gray-700" />
               </div>
-              <h3 className="font-semibold text-white mb-1">Services Actifs</h3>
-              <p className="text-sm text-white/80 mb-4">12 prestations disponibles</p>
+              <h3 className="font-semibold text-gray-900 mb-1">Services Actifs</h3>
+              <p className="text-sm text-gray-500 mb-4">12 prestations disponibles</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Popularité</span>
@@ -338,80 +338,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-          {/* Sidebar droite - Friends */}
-          <div className="w-80 p-6" style={{
-            backdropFilter: 'blur(20px) saturate(180%)',
-            background: 'rgba(139, 92, 246, 0.8)',
-            border: '1px solid rgba(255, 255, 255, 0.18)',
-            boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
-          }}>
-            {/* Header Clients */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-gray-400" />
-                <span className="font-semibold text-gray-900">Clients Aujourd'hui</span>
-              </div>
-              <span className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">Voir tous</span>
-            </div>
-            
-            {/* Tabs */}
-            <div className="flex space-x-1 bg-white/40 backdrop-blur-sm rounded-xl p-1 mb-6 border border-white/30">
-              <button className="flex-1 py-2 px-4 bg-white/40 backdrop-blur-sm text-gray-800 rounded-lg text-sm font-medium border border-white/30">
-                Planning
-              </button>
-              <button className="flex-1 py-2 px-4 text-gray-600 rounded-lg text-sm font-medium hover:bg-white/20">
-                Attente
-              </button>
-            </div>
-            
-            {/* Clients List */}
-            <div className="space-y-4 mb-8">
-              {clients.map((client, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40">
-                      <span className="text-gray-800 text-sm font-semibold">{client.avatar}</span>
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900 text-sm">{client.name}</div>
-                      <div className="text-gray-500 text-xs">{client.service}</div>
-                      <div className="text-gray-400 text-xs">{client.time}</div>
-                    </div>
-                  </div>
-                  <MessageSquare className="w-5 h-5 text-gray-400 hover:text-gray-600 cursor-pointer" />
-                </div>
-              ))}
-            </div>
-            
-            {/* Salon Info */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-4 h-4 text-gray-400" />
-                  <span className="font-medium text-gray-900 text-sm">Salon Avyento</span>
-                </div>
-                <span className="text-sm text-gray-500 cursor-pointer hover:text-gray-700">Voir</span>
-              </div>
-              
-              {/* Salon Card */}
-              <div className="bg-white/30 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden border border-white/40">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-white/40 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/50">
-                    <span className="text-gray-800 font-bold text-lg">AV</span>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">Salon Avyento</h4>
-                    <p className="text-sm text-gray-600">Coiffure & Esthétique</p>
-                    <p className="text-xs text-gray-500">📍 Paris 15ème</p>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">✅ Ouvert</span>
-                  <span className="text-xs text-gray-500">9h - 19h</span>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
       
