@@ -10,178 +10,183 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-violet-900 via-purple-900 to-amber-900 relative overflow-hidden">
-      {/* Arrière-plan animé avec particules */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 via-purple-500/10 to-amber-500/20"></div>
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
-            }}
-            animate={{
-              y: [null, Math.random() * -100 - 100],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+      {/* Bulles décoratives violettes d'Avyento */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Grande bulle gauche */}
+        <div className="absolute -left-32 top-16 w-96 h-96 bg-violet-200/40 rounded-full blur-3xl"></div>
+        {/* Bulle droite haute */}
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-violet-300/50 rounded-full blur-2xl"></div>
+        {/* Bulle droite basse */}
+        <div className="absolute -right-32 bottom-32 w-80 h-80 bg-violet-300/35 rounded-full blur-3xl"></div>
+        {/* Petite bulle centre */}
+        <div className="absolute left-1/3 top-1/4 w-32 h-32 bg-violet-200/30 rounded-full blur-xl"></div>
       </div>
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 pb-20">
-        <div className="max-w-lg w-full">
-          {/* Logo et branding Avyento */}
-          <motion.div
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-8"
-          >
-            <div className="relative mb-6">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-24 h-24 mx-auto relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-400 via-purple-500 to-amber-400 rounded-3xl blur-sm"></div>
-                <div className="relative w-full h-full bg-gradient-to-br from-violet-500 via-purple-600 to-amber-500 rounded-3xl flex items-center justify-center">
-                  <Crown className="h-12 w-12 text-white" />
-                </div>
-              </motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center"
-              >
-                <Star className="h-3 w-3 text-amber-900" />
-              </motion.div>
+      {/* Navigation header */}
+      <header className="relative z-10 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-8">
+              <div className="text-xl font-bold text-gray-900" style={{ fontSize: '40px' }}>Avyento Pro</div>
+              <nav className="hidden md:flex space-x-6">
+                <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors">Home</a>
+                <a href="/search" className="text-gray-600 hover:text-gray-900 transition-colors">Explore</a>
+                <a href="/professional-plans" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+                <a href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">About</a>
+              </nav>
             </div>
-            
-            <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="font-bold mb-2"
-              style={{ fontSize: '40px' }}
+            <div className="w-10 h-10 bg-gradient-to-r from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+              <Crown className="w-5 h-5 text-white" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="relative z-10 flex min-h-screen">
+        {/* Sidebar gauche */}
+        <div className="w-80 bg-white/90 backdrop-blur-md border-r border-gray-200 p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Connexion</h2>
+          
+          <nav className="space-y-2">
+            <div className="bg-violet-100 text-violet-700 px-4 py-3 rounded-lg font-medium">
+              Se connecter
+            </div>
+            <a href="#" className="block text-gray-600 hover:text-gray-900 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+              Créer un compte
+            </a>
+            <a href="#" className="block text-gray-600 hover:text-gray-900 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+              Mot de passe oublié
+            </a>
+            <a href="/" className="block text-gray-600 hover:text-gray-900 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+              Retour accueil
+            </a>
+          </nav>
+        </div>
+
+        {/* Contenu principal */}
+        <div className="flex-1 p-8 flex items-center justify-center">
+          <div className="max-w-2xl w-full">
+            {/* Titre principal */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="mb-8"
             >
-              <span className="bg-gradient-to-r from-white via-violet-200 to-amber-200 bg-clip-text text-transparent">
-                Avyento Pro
-              </span>
-              <span className="text-amber-300 ml-2 text-2xl">Pro</span>
-            </motion.h1>
-            <p className="text-white/80 text-lg font-medium">
-              Plateforme professionnelle de beauté
-            </p>
-            <p className="text-white/60 text-sm mt-1">
-              L'excellence technologique au service de votre salon
-            </p>
-          </motion.div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                Connexion Professionnelle
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Accédez à votre espace Avyento Pro - Plateforme professionnelle de beauté. L'excellence technologique au service de votre salon.
+              </p>
+            </motion.div>
 
-          {/* Carte de connexion glassmorphism */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl p-8 rounded-3xl">
-              <div className="space-y-6">
-                <div className="text-center">
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    Espace Professionnel
-                  </h2>
-                  <p className="text-white/70">
-                    Connectez-vous pour accéder à votre dashboard
-                  </p>
-                </div>
+            {/* Carte de connexion */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <Card className="bg-white/80 backdrop-blur-md border border-gray-200 shadow-xl p-8 rounded-2xl">
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                      Espace Professionnel
+                    </h2>
+                    <p className="text-gray-600">
+                      Connectez-vous pour accéder à votre dashboard
+                    </p>
+                  </div>
 
-                {/* Fonctionnalités premium */}
-                <div className="grid grid-cols-2 gap-3">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
-                  >
-                    <Calendar className="h-6 w-6 text-violet-300 mx-auto mb-2" />
-                    <p className="text-white/80 text-sm font-medium">Planning IA</p>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
-                  >
-                    <BarChart3 className="h-6 w-6 text-amber-300 mx-auto mb-2" />
-                    <p className="text-white/80 text-sm font-medium">Analytics</p>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
-                  >
-                    <Users className="h-6 w-6 text-purple-300 mx-auto mb-2" />
-                    <p className="text-white/80 text-sm font-medium">Clientèle</p>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-3 text-center"
-                  >
-                    <Shield className="h-6 w-6 text-emerald-300 mx-auto mb-2" />
-                    <p className="text-white/80 text-sm font-medium">Sécurisé</p>
-                  </motion.div>
-                </div>
-
-                {/* Bouton de connexion premium */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    onClick={handleLogin}
-                    className="w-full h-14 bg-gradient-to-r from-violet-500 via-purple-600 to-amber-500 hover:from-violet-600 hover:via-purple-700 hover:to-amber-600 text-white font-bold text-lg rounded-2xl transition-all duration-500 shadow-2xl hover:shadow-amber-500/25 border border-white/20"
-                  >
+                  {/* Fonctionnalités premium */}
+                  <div className="grid grid-cols-2 gap-3">
                     <motion.div
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      className="mr-3"
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-3 p-4 bg-violet-50 rounded-xl border border-violet-100"
                     >
-                      <Sparkles className="h-6 w-6" />
+                      <Calendar className="h-6 w-6 text-violet-600" />
+                      <span className="text-sm font-medium text-violet-700">Planning IA</span>
                     </motion.div>
-                    Se connecter avec Replit
-                    <LogIn className="h-5 w-5 ml-2" />
-                  </Button>
-                </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-3 p-4 bg-violet-50 rounded-xl border border-violet-100"
+                    >
+                      <BarChart3 className="h-6 w-6 text-violet-600" />
+                      <span className="text-sm font-medium text-violet-700">Analytics</span>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-3 p-4 bg-violet-50 rounded-xl border border-violet-100"
+                    >
+                      <Users className="h-6 w-6 text-violet-600" />
+                      <span className="text-sm font-medium text-violet-700">Équipe</span>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      className="flex items-center gap-3 p-4 bg-violet-50 rounded-xl border border-violet-100"
+                    >
+                      <Crown className="h-6 w-6 text-violet-600" />
+                      <span className="text-sm font-medium text-violet-700">Premium</span>
+                    </motion.div>
+                  </div>
 
-                {/* Badge sécurité */}
-                <div className="text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                    <Shield className="h-4 w-4 text-emerald-300" />
-                    <span className="text-white/70 text-xs font-medium">
-                      Authentification sécurisée Replit
-                    </span>
+                  {/* Bouton de connexion */}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="pt-4"
+                  >
+                    <Button
+                      onClick={handleLogin}
+                      size="lg"
+                      className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+                    >
+                      <motion.div
+                        animate={{ rotate: [0, 360] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="mr-3"
+                      >
+                        <Sparkles className="h-6 w-6" />
+                      </motion.div>
+                      Se connecter avec Replit
+                      <LogIn className="h-5 w-5 ml-2" />
+                    </Button>
+                  </motion.div>
+
+                  {/* Badge sécurité */}
+                  <div className="text-center">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 rounded-full">
+                      <Shield className="h-4 w-4 text-emerald-600" />
+                      <span className="text-gray-700 text-xs font-medium">
+                        Authentification sécurisée Replit
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Card>
-          </motion.div>
+              </Card>
+            </motion.div>
 
-          {/* Lien retour stylisé */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-center mt-8"
-          >
-            <Button
-              variant="ghost"
-              onClick={() => window.location.href = '/'}
-              className="text-white/60 hover:text-white/90 hover:bg-white/5 rounded-xl transition-all duration-300"
+            {/* Section informations supplémentaires */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="mt-8 text-center"
             >
-              ← Retour à l'accueil
-            </Button>
-          </motion.div>
+              <p className="text-gray-500 text-sm mb-4">
+                Nouveau sur Avyento Pro ?
+              </p>
+              <div className="flex justify-center space-x-4">
+                <a href="/professional-plans" className="text-violet-600 hover:text-violet-700 text-sm font-medium underline">
+                  Découvrir nos offres
+                </a>
+                <a href="/demo" className="text-violet-600 hover:text-violet-700 text-sm font-medium underline">
+                  Demander une démo
+                </a>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 
@@ -276,7 +281,7 @@ export default function ProLogin() {
                 </div>
                 <div 
                   className="cursor-pointer hover:text-white transition-colors"
-                  onClick={() => window.location.href = '/confidentialite'}
+                  onClick={() => window.location.href = '/confidentialité'}
                 >
                   Confidentialité
                 </div>
