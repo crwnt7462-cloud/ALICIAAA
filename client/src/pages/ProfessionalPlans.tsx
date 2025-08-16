@@ -10,33 +10,66 @@ export default function ProfessionalPlans() {
 
   const plans = [
     {
-      id: 'monthly',
-      name: 'Monthly',
-      price: 98,
-      period: 'Monthly',
-      description: 'Payment Of $98 Each Month',
+      id: 'essentiel',
+      name: 'Essentiel',
+      tagline: 'Pour commencer',
+      price: 29,
+      period: 'mois',
+      yearlyPrice: 290,
+      originalYearlyPrice: 348,
+      description: 'Parfait pour débuter votre activité salon',
+      features: [
+        'Planning et réservations',
+        'Gestion clientèle',
+        'Notifications automatiques',
+        'Paiements sécurisés',
+        'Support email'
+      ],
+      limits: "Jusqu'à 200 RDV/mois",
       popular: false,
       bgColor: 'bg-white',
       textColor: 'text-gray-800',
       buttonColor: 'bg-blue-600 hover:bg-blue-700 text-white'
     },
     {
-      id: 'quarterly',
-      name: 'Quarterly',
-      price: 92,
-      period: 'Monthly',
-      description: 'Payment Of $276 Every 3 Months',
+      id: 'professionnel',
+      name: 'Professionnel',
+      tagline: 'Le plus populaire',
+      price: 79,
+      period: 'mois',
+      yearlyPrice: 790,
+      originalYearlyPrice: 948,
+      description: 'Idéal pour les salons établis avec plusieurs services',
+      features: [
+        "Tout de l'Essentiel",
+        'Analytics avancés',
+        'Marketing automation',
+        'Multi-établissements (3 max)',
+        'Support prioritaire'
+      ],
+      limits: "Jusqu'à 1000 RDV/mois",
       popular: true,
       bgColor: 'bg-gradient-to-br from-blue-500 to-purple-600',
       textColor: 'text-white',
       buttonColor: 'bg-white/20 hover:bg-white/30 text-white border border-white/20'
     },
     {
-      id: 'annual',
-      name: 'Annual',
-      price: 83,
-      period: 'Monthly',
-      description: 'Payment Of $996 Each Year',
+      id: 'premium',
+      name: 'Premium',
+      tagline: 'Fonctionnalités avancées',
+      price: 149,
+      period: 'mois',
+      yearlyPrice: 1490,
+      originalYearlyPrice: 1788,
+      description: 'Solution complète pour les grands salons et chaînes',
+      features: [
+        'Tout du Professionnel',
+        'Assistant IA intégré',
+        'Messagerie clients illimitée',
+        'Établissements illimités',
+        'Support VIP 24/7'
+      ],
+      limits: 'RDV illimités',
       popular: false,
       bgColor: 'bg-white',
       textColor: 'text-gray-800',
@@ -145,7 +178,7 @@ export default function ProfessionalPlans() {
               <CardContent className="p-8 text-center">
                 <div className={`${plan.textColor} mb-6 ${plan.popular ? 'pt-6' : ''}`}>
                   <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-4xl font-light">$</span>
+                    <span className="text-4xl font-light">€</span>
                     <span className="text-6xl font-bold">{plan.price}</span>
                     <span className="text-lg font-normal ml-2">/ {plan.period}</span>
                   </div>
@@ -155,9 +188,24 @@ export default function ProfessionalPlans() {
                   {plan.name}
                 </h3>
                 
-                <p className={`${plan.popular ? 'text-blue-100' : 'text-gray-500'} text-sm mb-8`}>
-                  {plan.description}
+                <p className={`${plan.popular ? 'text-blue-100' : 'text-gray-500'} text-sm mb-2`}>
+                  {plan.tagline}
                 </p>
+                
+                <p className={`${plan.popular ? 'text-blue-100' : 'text-gray-500'} text-xs mb-4`}>
+                  {plan.limits}
+                </p>
+                
+                <div className={`${plan.popular ? 'text-blue-100' : 'text-gray-600'} text-left mb-6`}>
+                  <ul className="space-y-2 text-sm">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center">
+                        <span className={`w-1.5 h-1.5 rounded-full mr-3 ${plan.popular ? 'bg-white/60' : 'bg-blue-500'}`}></span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
                 
                 <Button 
                   onClick={() => handleSelectPlan(plan.id)}
@@ -166,7 +214,7 @@ export default function ProfessionalPlans() {
                     ${plan.buttonColor}
                   `}
                 >
-                  Start With A Monthly Plan
+                  Commencer l'essai gratuit
                 </Button>
               </CardContent>
             </Card>
