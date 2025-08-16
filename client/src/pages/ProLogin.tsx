@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useLocation } from 'wouter';
-import { LogIn, Calendar, BarChart3, Users, Shield, Crown, Sparkles, ArrowRight, Github } from 'lucide-react';
+import { Calendar, BarChart3, Users, Crown, Sparkles, Github } from 'lucide-react';
 
 export default function ProLogin() {
   const [, setLocation] = useLocation();
