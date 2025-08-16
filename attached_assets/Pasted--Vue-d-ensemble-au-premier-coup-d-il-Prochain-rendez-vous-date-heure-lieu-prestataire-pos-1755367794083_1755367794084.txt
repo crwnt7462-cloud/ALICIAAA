@@ -1,0 +1,59 @@
+🔮 Vue d’ensemble (au premier coup d’œil)
+
+Prochain rendez-vous (date, heure, lieu, prestataire, possibilité d’ajouter au calendrier / recevoir un rappel).
+
+Compteur rapide : combien de rendez-vous à venir, combien passés.
+
+Avantages en cours (réductions, crédits de fidélité, cartes cadeaux actives).
+
+📅 Rendez-vous
+
+À venir : avec statut (confirmé, en attente, annulable), bouton reprogrammer ou annuler.
+
+Historique : liste des rendez-vous passés, avec possibilité de reprendre RDV en 1 clic avec le même prestataire.
+
+Recommandations intelligentes : “Il est temps de reprendre RDV pour vos ongles / vos cheveux !” (basé sur sa fréquence).
+
+⭐ Avis & interactions
+
+Avis laissés : les consulter, les modifier, les supprimer.
+
+Avis en attente : relance après un rendez-vous (“Laissez un petit mot pour aider la communauté”).
+
+Badges ou récompenses pour les clients actifs qui laissent des avis (gamification).
+
+💎 Fidélité & avantages
+
+Points / crédits cumulés : une jauge claire (“Encore 2 rendez-vous avant -20%”).
+
+Offres personnalisées : promos dans ses salons favoris ou basées sur ses habitudes.
+
+Carte cadeau reçue ou offerte.
+
+🔔 Notifications & rappels
+
+Rappels push pour rendez-vous.
+
+Suggestions de créneaux quand un prestataire favori ouvre une dispo rare.
+
+Nouveautés (nouveaux salons proches, nouveaux services ajoutés).
+
+👤 Espace personnel
+
+Gérer ses infos (profil beauté : type de cheveux, préférences, allergies, etc.).
+
+Méthodes de paiement / adresses enregistrées.
+
+Préférences de communication (SMS, email, notifications push).
+
+🚀 Bonus différenciants (pour te démarquer)
+
+Timeline beauté : une frise qui montre son historique beauté (ex. "Coupe de cheveux en avril", "Manucure en juillet") → ludique & valorisant.
+
+Recommandations beauté personnalisées (basées sur son profil et ses rendez-vous passés).
+
+Wishlist : pouvoir enregistrer des soins/services à tester plus tard.
+
+Partage social : “Partagez votre expérience sur Insta avec un -10% au prochain rendez-vous.”
+
+Mode calendrier intégré → pour voir directement tous ses RDV du mois.
