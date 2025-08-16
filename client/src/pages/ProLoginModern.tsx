@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, LogIn, Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react';
+import { ArrowLeft, LogIn, Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
 
 export default function ProLoginModern() {
@@ -65,35 +65,34 @@ export default function ProLoginModern() {
           <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:max-h-[80vh]">
             
             {/* Section gauche - Branding (desktop uniquement) */}
-            <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
-              <div className="text-center max-w-xs">
-                <div className="mb-6">
+            <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
+              <div className="text-center w-full max-w-sm px-4">
+                <div className="mb-8">
                   <img 
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
                     className="mx-auto"
-                    style={{ height: '60px' }}
+                    style={{ height: '70px' }}
                   />
                 </div>
-                <h1 className="text-3xl font-bold mb-3 text-gray-900">
+                <h1 className="text-4xl font-bold mb-4 text-gray-900 leading-tight">
                   Avyento Pro
                 </h1>
-                <p className="text-gray-600 text-base mb-6 leading-relaxed">
-                  La plateforme révolutionnaire
-                  pour professionnels de la beauté
+                <p className="text-gray-600 text-lg mb-8 leading-relaxed px-2">
+                  La plateforme révolutionnaire pour professionnels de la beauté
                 </p>
-                <div className="space-y-3 text-left">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700 text-sm">Planning IA optimisé</span>
+                <div className="space-y-4 text-left max-w-xs mx-auto">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0 mt-2"></div>
+                    <span className="text-gray-700 text-base leading-relaxed">Planning IA optimisé</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700 text-sm">Analytics en temps réel</span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0 mt-2"></div>
+                    <span className="text-gray-700 text-base leading-relaxed">Analytics en temps réel</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0"></div>
-                    <span className="text-gray-700 text-sm">Gestion clientèle avancée</span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full flex-shrink-0 mt-2"></div>
+                    <span className="text-gray-700 text-base leading-relaxed">Gestion clientèle avancée</span>
                   </div>
                 </div>
               </div>
@@ -210,27 +209,10 @@ export default function ProLoginModern() {
                 </button>
               </form>
 
-              {/* Divider */}
-              <div className="flex items-center my-6 lg:my-5">
-                <div className="flex-1 border-t border-gray-200"></div>
-                <span className="px-4 text-sm text-gray-500">ou</span>
-                <div className="flex-1 border-t border-gray-200"></div>
-              </div>
 
-              {/* Connexion avec Google avec vrai style glass-button */}
-              <button
-                onClick={() => {
-                  // Redirection vers Google OAuth (à configurer côté serveur)
-                  window.location.href = '/api/auth/google';
-                }}
-                className="w-full glass-button text-black font-medium py-3 lg:py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 hover:scale-105 hover:shadow-xl"
-              >
-                <Chrome className="w-5 h-5 text-gray-900" />
-                <span className="text-gray-900">Continuer avec Google</span>
-              </button>
 
               {/* Lien d'inscription */}
-              <div className="text-center mt-6 lg:mt-5">
+              <div className="text-center mt-8 lg:mt-6">
                 <p className="text-sm text-gray-600">
                   Pas encore de compte ?{' '}
                   <button
