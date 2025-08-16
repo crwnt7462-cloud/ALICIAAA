@@ -125,33 +125,33 @@ export default function ProfessionalPlans() {
 
         {/* Trial Badge */}
         <div className="text-center mb-8">
-          <Badge className="bg-gray-100 text-gray-600 px-4 py-2 rounded-full border border-gray-200">
-            🎯 SAVE ON THE GO
+          <Badge className="bg-violet-100 text-violet-600 px-4 py-2 rounded-full border border-violet-200">
+            ✨ RÉVOLUTIONNEZ VOTRE SALON
           </Badge>
         </div>
 
         {/* Main Title */}
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Join the ranks of our customers
+            Choisissez l'excellence pour votre salon
           </h1>
           <p className="text-gray-600 text-lg">
-            Trial Period For 30 Days With No Risk
+            Essai gratuit de 30 jours - Aucun engagement
           </p>
         </div>
 
         {/* Plan Toggle Buttons */}
         <div className="flex items-center justify-center mb-16 space-x-4">
           <Button 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-medium"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full font-medium"
           >
-            Solo
+            Mensuel
           </Button>
           <Button 
             variant="outline" 
             className="border-gray-200 text-gray-600 hover:bg-gray-50 px-8 py-3 rounded-full font-medium"
           >
-            Joint
+            Annuel (-20%)
           </Button>
         </div>
 
