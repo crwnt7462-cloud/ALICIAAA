@@ -4,6 +4,17 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { 
+  Calendar, 
+  Users, 
+  Settings as SettingsIcon, 
+  MessageSquare, 
+  Home, 
+  User, 
+  BarChart3, 
+  MapPin, 
+  Sparkles 
+} from "lucide-react";
 
 
 import { Header } from "@/components/Header";
@@ -883,22 +894,103 @@ function Router() {
     );
   }
 
-  // Page Planning en plein écran desktop avec header - SANS menu en bas pour les pros
-  if (location === '/planning') {
-    return (
-      <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
-          <Planning />
-        </main>
-        {/* Menu BottomNavigation supprimé pour les professionnels */}
-      </div>
-    );
-  }
+  // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
 
   // Page Dashboard - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
     return <Dashboard />;
+  }
+
+  // Pages professionnelles avec sidebar persistant
+  const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
+  if (proPages.includes(location)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
+        <div className="flex min-h-screen">
+          {/* Sidebar Glass - Identique au Dashboard */}
+          <div className="w-20 flex flex-col items-center py-6" style={{
+            backdropFilter: 'blur(20px) saturate(180%)',
+            background: 'rgba(128, 128, 128, 0.15)',
+            border: '1px solid rgba(255, 255, 255, 0.25)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
+          }}>
+            {/* Logo */}
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-gray-300/50">
+              <Sparkles className="w-6 h-6 text-gray-600" />
+            </div>
+            
+            {/* Navigation Icons */}
+            <div className="space-y-4">
+              <div 
+                onClick={() => setLocation('/dashboard')}
+                className={`w-12 h-12 ${location === '/dashboard' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <Home className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/planning')}
+                className={`w-12 h-12 ${location === '/planning' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <Calendar className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/clients-modern')}
+                className={`w-12 h-12 ${location === '/clients-modern' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <Users className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/services-management')}
+                className={`w-12 h-12 ${location === '/services-management' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <SettingsIcon className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/messaging-hub')}
+                className={`w-12 h-12 ${location === '/messaging-hub' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <MessageSquare className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/ai-assistant-fixed')}
+                className={`w-12 h-12 ${location === '/ai-assistant-fixed' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <MapPin className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/client-analytics')}
+                className={`w-12 h-12 ${location === '/client-analytics' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <BarChart3 className="w-6 h-6 text-gray-600" />
+              </div>
+            </div>
+            
+            {/* User Avatar */}
+            <div className="mt-auto">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center">
+                <User className="w-6 h-6 text-white" />
+              </div>
+            </div>
+          </div>
+          
+          {/* Contenu principal */}
+          <div className="flex-1 overflow-hidden">
+            {location === '/planning' && <Planning />}
+            {location === '/clients-modern' && <ClientsModern />}
+            {location === '/services-management' && <ServicesManagement />}
+            {location === '/messaging-hub' && <MessagingHub />}
+            {location === '/ai-assistant-fixed' && <AIAssistantFixed />}
+            {location === '/client-analytics' && <ClientAnalytics />}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Page Business Features en plein écran desktop avec navigation mobile conservée
