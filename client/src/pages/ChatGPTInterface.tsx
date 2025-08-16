@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { Send, ArrowLeft } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Send, ArrowLeft, Crown, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,14 @@ export default function ChatGPTInterface() {
   const [inputMessage, setInputMessage] = useState("");
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Vérification de l'abonnement pour l'accès IA
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ['/api/auth/user'],
+    retry: false,
+  });
+
+  const hasAIAccess = user?.subscriptionPlan === 'premium-pro' && user?.subscriptionStatus === 'active';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -61,6 +69,16 @@ export default function ChatGPTInterface() {
 
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return;
+    
+    // Vérifier l'accès IA avant d'envoyer
+    if (!hasAIAccess) {
+      toast({
+        title: "Accès Premium Requis",
+        description: "L'assistant IA est disponible uniquement avec l'abonnement Premium Pro à 149€/mois.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString() + '_user',
@@ -106,7 +124,31 @@ export default function ChatGPTInterface() {
 
       {/* Zone de conversation */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
+        {/* Message de blocage pour utilisateurs sans Premium Pro */}
+        {!userLoading && !hasAIAccess && (
+          <div className="flex justify-center mb-6">
+            <div className="max-w-md bg-white/10 backdrop-blur-md rounded-3xl p-6 text-center border border-white/20">
+              <Lock className="h-12 w-12 text-amber-400 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-white mb-2">Assistant IA Premium</h3>
+              <p className="text-white/80 mb-4">
+                L'assistant IA est exclusivement disponible avec l'abonnement Premium Pro à 149€/mois.
+              </p>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Crown className="h-5 w-5 text-amber-400" />
+                <span className="text-amber-400 font-semibold">Premium Pro uniquement</span>
+              </div>
+              <Button
+                onClick={() => setLocation('/subscription-plans')}
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg"
+              >
+                Passer au Premium Pro
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {/* Messages de conversation (seulement si accès Premium) */}
+        {hasAIAccess && messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -133,8 +175,8 @@ export default function ChatGPTInterface() {
           </div>
         ))}
         
-        {/* Indicateur de frappe */}
-        {chatMutation.isPending && (
+        {/* Indicateur de frappe (seulement si accès Premium) */}
+        {hasAIAccess && chatMutation.isPending && (
           <div className="flex justify-start">
             <div className="bg-white text-gray-900 rounded-2xl px-4 py-3 mr-12 shadow-lg border border-gray-200">
               <div className="flex items-center space-x-1">
@@ -160,16 +202,24 @@ export default function ChatGPTInterface() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Tapez votre message..."
-              disabled={chatMutation.isPending}
-              className="min-h-[48px] pr-12 rounded-3xl bg-white/20 border-white/30 text-white placeholder:text-white/70 focus:border-white/50 focus:ring-0 resize-none"
+              placeholder={hasAIAccess ? "Tapez votre message..." : "Premium Pro requis pour utiliser l'IA..."}
+              disabled={chatMutation.isPending || !hasAIAccess}
+              className={`min-h-[48px] pr-12 rounded-3xl border-white/30 text-white placeholder:text-white/70 focus:border-white/50 focus:ring-0 resize-none ${
+                hasAIAccess 
+                  ? 'bg-white/20' 
+                  : 'bg-white/10 cursor-not-allowed opacity-60'
+              }`}
               style={{ paddingTop: '12px', paddingBottom: '12px' }}
             />
           </div>
           <Button
             onClick={handleSendMessage}
-            disabled={!inputMessage.trim() || chatMutation.isPending}
-            className="h-12 w-12 rounded-full bg-violet-600 hover:bg-violet-500 text-white shadow-lg disabled:opacity-50 flex-shrink-0"
+            disabled={!inputMessage.trim() || chatMutation.isPending || !hasAIAccess}
+            className={`h-12 w-12 rounded-full text-white shadow-lg disabled:opacity-50 flex-shrink-0 ${
+              hasAIAccess 
+                ? 'bg-violet-600 hover:bg-violet-500' 
+                : 'bg-gray-500 cursor-not-allowed'
+            }`}
           >
             <Send className="h-5 w-5" />
           </Button>
@@ -177,7 +227,10 @@ export default function ChatGPTInterface() {
         
         {/* Note informative */}
         <p className="text-xs text-white/80 text-center mt-2 max-w-4xl mx-auto">
-          L'assistant IA peut vous aider avec la gestion de votre salon, vos rendez-vous, et répondre à vos questions.
+          {hasAIAccess 
+            ? "L'assistant IA peut vous aider avec la gestion de votre salon, vos rendez-vous, et répondre à vos questions."
+            : "L'assistant IA est exclusivement disponible avec l'abonnement Premium Pro à 149€/mois."
+          }
         </p>
       </div>
     </div>

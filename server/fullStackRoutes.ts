@@ -82,10 +82,10 @@ export async function registerFullStackRoutes(app: Express): Promise<Server> {
           billingCycle: 'monthly',
           features: [
             'Tout du plan Advanced Pro',
-            'Intelligence Artificielle',
-            'Messagerie directe clients',
-            'Analytics avancés',
-            'Support prioritaire'
+            'Assistant IA exclusif',
+            'Optimisation intelligente du planning',
+            'Analytics avancés avec IA',
+            'Support prioritaire 24/7'
           ],
           isPopular: false,
           isActive: true

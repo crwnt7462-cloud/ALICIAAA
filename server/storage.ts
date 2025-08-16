@@ -1601,6 +1601,19 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return subscription;
   }
+
+  // Vérification d'accès Premium Pro pour IA
+  async hasAIAccess(userId: string): Promise<boolean> {
+    try {
+      const user = await this.getUser(userId);
+      if (!user) return false;
+      
+      return user.subscriptionPlan === 'premium-pro' && user.subscriptionStatus === 'active';
+    } catch (error) {
+      console.error('Erreur hasAIAccess:', error);
+      return false;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

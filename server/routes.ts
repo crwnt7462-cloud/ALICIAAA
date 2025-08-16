@@ -35,6 +35,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Middleware pour vérifier l'accès Premium Pro
+  const requirePremiumPro = async (req: any, res: any, next: any) => {
+    try {
+      const userId = req.user.claims.sub;
+      const hasAccess = await storage.hasAIAccess(userId);
+      
+      if (!hasAccess) {
+        return res.status(403).json({ 
+          message: "Accès Premium Pro requis",
+          error: "Cette fonctionnalité est réservée aux utilisateurs Premium Pro à 149€/mois"
+        });
+      }
+      
+      next();
+    } catch (error) {
+      console.error("Erreur vérification Premium Pro:", error);
+      res.status(500).json({ message: "Erreur de vérification d'accès" });
+    }
+  };
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -44,6 +64,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Route IA sécurisée (Premium Pro uniquement)
+  app.post('/api/ai/chat', isAuthenticated, requirePremiumPro, async (req: any, res) => {
+    try {
+      const { message } = req.body;
+      const userId = req.user.claims.sub;
+      
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: "Message requis" });
+      }
+
+      // Import dynamique pour éviter les erreurs de dépendances
+      const { aiService } = await import("./aiService");
+      const response = await aiService.chatWithAssistant(message, userId);
+      
+      res.json({ response });
+    } catch (error) {
+      console.error("Erreur chat IA:", error);
+      res.status(500).json({ message: "Erreur lors de la communication avec l'IA" });
     }
   });
 
