@@ -400,250 +400,85 @@ export default function ProfessionalPlans() {
         <div className="pb-8 sm:pb-16"></div>
       </div>
 
-      {/* Section Fonctionnalités Clés */}
-      <section className="py-20 bg-gradient-to-br from-violet-50 via-purple-50 to-amber-50 relative overflow-hidden">
-        {/* Émojis flottants */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-10 left-10 text-4xl opacity-20 animate-pulse">💄</div>
-          <div className="absolute top-32 right-20 text-3xl opacity-15 animate-bounce">✨</div>
-          <div className="absolute bottom-20 left-20 text-5xl opacity-10 animate-pulse">💅</div>
-          <div className="absolute bottom-32 right-10 text-4xl opacity-20 animate-bounce">🎀</div>
-          <div className="absolute top-20 left-1/2 text-3xl opacity-15 animate-pulse">💆‍♀️</div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Tout ce dont votre salon a besoin
-            </h2>
-            <p className="text-xl text-gray-600">
-              Une solution complète pour gérer et développer votre activité beauté
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Prise de RDV 24/7 */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Prise de RDV 24h/24 et 7j/7</h3>
-                <p className="text-gray-600">
-                  Vos clients peuvent réserver à toute heure, même quand votre salon est fermé. Augmentez vos réservations automatiquement.
-                </p>
-              </div>
-            </div>
-
-            {/* Outils Marketing */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Outils de marketing intégrés</h3>
-                <p className="text-gray-600">
-                  Campagnes automatiques, promotions personnalisées et fidélisation client pour booster votre chiffre d'affaires.
-                </p>
-              </div>
-            </div>
-
-            {/* Gestion Complète */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Gestion des clients et des agendas</h3>
-                <p className="text-gray-600">
-                  Base de données clients complète, historique des rendez-vous et gestion multi-agenda pour toute votre équipe.
-                </p>
-              </div>
-            </div>
-
-            {/* Logiciel de Caisse */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Logiciel de caisse certifié NF525</h3>
-                <p className="text-gray-600">
-                  Encaissements conformes à la loi française, tickets automatiques et comptabilité simplifiée pour votre salon.
-                </p>
-              </div>
-            </div>
-
-            {/* Statistiques */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Statistiques et rapports détaillés</h3>
-                <p className="text-gray-600">
-                  Analysez vos performances, identifiez les tendances et prenez des décisions éclairées pour développer votre salon.
-                </p>
-              </div>
-            </div>
-
-            {/* Transparence Tarifaire */}
-            <div className="group">
-              <div className="glass-card p-8 h-full hover:shadow-2xl transition-all duration-300 group-hover:scale-105 border-2 border-violet-200">
-                <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Transparence totale</h3>
-                <p className="text-gray-600 mb-4">
-                  Pas de frais cachés, pas de commission sur vos ventes, pas de frais supplémentaires.
-                </p>
-                <div className="bg-violet-50 rounded-lg p-4 border border-violet-200">
-                  <p className="text-sm font-medium text-violet-800">
-                    ✅ Prix fixe mensuel<br/>
-                    ✅ Support inclus<br/>
-                    ✅ Mises à jour gratuites
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section Témoignages & Garanties */}
-      <section className="py-20 bg-white relative overflow-hidden">
+      {/* Section stats minimaliste */}
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-4">
-              Pourquoi choisir Avyento ?
-            </h2>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Une solution complète pour votre salon</h2>
+            <p className="text-lg text-gray-600">Tout ce dont vous avez besoin, rien de superflu</p>
           </div>
+          
+          {/* Grid simple et épuré */}
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-violet-600 mb-2">24h/24</div>
+              <div className="text-gray-900 font-medium mb-1">Prise de RDV</div>
+              <div className="text-gray-500 text-sm">Réservations automatiques</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-violet-600 mb-2">NF525</div>
+              <div className="text-gray-900 font-medium mb-1">Caisse certifiée</div>
+              <div className="text-gray-500 text-sm">Conforme à la loi française</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-violet-600 mb-2">0€</div>
+              <div className="text-gray-900 font-medium mb-1">Frais cachés</div>
+              <div className="text-gray-500 text-sm">Transparence totale</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Garanties */}
-            <div>
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Nos garanties</h3>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800">Essai gratuit 7 jours</h4>
-                      <p className="text-gray-600 text-sm">Testez toutes les fonctionnalités sans engagement</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800">Support français 7j/7</h4>
-                      <p className="text-gray-600 text-sm">Une équipe dédiée pour vous accompagner</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800">Migrations gratuites</h4>
-                      <p className="text-gray-600 text-sm">Nous importons vos données existantes</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-800">Satisfait ou remboursé 30 jours</h4>
-                      <p className="text-gray-600 text-sm">Votre satisfaction est notre priorité</p>
-                    </div>
-                  </div>
-                </div>
+      {/* Section fonctionnalités */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="space-y-8">
+            <div className="flex items-start gap-4">
+              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Marketing automatisé</h3>
+                <p className="text-gray-600">Campagnes de fidélisation et promotions personnalisées pour augmenter votre chiffre d'affaires</p>
               </div>
             </div>
-
-            {/* ROI */}
-            <div>
-              <div className="glass-card p-8 border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50">
-                <h3 className="text-2xl font-bold text-gray-800 mb-6">Retour sur investissement</h3>
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <div className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                      +40%
-                    </div>
-                    <p className="text-gray-600">de réservations en moyenne</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div>
-                      <div className="text-2xl font-bold text-amber-600">-60%</div>
-                      <p className="text-sm text-gray-600">temps admin</p>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-amber-600">-90%</div>
-                      <p className="text-sm text-gray-600">appels ratés</p>
-                    </div>
-                  </div>
-                  <div className="bg-white rounded-lg p-4 border border-amber-200">
-                    <p className="text-sm text-gray-700 text-center">
-                      <strong>Exemple :</strong> Pour un salon générant 5000€/mois, Avyento peut vous faire gagner jusqu'à <strong className="text-amber-600">2000€ supplémentaires</strong> grâce aux réservations automatiques.
-                    </p>
-                  </div>
-                </div>
+            <div className="flex items-start gap-4">
+              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Gestion complète</h3>
+                <p className="text-gray-600">Clients, agendas, équipe et statistiques centralisés dans une interface simple</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4">
+              <div className="w-2 h-2 bg-violet-600 rounded-full mt-3 flex-shrink-0"></div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Analyses détaillées</h3>
+                <p className="text-gray-600">Rapports et insights pour optimiser vos performances et prendre les bonnes décisions</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Final */}
-      <section className="py-16 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-white/10 to-white/5"></div>
-        </div>
-        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Rejoignez plus de 5000 salons qui nous font confiance
-          </h2>
-          <p className="text-xl text-white/90 mb-8">
-            Commencez votre essai gratuit dès aujourd'hui et découvrez comment Avyento peut transformer votre salon.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              onClick={() => handleSelectPlan('professionnel')}
-              size="lg"
-              className="glass-button text-violet-800 font-semibold px-8 py-4 text-lg rounded-2xl hover:scale-105 transition-all duration-300"
-            >
-              Commencer l'essai gratuit
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Button>
-            <p className="text-white/80 text-sm">
-              7 jours gratuits • Aucune carte requise • Annulation en 1 clic
-            </p>
+      {/* Section garanties simple */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-8">Nos engagements</h2>
+          <div className="grid md:grid-cols-4 gap-6">
+            <div>
+              <div className="text-lg font-semibold text-gray-900 mb-1">7 jours</div>
+              <div className="text-gray-500 text-sm">Essai gratuit</div>
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-gray-900 mb-1">24/7</div>
+              <div className="text-gray-500 text-sm">Support français</div>
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-gray-900 mb-1">30 jours</div>
+              <div className="text-gray-500 text-sm">Satisfait ou remboursé</div>
+            </div>
+            <div>
+              <div className="text-lg font-semibold text-gray-900 mb-1">Gratuit</div>
+              <div className="text-gray-500 text-sm">Migration de données</div>
+            </div>
           </div>
         </div>
       </section>
