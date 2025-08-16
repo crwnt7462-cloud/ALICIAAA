@@ -538,86 +538,91 @@ export default function ProfessionalPlans() {
         </div>
       </section>
 
-      {/* FAQ Professionnels */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Questions fréquentes</h2>
-            <p className="text-gray-600">Tout ce que vous devez savoir avant de vous lancer</p>
+      {/* FAQ Professionnels - Design exact */}
+      <section className="py-20 bg-white relative overflow-hidden">
+        {/* Émojis flottants */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-12 left-16 text-6xl opacity-10 animate-pulse">⚡</div>
+          <div className="absolute top-32 right-24 text-4xl opacity-20 animate-bounce" style={{ animationDelay: '2s' }}>💡</div>
+          <div className="absolute bottom-32 left-12 text-5xl opacity-15 animate-pulse" style={{ animationDelay: '4s' }}>❓</div>
+          <div className="absolute bottom-16 right-16 text-6xl opacity-10 animate-bounce" style={{ animationDelay: '6s' }}>🔧</div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          {/* Badge et titre exactement comme sur la capture */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-violet-100 text-violet-600 px-4 py-2 rounded-full text-sm font-medium mb-6">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+              Questions Fréquentes
+            </div>
+            <h2 className="text-4xl font-bold mb-4">
+              Questions <span className="text-violet-600">fréquentes</span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Retrouvez les réponses aux questions les plus courantes sur Avyento
+            </p>
           </div>
-          
-          <div className="space-y-4">
-            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
-                <span className="flex items-center gap-3">
-                  <span className="text-lg">⚡</span>
-                  Combien de temps faut-il pour configurer Avyento ?
-                </span>
-                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+          {/* FAQ avec design exact */}
+          <div className="space-y-6">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+                Combien de temps faut-il pour configurer Avyento ?
+                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
-              <div className="mt-4 text-gray-600 text-sm pl-8">
+              <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
                 La prise en main est simple et intuitive, la configuration prend environ 30 minutes. Vous avez accès directement à votre espace après inscription et nous restons disponibles si vous avez besoin d'aide.
               </div>
             </details>
 
-            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
-                <span className="flex items-center gap-3">
-                  <span className="text-lg">📊</span>
-                  Mes données actuelles peuvent-elles être récupérées ?
-                </span>
-                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+                Mes données actuelles peuvent-elles être récupérées ?
+                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
-              <div className="mt-4 text-gray-600 text-sm pl-8">
+              <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
                 Oui, nous importons gratuitement vos clients, historique des rendez-vous et services depuis la plupart des logiciels de gestion existants.
               </div>
             </details>
 
-            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
-                <span className="flex items-center gap-3">
-                  <span className="text-lg">🔄</span>
-                  Que se passe-t-il si je veux changer d'abonnement ?
-                </span>
-                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+                Que se passe-t-il si je veux changer d'abonnement ?
+                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
-              <div className="mt-4 text-gray-600 text-sm pl-8">
+              <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
                 Vous pouvez passer d'un plan à l'autre à tout moment. Le changement est immédiat et proratisé selon votre période de facturation.
               </div>
             </details>
 
-            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
-                <span className="flex items-center gap-3">
-                  <span className="text-lg">🤖</span>
-                  L'IA fonctionne-t-elle dès le premier jour ?
-                </span>
-                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+                L'IA fonctionne-t-elle dès le premier jour ?
+                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
-              <div className="mt-4 text-gray-600 text-sm pl-8">
+              <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
                 L'IA commence à apprendre dès le premier jour et s'améliore avec le temps. Les recommandations de base sont disponibles immédiatement, les prédictions avancées sont vraiment efficaces après quelques semaines d'utilisation.
               </div>
             </details>
 
-            <details className="group bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200">
-              <summary className="flex items-center justify-between cursor-pointer text-gray-900 font-medium">
-                <span className="flex items-center gap-3">
-                  <span className="text-lg">💳</span>
-                  Y a-t-il des frais de transaction sur les paiements ?
-                </span>
-                <svg className="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <details className="group bg-white border-2 border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 transition-colors">
+              <summary className="flex items-center justify-between cursor-pointer p-6 text-gray-900 font-semibold text-lg">
+                Y a-t-il des frais de transaction sur les paiements ?
+                <svg className="w-6 h-6 text-gray-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
-              <div className="mt-4 text-gray-600 text-sm pl-8">
+              <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-50 pt-4">
                 Aucun frais de transaction. Vous payez uniquement votre abonnement mensuel, quel que soit le nombre de paiements traités par votre salon.
               </div>
             </details>
