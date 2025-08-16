@@ -109,7 +109,7 @@ export default function Register() {
             </div>
 
             {/* Section droite - Formulaire */}
-            <div className="p-8 lg:w-1/2 lg:p-6 lg:flex lg:flex-col lg:justify-center lg:overflow-y-auto">
+            <div className="p-8 lg:w-1/2 lg:p-8 lg:flex lg:flex-col lg:justify-center lg:overflow-y-auto">
               {/* En-tête mobile */}
               <div className="text-center mb-8 lg:hidden">
                 <div className="mb-0">
@@ -127,19 +127,19 @@ export default function Register() {
               </div>
 
               {/* En-tête desktop */}
-              <div className="hidden lg:block lg:mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Créer votre salon</h2>
-                <p className="text-gray-600">Rejoignez la plateforme professionnelle</p>
+              <div className="lg:mb-8 mb-6">
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Créer votre salon</h2>
+                <p className="text-gray-600 text-base">Rejoignez la plateforme professionnelle</p>
               </div>
 
-              {/* Formulaire avec colonne gauche (infos de base) et droite (reste) */}
-              <form onSubmit={handleRegister} className="space-y-4 lg:space-y-0">
-                <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-                  {/* Colonne GAUCHE - Infos de base comme sur la photo */}
-                  <div className="space-y-3">
+              {/* Formulaire avec disposition claire en 2 colonnes */}
+              <form onSubmit={handleRegister} className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                  {/* COLONNE GAUCHE - Informations personnelles et salon */}
+                  <div className="space-y-4">
                     {/* Prénom */}
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-sm">Prénom</Label>
+                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-900">Prénom</Label>
                       <div className="relative">
                         <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -155,7 +155,7 @@ export default function Register() {
 
                     {/* Nom */}
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-sm">Nom</Label>
+                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-900">Nom</Label>
                       <Input
                         id="lastName"
                         placeholder="Martin"
@@ -168,7 +168,7 @@ export default function Register() {
 
                     {/* Nom du salon */}
                     <div className="space-y-2">
-                      <Label htmlFor="businessName" className="text-sm">Nom du salon</Label>
+                      <Label htmlFor="businessName" className="text-sm font-medium text-gray-900">Nom du salon</Label>
                       <div className="relative">
                         <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -184,7 +184,7 @@ export default function Register() {
 
                     {/* Email professionnel */}
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm">Email professionnel</Label>
+                      <Label htmlFor="email" className="text-sm font-medium text-gray-900">Email professionnel</Label>
                       <div className="relative">
                         <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -200,11 +200,11 @@ export default function Register() {
                     </div>
                   </div>
 
-                  {/* Colonne DROITE - Reste du formulaire */}
-                  <div className="space-y-3 lg:mt-0 mt-4">
+                  {/* COLONNE DROITE - Coordonnées et sécurité */}
+                  <div className="space-y-4">
                     {/* Téléphone */}
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm">Téléphone</Label>
+                      <Label htmlFor="phone" className="text-sm font-medium text-gray-900">Téléphone</Label>
                       <div className="relative">
                         <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -220,7 +220,7 @@ export default function Register() {
 
                     {/* Ville */}
                     <div className="space-y-2">
-                      <Label htmlFor="city" className="text-sm">Ville</Label>
+                      <Label htmlFor="city" className="text-sm font-medium text-gray-900">Ville</Label>
                       <Input
                         id="city"
                         placeholder="Paris"
@@ -233,7 +233,7 @@ export default function Register() {
 
                     {/* Adresse complète */}
                     <div className="space-y-2">
-                      <Label htmlFor="address" className="text-sm">Adresse complète</Label>
+                      <Label htmlFor="address" className="text-sm font-medium text-gray-900">Adresse complète</Label>
                       <div className="relative">
                         <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -249,7 +249,7 @@ export default function Register() {
 
                     {/* Mot de passe */}
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-sm">Mot de passe</Label>
+                      <Label htmlFor="password" className="text-sm font-medium text-gray-900">Mot de passe</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -267,7 +267,7 @@ export default function Register() {
 
                     {/* Confirmer mot de passe */}
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-sm">Confirmer le mot de passe</Label>
+                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-900">Confirmer le mot de passe</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
