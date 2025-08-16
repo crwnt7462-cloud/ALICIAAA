@@ -107,6 +107,7 @@ import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
+import ProLogin from "@/pages/ProLogin";
 
 import AvyentoStyleClientLogin from "@/pages/AvyentoStyleClientLogin";
 import AvyentoStyleBooking from "@/pages/AvyentoStyleBooking";
@@ -322,6 +323,24 @@ function Router() {
   
   if (location === '/client-register') {
     return <div className="h-full"><ClientRegister /></div>;
+  }
+
+  // Page de connexion professionnelle
+  if (location === '/pro-login') {
+    return (
+      <div className="h-full">
+        <ProLogin />
+      </div>
+    );
+  }
+
+  // Page de paiement d'abonnement
+  if (location === '/subscription-payment') {
+    return (
+      <div className="h-full">
+        <SubscriptionPayment />
+      </div>
+    );
   }
   
 
