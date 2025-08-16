@@ -76,19 +76,12 @@ export default function Dashboard() {
           </div>
           
           {/* Navigation Icons */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div 
               onClick={() => setLocation('/dashboard-desktop')}
               className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 cursor-pointer"
             >
               <Home className="w-6 h-6 text-white" />
-            </div>
-            
-            <div 
-              onClick={() => setLocation('/client-analytics')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
-            >
-              <BarChart3 className="w-6 h-6 text-white/70" />
             </div>
             
             <div 
@@ -99,6 +92,20 @@ export default function Dashboard() {
             </div>
             
             <div 
+              onClick={() => setLocation('/clients-modern')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <Users className="w-6 h-6 text-white/70" />
+            </div>
+            
+            <div 
+              onClick={() => setLocation('/services-management')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <Settings className="w-6 h-6 text-white/70" />
+            </div>
+            
+            <div 
               onClick={() => setLocation('/messaging-hub')}
               className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
@@ -106,17 +113,24 @@ export default function Dashboard() {
             </div>
             
             <div 
-              onClick={() => setLocation('/clients-modern')}
+              onClick={() => setLocation('/ai-assistant-fixed')}
               className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Clock className="w-6 h-6 text-white/70" />
+              <MapPin className="w-6 h-6 text-white/70" />
             </div>
             
             <div 
-              onClick={() => setLocation('/salon-settings-modern')}
+              onClick={() => setLocation('/client-analytics')}
               className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Settings className="w-6 h-6 text-white/70" />
+              <BarChart3 className="w-6 h-6 text-white/70" />
+            </div>
+            
+            <div 
+              onClick={() => setLocation('/inventory-modern')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <Activity className="w-6 h-6 text-white/70" />
             </div>
           </div>
           
