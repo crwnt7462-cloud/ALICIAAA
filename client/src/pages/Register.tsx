@@ -86,53 +86,53 @@ export default function Register() {
       </button>
 
       {/* Contenu principal optimisé desktop */}
-      <div className="flex items-center justify-center min-h-screen px-4 py-8">
+      <div className="flex items-center justify-center min-h-screen px-2 py-4 lg:px-4 lg:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-full max-w-md lg:max-w-6xl"
+          className="w-full max-w-sm sm:max-w-md lg:max-w-5xl xl:max-w-6xl"
         >
           {/* Formulaire global */}
           <form onSubmit={handleRegister}>
             {/* Card principale avec orientation paysage sur desktop */}
-            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:h-[85vh] overflow-hidden">
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:min-h-[80vh] lg:max-h-[90vh] overflow-hidden">
               
               {/* Section gauche - Premiers champs du formulaire */}
-              <div className="lg:w-1/2 lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
+              <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
                 {/* Logo en haut sur mobile */}
-                <div className="text-center mb-8 lg:hidden">
+                <div className="text-center mb-6 lg:hidden">
                   <div className="mb-0">
                     <img 
                       src={avyentoProLogo} 
                       alt="Avyento Pro" 
                       className="mx-auto"
-                      style={{ height: '120px' }}
+                      style={{ height: '100px' }}
                     />
                   </div>
-                  <h1 className="text-3xl font-bold mb-3 text-gray-900">
+                  <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
                     Inscription Pro
                   </h1>
-                  <p className="text-gray-600 text-lg">Créez votre salon professionnel</p>
+                  <p className="text-gray-600 text-base">Créez votre salon professionnel</p>
                 </div>
                 
                 {/* En-tête desktop avec logo plus petit */}
-                <div className="hidden lg:block lg:text-center lg:mb-8">
+                <div className="hidden lg:block lg:text-center lg:mb-6">
                   <img 
                     src={avyentoProLogo} 
                     alt="Avyento Pro" 
-                    className="mx-auto mb-4"
-                    style={{ height: '100px' }}
+                    className="mx-auto mb-3"
+                    style={{ height: '80px' }}
                   />
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Créer votre salon</h2>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">Créer votre salon</h2>
                   <p className="text-gray-600 text-sm">Rejoignez la plateforme professionnelle</p>
                 </div>
 
                 {/* Partie gauche du formulaire */}
-                <div className="space-y-4 p-8 lg:p-0">
+                <div className="space-y-3 p-4 sm:p-6 lg:p-0">
                   {/* Prénom */}
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-900">Prénom</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="firstName" className="text-xs font-medium text-gray-900">Prénom</Label>
                     <div className="relative">
                       <User className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -147,8 +147,8 @@ export default function Register() {
                   </div>
 
                   {/* Nom */}
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-900">Nom</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="lastName" className="text-xs font-medium text-gray-900">Nom</Label>
                     <Input
                       id="lastName"
                       placeholder="Martin"
@@ -160,8 +160,8 @@ export default function Register() {
                   </div>
 
                   {/* Nom du salon */}
-                  <div className="space-y-2">
-                    <Label htmlFor="businessName" className="text-sm font-medium text-gray-900">Nom du salon</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="businessName" className="text-xs font-medium text-gray-900">Nom du salon</Label>
                     <div className="relative">
                       <Building className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -176,8 +176,8 @@ export default function Register() {
                   </div>
 
                   {/* Email professionnel */}
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-900">Email professionnel</Label>
+                  <div className="space-y-1">
+                    <Label htmlFor="email" className="text-xs font-medium text-gray-900">Email professionnel</Label>
                     <div className="relative">
                       <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                       <Input
@@ -195,11 +195,11 @@ export default function Register() {
               </div>
 
               {/* Section droite - Reste du formulaire */}
-              <div className="lg:w-1/2 lg:p-10 lg:flex lg:flex-col lg:justify-center">
-                <div className="space-y-4 p-8 lg:p-0">
+              <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:flex lg:flex-col lg:justify-center">
+                <div className="space-y-3 p-4 sm:p-6 lg:p-0">
                     {/* Téléphone */}
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-medium text-gray-900">Téléphone</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="phone" className="text-xs font-medium text-gray-900">Téléphone</Label>
                       <div className="relative">
                         <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -214,8 +214,8 @@ export default function Register() {
                     </div>
 
                     {/* Ville */}
-                    <div className="space-y-2">
-                      <Label htmlFor="city" className="text-sm font-medium text-gray-900">Ville</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="city" className="text-xs font-medium text-gray-900">Ville</Label>
                       <Input
                         id="city"
                         placeholder="Paris"
@@ -227,8 +227,8 @@ export default function Register() {
                     </div>
 
                     {/* Adresse complète */}
-                    <div className="space-y-2">
-                      <Label htmlFor="address" className="text-sm font-medium text-gray-900">Adresse complète</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="address" className="text-xs font-medium text-gray-900">Adresse complète</Label>
                       <div className="relative">
                         <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -243,8 +243,8 @@ export default function Register() {
                     </div>
 
                     {/* Mot de passe */}
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-sm font-medium text-gray-900">Mot de passe</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="password" className="text-xs font-medium text-gray-900">Mot de passe</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -261,8 +261,8 @@ export default function Register() {
                     </div>
 
                     {/* Confirmer mot de passe */}
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-900">Confirmer le mot de passe</Label>
+                    <div className="space-y-1">
+                      <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-900">Confirmer le mot de passe</Label>
                       <div className="relative">
                         <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                         <Input
@@ -282,13 +282,13 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full glass-button text-black px-6 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+                  className="w-full glass-button text-black px-4 py-3 rounded-2xl text-base font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-3"
                 >
                   {isLoading ? "Création..." : "Créer mon salon"}
                 </button>
 
                 {/* Lien connexion */}
-                <div className="mt-4 text-center">
+                <div className="mt-3 text-center">
                   <button
                     onClick={() => setLocation("/pro-login")}
                     className="text-xs text-violet-600 hover:text-violet-700 transition-colors"
