@@ -77,27 +77,45 @@ export default function Dashboard() {
           
           {/* Navigation Icons */}
           <div className="space-y-6">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
+            <div 
+              onClick={() => setLocation('/dashboard-desktop')}
+              className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 cursor-pointer"
+            >
               <Home className="w-6 h-6 text-white" />
             </div>
             
-            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+            <div 
+              onClick={() => setLocation('/client-analytics')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
               <BarChart3 className="w-6 h-6 text-white/70" />
             </div>
             
-            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+            <div 
+              onClick={() => setLocation('/planning')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
               <Calendar className="w-6 h-6 text-white/70" />
             </div>
             
-            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+            <div 
+              onClick={() => setLocation('/messaging-hub')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
               <MessageSquare className="w-6 h-6 text-white/70" />
             </div>
             
-            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+            <div 
+              onClick={() => setLocation('/clients-modern')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
               <Clock className="w-6 h-6 text-white/70" />
             </div>
             
-            <div className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer">
+            <div 
+              onClick={() => setLocation('/salon-settings-modern')}
+              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+            >
               <Settings className="w-6 h-6 text-white/70" />
             </div>
           </div>
@@ -132,12 +150,18 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Boutons d'action */}
-                <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors">
+                <button 
+                  onClick={() => setLocation('/salon/avyento')}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                >
                   <Globe className="w-4 h-4 text-gray-600" />
                   <span className="text-sm text-gray-700">Ma Page</span>
                 </button>
                 
-                <button className="flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors">
+                <button 
+                  onClick={() => setLocation('/salon-settings-modern')}
+                  className="flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors"
+                >
                   <Settings className="w-4 h-4 text-purple-600" />
                   <span className="text-sm text-purple-700">Settings</span>
                 </button>
