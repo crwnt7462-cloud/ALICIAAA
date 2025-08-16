@@ -68,3 +68,5 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Personnalisation Couleurs Corrigée**: Boutons de réservation appliquent correctement les couleurs personnalisées avec effet glassmorphism
 - **Responsive Mobile Optimisé**: Navigation responsive parfaite avec noms services sur une ligne et galerie catégorisée
 - **Synchronisation Temps Réel**: Système de couleurs personnalisées synchronisé entre éditeur et pages publiques
+- **Page Professional-Plans Redesignée**: Application complète du design Slay avec positionnement asymétrique des cartes (carte centrale surélevée, cartes latérales décalées), contenu adapté salon Avyento, couleurs violettes thématiques
+- **Dashboard Peymen Intégré**: Dashboard professionnel avec design moderne financier (cartes blanches, fond gris, palette bleu/violet) selon maquette exacte
