@@ -185,16 +185,16 @@ export default function ProfessionalPlans() {
               </p>
 
               {/* 3 éléments descriptifs */}
-              <div className="space-y-2 mb-6 text-left">
-                <div className="flex items-center text-sm text-gray-600">
+              <div className="space-y-2 mb-6 text-center">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>Planning et réservations</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>Gestion clientèle</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>Jusqu'à 200 RDV/mois</span>
                 </div>
@@ -235,16 +235,16 @@ export default function ProfessionalPlans() {
                 </p>
 
                 {/* 3 éléments descriptifs */}
-                <div className="space-y-2 mb-6 text-left">
-                  <div className="flex items-center text-sm text-violet-100">
+                <div className="space-y-2 mb-6 text-center">
+                  <div className="flex items-center justify-center text-sm text-violet-100">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Tout de l'Essentiel</span>
                   </div>
-                  <div className="flex items-center text-sm text-violet-100">
+                  <div className="flex items-center justify-center text-sm text-violet-100">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Analytics avancés</span>
                   </div>
-                  <div className="flex items-center text-sm text-violet-100">
+                  <div className="flex items-center justify-center text-sm text-violet-100">
                     <div className="w-1.5 h-1.5 bg-white rounded-full mr-2"></div>
                     <span>Jusqu'à 1000 RDV/mois</span>
                   </div>
@@ -280,16 +280,16 @@ export default function ProfessionalPlans() {
               </p>
 
               {/* 3 éléments descriptifs */}
-              <div className="space-y-2 mb-6 text-left">
-                <div className="flex items-center text-sm text-gray-600">
+              <div className="space-y-2 mb-6 text-center">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>Tout du Professionnel</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>Assistant IA intégré</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center justify-center text-sm text-gray-600">
                   <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>
                   <span>RDV illimités</span>
                 </div>
@@ -305,9 +305,9 @@ export default function ProfessionalPlans() {
           </Card>
         </div>
 
-        {/* Desktop Layout - Exact Slay asymmetric layout */}
+        {/* Desktop Layout - Exact Slay asymmetric layout avec Professionnel AU CENTRE */}
         <div className="hidden lg:block relative flex items-start justify-center min-h-[500px] mb-20">
-          {/* Carte de gauche - décalée vers le bas et inclinée */}
+          {/* Carte de gauche - Essentiel décalée vers le bas et inclinée */}
           <div className="absolute left-0 top-16" style={{transform: 'rotate(-5deg)'}}>
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
@@ -353,7 +353,7 @@ export default function ProfessionalPlans() {
             </Card>
           </div>
 
-          {/* Carte centrale - surélevée */}
+          {/* Carte CENTRALE - Professionnel (LE PLUS POPULAIRE) surélevée AU CENTRE */}
           <div className="relative z-10">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
@@ -404,7 +404,7 @@ export default function ProfessionalPlans() {
             </Card>
           </div>
 
-          {/* Carte de droite - décalée vers le bas et inclinée */}
+          {/* Carte de droite - Premium décalée vers le bas et inclinée */}
           <div className="absolute right-0 top-16" style={{transform: 'rotate(5deg)'}}>
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
@@ -457,7 +457,7 @@ export default function ProfessionalPlans() {
 
       {/* Footer - Identique à la page / */}
       <footer className="bg-gray-900 text-white py-8 w-full">
-        <div className="mx-auto px-6 lg:px-12 xl:px-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 xl:px-20">
           <div className="grid md:grid-cols-5 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">Avyento</h3>
