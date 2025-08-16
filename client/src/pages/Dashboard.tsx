@@ -66,71 +66,71 @@ export default function Dashboard() {
         {/* Sidebar Glass */}
         <div className="w-20 flex flex-col items-center py-6" style={{
           backdropFilter: 'blur(20px) saturate(180%)',
-          background: 'rgba(255, 255, 255, 0.09)',
-          border: '1px solid rgba(255, 255, 255, 0.18)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+          background: 'rgba(128, 128, 128, 0.15)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)'
         }}>
           {/* Logo */}
-          <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/40">
-            <Bell className="w-6 h-6 text-gray-700" />
+          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-gray-300/50">
+            <Bell className="w-6 h-6 text-gray-600" />
           </div>
           
           {/* Navigation Icons */}
           <div className="space-y-4">
             <div 
               onClick={() => setLocation('/dashboard')}
-              className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 cursor-pointer"
+              className="w-12 h-12 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-gray-300/40 cursor-pointer shadow-sm"
             >
-              <Home className="w-6 h-6 text-white" />
+              <Home className="w-6 h-6 text-gray-700" />
             </div>
             
             <div 
               onClick={() => setLocation('/planning')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Calendar className="w-6 h-6 text-white/70" />
+              <Calendar className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/clients-modern')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Users className="w-6 h-6 text-white/70" />
+              <Users className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/services-management')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Settings className="w-6 h-6 text-white/70" />
+              <Settings className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/messaging-hub')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <MessageSquare className="w-6 h-6 text-white/70" />
+              <MessageSquare className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/ai-assistant-fixed')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <MapPin className="w-6 h-6 text-white/70" />
+              <MapPin className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/client-analytics')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <BarChart3 className="w-6 h-6 text-white/70" />
+              <BarChart3 className="w-6 h-6 text-gray-600" />
             </div>
             
             <div 
               onClick={() => setLocation('/inventory-modern')}
-              className="w-12 h-12 bg-transparent hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+              className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
             >
-              <Activity className="w-6 h-6 text-white/70" />
+              <Activity className="w-6 h-6 text-gray-600" />
             </div>
           </div>
           
