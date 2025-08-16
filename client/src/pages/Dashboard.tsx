@@ -151,7 +151,28 @@ export default function Dashboard() {
                 
                 {/* Boutons d'action */}
                 <button 
-                  onClick={() => setLocation('/salon/avyento')}
+                  onClick={async () => {
+                    try {
+                      // Récupérer le salon de l'utilisateur connecté
+                      const response = await fetch('/api/salon/my-salon');
+                      if (response.ok) {
+                        const data = await response.json();
+                        if (data.salon) {
+                          // Rediriger vers la page du salon avec mode éditeur
+                          setLocation(`/salon-editor/${data.salon.id}`);
+                        } else {
+                          // Pas de salon trouvé, créer un nouveau salon
+                          setLocation('/salon-creation');
+                        }
+                      } else {
+                        // Erreur API, fallback vers création
+                        setLocation('/salon-creation');
+                      }
+                    } catch (error) {
+                      console.error('Erreur récupération salon:', error);
+                      setLocation('/salon-creation');
+                    }
+                  }}
                   className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   <Globe className="w-4 h-4 text-gray-600" />
