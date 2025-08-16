@@ -107,7 +107,7 @@ export default function ClientRegister() {
           className="w-full max-w-md lg:max-w-4xl"
         >
           {/* Card principale avec orientation paysage sur desktop */}
-          <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:max-h-[80vh]">
+          <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:min-h-[75vh] lg:max-h-[85vh] overflow-hidden">
             
             {/* Section gauche - Branding (desktop uniquement) */}
             <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
@@ -147,7 +147,7 @@ export default function ClientRegister() {
             </div>
 
             {/* Section droite - Formulaire */}
-            <div className="p-8 lg:w-1/2 lg:p-8 lg:flex lg:flex-col lg:justify-center">
+            <div className="p-8 lg:w-1/2 lg:p-6 lg:flex lg:flex-col lg:justify-center lg:overflow-y-auto">
               {/* En-tête mobile */}
               <div className="text-center mb-8 lg:hidden">
                 <div className="mb-0">
@@ -165,15 +165,15 @@ export default function ClientRegister() {
               </div>
 
               {/* En-tête desktop */}
-              <div className="hidden lg:block text-center mb-6">
-                <h2 className="text-2xl font-bold mb-2 text-gray-900">
+              <div className="hidden lg:block text-center mb-4">
+                <h2 className="text-xl font-bold mb-1 text-gray-900">
                   Inscription
                 </h2>
-                <p className="text-gray-600 text-sm">Créez votre compte client</p>
+                <p className="text-gray-600 text-xs">Créez votre compte client</p>
               </div>
 
               {/* Formulaire avec vrai style /home */}
-              <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6 lg:space-y-3">
                 {/* Prénom et Nom */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -187,7 +187,7 @@ export default function ClientRegister() {
                         type="text"
                         value={formData.firstName}
                         onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                        className="w-full pl-12 pr-4 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                        className="w-full pl-12 pr-4 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                         placeholder="Votre prénom"
                         required
                       />
@@ -205,7 +205,7 @@ export default function ClientRegister() {
                         type="text"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                        className="w-full pl-12 pr-4 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                        className="w-full pl-12 pr-4 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                         placeholder="Votre nom"
                         required
                       />
@@ -225,7 +225,7 @@ export default function ClientRegister() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full pl-12 pr-4 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      className="w-full pl-12 pr-4 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                       placeholder="votre@email.com"
                       required
                     />
@@ -244,7 +244,7 @@ export default function ClientRegister() {
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full pl-12 pr-4 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      className="w-full pl-12 pr-4 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                       placeholder="Votre numéro"
                     />
                   </div>
@@ -262,7 +262,7 @@ export default function ClientRegister() {
                       type={showPassword ? 'text' : 'password'}
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full pl-12 pr-14 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      className="w-full pl-12 pr-14 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                       placeholder="••••••••"
                       required
                     />
@@ -292,7 +292,7 @@ export default function ClientRegister() {
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                      className="w-full pl-12 pr-14 py-3 lg:py-3 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
+                      className="w-full pl-12 pr-14 py-3 lg:py-2 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all duration-200 text-gray-900 placeholder-gray-500 bg-white"
                       placeholder="••••••••"
                       required
                     />
@@ -333,7 +333,7 @@ export default function ClientRegister() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full glass-button text-black font-medium py-3 lg:py-3 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl"
+                  className="w-full glass-button text-black font-medium py-3 lg:py-2 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 hover:shadow-2xl"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 border-2 border-gray-900 border-t-transparent rounded-full animate-spin" />
@@ -347,7 +347,7 @@ export default function ClientRegister() {
               </form>
 
               {/* Lien de connexion */}
-              <div className="text-center mt-8 lg:mt-6">
+              <div className="text-center mt-8 lg:mt-4">
                 <p className="text-sm text-gray-600">
                   Déjà un compte ?{' '}
                   <button
