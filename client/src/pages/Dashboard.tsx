@@ -35,6 +35,18 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/revenue-chart"],
   });
 
+  const { data: popularServices = [], isLoading: servicesLoading } = useQuery({
+    queryKey: ["/api/dashboard/popular-services"],
+  });
+
+  const { data: todayAppointments = [], isLoading: appointmentsLoading } = useQuery({
+    queryKey: ["/api/dashboard/today-appointments"],
+  });
+
+  const { data: weeklyNewClients } = useQuery({
+    queryKey: ["/api/dashboard/weekly-new-clients"],
+  });
+
   if (statsLoading || revenueLoading) {
     return (
       <div className="flex h-screen bg-gray-50">
@@ -230,7 +242,9 @@ export default function Dashboard() {
                 
                 {/* Montant principal */}
                 <div className="mb-8">
-                  <h2 className="text-4xl font-bold text-gray-900 mb-1">$234.2</h2>
+                  <h2 className="text-4xl font-bold text-gray-900 mb-1">
+                    {statsLoading ? "..." : `${stats?.monthlyRevenue || 0}€`}
+                  </h2>
                 </div>
                 
                 {/* Graphique en ligne */}
@@ -287,7 +301,12 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg">Services Populaires</h3>
-                      <p className="text-sm opacity-75">Coiffure & Esthétique</p>
+                      <p className="text-sm opacity-75">
+                        {servicesLoading ? "Chargement..." : 
+                         popularServices.length > 0 ? 
+                         `${popularServices[0]?.serviceName} (${popularServices[0]?.bookingCount} réservations)` : 
+                         "Aucun service encore"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -307,7 +326,9 @@ export default function Dashboard() {
                       <div>
                         <h3 className="font-semibold text-lg">Planning Aujourd'hui</h3>
                         <p className="text-sm opacity-75">Objectif: 100% rempli</p>
-                        <p className="text-2xl font-bold mt-1">{stats?.appointmentsToday || 0} RDV</p>
+                        <p className="text-2xl font-bold mt-1">
+                          {appointmentsLoading ? "..." : `${todayAppointments?.length || 0} RDV`}
+                        </p>
                         <p className="text-xs opacity-75">Août 2025</p>
                       </div>
                     </div>
@@ -329,7 +350,7 @@ export default function Dashboard() {
                 <Users className="w-6 h-6 text-gray-700" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
-              <p className="text-sm text-gray-500 mb-4">{stats?.totalClients || 0} clients actifs</p>
+              <p className="text-sm text-gray-500 mb-4">{statsLoading ? "Chargement..." : `${stats?.totalClients || 0} clients actifs`}</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Fidélité</span>
@@ -341,7 +362,7 @@ export default function Dashboard() {
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Nouveaux cette semaine</span>
-                <span className="text-gray-700">3 clients</span>
+                <span className="text-gray-700">{weeklyNewClients?.count || 0} clients</span>
               </div>
             </div>
             

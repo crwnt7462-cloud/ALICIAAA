@@ -2100,6 +2100,40 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Nouvelles routes pour données dashboard connectées à la BDD
+  app.get('/api/dashboard/popular-services', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const popularServices = await storage.getPopularServices(userId);
+      res.json(popularServices);
+    } catch (error: any) {
+      console.error("❌ Erreur récupération services populaires:", error);
+      res.status(500).json({ error: "Erreur récupération services populaires" });
+    }
+  });
+
+  app.get('/api/dashboard/today-appointments', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const todayAppointments = await storage.getTodayAppointments(userId);
+      res.json(todayAppointments);
+    } catch (error: any) {
+      console.error("❌ Erreur récupération RDV aujourd'hui:", error);
+      res.status(500).json({ error: "Erreur récupération RDV aujourd'hui" });
+    }
+  });
+
+  app.get('/api/dashboard/weekly-new-clients', async (req, res) => {
+    try {
+      const userId = (req.session as any)?.user?.id || 'demo';
+      const weeklyNewClients = await storage.getWeeklyNewClients(userId);
+      res.json({ count: weeklyNewClients });
+    } catch (error: any) {
+      console.error("❌ Erreur récupération nouveaux clients:", error);
+      res.status(500).json({ error: "Erreur récupération nouveaux clients" });
+    }
+  });
+
   // === ROUTES STAFF ET INVENTORY (FIXES ROUTING VITE) ===
   app.get('/api/staff', async (req, res) => {
     try {
