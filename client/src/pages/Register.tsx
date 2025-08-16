@@ -24,6 +24,7 @@ export default function Register() {
     address: "",
     city: ""
   });
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +33,15 @@ export default function Register() {
       toast({
         title: "Erreur",
         description: "Les mots de passe ne correspondent pas",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!acceptTerms) {
+      toast({
+        title: "Erreur",
+        description: "Vous devez accepter les CGU pour continuer",
         variant: "destructive"
       });
       return;
@@ -72,12 +82,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-white relative">
-      
-      {/* Emoji flottant discret */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/2 right-1/3 text-6xl opacity-8 animate-bounce-slow">💖</div>
-      </div>
-
       {/* Bouton retour en haut à gauche */}
       <button
         onClick={() => setLocation('/')}
@@ -86,48 +90,41 @@ export default function Register() {
         <ArrowLeft className="h-5 w-5 text-gray-700" />
       </button>
 
+      {/* Logo Avyento centré au-dessus du conteneur */}
+      <div className="text-center pt-8 pb-6">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <img 
+            src={avyentoProLogo} 
+            alt="Avyento Pro" 
+            className="mx-auto mb-4"
+            style={{ height: '120px' }}
+          />
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900">
+            Inscription Pro
+          </h1>
+          <p className="text-gray-600 text-lg">Créez votre salon professionnel</p>
+        </motion.div>
+      </div>
+
       {/* Contenu principal optimisé desktop */}
-      <div className="flex items-center justify-center min-h-screen px-2 py-4 lg:px-4 lg:py-8">
+      <div className="flex items-center justify-center px-2 py-4 lg:px-4 lg:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="w-full max-w-sm sm:max-w-md lg:max-w-5xl xl:max-w-6xl"
         >
           {/* Formulaire global */}
           <form onSubmit={handleRegister}>
             {/* Card principale avec orientation paysage sur desktop */}
-            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:min-h-[80vh] lg:max-h-[90vh] overflow-hidden">
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:min-h-[70vh] overflow-hidden">
               
               {/* Section gauche - Premiers champs du formulaire */}
               <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
-                {/* Logo en haut sur mobile */}
-                <div className="text-center mb-6 lg:hidden">
-                  <div className="mb-0">
-                    <img 
-                      src={avyentoProLogo} 
-                      alt="Avyento Pro" 
-                      className="mx-auto"
-                      style={{ height: '100px' }}
-                    />
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-gray-900">
-                    Inscription Pro
-                  </h1>
-                  <p className="text-gray-600 text-base">Créez votre salon professionnel</p>
-                </div>
-                
-                {/* En-tête desktop avec logo plus petit */}
-                <div className="hidden lg:block lg:text-center lg:mb-6">
-                  <img 
-                    src={avyentoProLogo} 
-                    alt="Avyento Pro" 
-                    className="mx-auto mb-3"
-                    style={{ height: '80px' }}
-                  />
-                  <h2 className="text-xl font-bold text-gray-900 mb-1">Créer votre salon</h2>
-                  <p className="text-gray-600 text-sm">Rejoignez la plateforme professionnelle</p>
-                </div>
 
                 {/* Partie gauche du formulaire */}
                 <div className="space-y-3 p-4 sm:p-6 lg:p-0">
@@ -294,11 +291,30 @@ export default function Register() {
                       </div>
                     </div>
 
+                    {/* Case à cocher CGU */}
+                    <div className="flex items-start space-x-3 mt-4">
+                      <input
+                        type="checkbox"
+                        id="acceptTerms"
+                        checked={acceptTerms}
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        className="mt-1 w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
+                        required
+                      />
+                      <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
+                        J'accepte les{" "}
+                        <span className="text-violet-600 hover:text-violet-700 underline cursor-pointer">
+                          CGU Avyento
+                        </span>
+                        {" "}*
+                      </label>
+                    </div>
+
                 {/* Bouton d'inscription avec vrai style glass-button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="w-full glass-button text-black px-4 py-3 rounded-2xl text-base font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-3"
+                  disabled={isLoading || !acceptTerms}
+                  className="w-full glass-button text-black px-4 py-3 rounded-2xl text-base font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
                 >
                   {isLoading ? "Création..." : "Créer mon salon"}
                 </button>
