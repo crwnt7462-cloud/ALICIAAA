@@ -155,8 +155,8 @@ export default function ProfessionalPlans() {
 
         {/* Pricing Cards - Exact Slay Layout */}
         <div className="relative flex items-start justify-center min-h-[500px] mb-20">
-          {/* Carte de gauche - décalée vers le bas */}
-          <div className="absolute left-0 top-16">
+          {/* Carte de gauche - décalée vers le bas et inclinée */}
+          <div className="absolute left-0 top-16 transform -rotate-3">
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
@@ -220,8 +220,8 @@ export default function ProfessionalPlans() {
             </Card>
           </div>
 
-          {/* Carte de droite - décalée vers le bas */}
-          <div className="absolute right-0 top-16">
+          {/* Carte de droite - décalée vers le bas et inclinée */}
+          <div className="absolute right-0 top-16 transform rotate-3">
             <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
               <CardContent className="p-8 text-center">
                 <div className="text-gray-800 mb-6">
