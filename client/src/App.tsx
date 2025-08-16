@@ -39,8 +39,7 @@ import BeautyLashStudio from "@/pages/salons/BeautyLashStudio";
 import Services from "@/pages/Services";
 import Staff from "@/pages/Staff";
 
-import BusinessFeatures from "@/pages/BusinessFeatures";
-import BusinessFeaturesFixed from "@/pages/BusinessFeaturesFixed";
+import BusinessFeaturesWithBottomSheets from "@/pages/BusinessFeaturesWithBottomSheets";
 import DashboardModern from "@/pages/DashboardModern";
 import SalonSettingsModern from "@/pages/SalonSettingsModern";
 import ProMessagingModern from "@/pages/ProMessagingModern";
@@ -858,7 +857,7 @@ function Router() {
           <Header />
         </div>
         <main className="flex-1 overflow-y-auto">
-          <BusinessFeatures />
+          <BusinessFeaturesWithBottomSheets />
         </main>
         <div className="lg:hidden">
           <BottomNavigation />
@@ -883,7 +882,7 @@ function Router() {
           <Route path="/staff-management" component={StaffManagement} />
           <Route path="/services-management" component={ServicesManagement} />
           <Route path="/professional-settings-demo" component={ProfessionalSettingsDemo} />
-          <Route path="/business-features" component={BusinessFeatures} />
+          <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
           <Route path="/messaging-system" component={MessagingSystem} />
           <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
           <Route path="/stock-alerts" component={StockAlerts} />
