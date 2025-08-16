@@ -42,6 +42,36 @@ export default function ClientDashboard() {
     address: "15 Rue de République, Paris"
   };
 
+  const favoriteSalons = [
+    {
+      id: 1,
+      name: "Beauty Lash Studio",
+      category: "Institut de beauté",
+      rating: 4.8,
+      image: "🌸",
+      lastVisit: "Il y a 2 semaines",
+      nextAvailable: "Demain 14h"
+    },
+    {
+      id: 2,
+      name: "Excellence Paris",
+      category: "Coiffure",
+      rating: 4.9,
+      image: "✨",
+      lastVisit: "Il y a 1 mois",
+      nextAvailable: "Lundi 10h"
+    },
+    {
+      id: 3,
+      name: "Salon Moderne",
+      category: "Coiffure & Beauté",
+      rating: 4.7,
+      image: "💎",
+      lastVisit: "Il y a 3 semaines",
+      nextAvailable: "Jeudi 16h"
+    }
+  ];
+
   const quickStats = {
     upcomingAppointments: 2,
     pastAppointments: 8,
@@ -263,22 +293,94 @@ export default function ClientDashboard() {
                         Prête pour votre prochain moment beauté ?
                       </p>
                       
-                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                         {quickActions.map((action, index) => {
                           const Icon = action.icon;
                           return (
-                            <button
+                            <motion.button
                               key={index}
                               onClick={action.action}
-                              className="flex flex-col items-center p-4 rounded-2xl bg-white/80 backdrop-blur-sm hover:scale-105 transition-all duration-200 group"
+                              whileHover={{ scale: 1.05, y: -2 }}
+                              whileTap={{ scale: 0.95 }}
+                              className="relative overflow-hidden rounded-2xl p-4 group"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%)',
+                                backdropFilter: 'blur(20px)',
+                                WebkitBackdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255, 255, 255, 0.5)',
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
+                              }}
                             >
-                              <div className="w-12 h-12 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                                <Icon className="w-6 h-6 text-white" />
+                              <div className="absolute inset-0 bg-gradient-to-br from-violet-400/10 to-pink-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="relative flex flex-col items-center text-center">
+                                <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-pink-400 rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                                  <Icon className="w-5 h-5 text-white" />
+                                </div>
+                                <span className="text-xs font-semibold text-gray-700">{action.name}</span>
                               </div>
-                              <span className="text-sm font-medium text-gray-700">{action.name}</span>
-                            </button>
+                            </motion.button>
                           );
                         })}
+                      </div>
+                      
+                      {/* Section Salons Favoris */}
+                      <div className="mt-8">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-lg font-semibold text-gray-900">Mes salons favoris</h3>
+                          <button className="text-sm text-violet-600 hover:text-violet-700 font-medium">
+                            Voir tout
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                          {favoriteSalons.map((salon) => (
+                            <motion.div
+                              key={salon.id}
+                              whileHover={{ scale: 1.02, y: -2 }}
+                              className="relative overflow-hidden rounded-2xl p-4 cursor-pointer group"
+                              style={{
+                                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%)',
+                                backdropFilter: 'blur(20px)',
+                                WebkitBackdropFilter: 'blur(20px)',
+                                border: '1px solid rgba(255, 255, 255, 0.5)',
+                                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
+                              }}
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-br from-violet-400/5 to-pink-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                              <div className="relative">
+                                <div className="flex items-center space-x-3 mb-3">
+                                  <div className="w-12 h-12 bg-gradient-to-br from-violet-100 to-pink-100 rounded-xl flex items-center justify-center text-2xl">
+                                    {salon.image}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-gray-900 truncate">{salon.name}</h4>
+                                    <p className="text-xs text-gray-500">{salon.category}</p>
+                                  </div>
+                                  <div className="flex items-center space-x-1">
+                                    <Star className="w-3 h-3 text-amber-400 fill-current" />
+                                    <span className="text-xs font-medium text-gray-600">{salon.rating}</span>
+                                  </div>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">Dernière visite</span>
+                                    <span className="text-gray-700">{salon.lastVisit}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between text-xs">
+                                    <span className="text-gray-500">Prochain créneau</span>
+                                    <span className="text-violet-600 font-medium">{salon.nextAvailable}</span>
+                                  </div>
+                                </div>
+                                <motion.button
+                                  whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="w-full mt-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-violet-400 to-pink-400 rounded-lg hover:shadow-lg transition-all duration-200"
+                                >
+                                  Réserver maintenant
+                                </motion.button>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                     
@@ -410,6 +512,13 @@ export default function ClientDashboard() {
                   </CardContent>
                 </Card>
               </motion.div>
+            </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="mt-16 pt-8 border-t border-gray-200">
+            <div className="text-center text-xs text-gray-500">
+              <p>© 2025 Avyento. Plateforme de gestion professionnelle.</p>
             </div>
           </div>
         </div>

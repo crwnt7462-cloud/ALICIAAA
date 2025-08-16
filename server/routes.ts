@@ -69,6 +69,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Routes pour les salons favoris des clients
+  app.get('/api/client/favorites', async (req, res) => {
+    try {
+      // Pour la démo, on retourne des données simulées
+      const favoriteSalons = [
+        {
+          id: 1,
+          name: "Beauty Lash Studio",
+          category: "Institut de beauté",
+          rating: 4.8,
+          image: "🌸",
+          lastVisit: "Il y a 2 semaines",
+          nextAvailable: "Demain 14h"
+        },
+        {
+          id: 2,
+          name: "Excellence Paris",
+          category: "Coiffure",
+          rating: 4.9,
+          image: "✨",
+          lastVisit: "Il y a 1 mois",
+          nextAvailable: "Lundi 10h"
+        },
+        {
+          id: 3,
+          name: "Salon Moderne",
+          category: "Coiffure & Beauté",
+          rating: 4.7,
+          image: "💎",
+          lastVisit: "Il y a 3 semaines",
+          nextAvailable: "Jeudi 16h"
+        }
+      ];
+      res.json(favoriteSalons);
+    } catch (error) {
+      console.error("Error fetching favorite salons:", error);
+      res.status(500).json({ message: "Failed to fetch favorite salons" });
+    }
+  });
+
+  app.post('/api/client/favorites/:salonId', async (req, res) => {
+    try {
+      const salonId = req.params.salonId;
+      console.log(`📌 Ajout salon ${salonId} aux favoris`);
+      // Ici on ajouterait la logique pour ajouter aux favoris
+      res.json({ success: true, message: "Salon ajouté aux favoris" });
+    } catch (error) {
+      console.error("Error adding favorite salon:", error);
+      res.status(500).json({ message: "Failed to add favorite salon" });
+    }
+  });
+
+  app.delete('/api/client/favorites/:salonId', async (req, res) => {
+    try {
+      const salonId = req.params.salonId;
+      console.log(`🗑️ Suppression salon ${salonId} des favoris`);
+      // Ici on ajouterait la logique pour supprimer des favoris
+      res.json({ success: true, message: "Salon supprimé des favoris" });
+    } catch (error) {
+      console.error("Error removing favorite salon:", error);
+      res.status(500).json({ message: "Failed to remove favorite salon" });
+    }
+  });
+
   // This endpoint is used to serve public assets.
   app.get("/public-objects/:filePath(*)", async (req, res) => {
     const filePath = req.params.filePath || '';

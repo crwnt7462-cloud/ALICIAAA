@@ -79,6 +79,17 @@ export const clientAccounts = pgTable("client_accounts", {
 export type ClientAccount = typeof clientAccounts.$inferSelect;
 export type InsertClientAccount = typeof clientAccounts.$inferInsert;
 
+// Table des salons favoris des clients
+export const clientFavorites = pgTable("client_favorites", {
+  id: serial("id").primaryKey(),
+  clientId: varchar("client_id").notNull(), // référence au client
+  salonId: varchar("salon_id").notNull(), // référence au salon
+  addedAt: timestamp("added_at").defaultNow(),
+});
+
+export type ClientFavorite = typeof clientFavorites.$inferSelect;
+export type InsertClientFavorite = typeof clientFavorites.$inferInsert;
+
 // Business registrations table for professional signups
 export const businessRegistrations = pgTable("business_registrations", {
   id: serial("id").primaryKey(),
