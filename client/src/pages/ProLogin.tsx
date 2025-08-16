@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { LogIn, Sparkles, Calendar, BarChart3, Users, Shield, Crown, Star } from 'lucide-react';
+import { LogIn, Sparkles, Calendar, BarChart3, Users, Shield, Crown } from 'lucide-react';
 
 export default function ProLogin() {
   const handleLogin = () => {
@@ -10,175 +10,152 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
-      {/* Bulles décoratives violettes d'Avyento */}
-      <div className="absolute inset-0 pointer-events-none">
-        {/* Grande bulle gauche */}
-        <div className="absolute -left-32 top-16 w-96 h-96 bg-violet-200/40 rounded-full blur-3xl"></div>
-        {/* Bulle droite haute */}
-        <div className="absolute -right-20 -top-20 w-64 h-64 bg-violet-300/50 rounded-full blur-2xl"></div>
-        {/* Bulle droite basse */}
-        <div className="absolute -right-32 bottom-32 w-80 h-80 bg-violet-300/35 rounded-full blur-3xl"></div>
-        {/* Petite bulle centre */}
-        <div className="absolute left-1/3 top-1/4 w-32 h-32 bg-violet-200/30 rounded-full blur-xl"></div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 relative overflow-hidden">
+      {/* Émojis flottants diffus style Avyento */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        {['💫', '✨', '💎', '🌟', '💜', '🔮'].map((emoji, index) => (
+          <motion.div
+            key={index}
+            className="absolute text-6xl"
+            initial={{ 
+              opacity: 0.1
+            }}
+            animate={{
+              x: [0, 100, 0],
+              y: [0, -50, 0],
+              rotate: [0, 360],
+              scale: [1, 1.2, 1]
+            }}
+            transition={{
+              duration: 20 + index * 2,
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            style={{
+              left: `${10 + (index * 15)}%`,
+              top: `${20 + (index * 10)}%`,
+            }}
+          >
+            {emoji}
+          </motion.div>
+        ))}
       </div>
 
 
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 pb-20">
-        <div className="max-w-lg w-full">
-          {/* Logo et branding Avyento */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+        <div className="max-w-md w-full">
+          {/* Logo Avyento Pro centré */}
           <motion.div
-            initial={{ opacity: 0, y: -30 }}
+            initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
             className="text-center mb-8"
           >
-            <div className="relative mb-6">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="w-24 h-24 mx-auto relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-400 via-purple-500 to-amber-400 rounded-3xl blur-sm"></div>
-                <div className="relative w-full h-full bg-gradient-to-br from-violet-500 via-purple-600 to-amber-500 rounded-3xl flex items-center justify-center">
-                  <img 
-                    src="/generated-icon.png" 
-                    alt="Avyento Pro" 
-                    className="w-12 h-12 object-contain"
-                  />
-                </div>
-              </motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center"
-              >
-                <Star className="h-3 w-3 text-amber-900" />
-              </motion.div>
-            </div>
-            
             <motion.h1
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="font-bold mb-2"
+              className="font-bold flex items-center justify-center mb-4"
               style={{ fontSize: '40px' }}
             >
               <img 
                 src="/generated-icon.png" 
                 alt="Avyento Pro" 
-                className="w-10 h-10 inline-block mr-2"
+                className="inline-block mr-3"
                 style={{ width: '40px', height: '40px' }}
               />
               <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-amber-600 bg-clip-text text-transparent">
                 Avyento Pro
               </span>
             </motion.h1>
-            <p className="text-gray-700 text-lg font-medium">
-              Plateforme professionnelle de beauté
-            </p>
-            <p className="text-gray-600 text-sm mt-1">
-              L'excellence technologique au service de votre salon
-            </p>
           </motion.div>
 
-          {/* Carte de connexion glassmorphism */}
+          {/* Carte minimaliste style Avyento */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Card className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl p-8 rounded-3xl">
-              <div className="space-y-6">
+            <Card className="bg-white/95 backdrop-blur-sm border border-gray-200/50 shadow-2xl p-8 rounded-3xl">
+              <div className="space-y-8">
+                {/* Titre de la section */}
                 <div className="text-center">
-                  <h2 className="text-2xl font-bold text-white mb-2">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     Espace Professionnel
                   </h2>
-                  <p className="text-white/70">
+                  <p className="text-gray-600">
                     Connectez-vous pour accéder à votre dashboard
                   </p>
                 </div>
 
-                {/* Fonctionnalités premium */}
-                <div className="grid grid-cols-2 gap-3">
+                {/* Icônes des fonctionnalités - Style minimaliste */}
+                <div className="grid grid-cols-2 gap-6 py-8">
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10"
+                    whileHover={{ scale: 1.1 }}
+                    className="flex flex-col items-center justify-center p-6 rounded-2xl hover:bg-violet-50/50 transition-colors"
                   >
-                    <Calendar className="h-6 w-6 text-violet-300" />
-                    <span className="text-sm font-medium text-white">Planning IA</span>
+                    <Calendar className="h-12 w-12 text-violet-400 mb-2" />
+                    <span className="text-sm font-medium text-gray-700">Planning IA</span>
                   </motion.div>
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10"
+                    whileHover={{ scale: 1.1 }}
+                    className="flex flex-col items-center justify-center p-6 rounded-2xl hover:bg-violet-50/50 transition-colors"
                   >
-                    <BarChart3 className="h-6 w-6 text-violet-300" />
-                    <span className="text-sm font-medium text-white">Analytics</span>
+                    <BarChart3 className="h-12 w-12 text-violet-400 mb-2" />
+                    <span className="text-sm font-medium text-gray-700">Analytics</span>
                   </motion.div>
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10"
+                    whileHover={{ scale: 1.1 }}
+                    className="flex flex-col items-center justify-center p-6 rounded-2xl hover:bg-violet-50/50 transition-colors"
                   >
-                    <Users className="h-6 w-6 text-violet-300" />
-                    <span className="text-sm font-medium text-white">Équipe</span>
+                    <Users className="h-12 w-12 text-violet-400 mb-2" />
+                    <span className="text-sm font-medium text-gray-700">Équipe</span>
                   </motion.div>
                   <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    className="flex items-center gap-3 p-4 bg-white/5 rounded-xl border border-white/10"
+                    whileHover={{ scale: 1.1 }}
+                    className="flex flex-col items-center justify-center p-6 rounded-2xl hover:bg-violet-50/50 transition-colors"
                   >
-                    <Crown className="h-6 w-6 text-violet-300" />
-                    <span className="text-sm font-medium text-white">Premium</span>
+                    <Crown className="h-12 w-12 text-violet-400 mb-2" />
+                    <span className="text-sm font-medium text-gray-700">Premium</span>
                   </motion.div>
                 </div>
 
-                {/* Bouton de connexion */}
+                {/* Bouton de connexion minimaliste */}
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="pt-4"
                 >
                   <Button
                     onClick={handleLogin}
                     size="lg"
-                    className="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
+                    className="w-full bg-gradient-to-r from-gray-900 to-gray-700 hover:from-gray-800 hover:to-gray-600 text-white font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center"
                   >
-                    <motion.div
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                      className="mr-3"
-                    >
-                      <Sparkles className="h-6 w-6" />
-                    </motion.div>
+                    <Sparkles className="h-5 w-5 mr-3" />
                     Se connecter avec Replit
-                    <LogIn className="h-5 w-5 ml-2" />
+                    <LogIn className="h-5 w-5 ml-3" />
                   </Button>
                 </motion.div>
 
-                {/* Badge sécurité */}
+                {/* Badge sécurité minimaliste */}
                 <div className="text-center">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                    <Shield className="h-4 w-4 text-emerald-300" />
-                    <span className="text-white/70 text-xs font-medium">
-                      Authentification sécurisée Replit
-                    </span>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 text-xs text-gray-500">
+                    <Shield className="h-3 w-3 text-emerald-500" />
+                    Authentification sécurisée Replit
                   </div>
                 </div>
               </div>
             </Card>
           </motion.div>
 
-          {/* Lien retour stylisé */}
+          {/* Lien retour minimaliste */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-center mt-8"
+            className="text-center mt-6"
           >
             <Button
               variant="ghost"
               onClick={() => window.location.href = '/'}
-              className="text-white/60 hover:text-white/90 hover:bg-white/5 rounded-xl transition-all duration-300"
+              className="text-gray-500 hover:text-gray-700 transition-colors text-sm"
             >
               ← Retour à l'accueil
             </Button>
