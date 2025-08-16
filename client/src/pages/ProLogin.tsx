@@ -10,7 +10,7 @@ export default function ProLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-900 via-purple-900 to-amber-900 relative overflow-hidden">
+    <div className="bg-gradient-to-br from-violet-900 via-purple-900 to-amber-900 relative overflow-hidden">
       {/* Arrière-plan animé avec particules */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 via-purple-500/10 to-amber-500/20"></div>
@@ -35,7 +35,7 @@ export default function ProLogin() {
         ))}
       </div>
 
-      <div className="relative z-10 min-h-screen flex items-center justify-center px-4">
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 pb-20">
         <div className="max-w-lg w-full">
           {/* Logo et branding Avyento */}
           <motion.div
