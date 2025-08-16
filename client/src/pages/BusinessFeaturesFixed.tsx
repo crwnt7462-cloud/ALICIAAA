@@ -153,65 +153,83 @@ export default function BusinessFeaturesFixed() {
         </motion.div>
       </div>
 
-      {/* To-do list automatique */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-          To-do List Automatique
-        </h3>
-        <div className="space-y-3">
-          {todoList.map((todo) => (
-            <div
-              key={todo.id}
-              className={`flex items-center justify-between p-3 rounded-xl ${
-                todo.completed ? 'bg-green-50 border border-green-200' : 
-                todo.urgent ? 'bg-red-50 border border-red-200' : 'bg-gray-50'
-              }`}
-            >
-              <div className="flex items-center space-x-3">
-                <div className={`w-4 h-4 rounded-full ${
-                  todo.completed ? 'bg-green-500' : 
-                  todo.urgent ? 'bg-red-500' : 'bg-gray-300'
-                }`} />
-                <span className={`text-sm ${todo.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                  {todo.task}
-                </span>
+      {/* To-do list modifiable */}
+      <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-100 to-green-200 rounded-xl flex items-center justify-center mr-3">
+                <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
-              {todo.urgent && !todo.completed && (
-                <AlertTriangle className="w-4 h-4 text-red-500" />
-              )}
-            </div>
-          ))}
+              To-do List
+            </h3>
+            <button className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+              + Ajouter
+            </button>
+          </div>
+          <div className="space-y-3">
+            {todoList.map((todo) => (
+              <div
+                key={todo.id}
+                className={`flex items-center justify-between p-3 rounded-xl transition-all ${
+                  todo.completed ? 'bg-green-50/80 border border-green-200/50' : 
+                  todo.urgent ? 'bg-red-50/80 border border-red-200/50' : 'bg-gray-50/80'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <button className={`w-4 h-4 rounded-full transition-colors ${
+                    todo.completed ? 'bg-green-500' : 
+                    todo.urgent ? 'bg-red-500' : 'bg-gray-300 hover:bg-gray-400'
+                  }`} />
+                  <span className={`text-sm ${todo.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                    {todo.task}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  {todo.urgent && !todo.completed && (
+                    <AlertTriangle className="w-4 h-4 text-red-500" />
+                  )}
+                  <button className="text-gray-400 hover:text-gray-600">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Prochains RDV du jour */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-          <Clock className="w-5 h-5 text-blue-500 mr-2" />
-          Prochains Rendez-vous du Jour
-        </h3>
-        <div className="space-y-3">
-          {[
-            { time: '14:30', client: 'Sophie Martin', service: 'Coupe + Brushing', status: 'confirmé' },
-            { time: '15:45', client: 'Marie Dubois', service: 'Couleur racines', status: 'attente' },
-            { time: '17:00', client: 'Emma Laurent', service: 'Manucure gel', status: 'confirmé' }
-          ].map((appointment, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <div className="flex items-center space-x-3">
-                <div className="text-sm font-semibold text-violet-600">{appointment.time}</div>
-                <div>
-                  <div className="text-sm font-medium text-gray-900">{appointment.client}</div>
-                  <div className="text-xs text-gray-600">{appointment.service}</div>
+      <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+        <div className="p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center mr-3">
+              <Clock className="w-5 h-5 text-blue-600" />
+            </div>
+            Prochains Rendez-vous du Jour
+          </h3>
+          <div className="space-y-3">
+            {[
+              { time: '14:30', client: 'Sophie Martin', service: 'Coupe + Brushing', status: 'confirmé' },
+              { time: '15:45', client: 'Marie Dubois', service: 'Couleur racines', status: 'attente' },
+              { time: '17:00', client: 'Emma Laurent', service: 'Manucure gel', status: 'confirmé' }
+            ].map((appointment, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50/80 rounded-xl">
+                <div className="flex items-center space-x-3">
+                  <div className="text-sm font-semibold text-purple-600">{appointment.time}</div>
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{appointment.client}</div>
+                    <div className="text-xs text-gray-600">{appointment.service}</div>
+                  </div>
+                </div>
+                <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  appointment.status === 'confirmé' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                }`}>
+                  {appointment.status}
                 </div>
               </div>
-              <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                appointment.status === 'confirmé' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
-              }`}>
-                {appointment.status}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </motion.div>
@@ -636,32 +654,15 @@ export default function BusinessFeaturesFixed() {
         {renderContent()}
       </motion.div>
 
-      {/* Footer Avyento */}
-      <motion.footer 
+      {/* Footer */}
+      <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="mt-16 border-t border-white/20 bg-white/40 backdrop-blur-sm"
+        className="text-center text-xs text-gray-500 pb-4 mt-16"
       >
-        <div className="max-w-7xl mx-auto p-6 text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-lg font-bold text-gray-900">Avyento</span>
-          </div>
-          <p className="text-sm text-gray-600 mb-4">
-            La plateforme intelligente pour les professionnels de la beauté
-          </p>
-          <div className="flex items-center justify-center space-x-6 text-xs text-gray-500">
-            <span>© 2025 Avyento</span>
-            <span>•</span>
-            <span>Support 24/7</span>
-            <span>•</span>
-            <span>Made with ❤️</span>
-          </div>
-        </div>
-      </motion.footer>
+        <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+      </motion.div>
     </motion.div>
   );
 }
