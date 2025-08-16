@@ -19,6 +19,7 @@ import {
 export default function ClientDashboard() {
   const [, setLocation] = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNotificationCenterOpen, setIsNotificationCenterOpen] = useState(false);
   
   // Données simulées pour la démo
   const userName = "Sophie";
@@ -161,8 +162,19 @@ export default function ClientDashboard() {
           <Menu className="w-6 h-6 text-gray-600" />
         </button>
         <h1 className="text-lg font-semibold text-gray-900">Dashboard</h1>
-        <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-pink-400 rounded-full flex items-center justify-center">
-          <span className="text-white font-medium text-sm">S</span>
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setIsNotificationCenterOpen(true)}
+            className="relative p-2 rounded-lg hover:bg-gray-100"
+          >
+            <Bell className="w-6 h-6 text-gray-600" />
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+              <span className="text-white text-xs font-medium">{notifications.length}</span>
+            </div>
+          </button>
+          <div className="w-10 h-10 bg-gradient-to-br from-violet-400 to-pink-400 rounded-full flex items-center justify-center">
+            <span className="text-white font-medium text-sm">S</span>
+          </div>
         </div>
       </div>
 
@@ -211,6 +223,49 @@ export default function ClientDashboard() {
         </div>
       )}
 
+      {/* Mobile Notification Center */}
+      {isNotificationCenterOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden">
+          <div className="bg-white w-full h-full p-4 flex flex-col">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Notifications</h2>
+              <button 
+                onClick={() => setIsNotificationCenterOpen(false)}
+                className="p-2 rounded-lg hover:bg-gray-100"
+              >
+                <X className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {notifications.map((notification) => (
+                <motion.div
+                  key={notification.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-xl border-l-4 ${notification.color} bg-white shadow-sm`}
+                >
+                  <div className="flex items-start space-x-3">
+                    <div className="text-2xl">{notification.icon}</div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 mb-1">{notification.title}</h3>
+                      <p className="text-sm text-gray-600 mb-2">{notification.message}</p>
+                      <span className="text-xs text-gray-400">{notification.time}</span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button className="w-full py-3 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition-colors">
+                Marquer tout comme lu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex">
         {/* Desktop Sidebar */}
         <div className="hidden lg:flex lg:w-64 bg-white shadow-sm border-r border-gray-100 h-screen sticky top-0">
@@ -245,7 +300,7 @@ export default function ClientDashboard() {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-4 lg:p-8 max-w-full">
+        <div className="flex-1 p-4 lg:p-8 max-w-full overflow-hidden">
           {/* Header with date and create button */}
           <div className="hidden lg:flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
@@ -264,9 +319,9 @@ export default function ClientDashboard() {
             </button>
           </div>
 
-          <div className="flex gap-6 h-[600px]">
+          <div className="flex flex-col lg:flex-row gap-6 h-auto lg:h-[600px]">
             {/* Conteneur principal "Salut Sophie" */}
-            <div className="flex-1" style={{
+            <div className="flex-1 h-auto lg:h-full" style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
@@ -278,24 +333,24 @@ export default function ClientDashboard() {
               overflow: 'hidden'
             }}>
               {/* Header avec titre et ours */}
-              <div className="flex items-start justify-between mb-8">
+              <div className="flex items-start justify-between mb-6 lg:mb-8">
                 <div className="flex-1">
-                  <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+                  <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
                     Salut, {userName}!
                   </h1>
-                  <p className="text-gray-600 text-lg lg:text-xl">
+                  <p className="text-gray-600 text-base lg:text-lg xl:text-xl">
                     Prête pour votre prochain moment beauté ?
                   </p>
                 </div>
                 
                 {/* Ours à droite */}
-                <div className="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full flex items-center justify-center flex-shrink-0 ml-8">
-                  <div className="text-4xl lg:text-5xl">🐻</div>
+                <div className="w-20 h-20 lg:w-24 lg:h-24 xl:w-32 xl:h-32 bg-gradient-to-br from-violet-100 to-pink-100 rounded-full flex items-center justify-center flex-shrink-0 ml-4 lg:ml-8">
+                  <div className="text-3xl lg:text-4xl xl:text-5xl">🐻</div>
                 </div>
               </div>
 
               {/* Actions rapides - Style page d'accueil */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 lg:mb-8">
                 {quickActions.map((action, index) => {
                   const Icon = action.icon;
                   return (
@@ -333,7 +388,7 @@ export default function ClientDashboard() {
                     Voir tout
                   </button>
                 </div>
-                <div className="flex-1 overflow-y-auto space-y-3 pr-2 dashboard-scroll">
+                <div className="flex-1 overflow-y-auto space-y-3 pr-2 dashboard-scroll max-h-60 lg:max-h-none">
                   {favoriteSalons.map((salon) => (
                     <motion.div
                       key={salon.id}
@@ -363,14 +418,14 @@ export default function ClientDashboard() {
               </div>
 
               {/* Section Prochains RDV */}
-              <div className="mt-6">
+              <div className="mt-4 lg:mt-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900">Prochains rendez-vous</h3>
                   <button className="text-sm text-violet-600 hover:text-violet-700 font-medium">
                     Voir tout
                   </button>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 max-h-60 overflow-y-auto lg:max-h-none">
                   {upcomingAppointments.slice(0, 3).map((appointment) => (
                     <motion.div
                       key={appointment.id}
@@ -418,8 +473,8 @@ export default function ClientDashboard() {
               </div>
             </div>
             
-            {/* Mur notifications avec hauteur identique */}
-            <div className="w-80" style={{
+            {/* Mur notifications avec hauteur identique - Desktop seulement */}
+            <div className="w-80 hidden lg:block" style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
