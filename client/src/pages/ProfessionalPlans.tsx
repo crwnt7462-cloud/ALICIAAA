@@ -156,7 +156,7 @@ export default function ProfessionalPlans() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="flex flex-col lg:flex-row justify-center gap-6 max-w-6xl mx-auto mb-16 relative">
+        <div className="flex flex-col lg:flex-row justify-center gap-12 max-w-7xl mx-auto mb-16 relative">
           {plans.map((plan, index) => (
             <Card 
               key={plan.id} 
@@ -166,10 +166,10 @@ export default function ProfessionalPlans() {
                   ? 'ring-2 ring-blue-400 shadow-2xl lg:scale-110 lg:z-10' 
                   : 'shadow-lg'
                 } 
-                ${!plan.popular && index === 0 ? 'lg:mt-8' : ''}
-                ${!plan.popular && index === 2 ? 'lg:mt-8' : ''}
+                ${!plan.popular && index === 0 ? 'lg:mt-20' : ''}
+                ${!plan.popular && index === 2 ? 'lg:mt-20' : ''}
                 rounded-3xl border-0 overflow-hidden transition-all duration-300 hover:shadow-xl
-                ${plan.popular ? 'lg:w-80 w-full' : 'lg:w-72 w-full'}
+                ${plan.popular ? 'lg:w-80 w-full' : 'lg:w-64 w-full'}
                 relative
               `}
             >
