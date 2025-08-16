@@ -78,7 +78,7 @@ export default function Dashboard() {
           {/* Navigation Icons */}
           <div className="space-y-4">
             <div 
-              onClick={() => setLocation('/dashboard-desktop')}
+              onClick={() => setLocation('/dashboard')}
               className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20 cursor-pointer"
             >
               <Home className="w-6 h-6 text-white" />

@@ -849,8 +849,8 @@ function Router() {
     );
   }
 
-  // Page Dashboard desktop - Plein écran sans contraintes
-  if (location === '/dashboard-desktop') {
+  // Page Dashboard - Plein écran sans contraintes avec glassmorphism
+  if (location === '/dashboard') {
     return <Dashboard />;
   }
 
@@ -879,8 +879,7 @@ function Router() {
       <Header />
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/dashboard" component={DashboardPeymen} />
-          <Route path="/dashboard-old" component={Dashboard} />
+          <Route path="/dashboard-old" component={DashboardPeymen} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
           {/* Planning géré séparément pour plein écran desktop */}
           <Route path="/clients" component={ClientsModern} />
