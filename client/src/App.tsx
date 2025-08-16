@@ -26,7 +26,6 @@ import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
 
 import NotFound from "@/pages/not-found";
-import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
@@ -238,7 +237,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLoginModern />
+        <ProLogin />
       </div>
     );
   }
@@ -652,7 +651,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLoginModern />
+        <ProLogin />
       </div>
     );
   }
@@ -868,7 +867,7 @@ function Router() {
   if (location === '/pro-login') {
     return (
       <div className="h-full">
-        <ProLoginModern />
+        <ProLogin />
       </div>
     );
   }
