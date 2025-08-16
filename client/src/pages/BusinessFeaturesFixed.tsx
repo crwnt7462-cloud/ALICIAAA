@@ -7,7 +7,7 @@ import {
   Copy, Mail, X, Smartphone, DollarSign, CreditCard, Receipt, FileText,
   TrendingUp, Clock, Target, Award, AlertTriangle, CheckCircle,
   UserCheck, BarChart3, PieChart, Plus, Filter, Search,
-  Home, Bell, User, ArrowUp, ArrowDown, Star, Zap, Trophy
+  Home, Bell, User, ArrowUp, ArrowDown, Star, Zap, Trophy, Sparkles
 } from 'lucide-react';
 
 export default function BusinessFeaturesFixed() {
@@ -88,36 +88,49 @@ export default function BusinessFeaturesFixed() {
 
 
   const renderOverviewTab = () => (
-    <div className="space-y-6">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-6"
+    >
       {/* Vue d'ensemble rapide */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         <motion.div 
           whileHover={{ scale: 1.02 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
+          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-3">
-            <Calendar className="w-8 h-8 text-blue-500" />
-            <span className="text-sm text-gray-500">Aujourd'hui</span>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-sm text-gray-500">Aujourd'hui</span>
+            </div>
+            <div className="text-2xl font-bold text-gray-900">{stats.todayAppointments}</div>
+            <div className="text-sm text-gray-600">Rendez-vous</div>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{stats.todayAppointments}</div>
-          <div className="text-sm text-gray-600">Rendez-vous</div>
         </motion.div>
 
         <motion.div 
           whileHover={{ scale: 1.02 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
+          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-3">
-            <DollarSign className="w-8 h-8 text-green-500" />
-            <span className="text-sm text-gray-500">CA jour</span>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
+              </div>
+              <span className="text-sm text-gray-500">CA jour</span>
+            </div>
+            <div className="text-2xl font-bold text-gray-900">{stats.todayRevenue}€</div>
+            <div className="text-sm text-gray-600">Chiffre d'affaires</div>
           </div>
-          <div className="text-2xl font-bold text-gray-900">{stats.todayRevenue}€</div>
-          <div className="text-sm text-gray-600">Chiffre d'affaires</div>
         </motion.div>
 
         <motion.div 
           whileHover={{ scale: 1.02 }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
+          className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden"
         >
           <div className="flex items-center justify-between mb-3">
             <Star className="w-8 h-8 text-yellow-500" />
@@ -201,7 +214,7 @@ export default function BusinessFeaturesFixed() {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderFinanceTab = () => (
@@ -486,51 +499,63 @@ export default function BusinessFeaturesFixed() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
-      {/* Header moderne avec navigation */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-white/20 p-4 lg:p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-xl">B</span>
-              </div>
-              <div>
-                <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  Dashboard Professionnel
-                </h1>
-                <p className="text-gray-600 text-sm">Centre de gestion et analytics avancés</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2 bg-green-100 px-3 py-2 rounded-full">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-green-700 text-sm font-medium">En ligne</span>
-              </div>
-              <button 
-                onClick={() => setLocation('/notifications')}
-                className="relative p-2 bg-white/50 rounded-xl hover:bg-white/80 transition-colors"
-              >
-                <Bell className="w-5 h-5 text-gray-600" />
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xs">3</span>
-                </div>
-              </button>
-            </div>
-          </div>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30"
+    >
+      {/* Hero Section avec logo Avyento */}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="text-center space-y-6 p-4 pt-8 lg:pt-12"
+      >
+        <div className="w-16 h-16 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
+          <BarChart3 className="w-8 h-8 text-white" />
+        </div>
+        
+        <div className="lg:hidden">
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-2">
+            Business Hub
+          </h1>
+          <p className="text-gray-600 text-sm leading-relaxed">
+            Centre de gestion professionnel avec analytics avancés
+          </p>
+        </div>
 
-          {/* Navigation par onglets - Desktop */}
-          <div className="hidden lg:flex space-x-1 bg-gray-100 p-1 rounded-xl">
+        <div className="hidden lg:block">
+          <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">
+            Dashboard Professionnel Avyento
+          </h1>
+          <p className="text-gray-600 text-lg leading-relaxed max-w-2xl mx-auto">
+            Centre de gestion et analytics avancés pour optimiser votre salon de beauté
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center space-x-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star key={star} className="w-4 h-4 text-yellow-400 fill-current" />
+          ))}
+          <span className="text-sm text-gray-600 ml-2">Solution Business Pro</span>
+        </div>
+      </motion.div>
+
+      {/* Navigation par onglets - Desktop */}
+      <div className="hidden lg:block sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-white/20 p-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex space-x-1 bg-white/60 backdrop-blur-sm p-1 rounded-xl border border-white/30 shadow-sm">
             {navigationTabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
                     activeTab === tab.id
-                      ? 'bg-white text-violet-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'gradient-bg text-white shadow-md'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -539,27 +564,104 @@ export default function BusinessFeaturesFixed() {
               );
             })}
           </div>
-
-          {/* Navigation mobile - Dropdown */}
-          <div className="lg:hidden">
-            <select 
-              value={activeTab} 
-              onChange={(e) => setActiveTab(e.target.value)}
-              className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm font-medium"
-            >
-              {navigationTabs.map((tab) => (
-                <option key={tab.id} value={tab.id}>{tab.label}</option>
-              ))}
-            </select>
-          </div>
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto p-4 lg:p-6 pb-24 lg:pb-6">
-        {renderContent()}
+      {/* Navigation mobile - Cards */}
+      <div className="lg:hidden p-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid grid-cols-2 gap-3 mb-6"
+        >
+          {navigationTabs.slice(0, 4).map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`p-4 rounded-xl border-0 shadow-md backdrop-blur-sm overflow-hidden transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'gradient-bg text-white transform scale-105'
+                    : 'bg-white/80 text-gray-700 hover:scale-105'
+                }`}
+              >
+                <div className="text-center">
+                  <Icon className={`w-6 h-6 mx-auto mb-2 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} />
+                  <span className="text-xs font-medium">{tab.label}</span>
+                </div>
+              </button>
+            );
+          })}
+        </motion.div>
+        
+        {navigationTabs.length > 4 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="grid grid-cols-3 gap-3 mb-6"
+          >
+            {navigationTabs.slice(4).map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`p-3 rounded-xl border-0 shadow-md backdrop-blur-sm overflow-hidden transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'gradient-bg text-white transform scale-105'
+                      : 'bg-white/80 text-gray-700 hover:scale-105'
+                  }`}
+                >
+                  <div className="text-center">
+                    <Icon className={`w-5 h-5 mx-auto mb-1 ${activeTab === tab.id ? 'text-white' : 'text-gray-600'}`} />
+                    <span className="text-xs font-medium">{tab.label}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
 
-    </div>
+      {/* Contenu principal */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
+        className="max-w-7xl mx-auto p-4 lg:p-6 pb-24 lg:pb-6"
+      >
+        {renderContent()}
+      </motion.div>
+
+      {/* Footer Avyento */}
+      <motion.footer 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="mt-16 border-t border-white/20 bg-white/40 backdrop-blur-sm"
+      >
+        <div className="max-w-7xl mx-auto p-6 text-center">
+          <div className="flex items-center justify-center space-x-2 mb-4">
+            <div className="w-8 h-8 gradient-bg rounded-lg flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold text-gray-900">Avyento</span>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            La plateforme intelligente pour les professionnels de la beauté
+          </p>
+          <div className="flex items-center justify-center space-x-6 text-xs text-gray-500">
+            <span>© 2025 Avyento</span>
+            <span>•</span>
+            <span>Support 24/7</span>
+            <span>•</span>
+            <span>Made with ❤️</span>
+          </div>
+        </div>
+      </motion.footer>
+    </motion.div>
   );
 }
