@@ -199,7 +199,7 @@ export default function ProfessionalPlans() {
                 Le plus populaire
               </Badge>
             </div>
-            <Card className="bg-gradient-to-br from-blue-500 to-purple-600 shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
+            <Card className="bg-gradient-to-br from-violet-600 to-pink-600 shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
               <CardContent className="p-10 text-center">
                 <div className="text-white mb-6 pt-6">
                   <div className="flex items-baseline justify-center mb-2">
@@ -213,7 +213,7 @@ export default function ProfessionalPlans() {
                   Professionnel
                 </h3>
                 
-                <p className="text-blue-100 text-sm mb-8">
+                <p className="text-violet-100 text-sm mb-8">
                   Le plus populaire
                 </p>
                 
