@@ -397,18 +397,49 @@ export class DatabaseStorage implements IStorage {
     console.log(`📊 Récupération stats dashboard pour: ${userId}`);
     
     try {
-      // Compter les vrais clients pour ce professionnel 
+      // Compter les vrais clients pour ce professionnel depuis clientAccounts
       const clientResults = await db.select({ count: sql<number>`count(*)` })
         .from(clientAccounts);
       const totalClients = clientResults[0]?.count || 0;
       
-      // Données dashboard simulées (en attendant la configuration complète des schémas)
-      const monthlyRevenue = 1250; // Simulation : 1250€ ce mois
-      const appointmentsToday = 5; // Simulation : 5 RDV aujourd'hui  
-      const satisfactionRate = 92; // Simulation : 92% de satisfaction
+      // Calculer les revenus réels du mois depuis les appointments
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth() + 1;
+      
+      const revenueResults = await db.select({ 
+        revenue: sql<number>`COALESCE(SUM(CAST(total_price AS NUMERIC)), 0)` 
+      })
+        .from(appointments)
+        .where(and(
+          eq(appointments.userId, userId),
+          sql`EXTRACT(YEAR FROM date) = ${currentYear}`,
+          sql`EXTRACT(MONTH FROM date) = ${currentMonth}`,
+          eq(appointments.status, 'completed')
+        ));
+      const monthlyRevenue = Number(revenueResults[0]?.revenue || 0);
+      
+      // Compter les vrais RDV d'aujourd'hui
+      const today = new Date().toISOString().split('T')[0];
+      const appointmentResults = await db.select({ count: sql<number>`count(*)` })
+        .from(appointments)
+        .where(and(
+          eq(appointments.userId, userId),
+          sql`date = ${today}`
+        ));
+      const appointmentsToday = appointmentResults[0]?.count || 0;
+      
+      // Calculer la satisfaction réelle depuis les reviews
+      const ratingResults = await db.select({ 
+        avgRating: sql<number>`COALESCE(AVG(CAST(rating AS NUMERIC)), 0)` 
+      })
+        .from(reviews)
+        .innerJoin(appointments, eq(reviews.appointmentId, appointments.id))
+        .where(eq(appointments.userId, userId));
+      const satisfactionRate = Math.round((Number(ratingResults[0]?.avgRating || 0)) * 20);
       
       const stats = {
-        totalClients: totalClients,
+        totalClients,
         monthlyRevenue,
         appointmentsToday,
         satisfactionRate
@@ -418,7 +449,6 @@ export class DatabaseStorage implements IStorage {
       return stats;
     } catch (error) {
       console.error("❌ Erreur récupération stats dashboard:", error);
-      // Retourner stats par défaut en cas d'erreur
       return {
         totalClients: 0,
         monthlyRevenue: 0,
@@ -433,14 +463,20 @@ export class DatabaseStorage implements IStorage {
     console.log(`🔥 Récupération services populaires pour: ${userId}`);
     
     try {
-      // Simulation de services populaires
-      const popularServices = [
-        { serviceName: 'Coupe & Couleur', bookingCount: 15, category: 'Coiffure', servicePrice: 65 },
-        { serviceName: 'Soin Visage', bookingCount: 12, category: 'Esthétique', servicePrice: 80 },
-        { serviceName: 'Manucure', bookingCount: 8, category: 'Beauté', servicePrice: 35 }
-      ];
+      const popularServices = await db.select({
+        serviceName: services.name,
+        servicePrice: services.price,
+        bookingCount: sql<number>`COUNT(${appointments.id})`,
+        category: services.category
+      })
+        .from(services)
+        .leftJoin(appointments, eq(appointments.serviceId, services.id))
+        .where(eq(services.userId, userId))
+        .groupBy(services.id, services.name, services.price, services.category)
+        .orderBy(sql`COUNT(${appointments.id}) DESC`)
+        .limit(5);
 
-      console.log(`🔥 Services populaires simulés: ${popularServices.length}`);
+      console.log(`🔥 Services populaires trouvés: ${popularServices.length}`);
       return popularServices;
     } catch (error) {
       console.error("❌ Erreur récupération services populaires:", error);
@@ -453,16 +489,24 @@ export class DatabaseStorage implements IStorage {
     console.log(`📅 Récupération RDV aujourd'hui pour: ${userId}`);
     
     try {
-      // Simulation RDV d'aujourd'hui
-      const todayAppointments = [
-        { id: 1, clientName: 'Sophie Martin', serviceName: 'Coupe & Brushing', time: '10:30', status: 'confirmed', totalPrice: 45 },
-        { id: 2, clientName: 'Marie Dubois', serviceName: 'Couleur', time: '14:00', status: 'confirmed', totalPrice: 85 },
-        { id: 3, clientName: 'Julie Leroy', serviceName: 'Manucure', time: '15:30', status: 'confirmed', totalPrice: 35 },
-        { id: 4, clientName: 'Emma Rousseau', serviceName: 'Soin Visage', time: '16:45', status: 'pending', totalPrice: 75 },
-        { id: 5, clientName: 'Laura Bernard', serviceName: 'Balayage', time: '17:15', status: 'confirmed', totalPrice: 95 }
-      ];
+      const today = new Date().toISOString().split('T')[0];
+      const todayAppointments = await db.select({
+        id: appointments.id,
+        clientName: appointments.clientName,
+        serviceName: services.name,
+        time: appointments.time,
+        status: appointments.status,
+        totalPrice: appointments.totalPrice
+      })
+        .from(appointments)
+        .leftJoin(services, eq(appointments.serviceId, services.id))
+        .where(and(
+          eq(appointments.userId, userId),
+          sql`date = ${today}`
+        ))
+        .orderBy(appointments.time);
 
-      console.log(`📅 RDV aujourd'hui simulés: ${todayAppointments.length}`);
+      console.log(`📅 RDV aujourd'hui trouvés: ${todayAppointments.length}`);
       return todayAppointments;
     } catch (error) {
       console.error("❌ Erreur récupération RDV aujourd'hui:", error);
@@ -475,9 +519,16 @@ export class DatabaseStorage implements IStorage {
     console.log(`🆕 Récupération nouveaux clients semaine pour: ${userId}`);
     
     try {
-      // Simulation nouveaux clients de la semaine
-      const newClientsCount = 3;
-      console.log(`🆕 Nouveaux clients cette semaine simulés: ${newClientsCount}`);
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const oneWeekAgoStr = oneWeekAgo.toISOString();
+      
+      const newClientsResults = await db.select({ count: sql<number>`count(*)` })
+        .from(clientAccounts)
+        .where(sql`created_at >= ${oneWeekAgoStr}`);
+      
+      const newClientsCount = newClientsResults[0]?.count || 0;
+      console.log(`🆕 Nouveaux clients cette semaine: ${newClientsCount}`);
       return newClientsCount;
     } catch (error) {
       console.error("❌ Erreur récupération nouveaux clients:", error);
