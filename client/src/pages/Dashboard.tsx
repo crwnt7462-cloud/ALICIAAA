@@ -141,73 +141,58 @@ export default function Dashboard() {
                 border: '1px solid rgba(255, 255, 255, 0.18)',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
               }}>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
-                  <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                    <span className="text-sm">Mensuel</span>
-                    <ChevronDown className="w-4 h-4" />
+                {/* Header avec période */}
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-sm text-gray-500 font-medium">Revenus - Cette Semaine</span>
+                  <div className="flex items-center space-x-3 text-xs text-gray-400">
+                    <span>Day</span>
+                    <span className="font-semibold text-gray-900">Week</span>
+                    <span>Month</span>
+                    <span>Year</span>
                   </div>
                 </div>
                 
-                {/* Graph Wave avec cercle central */}
-                <div className="relative mb-4 h-20">
-                  <svg width="100%" height="80" viewBox="0 0 400 80" className="opacity-40">
+                {/* Montant principal */}
+                <div className="mb-8">
+                  <h2 className="text-4xl font-bold text-gray-900 mb-1">$234.2</h2>
+                </div>
+                
+                {/* Graphique en ligne */}
+                <div className="h-24 mb-6 relative">
+                  <svg className="w-full h-full" viewBox="0 0 300 80">
                     <path
-                      d="M0,60 Q100,30 200,45 T400,25"
-                      stroke="rgba(255,255,255,0.6)"
+                      d="M10,60 Q30,40 50,45 T90,35 Q110,25 130,30 T170,20 Q190,15 210,25 T250,30 Q270,35 290,25"
+                      fill="none"
+                      stroke="#374151"
                       strokeWidth="2"
-                      fill="none"
+                      className="drop-shadow-sm"
                     />
-                    <path
-                      d="M0,40 Q100,10 200,25 T400,5"
-                      stroke="rgba(255,182,193,1)"
-                      strokeWidth="2.5"
-                      fill="none"
-                    />
+                    {/* Points sur la courbe */}
+                    <circle cx="50" cy="45" r="3" fill="#374151" />
+                    <circle cx="90" cy="35" r="3" fill="#374151" />
+                    <circle cx="130" cy="30" r="3" fill="#374151" />
+                    <circle cx="170" cy="20" r="3" fill="#374151" />
+                    <circle cx="210" cy="25" r="3" fill="#374151" />
+                    <circle cx="250" cy="30" r="3" fill="#374151" />
                   </svg>
-                  
-                  {/* Cercle central avec CA */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                      <div className="text-center">
-                        <div className="text-lg font-bold">{stats?.monthlyRevenue || 0}€</div>
-                        <div className="text-xs opacity-75">CA</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 
-                {/* Mois */}
-                <div className="flex justify-between text-xs mb-4 opacity-75 px-2">
-                  <span>Jan</span>
-                  <span>Fév</span>
-                  <span>Mar</span>
-                  <span className="bg-white/20 px-2 py-0.5 rounded text-white">Août</span>
-                  <span>Sep</span>
-                  <span>Oct</span>
-                  <span>Nov</span>
-                  <span>Déc</span>
+                {/* Jours de la semaine */}
+                <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
+                  <span>Mon</span>
+                  <span>Tue</span>
+                  <span>Wed</span>
+                  <span>Thu</span>
+                  <span>Fri</span>
+                  <span>Sat</span>
+                  <span>Sun</span>
                 </div>
                 
-                {/* Stats en bas */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">Clients Total</div>
-                    <div className="text-lg font-bold">{stats?.totalClients || 0}</div>
-                    <div className="text-xs opacity-75">Août</div>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">RDV Aujourd'hui</div>
-                    <div className="text-lg font-bold">{stats?.appointmentsToday || 0}</div>
-                    <div className="text-xs opacity-75">Août</div>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">Satisfaction</div>
-                    <div className="text-lg font-bold">{stats?.satisfactionRate || 95}%</div>
-                    <div className="text-xs opacity-75">Août</div>
-                  </div>
+                {/* Bouton View */}
+                <div className="absolute bottom-6 right-6">
+                  <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
+                    View
+                  </button>
                 </div>
               </div>
               
