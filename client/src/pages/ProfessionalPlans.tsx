@@ -542,16 +542,16 @@ export default function ProfessionalPlans() {
       <section className="py-20 bg-white relative overflow-hidden">
         {/* Émojis flottants dans bulles pastelles */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-12 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-12">
+          <div className="absolute top-12 left-16 w-12 h-12 rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/30 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-12" style={{ animationDelay: '0.5s', animationDuration: '4s' }}>
             <span className="text-lg">⚡</span>
           </div>
           <div className="absolute top-32 right-24 w-12 h-12 rounded-full bg-gradient-to-br from-pink-200/35 to-rose-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-6" style={{ animationDelay: '2s', animationDuration: '3s' }}>
             <span className="text-lg">💡</span>
           </div>
-          <div className="absolute bottom-32 left-12 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-pulse transform rotate-45" style={{ animationDelay: '4s' }}>
+          <div className="absolute bottom-32 left-12 w-12 h-12 rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/30 backdrop-blur-sm flex items-center justify-center animate-bounce transform rotate-45" style={{ animationDelay: '1.5s', animationDuration: '2.5s' }}>
             <span className="text-lg">❓</span>
           </div>
-          <div className="absolute bottom-16 right-16 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-12" style={{ animationDelay: '6s', animationDuration: '4s' }}>
+          <div className="absolute bottom-16 right-16 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-200/35 to-green-300/25 backdrop-blur-sm flex items-center justify-center animate-bounce transform -rotate-12" style={{ animationDelay: '3s', animationDuration: '4s' }}>
             <span className="text-lg">🔧</span>
           </div>
         </div>
