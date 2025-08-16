@@ -21,8 +21,8 @@ export default function ProLoginModern() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8">
-        {/* Container principal centré avec max-width */}
-        <div className="max-w-6xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
+        {/* Container principal centré réduit de moitié */}
+        <div className="max-w-3xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
@@ -39,7 +39,7 @@ export default function ProLoginModern() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5"></div>
             
             <div className="relative z-10 flex flex-col justify-center p-12 text-white">
-              {/* Titre principal Avyento */}
+              {/* Titre principal Avyento - couleurs inspirées de /home */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -47,91 +47,76 @@ export default function ProLoginModern() {
                 className="mb-12"
               >
                 <h1 className="text-4xl font-bold leading-tight mb-4">
-                  <span className="bg-gradient-to-r from-white via-violet-200 to-amber-200 bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-violet-300 via-purple-300 to-violet-200 bg-clip-text text-transparent">
                     Révolutionnez.</span><br />
-                  <span className="bg-gradient-to-r from-amber-200 via-violet-200 to-white bg-clip-text text-transparent">
+                  <span className="bg-gradient-to-r from-purple-300 via-violet-300 to-purple-200 bg-clip-text text-transparent">
                     Optimisez Tout.</span>
                 </h1>
               </motion.div>
 
-              {/* Features list Avyento */}
+              {/* Features list Avyento centrées */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="space-y-6"
+                className="space-y-6 flex flex-col items-center text-center"
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center flex-shrink-0" style={{
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                  }}>
-                    <Calendar className="w-6 h-6 text-white" />
+                <div className="max-w-sm">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center" style={{
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      <Calendar className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white text-lg mb-2">Optimisation Planning IA</h3>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      IA avancée pour maximiser vos revenus et minimiser<br />
-                      les créneaux vides automatiquement. Prédictions<br />
-                      intelligentes pour votre salon.
-                    </p>
-                  </div>
+                  <h3 className="font-semibold text-white text-lg mb-2">Optimisation Planning IA</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    IA avancée pour maximiser vos revenus et minimiser
+                    les créneaux vides automatiquement. Prédictions
+                    intelligentes pour votre salon.
+                  </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center flex-shrink-0" style={{
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                  }}>
-                    <BarChart3 className="w-6 h-6 text-white" />
+                <div className="max-w-sm">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center" style={{
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      <BarChart3 className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white text-lg mb-2">Analytics Prédictives</h3>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      Anticipez les tendances clients et optimisez vos<br />
-                      stocks avec machine learning. Tableaux de bord<br />
-                      temps réel pour décisions stratégiques.
-                    </p>
-                  </div>
+                  <h3 className="font-semibold text-white text-lg mb-2">Analytics Prédictives</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    Anticipez les tendances clients et optimisez vos
+                    stocks avec machine learning. Tableaux de bord
+                    temps réel pour décisions stratégiques.
+                  </p>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center flex-shrink-0" style={{
-                    backdropFilter: 'blur(10px)',
-                    WebkitBackdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                  }}>
-                    <Users className="w-6 h-6 text-white" />
+                <div className="max-w-sm">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center" style={{
+                      backdropFilter: 'blur(10px)',
+                      WebkitBackdropFilter: 'blur(10px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      <Users className="w-6 h-6 text-white" />
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white text-lg mb-2">Gestion Clientèle IA</h3>
-                    <p className="text-white/80 text-sm leading-relaxed">
-                      Recommandations personnalisées et fidélisation<br />
-                      automatique powered by AI. CRM intelligent<br />
-                      pour relations clients optimales.
-                    </p>
-                  </div>
+                  <h3 className="font-semibold text-white text-lg mb-2">Gestion Clientèle IA</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    Recommandations personnalisées et fidélisation
+                    automatique powered by AI. CRM intelligent
+                    pour relations clients optimales.
+                  </p>
                 </div>
               </motion.div>
 
-              {/* Logo Avyento en bas */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="mt-12 flex items-center gap-3"
-              >
-                <div className="w-10 h-10 bg-gradient-to-br from-white/30 to-white/20 rounded-xl flex items-center justify-center" style={{
-                  backdropFilter: 'blur(10px)',
-                  WebkitBackdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)'
-                }}>
-                  <Crown className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold text-white">Avyento Pro</span>
-              </motion.div>
+
             </div>
           </div>
 
@@ -146,18 +131,16 @@ export default function ProLoginModern() {
               {/* Formulaire glassmorphism */}
               <div className="p-8">
                 <div className="text-center mb-8">
-                  {/* Logo Avyento Pro */}
+                  {/* Logo Avyento Pro agrandi à 40px */}
                   <div className="mb-6">
                     <img 
                       src={avyentoProLogo} 
                       alt="Avyento Pro" 
-                      className="h-12 mx-auto"
+                      className="mx-auto"
+                      style={{ height: '40px' }}
                     />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Créez votre compte.</h2>
-                  <p className="text-gray-600 text-sm">
-                    Vous avez déjà un compte ? <button className="text-violet-600 hover:text-violet-700 font-medium">Se connecter</button>
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Connexion à votre compte</h2>
                 </div>
 
                 {/* Formulaire */}
