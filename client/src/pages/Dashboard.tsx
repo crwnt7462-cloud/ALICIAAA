@@ -126,109 +126,107 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Grille principale */}
-          <div className="grid grid-cols-2 gap-6">
-            {/* Overview Card - Grande carte à gauche */}
-            <div className="col-span-1">
-              <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-6 text-white relative overflow-hidden">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold">Overview</h2>
-                  <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1">
-                    <span className="text-sm">{selectedPeriod}</span>
-                    <ChevronDown className="w-4 h-4" />
-                  </div>
+          {/* Layout principal en 2 colonnes */}
+          <div className="grid grid-cols-2 gap-6 h-96">
+            {/* Grande carte Overview à gauche */}
+            <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-6 text-white relative overflow-hidden">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Overview</h2>
+                <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                  <span className="text-sm">{selectedPeriod}</span>
+                  <ChevronDown className="w-4 h-4" />
                 </div>
+              </div>
+              
+              {/* Graph Wave avec cercle central */}
+              <div className="relative mb-4 h-20">
+                <svg width="100%" height="80" viewBox="0 0 400 80" className="opacity-40">
+                  <path
+                    d="M0,60 Q100,30 200,45 T400,25"
+                    stroke="rgba(255,255,255,0.6)"
+                    strokeWidth="2"
+                    fill="none"
+                  />
+                  <path
+                    d="M0,40 Q100,10 200,25 T400,5"
+                    stroke="rgba(255,182,193,1)"
+                    strokeWidth="2.5"
+                    fill="none"
+                  />
+                </svg>
                 
-                {/* Graph Wave */}
-                <div className="relative mb-6">
-                  <svg width="100%" height="80" viewBox="0 0 400 80" className="opacity-50">
-                    <path
-                      d="M0,60 Q50,30 100,45 T200,35 T300,50 T400,25"
-                      stroke="rgba(255,255,255,0.6)"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                    <path
-                      d="M0,40 Q50,10 100,25 T200,15 T300,30 T400,5"
-                      stroke="rgba(255,182,193,0.8)"
-                      strokeWidth="2"
-                      fill="none"
-                    />
-                  </svg>
-                  
-                  {/* Central circle with steps */}
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                      <div className="text-center">
-                        <div className="text-lg font-bold">9.178</div>
-                        <div className="text-xs opacity-75">Steps</div>
-                      </div>
+                {/* Cercle central avec steps */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                    <div className="text-center">
+                      <div className="text-lg font-bold">9.178</div>
+                      <div className="text-xs opacity-75">Steps</div>
                     </div>
                   </div>
                 </div>
-                
-                {/* Mois */}
-                <div className="flex justify-between text-xs mb-6 opacity-75">
-                  <span>Jan</span>
-                  <span>Feb</span>
-                  <span>Mar</span>
-                  <span className="bg-white/20 px-2 py-1 rounded">Apr</span>
-                  <span>May</span>
-                  <span>Jun</span>
-                  <span>Jul</span>
-                  <span>Aug</span>
-                  <span>Sep</span>
-                  <span>Oct</span>
+              </div>
+              
+              {/* Mois */}
+              <div className="flex justify-between text-xs mb-4 opacity-75 px-2">
+                <span>Jan</span>
+                <span>Feb</span>
+                <span>Mar</span>
+                <span className="bg-white/20 px-2 py-0.5 rounded text-white">Apr</span>
+                <span>May</span>
+                <span>Jun</span>
+                <span>Jul</span>
+                <span>Aug</span>
+                <span>Sep</span>
+                <span>Oct</span>
+              </div>
+              
+              {/* Stats en bas */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
+                  <div className="text-xs opacity-75 mb-1">Total Time</div>
+                  <div className="text-lg font-bold">748 Hr</div>
+                  <div className="text-xs opacity-75">April</div>
                 </div>
                 
-                {/* Stats en bas */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">Total Time</div>
-                    <div className="text-xl font-bold">748 Hr</div>
-                    <div className="text-xs opacity-75">April</div>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">Total Steps</div>
-                    <div className="text-xl font-bold">9.178 St</div>
-                    <div className="text-xs opacity-75">April</div>
-                  </div>
-                  
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-                    <div className="text-xs opacity-75 mb-1">Target</div>
-                    <div className="text-xl font-bold">9.200 St</div>
-                    <div className="text-xs opacity-75">April</div>
-                  </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
+                  <div className="text-xs opacity-75 mb-1">Total Steps</div>
+                  <div className="text-lg font-bold">9.178 St</div>
+                  <div className="text-xs opacity-75">April</div>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20">
+                  <div className="text-xs opacity-75 mb-1">Target</div>
+                  <div className="text-lg font-bold">9.200 St</div>
+                  <div className="text-xs opacity-75">April</div>
                 </div>
               </div>
             </div>
             
-            {/* Cartes de droite */}
-            <div className="space-y-6">
+            {/* Colonne droite avec 2 cartes empilées */}
+            <div className="flex flex-col gap-4">
               {/* Daily Jogging */}
-              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white relative overflow-hidden">
-                <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
+                <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                     <Activity className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Daily Jogging</h3>
+                    <h3 className="font-semibold text-lg">Daily Jogging</h3>
                   </div>
                 </div>
               </div>
               
               {/* My Jogging */}
-              <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 text-white relative overflow-hidden">
+              <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                       <Activity className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-semibold">My Jogging</h3>
+                      <h3 className="font-semibold text-lg">My Jogging</h3>
                       <p className="text-sm opacity-75">Goal: 10k</p>
-                      <p className="text-2xl font-bold mt-2">748 hr</p>
+                      <p className="text-2xl font-bold mt-1">748 hr</p>
                       <p className="text-xs opacity-75">July</p>
                     </div>
                   </div>
