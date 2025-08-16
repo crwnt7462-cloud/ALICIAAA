@@ -13,110 +13,101 @@ export default function ProLoginModern() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50/30 relative overflow-hidden">
-      {/* Background avec effet glassmorphism subtil */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-96 h-96 bg-gradient-to-br from-violet-200/30 to-purple-300/20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-gradient-to-br from-purple-200/25 to-violet-300/15 rounded-full blur-3xl"></div>
-      </div>
-
+    <div className="min-h-screen bg-white relative overflow-hidden">
       <div className="relative z-10 min-h-screen flex">
-        {/* Côté gauche - Branding et features */}
-        <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-12">
-          <div className="max-w-md">
-            {/* Logo Avyento Pro agrandi à 40px */}
+        {/* Côté gauche - Gradient sombre avec features exactement comme l'image */}
+        <div className="hidden lg:flex lg:w-1/2 relative">
+          {/* Gradient background exactement comme l'image */}
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-700 to-emerald-400 opacity-90"></div>
+          
+          <div className="relative z-10 flex flex-col justify-center p-12 text-white">
+            {/* Titre principal */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="mb-8"
+              className="mb-16"
             >
-              <h1 className="font-bold mb-4" style={{ fontSize: '40px', lineHeight: '1.2' }}>
-                <span className="bg-gradient-to-r from-gray-900 via-violet-600 to-purple-700 bg-clip-text text-transparent">
-                  Révolutionnez.</span><br />
-                <span className="bg-gradient-to-r from-violet-600 via-purple-700 to-gray-900 bg-clip-text text-transparent">
-                  Optimisez Tout.</span>
+              <h1 className="text-5xl font-bold leading-tight mb-4">
+                Move Fast.<br />
+                Break Nothing.
               </h1>
             </motion.div>
 
-            {/* Features list */}
+            {/* Features list avec icônes et texte de l'image */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="space-y-6"
+              className="space-y-8"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-6 h-6 text-violet-600" />
+                <div className="w-12 h-12 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-6 bg-white rounded-sm flex items-center justify-center">
+                    <div className="w-2 h-4 bg-indigo-600 rounded-sm"></div>
+                    <div className="w-2 h-4 bg-indigo-600 rounded-sm ml-1"></div>
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Optimisation Planning</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    IA avancée pour maximiser vos revenus et minimiser les créneaux vides automatiquement.
+                  <h3 className="font-semibold text-white text-lg mb-2">Remove Bottlenecks</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    Review, testing and approvals are the most common<br />
+                    bottleneck for tech, but you can now remove that<br />
+                    bottleneck with HipHops.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/10 to-violet-500/10 flex items-center justify-center flex-shrink-0">
-                  <BarChart3 className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-6 h-4 bg-white rounded-sm flex items-center justify-center">
+                    <div className="w-4 h-2 bg-indigo-600 rounded-sm"></div>
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Analytics Prédictives</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Anticipez les tendances clients et optimisez vos stocks avec machine learning.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 flex items-center justify-center flex-shrink-0">
-                  <Users className="w-6 h-6 text-violet-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Gestion Clientèle IA</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Recommandations personnalisées et fidélisation automatique powered by AI.
+                  <h3 className="font-semibold text-white text-lg mb-2">Access Risk Analysis</h3>
+                  <p className="text-white/80 text-sm leading-relaxed">
+                    We use machine learning and static analysis to<br />
+                    assess risk, summarize code changes, and automate<br />
+                    and delegate release management tasks. Integrate<br />
+                    with a couple of clicks.
                   </p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Logo Avyento en bas */}
+            {/* Logo HipHops en bas */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              className="mt-12 flex items-center gap-3"
+              className="mt-16 flex items-center gap-3"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-purple-700 rounded-lg flex items-center justify-center">
-                <Crown className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
+                  <div className="w-2 h-2 bg-indigo-600 rounded-sm"></div>
+                  <div className="w-2 h-2 bg-indigo-600 rounded-sm ml-0.5"></div>
+                </div>
               </div>
-              <span className="text-xl font-bold text-gray-900">Avyento</span>
+              <span className="text-xl font-bold text-white">Avyento</span>
             </motion.div>
           </div>
         </div>
 
-        {/* Côté droit - Formulaire de connexion */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        {/* Côté droit - Formulaire blanc exactement comme l'image */}
+        <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-6 lg:p-12">
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="w-full max-w-md"
+            className="w-full max-w-sm"
           >
-            {/* Card glassmorphism */}
-            <Card className="p-8 border-0 shadow-2xl" style={{
-              background: 'rgba(255, 255, 255, 0.9)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}>
+            {/* Formulaire blanc sans card */}
+            <div className="bg-white p-8">
               <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Créez votre compte.</h2>
-                <p className="text-gray-600">
-                  Vous avez déjà un compte ? <button className="text-violet-600 hover:text-violet-700 font-medium">Se connecter</button>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Create an account.</h2>
+                <p className="text-gray-500 text-sm">
+                  Already have an account? <button className="text-indigo-600 hover:text-indigo-700 font-medium">Sign in</button>
                 </p>
               </div>
 
@@ -126,14 +117,14 @@ export default function ProLoginModern() {
                   <input
                     type="email"
                     placeholder="Email"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all duration-200 bg-white/50"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all duration-200 bg-white"
                   />
                 </div>
                 <div>
                   <input
                     type="password"
-                    placeholder="Mot de passe"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all duration-200 bg-white/50"
+                    placeholder="Password"
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all duration-200 bg-white"
                   />
                 </div>
               </div>
@@ -141,42 +132,35 @@ export default function ProLoginModern() {
               {/* Acceptation des conditions */}
               <div className="text-center mb-6">
                 <p className="text-xs text-gray-500">
-                  En vous inscrivant, vous acceptez nos <span className="text-violet-600">Conditions d'utilisation</span> et notre <span className="text-violet-600">Politique de confidentialité</span>.
+                  By signing up you agree to our <span className="text-indigo-600">Terms of Use</span> and <span className="text-indigo-600">Privacy Policy</span>.
                 </p>
               </div>
 
-              {/* Bouton principal */}
+              {/* Bouton principal vert */}
               <Button
                 onClick={handleLogin}
-                className="w-full py-3 bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 mb-4"
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 mb-4"
               >
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="mr-3"
-                >
-                  <Sparkles className="h-5 w-5" />
-                </motion.div>
-                Commencer avec Replit
+                Sign Up
               </Button>
 
               {/* Divider */}
               <div className="text-center mb-4">
-                <span className="text-sm text-gray-500">ou s'inscrire avec</span>
+                <span className="text-sm text-gray-500">or sign up with</span>
               </div>
 
-              {/* Boutons sociaux */}
+              {/* Boutons sociaux - exactement comme l'image */}
               <div className="flex gap-3">
                 <Button
                   variant="outline"
-                  className="flex-1 py-3 rounded-xl border-gray-200 hover:bg-gray-50 transition-all duration-200"
+                  className="flex-1 py-3 rounded-lg border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center justify-center"
                 >
                   <Github className="w-5 h-5 mr-2" />
                   GitHub
                 </Button>
                 <Button
                   variant="outline"
-                  className="flex-1 py-3 rounded-xl border-gray-200 hover:bg-gray-50 transition-all duration-200"
+                  className="flex-1 py-3 rounded-lg border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center justify-center"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -187,7 +171,7 @@ export default function ProLoginModern() {
                   Google
                 </Button>
               </div>
-            </Card>
+            </div>
 
             {/* Lien retour */}
             <div className="text-center mt-6">
