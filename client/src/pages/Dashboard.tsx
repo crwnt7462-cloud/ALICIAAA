@@ -62,8 +62,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 w-full">
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar violette */}
-        <div className="w-20 bg-gradient-to-b from-purple-600 via-purple-600 to-purple-700 flex flex-col items-center py-6 shadow-xl">
+        {/* Sidebar Avyento */}
+        <div className="w-20 bg-gradient-to-b from-violet-600 via-violet-600 to-violet-700 flex flex-col items-center py-6 shadow-xl">
           {/* Logo */}
           <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/20">
             <Bell className="w-6 h-6 text-white" />
@@ -130,7 +130,7 @@ export default function Dashboard() {
             {/* Layout principal en 2 colonnes - Dimensions exactes */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="bg-gradient-to-br from-purple-600 to-purple-700 rounded-3xl p-6 text-white relative overflow-hidden h-80">
+              <div className="bg-gradient-to-br from-violet-600 to-amber-500 rounded-3xl p-6 text-white relative overflow-hidden h-80">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
                   <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5">
@@ -204,7 +204,7 @@ export default function Dashboard() {
               {/* Colonne droite avec 2 cartes empilées */}
               <div className="flex flex-col gap-4 h-80">
                 {/* Services Populaires */}
-                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-violet-500 to-violet-600 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
                       <Calendar className="w-6 h-6" />
@@ -217,7 +217,7 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="bg-gradient-to-br from-pink-400 to-pink-500 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
+                <div className="bg-gradient-to-br from-amber-400 to-amber-500 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
@@ -239,8 +239,8 @@ export default function Dashboard() {
           {/* Cartes Gestion Salon */}
           <div className="grid grid-cols-3 gap-6 mt-8">
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-2xl mb-4">
-                <Users className="w-6 h-6 text-purple-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-violet-100 rounded-2xl mb-4">
+                <Users className="w-6 h-6 text-violet-600" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
               <p className="text-sm text-gray-500 mb-4">{stats?.totalClients || 0} clients actifs</p>
@@ -250,21 +250,21 @@ export default function Dashboard() {
                   <span className="font-medium">85%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-purple-500 h-2 rounded-full" style={{width: '85%'}}></div>
+                  <div className="bg-violet-500 h-2 rounded-full" style={{width: '85%'}}></div>
                 </div>
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Nouveaux cette semaine</span>
-                <span className="text-purple-500">3 clients</span>
+                <span className="text-violet-500">3 clients</span>
               </div>
             </div>
             
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-2xl mb-4">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-2xl mb-4">
+                <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Chiffre d'Affaires</h3>
-              <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 0}€ ce mois</p>
+              <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Objectif</span>
@@ -281,8 +281,8 @@ export default function Dashboard() {
             </div>
             
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-2xl mb-4">
-                <Settings className="w-6 h-6 text-purple-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-2xl mb-4">
+                <Settings className="w-6 h-6 text-blue-600" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Services Actifs</h3>
               <p className="text-sm text-gray-500 mb-4">12 prestations disponibles</p>
