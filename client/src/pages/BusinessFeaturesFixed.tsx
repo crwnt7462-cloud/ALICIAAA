@@ -78,7 +78,7 @@ export default function BusinessFeaturesFixed() {
   const navigationTabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: Home },
     { id: 'planning', label: 'Planning & RDV', icon: Calendar },
-    { id: 'finance', label: 'Performance & €', icon: TrendingUp },
+    { id: 'finance', label: 'Performance & CA', icon: TrendingUp },
     { id: 'clients', label: 'Clients & Relation', icon: Users },
     { id: 'services', label: 'Services & Offres', icon: Package },
     { id: 'employees', label: 'Employés', icon: UserCheck },
@@ -116,7 +116,7 @@ export default function BusinessFeaturesFixed() {
         >
           <div className="flex items-center justify-between mb-3">
             <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl flex items-center justify-center">
-              <DollarSign className="w-6 h-6 text-emerald-600" />
+              <TrendingUp className="w-6 h-6 text-emerald-600" />
             </div>
             <span className="text-sm text-gray-500">CA jour</span>
           </div>
