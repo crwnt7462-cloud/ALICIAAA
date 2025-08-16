@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,21 +18,29 @@ import { apiRequest } from "@/lib/queryClient";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
 interface SubscriptionPaymentProps {
-  subscriptionId: string;
+  subscriptionId?: string;
 }
 
-export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaymentProps) {
+export default function SubscriptionPayment({ subscriptionId: propSubscriptionId }: SubscriptionPaymentProps = {}) {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data: subscription, isLoading } = useQuery({
+  // Récupérer l'ID de souscription depuis les props ou l'URL
+  const subscriptionId = propSubscriptionId || new URLSearchParams(window.location.search).get('id') || 'demo';
+
+  const { data: subscription, isLoading, error } = useQuery({
     queryKey: [`/api/subscriptions/${subscriptionId}`],
     queryFn: async () => {
       const response = await apiRequest("GET", `/api/subscriptions/${subscriptionId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch subscription');
+      }
       return response.json();
     },
+    enabled: !!subscriptionId,
+    retry: 1
   });
 
   const paymentMethods = [
@@ -90,7 +98,7 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
         description: "Votre souscription a été activée avec succès",
       });
       
-      setLocation("/pro-tools");
+      setLocation("/business-features");
     } catch (error) {
       toast({
         title: "Erreur de paiement",
@@ -118,7 +126,7 @@ export default function SubscriptionPayment({ subscriptionId }: SubscriptionPaym
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">Souscription non trouvée</p>
-          <Button onClick={() => setLocation("/pro-tools")} className="mt-4">
+          <Button onClick={() => setLocation("/business-features")} className="mt-4">
             Retour aux outils pro
           </Button>
         </div>
