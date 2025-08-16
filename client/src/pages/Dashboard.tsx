@@ -65,9 +65,9 @@ export default function Dashboard() {
         {/* Sidebar Glass */}
         <div className="w-20 flex flex-col items-center py-6" style={{
           backdropFilter: 'blur(20px) saturate(180%)',
-          background: 'rgba(255, 255, 255, 0.09)',
+          background: 'rgba(139, 92, 246, 0.8)',
           border: '1px solid rgba(255, 255, 255, 0.18)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+          boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
         }}>
           {/* Logo */}
           <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/40">
@@ -135,11 +135,11 @@ export default function Dashboard() {
             {/* Layout principal en 2 colonnes - Dimensions exactes */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80" style={{
+              <div className="rounded-3xl p-6 text-white relative overflow-hidden h-80" style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
-                background: 'rgba(255, 255, 255, 0.09)',
+                background: 'rgba(139, 92, 246, 0.8)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+                boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
               }}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
@@ -214,11 +214,11 @@ export default function Dashboard() {
               {/* Colonne droite avec 2 cartes empilées */}
               <div className="flex flex-col gap-4 h-80">
                 {/* Services Populaires */}
-                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-6 text-white flex-1 relative overflow-hidden" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
-                  background: 'rgba(255, 255, 255, 0.09)',
+                  background: 'rgba(139, 92, 246, 0.8)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
                 }}>
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
@@ -232,11 +232,11 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-6 text-white flex-1 relative overflow-hidden" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
-                  background: 'rgba(255, 255, 255, 0.09)',
+                  background: 'rgba(139, 92, 246, 0.8)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
-                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
                 }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
@@ -258,12 +258,17 @@ export default function Dashboard() {
           
           {/* Cartes Gestion Salon */}
           <div className="grid grid-cols-3 gap-6 mt-8">
-            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
+            <div className="rounded-2xl p-6" style={{
+              backdropFilter: 'blur(20px) saturate(180%)',
+              background: 'rgba(139, 92, 246, 0.8)',
+              border: '1px solid rgba(255, 255, 255, 0.18)',
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
+            }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Users className="w-6 h-6 text-gray-700" />
+                <Users className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
-              <p className="text-sm text-gray-500 mb-4">{stats?.totalClients || 0} clients actifs</p>
+              <h3 className="font-semibold text-white mb-1">Gestion Clients</h3>
+              <p className="text-sm text-white/80 mb-4">{stats?.totalClients || 0} clients actifs</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Fidélité</span>
@@ -281,15 +286,15 @@ export default function Dashboard() {
             
             <div className="rounded-2xl p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
-              background: 'rgba(255, 255, 255, 0.09)',
+              background: 'rgba(139, 92, 246, 0.8)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
             }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <TrendingUp className="w-6 h-6 text-gray-700" />
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Chiffre d'Affaires</h3>
-              <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
+              <h3 className="font-semibold text-white mb-1">Chiffre d'Affaires</h3>
+              <p className="text-sm text-white/80 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Objectif</span>
@@ -307,15 +312,15 @@ export default function Dashboard() {
             
             <div className="rounded-2xl p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
-              background: 'rgba(255, 255, 255, 0.09)',
+              background: 'rgba(139, 92, 246, 0.8)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+              boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
             }}>
               <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Settings className="w-6 h-6 text-gray-700" />
+                <Settings className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Services Actifs</h3>
-              <p className="text-sm text-gray-500 mb-4">12 prestations disponibles</p>
+              <h3 className="font-semibold text-white mb-1">Services Actifs</h3>
+              <p className="text-sm text-white/80 mb-4">12 prestations disponibles</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-gray-600">Popularité</span>
@@ -336,9 +341,9 @@ export default function Dashboard() {
           {/* Sidebar droite - Friends */}
           <div className="w-80 p-6" style={{
             backdropFilter: 'blur(20px) saturate(180%)',
-            background: 'rgba(255, 255, 255, 0.09)',
+            background: 'rgba(139, 92, 246, 0.8)',
             border: '1px solid rgba(255, 255, 255, 0.18)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
+            boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
           }}>
             {/* Header Clients */}
             <div className="flex items-center justify-between mb-6">
