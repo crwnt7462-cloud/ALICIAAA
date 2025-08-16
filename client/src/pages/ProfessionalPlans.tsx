@@ -79,13 +79,11 @@ export default function ProfessionalPlans() {
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
-    // Redirect to subscription or payment page
     setLocation(`/subscription-payment?plan=${planId}`);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-      {/* Header */}
       <div className="max-w-6xl mx-auto">
         {/* Navigation Bar - Style Slay */}
         <div className="flex items-center justify-between mb-12 pt-4">
@@ -141,7 +139,7 @@ export default function ProfessionalPlans() {
         </div>
 
         {/* Plan Toggle Buttons */}
-        <div className="flex items-center justify-center mb-16 space-x-4">
+        <div className="flex items-center justify-center mb-20 space-x-4">
           <Button 
             className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full font-medium"
           >
@@ -155,76 +153,102 @@ export default function ProfessionalPlans() {
           </Button>
         </div>
 
-        {/* Pricing Cards */}
-        <div className="flex flex-col lg:flex-row justify-center gap-12 max-w-7xl mx-auto mb-16 relative">
-          {plans.map((plan, index) => (
-            <Card 
-              key={plan.id} 
-              className={`
-                ${plan.bgColor} 
-                ${plan.popular 
-                  ? 'ring-2 ring-blue-400 shadow-2xl lg:scale-110 lg:z-10' 
-                  : 'shadow-lg'
-                } 
-                ${!plan.popular && index === 0 ? 'lg:mt-20' : ''}
-                ${!plan.popular && index === 2 ? 'lg:mt-20' : ''}
-                rounded-3xl border-0 overflow-hidden transition-all duration-300 hover:shadow-xl
-                ${plan.popular ? 'lg:w-80 w-full' : 'lg:w-64 w-full'}
-                relative
-              `}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
-                    The Most Popular
-                  </Badge>
-                </div>
-              )}
-              
-              <CardContent className={`${plan.popular ? 'p-10' : 'p-8'} text-center`}>
-                <div className={`${plan.textColor} mb-6 ${plan.popular ? 'pt-8' : 'pt-4'}`}>
+        {/* Pricing Cards - Exact Slay Layout */}
+        <div className="relative flex items-start justify-center min-h-[500px] mb-20">
+          {/* Carte de gauche - décalée vers le bas */}
+          <div className="absolute left-0 top-16">
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
+              <CardContent className="p-8 text-center">
+                <div className="text-gray-800 mb-6">
                   <div className="flex items-baseline justify-center mb-2">
-                    <span className={`${plan.popular ? 'text-5xl' : 'text-4xl'} font-light`}>€</span>
-                    <span className={`${plan.popular ? 'text-7xl' : 'text-6xl'} font-bold`}>{plan.price}</span>
-                    <span className={`${plan.popular ? 'text-xl' : 'text-lg'} font-normal ml-2`}>/ {plan.period}</span>
+                    <span className="text-4xl font-light">€</span>
+                    <span className="text-6xl font-bold">29</span>
+                    <span className="text-lg font-normal ml-2">/ mois</span>
                   </div>
                 </div>
                 
-                <h3 className={`${plan.popular ? 'text-3xl' : 'text-2xl'} font-bold ${plan.textColor} mb-2`}>
-                  {plan.name}
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  Essentiel
                 </h3>
                 
-                <p className={`${plan.popular ? 'text-blue-100' : 'text-gray-500'} text-sm mb-2`}>
-                  {plan.tagline}
+                <p className="text-gray-500 text-sm mb-8">
+                  Pour commencer
                 </p>
-                
-                <p className={`${plan.popular ? 'text-blue-100' : 'text-gray-500'} text-xs mb-4`}>
-                  {plan.limits}
-                </p>
-                
-                <div className={`${plan.popular ? 'text-blue-100' : 'text-gray-600'} text-left mb-6`}>
-                  <ul className="space-y-2 text-sm">
-                    {plan.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-center">
-                        <span className={`w-1.5 h-1.5 rounded-full mr-3 ${plan.popular ? 'bg-white/60' : 'bg-blue-500'}`}></span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
                 
                 <Button 
-                  onClick={() => handleSelectPlan(plan.id)}
-                  className={`
-                    w-full py-4 text-lg font-medium rounded-2xl transition-all duration-200
-                    ${plan.buttonColor}
-                  `}
+                  onClick={() => handleSelectPlan('essentiel')}
+                  className="w-full py-4 text-lg font-medium rounded-2xl bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Commencer l'essai gratuit
                 </Button>
               </CardContent>
             </Card>
-          ))}
+          </div>
+
+          {/* Carte centrale - surélevée */}
+          <div className="relative z-10">
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+              <Badge className="bg-white/20 text-white px-6 py-2 rounded-full border border-white/20 text-sm font-medium">
+                Le plus populaire
+              </Badge>
+            </div>
+            <Card className="bg-gradient-to-br from-blue-500 to-purple-600 shadow-2xl rounded-3xl border-0 w-96 overflow-hidden">
+              <CardContent className="p-10 text-center">
+                <div className="text-white mb-6 pt-6">
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-5xl font-light">€</span>
+                    <span className="text-7xl font-bold">79</span>
+                    <span className="text-xl font-normal ml-2">/ mois</span>
+                  </div>
+                </div>
+                
+                <h3 className="text-3xl font-bold text-white mb-2">
+                  Professionnel
+                </h3>
+                
+                <p className="text-blue-100 text-sm mb-8">
+                  Le plus populaire
+                </p>
+                
+                <Button 
+                  onClick={() => handleSelectPlan('professionnel')}
+                  className="w-full py-4 text-lg font-medium rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/20"
+                >
+                  Commencer l'essai gratuit
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Carte de droite - décalée vers le bas */}
+          <div className="absolute right-0 top-16">
+            <Card className="bg-white shadow-lg rounded-3xl border-0 w-80 overflow-hidden">
+              <CardContent className="p-8 text-center">
+                <div className="text-gray-800 mb-6">
+                  <div className="flex items-baseline justify-center mb-2">
+                    <span className="text-4xl font-light">€</span>
+                    <span className="text-6xl font-bold">149</span>
+                    <span className="text-lg font-normal ml-2">/ mois</span>
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  Premium
+                </h3>
+                
+                <p className="text-gray-500 text-sm mb-8">
+                  Fonctionnalités avancées
+                </p>
+                
+                <Button 
+                  onClick={() => handleSelectPlan('premium')}
+                  className="w-full py-4 text-lg font-medium rounded-2xl bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  Commencer l'essai gratuit
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Bottom spacing */}
