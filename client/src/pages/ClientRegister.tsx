@@ -104,10 +104,10 @@ export default function ClientRegister() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-full max-w-md lg:max-w-4xl"
+          className="w-full max-w-md lg:max-w-5xl"
         >
           {/* Card principale avec orientation paysage sur desktop */}
-          <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:h-[75vh] overflow-hidden">
+          <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:h-[78vh] overflow-hidden">
             
             {/* Section gauche - Branding (desktop uniquement) */}
             <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
@@ -147,7 +147,7 @@ export default function ClientRegister() {
             </div>
 
             {/* Section droite - Formulaire */}
-            <div className="p-8 lg:w-1/2 lg:p-4 lg:flex lg:flex-col lg:justify-center lg:overflow-y-auto">
+            <div className="p-8 lg:w-1/2 lg:p-6 lg:flex lg:flex-col lg:justify-center lg:overflow-y-auto">
               {/* En-tête mobile */}
               <div className="text-center mb-8 lg:hidden">
                 <div className="mb-0">
@@ -159,7 +159,7 @@ export default function ClientRegister() {
                   />
                 </div>
                 <h1 className="text-3xl font-bold mb-3 text-gray-900">
-                  Inscription
+                  Inscription Client
                 </h1>
                 <p className="text-gray-600 text-lg">Créez votre compte client</p>
               </div>
