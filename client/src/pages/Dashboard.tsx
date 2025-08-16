@@ -60,13 +60,13 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-amber-50/30 to-violet-50 w-full">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
       <div className="flex h-screen overflow-hidden">
-        {/* Sidebar Avyento */}
-        <div className="w-20 bg-gradient-to-b from-violet-600 via-violet-600 to-violet-700 flex flex-col items-center py-6 shadow-xl">
+        {/* Sidebar Glass */}
+        <div className="w-20 bg-white/20 backdrop-blur-xl border-r border-white/30 flex flex-col items-center py-6 shadow-2xl">
           {/* Logo */}
-          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/20">
-            <Bell className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/40">
+            <Bell className="w-6 h-6 text-gray-700" />
           </div>
           
           {/* Navigation Icons */}
@@ -130,7 +130,7 @@ export default function Dashboard() {
             {/* Layout principal en 2 colonnes - Dimensions exactes */}
             <div className="grid grid-cols-2 gap-6 mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="bg-gradient-to-br from-violet-600 to-amber-500 rounded-3xl p-6 text-white relative overflow-hidden h-80">
+              <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80 border border-white/30 shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-semibold">Vue d'ensemble</h2>
                   <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-xl px-3 py-1.5">
@@ -204,10 +204,10 @@ export default function Dashboard() {
               {/* Colonne droite avec 2 cartes empilées */}
               <div className="flex flex-col gap-4 h-80">
                 {/* Services Populaires */}
-                <div className="bg-gradient-to-br from-violet-500 to-violet-600 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
+                <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden border border-white/30 shadow-xl">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                      <Calendar className="w-6 h-6" />
+                    <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
+                      <Calendar className="w-6 h-6 text-gray-700" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-lg">Services Populaires</h3>
@@ -217,11 +217,11 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="bg-gradient-to-br from-amber-400 to-amber-500 rounded-3xl p-6 text-white flex-1 relative overflow-hidden">
+                <div className="bg-white/20 backdrop-blur-xl rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden border border-white/30 shadow-xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                        <Clock className="w-6 h-6" />
+                      <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
+                        <Clock className="w-6 h-6 text-gray-700" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-lg">Planning Aujourd'hui</h3>
@@ -230,7 +230,7 @@ export default function Dashboard() {
                         <p className="text-xs opacity-75">Août 2025</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-6 h-6" />
+                    <ChevronRight className="w-6 h-6 text-gray-600" />
                   </div>
                 </div>
               </div>
@@ -239,8 +239,8 @@ export default function Dashboard() {
           {/* Cartes Gestion Salon */}
           <div className="grid grid-cols-3 gap-6 mt-8">
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
-              <div className="flex items-center justify-center w-12 h-12 bg-violet-100 rounded-2xl mb-4">
-                <Users className="w-6 h-6 text-violet-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
+                <Users className="w-6 h-6 text-gray-700" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
               <p className="text-sm text-gray-500 mb-4">{stats?.totalClients || 0} clients actifs</p>
@@ -250,18 +250,18 @@ export default function Dashboard() {
                   <span className="font-medium">85%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-violet-500 h-2 rounded-full" style={{width: '85%'}}></div>
+                  <div className="bg-gray-600/60 h-2 rounded-full" style={{width: '85%'}}></div>
                 </div>
               </div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>Nouveaux cette semaine</span>
-                <span className="text-violet-500">3 clients</span>
+                <span className="text-gray-700">3 clients</span>
               </div>
             </div>
             
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-2xl mb-4">
-                <TrendingUp className="w-6 h-6 text-green-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
+                <TrendingUp className="w-6 h-6 text-gray-700" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Chiffre d'Affaires</h3>
               <p className="text-sm text-gray-500 mb-4">{stats?.monthlyRevenue || 3650}€ ce mois</p>
@@ -281,8 +281,8 @@ export default function Dashboard() {
             </div>
             
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-2xl mb-4">
-                <Settings className="w-6 h-6 text-blue-600" />
+              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
+                <Settings className="w-6 h-6 text-gray-700" />
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">Services Actifs</h3>
               <p className="text-sm text-gray-500 mb-4">12 prestations disponibles</p>
@@ -315,11 +315,11 @@ export default function Dashboard() {
             </div>
             
             {/* Tabs */}
-            <div className="flex space-x-1 bg-white/60 backdrop-blur-sm rounded-xl p-1 mb-6 border border-white/20">
-              <button className="flex-1 py-2 px-4 bg-violet-600 text-white rounded-lg text-sm font-medium">
+            <div className="flex space-x-1 bg-white/40 backdrop-blur-sm rounded-xl p-1 mb-6 border border-white/30">
+              <button className="flex-1 py-2 px-4 bg-white/40 backdrop-blur-sm text-gray-800 rounded-lg text-sm font-medium border border-white/30">
                 Planning
               </button>
-              <button className="flex-1 py-2 px-4 text-gray-600 rounded-lg text-sm font-medium hover:bg-white/60">
+              <button className="flex-1 py-2 px-4 text-gray-600 rounded-lg text-sm font-medium hover:bg-white/20">
                 Attente
               </button>
             </div>
@@ -329,8 +329,8 @@ export default function Dashboard() {
               {clients.map((client, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center">
-                      <span className="text-white text-sm font-semibold">{client.avatar}</span>
+                    <div className="w-10 h-10 bg-white/30 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40">
+                      <span className="text-gray-800 text-sm font-semibold">{client.avatar}</span>
                     </div>
                     <div>
                       <div className="font-medium text-gray-900 text-sm">{client.name}</div>
@@ -354,10 +354,10 @@ export default function Dashboard() {
               </div>
               
               {/* Salon Card */}
-              <div className="bg-gradient-to-br from-violet-100/80 to-amber-100/80 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden border border-white/30">
+              <div className="bg-white/30 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden border border-white/40">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">AV</span>
+                  <div className="w-12 h-12 bg-white/40 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/50">
+                    <span className="text-gray-800 font-bold text-lg">AV</span>
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Salon Avyento</h4>
