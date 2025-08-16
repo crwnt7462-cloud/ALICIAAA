@@ -567,7 +567,7 @@ export default function BusinessFeaturesFixed() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all ${
                     activeTab === tab.id
-                      ? 'gradient-bg text-white shadow-md'
+                      ? 'bg-gradient-to-r from-purple-600/80 to-violet-600/80 backdrop-blur-sm text-white shadow-lg border border-white/20'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
                   }`}
                 >
