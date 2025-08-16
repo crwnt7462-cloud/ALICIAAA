@@ -60,7 +60,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-amber-50/30 to-violet-50 w-full">
       <div className="flex h-screen overflow-hidden">
         {/* Sidebar Avyento */}
         <div className="w-20 bg-gradient-to-b from-violet-600 via-violet-600 to-violet-700 flex flex-col items-center py-6 shadow-xl">
@@ -238,7 +238,7 @@ export default function Dashboard() {
           
           {/* Cartes Gestion Salon */}
           <div className="grid grid-cols-3 gap-6 mt-8">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
               <div className="flex items-center justify-center w-12 h-12 bg-violet-100 rounded-2xl mb-4">
                 <Users className="w-6 h-6 text-violet-600" />
               </div>
@@ -259,7 +259,7 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
               <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-2xl mb-4">
                 <TrendingUp className="w-6 h-6 text-green-600" />
               </div>
@@ -280,7 +280,7 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-white/20">
               <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-2xl mb-4">
                 <Settings className="w-6 h-6 text-blue-600" />
               </div>
@@ -304,7 +304,7 @@ export default function Dashboard() {
         </div>
 
           {/* Sidebar droite - Friends */}
-          <div className="w-80 bg-white p-6 border-l border-gray-100">
+          <div className="w-80 bg-white/40 backdrop-blur-xl p-6 border-l border-white/20">
             {/* Header Clients */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-2">
@@ -315,11 +315,11 @@ export default function Dashboard() {
             </div>
             
             {/* Tabs */}
-            <div className="flex space-x-1 bg-gray-100 rounded-xl p-1 mb-6">
-              <button className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-lg text-sm font-medium">
+            <div className="flex space-x-1 bg-white/60 backdrop-blur-sm rounded-xl p-1 mb-6 border border-white/20">
+              <button className="flex-1 py-2 px-4 bg-violet-600 text-white rounded-lg text-sm font-medium">
                 Planning
               </button>
-              <button className="flex-1 py-2 px-4 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200">
+              <button className="flex-1 py-2 px-4 text-gray-600 rounded-lg text-sm font-medium hover:bg-white/60">
                 Attente
               </button>
             </div>
@@ -329,7 +329,7 @@ export default function Dashboard() {
               {clients.map((client, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">{client.avatar}</span>
                     </div>
                     <div>
@@ -354,9 +354,9 @@ export default function Dashboard() {
               </div>
               
               {/* Salon Card */}
-              <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-violet-100/80 to-amber-100/80 backdrop-blur-sm rounded-xl p-4 relative overflow-hidden border border-white/30">
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center">
                     <span className="text-white font-bold text-lg">AV</span>
                   </div>
                   <div>
