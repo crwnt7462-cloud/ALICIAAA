@@ -112,7 +112,7 @@ export default function ClientRegister() {
             {/* Section gauche - Branding (desktop uniquement) */}
             <div className="hidden lg:flex lg:w-1/2 lg:flex-col lg:justify-center lg:items-center lg:p-10 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl">
               <div className="text-center w-full max-w-sm px-4">
-                <div className="mb-0">
+                <div className="mb-2">
                   <img 
                     src={avyentoLogo} 
                     alt="Avyento" 
@@ -120,7 +120,7 @@ export default function ClientRegister() {
                     style={{ height: '145px' }}
                   />
                 </div>
-                <p className="text-gray-600 text-base mb-6 leading-relaxed px-2">
+                <p className="text-gray-600 text-base mb-8 leading-relaxed px-2">
                   Rejoignez des milliers d'utilisateurs satisfaits
                 </p>
                 <div className="space-y-4 text-left max-w-xs mx-auto">
