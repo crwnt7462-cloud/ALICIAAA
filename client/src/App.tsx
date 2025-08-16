@@ -911,6 +911,23 @@ function Router() {
     );
   }
 
+  // Page Business Features en plein écran desktop avec navigation mobile conservée
+  if (location === '/business-features') {
+    return (
+      <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
+        <div className="lg:hidden">
+          <Header />
+        </div>
+        <main className="flex-1 overflow-y-auto">
+          <BusinessFeaturesFixed />
+        </main>
+        <div className="lg:hidden">
+          <BottomNavigation />
+        </div>
+      </div>
+    );
+  }
+
 
 
   // Application principale avec navigation

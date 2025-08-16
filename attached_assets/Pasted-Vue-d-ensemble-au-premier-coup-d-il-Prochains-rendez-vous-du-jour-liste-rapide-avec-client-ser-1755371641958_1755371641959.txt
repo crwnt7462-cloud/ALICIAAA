@@ -1,0 +1,67 @@
+Vue d’ensemble (au premier coup d’œil)
+
+Prochains rendez-vous du jour (liste rapide avec client, service, heure).
+
+To-do list auto-générée : "Confirmer X rendez-vous", "Répondre à 2 avis", "Mettre à jour ses dispos".
+
+Objectif CA du mois avec jauge visuelle (ex : 2 300€ / 3 000€).
+
+Indicateur de satisfaction client (note moyenne + nombre d’avis).
+
+📅 Planning & rendez-vous
+
+Calendrier visuel (jour/semaine/mois).
+
+Gestion des disponibilités (ouvrir/fermer des créneaux en 1 clic).
+
+Rendez-vous à confirmer / en attente de paiement / annulés.
+
+Exports : synchroniser avec Google Calendar ou télécharger planning en PDF.
+
+💰 Performance & CA
+
+CA en temps réel (jour, semaine, mois).
+
+Objectifs personnalisables : mensuel, annuel, par service.
+
+Répartition des revenus par service (ex : 40% coiffure, 30% manucure, 20% massage).
+
+Top clients (ceux qui réservent le plus / dépensent le plus).
+
+Comparatif avec la période précédente (“+12% par rapport à juillet”).
+
+👥 Clients & relation
+
+Carnet clients (historique des RDV, préférences, notes internes).
+
+Clients inactifs (relancer automatiquement : “Cela fait 2 mois que X n’est pas venu”).
+
+Avis clients : à lire, à répondre, à signaler si abus.
+
+Segmentation clients (fidèles, nouveaux, VIP).
+
+📦 Services & offres
+
+Gestion des prestations (ajouter/supprimer/modifier les prix/services).
+
+Mise en avant promo (ex : “-15% sur manucure en août”).
+
+Catalogue photos de ses prestations → utile pour attirer plus de clients.
+
+🔔 Notifications & alertes
+
+Annulations de dernière minute.
+
+Nouvelles réservations.
+
+Alerte “créneau vide” (suggestion d’ouvrir un créneau pour attirer des clients).
+
+🚀 Bonus différenciants (pour les motiver & fidéliser tes pros)
+
+Gamification business : badges ou récompenses (“1000€ atteints ce mois-ci”, “20 avis 5⭐”).
+
+Suggestions intelligentes : “Vos clients aiment les soins X, pourquoi ne pas proposer Y ?”
+
+Benchmark (facultatif, à réfléchir) : comparer son activité avec la moyenne des pros de la plateforme.
+
+Centre de ressources : tips marketing, gestion de clients, réseaux sociaux (petit espace formation).
