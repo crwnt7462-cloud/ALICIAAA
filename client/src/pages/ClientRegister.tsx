@@ -310,7 +310,7 @@ export default function ClientRegister() {
                 </div>
 
                 {/* Conditions */}
-                <div className="flex items-center">
+                <div className="flex items-center mb-3">
                   <input 
                     type="checkbox" 
                     className="w-3 h-3 lg:w-3 lg:h-3 text-violet-600 border-gray-300 rounded focus:ring-violet-500"
