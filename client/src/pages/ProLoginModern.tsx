@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useLocation } from 'wouter';
 import { Calendar, BarChart3, Users, Crown, Sparkles, Github } from 'lucide-react';
+import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
 
 export default function ProLoginModern() {
   const [, setLocation] = useLocation();
@@ -21,17 +22,22 @@ export default function ProLoginModern() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-8">
-        {/* Container principal centré avec max-width */}
-        <div className="max-w-6xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
+        {/* Container principal centré avec taille réduite */}
+        <div className="max-w-4xl w-full flex rounded-3xl overflow-hidden shadow-2xl" style={{
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: '1px solid rgba(255, 255, 255, 0.3)'
         }}>
-          {/* Côté gauche - Branding Avyento avec gradient violet */}
+          {/* Côté gauche - Branding Avyento avec gradient violet clair glassmorphism */}
           <div className="hidden lg:flex lg:w-1/2 relative">
-            {/* Gradient background Avyento */}
-            <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-700 to-violet-800"></div>
+            {/* Gradient background plus clair et diffus */}
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-400/80 via-purple-500/70 to-violet-600/80" style={{
+              backdropFilter: 'blur(15px)',
+              WebkitBackdropFilter: 'blur(15px)'
+            }}></div>
+            {/* Overlay glassmorphism supplémentaire */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5"></div>
             
             <div className="relative z-10 flex flex-col justify-center p-12 text-white">
               {/* Titre principal Avyento */}
@@ -141,6 +147,14 @@ export default function ProLoginModern() {
               {/* Formulaire glassmorphism */}
               <div className="p-8">
                 <div className="text-center mb-8">
+                  {/* Logo Avyento Pro */}
+                  <div className="mb-6">
+                    <img 
+                      src={avyentoProLogo} 
+                      alt="Avyento Pro" 
+                      className="h-12 mx-auto"
+                    />
+                  </div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">Créez votre compte.</h2>
                   <p className="text-gray-600 text-sm">
                     Vous avez déjà un compte ? <button className="text-violet-600 hover:text-violet-700 font-medium">Se connecter</button>
