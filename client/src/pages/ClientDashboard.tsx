@@ -321,7 +321,7 @@ export default function ClientDashboard() {
 
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-[600px]">
             {/* Conteneur principal mobile-friendly */}
-            <div className="flex-1 h-auto lg:h-full" style={{
+            <div className="flex-1 h-auto lg:h-full lg:rounded-3xl" style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.1) 100%)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
@@ -332,7 +332,6 @@ export default function ClientDashboard() {
               flexDirection: 'column',
               overflow: 'hidden'
             }}
-            className="lg:rounded-3xl lg:p-8"
             >
               {/* Header */}
               <div className="mb-6 lg:mb-8">
