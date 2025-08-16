@@ -70,3 +70,5 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Synchronisation Temps Réel**: Système de couleurs personnalisées synchronisé entre éditeur et pages publiques
 - **Page Professional-Plans Redesignée**: Application complète du design Slay avec positionnement asymétrique des cartes (carte centrale surélevée, cartes latérales décalées), contenu adapté salon Avyento, couleurs violettes thématiques
 - **Dashboard Peymen Intégré**: Dashboard professionnel avec design moderne financier (cartes blanches, fond gris, palette bleu/violet) selon maquette exacte
+- **Objectif Mensuel Éditable**: Ajout d'un système d'édition pour l'objectif mensuel en euros avec basculement intuitif mode affichage/édition
+- **Nettoyage Codebase Complet**: Suppression définitive des 6 pages obsolètes (/home, /pro/login, /client-login-modern, /pro-dashboard, /client-dashboard, /client-dashboard-new) et de leurs routes associées pour simplifier l'architecture

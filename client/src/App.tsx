@@ -26,7 +26,6 @@ import ClientBooking from "@/pages/ClientBooking";
 import ShareBooking from "@/pages/ShareBooking";
 
 import NotFound from "@/pages/not-found";
-import ProLoginModern from "@/pages/ProLoginModern";
 import Register from "@/pages/Register";
 import ModernSalonDetailNew from "@/pages/ModernSalonDetailNew";
 import FullScreenMessage from "@/pages/FullScreenMessage";
@@ -68,9 +67,7 @@ import SubscriptionPayment from "@/pages/SubscriptionPayment";
 import SubscriptionPlans from "@/pages/SubscriptionPlans";
 import ModernSubscriptionPlans from "@/pages/ModernSubscriptionPlans";
 import FreeTrialSignup from "@/pages/FreeTrialSignup";
-import ClientDashboard from "@/pages/ClientDashboard";
 import ClientDashboardSimple from "@/pages/ClientDashboardSimple";
-import ClientDashboardNew from "@/pages/ClientDashboardNew";
 
 import AIAssistantFixed from "@/pages/AIAssistantFixed";
 import MessagingHub from "@/pages/MessagingHub";
@@ -78,7 +75,6 @@ import PlanityStyleBooking from "@/pages/PlanityStyleBooking";
 import PlanityStyleBookingFixed from "@/pages/PlanityStyleBookingFixed";
 import ProfessionalSelection from "@/pages/ProfessionalSelection";
 import BookingDateTime from "@/pages/BookingDateTime";
-import ProLogin from "@/pages/ProLogin";
 import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
 
@@ -111,7 +107,6 @@ import ClientAccueil from "@/pages/ClientAccueil";
 import ClientRdv from "@/pages/ClientRdv";
 import ClientParametres from "@/pages/ClientParametres";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
-import ClientLoginModern from "@/pages/ClientLoginModern";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 
 import AvyentoStyleClientLogin from "@/pages/AvyentoStyleClientLogin";
@@ -138,7 +133,6 @@ import PaymentMethodsSimple from "@/pages/PaymentMethodsSimple";
 import SalonPayment from "@/pages/SalonPayment";
 import ClientProDashboard from "@/pages/ClientProDashboard";
 import MessagingSearch from "@/pages/MessagingSearch";
-import ProDashboard from "@/pages/ProDashboard";
 import ProMessaging from "@/pages/ProMessaging";
 import StripeDemo from "@/pages/StripeDemo";
 import StripeSuccess from "@/pages/StripeSuccess";
@@ -234,15 +228,6 @@ function Router() {
     );
   }
 
-  // Page de connexion professionnelle
-  if (location === '/pro-login') {
-    return (
-      <div className="h-full">
-        <ProLoginModern />
-      </div>
-    );
-  }
-
   // Page de recherche de messagerie
   if (location === '/messaging-search') {
     return (
@@ -252,23 +237,7 @@ function Router() {
     );
   }
 
-  // Page de connexion professionnelle avec Replit Auth
-  if (location === '/pro/login') {
-    return (
-      <div className="h-full">
-        <ProLogin />
-      </div>
-    );
-  }
 
-  // Tableau de bord professionnel
-  if (location === '/pro-dashboard') {
-    return (
-      <div className="h-full">
-        <ProDashboard />
-      </div>
-    );
-  }
 
   // Messagerie professionnelle
   if (location === '/pro-messaging') {
@@ -349,24 +318,14 @@ function Router() {
 
   // Pages client spécifiques
   if (location === '/client-login') {
-    return <div className="h-full"><ClientLoginModern /></div>;
-  }
-  
-  if (location === '/client-login-modern') {
-    return <div className="h-full"><ClientLoginModern /></div>;
+    return <div className="h-full"><FuturisticClientLogin /></div>;
   }
   
   if (location === '/client-register') {
     return <div className="h-full"><ClientRegister /></div>;
   }
   
-  if (location === '/client-dashboard') {
-    return <div className="h-full"><ClientDashboard /></div>;
-  }
-  
-  if (location === '/client-dashboard-new') {
-    return <div className="h-full"><ClientDashboardNew /></div>;
-  }
+
   
   if (location === '/client-accueil') {
     return <div className="h-full"><ClientAccueil /></div>;
@@ -381,7 +340,7 @@ function Router() {
   }
 
   // Page d'accueil publique (sans header/nav mobile)
-  if (location === '/' || location === '/home') {
+  if (location === '/') {
     return (
       <div className="h-full">
         <PublicLanding />
@@ -648,14 +607,7 @@ function Router() {
     );
   }
 
-  // Page de connexion professionnelle
-  if (location === '/pro-login') {
-    return (
-      <div className="h-full">
-        <ProLoginModern />
-      </div>
-    );
-  }
+
 
   // Page d'inscription
   if (location === '/register') {
@@ -864,22 +816,9 @@ function Router() {
     );
   }
 
-  // Pages de connexion sans navigation
-  if (location === '/pro-login') {
-    return (
-      <div className="h-full">
-        <ProLoginModern />
-      </div>
-    );
-  }
 
-  if (location === '/client-login') {
-    return (
-      <div className="h-full">
-        <ClientLogin />
-      </div>
-    );
-  }
+
+
 
   if (location === '/client-register') {
     return (
