@@ -165,7 +165,35 @@ export default function ProfessionalPlans() {
         
         {/* Mobile Layout - Stack vertical */}
         <div className="block lg:hidden space-y-6 mb-20 px-2">
-          {/* Plan Professionnel - Populaire en premier */}
+          {/* Plan Essentiel */}
+          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
+            <CardContent className="p-6 text-center">
+              <div className="text-gray-800 mb-4">
+                <div className="flex items-baseline justify-center mb-2">
+                  <span className="text-3xl font-light">€</span>
+                  <span className="text-5xl font-bold">29</span>
+                  <span className="text-base font-normal ml-2">/ mois</span>
+                </div>
+              </div>
+              
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                Essentiel
+              </h3>
+              
+              <p className="text-gray-500 text-sm mb-6">
+                Pour commencer
+              </p>
+              
+              <Button 
+                onClick={() => handleSelectPlan('essentiel')}
+                className="w-full py-3 text-base font-medium rounded-2xl bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Commencer l'essai gratuit
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Plan Professionnel - Populaire au milieu */}
           <div className="relative">
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
               <Badge className="bg-white/20 text-white px-4 py-1 rounded-full border border-white/20 text-xs font-medium">
@@ -199,34 +227,6 @@ export default function ProfessionalPlans() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Plan Essentiel */}
-          <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
-            <CardContent className="p-6 text-center">
-              <div className="text-gray-800 mb-4">
-                <div className="flex items-baseline justify-center mb-2">
-                  <span className="text-3xl font-light">€</span>
-                  <span className="text-5xl font-bold">29</span>
-                  <span className="text-base font-normal ml-2">/ mois</span>
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
-                Essentiel
-              </h3>
-              
-              <p className="text-gray-500 text-sm mb-6">
-                Pour commencer
-              </p>
-              
-              <Button 
-                onClick={() => handleSelectPlan('essentiel')}
-                className="w-full py-3 text-base font-medium rounded-2xl bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Commencer l'essai gratuit
-              </Button>
-            </CardContent>
-          </Card>
 
           {/* Plan Premium */}
           <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
