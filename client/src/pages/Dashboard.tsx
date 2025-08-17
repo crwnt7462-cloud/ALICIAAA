@@ -42,10 +42,10 @@ export default function Dashboard() {
     return (
       <div className="flex h-screen bg-gray-50">
         <div className="w-20 bg-gradient-to-b from-purple-600 to-purple-700"></div>
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 md:p-8">
           <div className="animate-pulse space-y-6">
             <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {Array.from({length: 3}).map((_, i) => (
                 <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
               ))}
@@ -143,21 +143,21 @@ export default function Dashboard() {
         {/* Contenu principal */}
         <div className="flex-1 flex">
           {/* Zone principale */}
-          <div className="flex-1 p-8 bg-gray-50 overflow-y-auto max-h-screen">
+          <div className="flex-1 p-4 md:p-6 lg:p-8 bg-gray-50 overflow-y-auto max-h-screen">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 space-y-4 md:space-y-0">
               <div>
                 <p className="text-gray-500 text-sm">Avyento</p>
-                <h1 className="text-3xl font-bold text-gray-900">Tableau de Bord</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Tableau de Bord</h1>
               </div>
               
-              <div className="flex items-center space-x-4">
-                <div className="relative">
+              <div className="flex items-center space-x-2 md:space-x-4">
+                <div className="relative hidden md:block">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Rechercher..."
-                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full md:w-auto"
                   />
                 </div>
                 
@@ -185,18 +185,18 @@ export default function Dashboard() {
                       setLocation('/salon-creation');
                     }
                   }}
-                  className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
+                  className="flex items-center space-x-1 md:space-x-2 px-2 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   <Globe className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm text-gray-700">Ma Page</span>
+                  <span className="text-xs md:text-sm text-gray-700 hidden sm:inline">Ma Page</span>
                 </button>
                 
                 <button 
                   onClick={() => setLocation('/salon-settings-modern')}
-                  className="flex items-center space-x-2 px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors"
+                  className="flex items-center space-x-1 md:space-x-2 px-2 md:px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-xl transition-colors"
                 >
                   <Settings className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm text-purple-700">Settings</span>
+                  <span className="text-xs md:text-sm text-purple-700 hidden sm:inline">Settings</span>
                 </button>
                 
                 <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -205,35 +205,35 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Layout principal en 2 colonnes - Dimensions exactes */}
-            <div className="grid grid-cols-2 gap-6 mb-8">
+            {/* Layout principal en 2 colonnes - Responsive */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
               {/* Grande carte Overview à gauche */}
-              <div className="rounded-3xl p-6 text-gray-800 relative overflow-hidden h-80" style={{
+              <div className="rounded-3xl p-4 md:p-6 text-gray-800 relative overflow-hidden h-64 md:h-80" style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.09)',
                 border: '1px solid rgba(255, 255, 255, 0.18)',
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
               }}>
                 {/* Header avec période */}
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 space-y-2 md:space-y-0">
                   <span className="text-sm text-gray-500 font-medium">Revenus - Cette Semaine</span>
-                  <div className="flex items-center space-x-3 text-xs text-gray-400">
+                  <div className="flex items-center space-x-2 md:space-x-3 text-xs text-gray-400">
                     <span>Jour</span>
                     <span className="font-semibold text-gray-900">Semaine</span>
                     <span>Mois</span>
-                    <span>Année</span>
+                    <span className="hidden md:inline">Année</span>
                   </div>
                 </div>
                 
                 {/* Montant principal */}
-                <div className="mb-8">
-                  <h2 className="text-4xl font-bold text-gray-900 mb-1">
+                <div className="mb-4 md:mb-8">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
                     {statsLoading ? "..." : `${(stats as any)?.monthlyRevenue || 0}€`}
                   </h2>
                 </div>
                 
                 {/* Graphique en ligne */}
-                <div className="h-24 mb-6 relative">
+                <div className="h-16 md:h-24 mb-4 md:mb-6 relative">
                   <svg className="w-full h-full" viewBox="0 0 300 80">
                     <path
                       d="M10,60 Q30,40 50,45 T90,35 Q110,25 130,30 T170,20 Q190,15 210,25 T250,30 Q270,35 290,25"
@@ -272,21 +272,21 @@ export default function Dashboard() {
               </div>
               
               {/* Colonne droite avec 2 cartes empilées */}
-              <div className="flex flex-col gap-4 h-80">
+              <div className="flex flex-col gap-4 h-auto lg:h-80">
                 {/* Services Populaires */}
-                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-4 md:p-6 text-gray-800 flex-1 relative overflow-hidden min-h-[120px]" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
                   background: 'rgba(255, 255, 255, 0.09)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
                 }}>
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
-                      <Calendar className="w-6 h-6 text-gray-700" />
+                    <div className="w-10 md:w-12 h-10 md:h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
+                      <Calendar className="w-5 md:w-6 h-5 md:h-6 text-gray-700" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">Services Populaires</h3>
-                      <p className="text-sm opacity-75">
+                      <h3 className="font-semibold text-base md:text-lg">Services Populaires</h3>
+                      <p className="text-xs md:text-sm opacity-75">
                         {servicesLoading ? "Chargement..." : 
                          (popularServices as any[]).length > 0 ? 
                          `${(popularServices as any)[0]?.serviceName} (${(popularServices as any)[0]?.bookingCount} réservations)` : 
@@ -297,7 +297,7 @@ export default function Dashboard() {
                 </div>
                 
                 {/* Planning Aujourd'hui */}
-                <div className="rounded-3xl p-6 text-gray-800 flex-1 relative overflow-hidden" style={{
+                <div className="rounded-3xl p-4 md:p-6 text-gray-800 flex-1 relative overflow-hidden min-h-[120px]" style={{
                   backdropFilter: 'blur(20px) saturate(180%)',
                   background: 'rgba(255, 255, 255, 0.09)',
                   border: '1px solid rgba(255, 255, 255, 0.18)',
@@ -305,36 +305,36 @@ export default function Dashboard() {
                 }}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
-                        <Clock className="w-6 h-6 text-gray-700" />
+                      <div className="w-10 md:w-12 h-10 md:h-12 bg-white/30 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/40">
+                        <Clock className="w-5 md:w-6 h-5 md:h-6 text-gray-700" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">Planning Aujourd'hui</h3>
-                        <p className="text-sm opacity-75">Objectif: 100% rempli</p>
-                        <p className="text-2xl font-bold mt-1">
+                        <h3 className="font-semibold text-base md:text-lg">Planning Aujourd'hui</h3>
+                        <p className="text-xs md:text-sm opacity-75">Objectif: 100% rempli</p>
+                        <p className="text-xl md:text-2xl font-bold mt-1">
                           {appointmentsLoading ? "..." : `${(todayAppointments as any[])?.length || 0} RDV`}
                         </p>
                         <p className="text-xs opacity-75">Août 2025</p>
                       </div>
                     </div>
-                    <ChevronRight className="w-6 h-6 text-gray-600" />
+                    <ChevronRight className="w-5 md:w-6 h-5 md:h-6 text-gray-600" />
                   </div>
                 </div>
               </div>
             </div>
           
           {/* Cartes Gestion Salon */}
-          <div className="grid grid-cols-3 gap-6 mt-8">
-            <div className="rounded-2xl p-6" style={{
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mt-6 md:mt-8">
+            <div className="rounded-2xl p-4 md:p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
               background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
-              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Users className="w-6 h-6 text-gray-700" />
+              <div className="flex items-center justify-center w-10 md:w-12 h-10 md:h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
+                <Users className="w-5 md:w-6 h-5 md:h-6 text-gray-700" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Gestion Clients</h3>
+              <h3 className="font-semibold text-base md:text-lg text-gray-900 mb-1">Gestion Clients</h3>
               <p className="text-sm text-gray-500 mb-4">{statsLoading ? "Chargement..." : `${(stats as any)?.totalClients || 0} clients actifs`}</p>
               <div className="mb-2">
                 <div className="flex justify-between text-sm mb-1">
@@ -351,42 +351,42 @@ export default function Dashboard() {
               </div>
             </div>
             
-            <div className="rounded-2xl p-6" style={{
+            <div className="rounded-2xl p-4 md:p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
               background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
               {/* Header avec dropdown */}
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-500 uppercase tracking-wide">Événements Programmés</h3>
-                <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-sm font-medium flex items-center space-x-1">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 space-y-2 md:space-y-0">
+                <h3 className="text-base md:text-lg font-semibold text-gray-500 uppercase tracking-wide">Événements Programmés</h3>
+                <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg text-xs md:text-sm font-medium flex items-center space-x-1 self-start md:self-auto">
                   <span>Aujourd'hui</span>
                   <ChevronDown className="w-4 h-4" />
                 </div>
               </div>
 
               {/* Layout avec graphique circulaire et statistiques */}
-              <div className="flex items-center space-x-6">
+              <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6">
                 {/* Graphique circulaire */}
-                <div className="relative">
-                  <svg className="w-24 h-24 transform -rotate-90">
+                <div className="relative self-center md:self-auto">
+                  <svg className="w-20 md:w-24 h-20 md:h-24 transform -rotate-90" viewBox="0 0 96 96">
                     <circle
                       cx="48"
                       cy="48"
-                      r="40"
+                      r="36"
                       stroke="#e5e7eb"
-                      strokeWidth="8"
+                      strokeWidth="6"
                       fill="none"
                     />
                     <circle
                       cx="48"
                       cy="48"
-                      r="40"
+                      r="36"
                       stroke="url(#gradient)"
-                      strokeWidth="8"
+                      strokeWidth="6"
                       fill="none"
-                      strokeDasharray={`${95 * 2.51} ${(100 - 95) * 2.51}`}
+                      strokeDasharray={`${95 * 2.26} ${(100 - 95) * 2.26}`}
                       strokeLinecap="round"
                     />
                     <defs>
@@ -404,36 +404,36 @@ export default function Dashboard() {
                 </div>
 
                 {/* Statistiques */}
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 space-y-3 md:space-y-4">
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">25</div>
-                    <div className="text-sm text-gray-500">Consultations</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">25</div>
+                    <div className="text-xs md:text-sm text-gray-500">Consultations</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">10</div>
-                    <div className="text-sm text-gray-500">Analyses</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">10</div>
+                    <div className="text-xs md:text-sm text-gray-500">Analyses</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-gray-900">3</div>
-                    <div className="text-sm text-gray-500">Réunions</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">3</div>
+                    <div className="text-xs md:text-sm text-gray-500">Réunions</div>
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="rounded-2xl p-6" style={{
+            <div className="rounded-2xl p-4 md:p-6" style={{
               backdropFilter: 'blur(20px) saturate(180%)',
               background: 'rgba(255, 255, 255, 0.09)',
               border: '1px solid rgba(255, 255, 255, 0.18)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.05)'
             }}>
-              <div className="flex items-center justify-center w-12 h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
-                <Settings className="w-6 h-6 text-gray-700" />
+              <div className="flex items-center justify-center w-10 md:w-12 h-10 md:h-12 bg-white/30 backdrop-blur-sm rounded-2xl mb-4 border border-white/40">
+                <Settings className="w-5 md:w-6 h-5 md:h-6 text-gray-700" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Services Actifs</h3>
-              <p className="text-sm text-gray-500 mb-4">12 prestations disponibles</p>
+              <h3 className="font-semibold text-base md:text-lg text-gray-900 mb-1">Services Actifs</h3>
+              <p className="text-xs md:text-sm text-gray-500 mb-4">12 prestations disponibles</p>
               <div className="mb-2">
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-xs md:text-sm mb-1">
                   <span className="text-gray-600">Popularité</span>
                   <span className="font-medium">92%</span>
                 </div>
@@ -441,7 +441,7 @@ export default function Dashboard() {
                   <div className="bg-blue-500 h-2 rounded-full" style={{width: '92%'}}></div>
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-gray-500">
+              <div className="flex flex-col md:flex-row md:justify-between text-xs text-gray-500 space-y-1 md:space-y-0">
                 <span>Plus demandé: Coupe</span>
                 <span className="text-blue-500">45% des RDV</span>
               </div>
