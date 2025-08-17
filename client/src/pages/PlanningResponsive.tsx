@@ -895,126 +895,40 @@ export default function PlanningResponsive() {
           transition={{ delay: 0.1 }}
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
         >
-          {viewMode === 'week' ? (
+          {viewMode === 'day' ? (
             <>
-              {/* En-tête style Fresha - Colonne heures + 7 jours */}
-              <div className="grid grid-cols-8 border-b border-gray-200 bg-gray-50">
-                {/* Colonne des heures */}
-                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4" />
-                    <span>Heures</span>
-                  </div>
-                </div>
-                {/* 7 colonnes des jours */}
-                {currentWeek.map((date, index) => {
-                  const isToday = date.toDateString() === new Date().toDateString();
-                  return (
-                    <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-blue-50' : ''}`}>
-                      <div className="text-sm font-medium text-gray-700">
-                        {weekDays[date.getDay()]}
-                      </div>
-                      <div className="text-lg font-bold text-gray-900 mt-1">
-                        {date.getDate()}
-                      </div>
-                      {isToday && (
-                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Grille horaire style Fresha */}
-              <div className="relative max-h-[600px] overflow-y-auto">
-                <div className="grid grid-cols-8">
-                  {/* Colonne des heures */}
-                  <div className="border-r border-gray-200 bg-white">
-                    {mainTimeSlots.map((slot, index) => (
-                      <div key={index} className="flex items-start justify-center pt-2 text-xs text-gray-500 border-b border-gray-100 font-medium" style={{ height: '60px' }}>
-                        {slot}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Colonnes des jours */}
-                  {currentWeek.map((date, dayIndex) => (
-                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
-                      {/* Créneaux horaires */}
-                      {mainTimeSlots.map((slot, slotIndex) => (
-                        <div
-                          key={slotIndex}
-                          className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
-                          style={{ height: '60px' }}
-                          onClick={() => handleTimeSlotClick(slot, dayIndex, date)}
-                        />
-                      ))}
-                      
-                      {/* Rendez-vous pour ce jour */}
-                      {filteredEvents
-                        .filter(event => event.day === dayIndex)
-                        .map((event) => {
-                          const isBlocked = event.isBlock;
-                          const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
-                          
-                          return (
-                            <div
-                              key={event.id}
-                              className="absolute left-1 right-1 rounded text-xs font-medium text-white p-2 z-10 border border-gray-300 cursor-pointer hover:shadow-lg transition-shadow"
-                              style={{
-                                top: `${getEventPosition(event.time)}px`,
-                                height: `${Math.max(getEventHeight(event.time), 40)}px`,
-                                backgroundColor: serviceColor,
-                                opacity: 0.9
-                              }}
-                            >
-                              <div className="font-semibold">{event.time}</div>
-                              <div className="mt-1">{event.title}</div>
-                              {event.client && (
-                                <div className="text-gray-200 text-xs">{event.client}</div>
-                              )}
-                            </div>
-                          );
-                        })}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          ) : viewMode === 'day' ? (
-            <>
-              {/* Vue jour desktop - 4 colonnes employés */}
+              {/* Vue jour - 4 colonnes (professionnels) */}
               <div className="grid grid-cols-5 border-b border-gray-200">
-                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200 bg-gray-50">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4" />
-                    <span>Heures</span>
+                <div className="p-2 lg:p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
+                  <div className="flex items-center space-x-1 lg:space-x-2">
+                    <Clock className="h-3 w-3 lg:h-4 lg:w-4" />
+                    <span className="hidden lg:inline">Heures</span>
                   </div>
                 </div>
                 {employees.map((employee) => (
-                  <div key={employee.id} className="p-4 text-center border-r border-gray-200 last:border-r-0 bg-gray-50">
-                    <div className="text-sm font-medium text-gray-700">{employee.name}</div>
+                  <div key={employee.id} className="p-2 lg:p-4 text-center border-r border-gray-200 last:border-r-0">
+                    <div className="text-xs lg:text-sm font-medium text-gray-700">{employee.name}</div>
                     <div className="text-xs text-gray-500 mt-1">{employee.specialties[0]}</div>
                   </div>
                 ))}
               </div>
               
               {/* Grille horaire jour */}
-              <div className="grid grid-cols-5 max-h-[600px] overflow-y-auto">
-                <div className="border-r border-gray-200 w-20 bg-white sticky left-0 z-10">
-                  {mainTimeSlots.map((slot, index) => (
-                    <div key={index} className="h-16 flex items-center justify-center text-sm text-gray-700 border-b border-gray-100 font-medium bg-gray-50">
+              <div className="grid grid-cols-5 max-h-96 lg:max-h-[500px] overflow-y-auto">
+                <div className="border-r border-gray-200 w-12 lg:w-16">
+                  {timeSlots.map((slot, index) => (
+                    <div key={index} className="h-12 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
                       {slot}
                     </div>
                   ))}
                 </div>
                 
                 {employees.map((employee, empIndex) => (
-                  <div key={employee.id} className="relative border-r border-gray-200 last:border-r-0">
-                    {mainTimeSlots.map((slot, slotIndex) => (
+                  <div key={employee.id} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
+                    {timeSlots.map((slot, slotIndex) => (
                       <div
                         key={slotIndex}
-                        className="h-16 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-200"
+                        className="h-8 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150"
                         onClick={() => handleTimeSlotClick(slot, new Date().getDay(), employee.id)}
                         title={`Créer un rendez-vous à ${slot} avec ${employee.name}`}
                       />
@@ -1030,25 +944,26 @@ export default function PlanningResponsive() {
                         return (
                           <div
                             key={event.id}
-                            className={`absolute left-1 right-1 rounded-lg p-3 text-sm font-medium shadow-lg z-10 border ${
+                            className={`absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-sm z-10 border ${
                               isBlocked 
                                 ? 'bg-red-100 border-red-300 text-red-800' 
-                                : 'bg-white border-gray-300'
+                                : 'border-gray-200'
                             }`}
                             style={{
                               top: `${getEventPosition(event.time)}px`,
-                              height: `${Math.max(getEventHeight(event.time), 60)}px`,
+                              height: `${getEventHeight(event.time)}px`,
+                              minHeight: '25px',
                               backgroundColor: isBlocked ? '#FEE2E2' : serviceColor
                             }}
                           >
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="font-semibold text-gray-900 truncate">{event.title}</div>
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="truncate font-semibold text-gray-800">{event.title}</div>
                               {event.status === 'confirmed' && !isBlocked && (
-                                <div className="w-3 h-3 bg-green-600 rounded-full flex-shrink-0"></div>
+                                <div className="w-1.5 h-1.5 bg-green-600 rounded-full flex-shrink-0"></div>
                               )}
                             </div>
                             {!isBlocked && (
-                              <div className="text-gray-700 truncate mb-1">{event.client}</div>
+                              <div className="truncate text-gray-700 text-xs">{event.client}</div>
                             )}
                             <div className="text-xs text-gray-600 truncate">{event.time}</div>
                           </div>
@@ -1058,18 +973,168 @@ export default function PlanningResponsive() {
                 ))}
               </div>
             </>
+          ) : viewMode === 'week' ? (
+            <>
+              {/* En-tête avec employé + heures + jours - Vue hebdomadaire responsive */}
+              <div className="grid grid-cols-9 lg:grid-cols-10 border-b border-gray-200 text-xs">
+                {/* Colonne employé */}
+                <div className="p-1 text-xs font-medium text-gray-500 border-r border-gray-200 w-12 lg:w-16">
+                  <div className="flex items-center justify-center">
+                    <User className="h-3 w-3" />
+                  </div>
+                </div>
+                {/* Colonne heures */}
+                <div className="p-1 text-xs font-medium text-gray-500 border-r border-gray-200 w-8 lg:w-10">
+                  <div className="flex items-center justify-center">
+                    <Clock className="h-3 w-3" />
+                  </div>
+                </div>
+                {/* Colonnes des jours */}
+                {currentWeek.map((date, index) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  return (
+                    <div key={index} className={`p-1 text-center border-r border-gray-200 last:border-r-0 min-w-0 ${isToday ? 'bg-purple-50' : ''}`}>
+                      <div className="text-xs font-medium text-gray-700 truncate">
+                        {weekDays[date.getDay()]}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {date.getDate()}
+                      </div>
+                      {isToday && (
+                        <div 
+                          className="w-2 h-2 bg-purple-500 rounded-full mx-auto mt-1 cursor-pointer hover:bg-purple-600" 
+                          onClick={() => goToToday()}
+                          title="Aller à la semaine actuelle"
+                        ></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Grille horaire - Vue hebdomadaire avec scroll 24h complet */}
+              <div 
+                ref={setTimeScrollContainer}
+                className="relative max-h-[500px] lg:max-h-[600px] overflow-y-auto scroll-smooth"
+                style={{ scrollBehavior: 'smooth' }}
+              >
+                <div className="grid grid-cols-9 lg:grid-cols-10">
+                  {/* Colonne employé - affichage compact avec noms complets */}
+                  <div className="border-r border-gray-200 w-12 lg:w-16 sticky left-0 bg-white z-20">
+                    {employees.map((employee, empIndex) => (
+                      <div key={empIndex} className="relative">
+                        {/* Affichage employé sur plusieurs créneaux pour visibilité */}
+                        <div 
+                          className="sticky top-0 bg-white border-b border-gray-200 p-1 z-30"
+                          style={{ height: `${Math.ceil(allTimeSlots.length / employees.length) * 20}px` }}
+                        >
+                          <button
+                            onClick={() => handleEmployeeClick(employee)}
+                            className="w-full h-full flex flex-col items-center justify-center hover:bg-gray-50 rounded transition-colors"
+                          >
+                            <div 
+                              className="w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-xs font-bold text-white mb-1"
+                              style={{ backgroundColor: employee.color }}
+                            >
+                              {employee.avatar}
+                            </div>
+                            <span className="text-xs font-medium text-gray-700 truncate max-w-full leading-tight">
+                              {employee.name.split(' ')[0]}
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Colonne des heures - largeur réduite */}
+                  <div className="border-r border-gray-200 w-8 lg:w-10 sticky left-12 lg:left-16 bg-white z-19">
+                    {allTimeSlots.map((slot, index) => {
+                      const isMainHour = mainTimeSlots.includes(slot);
+                      return (
+                        <div 
+                          key={index} 
+                          className={`flex items-center justify-center text-xs border-b border-gray-100 font-medium ${
+                            isMainHour 
+                              ? 'text-gray-800 bg-gray-50 h-6 lg:h-8' 
+                              : 'text-gray-400 h-4 lg:h-5'
+                          }`}
+                        >
+                          {isMainHour ? slot : slot.endsWith(':30') ? '30' : ''}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Colonnes des jours - hauteurs réduites et responsive */}
+                  {currentWeek.map((date, dayIndex) => (
+                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
+                      {allTimeSlots.map((slot, slotIndex) => {
+                        const isMainHour = mainTimeSlots.includes(slot);
+                        return (
+                          <div
+                            key={slotIndex}
+                            className={`border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150 ${
+                              isMainHour ? 'h-6 lg:h-8 bg-white' : 'h-4 lg:h-5 bg-gray-50/30'
+                            }`}
+                            onClick={() => handleTimeSlotClick(slot, dayIndex, date)}
+                            title={`Créer un rendez-vous à ${slot} le ${date.toLocaleDateString('fr-FR')}`}
+                          />
+                        );
+                      })}
+                      
+                      {/* Événements simulés pour ce jour - meilleure lisibilité */}
+                      {simulatedAppointments
+                        .filter(appointment => {
+                          const appointmentDate = new Date(appointment.date);
+                          return appointmentDate.toDateString() === date.toDateString();
+                        })
+                        .map((appointment) => {
+                          const employee = employees.find(e => e.id === appointment.employee);
+                          
+                          return (
+                            <div
+                              key={appointment.id}
+                              className="absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-lg z-10 border cursor-pointer hover:shadow-xl transition-all bg-white border-gray-300 hover:border-gray-400"
+                              style={{
+                                top: `${getEventPositionExtended(appointment.startTime)}px`,
+                                height: `${getEventHeightExtended(appointment.startTime, appointment.endTime)}px`,
+                                minHeight: '30px',
+                                borderLeftColor: employee?.color || '#6B7280',
+                                borderLeftWidth: '4px'
+                              }}
+                              onClick={() => handleAppointmentClick(appointment)}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="truncate font-bold text-gray-900 text-xs">{appointment.serviceName}</div>
+                                {appointment.status === 'confirmed' && (
+                                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-600 rounded-full flex-shrink-0"></div>
+                                )}
+                              </div>
+                              <div className="truncate text-gray-800 text-xs font-medium">{appointment.clientName}</div>
+                              <div className="text-xs text-gray-700 truncate font-medium">{appointment.startTime} - {appointment.endTime}</div>
+                              <div className="text-xs font-bold" style={{ color: employee?.color || '#6B7280' }}>{appointment.price}€</div>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           ) : (
             <>
-              {/* Vue mensuelle desktop */}
+              {/* En-tête des jours - Vue mensuelle */}
               <div className="grid grid-cols-7 border-b border-gray-200">
                 {weekDays.map((day, index) => (
-                  <div key={index} className="p-3 text-center border-r border-gray-200 last:border-r-0 bg-gray-50">
-                    <div className="text-sm font-medium text-gray-500">{day}</div>
+                  <div key={index} className="p-1 lg:p-3 text-center border-r border-gray-200 last:border-r-0">
+                    <div className="text-xs lg:text-sm font-medium text-gray-500">{day}</div>
                   </div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-7 max-h-[600px] overflow-y-auto">
+              {/* Grille mensuelle */}
+              <div className="grid grid-cols-7">
                 {monthDays.map((date, index) => {
                   const isToday = date.toDateString() === new Date().toDateString();
                   const isCurrentMonth = date.getMonth() === selectedMonth;
@@ -1081,40 +1146,42 @@ export default function PlanningResponsive() {
                   return (
                     <div 
                       key={index} 
-                      className={`min-h-[120px] p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
+                      className={`min-h-[80px] lg:min-h-[100px] p-1 lg:p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
                         !isCurrentMonth ? 'bg-gray-50/50 text-gray-400' : ''
                       } ${isToday ? 'bg-purple-50' : ''}`}
-                      onClick={() => setViewMode('day')}
+                      onClick={() => navigateToWeekFromDate(date)}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`text-lg font-semibold ${isToday ? 'text-purple-600' : 'text-gray-900'}`}>
+                        <span className={`text-sm font-medium ${isToday ? 'text-purple-600' : ''}`}>
                           {date.getDate()}
                         </span>
                         {isToday && (
-                          <div className="w-3 h-3 bg-purple-600 rounded-full"></div>
+                          <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
                         )}
                       </div>
                       
+                      {/* Événements du jour */}
                       <div className="space-y-1">
-                        {dayEvents.slice(0, 2).map((event) => {
+                        {dayEvents.slice(0, 3).map((event) => {
+                          const employee = getEmployee(event.employeeId);
                           const isBlocked = event.isBlock;
                           const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
                           
                           return (
                             <div
                               key={event.id}
-                              className={`text-xs p-2 rounded-md border-l-3 shadow-sm ${
+                              className={`text-xs p-1 rounded border-l-2 ${
                                 isBlocked 
                                   ? 'bg-red-100 text-red-800' 
                                   : 'bg-white text-gray-800'
                               }`}
-                              style={{ borderLeftColor: serviceColor, borderLeftWidth: '3px' }}
+                              style={{ borderLeftColor: serviceColor }}
                             >
-                              <div className="font-semibold truncate">{event.title}</div>
+                              <div className="truncate font-medium">{event.title}</div>
                               {!isBlocked && (
-                                <div className="truncate text-gray-600 mt-1">{event.client}</div>
+                                <div className="truncate text-gray-600">{event.client}</div>
                               )}
-                              <div className="text-xs text-gray-500 mt-1">{event.time.split('-')[0]}</div>
+                              <div className="text-xs opacity-75">{event.time.split('-')[0]}</div>
                             </div>
                           );
                         })}
