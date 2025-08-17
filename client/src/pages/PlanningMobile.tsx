@@ -518,7 +518,7 @@ export default function PlanningMobile() {
           </div>
         </motion.div>
 
-        {/* Planning Vue Semaine - Structure Desktop comme l'image */}
+        {/* Planning Vue Semaine - VRAIMENT Responsive Mobile */}
         {viewMode === 'week' && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -526,132 +526,228 @@ export default function PlanningMobile() {
             transition={{ delay: 0.2 }}
             className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden"
           >
-            {/* En-tête avec colonne employé + jours - Structure exacte */}
-            <div className="grid grid-cols-9 lg:grid-cols-9 bg-gray-50/80 border-b border-gray-200">
-              {/* Colonne Employé - plus large */}
-              <div className="p-3 text-center text-sm font-semibold text-gray-700 border-r border-gray-200 w-24 lg:w-32">
-                <div className="flex flex-col items-center">
-                  <User className="h-4 w-4 mb-1" />
-                  <span>Équipe</span>
+            {/* VERSION MOBILE - Vue par employé avec swipe */}
+            <div className="md:hidden">
+              {/* Header mobile avec employé sélectionné */}
+              <div className="bg-gray-50/80 border-b border-gray-200 p-3">
+                <div className="text-center">
+                  {selectedEmployee === "all" ? (
+                    <div className="text-sm font-medium text-gray-700">Tous les employés</div>
+                  ) : (
+                    <div className="flex items-center justify-center space-x-2">
+                      {employees.filter(e => e.id === selectedEmployee).map(employee => (
+                        <div key={employee.id} className="flex items-center space-x-2">
+                          <div 
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                            style={{ backgroundColor: employee.color }}
+                          >
+                            {employee.avatar}
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold text-gray-900">{employee.name}</div>
+                            <div className="text-xs text-gray-500">{employee.specialties[0]}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
-              
-              {/* Colonnes des 7 jours */}
-              {currentWeek.map((date, index) => {
-                const isToday = date.toDateString() === new Date().toDateString();
-                return (
-                  <div key={index} className={`p-2 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-100' : ''}`}>
-                    <div className="text-sm font-bold text-purple-600 mb-1">
-                      {date.getDate()}
+
+              {/* Grille mobile - 7 jours */}
+              <div className="grid grid-cols-7 text-xs">
+                {currentWeek.map((date, dayIndex) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  return (
+                    <div key={dayIndex} className="border-r border-gray-200 last:border-r-0">
+                      {/* Header jour */}
+                      <div className={`p-2 text-center border-b border-gray-200 ${isToday ? 'bg-purple-100' : 'bg-gray-50'}`}>
+                        <div className="font-bold text-purple-600 text-sm">{date.getDate()}</div>
+                        <div className="text-xs">{weekDays[date.getDay()].substring(0, 2)}</div>
+                      </div>
+                      
+                      {/* Créneaux pour ce jour */}
+                      <div className="relative" style={{ minHeight: '300px' }}>
+                        {mainHours.slice(9, 20).map((hour, hourIndex) => (
+                          <div
+                            key={hourIndex}
+                            className="h-6 border-b border-gray-100 hover:bg-purple-50 cursor-pointer relative"
+                            onClick={() => handleTimeSlotClick(hour, dayIndex, date)}
+                          >
+                            {/* Heure affichée toutes les 2h */}
+                            {hourIndex % 2 === 0 && (
+                              <div className="absolute -left-1 text-xs text-gray-400 bg-white px-1 rounded">
+                                {hour.substring(0, 2)}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {/* RDV pour ce jour */}
+                        {simulatedAppointments
+                          .filter(appointment => {
+                            const appointmentDate = new Date(appointment.date);
+                            const matchDate = appointmentDate.toDateString() === date.toDateString();
+                            const matchEmployee = selectedEmployee === "all" || appointment.employee === selectedEmployee;
+                            return matchDate && matchEmployee;
+                          })
+                          .map((appointment) => {
+                            const employee = employees.find(e => e.id === appointment.employee);
+                            const startIndex = mainHours.slice(9, 20).indexOf(appointment.startTime);
+                            
+                            if (startIndex === -1) return null;
+                            
+                            return (
+                              <div
+                                key={appointment.id}
+                                className="absolute left-0.5 right-0.5 rounded p-1 text-xs z-10 cursor-pointer"
+                                style={{
+                                  top: `${startIndex * 24}px`,
+                                  height: '22px',
+                                  backgroundColor: employee?.color + '30',
+                                  borderLeft: `3px solid ${employee?.color || '#6B7280'}`,
+                                  fontSize: '10px'
+                                }}
+                              >
+                                <div className="truncate font-medium" style={{ color: employee?.color }}>
+                                  {appointment.serviceName}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                    <div className="text-xs font-medium text-gray-700">
-                      {weekDays[date.getDay()]}
-                    </div>
-                    {isToday && (
-                      <div className="w-3 h-3 bg-purple-600 rounded-full mx-auto mt-1"></div>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Grille avec employés et créneaux - Structure comme l'image */}
-            <div 
-              ref={scrollContainerRef}
-              className="relative max-h-[600px] lg:max-h-[700px] overflow-y-auto"
-            >
-              {/* Chaque employé a sa ligne complète avec créneaux horaires */}
-              {(selectedEmployee === "all" ? employees : employees.filter(e => e.id === selectedEmployee)).map((employee, empIndex) => (
-                <div key={employee.id} className="grid grid-cols-9 lg:grid-cols-9 border-b border-gray-200">
-                  {/* Colonne info employé - comme dans l'image */}
-                  <div className="border-r border-gray-200 w-24 lg:w-32 bg-gray-50/30 p-3">
-                    <div className="flex flex-col items-center space-y-2">
-                      <div 
-                        className="w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-white font-bold"
-                        style={{ backgroundColor: employee.color }}
-                      >
-                        {employee.avatar}
+            {/* VERSION DESKTOP - Structure exacte comme l'image */}
+            <div className="hidden md:block">
+              {/* En-tête desktop avec colonne employé + jours */}
+              <div className="grid grid-cols-8 bg-gray-50/80 border-b border-gray-200">
+                {/* Colonne Employé */}
+                <div className="p-3 text-center text-sm font-semibold text-gray-700 border-r border-gray-200">
+                  <div className="flex flex-col items-center">
+                    <User className="h-4 w-4 mb-1" />
+                    <span>Équipe</span>
+                  </div>
+                </div>
+                
+                {/* Colonnes des 7 jours */}
+                {currentWeek.map((date, index) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  return (
+                    <div key={index} className={`p-2 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-100' : ''}`}>
+                      <div className="text-sm font-bold text-purple-600 mb-1">
+                        {date.getDate()}
                       </div>
-                      <div className="text-center">
-                        <div className="text-sm font-bold text-gray-900">
-                          {employee.name.split(' ')[0]}
+                      <div className="text-xs font-medium text-gray-700">
+                        {weekDays[date.getDay()]}
+                      </div>
+                      {isToday && (
+                        <div className="w-3 h-3 bg-purple-600 rounded-full mx-auto mt-1"></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Grille desktop avec employés et créneaux */}
+              <div 
+                ref={scrollContainerRef}
+                className="relative max-h-[600px] lg:max-h-[700px] overflow-y-auto"
+              >
+                {(selectedEmployee === "all" ? employees : employees.filter(e => e.id === selectedEmployee)).map((employee, empIndex) => (
+                  <div key={employee.id} className="grid grid-cols-8 border-b border-gray-200">
+                    {/* Colonne info employé */}
+                    <div className="border-r border-gray-200 bg-gray-50/30 p-3">
+                      <div className="flex flex-col items-center space-y-2">
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                          style={{ backgroundColor: employee.color }}
+                        >
+                          {employee.avatar}
                         </div>
-                        <div className="text-xs text-gray-500 truncate">
-                          {employee.specialties[0]}
+                        <div className="text-center">
+                          <div className="text-sm font-bold text-gray-900">
+                            {employee.name.split(' ')[0]}
+                          </div>
+                          <div className="text-xs text-gray-500 truncate">
+                            {employee.specialties[0]}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* Colonnes des 7 jours avec créneaux horaires */}
-                  {currentWeek.map((date, dayIndex) => (
-                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-h-[200px]">
-                      {/* Créneaux horaires pour ce jour */}
-                      {mainHours.slice(9, 20).map((hour, hourIndex) => {
-                        const slotKey = `${empIndex}-${dayIndex}-${hourIndex}`;
-                        return (
-                          <div
-                            key={slotKey}
-                            className="h-8 lg:h-10 border-b border-gray-100 hover:bg-purple-50 cursor-pointer relative transition-colors group"
-                            onClick={() => handleTimeSlotClick(hour, dayIndex, date)}
-                            title={`${employee.name} - ${hour} - ${date.toLocaleDateString('fr-FR')}`}
-                          >
-                            {/* Indicateur d'heure visible au hover */}
-                            <div className="absolute left-1 top-1 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                              {hour}
-                            </div>
-                          </div>
-                        );
-                      })}
-                      
-                      {/* Événements/rendez-vous pour cet employé et ce jour */}
-                      {simulatedAppointments
-                        .filter(appointment => {
-                          const appointmentDate = new Date(appointment.date);
-                          return appointmentDate.toDateString() === date.toDateString() && 
-                                 appointment.employee === employee.id;
-                        })
-                        .map((appointment) => {
-                          const startHourIndex = mainHours.slice(9, 20).indexOf(appointment.startTime);
-                          const endHourIndex = mainHours.slice(9, 20).indexOf(appointment.endTime);
-                          
-                          if (startHourIndex === -1) return null;
-                          
-                          const height = endHourIndex > startHourIndex ? (endHourIndex - startHourIndex) * 40 : 80;
-                          
+                    
+                    {/* Colonnes des 7 jours avec créneaux */}
+                    {currentWeek.map((date, dayIndex) => (
+                      <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-h-[200px]">
+                        {mainHours.slice(9, 20).map((hour, hourIndex) => {
+                          const slotKey = `${empIndex}-${dayIndex}-${hourIndex}`;
                           return (
                             <div
-                              key={appointment.id}
-                              className="absolute left-1 right-1 rounded-lg p-2 text-xs font-medium shadow-lg z-20 border cursor-pointer hover:shadow-xl transition-all"
-                              style={{
-                                top: `${startHourIndex * 40}px`,
-                                height: `${height}px`,
-                                backgroundColor: employee.color + '20',
-                                borderLeftColor: employee.color,
-                                borderLeftWidth: '4px',
-                                borderColor: employee.color + '40'
-                              }}
-                              title={`${appointment.clientName} - ${appointment.serviceName}`}
+                              key={slotKey}
+                              className="h-10 border-b border-gray-100 hover:bg-purple-50 cursor-pointer relative transition-colors group"
+                              onClick={() => handleTimeSlotClick(hour, dayIndex, date)}
+                              title={`${employee.name} - ${hour} - ${date.toLocaleDateString('fr-FR')}`}
                             >
-                              <div className="font-bold text-gray-900 truncate text-xs mb-1">
-                                {appointment.startTime} - {appointment.endTime}
-                              </div>
-                              <div className="text-gray-800 truncate text-xs font-medium">
-                                {appointment.serviceName}
-                              </div>
-                              <div className="text-gray-600 truncate text-xs">
-                                {appointment.clientName}
-                              </div>
-                              <div className="text-xs font-bold mt-1" style={{ color: employee.color }}>
-                                {appointment.price}€
+                              <div className="absolute left-1 top-1 text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {hour}
                               </div>
                             </div>
                           );
                         })}
-                    </div>
-                  ))}
-                </div>
-              ))}
+                        
+                        {/* Événements desktop */}
+                        {simulatedAppointments
+                          .filter(appointment => {
+                            const appointmentDate = new Date(appointment.date);
+                            return appointmentDate.toDateString() === date.toDateString() && 
+                                   appointment.employee === employee.id;
+                          })
+                          .map((appointment) => {
+                            const startHourIndex = mainHours.slice(9, 20).indexOf(appointment.startTime);
+                            const endHourIndex = mainHours.slice(9, 20).indexOf(appointment.endTime);
+                            
+                            if (startHourIndex === -1) return null;
+                            
+                            const height = endHourIndex > startHourIndex ? (endHourIndex - startHourIndex) * 40 : 80;
+                            
+                            return (
+                              <div
+                                key={appointment.id}
+                                className="absolute left-1 right-1 rounded-lg p-2 text-xs font-medium shadow-lg z-20 border cursor-pointer hover:shadow-xl transition-all"
+                                style={{
+                                  top: `${startHourIndex * 40}px`,
+                                  height: `${height}px`,
+                                  backgroundColor: employee.color + '20',
+                                  borderLeftColor: employee.color,
+                                  borderLeftWidth: '4px',
+                                  borderColor: employee.color + '40'
+                                }}
+                                title={`${appointment.clientName} - ${appointment.serviceName}`}
+                              >
+                                <div className="font-bold text-gray-900 truncate text-xs mb-1">
+                                  {appointment.startTime} - {appointment.endTime}
+                                </div>
+                                <div className="text-gray-800 truncate text-xs font-medium">
+                                  {appointment.serviceName}
+                                </div>
+                                <div className="text-gray-600 truncate text-xs">
+                                  {appointment.clientName}
+                                </div>
+                                <div className="text-xs font-bold mt-1" style={{ color: employee.color }}>
+                                  {appointment.price}€
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
