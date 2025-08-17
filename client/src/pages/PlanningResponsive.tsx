@@ -580,11 +580,8 @@ export default function PlanningResponsive() {
                                     {getPaymentStatusBadge(appointment.paymentStatus || 'à régler')}
                                   </div>
                                   <div className="text-xs lg:text-sm text-gray-600">
-                                    {service?.name} • {appointment.endTime}
+                                    {service?.name} • {appointment.endTime} • {service?.price}€
                                   </div>
-                                </div>
-                                <div className="text-sm lg:text-lg font-bold text-purple-600">
-                                  {service?.price}€
                                 </div>
                               </div>
                             </motion.div>
@@ -658,9 +655,8 @@ export default function PlanningResponsive() {
                               : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
                           }`}
                         >
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="font-bold">{apt.startTime}</div>
-                            <div className="text-xs opacity-75">{service?.price}€</div>
+                          <div className="flex items-center mb-1">
+                            <div className="font-bold">{apt.startTime} • {service?.price}€</div>
                           </div>
                           <div className="truncate font-medium">{client?.firstName} {client?.lastName}</div>
                           <div className="text-xs opacity-75 truncate">{service?.name}</div>
