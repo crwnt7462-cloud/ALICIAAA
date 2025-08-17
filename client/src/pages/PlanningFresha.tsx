@@ -1008,7 +1008,25 @@ export default function PlanningFresha() {
                               }
                             `}
                             onClick={() => {
-                              // Logique pour sélectionner une semaine
+                              // Calculer l'offset de semaine pour naviguer vers cette date
+                              const selectedDate = new Date(year, month, day);
+                              const today = new Date();
+                              
+                              // Trouver le lundi de la semaine sélectionnée
+                              const selectedMonday = new Date(selectedDate);
+                              const dayOfWeek = (selectedDate.getDay() + 6) % 7; // Lundi = 0
+                              selectedMonday.setDate(selectedDate.getDate() - dayOfWeek);
+                              
+                              // Trouver le lundi de la semaine actuelle
+                              const currentMonday = new Date(today);
+                              const todayDayOfWeek = (today.getDay() + 6) % 7;
+                              currentMonday.setDate(today.getDate() - todayDayOfWeek);
+                              
+                              // Calculer la différence en semaines
+                              const timeDiff = selectedMonday.getTime() - currentMonday.getTime();
+                              const weeksDiff = Math.round(timeDiff / (7 * 24 * 60 * 60 * 1000));
+                              
+                              setCurrentWeekOffset(weeksDiff);
                               setShowCalendar(false);
                             }}
                           >
