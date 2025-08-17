@@ -25,6 +25,10 @@ type InsertAppointmentForm = {
   notes?: string;
 };
 
+type QuickAppointmentForm = InsertAppointmentForm & {
+  employeeId: string;
+};
+
 type Employee = {
   id: string;
   name: string;
@@ -102,6 +106,8 @@ const beautyServices: ServiceType[] = [
 export default function PlanningResponsive() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
+  const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{time: string, day: number, employee?: string} | null>(null);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
@@ -154,6 +160,21 @@ export default function PlanningResponsive() {
       notes: "",
       clientId: 0,
       serviceId: 0,
+    },
+  });
+
+  const quickForm = useForm<QuickAppointmentForm>({
+    resolver: zodResolver(appointmentFormSchema.extend({
+      employeeId: insertAppointmentSchema.shape.notes.optional()
+    })),
+    defaultValues: {
+      appointmentDate: "",
+      startTime: "",
+      endTime: "",
+      notes: "",
+      clientId: 0,
+      serviceId: 0,
+      employeeId: "",
     },
   });
 
@@ -324,25 +345,59 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Fonction pour obtenir la position de l'événement (optimisée pour créneaux par heure)
+  // Fonction pour obtenir la position de l'événement (optimisée pour créneaux par heure - plus compact)
   const getEventPosition = (time: string) => {
     const startTime = time.split('-')[0];
     if (!startTime) return 0;
     const [hour, minute] = startTime.split(':').map(Number);
     if (hour === undefined || minute === undefined) return 0;
     const slotIndex = timeSlots.findIndex(slot => slot === `${hour.toString().padStart(2, '0')}:00`);
-    return slotIndex >= 0 ? slotIndex * 48 + (minute / 60) * 48 : 0; // 48px par heure (responsive mobile/desktop)
+    return slotIndex >= 0 ? slotIndex * 32 + (minute / 60) * 32 : 0; // 32px par heure (plus compact)
   };
 
-  // Fonction pour calculer la hauteur de l'événement (optimisée pour responsive)
+  // Fonction pour calculer la hauteur de l'événement (optimisée pour responsive - plus compact)
   const getEventHeight = (time: string) => {
     const [start, end] = time.split('-');
-    if (!start || !end) return 48;
+    if (!start || !end) return 32;
     const [startHour, startMin] = start.split(':').map(Number);
     const [endHour, endMin] = end.split(':').map(Number);
-    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 48;
+    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 32;
     const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
-    return Math.max(duration / 60 * 48, 30); // 48px par heure, minimum 30px pour lisibilité mobile
+    return Math.max(duration / 60 * 32, 24); // 32px par heure, minimum 24px pour lisibilité mobile
+  };
+
+  // Fonction pour gérer le clic sur un créneau vide
+  const handleTimeSlotClick = (timeSlot: string, dayIndex: number, employeeId?: string) => {
+    const appointmentDate = viewMode === 'week' 
+      ? currentWeek[dayIndex]?.toISOString().split('T')[0]
+      : new Date().toISOString().split('T')[0];
+    
+    // Pré-remplir le formulaire avec les informations du créneau sélectionné
+    quickForm.reset({
+      appointmentDate: appointmentDate || "",
+      startTime: timeSlot,
+      endTime: calculateEndTime(timeSlot, 60), // Durée par défaut de 60min
+      notes: "",
+      clientId: 0,
+      serviceId: 0,
+      employeeId: employeeId || ""
+    });
+    
+    setSelectedTimeSlot({
+      time: timeSlot,
+      day: dayIndex,
+      employee: employeeId
+    });
+    setIsAppointmentDialogOpen(true);
+  };
+
+  // Fonction pour calculer l'heure de fin
+  const calculateEndTime = (startTime: string, durationMinutes: number) => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes + durationMinutes;
+    const endHours = Math.floor(totalMinutes / 60);
+    const endMins = totalMinutes % 60;
+    return `${endHours.toString().padStart(2, '0')}:${endMins.toString().padStart(2, '0')}`;
   };
 
   const navigate = (direction: 'prev' | 'next') => {
@@ -675,7 +730,9 @@ export default function PlanningResponsive() {
                     {timeSlots.map((slot, slotIndex) => (
                       <div
                         key={slotIndex}
-                        className="h-12 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                        className="h-8 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150"
+                        onClick={() => handleTimeSlotClick(slot, new Date().getDay(), employee.id)}
+                        title={`Créer un rendez-vous à ${slot} avec ${employee.name}`}
                       />
                     ))}
                     
@@ -751,7 +808,7 @@ export default function PlanningResponsive() {
                   {/* Colonne des heures */}
                   <div className="border-r border-gray-200 w-12 lg:w-16">
                     {timeSlots.map((slot, index) => (
-                      <div key={index} className="h-12 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
+                      <div key={index} className="h-8 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
                         {slot}
                       </div>
                     ))}
@@ -763,7 +820,9 @@ export default function PlanningResponsive() {
                       {timeSlots.map((slot, slotIndex) => (
                         <div
                           key={slotIndex}
-                          className="h-12 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                          className="h-8 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150"
+                          onClick={() => handleTimeSlotClick(slot, dayIndex)}
+                          title={`Créer un rendez-vous à ${slot} le ${date.toLocaleDateString('fr-FR')}`}
                         />
                       ))}
                       
@@ -1042,6 +1101,154 @@ export default function PlanningResponsive() {
                     type="button" 
                     variant="outline" 
                     onClick={() => setIsDialogOpen(false)}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={createMutation.isPending}
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    {createMutation.isPending ? "Création..." : "Créer RDV"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog pour créer un RDV depuis un créneau cliqué */}
+        <Dialog open={isAppointmentDialogOpen} onOpenChange={setIsAppointmentDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <CalendarDays className="h-5 w-5 mr-2" />
+                Nouveau rendez-vous
+                {selectedTimeSlot && (
+                  <Badge variant="secondary" className="ml-2">
+                    {selectedTimeSlot.time} - {selectedTimeSlot.employee ? getEmployee(selectedTimeSlot.employee)?.name : 'Équipe'}
+                  </Badge>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+            <Form {...quickForm}>
+              <form onSubmit={quickForm.handleSubmit((data) => {
+                createMutation.mutate(data);
+                setIsAppointmentDialogOpen(false);
+              })} className="space-y-4">
+                
+                <FormField
+                  control={quickForm.control}
+                  name="serviceId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service</FormLabel>
+                      <Select onValueChange={(value) => {
+                        field.onChange(parseInt(value));
+                        const service = beautyServices.find(s => s.id === parseInt(value));
+                        if (service && selectedTimeSlot) {
+                          quickForm.setValue('endTime', calculateEndTime(selectedTimeSlot.time, service.duration));
+                        }
+                      }}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un service" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {beautyServices.map((service) => (
+                            <SelectItem key={service.id} value={service.id.toString()}>
+                              <div className="flex items-center space-x-2">
+                                <div 
+                                  className="w-3 h-3 rounded" 
+                                  style={{ backgroundColor: service.color }}
+                                />
+                                <span>{service.name} - {service.price}€ ({service.duration}min)</span>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={quickForm.control}
+                  name="clientId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un client" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1">Sophie Martin</SelectItem>
+                          <SelectItem value="2">Marie Dubois</SelectItem>
+                          <SelectItem value="3">Emma Laurent</SelectItem>
+                          <SelectItem value="4">Julie Bernard</SelectItem>
+                          <SelectItem value="5">Camille Blanc</SelectItem>
+                          <SelectItem value="6">Nina Roux</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={quickForm.control}
+                    name="startTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Heure début</FormLabel>
+                        <FormControl>
+                          <Input {...field} readOnly className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={quickForm.control}
+                    name="endTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Heure fin</FormLabel>
+                        <FormControl>
+                          <Input {...field} readOnly className="bg-gray-50" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={quickForm.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes (optionnel)</FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Notes du rendez-vous..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsAppointmentDialogOpen(false)}
                   >
                     Annuler
                   </Button>
