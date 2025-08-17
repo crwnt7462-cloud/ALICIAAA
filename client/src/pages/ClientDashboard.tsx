@@ -101,7 +101,7 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50 to-pink-100">
       {/* Sidebar Desktop - Glassmorphism */}
       <div className="hidden lg:flex lg:w-60 fixed left-0 top-0 h-full z-30" 
            style={{
@@ -115,7 +115,7 @@ export default function ClientDashboard() {
           <div className="px-6 py-8">
             <div className="flex items-center justify-center">
               <img 
-                src="@assets/Logo avyento._1755467984886.png" 
+                src="@assets/Logo avyento._1755468508430.png" 
                 alt="Avyento" 
                 className="h-[95px] w-auto object-contain"
               />
@@ -264,13 +264,7 @@ export default function ClientDashboard() {
             <div className="flex items-center space-x-4 flex-shrink-0">
               <button
                 onClick={() => setLocation('/salon-search')}
-                className="px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105 text-sm sm:text-base whitespace-nowrap"
-                style={{
-                  background: 'rgba(139, 92, 246, 0.2)',
-                  backdropFilter: 'blur(20px) saturate(180%)',
-                  border: '1px solid rgba(139, 92, 246, 0.3)',
-                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.15)'
-                }}
+                className="glass-button px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105 text-sm sm:text-base whitespace-nowrap"
               >
                 <Calendar className="w-4 h-4 mr-2" />
                 Nouveau rendez-vous
@@ -365,7 +359,7 @@ export default function ClientDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total dépensé</p>
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mt-2">
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-2">
                     {safeStats.totalSpent}€
                   </h3>
                   <div className="flex items-center mt-2">
@@ -404,13 +398,7 @@ export default function ClientDashboard() {
                   <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Prochains rendez-vous</h2>
                   <button
                     onClick={() => setLocation('/salon-search')}
-                    className="text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
-                    style={{
-                      background: 'rgba(139, 92, 246, 0.2)',
-                      backdropFilter: 'blur(20px) saturate(180%)',
-                      border: '1px solid rgba(139, 92, 246, 0.3)',
-                      boxShadow: '0 4px 16px rgba(139, 92, 246, 0.15)'
-                    }}
+                    className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Réserver
@@ -499,13 +487,7 @@ export default function ClientDashboard() {
                 <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Historique</h2>
                 <button
                   onClick={() => setLocation('/appointment-history')}
-                  className="text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
-                  style={{
-                    background: 'rgba(139, 92, 246, 0.2)',
-                    backdropFilter: 'blur(20px) saturate(180%)',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.15)'
-                  }}
+                  className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
                 >
                   Voir tout
                 </button>
@@ -648,15 +630,15 @@ export default function ClientDashboard() {
         </div>
       )}
 
-      {/* Navigation Mobile Bottom - Glassmorphism */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40" 
+      {/* Navigation Mobile Bottom - Glassmorphism moderne */}
+      <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 rounded-3xl" 
            style={{
              backdropFilter: 'blur(20px) saturate(180%)',
-             background: 'rgba(255, 255, 255, 0.9)',
-             borderTop: '1px solid rgba(255, 255, 255, 0.3)',
-             boxShadow: '0 -8px 32px rgba(31, 38, 135, 0.15)'
+             background: 'rgba(255, 255, 255, 0.95)',
+             border: '1px solid rgba(255, 255, 255, 0.4)',
+             boxShadow: '0 8px 32px rgba(31, 38, 135, 0.25)'
            }}>
-        <div className="grid grid-cols-4 gap-1 p-2">
+        <div className="grid grid-cols-4 gap-1 p-3">
           <button
             onClick={() => setLocation('/client-dashboard')}
             className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200"

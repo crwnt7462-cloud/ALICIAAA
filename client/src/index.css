@@ -71,6 +71,21 @@
   color: #111827 !important; /* Force le prix en noir pour lisibilité */
 }
 
+/* Glass button style - identical to homepage */
+.glass-button {
+  background: rgba(139, 92, 246, 0.2) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15) !important;
+  transition: all 0.3s ease !important;
+}
+
+.glass-button:hover {
+  background: rgba(139, 92, 246, 0.3) !important;
+  transform: scale(1.05) !important;
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.25) !important;
+}
+
 /* Amélioration design professionnel */
 .professional-card {
   background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 100%);
