@@ -3,9 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Plus, Filter, Share, Settings, Download, Euro, Target, TrendingUp, Clock, User, Users, Calendar, X, Scissors, Palette, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Share, Download, Euro, Target, TrendingUp, Clock, User, Users, X, Scissors, Palette, CalendarDays } from "lucide-react";
 import { motion } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -107,21 +107,24 @@ export default function PlanningResponsive() {
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
-  const [appointmentType, setAppointmentType] = useState<"appointment" | "block">("appointment");
+  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: appointments = [] } = useQuery({
-    queryKey: ["/api/appointments"],
-  });
+  // Utilisation des données simulées pour le planning beauté
+  // const { data: appointments = [] } = useQuery({
+  //   queryKey: ["/api/appointments"],
+  // });
 
-  const { data: clients = [] } = useQuery({
-    queryKey: ["/api/clients"],
-  });
+  // const { data: clients = [] } = useQuery({
+  //   queryKey: ["/api/clients"],
+  // });
 
-  const { data: services = [] } = useQuery({
-    queryKey: ["/api/services"],
-  });
+  // const { data: services = [] } = useQuery({
+  //   queryKey: ["/api/services"],
+  // });
 
   const createMutation = useMutation({
     mutationFn: (data: InsertAppointmentForm) => 
@@ -157,25 +160,48 @@ export default function PlanningResponsive() {
     },
   });
 
-  // Calcul des dates de la semaine
-  const { currentWeek, currentMonth, currentYear } = useMemo(() => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
-    
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(startOfWeek);
-      day.setDate(startOfWeek.getDate() + i);
-      week.push(day);
+  // Calcul des dates selon le mode de vue
+  const { currentWeek, currentMonth, currentYear, monthDays } = useMemo(() => {
+    if (viewMode === 'week') {
+      const today = new Date();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
+      
+      const week = [];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(startOfWeek);
+        day.setDate(startOfWeek.getDate() + i);
+        week.push(day);
+      }
+      
+      return {
+        currentWeek: week,
+        currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
+        currentYear: startOfWeek.getFullYear(),
+        monthDays: []
+      };
+    } else {
+      // Vue mensuelle
+      const firstDay = new Date(selectedYear, selectedMonth, 1);
+      const lastDay = new Date(selectedYear, selectedMonth + 1, 0);
+      const startDate = new Date(firstDay);
+      startDate.setDate(startDate.getDate() - firstDay.getDay());
+      
+      const monthDays = [];
+      for (let i = 0; i < 42; i++) { // 6 semaines max
+        const day = new Date(startDate);
+        day.setDate(startDate.getDate() + i);
+        monthDays.push(day);
+      }
+      
+      return {
+        currentWeek: [],
+        currentMonth: firstDay.toLocaleDateString('fr-FR', { month: 'long' }),
+        currentYear: selectedYear,
+        monthDays
+      };
     }
-    
-    return {
-      currentWeek: week,
-      currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
-      currentYear: startOfWeek.getFullYear()
-    };
-  }, [currentWeekOffset]);
+  }, [currentWeekOffset, viewMode, selectedMonth, selectedYear]);
 
   // Rendez-vous beauté simulés
   const beautySampleEvents = [
@@ -312,6 +338,34 @@ export default function PlanningResponsive() {
     setCurrentWeekOffset(prev => direction === 'next' ? prev + 1 : prev - 1);
   };
 
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    if (direction === 'next') {
+      if (selectedMonth === 11) {
+        setSelectedMonth(0);
+        setSelectedYear(selectedYear + 1);
+      } else {
+        setSelectedMonth(selectedMonth + 1);
+      }
+    } else {
+      if (selectedMonth === 0) {
+        setSelectedMonth(11);
+        setSelectedYear(selectedYear - 1);
+      } else {
+        setSelectedMonth(selectedMonth - 1);
+      }
+    }
+  };
+
+  const goToToday = () => {
+    const today = new Date();
+    if (viewMode === 'week') {
+      setCurrentWeekOffset(0);
+    } else {
+      setSelectedMonth(today.getMonth());
+      setSelectedYear(today.getFullYear());
+    }
+  };
+
   // Fonction pour obtenir la couleur du service
   const getServiceColor = (serviceId: number) => {
     const service = beautyServices.find(s => s.id === serviceId);
@@ -414,7 +468,7 @@ export default function PlanningResponsive() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setCurrentWeekOffset(0)}
+                  onClick={goToToday}
                   className="bg-white/80 backdrop-blur-sm border-gray-200"
                 >
                   Aujourd'hui
@@ -422,7 +476,7 @@ export default function PlanningResponsive() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigateWeek('prev')}
+                  onClick={() => viewMode === 'week' ? navigateWeek('prev') : navigateMonth('prev')}
                   className="p-2"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -430,18 +484,61 @@ export default function PlanningResponsive() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => navigateWeek('next')}
+                  onClick={() => viewMode === 'week' ? navigateWeek('next') : navigateMonth('next')}
                   className="p-2"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
-                <span className="text-lg font-medium text-gray-700 capitalize">
-                  {currentMonth} {currentYear}
-                </span>
+                
+                {/* Sélecteurs mois et année pour vue mensuelle */}
+                {viewMode === 'month' ? (
+                  <div className="flex items-center space-x-2">
+                    <Select value={selectedMonth.toString()} onValueChange={(value) => setSelectedMonth(parseInt(value))}>
+                      <SelectTrigger className="w-32 bg-white/80 backdrop-blur-sm border-gray-200">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 12 }, (_, i) => (
+                          <SelectItem key={i} value={i.toString()}>
+                            {new Date(2024, i, 1).toLocaleDateString('fr-FR', { month: 'long' })}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(parseInt(value))}>
+                      <SelectTrigger className="w-20 bg-white/80 backdrop-blur-sm border-gray-200">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 10 }, (_, i) => {
+                          const year = new Date().getFullYear() - 2 + i;
+                          return (
+                            <SelectItem key={year} value={year.toString()}>
+                              {year}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ) : (
+                  <span className="text-lg font-medium text-gray-700 capitalize">
+                    {currentMonth} {currentYear}
+                  </span>
+                )}
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
+              <Select value={viewMode} onValueChange={(value: 'week' | 'month') => setViewMode(value)}>
+                <SelectTrigger className="w-28 bg-white/80 backdrop-blur-sm border-gray-200">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Semaine</SelectItem>
+                  <SelectItem value="month">Mois</SelectItem>
+                </SelectContent>
+              </Select>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -508,114 +605,191 @@ export default function PlanningResponsive() {
           </div>
         </motion.div>
 
-        {/* Vue calendrier hebdomadaire */}
+        {/* Vue calendrier */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
         >
-          {/* En-tête des jours */}
-          <div className="grid grid-cols-8 border-b border-gray-200">
-            <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4" />
-                <span>Heures</span>
-              </div>
-            </div>
-            {currentWeek.map((date, index) => {
-              const isToday = date.toDateString() === new Date().toDateString();
-              return (
-                <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-50' : ''}`}>
-                  <div className="text-sm font-medium text-gray-500">
-                    {weekDays[date.getDay()]} {date.getDate()}
+          {viewMode === 'week' ? (
+            <>
+              {/* En-tête des jours - Vue hebdomadaire */}
+              <div className="grid grid-cols-8 border-b border-gray-200">
+                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4" />
+                    <span>Heures</span>
                   </div>
-                  {isToday && (
-                    <Badge variant="secondary" className="mt-1 text-xs bg-purple-100 text-purple-700">
-                      Aujourd'hui
-                    </Badge>
-                  )}
                 </div>
-              );
-            })}
-          </div>
+                {currentWeek.map((date, index) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  return (
+                    <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-50' : ''}`}>
+                      <div className="text-sm font-medium text-gray-500">
+                        {weekDays[date.getDay()]} {date.getDate()}
+                      </div>
+                      {isToday && (
+                        <Badge variant="secondary" className="mt-1 text-xs bg-purple-100 text-purple-700">
+                          Aujourd'hui
+                        </Badge>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
 
-          {/* Grille horaire */}
-          <div className="relative">
-            <div className="grid grid-cols-8">
-              {/* Colonne des heures */}
-              <div className="border-r border-gray-200">
-                {timeSlots.map((slot, index) => (
-                  <div key={index} className="h-20 flex items-start justify-end pr-2 pt-1 text-xs text-gray-500 border-b border-gray-100">
-                    {slot}
+              {/* Grille horaire - Vue hebdomadaire */}
+              <div className="relative">
+                <div className="grid grid-cols-8">
+                  {/* Colonne des heures */}
+                  <div className="border-r border-gray-200">
+                    {timeSlots.map((slot, index) => (
+                      <div key={index} className="h-20 flex items-start justify-end pr-2 pt-1 text-xs text-gray-500 border-b border-gray-100">
+                        {slot}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Colonnes des jours */}
+                  {currentWeek.map((date, dayIndex) => (
+                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
+                      {timeSlots.map((slot, slotIndex) => (
+                        <div
+                          key={slotIndex}
+                          className="h-20 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                        />
+                      ))}
+                      
+                      {/* Événements pour ce jour */}
+                      {filteredEvents
+                        .filter(event => event.day === dayIndex)
+                        .map((event) => {
+                          const employee = getEmployee(event.employeeId);
+                          const isBlocked = event.isBlock;
+                          const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                          
+                          return (
+                            <div
+                              key={event.id}
+                              className={`absolute left-1 right-1 border rounded-md p-2 text-xs font-medium shadow-sm z-10 ${
+                                isBlocked 
+                                  ? 'bg-red-100 border-red-300 text-red-800' 
+                                  : 'bg-white border-gray-300 text-gray-800'
+                              }`}
+                              style={{
+                                top: `${getEventPosition(event.time)}px`,
+                                height: `${getEventHeight(event.time)}px`,
+                                minHeight: '35px',
+                                borderLeftColor: serviceColor,
+                                borderLeftWidth: '4px'
+                              }}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="truncate font-semibold">{event.title}</div>
+                                {event.status === 'confirmed' && !isBlocked && (
+                                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                )}
+                              </div>
+                              {!isBlocked && (
+                                <div className="truncate text-gray-600 mb-1">{event.client}</div>
+                              )}
+                              <div className="text-xs opacity-75 mb-1">{event.time}</div>
+                              {employee && selectedEmployee === "all" && (
+                                <div 
+                                  className="text-xs px-1 py-0.5 rounded text-white"
+                                  style={{ backgroundColor: employee.color }}
+                                >
+                                  {employee.name}
+                                </div>
+                              )}
+                              {event.notes && (
+                                <div className="text-xs text-gray-500 truncate mt-1">
+                                  {event.notes}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* En-tête des jours - Vue mensuelle */}
+              <div className="grid grid-cols-7 border-b border-gray-200">
+                {weekDays.map((day, index) => (
+                  <div key={index} className="p-4 text-center border-r border-gray-200 last:border-r-0">
+                    <div className="text-sm font-medium text-gray-500">{day}</div>
                   </div>
                 ))}
               </div>
 
-              {/* Colonnes des jours */}
-              {currentWeek.map((date, dayIndex) => (
-                <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
-                  {timeSlots.map((slot, slotIndex) => (
-                    <div
-                      key={slotIndex}
-                      className="h-20 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
-                    />
-                  ))}
+              {/* Grille mensuelle */}
+              <div className="grid grid-cols-7">
+                {monthDays.map((date, index) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  const isCurrentMonth = date.getMonth() === selectedMonth;
+                  const dayEvents = filteredEvents.filter(event => {
+                    const eventDate = new Date(selectedYear, selectedMonth, date.getDate());
+                    return eventDate.toDateString() === date.toDateString();
+                  });
                   
-                  {/* Événements pour ce jour */}
-                  {filteredEvents
-                    .filter(event => event.day === dayIndex)
-                    .map((event) => {
-                      const employee = getEmployee(event.employeeId);
-                      const isBlocked = event.isBlock;
-                      const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                  return (
+                    <div 
+                      key={index} 
+                      className={`min-h-[120px] p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
+                        !isCurrentMonth ? 'bg-gray-50/50 text-gray-400' : ''
+                      } ${isToday ? 'bg-purple-50' : ''}`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className={`text-sm font-medium ${isToday ? 'text-purple-600' : ''}`}>
+                          {date.getDate()}
+                        </span>
+                        {isToday && (
+                          <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                        )}
+                      </div>
                       
-                      return (
-                        <div
-                          key={event.id}
-                          className={`absolute left-1 right-1 border rounded-md p-2 text-xs font-medium shadow-sm z-10 ${
-                            isBlocked 
-                              ? 'bg-red-100 border-red-300 text-red-800' 
-                              : 'bg-white border-gray-300 text-gray-800'
-                          }`}
-                          style={{
-                            top: `${getEventPosition(event.time)}px`,
-                            height: `${getEventHeight(event.time)}px`,
-                            minHeight: '35px',
-                            borderLeftColor: serviceColor,
-                            borderLeftWidth: '4px'
-                          }}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="truncate font-semibold">{event.title}</div>
-                            {event.status === 'confirmed' && !isBlocked && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                            )}
-                          </div>
-                          {!isBlocked && (
-                            <div className="truncate text-gray-600 mb-1">{event.client}</div>
-                          )}
-                          <div className="text-xs opacity-75 mb-1">{event.time}</div>
-                          {employee && selectedEmployee === "all" && (
-                            <div 
-                              className="text-xs px-1 py-0.5 rounded text-white"
-                              style={{ backgroundColor: employee.color }}
+                      {/* Événements du jour */}
+                      <div className="space-y-1">
+                        {dayEvents.slice(0, 3).map((event) => {
+                          const employee = getEmployee(event.employeeId);
+                          const isBlocked = event.isBlock;
+                          const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                          
+                          return (
+                            <div
+                              key={event.id}
+                              className={`text-xs p-1 rounded border-l-2 ${
+                                isBlocked 
+                                  ? 'bg-red-100 text-red-800' 
+                                  : 'bg-white text-gray-800'
+                              }`}
+                              style={{ borderLeftColor: serviceColor }}
                             >
-                              {employee.name}
+                              <div className="truncate font-medium">{event.title}</div>
+                              {!isBlocked && (
+                                <div className="truncate text-gray-600">{event.client}</div>
+                              )}
+                              <div className="text-xs opacity-75">{event.time.split('-')[0]}</div>
                             </div>
-                          )}
-                          {event.notes && (
-                            <div className="text-xs text-gray-500 truncate mt-1">
-                              {event.notes}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              ))}
-            </div>
-          </div>
+                          );
+                        })}
+                        {dayEvents.length > 3 && (
+                          <div className="text-xs text-gray-500 text-center">
+                            +{dayEvents.length - 3} autre{dayEvents.length - 3 > 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
         </motion.div>
 
         {/* Légende des services */}
@@ -700,11 +874,10 @@ export default function PlanningResponsive() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Array.isArray(clients) && clients.map((client: any) => (
-                            <SelectItem key={client.id} value={client.id.toString()}>
-                              {client.firstName} {client.lastName}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="1">Sophie Martin</SelectItem>
+                          <SelectItem value="2">Marie Dubois</SelectItem>
+                          <SelectItem value="3">Emma Laurent</SelectItem>
+                          <SelectItem value="4">Julie Bernard</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
