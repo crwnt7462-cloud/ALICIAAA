@@ -752,6 +752,259 @@ export default function PlanningMobile() {
           </motion.div>
         )}
 
+        {/* Planning Vue Jour - Mobile Optimisée */}
+        {viewMode === 'day' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden"
+          >
+            {/* Header Vue Jour Mobile */}
+            <div className="bg-gradient-to-r from-purple-100 to-purple-200 p-3 border-b border-purple-300">
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-800">
+                  {currentWeek[0].toLocaleDateString('fr-FR', { 
+                    weekday: 'long', 
+                    day: 'numeric', 
+                    month: 'long' 
+                  })}
+                </div>
+                <div className="text-sm text-purple-600 flex items-center justify-center space-x-4">
+                  <span>{simulatedAppointments.filter(apt => 
+                    new Date(apt.date).toDateString() === currentWeek[0].toDateString()
+                  ).length} RDV</span>
+                  <span>•</span>
+                  <span>{simulatedAppointments.filter(apt => 
+                    new Date(apt.date).toDateString() === currentWeek[0].toDateString()
+                  ).reduce((sum, apt) => sum + apt.price, 0)}€ CA</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Filtre employé mobile pour vue jour */}
+            <div className="p-3 bg-gray-50/50 border-b border-gray-200">
+              <select
+                value={selectedEmployee}
+                onChange={(e) => setSelectedEmployee(e.target.value)}
+                className="w-full p-2 rounded-lg border border-gray-300 bg-white text-sm"
+              >
+                <option value="all">👥 Tous les employés</option>
+                {employees.map(employee => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.avatar} {employee.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Timeline mobile compacte */}
+            <div 
+              ref={scrollContainerRef}
+              className="relative max-h-[500px] overflow-y-auto"
+            >
+              {/* Grille des heures optimisée mobile */}
+              {mainHours.slice(8, 20).map((timeSlot, index) => (
+                <div
+                  key={timeSlot}
+                  className="flex items-stretch border-b border-gray-100 min-h-[50px]"
+                >
+                  {/* Colonne heure compacte */}
+                  <div className="w-14 flex-shrink-0 bg-gray-50 flex items-center justify-center border-r border-gray-200">
+                    <div className="text-xs font-bold text-gray-700">
+                      {timeSlot.substring(0, 2)}h
+                    </div>
+                  </div>
+                  
+                  {/* Zone RDV responsive */}
+                  <div className="flex-1 relative p-2 hover:bg-purple-50/50 cursor-pointer transition-colors">
+                    {simulatedAppointments
+                      .filter(appointment => {
+                        const appointmentDate = new Date(appointment.date);
+                        const matchDate = appointmentDate.toDateString() === currentWeek[0].toDateString();
+                        const matchTime = appointment.startTime === timeSlot;
+                        const matchEmployee = selectedEmployee === "all" || appointment.employee === selectedEmployee;
+                        return matchDate && matchTime && matchEmployee;
+                      })
+                      .map((appointment) => {
+                        const employee = employees.find(e => e.id === appointment.employee);
+                        return (
+                          <div
+                            key={appointment.id}
+                            className="bg-white rounded-xl p-3 border-l-4 shadow-sm mb-2 last:mb-0 hover:shadow-md transition-shadow"
+                            style={{
+                              borderLeftColor: employee?.color || '#6B7280',
+                              backgroundColor: `${employee?.color || '#6B7280'}08`
+                            }}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="font-bold text-gray-900 text-sm truncate flex-1 mr-2">
+                                {appointment.serviceName}
+                              </div>
+                              <div className="text-sm font-bold px-2 py-1 rounded-full text-white text-xs" 
+                                   style={{ backgroundColor: employee?.color || '#6B7280' }}>
+                                {appointment.price}€
+                              </div>
+                            </div>
+                            
+                            <div className="text-sm text-gray-700 mb-2 font-medium">
+                              👤 {appointment.clientName}
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <div 
+                                  className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                  style={{ backgroundColor: employee?.color || '#6B7280' }}
+                                >
+                                  {employee?.avatar}
+                                </div>
+                                <div className="text-xs text-gray-600">
+                                  {employee?.name.split(' ')[0]}
+                                </div>
+                              </div>
+                              
+                              <div className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                {appointment.startTime} - {appointment.endTime}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      
+                    {/* Zone d'ajout mobile */}
+                    {!simulatedAppointments.some(apt => {
+                      const matchDate = new Date(apt.date).toDateString() === currentWeek[0].toDateString();
+                      const matchTime = apt.startTime === timeSlot;
+                      const matchEmployee = selectedEmployee === "all" || apt.employee === selectedEmployee;
+                      return matchDate && matchTime && matchEmployee;
+                    }) && (
+                      <div 
+                        className="opacity-0 hover:opacity-100 transition-opacity p-3 rounded-xl border-2 border-dashed border-purple-300 text-center text-purple-600 text-sm bg-purple-50/30"
+                        onClick={() => handleTimeSlotClick(timeSlot, 0, currentWeek[0])}
+                      >
+                        <div className="flex items-center justify-center space-x-2">
+                          <div className="w-6 h-6 rounded-full bg-purple-200 flex items-center justify-center">
+                            <span className="text-purple-600 text-xs font-bold">+</span>
+                          </div>
+                          <span className="font-medium">Nouveau RDV</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Planning Vue Mois - Mobile Optimisée */}
+        {viewMode === 'month' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden"
+          >
+            {/* Header Vue Mois */}
+            <div className="bg-gradient-to-r from-purple-100 to-purple-200 p-3 border-b border-purple-300">
+              <div className="text-center">
+                <div className="text-lg font-bold text-purple-800">
+                  {currentWeek[0].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                </div>
+                <div className="text-sm text-purple-600">
+                  Vue mensuelle • {selectedEmployee === "all" ? "Toute l'équipe" : employees.find(e => e.id === selectedEmployee)?.name}
+                </div>
+              </div>
+            </div>
+
+            {/* Grille calendrier mobile */}
+            <div className="p-3">
+              {/* En-têtes des jours de la semaine */}
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((day, index) => (
+                  <div key={index} className="text-center text-xs font-bold text-gray-600 p-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              
+              {/* Grille des jours du mois */}
+              <div className="grid grid-cols-7 gap-1">
+                {Array.from({ length: 35 }, (_, index) => {
+                  const date = new Date(currentWeek[0]);
+                  // Première semaine du mois
+                  const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+                  const startDate = new Date(firstDayOfMonth);
+                  startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay() + 1 + index);
+                  
+                  const isCurrentMonth = startDate.getMonth() === date.getMonth();
+                  const isToday = startDate.toDateString() === new Date().toDateString();
+                  
+                  const dayAppointments = simulatedAppointments.filter(apt => {
+                    const appointmentDate = new Date(apt.date);
+                    const matchDate = appointmentDate.toDateString() === startDate.toDateString();
+                    const matchEmployee = selectedEmployee === "all" || apt.employee === selectedEmployee;
+                    return matchDate && matchEmployee;
+                  });
+                  
+                  return (
+                    <div
+                      key={index}
+                      className={`relative aspect-square border border-gray-200 rounded-lg p-1 cursor-pointer hover:bg-purple-50 transition-colors ${
+                        isCurrentMonth ? 'bg-white' : 'bg-gray-50'
+                      } ${isToday ? 'ring-2 ring-purple-400' : ''}`}
+                      onClick={() => {
+                        // Navigation vers la vue jour pour cette date
+                        setViewMode('day');
+                        // TODO: Mettre à jour currentWeek avec cette date
+                      }}
+                    >
+                      {/* Numéro du jour */}
+                      <div className={`text-xs font-bold mb-1 ${
+                        isCurrentMonth ? (isToday ? 'text-purple-700' : 'text-gray-900') : 'text-gray-400'
+                      }`}>
+                        {startDate.getDate()}
+                      </div>
+                      
+                      {/* Indicateurs RDV */}
+                      <div className="space-y-0.5">
+                        {dayAppointments.slice(0, 2).map((appointment, aptIndex) => {
+                          const employee = employees.find(e => e.id === appointment.employee);
+                          return (
+                            <div
+                              key={aptIndex}
+                              className="text-xs p-0.5 rounded text-white font-medium truncate"
+                              style={{ backgroundColor: employee?.color || '#6B7280', fontSize: '10px' }}
+                              title={`${appointment.startTime} - ${appointment.serviceName}`}
+                            >
+                              {appointment.startTime.substring(0, 2)}h {appointment.serviceName.substring(0, 8)}...
+                            </div>
+                          );
+                        })}
+                        
+                        {/* Indicateur "plus de RDV" */}
+                        {dayAppointments.length > 2 && (
+                          <div className="text-xs text-purple-600 font-bold">
+                            +{dayAppointments.length - 2}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Indicateur CA du jour */}
+                      {dayAppointments.length > 0 && (
+                        <div className="absolute bottom-1 right-1 text-xs font-bold text-green-600 bg-green-100 px-1 rounded">
+                          {dayAppointments.reduce((sum, apt) => sum + apt.price, 0)}€
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Menu contextuel pour créneaux */}
         <Dialog open={isTimeSlotMenuOpen} onOpenChange={setIsTimeSlotMenuOpen}>
           <DialogContent className="max-w-xs mx-auto">
@@ -771,7 +1024,7 @@ export default function PlanningMobile() {
                 onClick={handleCreateAppointment}
                 className="w-full justify-start bg-green-600 hover:bg-green-700 text-white"
               >
-                <Scissors className="h-4 w-4 mr-2" />
+                <Calendar className="h-4 w-4 mr-2" />
                 Créer un rendez-vous
               </Button>
               <Button
