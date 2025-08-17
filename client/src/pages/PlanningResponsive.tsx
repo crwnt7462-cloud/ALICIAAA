@@ -2,9 +2,8 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Euro, Target, Eye, CreditCard, CheckCircle, FileText, Check } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Plus, Filter, Share, Settings, Download, Euro, Target, TrendingUp, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,6 +13,7 @@ import { insertAppointmentSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -28,23 +28,30 @@ const appointmentFormSchema = insertAppointmentSchema.extend({
   notes: insertAppointmentSchema.shape.notes.optional(),
 });
 
+// Configuration des créneaux horaires (12 PM à 8 PM comme dans l'image)
 const timeSlots = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00"
+  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", 
+  "18:00", "18:30", "19:00", "19:30", "20:00"
 ];
 
-const weekDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+
+// Couleurs pour les différents types d'événements
+const eventColors = [
+  { bg: 'bg-green-200', border: 'border-green-300', text: 'text-green-800' }, // Lunch
+  { bg: 'bg-purple-200', border: 'border-purple-300', text: 'text-purple-800' }, // Meetings
+  { bg: 'bg-blue-200', border: 'border-blue-300', text: 'text-blue-800' }, // Projects
+  { bg: 'bg-yellow-200', border: 'border-yellow-300', text: 'text-yellow-800' }, // Creative
+  { bg: 'bg-pink-200', border: 'border-pink-300', text: 'text-pink-800' }, // Family
+  { bg: 'bg-indigo-200', border: 'border-indigo-300', text: 'text-indigo-800' }, // Networking
+];
 
 export default function PlanningResponsive() {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
-  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
-  const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
-  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
-  const [paymentDetailsOpen, setPaymentDetailsOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'week'>('week');
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -84,7 +91,7 @@ export default function PlanningResponsive() {
   const form = useForm<InsertAppointmentForm>({
     resolver: zodResolver(appointmentFormSchema),
     defaultValues: {
-      appointmentDate: selectedDate || "",
+      appointmentDate: "",
       startTime: "",
       endTime: "",
       notes: "",
@@ -93,1504 +100,551 @@ export default function PlanningResponsive() {
     },
   });
 
-  // Calcul des semaines avec navigation
+  // Calcul des dates de la semaine
   const { currentWeek, currentMonth, currentYear } = useMemo(() => {
-    const baseDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
     
-    if (viewMode === 'day') {
-      // Pour le mode jour, calcul simple de la semaine
-      const start = new Date(baseDate);
-      start.setDate(start.getDate() - start.getDay() + 1);
-      const week = [];
-      for (let i = 0; i < 7; i++) {
-        const day = new Date(start);
-        day.setDate(day.getDate() + i);
-        week.push(day.toISOString().split('T')[0]);
-      }
-      return {
-        currentWeek: week,
-        currentMonth: baseDate.toLocaleDateString('fr-FR', { month: 'long' }),
-        currentYear: baseDate.getFullYear()
-      };
-    } else {
-      // Pour le mode semaine, calcul avec navigation par semaines
-      const startOfYear = new Date(baseDate.getFullYear(), 0, 1);
-      const startOfFirstWeek = new Date(startOfYear);
-      startOfFirstWeek.setDate(startOfFirstWeek.getDate() - startOfFirstWeek.getDay() + 1);
-      
-      const targetWeekStart = new Date(startOfFirstWeek);
-      targetWeekStart.setDate(targetWeekStart.getDate() + (currentWeekIndex * 7));
-      
-      const week = [];
-      for (let i = 0; i < 7; i++) {
-        const day = new Date(targetWeekStart);
-        day.setDate(day.getDate() + i);
-        week.push(day.toISOString().split('T')[0]);
-      }
-      
-      return {
-        currentWeek: week,
-        currentMonth: targetWeekStart.toLocaleDateString('fr-FR', { month: 'long' }),
-        currentYear: targetWeekStart.getFullYear()
-      };
+    const week = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      week.push(day);
     }
-  }, [selectedDate, viewMode, currentWeekIndex]);
-
-  // Rendez-vous simulés pour le test avec dates variées
-  const getDateOffset = (days: number) => {
-    const date = new Date();
-    date.setDate(date.getDate() + days);
-    return date.toISOString().split('T')[0];
-  };
-
-  const simulatedAppointments = [
-    // Aujourd'hui - Sarah Martin
-    {
-      id: 1001,
-      clientId: 1,
-      serviceId: 1,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "09:00",
-      endTime: "10:00",
-      status: "confirmed",
-      notes: "Coupe + Couleur",
-      employeeId: "1",
-      paymentStatus: "payé",
-      totalAmount: 85,
-      depositAmount: 0,
-      remainingAmount: 0,
-      paymentMethod: "CB"
-    },
-    {
-      id: 1002,
-      clientId: 2,
-      serviceId: 2,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "10:30",
-      endTime: "11:30",
-      status: "scheduled",
-      notes: "Manucure complète",
-      employeeId: "2",
-      paymentStatus: "à compléter",
-      totalAmount: 45,
-      depositAmount: 15,
-      remainingAmount: 30,
-      paymentMethod: "Espèces"
-    },
-    // RDV simultanés pour tester le rendu multi-employés
-    {
-      id: 1014,
-      clientId: 1,
-      serviceId: 1,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "10:30",
-      endTime: "11:30",
-      status: "confirmed",
-      notes: "Coupe couleur premium",
-      employeeId: "1",
-      paymentStatus: "à régler",
-      totalAmount: 85,
-      depositAmount: 0,
-      remainingAmount: 85,
-      paymentMethod: null
-    },
-    {
-      id: 1015,
-      clientId: 3,
-      serviceId: 3,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "10:30",
-      endTime: "11:30",
-      status: "scheduled",
-      notes: "Soin visage relaxant",
-      employeeId: "3",
-      paymentStatus: "à compléter",
-      totalAmount: 120,
-      depositAmount: 50,
-      remainingAmount: 70,
-      paymentMethod: "Virement"
-    },
-    {
-      id: 1003,
-      clientId: 3,
-      serviceId: 3,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "14:00",
-      endTime: "15:30",
-      status: "completed",
-      notes: "Soin visage premium",
-      employeeId: "1",
-      paymentStatus: "payé",
-      totalAmount: 120,
-      depositAmount: 0,
-      remainingAmount: 0,
-      paymentMethod: "CB"
-    },
-    {
-      id: 1004,
-      clientId: 1,
-      serviceId: 2,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "16:30",
-      endTime: "17:30",
-      status: "confirmed",
-      notes: "Brushing + styling",
-      employeeId: "3",
-      paymentStatus: "à compléter",
-      totalAmount: 45,
-      depositAmount: 20,
-      remainingAmount: 25,
-      paymentMethod: "CB"
-    },
-    // Autres RDV simultanés pour tester
-    {
-      id: 1016,
-      clientId: 2,
-      serviceId: 1,
-      appointmentDate: new Date().toISOString().split('T')[0],
-      startTime: "16:30",
-      endTime: "17:30",
-      status: "scheduled",
-      notes: "Coupe tendance",
-      employeeId: "1",
-      paymentStatus: "à régler",
-      totalAmount: 85,
-      depositAmount: 0,
-      remainingAmount: 85,
-      paymentMethod: null
-    },
-    // Demain
-    {
-      id: 1005,
-      clientId: 2,
-      serviceId: 1,
-      appointmentDate: getDateOffset(1),
-      startTime: "09:30",
-      endTime: "10:30",
-      status: "scheduled",
-      notes: "Coupe moderne",
-      employeeId: "2"
-    },
-    {
-      id: 1006,
-      clientId: 3,
-      serviceId: 3,
-      appointmentDate: getDateOffset(1),
-      startTime: "15:00",
-      endTime: "16:30",
-      status: "confirmed",
-      notes: "Soin anti-âge",
-      employeeId: "1"
-    },
-    {
-      id: 1011,
-      clientId: 1,
-      serviceId: 2,
-      appointmentDate: getDateOffset(1),
-      startTime: "11:00",
-      endTime: "12:00",
-      status: "confirmed",
-      notes: "Manucure française",
-      employeeId: "3"
-    },
-    // Dans 2 jours (pour vue semaine)
-    {
-      id: 1017,
-      clientId: 2,
-      serviceId: 1,
-      appointmentDate: getDateOffset(2),
-      startTime: "09:00",
-      endTime: "10:00",
-      status: "confirmed",
-      notes: "Coupe moderne",
-      employeeId: "2",
-      paymentStatus: "à régler",
-      totalAmount: 85,
-      depositAmount: 0,
-      remainingAmount: 85,
-      paymentMethod: null
-    },
-    {
-      id: 1018,
-      clientId: 1,
-      serviceId: 3,
-      appointmentDate: getDateOffset(2),
-      startTime: "14:30",
-      endTime: "16:00",
-      status: "scheduled",
-      notes: "Soin visage complet",
-      employeeId: "1",
-      paymentStatus: "à compléter",
-      totalAmount: 120,
-      depositAmount: 40,
-      remainingAmount: 80,
-      paymentMethod: "CB"
-    },
-    // Dans 3 jours
-    {
-      id: 1007,
-      clientId: 1,
-      serviceId: 2,
-      appointmentDate: getDateOffset(3),
-      startTime: "11:00",
-      endTime: "12:00",
-      status: "scheduled",
-      notes: "Pédicure",
-      employeeId: "2"
-    },
-    {
-      id: 1012,
-      clientId: 2,
-      serviceId: 1,
-      appointmentDate: getDateOffset(3),
-      startTime: "14:00",
-      endTime: "15:00",
-      status: "confirmed",
-      notes: "Coupe tendance",
-      employeeId: "1"
-    },
-    // Dans 5 jours
-    {
-      id: 1008,
-      clientId: 2,
-      serviceId: 1,
-      appointmentDate: getDateOffset(5),
-      startTime: "14:30",
-      endTime: "15:30",
-      status: "confirmed",
-      notes: "Retouche couleur",
-      employeeId: "1"
-    },
-    {
-      id: 1009,
-      clientId: 3,
-      serviceId: 3,
-      appointmentDate: getDateOffset(5),
-      startTime: "16:00",
-      endTime: "17:00",
-      status: "scheduled",
-      notes: "Consultation beauté",
-      employeeId: "2"
-    },
-    {
-      id: 1013,
-      clientId: 1,
-      serviceId: 2,
-      appointmentDate: getDateOffset(5),
-      startTime: "10:00",
-      endTime: "11:00",
-      status: "scheduled",
-      notes: "Nail art",
-      employeeId: "3"
-    },
-    // Dans une semaine
-    {
-      id: 1010,
-      clientId: 1,
-      serviceId: 1,
-      appointmentDate: getDateOffset(7),
-      startTime: "10:00",
-      endTime: "11:30",
-      status: "scheduled",
-      notes: "Coupe + Brushing",
-      employeeId: "1"
-    }
-  ];
-
-  // Clients simulés pour les noms
-  const simulatedClients = [
-    { id: 1, firstName: "Sophie", lastName: "Martin" },
-    { id: 2, firstName: "Emma", lastName: "Dubois" },
-    { id: 3, firstName: "Léa", lastName: "Bernard" }
-  ];
-
-  // Services simulés pour les prix
-  const simulatedServices = [
-    { id: 1, name: "Coupe + Couleur", price: 85 },
-    { id: 2, name: "Manucure", price: 45 },
-    { id: 3, name: "Soin Visage", price: 120 }
-  ];
-
-  // Employés avec couleurs cohérentes et distinctives
-  const simulatedEmployees = [
-    { 
-      id: "all", 
-      name: "Vue d'ensemble", 
-      color: "purple",
-      bgColor: "bg-purple-100",
-      textColor: "text-purple-800", 
-      borderColor: "border-purple-300",
-      cardColor: "from-purple-100 to-purple-200"
-    },
-    { 
-      id: "1", 
-      name: "Sarah Martin", 
-      color: "blue",
-      bgColor: "bg-blue-100",
-      textColor: "text-blue-800",
-      borderColor: "border-blue-300", 
-      cardColor: "from-blue-100 to-blue-200"
-    },
-    { 
-      id: "2", 
-      name: "Julie Dupont", 
-      color: "emerald",
-      bgColor: "bg-emerald-100",
-      textColor: "text-emerald-800",
-      borderColor: "border-emerald-300",
-      cardColor: "from-emerald-100 to-emerald-200"
-    },
-    { 
-      id: "3", 
-      name: "Emma Laurent", 
-      color: "amber",
-      bgColor: "bg-amber-100", 
-      textColor: "text-amber-800",
-      borderColor: "border-amber-300",
-      cardColor: "from-amber-100 to-amber-200"
-    }
-  ];
-
-  // Fusionner les vraies données avec les données simulées
-  const allAppointments = Array.isArray(appointments) ? [...appointments, ...simulatedAppointments] : simulatedAppointments;
-  const allClients = Array.isArray(clients) ? [...clients, ...simulatedClients] : simulatedClients;
-  const allServices = Array.isArray(services) ? [...services, ...simulatedServices] : simulatedServices;
-
-  // Filtrage des rendez-vous
-  const filteredAppointments = useMemo(() => {
-    if (!allAppointments || !Array.isArray(allAppointments) || allAppointments.length === 0) return [];
     
-    return (allAppointments as any[]).filter(apt => {
-      if (statusFilter !== 'all' && apt.status !== statusFilter) return false;
-      if (selectedEmployee !== 'all' && apt.employeeId !== selectedEmployee) return false;
-      
-      if (viewMode === 'day') {
-        return apt.appointmentDate === selectedDate;
-      } else { // week
-        return currentWeek.includes(apt.appointmentDate || '');
-      }
-    });
-  }, [allAppointments, statusFilter, selectedEmployee, selectedDate, viewMode, currentWeek]);
-
-  // Navigation de date et semaines
-  const changeDate = (direction: number) => {
-    if (viewMode === 'day') {
-      const newDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
-      newDate.setDate(newDate.getDate() + direction);
-      setSelectedDate(newDate.toISOString().split('T')[0]);
-    } else { // week
-      setCurrentWeekIndex(prev => prev + direction);
-    }
-  };
-
-  // Formatage des dates
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { 
-      weekday: 'long', 
-      day: 'numeric', 
-      month: 'long' 
-    });
-  };
-
-  const formatWeekRange = () => {
-    const start = new Date(currentWeek[0] || new Date().toISOString().split('T')[0]);
-    const end = new Date(currentWeek[6] || new Date().toISOString().split('T')[0]);
-    return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} - ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
-  };
-
-  // Obtenir les rendez-vous pour un créneau horaire spécifique
-  const getAppointmentsForSlot = (date: string, time: string) => {
-    return filteredAppointments.filter(apt => 
-      apt.appointmentDate === date && apt.startTime === time
-    );
-  };
-
-  // Calcul du chiffre d'affaires
-  const calculateRevenue = () => {
-    const completedAppointments = filteredAppointments.filter(apt => 
-      apt.status === 'completed' || apt.status === 'confirmed'
-    );
-    
-    const revenue = completedAppointments.reduce((total, apt) => {
-      const service = allServices.find(s => s.id === apt.serviceId);
-      return total + (Number(service?.price) || 0);
-    }, 0);
-
-    const totalAppointments = completedAppointments.length;
-    const averageTicket = totalAppointments > 0 ? revenue / totalAppointments : 0;
-
-    return { revenue, totalAppointments, averageTicket };
-  };
-
-  const revenueStats = calculateRevenue();
-
-  // Statistiques par période
-  const getPeriodLabel = () => {
-    if (viewMode === 'day') return 'Aujourd\'hui';
-    return 'Cette semaine';
-  };
-
-  const getPaymentStatusBadge = (paymentStatus: string) => {
-    switch (paymentStatus) {
-      case 'à régler':
-        return <Badge variant="outline" className="text-red-600 border-red-300 bg-red-50">À régler</Badge>
-      case 'à compléter':
-        return <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50">À compléter</Badge>
-      case 'payé':
-        return <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50">Payé</Badge>
-      default:
-        return <Badge variant="outline" className="text-gray-600 border-gray-300 bg-gray-50">À régler</Badge>
-    }
-  };
-
-  const handleAppointmentClick = (appointment: any) => {
-    setSelectedAppointment(appointment);
-    setPaymentDetailsOpen(true);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      scheduled: { label: "Programmé", variant: "secondary" as const },
-      confirmed: { label: "Confirmé", variant: "default" as const },
-      completed: { label: "Terminé", variant: "outline" as const },
-      cancelled: { label: "Annulé", variant: "destructive" as const },
-      "no-show": { label: "Absent", variant: "destructive" as const }
+    return {
+      currentWeek: week,
+      currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
+      currentYear: startOfWeek.getFullYear()
     };
+  }, [currentWeekOffset]);
+
+  // Données d'exemple pour reproduire le planning de l'image
+  const sampleEvents = [
+    // Dimanche 18
+    { id: 1, title: "Lunch", time: "12:00-13:00", day: 0, color: 0, duration: 2 },
+    { id: 2, title: "Hobbies", time: "16:00-18:00", day: 0, color: 4, duration: 4 },
+    { id: 3, title: "Family Time", time: "18:00-19:00", day: 0, color: 4, duration: 2 },
     
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.scheduled;
-    return <Badge variant={config.variant}>{config.label}</Badge>;
-  };
-
-  const onSubmit = (data: InsertAppointmentForm) => {
-    createMutation.mutate(data);
-  };
-
-  // Vue jour avec design Landing 
-  const renderDayView = () => (
-    <div className="space-y-3">
-      {timeSlots.map((time, index) => {
-        const appointmentsAtTime = getAppointmentsForSlot(selectedDate || '', time);
-        
-        return (
-          <motion.div
-            key={time}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.02 }}
-          >
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-4 lg:p-6">
-                <div className="flex items-center gap-4 lg:gap-6">
-                  <div className="text-sm lg:text-base font-semibold text-purple-600 min-w-[50px] lg:min-w-[70px]">
-                    {time}
-                  </div>
-                  
-                  <div className="flex-1">
-                    {appointmentsAtTime.length > 0 ? (
-                      <div className="space-y-2">
-                        {appointmentsAtTime.map((appointment) => {
-                          const client = allClients.find(c => c.id === appointment.clientId);
-                          const service = allServices.find(s => s.id === appointment.serviceId);
-                          const employee = simulatedEmployees.find(e => e.id === appointment.employeeId);
-                          
-                          return (
-                            <motion.div
-                              key={appointment.id}
-                              whileHover={{ scale: 1.02 }}
-                              onClick={() => handleAppointmentClick(appointment)}
-                              className={`bg-gradient-to-r ${employee?.cardColor || 'from-gray-50 to-purple-50/30'} p-3 lg:p-4 rounded-xl cursor-pointer border-l-4 ${employee?.borderColor || 'border-purple-300'}`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <span className={`text-xs px-2 py-1 rounded-full ${employee?.bgColor} ${employee?.textColor} font-medium`}>
-                                      {employee?.name || 'Employé'}
-                                    </span>
-                                    <span className="font-medium text-gray-900 text-sm lg:text-base">
-                                      {client ? `${client.firstName} ${client.lastName}` : 'Client'}
-                                    </span>
-                                    {getPaymentStatusBadge(appointment.paymentStatus || 'à régler')}
-                                  </div>
-                                  <div className="text-xs lg:text-sm text-gray-600">
-                                    {service?.name} • {appointment.endTime}
-                                  </div>
-                                </div>
-                              </div>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <div className="text-gray-400 text-sm lg:text-base py-2">
-                        Créneaux libre
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-
-  // Vue semaine simplifiée avec calendrier 7 jours
-  const renderWeekView = () => (
-    <div className="space-y-4">
-      {/* Calendrier semaine - 7 jours en grille */}
-      <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-        <CardContent className="p-4 lg:p-6">
-          <div className="grid grid-cols-3 md:grid-cols-7 gap-1 sm:gap-2 lg:gap-4">
-            {currentWeek.map((date, index) => {
-              const dayDate = new Date(date);
-              const isToday = date === new Date().toISOString().split('T')[0];
-              const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === date);
-              
-              return (
-                <motion.div
-                  key={date}
-                  whileHover={{ scale: 1.02 }}
-                  className={`
-                    p-1 sm:p-2 md:p-3 lg:p-4 rounded-lg sm:rounded-xl cursor-pointer transition-all 
-                    min-h-[80px] sm:min-h-[100px] md:min-h-[120px] lg:min-h-[160px]
-                    ${isToday 
-                      ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' 
-                      : 'bg-white/60 hover:bg-purple-50 border border-white/40'
-                    }
-                  `}
-                  onClick={() => setSelectedDate(date)}
-                >
-                  {/* En-tête du jour */}
-                  <div className="text-center mb-1 md:mb-2 lg:mb-3">
-                    <div className={`text-xs md:text-xs lg:text-sm font-medium opacity-75 ${isToday ? 'text-white' : 'text-gray-600'}`}>
-                      {weekDays[index].slice(0, 3)}
-                    </div>
-                    <div className={`text-base md:text-lg lg:text-xl font-bold ${isToday ? 'text-white' : 'text-gray-900'}`}>
-                      {dayDate.getDate()}
-                    </div>
-                  </div>
-                  
-                  {/* Rendez-vous du jour avec détails visibles */}
-                  <div className="space-y-1">
-                    {dayAppointments.slice(0, 4).map((apt, aptIndex) => {
-                      const client = allClients.find(c => c.id === apt.clientId);
-                      const service = allServices.find(s => s.id === apt.serviceId);
-                      const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
-                      
-                      return (
-                        <div
-                          key={aptIndex}
-                          className={`text-xs p-1 md:p-2 rounded-md md:rounded-lg border ${
-                            isToday 
-                              ? 'bg-white/20 text-white border-white/30' 
-                              : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="font-bold text-xs md:text-xs">{apt.startTime}</div>
-                            <div className="text-xs opacity-75 hidden md:block">{service?.price}€</div>
-                          </div>
-                          <div className="truncate font-medium text-xs">{client?.firstName}</div>
-                          <div className="text-xs opacity-75 truncate hidden md:block">{service?.name}</div>
-                          {selectedEmployee === 'all' && (
-                            <div className="text-xs opacity-75 truncate mt-1 hidden lg:block">{employee?.name.split(' ')[0]}</div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    {dayAppointments.length > 4 && (
-                      <div className={`text-xs text-center font-medium p-1 ${
-                        isToday ? 'text-white/80' : 'text-purple-600'
-                      }`}>
-                        +{dayAppointments.length - 4} autres
-                      </div>
-                    )}
-                    {dayAppointments.length === 0 && (
-                      <div className={`text-xs text-center p-2 ${
-                        isToday ? 'text-white/60' : 'text-gray-400'
-                      }`}>
-                        Libre
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Résumé hebdomadaire */}
-      <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-        <CardContent className="p-4 lg:p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé de la semaine</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
-              <div className="text-2xl font-bold text-purple-600">
-                {filteredAppointments.length}
-              </div>
-              <div className="text-sm text-gray-600">RDV total</div>
-            </div>
-            <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl">
-              <div className="text-2xl font-bold text-emerald-600">
-                {filteredAppointments.filter(apt => apt.status === 'completed').length}
-              </div>
-              <div className="text-sm text-gray-600">Terminés</div>
-            </div>
-            <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
-              <div className="text-2xl font-bold text-amber-600">
-                {revenueStats.revenue.toFixed(0)}€
-              </div>
-              <div className="text-sm text-gray-600">Chiffre d'affaires</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  // Vue mois moderne - Seulement les jours du mois en cours
-  const renderMonthView = () => {
-    const selectedDateObj = new Date(selectedDate || new Date().toISOString().split('T')[0]);
-    const firstDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), 1);
-    const lastDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth() + 1, 0);
+    // Lundi 19
+    { id: 4, title: "Lunch", time: "12:00-13:00", day: 1, color: 0, duration: 2 },
+    { id: 5, title: "Meet", time: "15:00-16:00", day: 1, color: 1, duration: 2 },
+    { id: 6, title: "Creative Brainstorm", time: "16:00-20:00", day: 1, color: 3, duration: 8 },
     
-    // Créer seulement les jours du mois en cours
-    const calendarDays = [];
-    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-      const currentDay = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), day);
-      calendarDays.push(currentDay);
-    }
+    // Mardi 20
+    { id: 7, title: "Lunch with Emma", time: "12:00-13:00", day: 2, color: 1, duration: 2 },
+    { id: 8, title: "Meet with @Ei", time: "13:00-14:00", day: 2, color: 1, duration: 2 },
+    { id: 9, title: "Networking Event", time: "14:00-16:00", day: 2, color: 5, duration: 4 },
+    { id: 10, title: "Product Development", time: "16:00-17:00", day: 2, color: 2, duration: 2 },
+    
+    // Mercredi 21
+    { id: 11, title: "Lunch", time: "12:00-13:00", day: 3, color: 0, duration: 2 },
+    { id: 12, title: "Team Meeting", time: "14:00-15:00", day: 3, color: 2, duration: 2 },
+    { id: 13, title: "Project A", time: "17:00-18:00", day: 3, color: 2, duration: 2 },
+    
+    // Jeudi 22
+    { id: 14, title: "Lunch with Emma", time: "12:00-13:00", day: 4, color: 1, duration: 2 },
+    { id: 15, title: "Project Start", time: "14:00-15:00", day: 4, color: 2, duration: 2 },
+    { id: 16, title: "Project Review", time: "17:00-18:00", day: 4, color: 2, duration: 2 },
+  ];
 
-    return (
-      <div className="space-y-4">
-        {/* Grille moderne des jours du mois */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-          <CardContent className="p-4 lg:p-6">
-            {/* Grille responsive des jours */}
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-3 lg:gap-4">
-              {calendarDays.map((day, index) => {
-                const isToday = day.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
-                const dayString = day.toISOString().split('T')[0];
-                const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === dayString);
-                
-                return (
-                  <motion.div
-                    key={index}
-                    whileHover={{ scale: 1.05 }}
-                    className={`
-                      aspect-square p-2 sm:p-3 rounded-xl cursor-pointer transition-all
-                      ${isToday 
-                        ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' 
-                        : 'bg-white/60 border border-white/40 hover:bg-purple-50'
-                      }
-                    `}
-                    onClick={() => setSelectedDate(dayString)}
-                  >
-                    <div className="h-full flex flex-col justify-between">
-                      {/* Numéro du jour */}
-                      <div className={`text-base lg:text-lg font-bold ${isToday ? 'text-white' : 'text-gray-900'}`}>
-                        {day.getDate()}
-                      </div>
-                      
-                      {/* Aperçu détaillé des RDV */}
-                      {dayAppointments.length > 0 ? (
-                        <div className="space-y-1">
-                          {dayAppointments.slice(0, 2).map((apt, aptIndex) => {
-                            const client = allClients.find(c => c.id === apt.clientId);
-                            const service = allServices.find(s => s.id === apt.serviceId);
-                            const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
-                            
-                            return (
-                              <div
-                                key={aptIndex}
-                                className={`text-xs p-1.5 rounded border ${
-                                  isToday 
-                                    ? 'bg-white/20 text-white border-white/30' 
-                                    : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
-                                }`}
-                              >
-                                <div className="font-bold">{apt.startTime}</div>
-                                <div className="truncate">{client?.firstName}</div>
-                                <div className="text-xs opacity-75 truncate">{service?.name}</div>
-                                {selectedEmployee === 'all' && (
-                                  <div className="text-xs opacity-75 truncate">{employee?.name.split(' ')[0]}</div>
-                                )}
-                              </div>
-                            );
-                          })}
-                          {dayAppointments.length > 2 && (
-                            <div className={`text-xs text-center font-medium ${isToday ? 'text-white/80' : 'text-purple-600'}`}>
-                              +{dayAppointments.length - 2}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className={`text-xs text-center ${isToday ? 'text-white/60' : 'text-gray-400'}`}>
-                          Libre
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Résumé mensuel détaillé */}
-        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-          <CardContent className="p-4 lg:p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé du mois</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl border border-white/40 shadow-sm">
-                <div className="text-xl sm:text-2xl font-bold text-purple-600">
-                  {filteredAppointments.length}
-                </div>
-                <div className="text-xs sm:text-sm text-gray-600">RDV total</div>
-              </div>
-              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border border-white/40 shadow-sm">
-                <div className="text-xl sm:text-2xl font-bold text-emerald-600">
-                  {filteredAppointments.filter(apt => apt.status === 'completed').length}
-                </div>
-                <div className="text-xs sm:text-sm text-gray-600">Terminés</div>
-              </div>
-              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-white/40 shadow-sm sm:col-span-2 lg:col-span-1">
-                <div className="text-xl sm:text-2xl font-bold text-amber-600">
-                  {revenueStats.revenue.toFixed(0)}€
-                </div>
-                <div className="text-xs sm:text-sm text-gray-600">Chiffre d'affaires</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  // Fonction pour obtenir la position de l'événement
+  const getEventPosition = (time: string) => {
+    const [hour, minute] = time.split(':').map(Number);
+    const totalMinutes = (hour - 12) * 60 + minute;
+    return (totalMinutes / 30) * 40; // 40px par demi-heure
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 flex items-center justify-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-8 h-8 border-2 border-purple-200 border-t-purple-600 rounded-full"
-        />
-      </div>
-    );
-  }
+  // Fonction pour calculer la hauteur de l'événement
+  const getEventHeight = (duration: number) => {
+    return duration * 20; // 20px par demi-heure
+  };
+
+  const navigateWeek = (direction: 'prev' | 'next') => {
+    setCurrentWeekOffset(prev => direction === 'next' ? prev + 1 : prev - 1);
+  };
+
+  // Calcul des insights CA
+  const dailyRevenue = 1847;
+  const weeklyRevenue = 8392;
+  const monthlyRevenue = 28450;
+  const monthlyGoal = 35000;
+  const goalProgress = (monthlyRevenue / monthlyGoal) * 100;
+  const avgTicket = 67;
 
   return (
-    <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 relative overflow-hidden"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
-
-
-      {/* Container responsive avec glassmorphism */}
-      <div className="relative z-10 min-h-screen">
-        <div className="container mx-auto px-4 py-6 max-w-md lg:max-w-none lg:w-full xl:max-w-7xl">
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl p-4 lg:p-8">
-        {/* Header avec navigation - Responsive */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full">
+      <div className="container mx-auto p-4 lg:p-6">
+        
+        {/* Header avec insights */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-6"
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            {/* Titre */}
-            <div className="text-center sm:text-left">
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                Planning
-              </h1>
-              <p className="text-sm text-gray-600">
-                {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
-              </p>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-3 flex-wrap">
-              {/* Sélecteur d'employé */}
-              <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-white/40">
-                <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
-                  <SelectTrigger className="border-0 shadow-none bg-transparent min-w-[140px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {simulatedEmployees.map((employee) => (
-                      <SelectItem key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Sélecteur de mode */}
-              <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-white/40">
-                <Button
-                  variant={viewMode === 'day' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('day')}
-                  className="rounded-lg"
-                >
-                  Jour
-                </Button>
-                <Button
-                  variant={viewMode === 'week' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('week')}
-                  className="rounded-lg"
-                >
-                  Semaine
-                </Button>
-              </div>
-
-              {/* Indicateur mois/année pour navigation semaines */}
-              {viewMode === 'week' && (
-                <div className="text-sm font-medium text-gray-700 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg border border-white/40">
-                  {currentMonth} {currentYear}
-                </div>
-              )}
-
-              {/* Navigation */}
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => changeDate(-1)}
-                  className="rounded-xl bg-white/80 backdrop-blur-sm border-white/40"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => changeDate(1)}
-                  className="rounded-xl bg-white/80 backdrop-blur-sm border-white/40"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              </div>
-
-              {/* Bouton Nouveau RDV */}
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    className="bg-gradient-to-r from-purple-500 to-blue-600 text-white rounded-xl font-medium px-4"
-                    size="sm"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Nouveau RDV</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-white/95 backdrop-blur-sm border-white/40">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                      <Plus className="w-5 h-5 text-purple-600" />
-                      Nouveau Rendez-vous
-                    </DialogTitle>
-                  </DialogHeader>
-
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                      <FormField
-                        control={form.control}
-                        name="appointmentDate"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">Date</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} className="rounded-xl border-gray-200" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="clientId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">Client</FormLabel>
-                            <FormControl>
-                              <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                                <SelectTrigger className="rounded-xl border-gray-200">
-                                  <SelectValue placeholder="Sélectionner un client" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {allClients.map((client: any) => (
-                                    <SelectItem key={client.id} value={client.id.toString()}>
-                                      {client.firstName} {client.lastName}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="serviceId"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">Service</FormLabel>
-                            <FormControl>
-                              <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                                <SelectTrigger className="rounded-xl border-gray-200">
-                                  <SelectValue placeholder="Sélectionner un service" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {allServices.map((service: any) => (
-                                    <SelectItem key={service.id} value={service.id.toString()}>
-                                      {service.name} - {service.price}€
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <FormField
-                          control={form.control}
-                          name="startTime"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-sm font-medium">Début</FormLabel>
-                              <FormControl>
-                                <Input type="time" {...field} className="rounded-xl border-gray-200" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="endTime"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-sm font-medium">Fin</FormLabel>
-                              <FormControl>
-                                <Input type="time" {...field} className="rounded-xl border-gray-200" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-gradient-to-br from-purple-500 to-blue-600 text-white rounded-xl font-medium py-3"
-                        disabled={createMutation.isPending}
-                      >
-                        {createMutation.isPending ? "Création..." : "Créer le rendez-vous"}
-                      </Button>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Statistiques CA en style Landing - Responsive Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="text-xl font-bold text-gray-900 text-center mb-4">
-            Chiffre d'Affaires - {getPeriodLabel()}
-          </h2>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-            {/* CA Total */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 lg:p-6 text-center">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Euro className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
+          {/* Insights CA au-dessus */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">CA Jour</p>
+                    <p className="text-2xl font-bold text-purple-600">{dailyRevenue}€</p>
+                  </div>
+                  <Euro className="h-8 w-8 text-purple-500" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
-                  CA Total
-                </h3>
-                <p className="text-lg lg:text-2xl font-bold text-purple-600">
-                  {revenueStats.revenue.toFixed(0)}€
-                </p>
-                <p className="text-xs lg:text-sm text-gray-600">
-                  {revenueStats.totalAppointments} RDV
-                </p>
               </CardContent>
             </Card>
 
-            {/* Ticket moyen */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 lg:p-6 text-center">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <User className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
+            <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">CA Semaine</p>
+                    <p className="text-2xl font-bold text-blue-600">{weeklyRevenue}€</p>
+                  </div>
+                  <TrendingUp className="h-8 w-8 text-blue-500" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
-                  Ticket moyen
-                </h3>
-                <p className="text-lg lg:text-2xl font-bold text-emerald-600">
-                  {revenueStats.averageTicket.toFixed(0)}€
-                </p>
-                <p className="text-xs lg:text-sm text-gray-600">
-                  Par client
-                </p>
               </CardContent>
             </Card>
 
-            {/* Objectif */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
-              <CardContent className="p-4 lg:p-6 text-center">
-                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
+            <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">CA Mois</p>
+                    <p className="text-2xl font-bold text-amber-600">{monthlyRevenue}€</p>
+                  </div>
+                  <Target className="h-8 w-8 text-amber-500" />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
-                  Objectif
-                </h3>
-                <p className="text-lg lg:text-2xl font-bold text-amber-600">
-                  {viewMode === 'day' ? '250' : viewMode === 'week' ? '1500' : '6000'}€
-                </p>
-                <p className="text-xs lg:text-sm text-gray-600">
-                  {((revenueStats.revenue / (viewMode === 'day' ? 250 : viewMode === 'week' ? 1500 : 6000)) * 100).toFixed(0)}% atteint
-                </p>
               </CardContent>
             </Card>
 
-            {/* Filtre */}
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-4 lg:p-6">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="border-0 shadow-none">
-                    <div className="flex items-center gap-2">
-                      <Filter className="h-4 w-4 lg:h-5 lg:w-5" />
-                      <SelectValue />
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Tous</SelectItem>
-                    <SelectItem value="confirmed">Confirmés</SelectItem>
-                    <SelectItem value="scheduled">Programmés</SelectItem>
-                    <SelectItem value="completed">Terminés</SelectItem>
-                  </SelectContent>
-                </Select>
+            <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600">Ticket Moyen</p>
+                    <p className="text-2xl font-bold text-green-600">{avgTicket}€</p>
+                  </div>
+                  <Clock className="h-8 w-8 text-green-500" />
+                </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Header du calendrier */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentWeekOffset(0)}
+                  className="bg-white/80 backdrop-blur-sm border-gray-200"
+                >
+                  Today
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigateWeek('prev')}
+                  className="p-2"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigateWeek('next')}
+                  className="p-2"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <span className="text-lg font-medium text-gray-700 capitalize">
+                  {currentMonth} {currentYear}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Select value="week">
+                <SelectTrigger className="w-24 bg-white/80 backdrop-blur-sm border-gray-200">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Week</SelectItem>
+                  <SelectItem value="month">Month</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
+                <Filter className="h-4 w-4 mr-1" />
+                Filter
+              </Button>
+              <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
+                <Download className="h-4 w-4 mr-1" />
+                Export
+              </Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Share className="h-4 w-4 mr-1" />
+                Share
+              </Button>
+              <Button variant="ghost" size="sm" className="p-2">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Contenu principal - Responsive */}
+        {/* Vue calendrier hebdomadaire */}
         <motion.div
-          key={viewMode}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="space-y-4 lg:space-y-6 w-full max-w-md mx-auto md:max-w-4xl lg:max-w-none xl:max-w-7xl"
+          transition={{ delay: 0.1 }}
+          className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
         >
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">
-              {viewMode === 'day' ? 'Planning du jour' : 'Aperçu de la semaine'}
-            </h2>
-            {selectedEmployee !== 'all' && (
-              <div className="text-sm text-purple-600 font-medium">
-                {simulatedEmployees.find(e => e.id === selectedEmployee)?.name}
-              </div>
-            )}
-          </div>
-          
-          {filteredAppointments.length === 0 ? (
-            <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-              <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-gray-600" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                  Aucun rendez-vous
-                </h3>
-                <p className="text-gray-500 text-sm">
-                  {viewMode === 'day' 
-                    ? 'Aucun rendez-vous prévu pour cette journée'
-                    : 'Aucun rendez-vous prévu pour cette semaine'
-                  }
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div>
-              {viewMode === 'day' ? renderDayView() : 
-           viewMode === 'week' ? renderWeekView() : renderMonthView()}
+          {/* En-tête des jours */}
+          <div className="grid grid-cols-8 border-b border-gray-200">
+            <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
+              UTC +7
             </div>
-          )}
+            {currentWeek.map((date, index) => (
+              <div key={index} className="p-4 text-center border-r border-gray-200 last:border-r-0">
+                <div className="text-sm font-medium text-gray-500">
+                  {weekDays[date.getDay()]} {date.getDate()}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Événements all day */}
+          <div className="grid grid-cols-8 border-b border-gray-200">
+            <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
+              All day
+            </div>
+            <div className="p-2 border-r border-gray-200 bg-blue-50">
+              <div className="text-sm font-medium text-blue-700">Photo Session</div>
+            </div>
+            <div className="p-2 border-r border-gray-200 bg-purple-50">
+              <div className="text-sm font-medium text-purple-700">Brain Training</div>
+            </div>
+            <div className="p-2 border-r border-gray-200 bg-green-50">
+              <div className="text-sm font-medium text-green-700">Skill Enhancement</div>
+            </div>
+            <div className="p-2 border-r border-gray-200 bg-yellow-50">
+              <div className="text-sm font-medium text-yellow-700">Call Mom</div>
+            </div>
+            <div className="p-2 border-r border-gray-200"></div>
+            <div className="p-2 border-r border-gray-200"></div>
+            <div className="p-2"></div>
+          </div>
+
+          {/* Grille horaire */}
+          <div className="relative">
+            <div className="grid grid-cols-8">
+              {/* Colonne des heures */}
+              <div className="border-r border-gray-200">
+                {timeSlots.map((slot, index) => (
+                  <div key={index} className="h-20 flex items-start justify-end pr-2 pt-1 text-xs text-gray-500 border-b border-gray-100">
+                    {slot}
+                  </div>
+                ))}
+              </div>
+
+              {/* Colonnes des jours */}
+              {currentWeek.map((date, dayIndex) => (
+                <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
+                  {timeSlots.map((slot, slotIndex) => (
+                    <div
+                      key={slotIndex}
+                      className="h-20 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                    />
+                  ))}
+                  
+                  {/* Événements pour ce jour */}
+                  {sampleEvents
+                    .filter(event => event.day === dayIndex)
+                    .map((event) => {
+                      const colorScheme = eventColors[event.color];
+                      return (
+                        <div
+                          key={event.id}
+                          className={`absolute left-1 right-1 ${colorScheme.bg} ${colorScheme.border} ${colorScheme.text} border rounded-md p-1 text-xs font-medium shadow-sm z-10`}
+                          style={{
+                            top: `${getEventPosition(event.time.split('-')[0])}px`,
+                            height: `${getEventHeight(event.duration)}px`,
+                            minHeight: '30px'
+                          }}
+                        >
+                          <div className="truncate">{event.title}</div>
+                          <div className="text-xs opacity-75">{event.time}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
-          </div>
-        </div>
-      </div>
-      
-      {/* Footer Avyento complet - pleine largeur, en dehors de tous les conteneurs */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        className="bg-slate-800 text-white w-full"
-      >
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Avyento */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Avyento</h3>
-              <p className="text-sm text-gray-300 mb-4">
-                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
-              </p>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Services</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li>Coiffure</li>
-                <li>Esthétique</li>
-                <li>Manucure</li>
-                <li>Massage</li>
-              </ul>
-            </div>
-
-            {/* Partenaires */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Partenaires</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li>Devenir partenaire</li>
-                <li>Tarifs professionnels</li>
-                <li>Formation & Support</li>
-                <li>Témoignages</li>
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-sm text-gray-300">
-                <li>Centre d'aide</li>
-                <li>Contact</li>
-                <li>CGU</li>
-                <li>Confidentialité</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Ligne de séparation et copyright */}
-          <div className="border-t border-gray-700 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-400">
-              © 2024 Avyento. Tous droits réservés.
-            </p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <button className="text-gray-400 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                </svg>
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.89 2.747.098.119.112.224.082.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.748-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
-                </svg>
-              </button>
-              <button className="text-gray-400 hover:text-white transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M6.94 12.034c0-4.62 2.326-7.044 7.024-7.044 4.698 0 7.024 2.424 7.024 7.044 0 4.62-2.326 7.044-7.024 7.044-4.698 0-7.024-2.424-7.024-7.044zm3.524 0c0 2.64 1.506 4.296 3.5 4.296s3.5-1.656 3.5-4.296c0-2.64-1.506-4.296-3.5-4.296s-3.5 1.656-3.5 4.296zm7.728-4.632a1.656 1.656 0 101.656-1.656 1.656 1.656 0 00-1.656 1.656zM13.958 2.042c-5.432 0-9.916 4.484-9.916 9.916 0 1.752.454 3.402 1.25 4.84l-1.318 4.186a.414.414 0 00.526.526l4.186-1.318a9.85 9.85 0 004.84 1.25c5.432 0 9.916-4.484 9.916-9.916S19.39 2.042 13.958 2.042zm0 17.874a7.918 7.918 0 01-4.186-1.15l-.234-.138-2.992.944.944-2.992-.138-.234a7.918 7.918 0 01-1.15-4.186c0-4.398 3.578-7.958 7.958-7.958s7.958 3.56 7.958 7.958-3.578 7.958-7.958 7.958z"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </motion.footer>
-        
-        {/* Bottom Navigation Mobile */}
-        <motion.nav 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-white/30 z-50 shadow-2xl"
+        {/* Panel latéral Meet (reproduisant celui de l'image) */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="fixed right-4 top-1/2 transform -translate-y-1/2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-6 hidden lg:block"
         >
-          <div className="flex justify-around py-3 px-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setViewMode('day')}
-              className={`flex flex-col items-center gap-1 ${viewMode === 'day' ? 'text-purple-600' : 'text-gray-500'}`}
-            >
-              <Calendar className="w-5 h-5" />
-              <span className="text-xs">Jour</span>
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setViewMode('week')}
-              className={`flex flex-col items-center gap-1 ${viewMode === 'week' ? 'text-purple-600' : 'text-gray-500'}`}
-            >
-              <CalendarDays className="w-5 h-5" />
-              <span className="text-xs">Semaine</span>
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setIsDialogOpen(true)}
-              className="flex flex-col items-center gap-1 text-purple-600"
-            >
-              <Plus className="w-5 h-5" />
-              <span className="text-xs">Nouveau</span>
-            </Button>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-gray-900">Meet</h3>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-500">Thursday, 18 September</span>
+            </div>
           </div>
-        </motion.nav>
-
-        {/* Modal détails de RDV */}
-        <Dialog open={paymentDetailsOpen} onOpenChange={setPaymentDetailsOpen}>
-          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <User className="h-5 w-5 text-purple-600" />
-                Détails du rendez-vous
-              </DialogTitle>
-            </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Clock className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-600">3:00</span>
+              <span className="text-sm text-gray-600">4:00</span>
+            </div>
             
-            {selectedAppointment && (
-              <div className="space-y-6">
-                {(() => {
-              const client = allClients.find(c => c.id === selectedAppointment.clientId);
-              const service = allServices.find(s => s.id === selectedAppointment.serviceId);
-              const employee = simulatedEmployees.find(e => e.id === selectedAppointment.employeeId);
-              
-              // Simulation dernière prestation effectuée
-              const lastCompletedService = {
-                name: "Coloration + coupe",
-                date: "2025-01-10",
-                employee: "Sarah",
-                notes: "Client satisfaite du résultat, prochaine couleur dans 6 semaines"
-              };
-              
-              // Simulation notes de suivi client  
-              const clientNotes = [
-                { date: "2025-01-10", note: "Allergique aux produits à base d'ammoniaque", type: "Allergie" },
-                { date: "2025-01-05", note: "Préfère les RDV le matin", type: "Préférence" },
-                { date: "2024-12-20", note: "Fidèle depuis 2 ans, très ponctuelle", type: "Général" }
-              ];
-                  
-              return (
-                <>
-                  {/* Informations cliente */}
-                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-100">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <User className="h-4 w-4 text-purple-600" />
-                      Informations cliente
-                    </h3>
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div>
-                        <span className="text-gray-600">Nom:</span>
-                        <div className="font-medium">{client?.firstName} {client?.lastName}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Téléphone:</span>
-                        <div className="font-medium">{client?.phone || "06 12 34 56 78"}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Email:</span>
-                        <div className="font-medium text-purple-600">{client?.email || "cliente@email.com"}</div>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Première visite:</span>
-                        <div className="font-medium">Mars 2023</div>
-                      </div>
-                  </div>
-                  </div>
-
-                  {/* Prestation réservée */}
-                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-amber-600" />
-                      Prestation réservée
-                    </h3>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium text-lg">{service?.name}</span>
-                        <span className="text-lg font-bold text-amber-600">{service?.price}€</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-gray-600">
-                        <span>Durée: {service?.duration || "60"} min</span>
-                        <span>Avec: {employee?.name}</span>
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        <strong>Date:</strong> {new Date(selectedAppointment.appointmentDate || '').toLocaleDateString('fr-FR', { 
-                          weekday: 'long', 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        <strong>Horaire:</strong> {selectedAppointment.startTime} - {selectedAppointment.endTime}
-                      </div>
-                      {selectedAppointment.notes && (
-                        <div className="text-sm text-gray-600 bg-white p-2 rounded border-l-4 border-amber-400">
-                          <strong>Notes RDV:</strong> {selectedAppointment.notes}
-                        </div>
-                      )}
-                  </div>
-                  </div>
-
-                  {/* Dernière prestation effectuée */}
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      Dernière prestation effectuée
-                    </h3>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">{lastCompletedService.name}</span>
-                        <span className="text-sm text-gray-600">{new Date(lastCompletedService.date).toLocaleDateString('fr-FR')}</span>
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Réalisée par: <span className="font-medium">{lastCompletedService.employee}</span>
-                      </div>
-                      <div className="text-sm text-gray-600 bg-white p-2 rounded border-l-4 border-green-400">
-                        <strong>Notes:</strong> {lastCompletedService.notes}
-                      </div>
-                  </div>
-                  </div>
-
-                  {/* Notes de suivi client */}
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-blue-600" />
-                      Notes de suivi client
-                    </h3>
-                    <div className="space-y-3 max-h-32 overflow-y-auto">
-                      {clientNotes.map((note, index) => (
-                        <div key={index} className="bg-white p-3 rounded border-l-4 border-blue-400">
-                          <div className="flex justify-between items-start mb-1">
-                            <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
-                              {note.type}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {new Date(note.date).toLocaleDateString('fr-FR')}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-700">{note.note}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full mt-3 text-blue-600 border-blue-200 hover:bg-blue-50"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Ajouter une note
-                  </Button>
-                  </div>
-
-                  {/* Statut de paiement */}
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                      <CreditCard className="h-4 w-4 text-gray-600" />
-                      Informations de paiement
-                    </h3>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="font-medium">Statut du paiement:</span>
-                      {getPaymentStatusBadge(selectedAppointment.paymentStatus || 'à régler')}
-                    </div>
-
-                    {/* Détails financiers */}
-                    <div className="space-y-3 border-t pt-4">
-                      <div className="flex justify-between">
-                        <span>Montant total:</span>
-                        <span className="font-medium">{selectedAppointment.totalAmount}€</span>
-                      </div>
-                      
-                      {selectedAppointment.depositAmount > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span>Acompte versé:</span>
-                          <span className="font-medium">{selectedAppointment.depositAmount}€</span>
-                        </div>
-                      )}
-                      
-                      {selectedAppointment.remainingAmount > 0 && (
-                        <div className="flex justify-between text-amber-600">
-                          <span>Reste à payer:</span>
-                          <span className="font-medium">{selectedAppointment.remainingAmount}€</span>
-                        </div>
-                      )}
-                      
-                      {selectedAppointment.paymentMethod && (
-                        <div className="flex justify-between text-sm text-gray-600">
-                          <span>Mode de paiement:</span>
-                          <span>{selectedAppointment.paymentMethod}</span>
-                        </div>
-                    )}
-                  </div>
-                  
-                  {/* Actions */}
-                  {selectedAppointment.paymentStatus !== 'payé' && (
-                    <div className="flex gap-2 pt-4 border-t">
-                      {selectedAppointment.paymentStatus === 'à régler' && (
-                        <Button 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={() => {
-                            toast({
-                              title: "Paiement enregistré",
-                              description: "Le paiement a été marqué comme payé."
-                            });
-                            setPaymentDetailsOpen(false);
-                          }}
-                        >
-                          Marquer comme payé
-                        </Button>
-                      )}
-                      
-                      {selectedAppointment.paymentStatus === 'à compléter' && (
-                        <Button 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={() => {
-                            toast({
-                              title: "Paiement complété",
-                              description: "Le solde restant a été encaissé."
-                            });
-                            setPaymentDetailsOpen(false);
-                          }}
-                        >
-                          Encaisser le solde
-                        </Button>
-                      )}
-                    </div>
-                  )}
-                  </div>
-                </>
-              );
-            })()}
+            <div className="flex items-center space-x-2">
+              <input type="checkbox" className="rounded" />
+              <span className="text-sm">All day</span>
+              <span className="text-sm">Yearly</span>
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">
+                  N
+                </div>
+                <span className="text-sm font-medium">Nazmi Javier</span>
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
-            )}
+              
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
+                  E
+                </div>
+                <span className="text-sm">Emilia Inder</span>
+              </div>
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="text-sm text-blue-600 underline">
+                https://meet.google.com/izp-srs...
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                Jakarta, Indonesia
+              </div>
+            </div>
+            
+            <div className="text-sm text-gray-700 leading-relaxed">
+              You're invited to join our Google Meet session for an important discussion.
+            </div>
+            
+            <div className="text-sm text-blue-600">
+              Link: https://meet.google.com/izp-srsk-txf
+            </div>
+            
+            <div className="text-sm text-gray-600">
+              We look forward to your participation!
+            </div>
+            
+            <div className="border-t pt-4">
+              <div className="text-sm font-medium mb-2">Add Reminders</div>
+              <div className="flex space-x-2">
+                {['', '', '', '', '', '', '', ''].map((_, i) => (
+                  <div key={i} className={`w-6 h-6 rounded-full ${
+                    i === 0 ? 'bg-red-500' :
+                    i === 1 ? 'bg-orange-500' :
+                    i === 2 ? 'bg-pink-500' :
+                    i === 3 ? 'bg-yellow-500' :
+                    i === 4 ? 'bg-green-500' :
+                    i === 5 ? 'bg-blue-500' :
+                    i === 6 ? 'bg-purple-500' : 'bg-gray-400'
+                  }`} />
+                ))}
+              </div>
+            </div>
+            
+            <div className="flex justify-between pt-4">
+              <Button variant="ghost" className="text-gray-600">Cancel</Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Save</Button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Dialog pour créer un RDV */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg lg:hidden"
+              size="icon"
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Nouveau rendez-vous</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="clientId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Client</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un client" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {clients.map((client: any) => (
+                            <SelectItem key={client.id} value={client.id.toString()}>
+                              {client.firstName} {client.lastName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="serviceId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un service" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {services.map((service: any) => (
+                            <SelectItem key={service.id} value={service.id.toString()}>
+                              {service.name} - {service.price}€
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="appointmentDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="startTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Heure début</FormLabel>
+                        <Select onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Début" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {timeSlots.map((slot) => (
+                              <SelectItem key={slot} value={slot}>
+                                {slot}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="endTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Heure fin</FormLabel>
+                        <Select onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Fin" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {timeSlots.map((slot) => (
+                              <SelectItem key={slot} value={slot}>
+                                {slot}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Notes (optionnel)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Notes du rendez-vous..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={createMutation.isPending}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {createMutation.isPending ? "Création..." : "Créer"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
-    </motion.div>
+      </div>
+    </div>
   );
 }
