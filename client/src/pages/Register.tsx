@@ -110,10 +110,9 @@ export default function Register() {
       if (response.ok) {
         toast({
           title: "Salon créé avec succès !",
-          description: `Redirection vers le paiement ${subscriptionPlans.find(p => p.id === selectedPlan)?.name}`
+          description: `Abonnement ${subscriptionPlans.find(p => p.id === selectedPlan)?.name} activé`
         });
-        // Redirection vers la page de paiement avec les informations du plan
-        setLocation(`/professional-plans?plan=${selectedPlan}&email=${encodeURIComponent(formData.email)}&business=${encodeURIComponent(formData.businessName)}`);
+        setLocation("/pro-login");
       } else {
         throw new Error(data.error || "Erreur lors de la création du salon");
       }
