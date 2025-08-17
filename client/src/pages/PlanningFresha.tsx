@@ -878,19 +878,28 @@ export default function PlanningFresha() {
             {/* Header du calendrier */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset - 4)}>
+                <button 
+                  className="glass-button-purple flex items-center justify-center w-10 h-10 rounded-xl"
+                  onClick={() => setCurrentWeekOffset(currentWeekOffset - 4)}
+                >
                   <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-lg font-medium">
+                </button>
+                <span className="text-lg font-medium bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
                   {formatWeekRange()}
                 </span>
-                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset + 4)}>
+                <button 
+                  className="glass-button-purple flex items-center justify-center w-10 h-10 rounded-xl"
+                  onClick={() => setCurrentWeekOffset(currentWeekOffset + 4)}
+                >
                   <ChevronRight className="h-4 w-4" />
-                </Button>
+                </button>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setShowCalendar(false)}>
+              <button 
+                className="glass-button-purple flex items-center justify-center w-10 h-10 rounded-xl"
+                onClick={() => setShowCalendar(false)}
+              >
                 <X className="h-4 w-4" />
-              </Button>
+              </button>
             </div>
 
             {/* Calendrier double mois */}
@@ -924,15 +933,15 @@ export default function PlanningFresha() {
                 return (
                   <div key={monthOffset} className="text-center">
                     <div className="flex items-center justify-between mb-4">
-                      <Button variant="ghost" size="sm" onClick={() => {}}>
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <h3 className="text-lg font-semibold">
+                      <button className="glass-button-purple flex items-center justify-center w-8 h-8 rounded-lg">
+                        <ChevronLeft className="h-3 w-3" />
+                      </button>
+                      <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
                         {monthNames[month]} {year}
                       </h3>
-                      <Button variant="ghost" size="sm" onClick={() => {}}>
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
+                      <button className="glass-button-purple flex items-center justify-center w-8 h-8 rounded-lg">
+                        <ChevronRight className="h-3 w-3" />
+                      </button>
                     </div>
 
                     {/* En-têtes des jours */}
@@ -989,7 +998,7 @@ export default function PlanningFresha() {
             </div>
 
             {/* Boutons de sélection rapide */}
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center">
               {[
                 'Dans 1 semaine',
                 'Dans 2 semaines', 
@@ -997,26 +1006,20 @@ export default function PlanningFresha() {
                 'Dans 4 semaines',
                 'Dans 5 semaines'
               ].map((option, index) => (
-                <Button 
+                <button
                   key={option}
-                  variant="outline" 
-                  size="sm"
-                  className="text-sm bg-gradient-to-r from-purple-50/80 to-purple-100/60 backdrop-blur-sm border-purple-200/50 text-purple-700 hover:from-purple-100/80 hover:to-purple-200/70 hover:border-purple-300/60 transition-all duration-300"
+                  className="glass-button-purple px-4 py-2 rounded-xl text-sm font-medium"
                   onClick={() => {
                     setCurrentWeekOffset(index + 1);
                     setShowCalendar(false);
                   }}
                 >
                   {option}
-                </Button>
+                </button>
               ))}
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-sm bg-gradient-to-r from-gray-50/80 to-gray-100/60 backdrop-blur-sm border-gray-200/50 text-gray-600 hover:from-gray-100/80 hover:to-gray-200/70 hover:border-gray-300/60 transition-all duration-300"
-              >
+              <button className="glass-button-purple px-4 py-2 rounded-xl text-sm font-medium opacity-60">
                 Plus
-              </Button>
+              </button>
             </div>
           </div>
         </div>
