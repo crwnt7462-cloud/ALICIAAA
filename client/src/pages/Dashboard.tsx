@@ -130,6 +130,11 @@ export default function Dashboard() {
             >
               <Activity className="w-5 lg:w-6 h-5 lg:h-6 text-gray-600" />
             </div>
+            
+            {/* Logo vert utilisateur après le dernier icône */}
+            <div className="w-10 lg:w-12 h-10 lg:h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-xl lg:rounded-2xl flex items-center justify-center shadow-lg">
+              <User className="w-5 lg:w-6 h-5 lg:h-6 text-white" />
+            </div>
           </div>
           
           {/* User Avatar */}

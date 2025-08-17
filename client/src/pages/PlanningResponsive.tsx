@@ -1244,14 +1244,14 @@ export default function PlanningResponsive() {
         </div>
       </div>
       
-      {/* Footer Avyento complet - pleine largeur, en dehors de tous les conteneurs */}
+      {/* Footer Avyento complet - pleine largeur étiré sur toute la longueur */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.8 }}
-        className="bg-slate-800 text-white w-full"
+        className="bg-slate-800 text-white w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
       >
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-12 max-w-none">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Avyento */}
             <div>
@@ -1319,14 +1319,7 @@ export default function PlanningResponsive() {
             </div>
           </div>
           
-          {/* Logo vert de fermeture - repositionné plus haut */}
-          <div className="flex justify-center mt-6 mb-4">
-            <div className="w-16 h-16 bg-green-400 rounded-2xl flex items-center justify-center shadow-lg">
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-              </svg>
-            </div>
-          </div>
+
         </div>
       </motion.footer>
         
