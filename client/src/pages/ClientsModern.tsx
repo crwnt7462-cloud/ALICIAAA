@@ -395,7 +395,7 @@ export default function ClientsModern() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-slate-800 text-white py-12 mt-0 w-full"
+            className="bg-slate-800 text-white py-12 mt-16 w-full relative z-50"
           >
             <div className="max-w-6xl mx-auto px-6 lg:px-8">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -764,7 +764,7 @@ export default function ClientsModern() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-slate-800 text-white py-12 mt-0 w-full"
+            className="bg-slate-800 text-white py-12 mt-16 w-full relative z-50"
           >
             <div className="max-w-6xl mx-auto px-6 lg:px-8">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
