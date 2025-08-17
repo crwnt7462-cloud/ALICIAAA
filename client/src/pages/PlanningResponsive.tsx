@@ -52,7 +52,7 @@ const appointmentFormSchema = insertAppointmentSchema.extend({
 
 // Configuration des créneaux horaires étendus (minuit à 23h)
 // Créneaux horaires complets 24h avec demi-heures pour scroll détaillé
-const allTimeSlots: string[] = [];
+const allTimeSlots = [];
 for (let hour = 0; hour <= 23; hour++) {
   allTimeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
   allTimeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
@@ -205,15 +205,13 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Initialiser le scroll sur les heures principales - corrigé
+  // Initialiser le scroll sur les heures principales
   const initializeTimeScroll = () => {
     if (timeScrollContainer) {
       const targetTime = "09:00";
       const targetIndex = allTimeSlots.indexOf(targetTime);
-      if (targetIndex !== -1) {
-        const scrollPosition = targetIndex * 24; // 24px par créneau mobile
-        timeScrollContainer.scrollTop = scrollPosition;
-      }
+      const scrollPosition = targetIndex * 60; // 60px par heure
+      timeScrollContainer.scrollTop = scrollPosition;
     }
   };
 
