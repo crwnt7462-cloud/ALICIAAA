@@ -40,7 +40,7 @@ export default function PlanningResponsive() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -102,8 +102,15 @@ export default function PlanningResponsive() {
     return week;
   }, [selectedDate]);
 
-  // Rendez-vous simulés pour le test
+  // Rendez-vous simulés pour le test avec dates variées
+  const getDateOffset = (days: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date.toISOString().split('T')[0];
+  };
+
   const simulatedAppointments = [
+    // Aujourd'hui
     {
       id: 1001,
       clientId: 1,
@@ -143,6 +150,70 @@ export default function PlanningResponsive() {
       endTime: "17:30",
       status: "confirmed",
       notes: "Brushing + styling"
+    },
+    // Demain
+    {
+      id: 1005,
+      clientId: 2,
+      serviceId: 1,
+      appointmentDate: getDateOffset(1),
+      startTime: "09:30",
+      endTime: "10:30",
+      status: "scheduled",
+      notes: "Coupe moderne"
+    },
+    {
+      id: 1006,
+      clientId: 3,
+      serviceId: 3,
+      appointmentDate: getDateOffset(1),
+      startTime: "15:00",
+      endTime: "16:30",
+      status: "confirmed",
+      notes: "Soin anti-âge"
+    },
+    // Dans 3 jours
+    {
+      id: 1007,
+      clientId: 1,
+      serviceId: 2,
+      appointmentDate: getDateOffset(3),
+      startTime: "11:00",
+      endTime: "12:00",
+      status: "scheduled",
+      notes: "Pédicure"
+    },
+    // Dans 5 jours
+    {
+      id: 1008,
+      clientId: 2,
+      serviceId: 1,
+      appointmentDate: getDateOffset(5),
+      startTime: "14:30",
+      endTime: "15:30",
+      status: "confirmed",
+      notes: "Retouche couleur"
+    },
+    {
+      id: 1009,
+      clientId: 3,
+      serviceId: 3,
+      appointmentDate: getDateOffset(5),
+      startTime: "16:00",
+      endTime: "17:00",
+      status: "scheduled",
+      notes: "Consultation beauté"
+    },
+    // Dans une semaine
+    {
+      id: 1010,
+      clientId: 1,
+      serviceId: 1,
+      appointmentDate: getDateOffset(7),
+      startTime: "10:00",
+      endTime: "11:30",
+      status: "scheduled",
+      notes: "Coupe + Brushing"
     }
   ];
 
@@ -174,8 +245,13 @@ export default function PlanningResponsive() {
       
       if (viewMode === 'day') {
         return apt.appointmentDate === selectedDate;
-      } else {
+      } else if (viewMode === 'week') {
         return currentWeek.includes(apt.appointmentDate || '');
+      } else { // month
+        const aptDate = new Date(apt.appointmentDate || '');
+        const selectedDateObj = new Date(selectedDate || '');
+        return aptDate.getMonth() === selectedDateObj.getMonth() && 
+               aptDate.getFullYear() === selectedDateObj.getFullYear();
       }
     });
   }, [allAppointments, statusFilter, selectedDate, viewMode, currentWeek]);
@@ -185,6 +261,8 @@ export default function PlanningResponsive() {
     const newDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
     if (viewMode === 'week') {
       newDate.setDate(newDate.getDate() + (days * 7));
+    } else if (viewMode === 'month') {
+      newDate.setMonth(newDate.getMonth() + days);
     } else {
       newDate.setDate(newDate.getDate() + days);
     }
@@ -205,6 +283,11 @@ export default function PlanningResponsive() {
     const start = new Date(currentWeek[0] || new Date().toISOString().split('T')[0]);
     const end = new Date(currentWeek[6] || new Date().toISOString().split('T')[0]);
     return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} - ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
+  };
+
+  const formatMonthRange = () => {
+    const date = new Date(selectedDate || new Date().toISOString().split('T')[0]);
+    return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
   };
 
   // Obtenir les rendez-vous pour un créneau horaire spécifique
@@ -236,7 +319,8 @@ export default function PlanningResponsive() {
   // Statistiques par période
   const getPeriodLabel = () => {
     if (viewMode === 'day') return 'Aujourd\'hui';
-    return 'Cette semaine';
+    if (viewMode === 'week') return 'Cette semaine';
+    return 'Ce mois';
   };
 
   const getStatusBadge = (status: string) => {
@@ -405,6 +489,119 @@ export default function PlanningResponsive() {
     </div>
   );
 
+  // Vue mois avec calendrier style Avyento
+  const renderMonthView = () => {
+    const selectedDateObj = new Date(selectedDate || new Date().toISOString().split('T')[0]);
+    const firstDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), 1);
+    const lastDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth() + 1, 0);
+    
+    // Obtenir le premier lundi de la grille (peut être du mois précédent)
+    const startDate = new Date(firstDayOfMonth);
+    startDate.setDate(startDate.getDate() - ((firstDayOfMonth.getDay() + 6) % 7));
+    
+    // Créer les 42 jours de la grille (6 semaines × 7 jours)
+    const calendarDays = [];
+    for (let i = 0; i < 42; i++) {
+      const day = new Date(startDate);
+      day.setDate(day.getDate() + i);
+      calendarDays.push(day);
+    }
+
+    return (
+      <div className="space-y-4">
+        {/* En-têtes des jours de la semaine */}
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <CardContent className="p-4 lg:p-6">
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
+                <div key={day} className="text-center font-semibold text-purple-600 p-2">
+                  {day}
+                </div>
+              ))}
+            </div>
+            
+            {/* Grille du calendrier */}
+            <div className="grid grid-cols-7 gap-2">
+              {calendarDays.map((day, index) => {
+                const isCurrentMonth = day.getMonth() === selectedDateObj.getMonth();
+                const isToday = day.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+                const dayString = day.toISOString().split('T')[0];
+                const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === dayString);
+                
+                return (
+                  <motion.div
+                    key={index}
+                    whileHover={{ scale: 1.05 }}
+                    className={`
+                      aspect-square p-2 rounded-xl cursor-pointer transition-all
+                      ${isCurrentMonth ? 'bg-white/50' : 'bg-gray-50/30'} 
+                      ${isToday ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white' : ''}
+                      hover:bg-purple-100
+                    `}
+                    onClick={() => setSelectedDate(dayString)}
+                  >
+                    <div className="h-full flex flex-col">
+                      <div className={`text-sm font-bold mb-1 ${!isCurrentMonth ? 'opacity-40' : ''}`}>
+                        {day.getDate()}
+                      </div>
+                      {dayAppointments.length > 0 && (
+                        <div className="flex-1 space-y-1">
+                          {dayAppointments.slice(0, 2).map((apt, aptIndex) => {
+                            const client = allClients.find(c => c.id === apt.clientId);
+                            return (
+                              <div
+                                key={aptIndex}
+                                className="text-xs p-1 bg-purple-100 text-purple-800 rounded truncate"
+                              >
+                                {apt.startTime} {client?.firstName}
+                              </div>
+                            );
+                          })}
+                          {dayAppointments.length > 2 && (
+                            <div className="text-xs text-purple-600 font-medium">
+                              +{dayAppointments.length - 2} autres
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Résumé mensuel détaillé */}
+        <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+          <CardContent className="p-4 lg:p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé du mois</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
+                <div className="text-2xl font-bold text-purple-600">
+                  {filteredAppointments.length}
+                </div>
+                <div className="text-sm text-gray-600">RDV total</div>
+              </div>
+              <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl">
+                <div className="text-2xl font-bold text-emerald-600">
+                  {filteredAppointments.filter(apt => apt.status === 'completed').length}
+                </div>
+                <div className="text-sm text-gray-600">Terminés</div>
+              </div>
+              <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
+                <div className="text-2xl font-bold text-amber-600">
+                  {revenueStats.revenue.toFixed(0)}€
+                </div>
+                <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 flex items-center justify-center">
@@ -442,7 +639,8 @@ export default function PlanningResponsive() {
                 Planning
               </h1>
               <p className="text-sm text-gray-600">
-                {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
+                {viewMode === 'day' ? formatDate(selectedDate) : 
+                 viewMode === 'week' ? formatWeekRange() : formatMonthRange()}
               </p>
             </div>
 
@@ -465,6 +663,14 @@ export default function PlanningResponsive() {
                   className="rounded-lg"
                 >
                   Semaine
+                </Button>
+                <Button
+                  variant={viewMode === 'month' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('month')}
+                  className="rounded-lg"
+                >
+                  Mois
                 </Button>
               </div>
 
@@ -676,10 +882,10 @@ export default function PlanningResponsive() {
                   Objectif
                 </h3>
                 <p className="text-lg lg:text-2xl font-bold text-amber-600">
-                  {viewMode === 'day' ? '250' : '1500'}€
+                  {viewMode === 'day' ? '250' : viewMode === 'week' ? '1500' : '6000'}€
                 </p>
                 <p className="text-xs lg:text-sm text-gray-600">
-                  {((revenueStats.revenue / (viewMode === 'day' ? 250 : 1500)) * 100).toFixed(0)}% atteint
+                  {((revenueStats.revenue / (viewMode === 'day' ? 250 : viewMode === 'week' ? 1500 : 6000)) * 100).toFixed(0)}% atteint
                 </p>
               </CardContent>
             </Card>
@@ -715,7 +921,8 @@ export default function PlanningResponsive() {
           className="space-y-4"
         >
           <h2 className="text-xl font-bold text-gray-900 text-center lg:text-left">
-            {viewMode === 'day' ? 'Planning du jour' : 'Aperçu de la semaine'}
+            {viewMode === 'day' ? 'Planning du jour' : 
+             viewMode === 'week' ? 'Aperçu de la semaine' : 'Aperçu du mois'}
           </h2>
           
           {filteredAppointments.length === 0 ? (
@@ -737,7 +944,8 @@ export default function PlanningResponsive() {
             </Card>
           ) : (
             <div>
-              {viewMode === 'day' ? renderDayView() : renderWeekView()}
+              {viewMode === 'day' ? renderDayView() : 
+           viewMode === 'week' ? renderWeekView() : renderMonthView()}
             </div>
           )}
         </motion.div>
