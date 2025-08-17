@@ -4,9 +4,8 @@ import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { 
-  ArrowLeft, Search, Plus, Filter, Star, Phone, 
-  Mail, Calendar, MessageCircle, User, Crown, Sparkles,
-  Heart, Zap, Users
+  ArrowLeft, Search, Plus, Star, Phone, 
+  MessageCircle, User, Crown, Sparkles, Users
 } from 'lucide-react';
 
 interface Client {
@@ -32,21 +31,21 @@ export default function ClientsModern() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
 
-  // Récupérer les clients depuis la BDD
-  const { data: clients, isLoading } = useQuery({
+  // Récupérer les clients depuis la BDD avec type correct
+  const { data: clients, isLoading } = useQuery<Client[]>({
     queryKey: ['/api/clients'],
     retry: 1
   });
 
   const filters = [
     { id: 'all', label: 'Tous', count: clients?.length || 0 },
-    { id: 'VIP', label: 'VIP', count: clients?.filter(c => c.status === 'VIP').length || 0 },
-    { id: 'Fidèle', label: 'Fidèles', count: clients?.filter(c => c.status === 'Fidèle').length || 0 },
-    { id: 'Nouvelle', label: 'Nouvelles', count: clients?.filter(c => c.status === 'Nouvelle').length || 0 },
-    { id: 'Inactive', label: 'Inactives', count: clients?.filter(c => c.status === 'Inactive').length || 0 }
+    { id: 'VIP', label: 'VIP', count: clients?.filter((c: Client) => c.status === 'VIP').length || 0 },
+    { id: 'Fidèle', label: 'Fidèles', count: clients?.filter((c: Client) => c.status === 'Fidèle').length || 0 },
+    { id: 'Nouvelle', label: 'Nouvelles', count: clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0 },
+    { id: 'Inactive', label: 'Inactives', count: clients?.filter((c: Client) => c.status === 'Inactive').length || 0 }
   ];
 
-  const filteredClients = (clients || []).filter(client => {
+  const filteredClients = (clients || []).filter((client: Client) => {
     const matchesSearch = client.name.toLowerCase().includes(searchText.toLowerCase()) ||
                          client.email.toLowerCase().includes(searchText.toLowerCase()) ||
                          client.phone.includes(searchText);
@@ -65,7 +64,7 @@ export default function ClientsModern() {
   };
 
   const currentClient = selectedClient 
-    ? (clients || []).find(c => c.id === selectedClient)
+    ? (clients || []).find((c: Client) => c.id === selectedClient)
     : null;
 
   if (isLoading) {
@@ -218,15 +217,15 @@ export default function ClientsModern() {
                   <div className="p-4 lg:p-6">
                     <div className="grid grid-cols-3 gap-4 lg:gap-8 text-center">
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'VIP').length || 0}</p>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'VIP').length || 0}</p>
                         <p className="text-xs lg:text-sm text-gray-600">Clientes VIP</p>
                       </div>
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'Fidèle').length || 0}</p>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Fidèle').length || 0}</p>
                         <p className="text-xs lg:text-sm text-gray-600">Fidèles</p>
                       </div>
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'Nouvelle').length || 0}</p>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0}</p>
                         <p className="text-xs lg:text-sm text-gray-600">Nouvelles</p>
                       </div>
                     </div>
@@ -325,7 +324,7 @@ export default function ClientsModern() {
                     </div>
                   </div>
                 ) : (
-                  filteredClients.map((client, index) => (
+                  filteredClients.map((client: Client, index: number) => (
                   <motion.button
                     key={client.id}
                     initial={{ opacity: 0, y: 20 }}
@@ -618,7 +617,7 @@ export default function ClientsModern() {
                 <div className="bg-gray-50 rounded-2xl p-4">
                   <h3 className="font-medium text-gray-900 mb-3">Préférences</h3>
                   <div className="flex flex-wrap gap-2">
-                    {currentClient.preferences.map((pref, index) => (
+                    {currentClient.preferences.map((pref: string, index: number) => (
                       <span key={index} className="px-3 py-1 bg-white rounded-full text-sm text-gray-600">
                         {pref}
                       </span>
