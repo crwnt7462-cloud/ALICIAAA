@@ -275,12 +275,44 @@ export default function PlanningResponsive() {
     { id: 3, name: "Soin Visage", price: 120 }
   ];
 
-  // Employés simulés
+  // Employés avec identification visuelle optimisée
   const simulatedEmployees = [
-    { id: "all", name: "Vue d'ensemble", color: "purple" },
-    { id: "1", name: "Sarah Martin", color: "blue" },
-    { id: "2", name: "Julie Dupont", color: "emerald" },
-    { id: "3", name: "Emma Laurent", color: "amber" }
+    { 
+      id: "all", 
+      name: "Vue d'ensemble", 
+      color: "purple",
+      bgColor: "bg-purple-100",
+      textColor: "text-purple-800", 
+      borderColor: "border-purple-300",
+      icon: "👥"
+    },
+    { 
+      id: "1", 
+      name: "Sarah Martin", 
+      color: "blue",
+      bgColor: "bg-blue-100",
+      textColor: "text-blue-800",
+      borderColor: "border-blue-300", 
+      icon: "💄"
+    },
+    { 
+      id: "2", 
+      name: "Julie Dupont", 
+      color: "emerald",
+      bgColor: "bg-emerald-100",
+      textColor: "text-emerald-800",
+      borderColor: "border-emerald-300",
+      icon: "💇‍♀️"
+    },
+    { 
+      id: "3", 
+      name: "Emma Laurent", 
+      color: "amber",
+      bgColor: "bg-amber-100", 
+      textColor: "text-amber-800",
+      borderColor: "border-amber-300",
+      icon: "💅"
+    }
   ];
 
   // Fusionner les vraies données avec les données simulées
@@ -419,17 +451,21 @@ export default function PlanningResponsive() {
                         {appointmentsAtTime.map((appointment) => {
                           const client = allClients.find(c => c.id === appointment.clientId);
                           const service = allServices.find(s => s.id === appointment.serviceId);
+                          const employee = simulatedEmployees.find(e => e.id === appointment.employeeId);
                           
                           return (
                             <motion.div
                               key={appointment.id}
                               whileHover={{ scale: 1.02 }}
-                              className="bg-gradient-to-r from-gray-50 to-purple-50/30 p-3 lg:p-4 rounded-xl cursor-pointer"
+                              className={`bg-gradient-to-r from-gray-50 to-purple-50/30 p-3 lg:p-4 rounded-xl cursor-pointer border-l-4 ${employee?.borderColor || 'border-purple-300'}`}
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-purple-500 rounded-full"></div>
+                                    <span className="text-lg">{employee?.icon || '👤'}</span>
+                                    <span className={`text-xs px-2 py-1 rounded-full ${employee?.bgColor} ${employee?.textColor} font-medium`}>
+                                      {employee?.name || 'Employé'}
+                                    </span>
                                     <span className="font-medium text-gray-900 text-sm lg:text-base">
                                       {client ? `${client.firstName} ${client.lastName}` : 'Client'}
                                     </span>
@@ -578,41 +614,27 @@ export default function PlanningResponsive() {
     </div>
   );
 
-  // Vue mois avec calendrier style Avyento
+  // Vue mois moderne - Seulement les jours du mois en cours
   const renderMonthView = () => {
     const selectedDateObj = new Date(selectedDate || new Date().toISOString().split('T')[0]);
     const firstDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), 1);
     const lastDayOfMonth = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth() + 1, 0);
     
-    // Obtenir le premier lundi de la grille (peut être du mois précédent)
-    const startDate = new Date(firstDayOfMonth);
-    startDate.setDate(startDate.getDate() - ((firstDayOfMonth.getDay() + 6) % 7));
-    
-    // Créer les 42 jours de la grille (6 semaines × 7 jours)
+    // Créer seulement les jours du mois en cours
     const calendarDays = [];
-    for (let i = 0; i < 42; i++) {
-      const day = new Date(startDate);
-      day.setDate(day.getDate() + i);
-      calendarDays.push(day);
+    for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+      const currentDay = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), day);
+      calendarDays.push(currentDay);
     }
 
     return (
       <div className="space-y-4">
-        {/* En-têtes des jours de la semaine */}
+        {/* Grille moderne des jours du mois */}
         <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 lg:p-6">
-            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4">
-              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
-                <div key={day} className="text-center font-semibold text-purple-600 p-2">
-                  {day}
-                </div>
-              ))}
-            </div>
-            
-            {/* Grille du calendrier */}
-            <div className="grid grid-cols-7 gap-1 sm:gap-2">
+            {/* Grille responsive des jours */}
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2 sm:gap-3 lg:gap-4">
               {calendarDays.map((day, index) => {
-                const isCurrentMonth = day.getMonth() === selectedDateObj.getMonth();
                 const isToday = day.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
                 const dayString = day.toISOString().split('T')[0];
                 const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === dayString);
@@ -622,48 +644,42 @@ export default function PlanningResponsive() {
                     key={index}
                     whileHover={{ scale: 1.05 }}
                     className={`
-                      aspect-square p-1 sm:p-2 rounded-lg sm:rounded-xl cursor-pointer transition-all
-                      ${isCurrentMonth ? 'bg-white/60 border border-white/40' : 'bg-gray-50/30'} 
-                      ${isToday ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' : ''}
-                      hover:bg-purple-100
+                      aspect-square p-2 sm:p-3 rounded-xl cursor-pointer transition-all
+                      ${isToday 
+                        ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' 
+                        : 'bg-white/60 border border-white/40 hover:bg-purple-50'
+                      }
                     `}
                     onClick={() => setSelectedDate(dayString)}
                   >
-                    <div className="h-full flex flex-col">
-                      <div className={`text-sm font-bold mb-1 ${!isCurrentMonth ? 'opacity-40' : ''} ${isToday ? 'text-white' : 'text-gray-900'}`}>
+                    <div className="h-full flex flex-col justify-between">
+                      {/* Numéro du jour */}
+                      <div className={`text-base lg:text-lg font-bold ${isToday ? 'text-white' : 'text-gray-900'}`}>
                         {day.getDate()}
                       </div>
-                      {dayAppointments.length > 0 && (
-                        <div className="flex-1 space-y-1">
-                          {dayAppointments.slice(0, 2).map((apt, aptIndex) => {
-                            const client = allClients.find(c => c.id === apt.clientId);
-                            const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
-                            const employeeColor = employee?.color || 'purple';
-                            
-                            return (
-                              <div
-                                key={aptIndex}
-                                className={`text-xs p-1 rounded truncate font-medium ${
-                                  isToday 
-                                    ? 'bg-white/20 text-white' 
-                                    : selectedEmployee === 'all' 
-                                      ? employeeColor === 'blue' ? 'bg-blue-100 text-blue-800' :
-                                        employeeColor === 'emerald' ? 'bg-emerald-100 text-emerald-800' :
-                                        employeeColor === 'amber' ? 'bg-amber-100 text-amber-800' :
-                                        'bg-purple-100 text-purple-800'
-                                      : 'bg-purple-100 text-purple-800'
-                                }`}
-                              >
-                                <div className="font-bold">{apt.startTime}</div>
-                                <div className="truncate">{client?.firstName}</div>
-                              </div>
-                            );
-                          })}
-                          {dayAppointments.length > 2 && (
-                            <div className={`text-xs font-medium ${isToday ? 'text-white/80' : 'text-purple-600'}`}>
-                              +{dayAppointments.length - 2} autres
+                      
+                      {/* Indicateur de rendez-vous avec employés */}
+                      {dayAppointments.length > 0 ? (
+                        <div className="flex flex-col items-center gap-1">
+                          <div className={`text-xs font-bold ${isToday ? 'text-white' : 'text-purple-600'}`}>
+                            {dayAppointments.length} RDV
+                          </div>
+                          {selectedEmployee === 'all' && (
+                            <div className="flex gap-1 flex-wrap justify-center">
+                              {Array.from(new Set(dayAppointments.map(apt => apt.employeeId))).slice(0, 3).map((empId, empIndex) => {
+                                const employee = simulatedEmployees.find(e => e.id === empId);
+                                return (
+                                  <span key={empIndex} className="text-xs">
+                                    {employee?.icon || '👤'}
+                                  </span>
+                                );
+                              })}
                             </div>
                           )}
+                        </div>
+                      ) : (
+                        <div className={`text-xs ${isToday ? 'text-white/60' : 'text-gray-400'}`}>
+                          Libre
                         </div>
                       )}
                     </div>
