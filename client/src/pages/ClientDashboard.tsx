@@ -136,7 +136,7 @@ export default function ClientDashboard() {
             </div>
             
             <button 
-              onClick={() => setLocation('/client-profile')}
+              onClick={() => setLocation('/client-parametres')}
               className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
               style={{
                 backdropFilter: 'blur(10px)',
@@ -159,7 +159,7 @@ export default function ClientDashboard() {
             </button>
             
             <button 
-              onClick={() => setLocation('/salon-search')}
+              onClick={() => setLocation('/search')}
               className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
               style={{
                 backdropFilter: 'blur(10px)',
@@ -182,7 +182,7 @@ export default function ClientDashboard() {
             </button>
             
             <button 
-              onClick={() => setLocation('/client-favorites')}
+              onClick={() => setLocation('/client-rdv')}
               className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
               style={{
                 backdropFilter: 'blur(10px)',
@@ -201,11 +201,11 @@ export default function ClientDashboard() {
               <div className="w-6 h-6 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
                 <Star className="w-4 h-4" />
               </div>
-              <span className="font-medium">Favoris</span>
+              <span className="font-medium">Mes RDV</span>
             </button>
             
             <button 
-              onClick={() => setLocation('/client-settings')}
+              onClick={() => setLocation('/client-parametres')}
               className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
               style={{
                 backdropFilter: 'blur(10px)',
@@ -651,7 +651,7 @@ export default function ClientDashboard() {
           </button>
           
           <button
-            onClick={() => setLocation('/salon-search')}
+            onClick={() => setLocation('/search')}
             className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
             style={{
               background: 'rgba(255, 255, 255, 0.5)'
@@ -662,18 +662,18 @@ export default function ClientDashboard() {
           </button>
           
           <button
-            onClick={() => setLocation('/client-favorites')}
+            onClick={() => setLocation('/client-rdv')}
             className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
             style={{
               background: 'rgba(255, 255, 255, 0.5)'
             }}
           >
             <Star className="w-5 h-5 mb-1" />
-            <span className="text-xs font-medium">Favoris</span>
+            <span className="text-xs font-medium">Mes RDV</span>
           </button>
           
           <button
-            onClick={() => setLocation('/client-settings')}
+            onClick={() => setLocation('/client-parametres')}
             className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
             style={{
               background: 'rgba(255, 255, 255, 0.5)'
