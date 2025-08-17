@@ -102,11 +102,74 @@ export default function PlanningResponsive() {
     return week;
   }, [selectedDate]);
 
+  // Rendez-vous simulés pour le test
+  const simulatedAppointments = [
+    {
+      id: 1001,
+      clientId: 1,
+      serviceId: 1,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "09:00",
+      endTime: "10:00",
+      status: "confirmed",
+      notes: "Coupe + Couleur"
+    },
+    {
+      id: 1002,
+      clientId: 2,
+      serviceId: 2,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "10:30",
+      endTime: "11:30",
+      status: "scheduled",
+      notes: "Manucure complète"
+    },
+    {
+      id: 1003,
+      clientId: 3,
+      serviceId: 3,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "14:00",
+      endTime: "15:30",
+      status: "completed",
+      notes: "Soin visage premium"
+    },
+    {
+      id: 1004,
+      clientId: 1,
+      serviceId: 2,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "16:30",
+      endTime: "17:30",
+      status: "confirmed",
+      notes: "Brushing + styling"
+    }
+  ];
+
+  // Clients simulés pour les noms
+  const simulatedClients = [
+    { id: 1, firstName: "Sophie", lastName: "Martin" },
+    { id: 2, firstName: "Emma", lastName: "Dubois" },
+    { id: 3, firstName: "Léa", lastName: "Bernard" }
+  ];
+
+  // Services simulés pour les prix
+  const simulatedServices = [
+    { id: 1, name: "Coupe + Couleur", price: 85 },
+    { id: 2, name: "Manucure", price: 45 },
+    { id: 3, name: "Soin Visage", price: 120 }
+  ];
+
+  // Fusionner les vraies données avec les données simulées
+  const allAppointments = [...(appointments || []), ...simulatedAppointments];
+  const allClients = [...(clients || []), ...simulatedClients];
+  const allServices = [...(services || []), ...simulatedServices];
+
   // Filtrage des rendez-vous
   const filteredAppointments = useMemo(() => {
-    if (!appointments || !Array.isArray(appointments) || appointments.length === 0) return [];
+    if (!allAppointments || !Array.isArray(allAppointments) || allAppointments.length === 0) return [];
     
-    return (appointments as Appointment[]).filter(apt => {
+    return (allAppointments as Appointment[]).filter(apt => {
       if (statusFilter !== 'all' && apt.status !== statusFilter) return false;
       
       if (viewMode === 'day') {
@@ -115,7 +178,7 @@ export default function PlanningResponsive() {
         return currentWeek.includes(apt.appointmentDate || '');
       }
     });
-  }, [appointments, statusFilter, selectedDate, viewMode, currentWeek]);
+  }, [allAppointments, statusFilter, selectedDate, viewMode, currentWeek]);
 
   // Navigation de date
   const changeDate = (days: number) => {
@@ -158,7 +221,7 @@ export default function PlanningResponsive() {
     );
     
     const revenue = completedAppointments.reduce((total, apt) => {
-      const service = (services as Service[]).find(s => s.id === apt.serviceId);
+      const service = allServices.find(s => s.id === apt.serviceId);
       return total + (Number(service?.price) || 0);
     }, 0);
 
@@ -217,8 +280,8 @@ export default function PlanningResponsive() {
                     {appointmentsAtTime.length > 0 ? (
                       <div className="space-y-2">
                         {appointmentsAtTime.map((appointment) => {
-                          const client = (clients as Client[]).find(c => c.id === appointment.clientId);
-                          const service = (services as Service[]).find(s => s.id === appointment.serviceId);
+                          const client = allClients.find(c => c.id === appointment.clientId);
+                          const service = allServices.find(s => s.id === appointment.serviceId);
                           
                           return (
                             <motion.div
@@ -314,8 +377,8 @@ export default function PlanningResponsive() {
                 </div>
                 <div className="space-y-2">
                   {dayAppointments.map((apt) => {
-                    const client = (clients as Client[]).find(c => c.id === apt.clientId);
-                    const service = (services as Service[]).find(s => s.id === apt.serviceId);
+                    const client = allClients.find(c => c.id === apt.clientId);
+                    const service = allServices.find(s => s.id === apt.serviceId);
                     
                     return (
                       <div key={apt.id} className="flex justify-between items-center text-xs">
@@ -361,17 +424,7 @@ export default function PlanningResponsive() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Background Effects - Avyento Style */}
-      <div className="absolute inset-0">
-        {/* Floating emojis backdrop - diffus et subtil */}
-        <div className="absolute top-20 left-10 text-4xl opacity-10 animate-bounce" style={{animationDelay: '0s'}}>💄</div>
-        <div className="absolute top-40 right-20 text-3xl opacity-10 animate-bounce" style={{animationDelay: '1s'}}>💅</div>
-        <div className="absolute top-60 left-1/4 text-4xl opacity-10 animate-bounce" style={{animationDelay: '2s'}}>✨</div>
-        <div className="absolute bottom-40 right-10 text-3xl opacity-10 animate-bounce" style={{animationDelay: '3s'}}>🌟</div>
-        <div className="absolute bottom-20 left-16 text-4xl opacity-10 animate-bounce" style={{animationDelay: '0.5s'}}>💋</div>
-        <div className="absolute top-32 right-1/3 text-3xl opacity-10 animate-bounce" style={{animationDelay: '1.5s'}}>🎀</div>
-        <div className="absolute bottom-60 left-1/3 text-4xl opacity-10 animate-bounce" style={{animationDelay: '2.5s'}}>👑</div>
-      </div>
+
 
       {/* Container responsive avec glassmorphism */}
       <div className="relative z-10 container mx-auto px-4 py-6 max-w-md lg:max-w-none lg:w-full xl:max-w-7xl min-h-screen">
@@ -386,8 +439,7 @@ export default function PlanningResponsive() {
             {/* Titre */}
             <div className="text-center sm:text-left">
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                <Sparkles className="inline w-6 h-6 mr-2 text-purple-600" />
-                Planning Pro
+                Planning
               </h1>
               <p className="text-sm text-gray-600">
                 {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
@@ -483,7 +535,7 @@ export default function PlanningResponsive() {
                                   <SelectValue placeholder="Sélectionner un client" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {(clients as Client[]).map((client: Client) => (
+                                  {allClients.map((client: any) => (
                                     <SelectItem key={client.id} value={client.id.toString()}>
                                       {client.firstName} {client.lastName}
                                     </SelectItem>
@@ -508,7 +560,7 @@ export default function PlanningResponsive() {
                                   <SelectValue placeholder="Sélectionner un service" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  {(services as Service[]).map((service: Service) => (
+                                  {allServices.map((service: any) => (
                                     <SelectItem key={service.id} value={service.id.toString()}>
                                       {service.name} - {service.price}€
                                     </SelectItem>
