@@ -856,34 +856,18 @@ export default function PlanningMobile() {
                         return (
                           <div
                             key={appointment.id}
-                            className="relative bg-white/90 backdrop-blur-sm rounded-xl p-3 mb-2 last:mb-0 border border-gray-100 hover:border-gray-200 transition-all"
+                            className="flex items-center p-2 rounded-lg bg-white/50 border border-gray-100 hover:bg-white transition-colors mb-2 last:mb-0"
                           >
-                            {/* Bande colorée gauche minimaliste */}
-                            <div 
-                              className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
-                              style={{ backgroundColor: employee?.color }}
-                            />
-                            
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1 ml-2">
-                                <div className="font-semibold text-gray-900 text-sm mb-1">
-                                  {appointment.serviceName}
-                                </div>
-                                <div className="text-xs text-gray-600 mb-1">
-                                  {appointment.clientName}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {appointment.startTime} - {appointment.endTime}
-                                </div>
+                            <div className="flex-1">
+                              <div className="font-medium text-gray-900 text-sm">{appointment.serviceName}</div>
+                              <div className="text-xs text-gray-600">{appointment.clientName}</div>
+                              <div className="text-xs text-gray-500">
+                                {appointment.startTime} • {employee?.name.split(' ')[0]}
                               </div>
-                              
-                              <div className="text-right">
-                                <div className="text-sm font-bold text-gray-900">
-                                  {appointment.price}€
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {employee?.name.split(' ')[0]}
-                                </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-semibold text-gray-900 text-sm">
+                                {appointment.price}€
                               </div>
                             </div>
                           </div>
