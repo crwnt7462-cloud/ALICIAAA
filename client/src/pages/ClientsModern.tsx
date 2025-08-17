@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  ArrowLeft, Grid3X3, List, Heart, X, Calendar
+  ArrowLeft, Grid3X3, List, Heart, X, Calendar, Users, Star, TrendingUp
 } from 'lucide-react';
 
 // Interface pour les rendez-vous du jour
@@ -25,6 +25,31 @@ export default function ClientsModern() {
     consultations: { count: 22, label: 'Todays', percentage: '-6.4%' },
     cancelled: { count: 3, label: 'Todays', percentage: '+30%' },
     urgentResolve: { count: 5, label: 'Todays', percentage: '+31%' }
+  };
+
+  // Insights clients avancés demandés
+  const clientInsights = {
+    loyalClients: { 
+      percentage: 68, 
+      label: 'Clients fidèles',
+      description: 'Plus de 5 visites',
+      change: '+12%',
+      color: '#10b981'
+    },
+    newClients: { 
+      percentage: 32, 
+      label: 'Nouveaux clients',
+      description: 'Moins de 5 visites',
+      change: '+8%',
+      color: '#f59e0b'
+    },
+    reviewedClients: { 
+      percentage: 45, 
+      label: 'Clients avec avis',
+      description: 'Ont laissé un avis',
+      change: '+15%',
+      color: '#8b5cf6'
+    }
   };
 
   // Rendez-vous du jour - exactement comme dans la capture
@@ -242,6 +267,100 @@ export default function ClientsModern() {
               <ProgressCircle percentage={31} color="#ffffff" />
             </div>
             <div className="mt-2 text-sm text-green-100">{dashboardStats.urgentResolve.percentage}</div>
+          </div>
+        </motion.div>
+
+        {/* Insights Clients Avancés */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-800">Insights Clients</h2>
+            <p className="text-gray-600">Analyse comportementale de votre clientèle</p>
+          </div>
+
+          {/* 3 Cartes d'insights clients */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Clients fidèles */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-green-100 rounded-xl">
+                    <Users className="h-6 w-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">{clientInsights.loyalClients.label}</h3>
+                    <p className="text-sm text-gray-600">{clientInsights.loyalClients.description}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="text-3xl font-bold text-gray-800 mb-1">
+                    {clientInsights.loyalClients.percentage}%
+                  </div>
+                  <div className="text-sm text-green-600 font-medium">
+                    {clientInsights.loyalClients.change}
+                  </div>
+                </div>
+                <ProgressCircle percentage={clientInsights.loyalClients.percentage} color={clientInsights.loyalClients.color} />
+              </div>
+            </div>
+
+            {/* Nouveaux clients */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-amber-100 rounded-xl">
+                    <TrendingUp className="h-6 w-6 text-amber-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">{clientInsights.newClients.label}</h3>
+                    <p className="text-sm text-gray-600">{clientInsights.newClients.description}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="text-3xl font-bold text-gray-800 mb-1">
+                    {clientInsights.newClients.percentage}%
+                  </div>
+                  <div className="text-sm text-amber-600 font-medium">
+                    {clientInsights.newClients.change}
+                  </div>
+                </div>
+                <ProgressCircle percentage={clientInsights.newClients.percentage} color={clientInsights.newClients.color} />
+              </div>
+            </div>
+
+            {/* Clients avec avis */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200/50">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-100 rounded-xl">
+                    <Star className="h-6 w-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-800">{clientInsights.reviewedClients.label}</h3>
+                    <p className="text-sm text-gray-600">{clientInsights.reviewedClients.description}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className="text-3xl font-bold text-gray-800 mb-1">
+                    {clientInsights.reviewedClients.percentage}%
+                  </div>
+                  <div className="text-sm text-purple-600 font-medium">
+                    {clientInsights.reviewedClients.change}
+                  </div>
+                </div>
+                <ProgressCircle percentage={clientInsights.reviewedClients.percentage} color={clientInsights.reviewedClients.color} />
+              </div>
+            </div>
           </div>
         </motion.div>
 
