@@ -5,8 +5,9 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Search, Plus, Star, Phone, 
-  MessageCircle, User, Crown, Sparkles, Users
+  MessageCircle, User, Crown, Sparkles, Users, ArrowRight
 } from 'lucide-react';
+import { getGenericGlassButton } from "@/lib/salonColors";
 
 interface Client {
   id: string;
@@ -32,11 +33,77 @@ export default function ClientsModern() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
 
-  // Récupérer les clients depuis la BDD avec type correct
-  const { data: clients, isLoading } = useQuery<Client[]>({
+  // Clients fictifs pour la démo
+  const mockClients: Client[] = [
+    {
+      id: '1',
+      name: 'Marie Dupont',
+      email: 'marie.dupont@email.com',
+      phone: '06 12 34 56 78',
+      status: 'VIP',
+      lastVisit: '2025-01-15',
+      totalVisits: 24,
+      totalSpent: 1850,
+      rating: 4.9,
+      notes: 'Préfère les rendez-vous le matin. Allergique aux sulfates.',
+      preferences: ['Coiffure', 'Coloration naturelle', 'Soins bio']
+    },
+    {
+      id: '2',
+      name: 'Sophie Martin',
+      email: 'sophie.martin@gmail.com',
+      phone: '06 98 76 54 32',
+      status: 'Fidèle',
+      lastVisit: '2025-01-10',
+      totalVisits: 12,
+      totalSpent: 680,
+      rating: 4.7,
+      preferences: ['Manucure', 'Pédicure', 'Massage']
+    },
+    {
+      id: '3',
+      name: 'Emma Rodriguez',
+      email: 'emma.rodriguez@outlook.com',
+      phone: '07 45 67 89 12',
+      status: 'Nouvelle',
+      lastVisit: '2025-01-08',
+      totalVisits: 2,
+      totalSpent: 120,
+      rating: 4.5
+    },
+    {
+      id: '4',
+      name: 'Lucas Leroy',
+      email: 'lucas.leroy@email.fr',
+      phone: '06 11 22 33 44',
+      status: 'VIP',
+      lastVisit: '2025-01-12',
+      totalVisits: 18,
+      totalSpent: 1200,
+      rating: 4.8,
+      preferences: ['Coupe homme', 'Barbe', 'Soins visage']
+    },
+    {
+      id: '5',
+      name: 'Amélie Thomas',
+      email: 'amelie.thomas@yahoo.fr',
+      phone: '06 55 44 33 22',
+      status: 'Fidèle',
+      lastVisit: '2025-01-05',
+      totalVisits: 8,
+      totalSpent: 450,
+      rating: 4.6,
+      preferences: ['Extensions', 'Lissage', 'Soins capillaires']
+    }
+  ];
+
+  // Récupérer les clients depuis la BDD avec fallback sur les clients fictifs
+  const { data: clientsFromDB, isLoading } = useQuery<Client[]>({
     queryKey: ['/api/clients'],
     retry: 1
   });
+
+  const clients = clientsFromDB && clientsFromDB.length > 0 ? clientsFromDB : mockClients;
 
   const filters = [
     { id: 'all', label: 'Tous', count: clients?.length || 0 },
@@ -195,15 +262,15 @@ export default function ClientsModern() {
                 
                 <div>
                   <h1 className="text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-3 xl:mb-4 2xl:mb-6">
-                    Gestion Clients
+                    Gestion Client(e)s
                   </h1>
                   <p className="text-gray-600 text-sm lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto">
-                    Base de données clients complète avec historique et préférences
+                    Base de données client(e)s complète avec historique et préférences
                   </p>
                 </div>
 
                 <div className="flex items-center justify-center space-x-1">
-                  <span className="text-sm lg:text-base xl:text-lg 2xl:text-xl text-gray-600">{(clients || []).length} clientes • Gestion intelligente</span>
+                  <span className="text-sm lg:text-base xl:text-lg 2xl:text-xl text-gray-600">{(clients || []).length} client(e)s • Gestion intelligente</span>
                 </div>
               </motion.div>
 
@@ -219,7 +286,7 @@ export default function ClientsModern() {
                     <div className="grid grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12 text-center">
                       <div>
                         <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'VIP').length || 0}</p>
-                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Clientes VIP</p>
+                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Client(e)s VIP</p>
                       </div>
                       <div>
                         <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Fidèle').length || 0}</p>
@@ -227,7 +294,7 @@ export default function ClientsModern() {
                       </div>
                       <div>
                         <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0}</p>
-                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Nouvelles</p>
+                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Nouveau/elles</p>
                       </div>
                     </div>
                   </div>
@@ -473,46 +540,61 @@ export default function ClientsModern() {
                   </div>
                 </div>
 
-                {/* Réseaux sociaux style Landing */}
-                <div className="flex justify-center gap-4 mb-6 lg:mb-8">
-                  <motion.a 
-                    whileHover={{ scale: 1.1 }}
-                    href="#" 
-                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
+                {/* CTA Buttons with Glassmorphism - EXACTEMENT comme Landing.tsx */}
+                <div className="space-y-4">
+                  {/* Bouton Glassmorphism Principal - Rechercher un salon */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    whileHover={{ 
+                      scale: 1.02,
+                      y: -2,
+                      transition: { duration: 0.2 }
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setLocation('/search')}
+                    className="relative w-full h-16 rounded-3xl overflow-hidden group"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255, 255, 255, 0.3)',
+                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                    }}
                   >
-                    <span className="text-gray-700 font-semibold text-sm lg:text-base">f</span>
-                  </motion.a>
-                  <motion.a 
-                    whileHover={{ scale: 1.1 }}
-                    href="#" 
-                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
+                      <Search className="w-5 h-5 mr-3" />
+                      Rechercher un salon
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+                  </motion.button>
+                  
+                  {/* Bouton secondaire */}
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
+                    onClick={() => setLocation('/dashboard')}
                   >
-                    <span className="text-gray-700 font-semibold text-sm lg:text-base">ig</span>
-                  </motion.a>
-                  <motion.a 
-                    whileHover={{ scale: 1.1 }}
-                    href="#" 
-                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
+                    Accéder au tableau de bord
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </motion.button>
+                  
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
+                    onClick={() => setLocation('/client-login-modern')}
                   >
-                    <span className="text-gray-700 font-semibold text-sm lg:text-base">tw</span>
-                  </motion.a>
-                  <motion.a 
-                    whileHover={{ scale: 1.1 }}
-                    href="#" 
-                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
-                  >
-                    <span className="text-gray-700 font-semibold text-sm lg:text-base">li</span>
-                  </motion.a>
+                    Espace client
+                  </motion.button>
                 </div>
 
-                {/* Copyright Avyento */}
-                <div className="text-center text-xs lg:text-sm text-gray-600 border-t border-gray-200 pt-4 lg:pt-6">
-                  <p>&copy; 2025 Avyento. Tous droits réservés.</p>
-                  <div className="flex justify-center gap-4 lg:gap-6 mt-2">
-                    <a href="#" className="hover:text-gray-900 transition-colors">Politique de confidentialité</a>
-                    <a href="#" className="hover:text-gray-900 transition-colors">Conditions d'utilisation</a>
-                    <a href="#" className="hover:text-gray-900 transition-colors">Mentions légales</a>
-                  </div>
+                {/* Footer EXACT de Landing.tsx */}
+                <div className="text-center text-xs text-gray-500 pb-4">
+                  <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
                 </div>
               </div>
             </div>
