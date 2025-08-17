@@ -967,10 +967,10 @@ export default function PlanningFresha() {
                               p-2 h-10 w-10 rounded-full text-sm font-medium transition-all duration-300
                               hover:scale-105 hover:shadow-lg
                               ${isCurrentWeekStart || isCurrentWeekEnd 
-                                ? 'bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25' 
+                                ? 'bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg shadow-purple-500/25' 
                                 : isInCurrentWeek 
-                                ? 'bg-gradient-to-br from-blue-100/90 to-blue-200/80 text-blue-700 shadow-md'
-                                : 'text-gray-700 hover:bg-gradient-to-br hover:from-blue-50/70 hover:to-blue-100/50'
+                                ? 'bg-gradient-to-br from-purple-100/90 to-purple-200/80 text-purple-600 shadow-md'
+                                : 'text-gray-700 hover:bg-gradient-to-br hover:from-purple-50/70 hover:to-purple-100/50'
                               }
                             `}
                             onClick={() => {
