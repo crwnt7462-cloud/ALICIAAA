@@ -113,12 +113,12 @@ export default function ClientDashboard() {
         <div className="flex flex-col w-full">
           {/* Logo section - Glassmorphism */}
           <div className="px-6 py-8">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mr-3 shadow-lg" 
-                   style={{backdropFilter: 'blur(10px)'}}>
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Avyento</span>
+            <div className="flex items-center justify-center">
+              <img 
+                src="/attached_assets/Logo avyento._1755467984886.png" 
+                alt="Avyento" 
+                className="h-[95px] w-auto object-contain"
+              />
             </div>
           </div>
           
@@ -262,18 +262,19 @@ export default function ClientDashboard() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <Button
+              <button
                 onClick={() => setLocation('/salon-search')}
-                className="px-6 py-3 rounded-2xl font-medium text-white shadow-lg border-0"
+                className="px-6 py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 69, 219, 0.9) 100%)',
+                  background: 'rgba(139, 92, 246, 0.2)',
                   backdropFilter: 'blur(20px) saturate(180%)',
-                  boxShadow: '0 8px 32px rgba(99, 102, 241, 0.25)'
+                  border: '1px solid rgba(139, 92, 246, 0.3)',
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.15)'
                 }}
               >
                 <Calendar className="w-4 h-4 mr-2" />
                 Nouveau rendez-vous
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -401,18 +402,19 @@ export default function ClientDashboard() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Prochains rendez-vous</h2>
-                  <Button
-                    size="sm"
+                  <button
                     onClick={() => setLocation('/salon-search')}
-                    className="text-white rounded-xl border-0 shadow-lg font-medium"
+                    className="text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 69, 219, 0.9) 100%)',
-                      backdropFilter: 'blur(10px)'
+                      background: 'rgba(139, 92, 246, 0.2)',
+                      backdropFilter: 'blur(20px) saturate(180%)',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      boxShadow: '0 4px 16px rgba(139, 92, 246, 0.15)'
                     }}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Réserver
-                  </Button>
+                  </button>
                 </div>
                 
                 <div className="space-y-4">
@@ -495,17 +497,18 @@ export default function ClientDashboard() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Historique</h2>
-                <Button
-                  size="sm"
+                <button
                   onClick={() => setLocation('/appointment-history')}
-                  className="text-white rounded-xl border-0 shadow-lg font-medium"
+                  className="text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(236, 72, 153, 0.9) 100%)',
-                    backdropFilter: 'blur(10px)'
+                    background: 'rgba(139, 92, 246, 0.2)',
+                    backdropFilter: 'blur(20px) saturate(180%)',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.15)'
                   }}
                 >
                   Voir tout
-                </Button>
+                </button>
               </div>
                 
                 <div className="space-y-4">
