@@ -158,32 +158,32 @@ export default function Register() {
         </motion.div>
       </div>
 
-      {/* Contenu principal optimisé desktop */}
-      <div className="flex items-center justify-center px-2 py-4 lg:px-4 lg:py-8">
+      {/* Contenu principal optimisé tablette/desktop */}
+      <div className="flex items-center justify-center px-2 py-4 md:px-6 lg:px-4 lg:py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-full max-w-sm sm:max-w-md lg:max-w-5xl xl:max-w-6xl"
+          className="w-full max-w-sm sm:max-w-md md:max-w-3xl lg:max-w-5xl xl:max-w-6xl"
         >
           {/* Formulaire global */}
           <form onSubmit={handleRegister}>
-            {/* Card principale avec orientation paysage sur desktop */}
-            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl lg:flex lg:min-h-[70vh] overflow-hidden">
+            {/* Card principale avec orientation paysage sur tablette/desktop */}
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl md:flex md:min-h-[65vh] lg:min-h-[70vh] overflow-hidden">
               
               {/* Section gauche - Premiers champs du formulaire */}
-              <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:bg-gradient-to-br lg:from-violet-50 lg:to-purple-50 lg:rounded-l-3xl lg:flex lg:flex-col lg:justify-center">
+              <div className="md:w-1/2 md:p-4 lg:p-6 xl:p-8 md:bg-gradient-to-br md:from-violet-50 md:to-purple-50 md:rounded-l-3xl md:flex md:flex-col md:justify-center">
 
                 {/* Titre et sous-titre dans la colonne de gauche */}
-                <div className="text-center mb-8">
-                  <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold mb-2 text-gray-900">
+                <div className="text-center mb-6 md:mb-8">
+                  <h1 className="text-2xl sm:text-3xl md:text-2xl lg:text-3xl font-bold mb-2 text-gray-900">
                     Inscription Salon
                   </h1>
-                  <p className="text-gray-600 text-base lg:text-lg">Créez votre salon professionnel</p>
+                  <p className="text-gray-600 text-base md:text-base lg:text-lg">Créez votre salon professionnel</p>
                 </div>
 
                 {/* Partie gauche du formulaire */}
-                <div className="space-y-3 p-4 sm:p-6 lg:p-0">
+                <div className="space-y-3 p-4 sm:p-6 md:p-0">
                   {/* Prénom */}
                   <div className="space-y-1">
                     <Label htmlFor="firstName" className="text-xs font-medium text-gray-900 text-left block">Prénom *</Label>
@@ -269,8 +269,8 @@ export default function Register() {
               </div>
 
               {/* Section droite - Reste du formulaire */}
-              <div className="lg:w-1/2 lg:p-6 xl:p-8 lg:flex lg:flex-col lg:justify-center">
-                <div className="space-y-3 p-4 sm:p-6 lg:p-0">
+              <div className="md:w-1/2 md:p-4 lg:p-6 xl:p-8 md:flex md:flex-col md:justify-center">
+                <div className="space-y-3 p-4 sm:p-6 md:p-0">
                     {/* Téléphone */}
                     <div className="space-y-1">
                       <Label htmlFor="phone" className="text-xs font-medium text-gray-900 text-left block">Téléphone professionnel *</Label>
@@ -359,13 +359,13 @@ export default function Register() {
             </div>
 
             {/* Section Plans d'Abonnement - séparée en dessous */}
-            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-6">
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-4 md:p-6">
               <div className="text-center mb-6">
-                <h2 className="text-xl font-bold mb-2 text-gray-900">Choisissez votre plan</h2>
-                <p className="text-gray-600">Sélectionnez l'abonnement qui correspond à vos besoins</p>
+                <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-900">Choisissez votre plan</h2>
+                <p className="text-sm md:text-base text-gray-600">Sélectionnez l'abonnement qui correspond à vos besoins</p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-1 md:grid-cols-3 gap-4">
                 {subscriptionPlans.map((plan) => {
                   const IconComponent = plan.icon;
                   const isSelected = selectedPlan === plan.id;
@@ -375,7 +375,7 @@ export default function Register() {
                       key={plan.id}
                       whileHover={{ scale: 1.02, y: -5 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`relative cursor-pointer rounded-2xl border-2 p-6 transition-all duration-300 ${
+                      className={`relative cursor-pointer rounded-2xl border-2 p-4 md:p-6 transition-all duration-300 ${
                         isSelected 
                           ? 'border-violet-500 bg-violet-50 shadow-lg' 
                           : 'border-gray-200 bg-white hover:border-violet-300 hover:shadow-md'
@@ -398,16 +398,16 @@ export default function Register() {
                             isSelected ? 'text-violet-600' : 'text-gray-600'
                           }`} />
                         </div>
-                        <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                        <h3 className="text-base md:text-lg font-bold text-gray-900">{plan.name}</h3>
                         <div className="mt-2">
-                          <span className="text-3xl font-bold text-gray-900">{plan.price}€</span>
-                          <span className="text-gray-600">/mois</span>
+                          <span className="text-2xl md:text-3xl font-bold text-gray-900">{plan.price}€</span>
+                          <span className="text-sm md:text-base text-gray-600">/mois</span>
                         </div>
                       </div>
 
                       <ul className="space-y-2 mb-4">
                         {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-start text-sm">
+                          <li key={index} className="flex items-start text-xs md:text-sm">
                             <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                             <span className="text-gray-700">{feature}</span>
                           </li>
@@ -430,8 +430,8 @@ export default function Register() {
             </div>
 
             {/* CGU et bouton d'inscription */}
-            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-6">
-              <div className="max-w-md mx-auto">
+            <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-4 md:p-6">
+              <div className="max-w-sm md:max-w-md mx-auto">
                 <div className="flex items-center justify-center space-x-3 mb-6">
                   <input
                     type="checkbox"
@@ -441,7 +441,7 @@ export default function Register() {
                     className="w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
                     required
                   />
-                  <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
+                  <label htmlFor="acceptTerms" className="text-xs md:text-sm text-gray-700 leading-relaxed">
                     J'accepte les{" "}
                     <span 
                       className="text-violet-600 hover:text-violet-700 underline cursor-pointer"
@@ -459,7 +459,7 @@ export default function Register() {
                   disabled={isLoading || !acceptTerms}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
+                  className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 md:py-4 text-sm md:text-base font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {isLoading ? "Création..." : `Créer mon salon ${subscriptionPlans.find(p => p.id === selectedPlan)?.name} (${subscriptionPlans.find(p => p.id === selectedPlan)?.price}€/mois)`}
                 </motion.button>
@@ -469,7 +469,7 @@ export default function Register() {
                   <button
                     type="button"
                     onClick={() => setLocation("/pro-login")}
-                    className="text-xs text-violet-600 hover:text-violet-700 transition-colors"
+                    className="text-xs md:text-sm text-violet-600 hover:text-violet-700 transition-colors"
                   >
                     Déjà un compte ? Se connecter
                   </button>
