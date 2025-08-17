@@ -445,10 +445,41 @@ export default function PlanningFresha() {
   // Gestionnaires pour le tooltip au survol
   const handleMouseEnter = (appointmentId: string, event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Largeur responsive du tooltip
+    const tooltipWidth = Math.min(288, viewportWidth - 20); // w-72 ou largeur écran - 20px
+    
+    // Positionner à gauche par défaut
+    let x = rect.left - tooltipWidth - 10;
+    let y = rect.top;
+    
+    // Si le tooltip sortirait à gauche de l'écran, le positionner à droite
+    if (x < 10) {
+      x = rect.right + 10;
+      
+      // Si même à droite il sort de l'écran, le centrer
+      if (x + tooltipWidth > viewportWidth - 10) {
+        x = Math.max(10, (viewportWidth - tooltipWidth) / 2);
+      }
+    }
+    
+    // Ajuster verticalement si le tooltip sortirait de l'écran
+    const estimatedTooltipHeight = 200;
+    if (y + estimatedTooltipHeight > viewportHeight - 10) {
+      y = Math.max(10, viewportHeight - estimatedTooltipHeight - 10);
+    }
+    
+    // S'assurer que le tooltip ne sorte pas en haut
+    if (y < 10) {
+      y = 10;
+    }
+    
     setHoveredAppointment({
       id: appointmentId,
-      x: rect.right + 10,
-      y: rect.top
+      x: Math.max(10, Math.min(x, viewportWidth - tooltipWidth - 10)),
+      y: Math.max(10, y)
     });
   };
 
@@ -787,7 +818,7 @@ export default function PlanningFresha() {
             if (!appointment) return null;
 
             return (
-              <div className="bg-white rounded-xl shadow-2xl border border-gray-200 p-4 max-w-xs w-72">
+              <div className="bg-white rounded-xl shadow-2xl border border-gray-200 p-4 w-72 max-w-[calc(100vw-20px)]">
                 {/* Header avec avatar et infos client */}
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
