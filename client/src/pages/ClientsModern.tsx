@@ -388,76 +388,76 @@ export default function ClientsModern() {
                 </div>
               )}
             </motion.div>
-
-            {/* Footer professionnel Avyento */}
-            <motion.footer
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-slate-800 text-white py-12 mt-16"
-            >
-              <div className="max-w-6xl mx-auto px-6 lg:px-8">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                  {/* Avyento */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Avyento</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
-                      La plateforme IA qui révolutionne la beauté et optimise vos revenus.
-                    </p>
-                  </div>
-                  
-                  {/* Services */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Services</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Coiffure</li>
-                      <li>Esthétique</li>
-                      <li>Manucure</li>
-                      <li>Massage</li>
-                    </ul>
-                  </div>
-                  
-                  {/* Partenaires */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Partenaires</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Devenir partenaire</li>
-                      <li>Tarifs professionnels</li>
-                      <li>Formation & Support</li>
-                      <li>Témoignages</li>
-                    </ul>
-                  </div>
-                  
-                  {/* Support */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Support</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Centre d'aide</li>
-                      <li>Contact</li>
-                      <li>CGU</li>
-                      <li>Confidentialité</li>
-                    </ul>
-                  </div>
+          </div>
+          
+          {/* Footer professionnel Avyento - PLEINE LARGEUR */}
+          <motion.footer
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="bg-slate-800 text-white py-12 mt-0 w-full"
+          >
+            <div className="max-w-6xl mx-auto px-6 lg:px-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                {/* Avyento */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Avyento</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+                  </p>
                 </div>
                 
-                {/* Copyright et réseaux sociaux */}
-                <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
-                  <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
-                  <div className="flex space-x-4 mt-4 lg:mt-0">
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">tw</span>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">ig</span>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">tk</span>
-                    </div>
+                {/* Services */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Services</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Coiffure</li>
+                    <li>Esthétique</li>
+                    <li>Manucure</li>
+                    <li>Massage</li>
+                  </ul>
+                </div>
+                
+                {/* Partenaires */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Partenaires</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Devenir partenaire</li>
+                    <li>Tarifs professionnels</li>
+                    <li>Formation & Support</li>
+                    <li>Témoignages</li>
+                  </ul>
+                </div>
+                
+                {/* Support */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Support</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Centre d'aide</li>
+                    <li>Contact</li>
+                    <li>CGU</li>
+                    <li>Confidentialité</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Copyright et réseaux sociaux */}
+              <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
+                <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
+                <div className="flex space-x-4 mt-4 lg:mt-0">
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">tw</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">ig</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">tk</span>
                   </div>
                 </div>
               </div>
-            </motion.footer>
-          </div>
+            </div>
+          </motion.footer>
         </motion.div>
       ) : (
         // Vue détail client moderne - DESIGN LANDING.TSX
@@ -757,76 +757,76 @@ export default function ClientsModern() {
 
 
             </div>
-
-            {/* Footer professionnel Avyento */}
-            <motion.footer
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="bg-slate-800 text-white py-12 mt-16"
-            >
-              <div className="max-w-6xl mx-auto px-6 lg:px-8">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                  {/* Avyento */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Avyento</h3>
-                    <p className="text-gray-300 text-sm leading-relaxed">
-                      La plateforme IA qui révolutionne la beauté et optimise vos revenus.
-                    </p>
-                  </div>
-                  
-                  {/* Services */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Services</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Coiffure</li>
-                      <li>Esthétique</li>
-                      <li>Manucure</li>
-                      <li>Massage</li>
-                    </ul>
-                  </div>
-                  
-                  {/* Partenaires */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Partenaires</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Devenir partenaire</li>
-                      <li>Tarifs professionnels</li>
-                      <li>Formation & Support</li>
-                      <li>Témoignages</li>
-                    </ul>
-                  </div>
-                  
-                  {/* Support */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-4">Support</h3>
-                    <ul className="space-y-2 text-sm text-gray-300">
-                      <li>Centre d'aide</li>
-                      <li>Contact</li>
-                      <li>CGU</li>
-                      <li>Confidentialité</li>
-                    </ul>
-                  </div>
+          </div>
+          
+          {/* Footer professionnel Avyento - PLEINE LARGEUR */}
+          <motion.footer
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="bg-slate-800 text-white py-12 mt-0 w-full"
+          >
+            <div className="max-w-6xl mx-auto px-6 lg:px-8">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                {/* Avyento */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Avyento</h3>
+                  <p className="text-gray-300 text-sm leading-relaxed">
+                    La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+                  </p>
                 </div>
                 
-                {/* Copyright et réseaux sociaux */}
-                <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
-                  <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
-                  <div className="flex space-x-4 mt-4 lg:mt-0">
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">tw</span>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">ig</span>
-                    </div>
-                    <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                      <span className="text-xs">tk</span>
-                    </div>
+                {/* Services */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Services</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Coiffure</li>
+                    <li>Esthétique</li>
+                    <li>Manucure</li>
+                    <li>Massage</li>
+                  </ul>
+                </div>
+                
+                {/* Partenaires */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Partenaires</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Devenir partenaire</li>
+                    <li>Tarifs professionnels</li>
+                    <li>Formation & Support</li>
+                    <li>Témoignages</li>
+                  </ul>
+                </div>
+                
+                {/* Support */}
+                <div>
+                  <h3 className="font-bold text-lg mb-4">Support</h3>
+                  <ul className="space-y-2 text-sm text-gray-300">
+                    <li>Centre d'aide</li>
+                    <li>Contact</li>
+                    <li>CGU</li>
+                    <li>Confidentialité</li>
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Copyright et réseaux sociaux */}
+              <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
+                <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
+                <div className="flex space-x-4 mt-4 lg:mt-0">
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">tw</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">ig</span>
+                  </div>
+                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
+                    <span className="text-xs">tk</span>
                   </div>
                 </div>
               </div>
-            </motion.footer>
-          </div>
+            </div>
+          </motion.footer>
         </motion.div>
       )}
     </motion.div>
