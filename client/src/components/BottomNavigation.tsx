@@ -9,14 +9,17 @@ export function BottomNavigation() {
   const [isMobile, setIsMobile] = useState(() => {
     // Initialize based on window size if available
     if (typeof window !== 'undefined') {
-      return window.innerWidth < 768;
+      const mobile = window.innerWidth < 768;
+      console.log('🔍 INIT Mobile Detection:', mobile, 'Width:', window.innerWidth);
+      return mobile;
     }
-    return false;
+    return true; // Default to mobile if window not available
   });
 
   useEffect(() => {
     const checkIsMobile = () => {
       const mobile = window.innerWidth < 768;
+      console.log('🔍 Mobile Detection Update:', mobile, 'Width:', window.innerWidth);
       setIsMobile(mobile);
     };
     
@@ -27,6 +30,9 @@ export function BottomNavigation() {
     window.addEventListener('resize', checkIsMobile);
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+  // Force log current state
+  console.log('🔍 Current isMobile state:', isMobile, 'Window width:', typeof window !== 'undefined' ? window.innerWidth : 'undefined');
 
   const navItems = [
     {
@@ -94,7 +100,12 @@ export function BottomNavigation() {
       {/* Navigation desktop - à gauche - FORCE DISPLAY */}
       <div 
         className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50"
-        style={{ display: isMobile ? 'none' : 'block' }}
+        style={{ 
+          display: isMobile ? 'none !important' : 'block',
+          visibility: isMobile ? 'hidden' : 'visible',
+          opacity: isMobile ? '0' : '1',
+          pointerEvents: isMobile ? 'none' : 'auto'
+        }}
       >
         {/* Sidebar verticale glassmorphism */}
         <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-2xl px-3 py-4">

@@ -16,9 +16,21 @@
 @media (max-width: 767px) {
   .desktop-sidebar-only {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
   }
   .mobile-nav-only {
     display: block !important;
+  }
+  
+  /* Force hide any sidebar on mobile */
+  div[class*="left-4"][class*="top-1/2"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 
