@@ -40,7 +40,8 @@ export default function PlanningResponsive() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
+  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
+  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
   const [paymentDetailsOpen, setPaymentDetailsOpen] = useState(false);
@@ -92,18 +93,48 @@ export default function PlanningResponsive() {
     },
   });
 
-  // Calcul de la semaine actuelle
-  const currentWeek = useMemo(() => {
-    const start = new Date(selectedDate || new Date().toISOString().split('T')[0]);
-    start.setDate(start.getDate() - start.getDay() + 1); // Start from Monday
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(start);
-      day.setDate(day.getDate() + i);
-      week.push(day.toISOString().split('T')[0]);
+  // Calcul des semaines avec navigation
+  const { currentWeek, currentMonth, currentYear } = useMemo(() => {
+    const baseDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
+    
+    if (viewMode === 'day') {
+      // Pour le mode jour, calcul simple de la semaine
+      const start = new Date(baseDate);
+      start.setDate(start.getDate() - start.getDay() + 1);
+      const week = [];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(start);
+        day.setDate(day.getDate() + i);
+        week.push(day.toISOString().split('T')[0]);
+      }
+      return {
+        currentWeek: week,
+        currentMonth: baseDate.toLocaleDateString('fr-FR', { month: 'long' }),
+        currentYear: baseDate.getFullYear()
+      };
+    } else {
+      // Pour le mode semaine, calcul avec navigation par semaines
+      const startOfYear = new Date(baseDate.getFullYear(), 0, 1);
+      const startOfFirstWeek = new Date(startOfYear);
+      startOfFirstWeek.setDate(startOfFirstWeek.getDate() - startOfFirstWeek.getDay() + 1);
+      
+      const targetWeekStart = new Date(startOfFirstWeek);
+      targetWeekStart.setDate(targetWeekStart.getDate() + (currentWeekIndex * 7));
+      
+      const week = [];
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(targetWeekStart);
+        day.setDate(day.getDate() + i);
+        week.push(day.toISOString().split('T')[0]);
+      }
+      
+      return {
+        currentWeek: week,
+        currentMonth: targetWeekStart.toLocaleDateString('fr-FR', { month: 'long' }),
+        currentYear: targetWeekStart.getFullYear()
+      };
     }
-    return week;
-  }, [selectedDate]);
+  }, [selectedDate, viewMode, currentWeekIndex]);
 
   // Rendez-vous simulés pour le test avec dates variées
   const getDateOffset = (days: number) => {
@@ -402,28 +433,21 @@ export default function PlanningResponsive() {
       
       if (viewMode === 'day') {
         return apt.appointmentDate === selectedDate;
-      } else if (viewMode === 'week') {
+      } else { // week
         return currentWeek.includes(apt.appointmentDate || '');
-      } else { // month
-        const aptDate = new Date(apt.appointmentDate || '');
-        const selectedDateObj = new Date(selectedDate || '');
-        return aptDate.getMonth() === selectedDateObj.getMonth() && 
-               aptDate.getFullYear() === selectedDateObj.getFullYear();
       }
     });
   }, [allAppointments, statusFilter, selectedEmployee, selectedDate, viewMode, currentWeek]);
 
-  // Navigation de date
-  const changeDate = (days: number) => {
-    const newDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
-    if (viewMode === 'week') {
-      newDate.setDate(newDate.getDate() + (days * 7));
-    } else if (viewMode === 'month') {
-      newDate.setMonth(newDate.getMonth() + days);
-    } else {
-      newDate.setDate(newDate.getDate() + days);
+  // Navigation de date et semaines
+  const changeDate = (direction: number) => {
+    if (viewMode === 'day') {
+      const newDate = new Date(selectedDate || new Date().toISOString().split('T')[0]);
+      newDate.setDate(newDate.getDate() + direction);
+      setSelectedDate(newDate.toISOString().split('T')[0]);
+    } else { // week
+      setCurrentWeekIndex(prev => prev + direction);
     }
-    setSelectedDate(newDate.toISOString().split('T')[0]);
   };
 
   // Formatage des dates
@@ -440,11 +464,6 @@ export default function PlanningResponsive() {
     const start = new Date(currentWeek[0] || new Date().toISOString().split('T')[0]);
     const end = new Date(currentWeek[6] || new Date().toISOString().split('T')[0]);
     return `${start.getDate()} ${start.toLocaleDateString('fr-FR', { month: 'short' })} - ${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`;
-  };
-
-  const formatMonthRange = () => {
-    const date = new Date(selectedDate || new Date().toISOString().split('T')[0]);
-    return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
   };
 
   // Obtenir les rendez-vous pour un créneau horaire spécifique
@@ -476,8 +495,7 @@ export default function PlanningResponsive() {
   // Statistiques par période
   const getPeriodLabel = () => {
     if (viewMode === 'day') return 'Aujourd\'hui';
-    if (viewMode === 'week') return 'Cette semaine';
-    return 'Ce mois';
+    return 'Cette semaine';
   };
 
   const getPaymentStatusBadge = (paymentStatus: string) => {
@@ -861,8 +879,7 @@ export default function PlanningResponsive() {
                 Planning
               </h1>
               <p className="text-sm text-gray-600">
-                {viewMode === 'day' ? formatDate(selectedDate) : 
-                 viewMode === 'week' ? formatWeekRange() : formatMonthRange()}
+                {viewMode === 'day' ? formatDate(selectedDate) : formatWeekRange()}
               </p>
             </div>
 
@@ -902,15 +919,14 @@ export default function PlanningResponsive() {
                 >
                   Semaine
                 </Button>
-                <Button
-                  variant={viewMode === 'month' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('month')}
-                  className="rounded-lg"
-                >
-                  Mois
-                </Button>
               </div>
+
+              {/* Indicateur mois/année pour navigation semaines */}
+              {viewMode === 'week' && (
+                <div className="text-sm font-medium text-gray-700 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg border border-white/40">
+                  {currentMonth} {currentYear}
+                </div>
+              )}
 
               {/* Navigation */}
               <div className="flex items-center gap-2">
@@ -1160,8 +1176,7 @@ export default function PlanningResponsive() {
         >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">
-              {viewMode === 'day' ? 'Planning du jour' : 
-               viewMode === 'week' ? 'Aperçu de la semaine' : 'Aperçu du mois'}
+              {viewMode === 'day' ? 'Planning du jour' : 'Aperçu de la semaine'}
             </h2>
             {selectedEmployee !== 'all' && (
               <div className="text-sm text-purple-600 font-medium">
@@ -1236,16 +1251,6 @@ export default function PlanningResponsive() {
             >
               <CalendarDays className="w-5 h-5" />
               <span className="text-xs">Semaine</span>
-            </Button>
-            
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setViewMode('month')}
-              className={`flex flex-col items-center gap-1 ${viewMode === 'month' ? 'text-purple-600' : 'text-gray-500'}`}
-            >
-              <CalendarRange className="w-5 h-5" />
-              <span className="text-xs">Mois</span>
             </Button>
             
             <Button 
