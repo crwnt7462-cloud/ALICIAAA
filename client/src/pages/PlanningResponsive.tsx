@@ -134,6 +134,29 @@ export default function PlanningResponsive() {
       notes: "Manucure complète",
       employeeId: "2"
     },
+    // RDV simultanés pour tester le rendu multi-employés
+    {
+      id: 1014,
+      clientId: 1,
+      serviceId: 1,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "10:30",
+      endTime: "11:30",
+      status: "confirmed",
+      notes: "Coupe couleur premium",
+      employeeId: "1"
+    },
+    {
+      id: 1015,
+      clientId: 3,
+      serviceId: 3,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "10:30",
+      endTime: "11:30",
+      status: "scheduled",
+      notes: "Soin visage relaxant",
+      employeeId: "3"
+    },
     {
       id: 1003,
       clientId: 3,
@@ -155,6 +178,18 @@ export default function PlanningResponsive() {
       status: "confirmed",
       notes: "Brushing + styling",
       employeeId: "3"
+    },
+    // Autres RDV simultanés pour tester
+    {
+      id: 1016,
+      clientId: 2,
+      serviceId: 1,
+      appointmentDate: new Date().toISOString().split('T')[0],
+      startTime: "16:30",
+      endTime: "17:30",
+      status: "scheduled",
+      notes: "Coupe tendance",
+      employeeId: "1"
     },
     // Demain
     {
@@ -275,7 +310,7 @@ export default function PlanningResponsive() {
     { id: 3, name: "Soin Visage", price: 120 }
   ];
 
-  // Employés avec identification visuelle optimisée
+  // Employés avec couleurs cohérentes et distinctives
   const simulatedEmployees = [
     { 
       id: "all", 
@@ -284,7 +319,7 @@ export default function PlanningResponsive() {
       bgColor: "bg-purple-100",
       textColor: "text-purple-800", 
       borderColor: "border-purple-300",
-      icon: "👥"
+      cardColor: "from-purple-100 to-purple-200"
     },
     { 
       id: "1", 
@@ -293,7 +328,7 @@ export default function PlanningResponsive() {
       bgColor: "bg-blue-100",
       textColor: "text-blue-800",
       borderColor: "border-blue-300", 
-      icon: "💄"
+      cardColor: "from-blue-100 to-blue-200"
     },
     { 
       id: "2", 
@@ -302,7 +337,7 @@ export default function PlanningResponsive() {
       bgColor: "bg-emerald-100",
       textColor: "text-emerald-800",
       borderColor: "border-emerald-300",
-      icon: "💇‍♀️"
+      cardColor: "from-emerald-100 to-emerald-200"
     },
     { 
       id: "3", 
@@ -311,7 +346,7 @@ export default function PlanningResponsive() {
       bgColor: "bg-amber-100", 
       textColor: "text-amber-800",
       borderColor: "border-amber-300",
-      icon: "💅"
+      cardColor: "from-amber-100 to-amber-200"
     }
   ];
 
@@ -457,12 +492,11 @@ export default function PlanningResponsive() {
                             <motion.div
                               key={appointment.id}
                               whileHover={{ scale: 1.02 }}
-                              className={`bg-gradient-to-r from-gray-50 to-purple-50/30 p-3 lg:p-4 rounded-xl cursor-pointer border-l-4 ${employee?.borderColor || 'border-purple-300'}`}
+                              className={`bg-gradient-to-r ${employee?.cardColor || 'from-gray-50 to-purple-50/30'} p-3 lg:p-4 rounded-xl cursor-pointer border-l-4 ${employee?.borderColor || 'border-purple-300'}`}
                             >
                               <div className="flex items-center justify-between">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <span className="text-lg">{employee?.icon || '👤'}</span>
                                     <span className={`text-xs px-2 py-1 rounded-full ${employee?.bgColor} ${employee?.textColor} font-medium`}>
                                       {employee?.name || 'Employé'}
                                     </span>
@@ -534,44 +568,43 @@ export default function PlanningResponsive() {
                     </div>
                   </div>
                   
-                  {/* Rendez-vous du jour */}
+                  {/* Rendez-vous du jour avec détails visibles */}
                   <div className="space-y-1">
-                    {dayAppointments.slice(0, 3).map((apt, aptIndex) => {
+                    {dayAppointments.slice(0, 4).map((apt, aptIndex) => {
                       const client = allClients.find(c => c.id === apt.clientId);
+                      const service = allServices.find(s => s.id === apt.serviceId);
                       const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
-                      const employeeColor = employee?.color || 'purple';
                       
                       return (
                         <div
                           key={aptIndex}
-                          className={`text-xs p-1.5 rounded text-center truncate ${
+                          className={`text-xs p-2 rounded-lg border ${
                             isToday 
-                              ? 'bg-white/20 text-white' 
-                              : selectedEmployee === 'all' 
-                                ? employeeColor === 'blue' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
-                                  employeeColor === 'emerald' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
-                                  employeeColor === 'amber' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
-                                  'bg-purple-100 text-purple-800 border border-purple-200'
-                                : 'bg-purple-100 text-purple-800'
+                              ? 'bg-white/20 text-white border-white/30' 
+                              : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
                           }`}
                         >
-                          <div className="font-bold text-xs">{apt.startTime}</div>
-                          <div className="truncate font-medium">{client?.firstName}</div>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="font-bold">{apt.startTime}</div>
+                            <div className="text-xs opacity-75">{service?.price}€</div>
+                          </div>
+                          <div className="truncate font-medium">{client?.firstName} {client?.lastName}</div>
+                          <div className="text-xs opacity-75 truncate">{service?.name}</div>
                           {selectedEmployee === 'all' && (
-                            <div className="text-xs opacity-75 truncate">{employee?.name.split(' ')[0]}</div>
+                            <div className="text-xs opacity-75 truncate mt-1">{employee?.name.split(' ')[0]}</div>
                           )}
                         </div>
                       );
                     })}
-                    {dayAppointments.length > 3 && (
-                      <div className={`text-xs text-center font-medium ${
+                    {dayAppointments.length > 4 && (
+                      <div className={`text-xs text-center font-medium p-1 ${
                         isToday ? 'text-white/80' : 'text-purple-600'
                       }`}>
-                        +{dayAppointments.length - 3} autres
+                        +{dayAppointments.length - 4} autres
                       </div>
                     )}
                     {dayAppointments.length === 0 && (
-                      <div className={`text-xs text-center ${
+                      <div className={`text-xs text-center p-2 ${
                         isToday ? 'text-white/60' : 'text-gray-400'
                       }`}>
                         Libre
@@ -658,27 +691,40 @@ export default function PlanningResponsive() {
                         {day.getDate()}
                       </div>
                       
-                      {/* Indicateur de rendez-vous avec employés */}
+                      {/* Aperçu détaillé des RDV */}
                       {dayAppointments.length > 0 ? (
-                        <div className="flex flex-col items-center gap-1">
-                          <div className={`text-xs font-bold ${isToday ? 'text-white' : 'text-purple-600'}`}>
-                            {dayAppointments.length} RDV
-                          </div>
-                          {selectedEmployee === 'all' && (
-                            <div className="flex gap-1 flex-wrap justify-center">
-                              {Array.from(new Set(dayAppointments.map(apt => apt.employeeId))).slice(0, 3).map((empId, empIndex) => {
-                                const employee = simulatedEmployees.find(e => e.id === empId);
-                                return (
-                                  <span key={empIndex} className="text-xs">
-                                    {employee?.icon || '👤'}
-                                  </span>
-                                );
-                              })}
+                        <div className="space-y-1">
+                          {dayAppointments.slice(0, 2).map((apt, aptIndex) => {
+                            const client = allClients.find(c => c.id === apt.clientId);
+                            const service = allServices.find(s => s.id === apt.serviceId);
+                            const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
+                            
+                            return (
+                              <div
+                                key={aptIndex}
+                                className={`text-xs p-1.5 rounded border ${
+                                  isToday 
+                                    ? 'bg-white/20 text-white border-white/30' 
+                                    : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
+                                }`}
+                              >
+                                <div className="font-bold">{apt.startTime}</div>
+                                <div className="truncate">{client?.firstName}</div>
+                                <div className="text-xs opacity-75 truncate">{service?.name}</div>
+                                {selectedEmployee === 'all' && (
+                                  <div className="text-xs opacity-75 truncate">{employee?.name.split(' ')[0]}</div>
+                                )}
+                              </div>
+                            );
+                          })}
+                          {dayAppointments.length > 2 && (
+                            <div className={`text-xs text-center font-medium ${isToday ? 'text-white/80' : 'text-purple-600'}`}>
+                              +{dayAppointments.length - 2}
                             </div>
                           )}
                         </div>
                       ) : (
-                        <div className={`text-xs ${isToday ? 'text-white/60' : 'text-gray-400'}`}>
+                        <div className={`text-xs text-center ${isToday ? 'text-white/60' : 'text-gray-400'}`}>
                           Libre
                         </div>
                       )}
