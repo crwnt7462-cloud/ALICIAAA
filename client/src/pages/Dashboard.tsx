@@ -165,9 +165,9 @@ export default function Dashboard() {
           </div>
 
           {/* Zone principale */}
-          <div className="flex-1 p-4 md:p-6 lg:p-8 bg-gray-50 overflow-y-auto max-h-screen pb-20 md:pb-8">
+          <div className="flex-1 p-4 md:p-6 lg:p-8 bg-gray-50 overflow-y-auto max-h-screen pb-20 md:pb-8 pt-8 md:pt-12">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 md:mb-8 space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-10 space-y-4 md:space-y-0">
               <div>
                 <p className="text-gray-500 text-xs md:text-sm">Avyento</p>
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">Tableau de Bord</h1>
