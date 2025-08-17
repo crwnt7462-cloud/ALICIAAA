@@ -1011,18 +1011,16 @@ function Router() {
   }
 
   // Page Clients en plein écran desktop avec navigation mobile conservée
-  if (location === '/clients') {
+  if (location === '/clients' || location === '/clients-modern') {
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
         <div className="lg:hidden">
           <Header />
         </div>
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto md:pl-20">
           <ClientsModern />
         </main>
-        <div className="lg:hidden">
-          <BottomNavigation />
-        </div>
+        <BottomNavigation />
       </div>
     );
   }
