@@ -452,9 +452,9 @@ export default function PlanningResponsive() {
   ];
 
   // Fusionner les vraies données avec les données simulées
-  const allAppointments = [...(appointments || []), ...simulatedAppointments];
-  const allClients = [...(clients || []), ...simulatedClients];
-  const allServices = [...(services || []), ...simulatedServices];
+  const allAppointments = Array.isArray(appointments) ? [...appointments, ...simulatedAppointments] : simulatedAppointments;
+  const allClients = Array.isArray(clients) ? [...clients, ...simulatedClients] : simulatedClients;
+  const allServices = Array.isArray(services) ? [...services, ...simulatedServices] : simulatedServices;
 
   // Filtrage des rendez-vous
   const filteredAppointments = useMemo(() => {
@@ -642,7 +642,7 @@ export default function PlanningResponsive() {
       {/* Calendrier semaine - 7 jours en grille */}
       <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
         <CardContent className="p-4 lg:p-6">
-          <div className="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-4">
+          <div className="grid grid-cols-3 md:grid-cols-7 gap-1 sm:gap-2 lg:gap-4">
             {currentWeek.map((date, index) => {
               const dayDate = new Date(date);
               const isToday = date === new Date().toISOString().split('T')[0];
@@ -653,8 +653,8 @@ export default function PlanningResponsive() {
                   key={date}
                   whileHover={{ scale: 1.02 }}
                   className={`
-                    p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl cursor-pointer transition-all 
-                    min-h-[100px] sm:min-h-[120px] lg:min-h-[160px]
+                    p-1 sm:p-2 md:p-3 lg:p-4 rounded-lg sm:rounded-xl cursor-pointer transition-all 
+                    min-h-[80px] sm:min-h-[100px] md:min-h-[120px] lg:min-h-[160px]
                     ${isToday 
                       ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' 
                       : 'bg-white/60 hover:bg-purple-50 border border-white/40'
@@ -663,11 +663,11 @@ export default function PlanningResponsive() {
                   onClick={() => setSelectedDate(date)}
                 >
                   {/* En-tête du jour */}
-                  <div className="text-center mb-2 lg:mb-3">
-                    <div className={`text-xs lg:text-sm font-medium opacity-75 ${isToday ? 'text-white' : 'text-gray-600'}`}>
-                      {weekDays[index]}
+                  <div className="text-center mb-1 md:mb-2 lg:mb-3">
+                    <div className={`text-xs md:text-xs lg:text-sm font-medium opacity-75 ${isToday ? 'text-white' : 'text-gray-600'}`}>
+                      {weekDays[index].slice(0, 3)}
                     </div>
-                    <div className={`text-lg lg:text-xl font-bold ${isToday ? 'text-white' : 'text-gray-900'}`}>
+                    <div className={`text-base md:text-lg lg:text-xl font-bold ${isToday ? 'text-white' : 'text-gray-900'}`}>
                       {dayDate.getDate()}
                     </div>
                   </div>
@@ -682,20 +682,20 @@ export default function PlanningResponsive() {
                       return (
                         <div
                           key={aptIndex}
-                          className={`text-xs p-2 rounded-lg border ${
+                          className={`text-xs p-1 md:p-2 rounded-md md:rounded-lg border ${
                             isToday 
                               ? 'bg-white/20 text-white border-white/30' 
                               : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
                           }`}
                         >
                           <div className="flex items-center justify-between mb-1">
-                            <div className="font-bold">{apt.startTime}</div>
-                            <div className="text-xs opacity-75">{service?.price}€</div>
+                            <div className="font-bold text-xs md:text-xs">{apt.startTime}</div>
+                            <div className="text-xs opacity-75 hidden md:block">{service?.price}€</div>
                           </div>
-                          <div className="truncate font-medium">{client?.firstName} {client?.lastName}</div>
-                          <div className="text-xs opacity-75 truncate">{service?.name}</div>
+                          <div className="truncate font-medium text-xs">{client?.firstName}</div>
+                          <div className="text-xs opacity-75 truncate hidden md:block">{service?.name}</div>
                           {selectedEmployee === 'all' && (
-                            <div className="text-xs opacity-75 truncate mt-1">{employee?.name.split(' ')[0]}</div>
+                            <div className="text-xs opacity-75 truncate mt-1 hidden lg:block">{employee?.name.split(' ')[0]}</div>
                           )}
                         </div>
                       );
@@ -726,7 +726,7 @@ export default function PlanningResponsive() {
       <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
         <CardContent className="p-4 lg:p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé de la semaine</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
             <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
               <div className="text-2xl font-bold text-purple-600">
                 {filteredAppointments.length}
@@ -770,7 +770,7 @@ export default function PlanningResponsive() {
         <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 lg:p-6">
             {/* Grille responsive des jours */}
-            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-2 sm:gap-3 lg:gap-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-2 sm:gap-3 lg:gap-4">
               {calendarDays.map((day, index) => {
                 const isToday = day.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
                 const dayString = day.toISOString().split('T')[0];
@@ -1119,7 +1119,7 @@ export default function PlanningResponsive() {
             Chiffre d'Affaires - {getPeriodLabel()}
           </h2>
           
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
             {/* CA Total */}
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:scale-105 transition-all duration-200">
               <CardContent className="p-4 lg:p-6 text-center">
@@ -1202,7 +1202,7 @@ export default function PlanningResponsive() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="space-y-4"
+          className="space-y-4 lg:space-y-6 w-full max-w-md mx-auto md:max-w-4xl lg:max-w-none xl:max-w-7xl"
         >
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900">
