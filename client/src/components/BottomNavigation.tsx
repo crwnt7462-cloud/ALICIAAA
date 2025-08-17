@@ -42,7 +42,7 @@ export function BottomNavigation() {
   return (
     <>
       {/* Navigation mobile - en bas */}
-      <div className="md:hidden fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="mobile-nav-only fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
         {/* Barre flottante glassmorphism compacte mobile */}
         <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-full px-4 py-1.5">
           <div className="flex items-center gap-3">
@@ -67,7 +67,7 @@ export function BottomNavigation() {
       </div>
 
       {/* Navigation desktop - à gauche */}
-      <div className="hidden md:block fixed left-4 top-1/2 transform -translate-y-1/2 z-50">
+      <div className="desktop-sidebar-only fixed left-4 top-1/2 transform -translate-y-1/2 z-50">
         {/* Sidebar verticale glassmorphism */}
         <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-2xl px-3 py-4">
           <div className="flex flex-col gap-6">

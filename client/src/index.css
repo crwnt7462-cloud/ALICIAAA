@@ -12,6 +12,25 @@
   .xs\:hidden { display: none; }
 }
 
+/* Force responsive navigation display */
+@media (max-width: 767px) {
+  .desktop-sidebar-only {
+    display: none !important;
+  }
+  .mobile-nav-only {
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-nav-only {
+    display: none !important;
+  }
+  .desktop-sidebar-only {
+    display: block !important;
+  }
+}
+
 /* Hide scrollbar on mobile */
 .scrollbar-hide {
   -ms-overflow-style: none;
