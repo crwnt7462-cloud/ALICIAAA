@@ -491,6 +491,17 @@ export default function ClientsModern() {
                         <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(currentClient?.status || '')}`}>
                           {currentClient?.status}
                         </span>
+                        {/* Informations de contact */}
+                        <div className="mt-3 space-y-1 text-sm text-gray-600">
+                          <div className="flex items-center gap-2">
+                            <span>📧</span>
+                            <span>{currentClient?.email}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span>📞</span>
+                            <span>{currentClient?.phone || '+33 6 12 34 56 78'}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     
@@ -540,11 +551,8 @@ export default function ClientsModern() {
                       Envoyer un message
                     </button>
                   </motion.div>
-                </div>
 
-                {/* Colonne droite - Préférences et Notes */}
-                <div className="space-y-6">
-                  {/* Préférences */}
+                  {/* Préférences - maintenant sous l'encadré principal */}
                   {currentClient?.preferences && (
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
@@ -562,6 +570,10 @@ export default function ClientsModern() {
                       </div>
                     </motion.div>
                   )}
+                </div>
+
+                {/* Colonne droite - Notes et Photos */}
+                <div className="space-y-6">
 
                   {/* Notes éditables */}
                   <motion.div 
