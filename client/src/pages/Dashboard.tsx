@@ -1,9 +1,31 @@
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Globe, Settings, Sparkles, Home, Calendar, Users, MessageSquare, MapPin, BarChart3, Activity, User, TrendingUp, Clock, DollarSign } from "lucide-react";
+import { useState } from "react";
+import { 
+  Search, 
+  Globe, 
+  Settings as SettingsIcon, 
+  Sparkles, 
+  Home, 
+  Calendar, 
+  Users, 
+  MessageSquare, 
+  MapPin, 
+  BarChart3, 
+  Activity, 
+  User, 
+  TrendingUp, 
+  Clock, 
+  DollarSign,
+  ChevronDown,
+  Eye
+} from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
+  const [selectedPeriod, setSelectedPeriod] = useState("Week");
 
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["/api/dashboard/stats"],
@@ -25,10 +47,10 @@ export default function Dashboard() {
     return (
       <div className="flex h-screen bg-gray-50">
         <div className="w-20 bg-gradient-to-b from-purple-600 to-purple-700"></div>
-        <div className="flex-1 p-4 md:p-8">
+        <div className="flex-1 p-8">
           <div className="animate-pulse space-y-6">
             <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6">
               {Array.from({length: 3}).map((_, i) => (
                 <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
               ))}
@@ -40,151 +62,310 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
-      {/* Navigation supprimée - gérée par BottomNavigation globale */}
-      
-      {/* Zone principale pleine largeur */}
-      <div className="w-full p-4 md:p-6 lg:p-8 bg-gray-50 min-h-screen pb-20 md:pb-8 pt-8 md:pt-12">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 md:mb-10 space-y-4 md:space-y-0">
-          <div>
-            <p className="text-gray-500 text-xs md:text-sm">Avyento</p>
-            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">Tableau de Bord</h1>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar Glassmorphism Violet - Style exact de l'image */}
+      <div className="w-20 flex flex-col items-center py-6" style={{
+        background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        border: '1px solid rgba(255, 255, 255, 0.125)',
+        boxShadow: '0 8px 32px rgba(139, 69, 219, 0.25)'
+      }}>
+        {/* Logo */}
+        <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-8 border border-white/25">
+          <Sparkles className="w-6 h-6 text-white" />
+        </div>
+        
+        {/* Navigation Icons */}
+        <div className="space-y-4">
+          <div className="w-12 h-12 bg-white/25 backdrop-blur-sm border border-white/30 shadow-sm rounded-2xl flex items-center justify-center">
+            <Home className="w-6 h-6 text-white" />
           </div>
           
-          <div className="flex items-center space-x-2 md:space-x-4">
-            <div className="relative hidden md:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full md:w-auto"
-              />
+          <div 
+            onClick={() => setLocation('/planning')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <Calendar className="w-6 h-6 text-white/80" />
+          </div>
+          
+          <div 
+            onClick={() => setLocation('/clients-modern')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <Users className="w-6 h-6 text-white/80" />
+          </div>
+          
+          <div 
+            onClick={() => setLocation('/services-management')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <SettingsIcon className="w-6 h-6 text-white/80" />
+          </div>
+          
+          <div 
+            onClick={() => setLocation('/messaging-hub')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <MessageSquare className="w-6 h-6 text-white/80" />
+          </div>
+          
+          <div 
+            onClick={() => setLocation('/client-analytics')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <BarChart3 className="w-6 h-6 text-white/80" />
+          </div>
+          
+          <div 
+            onClick={() => setLocation('/inventory')}
+            className="w-12 h-12 bg-transparent hover:bg-white/15 rounded-2xl flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <Activity className="w-6 h-6 text-white/80" />
+          </div>
+        </div>
+        
+        {/* User Avatar */}
+        <div className="mt-auto">
+          <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-500 rounded-2xl flex items-center justify-center">
+            <User className="w-6 h-6 text-white" />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content - Style exact de l'image */}
+      <div className="flex-1 bg-gray-50 overflow-auto">
+        <div className="p-8">
+          {/* Header - Exact comme l'image */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-gray-500 text-sm mb-1">Avyento</p>
+              <h1 className="text-3xl font-bold text-gray-800">Tableau de Bord</h1>
             </div>
             
-            {/* Boutons d'action */}
-            <button 
-              onClick={async () => {
-                try {
-                  const response = await fetch('/api/salon/my-salon');
-                  if (response.ok) {
-                    const data = await response.json();
-                    if (data.salon) {
-                      setLocation(`/salon-editor/${data.salon.id}`);
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64"
+                />
+              </div>
+              
+              <Button 
+                onClick={async () => {
+                  try {
+                    const response = await fetch('/api/salon/my-salon');
+                    if (response.ok) {
+                      const data = await response.json();
+                      if (data.salon) {
+                        setLocation(`/salon-editor/${data.salon.id}`);
+                      } else {
+                        setLocation('/salon-creation');
+                      }
                     } else {
                       setLocation('/salon-creation');
                     }
-                  } else {
+                  } catch (error) {
+                    console.error('Erreur récupération salon:', error);
                     setLocation('/salon-creation');
                   }
-                } catch (error) {
-                  console.error('Erreur récupération salon:', error);
-                  setLocation('/salon-creation');
-                }
-              }}
-              className="flex items-center space-x-1 md:space-x-2 px-2 md:px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg md:rounded-xl transition-colors"
-            >
-              <Globe className="w-4 h-4 text-gray-600" />
-              <span className="text-xs md:text-sm text-gray-700 hidden sm:inline">Ma Page</span>
-            </button>
-            
-            <button 
-              onClick={() => setLocation('/salon-settings-modern')}
-              className="flex items-center space-x-1 md:space-x-2 px-2 md:px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-lg md:rounded-xl transition-colors"
-            >
-              <Settings className="w-4 h-4 text-purple-600" />
-              <span className="text-xs md:text-sm text-purple-700 hidden sm:inline">Settings</span>
-            </button>
-            
-            <div className="w-8 md:w-10 h-8 md:h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg md:rounded-xl flex items-center justify-center">
-              <span className="text-white font-semibold text-xs md:text-sm">AV</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Cartes statistiques */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
-          <div className="rounded-xl p-4 bg-white/40 backdrop-blur-sm border border-white/25 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg">
-                <DollarSign className="w-6 h-6 text-green-600" />
+                }}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <Globe className="w-4 h-4" />
+                <span>Ma Page</span>
+              </Button>
+              
+              <Button 
+                onClick={() => setLocation('/salon-settings-modern')}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2"
+              >
+                <SettingsIcon className="w-4 h-4" />
+                <span>Settings</span>
+              </Button>
+              
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">AV</span>
               </div>
-              <TrendingUp className="w-4 h-4 text-green-500" />
             </div>
-            <h3 className="font-bold text-2xl text-gray-900">{stats?.monthlyRevenue || 0}€</h3>
-            <p className="text-sm text-gray-600">Revenus mensuel</p>
           </div>
 
-          <div className="rounded-xl p-4 bg-white/40 backdrop-blur-sm border border-white/25 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-            <h3 className="font-bold text-2xl text-gray-900">{stats?.totalClients || 0}</h3>
-            <p className="text-sm text-gray-600">Clients totaux</p>
-          </div>
-
-          <div className="rounded-xl p-4 bg-white/40 backdrop-blur-sm border border-white/25 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-purple-100 rounded-lg">
-                <Calendar className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-            <h3 className="font-bold text-2xl text-gray-900">{todayAppointments?.length || 0}</h3>
-            <p className="text-sm text-gray-600">RDV aujourd'hui</p>
-          </div>
-
-          <div className="rounded-xl p-4 bg-white/40 backdrop-blur-sm border border-white/25 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-lg">
-                <Clock className="w-6 h-6 text-orange-600" />
-              </div>
-            </div>
-            <h3 className="font-bold text-2xl text-gray-900">{weeklyNewClients?.count || 0}</h3>
-            <p className="text-sm text-gray-600">Nouveaux cette semaine</p>
-          </div>
-        </div>
-
-        {/* Services populaires */}
-        <div className="bg-white/40 backdrop-blur-sm border border-white/25 shadow-lg rounded-2xl p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Settings className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-900">Services Populaires</h3>
-                <p className="text-sm text-gray-500">Vos prestations les plus demandées</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="space-y-4">
-            {popularServices && popularServices.length > 0 ? (
-              popularServices.map((service: any, index: number) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50/50 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-gray-900">{service.name}</h4>
-                    <p className="text-sm text-gray-500">{service.price}€ • {service.duration}min</p>
+          {/* Content Grid - Exactement comme l'image */}
+          <div className="grid grid-cols-12 gap-6">
+            {/* Graphique des revenus - Section principale gauche */}
+            <div className="col-span-8">
+              <Card className="bg-white rounded-3xl shadow-sm border-0">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Revenus - Cette Semaine</h3>
+                      <div className="flex items-center space-x-4 mt-2">
+                        <div className="flex items-center space-x-2">
+                          <button 
+                            onClick={() => setSelectedPeriod("Day")}
+                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                          >
+                            Day
+                          </button>
+                          <button 
+                            onClick={() => setSelectedPeriod("Week")}
+                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                          >
+                            Week
+                          </button>
+                          <button 
+                            onClick={() => setSelectedPeriod("Month")}
+                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                          >
+                            Month
+                          </button>
+                          <button 
+                            onClick={() => setSelectedPeriod("Year")}
+                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                          >
+                            Year
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                      <Eye className="w-4 h-4" />
+                      <span>View</span>
+                    </Button>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium text-purple-600">{service.bookings || 0} réservations</div>
+                  
+                  {/* Montant principal */}
+                  <div className="mb-6">
+                    <div className="text-4xl font-bold text-gray-900 mb-2">{stats?.monthlyRevenue || 0}€</div>
+                  </div>
+                  
+                  {/* Graphique simulé - Courbe comme dans l'image */}
+                  <div className="relative h-32 mb-4">
+                    <svg className="w-full h-full" viewBox="0 0 400 120">
+                      <defs>
+                        <linearGradient id="revenueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.3"/>
+                          <stop offset="100%" stopColor="#8B5CF6" stopOpacity="0"/>
+                        </linearGradient>
+                      </defs>
+                      {/* Courbe principale */}
+                      <path 
+                        d="M 20 80 Q 80 60 120 50 T 200 45 T 280 40 T 360 35" 
+                        stroke="#8B5CF6" 
+                        strokeWidth="2" 
+                        fill="none"
+                        className="drop-shadow-sm"
+                      />
+                      {/* Zone sous la courbe */}
+                      <path 
+                        d="M 20 80 Q 80 60 120 50 T 200 45 T 280 40 T 360 35 L 360 100 L 20 100 Z" 
+                        fill="url(#revenueGradient)"
+                      />
+                      {/* Points sur la courbe */}
+                      <circle cx="120" cy="50" r="3" fill="#8B5CF6" />
+                      <circle cx="200" cy="45" r="3" fill="#8B5CF6" />
+                      <circle cx="280" cy="40" r="3" fill="#8B5CF6" />
+                      <circle cx="360" cy="35" r="3" fill="#8B5CF6" />
+                    </svg>
+                  </div>
+                  
+                  {/* Labels des jours */}
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Services Populaires - Section droite */}
+            <div className="col-span-4">
+              <Card className="bg-white rounded-3xl shadow-sm border-0">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Services Populaires</h3>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {popularServices && popularServices.length > 0 ? (
+                      popularServices.map((service: any, index: number) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-900">{service.name}</div>
+                            <div className="text-sm text-gray-500">{service.price}€</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-medium text-gray-900">{service.bookings || 0}</div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <p>Aucun service encore</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Section Planning Aujourd'hui - En bas comme l'image */}
+          <div className="mt-8">
+            <Card className="bg-white rounded-3xl shadow-sm border-0">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <Clock className="w-6 h-6 text-purple-600" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Planning Aujourd'hui</h3>
+                      <p className="text-sm text-gray-500">Objectif: 100% rempli</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <div className="text-2xl font-bold text-gray-900">{todayAppointments?.length || 0} RDV</div>
+                    <Button variant="outline" size="sm">
+                      <Calendar className="w-4 h-4 mr-2" />
+                      Today
+                    </Button>
                   </div>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                <Settings className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Aucun service configuré</p>
-                <button 
-                  onClick={() => setLocation('/services-management')}
-                  className="mt-2 text-purple-600 hover:text-purple-700 text-sm font-medium"
-                >
-                  Ajouter des services
-                </button>
-              </div>
-            )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {todayAppointments && todayAppointments.length > 0 ? (
+                    todayAppointments.slice(0, 6).map((appointment: any, index: number) => (
+                      <div key={index} className="bg-gray-50 rounded-2xl p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="font-medium text-gray-900">{appointment.service?.name || 'Service'}</div>
+                          <div className="text-sm text-gray-500">{appointment.time || '10:00'}</div>
+                        </div>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <User className="w-4 h-4" />
+                          <span>{appointment.client?.name || 'Client'}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12 text-gray-500">
+                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg font-medium">Aucun rendez-vous aujourd'hui</p>
+                      <p className="text-sm">Votre planning est libre</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
