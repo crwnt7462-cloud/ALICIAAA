@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Plus, MoreHorizontal } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, MoreHorizontal, X, User, Phone, Mail, Clock, Calendar } from "lucide-react";
 
 type Employee = {
   id: string;
@@ -258,6 +258,8 @@ const weekDays = [
 
 export default function PlanningFresha() {
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
+  const [selectedSlot, setSelectedSlot] = useState<{ day: number; hour: string; appointment?: Appointment } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Calcul des dates de la semaine courante
   const currentWeek = useMemo(() => {
@@ -280,6 +282,17 @@ export default function PlanningFresha() {
 
   const goToToday = () => {
     setCurrentWeekOffset(0);
+  };
+
+  // Fonction pour gérer le clic sur un créneau
+  const handleSlotClick = (day: number, hour: string, appointment?: Appointment) => {
+    setSelectedSlot({ day, hour, appointment });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedSlot(null);
   };
 
   // Fonction pour calculer la position des rendez-vous
@@ -425,11 +438,12 @@ export default function PlanningFresha() {
                 {weekDays.map((weekDay) => (
                   <div key={weekDay.index} className="relative border-r border-gray-200 last:border-r-0">
                     {/* Créneaux horaires */}
-                    {timeSlots.map((_, slotIndex) => (
+                    {timeSlots.map((slot, slotIndex) => (
                       <div
                         key={slotIndex}
                         className="h-15 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
                         style={{ height: '60px' }}
+                        onClick={() => handleSlotClick(weekDay.index, slot)}
                       />
                     ))}
                     
@@ -439,8 +453,9 @@ export default function PlanningFresha() {
                       .map((appointment) => (
                         <div
                           key={appointment.id}
-                          className="absolute left-1 right-1 rounded text-xs font-medium text-white p-2 z-10 border border-gray-300"
+                          className="absolute left-1 right-1 rounded text-xs font-medium text-white p-2 z-10 border border-gray-300 cursor-pointer hover:shadow-lg transition-shadow"
                           style={getAppointmentStyle(appointment)}
+                          onClick={() => handleSlotClick(weekDay.index, appointment.startTime, appointment)}
                         >
                           <div className="font-semibold">{appointment.startTime} - {appointment.endTime}</div>
                           <div className="mt-1">{appointment.title}</div>
@@ -456,6 +471,137 @@ export default function PlanningFresha() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Modal de détails du rendez-vous */}
+      {isModalOpen && selectedSlot && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            {selectedSlot.appointment ? (
+              // Modal pour un rendez-vous existant
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-gray-800">Détails du rendez-vous</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={closeModal}
+                    className="rounded-full h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Service */}
+                  <div className="flex items-start gap-3">
+                    <div 
+                      className="w-4 h-4 rounded-full mt-1 flex-shrink-0"
+                      style={{ backgroundColor: selectedSlot.appointment.color }}
+                    ></div>
+                    <div>
+                      <div className="font-semibold text-gray-800">{selectedSlot.appointment.title}</div>
+                      <div className="text-sm text-gray-600">
+                        {selectedSlot.appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Horaire */}
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-4 h-4 text-gray-500" />
+                    <div>
+                      <div className="font-medium text-gray-800">
+                        {selectedSlot.appointment.startTime} - {selectedSlot.appointment.endTime}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        {weekDays.find(d => d.index === selectedSlot.day)?.full}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Client */}
+                  {selectedSlot.appointment.client && (
+                    <div className="flex items-center gap-3">
+                      <User className="w-4 h-4 text-gray-500" />
+                      <div>
+                        <div className="font-medium text-gray-800">{selectedSlot.appointment.client}</div>
+                        <div className="text-sm text-gray-600">Client régulier</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex gap-2 pt-4 border-t">
+                    <Button className="flex-1" variant="outline">
+                      <Phone className="w-4 h-4 mr-2" />
+                      Appeler
+                    </Button>
+                    <Button className="flex-1" variant="outline">
+                      <Mail className="w-4 h-4 mr-2" />
+                      Message
+                    </Button>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button className="flex-1" variant="outline">
+                      Modifier
+                    </Button>
+                    <Button className="flex-1" variant="outline" className="text-red-600 hover:text-red-700">
+                      Annuler
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Modal pour créer un nouveau rendez-vous
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-gray-800">Nouveau rendez-vous</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={closeModal}
+                    className="rounded-full h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Horaire sélectionné */}
+                  <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                    <Calendar className="w-4 h-4 text-blue-600" />
+                    <div>
+                      <div className="font-medium text-gray-800">
+                        {weekDays.find(d => d.index === selectedSlot.day)?.full}
+                      </div>
+                      <div className="text-sm text-blue-600">
+                        {selectedSlot.hour} - Créneau disponible
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Boutons d'action */}
+                  <div className="space-y-2">
+                    <Button className="w-full justify-start">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Réserver un client
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <Clock className="w-4 h-4 mr-2" />
+                      Bloquer le créneau
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start">
+                      <User className="w-4 h-4 mr-2" />
+                      Rechercher un client
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
