@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Euro, Target, Eye, CreditCard } from "lucide-react";
+import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Euro, Target, Eye, CreditCard, CheckCircle, FileText, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -1265,104 +1265,232 @@ export default function PlanningResponsive() {
           </div>
         </motion.nav>
 
-        {/* Modal détails de paiement */}
+        {/* Modal détails de RDV */}
         <Dialog open={paymentDetailsOpen} onOpenChange={setPaymentDetailsOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-purple-600" />
-                Détails du paiement
+                <User className="h-5 w-5 text-purple-600" />
+                Détails du rendez-vous
               </DialogTitle>
             </DialogHeader>
             
             {selectedAppointment && (
-              <div className="space-y-4">
-                {/* Informations RDV */}
-                <div className="bg-gray-50 p-3 rounded-lg">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">
-                      {allClients.find(c => c.id === selectedAppointment.clientId)?.firstName} {allClients.find(c => c.id === selectedAppointment.clientId)?.lastName}
-                    </span>
-                    <span className="text-sm text-gray-600">
-                      {selectedAppointment.startTime} - {selectedAppointment.endTime}
-                    </span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {allServices.find(s => s.id === selectedAppointment.serviceId)?.name}
-                  </div>
-                </div>
-
-                {/* Statut de paiement */}
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Statut du paiement:</span>
-                  {getPaymentStatusBadge(selectedAppointment.paymentStatus || 'à régler')}
-                </div>
-
-                {/* Détails financiers */}
-                <div className="space-y-3 border-t pt-4">
-                  <div className="flex justify-between">
-                    <span>Montant total:</span>
-                    <span className="font-medium">{selectedAppointment.totalAmount}€</span>
-                  </div>
+              <div className="space-y-6">
+                {(() => {
+              const client = allClients.find(c => c.id === selectedAppointment.clientId);
+              const service = allServices.find(s => s.id === selectedAppointment.serviceId);
+              const employee = simulatedEmployees.find(e => e.id === selectedAppointment.employeeId);
+              
+              // Simulation dernière prestation effectuée
+              const lastCompletedService = {
+                name: "Coloration + coupe",
+                date: "2025-01-10",
+                employee: "Sarah",
+                notes: "Client satisfaite du résultat, prochaine couleur dans 6 semaines"
+              };
+              
+              // Simulation notes de suivi client  
+              const clientNotes = [
+                { date: "2025-01-10", note: "Allergique aux produits à base d'ammoniaque", type: "Allergie" },
+                { date: "2025-01-05", note: "Préfère les RDV le matin", type: "Préférence" },
+                { date: "2024-12-20", note: "Fidèle depuis 2 ans, très ponctuelle", type: "Général" }
+              ];
                   
-                  {selectedAppointment.depositAmount > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Acompte versé:</span>
-                      <span className="font-medium">{selectedAppointment.depositAmount}€</span>
-                    </div>
-                  )}
-                  
-                  {selectedAppointment.remainingAmount > 0 && (
-                    <div className="flex justify-between text-amber-600">
-                      <span>Reste à payer:</span>
-                      <span className="font-medium">{selectedAppointment.remainingAmount}€</span>
-                    </div>
-                  )}
-                  
-                  {selectedAppointment.paymentMethod && (
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>Mode de paiement:</span>
-                      <span>{selectedAppointment.paymentMethod}</span>
-                    </div>
-                  )}
-                </div>
+              return (
+                <>
+                  {/* Informations cliente */}
+                  <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border border-purple-100">
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <User className="h-4 w-4 text-purple-600" />
+                      Informations cliente
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <span className="text-gray-600">Nom:</span>
+                        <div className="font-medium">{client?.firstName} {client?.lastName}</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Téléphone:</span>
+                        <div className="font-medium">{client?.phone || "06 12 34 56 78"}</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Email:</span>
+                        <div className="font-medium text-purple-600">{client?.email || "cliente@email.com"}</div>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Première visite:</span>
+                        <div className="font-medium">Mars 2023</div>
+                      </div>
+                  </div>
+                  </div>
 
-                {/* Actions */}
-                {selectedAppointment.paymentStatus !== 'payé' && (
-                  <div className="flex gap-2 pt-4 border-t">
-                    {selectedAppointment.paymentStatus === 'à régler' && (
-                      <Button 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => {
-                          toast({
-                            title: "Paiement enregistré",
-                            description: "Le paiement a été marqué comme payé."
-                          });
-                          setPaymentDetailsOpen(false);
-                        }}
-                      >
-                        Marquer comme payé
-                      </Button>
-                    )}
+                  {/* Prestation réservée */}
+                  <div className="bg-amber-50 p-4 rounded-lg border border-amber-100">
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-amber-600" />
+                      Prestation réservée
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium text-lg">{service?.name}</span>
+                        <span className="text-lg font-bold text-amber-600">{service?.price}€</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Durée: {service?.duration || "60"} min</span>
+                        <span>Avec: {employee?.name}</span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <strong>Date:</strong> {new Date(selectedAppointment.appointmentDate || '').toLocaleDateString('fr-FR', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <strong>Horaire:</strong> {selectedAppointment.startTime} - {selectedAppointment.endTime}
+                      </div>
+                      {selectedAppointment.notes && (
+                        <div className="text-sm text-gray-600 bg-white p-2 rounded border-l-4 border-amber-400">
+                          <strong>Notes RDV:</strong> {selectedAppointment.notes}
+                        </div>
+                      )}
+                  </div>
+                  </div>
+
+                  {/* Dernière prestation effectuée */}
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      Dernière prestation effectuée
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{lastCompletedService.name}</span>
+                        <span className="text-sm text-gray-600">{new Date(lastCompletedService.date).toLocaleDateString('fr-FR')}</span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Réalisée par: <span className="font-medium">{lastCompletedService.employee}</span>
+                      </div>
+                      <div className="text-sm text-gray-600 bg-white p-2 rounded border-l-4 border-green-400">
+                        <strong>Notes:</strong> {lastCompletedService.notes}
+                      </div>
+                  </div>
+                  </div>
+
+                  {/* Notes de suivi client */}
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-blue-600" />
+                      Notes de suivi client
+                    </h3>
+                    <div className="space-y-3 max-h-32 overflow-y-auto">
+                      {clientNotes.map((note, index) => (
+                        <div key={index} className="bg-white p-3 rounded border-l-4 border-blue-400">
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                              {note.type}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {new Date(note.date).toLocaleDateString('fr-FR')}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-700">{note.note}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="w-full mt-3 text-blue-600 border-blue-200 hover:bg-blue-50"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Ajouter une note
+                  </Button>
+                  </div>
+
+                  {/* Statut de paiement */}
+                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                    <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                      <CreditCard className="h-4 w-4 text-gray-600" />
+                      Informations de paiement
+                    </h3>
                     
-                    {selectedAppointment.paymentStatus === 'à compléter' && (
-                      <Button 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => {
-                          toast({
-                            title: "Paiement complété",
-                            description: "Le solde restant a été encaissé."
-                          });
-                          setPaymentDetailsOpen(false);
-                        }}
-                      >
-                        Encaisser le solde
-                      </Button>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="font-medium">Statut du paiement:</span>
+                      {getPaymentStatusBadge(selectedAppointment.paymentStatus || 'à régler')}
+                    </div>
+
+                    {/* Détails financiers */}
+                    <div className="space-y-3 border-t pt-4">
+                      <div className="flex justify-between">
+                        <span>Montant total:</span>
+                        <span className="font-medium">{selectedAppointment.totalAmount}€</span>
+                      </div>
+                      
+                      {selectedAppointment.depositAmount > 0 && (
+                        <div className="flex justify-between text-green-600">
+                          <span>Acompte versé:</span>
+                          <span className="font-medium">{selectedAppointment.depositAmount}€</span>
+                        </div>
+                      )}
+                      
+                      {selectedAppointment.remainingAmount > 0 && (
+                        <div className="flex justify-between text-amber-600">
+                          <span>Reste à payer:</span>
+                          <span className="font-medium">{selectedAppointment.remainingAmount}€</span>
+                        </div>
+                      )}
+                      
+                      {selectedAppointment.paymentMethod && (
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>Mode de paiement:</span>
+                          <span>{selectedAppointment.paymentMethod}</span>
+                        </div>
                     )}
                   </div>
-                )}
+                  
+                  {/* Actions */}
+                  {selectedAppointment.paymentStatus !== 'payé' && (
+                    <div className="flex gap-2 pt-4 border-t">
+                      {selectedAppointment.paymentStatus === 'à régler' && (
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => {
+                            toast({
+                              title: "Paiement enregistré",
+                              description: "Le paiement a été marqué comme payé."
+                            });
+                            setPaymentDetailsOpen(false);
+                          }}
+                        >
+                          Marquer comme payé
+                        </Button>
+                      )}
+                      
+                      {selectedAppointment.paymentStatus === 'à compléter' && (
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => {
+                            toast({
+                              title: "Paiement complété",
+                              description: "Le solde restant a été encaissé."
+                            });
+                            setPaymentDetailsOpen(false);
+                          }}
+                        >
+                          Encaisser le solde
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  </div>
+                </>
+              );
+            })()}
               </div>
             )}
           </DialogContent>
