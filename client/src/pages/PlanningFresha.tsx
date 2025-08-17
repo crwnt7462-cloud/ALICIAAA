@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Plus, MoreHorizontal, X, User, Phone, Mail, Clock, Calendar } from "lucide-react";
+import avyentoProLogo from "@assets/Logo avyento pro._1755451965339.png";
 
 // Interface Employee conservée pour compatibilité future
 
@@ -495,7 +496,7 @@ export default function PlanningFresha() {
         <div className="flex items-center justify-between">
           {/* Logo et navigation */}
           <div className="flex items-center space-x-6">
-            <div className="text-xl font-bold text-gray-900">fresha</div>
+            <img src={avyentoProLogo} alt="Avyento Pro" className="h-8" />
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm" onClick={goToToday} className="text-sm">
                 Aujourd'hui
