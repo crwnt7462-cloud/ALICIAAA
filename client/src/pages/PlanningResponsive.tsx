@@ -791,37 +791,40 @@ export default function PlanningResponsive() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 overflow-x-auto">
               <div className="flex bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1">
                 <Button
                   variant={viewMode === 'day' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('day')}
-                  className={`px-3 py-1 text-xs ${viewMode === 'day' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`px-2 lg:px-3 py-1 text-xs ${viewMode === 'day' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
                 >
-                  Jour
+                  <span className="hidden sm:inline">Jour</span>
+                  <span className="sm:hidden">J</span>
                 </Button>
                 <Button
                   variant={viewMode === 'week' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('week')}
-                  className={`px-3 py-1 text-xs ${viewMode === 'week' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`px-2 lg:px-3 py-1 text-xs ${viewMode === 'week' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
                 >
-                  Semaine
+                  <span className="hidden sm:inline">Semaine</span>
+                  <span className="sm:hidden">S</span>
                 </Button>
                 <Button
                   variant={viewMode === 'month' ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => setViewMode('month')}
-                  className={`px-3 py-1 text-xs ${viewMode === 'month' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                  className={`px-2 lg:px-3 py-1 text-xs ${viewMode === 'month' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
                 >
-                  Mois
+                  <span className="hidden sm:inline">Mois</span>
+                  <span className="sm:hidden">M</span>
                 </Button>
               </div>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="bg-white/80 backdrop-blur-sm"
+                className="bg-white/80 backdrop-blur-sm hidden sm:flex"
                 onClick={() => openQuickAdd("appointment")}
               >
                 <Plus className="h-4 w-4 mr-1" />
@@ -830,25 +833,33 @@ export default function PlanningResponsive() {
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="bg-white/80 backdrop-blur-sm"
+                className="bg-white/80 backdrop-blur-sm sm:hidden"
+                onClick={() => openQuickAdd("appointment")}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-white/80 backdrop-blur-sm hidden lg:flex"
                 onClick={() => openQuickAdd("block")}
               >
                 <X className="h-4 w-4 mr-1" />
                 Bloquer
               </Button>
-              <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
+              <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm hidden lg:flex">
                 <Download className="h-4 w-4 mr-1" />
                 Export
               </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white hidden lg:flex">
                 <Share className="h-4 w-4 mr-1" />
                 Partager
               </Button>
             </div>
           </div>
 
-          {/* Sélection d'employé */}
-          <div className="flex items-center space-x-4 mb-6">
+          {/* Sélection d'employé - masquée sur mobile */}
+          <div className="hidden lg:flex items-center space-x-4 mb-6">
             <div className="flex items-center space-x-2">
               <Users className="h-5 w-5 text-gray-600" />
               <span className="text-sm font-medium text-gray-700">Équipe:</span>
