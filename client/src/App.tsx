@@ -914,7 +914,17 @@ function Router() {
   }
 
   // Pages professionnelles avec sidebar persistant
-  const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
+  // Page Planning - Mobile sans sidebar, Desktop avec sidebar
+  if (location === '/planning') {
+    return (
+      <div className="h-full">
+        <PlanningMobile />
+      </div>
+    );
+  }
+
+  // Autres pages Pro avec sidebar
+  const proPages = ['/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
   if (proPages.includes(location)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
@@ -993,7 +1003,6 @@ function Router() {
           
           {/* Contenu principal */}
           <div className="flex-1 overflow-hidden">
-            {location === '/planning' && <PlanningMobile />}
             {location === '/clients-modern' && <ClientsModern />}
             {location === '/services-management' && <ServicesManagement />}
             {location === '/messaging-hub' && <MessagingHub />}
