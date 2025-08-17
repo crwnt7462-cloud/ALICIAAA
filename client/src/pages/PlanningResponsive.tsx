@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -52,7 +52,7 @@ const appointmentFormSchema = insertAppointmentSchema.extend({
 
 // Configuration des créneaux horaires étendus (minuit à 23h)
 // Créneaux horaires complets 24h avec demi-heures pour scroll détaillé
-const allTimeSlots = [];
+const allTimeSlots: string[] = [];
 for (let hour = 0; hour <= 23; hour++) {
   allTimeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
   allTimeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
@@ -205,12 +205,12 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Initialiser le scroll sur les heures principales
+  // Initialiser le scroll sur les heures principales (6h du matin)
   const initializeTimeScroll = () => {
     if (timeScrollContainer) {
-      const targetTime = "09:00";
+      const targetTime = "06:00";
       const targetIndex = allTimeSlots.indexOf(targetTime);
-      const scrollPosition = targetIndex * 60; // 60px par heure
+      const scrollPosition = targetIndex * 5; // 5px par demi-heure (10px par heure)
       timeScrollContainer.scrollTop = scrollPosition;
     }
   };
@@ -298,8 +298,6 @@ export default function PlanningResponsive() {
   const navigateToWeekFromDate = (selectedDate: Date) => {
     // Calculer l'offset de semaine basé sur la date sélectionnée
     const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const startOfSelectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
     
     // Trouver le lundi de la semaine de la date sélectionnée
     const dayOfWeek = selectedDate.getDay();
@@ -320,8 +318,8 @@ export default function PlanningResponsive() {
     setViewMode('week');
   };
 
-  // Navigation vers la semaine actuelle (bouton "Aujourd'hui")
-  const goToToday = () => {
+  // Navigation vers la semaine actuelle (bouton "Aujourd'hui") - version corrigée
+  const goToTodayWeek = () => {
     setCurrentWeekOffset(0);
     setViewMode('week');
   };
@@ -520,25 +518,24 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Fonction pour obtenir la position de l'événement (optimisée pour créneaux par heure - plus compact)
-  const getEventPosition = (time: string) => {
-    const startTime = time.split('-')[0];
-    if (!startTime) return 0;
-    const [hour, minute] = startTime.split(':').map(Number);
-    if (hour === undefined || minute === undefined) return 0;
-    const slotIndex = timeSlots.findIndex(slot => slot === `${hour.toString().padStart(2, '0')}:00`);
-    return slotIndex >= 0 ? slotIndex * 32 + (minute / 60) * 32 : 0; // 32px par heure (plus compact)
+  // Fonctions pour calculer la position et hauteur des événements (6h-23h)
+  const getEventPositionExtended = (startTime: string) => {
+    const index = allTimeSlots.indexOf(startTime);
+    return index >= 0 ? index * 5 : 0; // 5px par demi-heure
   };
 
-  // Fonction pour calculer la hauteur de l'événement (optimisée pour responsive - plus compact)
-  const getEventHeight = (time: string) => {
-    const [start, end] = time.split('-');
-    if (!start || !end) return 32;
-    const [startHour, startMin] = start.split(':').map(Number);
-    const [endHour, endMin] = end.split(':').map(Number);
-    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 32;
+  const getEventHeightExtended = (startTime: string, endTime: string) => {
+    const startIndex = allTimeSlots.indexOf(startTime);
+    const endIndex = allTimeSlots.indexOf(endTime);
+    if (startIndex >= 0 && endIndex >= 0) {
+      return (endIndex - startIndex) * 5; // 5px par demi-heure
+    }
+    
+    // Fallback: calculer manuellement
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
     const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
-    return Math.max(duration / 60 * 32, 24); // 32px par heure, minimum 24px pour lisibilité mobile
+    return Math.max(duration / 30 * 5, 20); // 5px par demi-heure, minimum 20px
   };
 
   // Fonction pour gérer le clic sur un créneau vide - menu contextuel
@@ -558,7 +555,7 @@ export default function PlanningResponsive() {
     
     // Pré-remplir le formulaire avec les informations du créneau sélectionné
     quickForm.reset({
-      appointmentDate: appointmentDate,
+      appointmentDate,
       startTime: selectedTimeSlot.time,
       endTime: calculateEndTime(selectedTimeSlot.time, 60), // Durée par défaut de 60min
       notes: "",
@@ -590,6 +587,7 @@ export default function PlanningResponsive() {
   // Fonction pour calculer l'heure de fin
   const calculateEndTime = (startTime: string, durationMinutes: number) => {
     const [hours, minutes] = startTime.split(':').map(Number);
+    if (hours === undefined || minutes === undefined) return startTime;
     const totalMinutes = hours * 60 + minutes + durationMinutes;
     const endHours = Math.floor(totalMinutes / 60);
     const endMins = totalMinutes % 60;
@@ -1001,7 +999,7 @@ export default function PlanningResponsive() {
                       {isToday && (
                         <div 
                           className="w-2 h-2 bg-purple-500 rounded-full mx-auto mt-1 cursor-pointer hover:bg-purple-600" 
-                          onClick={() => goToToday()}
+                          onClick={() => goToTodayWeek()}
                           title="Aller à la semaine actuelle"
                         ></div>
                       )}
