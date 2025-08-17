@@ -398,8 +398,8 @@ export default function Dashboard() {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-900">95%</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">OCCUPATION</span>
+                    <span className="text-xl md:text-2xl font-bold text-gray-900">95%</span>
+                    <span className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">OCCUPATION</span>
                   </div>
                 </div>
 
@@ -411,7 +411,7 @@ export default function Dashboard() {
                   </div>
                   <div>
                     <div className="text-xl md:text-2xl font-bold text-gray-900">10</div>
-                    <div className="text-xs md:text-sm text-gray-500">Soins visage</div>
+                    <div className="text-xs md:text-sm text-gray-500">Prestations</div>
                   </div>
                   <div>
                     <div className="text-xl md:text-2xl font-bold text-gray-900">3</div>
