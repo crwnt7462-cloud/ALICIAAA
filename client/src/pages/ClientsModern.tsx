@@ -138,30 +138,7 @@ export default function ClientsModern() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 relative overflow-hidden flex items-center justify-center">
-        {/* Émojis flottants diffus */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{ y: [-20, 20] }}
-            transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
-            className="absolute top-20 left-10 text-4xl opacity-20"
-          >
-            💄
-          </motion.div>
-          <motion.div
-            animate={{ y: [20, -20] }}
-            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: 1 }}
-            className="absolute top-40 right-16 text-3xl opacity-20"
-          >
-            ✨
-          </motion.div>
-          <motion.div
-            animate={{ y: [-15, 15] }}
-            transition={{ duration: 5, repeat: Infinity, repeatType: "reverse", delay: 2 }}
-            className="absolute bottom-32 left-20 text-3xl opacity-20"
-          >
-            💅
-          </motion.div>
-        </div>
+
         
         <motion.div
           initial={{ opacity: 0 }}
@@ -173,7 +150,7 @@ export default function ClientsModern() {
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             className="w-12 h-12 border-4 border-purple-100 border-t-purple-500 rounded-full mx-auto mb-6"
           />
-          <p className="text-purple-600 font-medium">Chargement de vos clientes...</p>
+          <p className="text-purple-600 font-medium">Chargement de vos client(e)s...</p>
         </motion.div>
       </div>
     );
@@ -186,49 +163,7 @@ export default function ClientsModern() {
       transition={{ duration: 0.8 }}
       className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 relative overflow-hidden"
     >
-      {/* Émojis flottants diffus - style vraie page d'accueil */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ 
-            y: [-20, 20],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
-          className="absolute top-20 left-10 text-3xl opacity-20"
-        >
-          ✨
-        </motion.div>
-        <motion.div
-          animate={{ 
-            y: [20, -20],
-            rotate: [0, -8, 0]
-          }}
-          transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", delay: 1 }}
-          className="absolute top-40 right-16 text-2xl opacity-15"
-        >
-          💄
-        </motion.div>
-        <motion.div
-          animate={{ 
-            y: [-15, 15],
-            x: [-5, 5]
-          }}
-          transition={{ duration: 7, repeat: Infinity, repeatType: "reverse", delay: 2 }}
-          className="absolute bottom-32 left-20 text-2xl opacity-20"
-        >
-          💅
-        </motion.div>
-        <motion.div
-          animate={{ 
-            y: [10, -10],
-            rotate: [0, 10, 0]
-          }}
-          transition={{ duration: 9, repeat: Infinity, repeatType: "reverse", delay: 3 }}
-          className="absolute top-60 right-1/4 text-2xl opacity-15"
-        >
-          🌸
-        </motion.div>
-      </div>
+
       
       {!selectedClient ? (
         // Vue liste des clients
@@ -356,13 +291,20 @@ export default function ClientsModern() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => toast({ 
-                    title: "Nouvelle cliente", 
+                    title: "Nouveau(elle) client(e)", 
                     description: "Fonctionnalité à venir" 
                   })}
-                  className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 gradient-bg text-white rounded-xl xl:rounded-2xl text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
+                  className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 text-white rounded-xl xl:rounded-2xl text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                  }}
                 >
                   <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
-                  Ajouter une cliente
+                  Ajouter un(e) client(e)
                 </motion.button>
               </div>
 
@@ -380,8 +322,8 @@ export default function ClientsModern() {
                         <User className="h-16 w-16 lg:h-20 lg:w-20 mx-auto text-gray-400" />
                         <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-gray-400 animate-pulse" />
                       </div>
-                      <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">Aucune cliente trouvée</h3>
-                      <p className="text-gray-600 text-sm lg:text-base mb-4">Commencez par ajouter vos premières clientes</p>
+                      <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">Aucun(e) client(e) trouvé(e)</h3>
+                      <p className="text-gray-600 text-sm lg:text-base mb-4">Commencez par ajouter vos premier(ère)s client(e)s</p>
                       <motion.div
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
@@ -471,164 +413,40 @@ export default function ClientsModern() {
             </div>
           </div>
           
-          {/* Footer Avyento complet responsive */}
-          <motion.footer 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.5 }}
-            className="w-full border-0 shadow-md bg-white/80 backdrop-blur-sm border-t border-gray-200/50 mt-16"
-          >
-            <div className="p-4 md:p-6 lg:p-12 xl:p-16">
-              <div className="max-w-md mx-auto lg:max-w-7xl xl:max-w-none">
-                {/* Logo et description Avyento */}
-                <div className="text-center mb-8 lg:mb-12">
-                  <div className="w-12 h-12 lg:w-16 lg:h-16 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury mx-auto mb-4">
-                    <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
-                  </div>
-                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                    Avyento
-                  </h2>
-                  <p className="text-gray-600 text-sm lg:text-base">
-                    Révolutionnez votre salon avec l'intelligence artificielle
-                  </p>
-                </div>
-
-                {/* Contenu footer 4 colonnes responsive */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-8 lg:mb-12 text-sm lg:text-base">
-                  {/* Colonne Avyento */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Avyento</h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">À propos</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Notre vision</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Équipe</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Carrières</a></li>
-                    </ul>
-                  </div>
-
-                  {/* Colonne Services */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Services</h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Gestion salon</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">IA Assistant</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Analytics</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Marketing</a></li>
-                    </ul>
-                  </div>
-
-                  {/* Colonne Partenaires */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Partenaires</h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Devenir partenaire</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Fournisseurs</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Intégrations</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">API</a></li>
-                    </ul>
-                  </div>
-
-                  {/* Colonne Support */}
-                  <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Support</h3>
-                    <ul className="space-y-2 text-gray-600">
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Centre d'aide</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Contact</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Formation</a></li>
-                      <li><a href="#" className="hover:text-gray-900 transition-colors">Documentation</a></li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* CTA Buttons with Glassmorphism - EXACTEMENT comme Landing.tsx */}
-                <div className="space-y-4">
-                  {/* Bouton Glassmorphism Principal - Rechercher un salon */}
-                  <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    whileHover={{ 
-                      scale: 1.02,
-                      y: -2,
-                      transition: { duration: 0.2 }
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setLocation('/search')}
-                    className="relative w-full h-16 rounded-3xl overflow-hidden group"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
-                      backdropFilter: 'blur(20px)',
-                      WebkitBackdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
-                      <Search className="w-5 h-5 mr-3" />
-                      Rechercher un salon
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-                  </motion.button>
-                  
-                  {/* Bouton secondaire */}
-                  <motion.button 
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
-                    onClick={() => setLocation('/dashboard')}
-                  >
-                    Accéder au tableau de bord
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.button>
-                  
-                  <motion.button 
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-                    onClick={() => setLocation('/client-login-modern')}
-                  >
-                    Espace client
-                  </motion.button>
-                </div>
-
-                {/* Footer EXACT de Landing.tsx */}
-                <div className="text-center text-xs text-gray-500 pb-4">
-                  <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-                </div>
-              </div>
-            </div>
-          </motion.footer>
+          {/* Footer identique à Landing.tsx */}
+          <div className="text-center text-xs text-gray-500 pb-4 mt-16">
+            <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+          </div>
         </div>
       ) : (
-        // Vue détail client
-        <div className="min-h-screen bg-white">
+        // Vue détail client moderne
+        <div className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30">
           
-          {/* Header */}
-          <div className="bg-white border-b border-gray-200 p-4">
-            <div className="flex items-center gap-3">
+          {/* Header glassmorphism */}
+          <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 p-4 lg:p-6">
+            <div className="max-w-4xl mx-auto flex items-center gap-3">
               <button
                 onClick={() => setSelectedClient(null)}
-                className="p-2"
+                className="p-2 hover:bg-white/60 rounded-full transition-colors"
               >
                 <ArrowLeft className="h-5 w-5 text-gray-700" />
               </button>
               
               <div className="flex-1">
-                <h3 className="font-medium text-gray-900">{currentClient?.name}</h3>
+                <h3 className="font-medium text-gray-900 text-lg">{currentClient?.name}</h3>
                 <p className="text-sm text-gray-500">{currentClient?.email}</p>
               </div>
               
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => window.open(`tel:${currentClient?.phone}`)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="p-2 hover:bg-white/60 rounded-full transition-colors"
                 >
                   <Phone className="h-5 w-5 text-gray-600" />
                 </button>
                 <button 
                   onClick={() => setLocation('/pro-messaging')}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="p-2 hover:bg-white/60 rounded-full transition-colors"
                 >
                   <MessageCircle className="h-5 w-5 text-gray-600" />
                 </button>
@@ -636,87 +454,157 @@ export default function ClientsModern() {
             </div>
           </div>
 
-          {/* Contenu détail */}
-          <div className="p-6">
-            <div className="max-w-sm mx-auto space-y-6">
-              
-              {/* Infos principales - ✅ GLASSMORPHISM APPLIQUÉ */}
-              <div className="glass-stat-card rounded-2xl p-4">
-                <div className="flex items-center gap-3 mb-4">
-                  {currentClient?.avatar ? (
-                    <img
-                      src={currentClient.avatar}
-                      alt={currentClient.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center">
-                      <User className="h-8 w-8 text-violet-600" />
+          {/* Contenu détail responsive */}
+          <div className="p-4 lg:p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                
+                {/* Colonne gauche - Infos principales */}
+                <div className="space-y-6">
+                  {/* Photo et infos - GLASSMORPHISM MODERNE */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl p-6"
+                  >
+                    <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                      {/* Photo avec upload */}
+                      <div className="relative group">
+                        {currentClient?.avatar ? (
+                          <img
+                            src={currentClient.avatar}
+                            alt={currentClient.name}
+                            className="w-20 h-20 lg:w-24 lg:h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                          />
+                        ) : (
+                          <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-violet-100 to-purple-200 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
+                            <User className="h-10 w-10 lg:h-12 lg:w-12 text-violet-600" />
+                          </div>
+                        )}
+                        <button className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <Plus className="h-6 w-6 text-white" />
+                        </button>
+                      </div>
+                      
+                      <div className="text-center sm:text-left flex-1">
+                        <h2 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2">{currentClient?.name}</h2>
+                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(currentClient?.status || '')}`}>
+                          {currentClient?.status}
+                        </span>
+                      </div>
                     </div>
+                    
+                    {/* Stats en grille */}
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-violet-600">{currentClient?.totalVisits}</div>
+                        <div className="text-sm text-gray-600">Visites</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-green-600">€{currentClient?.totalSpent}</div>
+                        <div className="text-sm text-gray-600">Dépensé</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl lg:text-3xl font-bold text-yellow-600">{currentClient?.rating}</div>
+                        <div className="text-sm text-gray-600">Note</div>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Actions rapides glassmorphism */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="space-y-3"
+                  >
+                    <button
+                      onClick={() => setLocation('/booking')}
+                      className="w-full h-14 rounded-xl text-base font-medium transition-all"
+                      style={{
+                        background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.8) 50%, rgba(124, 58, 237, 0.9) 100%)',
+                        backdropFilter: 'blur(20px)',
+                        WebkitBackdropFilter: 'blur(20px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
+                        color: 'white'
+                      }}
+                    >
+                      Prendre rendez-vous
+                    </button>
+                    
+                    <button
+                      onClick={() => setLocation('/pro-messaging')}
+                      className={`w-full h-14 ${getGenericGlassButton(1)} rounded-xl text-base font-medium`}
+                    >
+                      Envoyer un message
+                    </button>
+                  </motion.div>
+                </div>
+
+                {/* Colonne droite - Préférences et Notes */}
+                <div className="space-y-6">
+                  {/* Préférences */}
+                  {currentClient?.preferences && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl p-6"
+                    >
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Préférences</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {currentClient.preferences.map((pref: string, index: number) => (
+                          <span key={index} className="px-3 py-2 bg-white/60 backdrop-blur-sm rounded-full text-sm text-gray-700 border border-gray-200/50">
+                            {pref}
+                          </span>
+                        ))}
+                      </div>
+                    </motion.div>
                   )}
-                  <div>
-                    <h2 className="font-semibold text-gray-900">{currentClient?.name}</h2>
-                    <span className={`inline-block px-2 py-1 rounded-full text-xs border ${getStatusColor(currentClient?.status || '')}`}>
-                      {currentClient?.status}
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-violet-600">{currentClient?.totalVisits}</div>
-                    <div className="text-xs text-gray-700">Visites</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-green-600">€{currentClient?.totalSpent}</div>
-                    <div className="text-xs text-gray-700">Dépensé</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-yellow-600">{currentClient?.rating}</div>
-                    <div className="text-xs text-gray-700">Note</div>
-                  </div>
+
+                  {/* Notes éditables */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl p-6"
+                  >
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Notes</h3>
+                    <textarea
+                      className="w-full h-32 p-3 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                      placeholder="Ajouter des notes sur ce(tte) client(e)..."
+                      defaultValue={currentClient?.notes || ''}
+                    />
+                    <button className="mt-3 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition-colors">
+                      Sauvegarder
+                    </button>
+                  </motion.div>
+
+                  {/* Galerie photos */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl p-6"
+                  >
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Photos</h3>
+                    <div className="grid grid-cols-3 gap-3">
+                      {/* Placeholder photos */}
+                      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-colors">
+                        <Plus className="h-6 w-6 text-gray-400" />
+                      </div>
+                      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-colors">
+                        <Plus className="h-6 w-6 text-gray-400" />
+                      </div>
+                      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-colors">
+                        <Plus className="h-6 w-6 text-gray-400" />
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">Cliquez pour ajouter des photos de réalisations</p>
+                  </motion.div>
                 </div>
               </div>
-
-              {/* Actions rapides */}
-              <div className="space-y-3">
-                <button
-                  onClick={() => setLocation('/booking')}
-                  className="w-full h-12 bg-violet-600 hover:bg-violet-700 text-white rounded-2xl text-base font-medium transition-colors"
-                >
-                  Prendre rendez-vous
-                </button>
-                
-                <button
-                  onClick={() => setLocation('/pro-messaging')}
-                  className="w-full h-12 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-2xl text-base font-medium transition-colors"
-                >
-                  Envoyer un message
-                </button>
-              </div>
-
-              {/* Préférences */}
-              {currentClient?.preferences && (
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <h3 className="font-medium text-gray-900 mb-3">Préférences</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {currentClient.preferences.map((pref: string, index: number) => (
-                      <span key={index} className="px-3 py-1 bg-white rounded-full text-sm text-gray-600">
-                        {pref}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Notes */}
-              {currentClient?.notes && (
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <h3 className="font-medium text-gray-900 mb-2">Notes</h3>
-                  <p className="text-sm text-gray-600">{currentClient.notes}</p>
-                </div>
-              )}
-
             </div>
           </div>
         </div>
