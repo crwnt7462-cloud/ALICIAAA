@@ -39,6 +39,41 @@ export function BottomNavigation() {
     return null;
   }
 
+  // Mobile: Afficher la barre horizontale style Dashboard pro
+  if (isMobile) {
+    return (
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/20 backdrop-blur-md border-b border-white/30 shadow-lg">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Logo */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
+            </div>
+            <span className="text-lg font-bold text-gray-800">Avyento</span>
+          </div>
+          
+          {/* Navigation horizontale */}
+          <div className="flex items-center space-x-1">
+            {navItems.map((item) => (
+              <button
+                key={item.path}
+                onClick={() => setLocation(item.path)}
+                className={`p-2 rounded-xl transition-all duration-200 ${
+                  item.active
+                    ? 'bg-purple-100 text-purple-700'
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+                title={item.label}
+              >
+                <item.icon className="h-5 w-5" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const navItems = [
     {
       label: 'Accueil',
@@ -74,32 +109,7 @@ export function BottomNavigation() {
 
   return (
     <>
-      {/* Navigation mobile - en bas - COMPLÈTEMENT MASQUÉE SUR MOBILE */}
-      {isMobile && location !== '/planning' && (
-        <div className="fixed bottom-1 left-1/2 transform -translate-x-1/2 z-50">
-          {/* Barre flottante glassmorphism compacte mobile */}
-          <div className="bg-white/20 backdrop-blur-md border border-white/30 shadow-xl rounded-full px-4 py-1.5">
-            <div className="flex items-center gap-3">
-              {navItems.map((item) => (
-                <button
-                  key={item.path}
-                  onClick={() => setLocation(item.path)}
-                  className={`flex flex-col items-center gap-0.5 transition-all duration-200 px-1.5 py-0.5 ${
-                    item.active
-                      ? 'text-gray-900 transform scale-105'
-                      : 'text-gray-700 hover:text-gray-900'
-                  }`}
-                >
-                  <item.icon className="h-3.5 w-3.5" />
-                  <span className="text-[9px] font-medium">
-                    {item.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Navigation desktop - à gauche - COMPLÈTEMENT MASQUÉE SUR MOBILE */}
       {!isMobile && (
