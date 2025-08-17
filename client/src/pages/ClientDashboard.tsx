@@ -18,9 +18,7 @@ import {
   CheckCircle,
   AlertCircle,
   TrendingUp,
-  BarChart3,
-  MessageSquare,
-  HelpCircle
+  BarChart3
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { format, isAfter, isBefore } from "date-fns";
@@ -103,24 +101,37 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar - Style Peymen exact mais adapté client */}
-      <div className="hidden lg:flex lg:w-60 bg-white shadow-lg border-r border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+      {/* Sidebar Desktop - Glassmorphism */}
+      <div className="hidden lg:flex lg:w-60 fixed left-0 top-0 h-full z-30" 
+           style={{
+             backdropFilter: 'blur(20px) saturate(180%)',
+             background: 'rgba(255, 255, 255, 0.75)',
+             borderRight: '1px solid rgba(255, 255, 255, 0.25)',
+             boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+           }}>
         <div className="flex flex-col w-full">
-          {/* Logo section - Style Peymen */}
+          {/* Logo section - Glassmorphism */}
           <div className="px-6 py-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center mr-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mr-3 shadow-lg" 
+                   style={{backdropFilter: 'blur(10px)'}}>
                 <span className="text-white font-bold text-lg">A</span>
               </div>
-              <span className="text-xl font-bold text-gray-800">Avyento</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Avyento</span>
             </div>
           </div>
           
-          {/* Navigation - Style Peymen avec icônes dans des carrés */}
+          {/* Navigation - Glassmorphism avec icônes */}
           <nav className="flex-1 px-4 space-y-1">
-            <div className="flex items-center space-x-4 px-4 py-4 bg-blue-50 rounded-2xl text-blue-600 font-medium">
-              <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+            <div className="flex items-center space-x-4 px-4 py-4 rounded-2xl text-indigo-600 font-medium"
+                 style={{
+                   backdropFilter: 'blur(10px) saturate(180%)',
+                   background: 'rgba(99, 102, 241, 0.1)',
+                   border: '1px solid rgba(99, 102, 241, 0.2)',
+                   boxShadow: '0 4px 16px rgba(99, 102, 241, 0.1)'
+                 }}>
+              <div className="w-6 h-6 bg-indigo-100/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-indigo-200/50">
                 <BarChart3 className="w-4 h-4" />
               </div>
               <span>Dashboard</span>
@@ -128,9 +139,22 @@ export default function ClientDashboard() {
             
             <button 
               onClick={() => setLocation('/client-profile')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
+              style={{
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255, 255, 255, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              }}
             >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
                 <User className="w-4 h-4" />
               </div>
               <span className="font-medium">Profil</span>
@@ -138,9 +162,22 @@ export default function ClientDashboard() {
             
             <button 
               onClick={() => setLocation('/salon-search')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
+              style={{
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255, 255, 255, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              }}
             >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
                 <Calendar className="w-4 h-4" />
               </div>
               <span className="font-medium">Réserver</span>
@@ -148,42 +185,48 @@ export default function ClientDashboard() {
             
             <button 
               onClick={() => setLocation('/client-favorites')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
+              style={{
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255, 255, 255, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              }}
             >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
                 <Star className="w-4 h-4" />
               </div>
               <span className="font-medium">Favoris</span>
             </button>
             
             <button 
-              onClick={() => setLocation('/client-messages')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <MessageSquare className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Messages</span>
-            </button>
-
-            <button 
               onClick={() => setLocation('/client-settings')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-700 hover:text-indigo-600 rounded-2xl transition-all duration-200"
+              style={{
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(255, 255, 255, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(99, 102, 241, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+              }}
             >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-white/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-white/30">
                 <Settings className="w-4 h-4" />
               </div>
               <span className="font-medium">Paramètres</span>
-            </button>
-
-            <button 
-              onClick={() => setLocation('/support')}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
-            >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
-                <HelpCircle className="w-4 h-4" />
-              </div>
-              <span className="font-medium">Support</span>
             </button>
           </nav>
           
@@ -191,9 +234,14 @@ export default function ClientDashboard() {
           <div className="px-4 pb-6">
             <button 
               onClick={handleLogout}
-              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-2xl transition-all duration-200"
+              className="w-full flex items-center space-x-4 px-4 py-4 text-red-600 hover:text-red-700 rounded-2xl transition-all duration-200"
+              style={{
+                backdropFilter: 'blur(10px)',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.2)'
+              }}
             >
-              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-6 h-6 bg-red-100/50 backdrop-blur-sm rounded-lg flex items-center justify-center border border-red-200/50">
                 <LogOut className="w-4 h-4" />
               </div>
               <span className="font-medium">Déconnexion</span>
@@ -202,19 +250,26 @@ export default function ClientDashboard() {
         </div>
       </div>
 
-      {/* Main Content - Style Peymen exact */}
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full p-8">
-          {/* Header - Style Peymen */}
-          <div className="flex items-center justify-between mb-8">
+      {/* Main Content - Glassmorphism scrollable */}
+      <div className="flex-1 lg:ml-60 min-h-screen overflow-y-auto pb-20 lg:pb-8">
+        <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+          {/* Header - Glassmorphism */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 space-y-4 lg:space-y-0">
             <div>
-              <p className="text-gray-500 text-sm mb-1">Bonjour {clientData.firstName || 'Client'},</p>
-              <h1 className="text-3xl font-bold text-gray-800">Bienvenue sur votre espace</h1>
+              <p className="text-gray-600 text-sm mb-1">Bonjour {clientData.firstName || 'Client'},</p>
+              <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Bienvenue sur votre espace
+              </h1>
             </div>
             <div className="flex items-center space-x-4">
               <Button
                 onClick={() => setLocation('/salon-search')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-medium"
+                className="px-6 py-3 rounded-2xl font-medium text-white shadow-lg border-0"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 69, 219, 0.9) 100%)',
+                  backdropFilter: 'blur(20px) saturate(180%)',
+                  boxShadow: '0 8px 32px rgba(99, 102, 241, 0.25)'
+                }}
               >
                 <Calendar className="w-4 h-4 mr-2" />
                 Nouveau rendez-vous
@@ -225,76 +280,135 @@ export default function ClientDashboard() {
           {/* Cards - Style Peymen exact */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {/* Total RDV */}
-            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-500 text-sm font-medium">Total Rendez-vous</p>
-                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.totalAppointments}</h3>
-                    <div className="flex items-center mt-2">
-                      <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                      <span className="text-green-500 text-sm font-medium">+12%</span>
-                      <span className="text-gray-500 text-sm ml-1">ce mois</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-blue-600" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="rounded-3xl p-6 overflow-hidden"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Total Rendez-vous</p>
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-2">
+                    {safeStats.totalAppointments}
+                  </h3>
+                  <div className="flex items-center mt-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-500 mr-1" />
+                    <span className="text-emerald-500 text-sm font-medium">+12%</span>
+                    <span className="text-gray-600 text-sm ml-1">ce mois</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                     style={{
+                       background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(99, 102, 241, 0.8) 100%)',
+                       backdropFilter: 'blur(10px)'
+                     }}>
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </motion.div>
 
             {/* RDV à venir */}
-            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-500 text-sm font-medium">À venir</p>
-                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.upcomingAppointments}</h3>
-                    <div className="flex items-center mt-2">
-                      <Clock className="w-4 h-4 text-blue-500 mr-1" />
-                      <span className="text-blue-500 text-sm font-medium">Cette semaine</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-green-600" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-3xl p-6 overflow-hidden"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">À venir</p>
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mt-2">
+                    {safeStats.upcomingAppointments}
+                  </h3>
+                  <div className="flex items-center mt-2">
+                    <Clock className="w-4 h-4 text-indigo-500 mr-1" />
+                    <span className="text-indigo-500 text-sm font-medium">Cette semaine</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                     style={{
+                       background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.8) 0%, rgba(5, 150, 105, 0.8) 100%)',
+                       backdropFilter: 'blur(10px)'
+                     }}>
+                  <Clock className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </motion.div>
 
             {/* Total dépensé */}
-            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-gray-500 text-sm font-medium">Total dépensé</p>
-                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.totalSpent}€</h3>
-                    <div className="flex items-center mt-2">
-                      <Star className="w-4 h-4 text-amber-500 mr-1" />
-                      <span className="text-amber-500 text-sm font-medium">Points fidélité</span>
-                    </div>
-                  </div>
-                  <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-purple-600" />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="rounded-3xl p-6 overflow-hidden"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Total dépensé</p>
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mt-2">
+                    {safeStats.totalSpent}€
+                  </h3>
+                  <div className="flex items-center mt-2">
+                    <Star className="w-4 h-4 text-amber-500 mr-1" />
+                    <span className="text-amber-500 text-sm font-medium">Points fidélité</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                     style={{
+                       background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.8) 0%, rgba(236, 72, 153, 0.8) 100%)',
+                       backdropFilter: 'blur(10px)'
+                     }}>
+                  <User className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </motion.div>
           </div>
 
           {/* Charts Grid - Style Peymen */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Rendez-vous à venir */}
-            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
-              <CardContent className="p-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="rounded-3xl p-6 overflow-hidden"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+              }}
+            >
+              <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Prochains rendez-vous</h2>
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Prochains rendez-vous</h2>
                   <Button
-                    variant="outline"
                     size="sm"
                     onClick={() => setLocation('/salon-search')}
-                    className="text-blue-600 border-blue-200 hover:bg-blue-50 rounded-xl"
+                    className="text-white rounded-xl border-0 shadow-lg font-medium"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 69, 219, 0.9) 100%)',
+                      backdropFilter: 'blur(10px)'
+                    }}
                   >
                     <Calendar className="w-4 h-4 mr-2" />
                     Réserver
@@ -310,7 +424,12 @@ export default function ClientDashboard() {
                     </div>
                   ) : (
                     upcomingAppointments.map((appointment) => (
-                      <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
+                      <div key={appointment.id} className="rounded-2xl p-4"
+                           style={{
+                             backdropFilter: 'blur(10px) saturate(180%)',
+                             background: 'rgba(255, 255, 255, 0.6)',
+                             border: '1px solid rgba(255, 255, 255, 0.4)'
+                           }}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
@@ -358,23 +477,36 @@ export default function ClientDashboard() {
                     ))
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </motion.div>
 
             {/* Historique des rendez-vous */}
-            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Historique</h2>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setLocation('/appointment-history')}
-                    className="text-gray-600 hover:text-gray-900 rounded-xl"
-                  >
-                    Voir tout
-                  </Button>
-                </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="rounded-3xl p-6 overflow-hidden"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)'
+              }}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Historique</h2>
+                <Button
+                  size="sm"
+                  onClick={() => setLocation('/appointment-history')}
+                  className="text-white rounded-xl border-0 shadow-lg font-medium"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(236, 72, 153, 0.9) 100%)',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  Voir tout
+                </Button>
+              </div>
                 
                 <div className="space-y-4">
                   {pastAppointments.length === 0 ? (
@@ -384,7 +516,12 @@ export default function ClientDashboard() {
                     </div>
                   ) : (
                     pastAppointments.slice(0, 3).map((appointment) => (
-                      <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
+                      <div key={appointment.id} className="rounded-2xl p-4"
+                           style={{
+                             backdropFilter: 'blur(10px) saturate(180%)',
+                             background: 'rgba(255, 255, 255, 0.6)',
+                             border: '1px solid rgba(255, 255, 255, 0.4)'
+                           }}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
@@ -433,23 +570,37 @@ export default function ClientDashboard() {
                     ))
                   )}
                 </div>
-              </CardContent>
-            </Card>
+              </motion.div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Modal d'annulation - Style Peymen */}
+      {/* Modal d'annulation - Glassmorphism */}
       {selectedAppointment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-3xl p-6 max-w-md w-full shadow-xl"
-          >
+        <div className="fixed inset-0 z-50 p-4" 
+             style={{
+               background: 'rgba(0, 0, 0, 0.4)',
+               backdropFilter: 'blur(8px)'
+             }}>
+          <div className="flex items-center justify-center min-h-full">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="rounded-3xl p-6 max-w-md w-full shadow-xl"
+              style={{
+                backdropFilter: 'blur(20px) saturate(180%)',
+                background: 'rgba(255, 255, 255, 0.9)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 8px 32px rgba(31, 38, 135, 0.25)'
+              }}
+            >
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                   style={{
+                     background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%)',
+                     backdropFilter: 'blur(10px)'
+                   }}>
                 <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
               <div>
@@ -458,7 +609,12 @@ export default function ClientDashboard() {
               </div>
             </div>
             
-            <div className="bg-gray-50 rounded-2xl p-4 mb-6">
+            <div className="rounded-2xl p-4 mb-6" 
+                 style={{
+                   backdropFilter: 'blur(10px) saturate(180%)',
+                   background: 'rgba(255, 255, 255, 0.6)',
+                   border: '1px solid rgba(255, 255, 255, 0.4)'
+                 }}>
               <div className="text-sm">
                 <div className="font-semibold text-gray-900 mb-1">{selectedAppointment.service?.name}</div>
                 <div className="text-gray-600 mb-1">
@@ -484,9 +640,66 @@ export default function ClientDashboard() {
                 {cancelAppointmentMutation.isPending ? 'Annulation...' : 'Confirmer'}
               </Button>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
       )}
+
+      {/* Navigation Mobile Bottom - Glassmorphism */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40" 
+           style={{
+             backdropFilter: 'blur(20px) saturate(180%)',
+             background: 'rgba(255, 255, 255, 0.9)',
+             borderTop: '1px solid rgba(255, 255, 255, 0.3)',
+             boxShadow: '0 -8px 32px rgba(31, 38, 135, 0.15)'
+           }}>
+        <div className="grid grid-cols-4 gap-1 p-2">
+          <button
+            onClick={() => setLocation('/client-dashboard')}
+            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200"
+            style={{
+              background: 'rgba(99, 102, 241, 0.1)',
+              color: '#6366f1'
+            }}
+          >
+            <BarChart3 className="w-5 h-5 mb-1" />
+            <span className="text-xs font-medium">Dashboard</span>
+          </button>
+          
+          <button
+            onClick={() => setLocation('/salon-search')}
+            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            <Calendar className="w-5 h-5 mb-1" />
+            <span className="text-xs font-medium">Réserver</span>
+          </button>
+          
+          <button
+            onClick={() => setLocation('/client-favorites')}
+            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            <Star className="w-5 h-5 mb-1" />
+            <span className="text-xs font-medium">Favoris</span>
+          </button>
+          
+          <button
+            onClick={() => setLocation('/client-settings')}
+            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
+            style={{
+              background: 'rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            <Settings className="w-5 h-5 mb-1" />
+            <span className="text-xs font-medium">Paramètres</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
