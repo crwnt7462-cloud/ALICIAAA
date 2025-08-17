@@ -178,9 +178,9 @@ export default function ClientsModern() {
             <ArrowLeft className="h-5 w-5 text-gray-700" />
           </motion.button>
 
-          {/* Layout responsive Desktop + Mobile */}
-          <div className="p-4 md:p-6 lg:p-8">
-            <div className="max-w-md mx-auto lg:max-w-6xl">
+          {/* Layout responsive Desktop optimisé + Mobile */}
+          <div className="p-4 md:p-6 lg:p-12 xl:p-16">
+            <div className="max-w-md mx-auto lg:max-w-7xl xl:max-w-none">
               
               {/* Header style Landing page */}
               <motion.div 
@@ -299,12 +299,12 @@ export default function ClientsModern() {
                 </motion.button>
               </div>
 
-              {/* Liste des clients style Landing Cards */}
+              {/* Liste des clients responsive desktop optimisée */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.2 }}
-                className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6 xl:gap-8"
               >
                 {filteredClients.length === 0 ? (
                   <div className="col-span-full">
@@ -404,33 +404,33 @@ export default function ClientsModern() {
             </div>
           </div>
           
-          {/* Footer style Landing page */}
+          {/* Footer Avyento complet responsive */}
           <motion.footer 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.5 }}
             className="w-full border-0 shadow-md bg-white/80 backdrop-blur-sm border-t border-gray-200/50 mt-16"
           >
-            <div className="p-4 md:p-6 lg:p-8">
-              <div className="max-w-md mx-auto lg:max-w-6xl">
-                {/* Logo et description style Landing */}
+            <div className="p-4 md:p-6 lg:p-12 xl:p-16">
+              <div className="max-w-md mx-auto lg:max-w-7xl xl:max-w-none">
+                {/* Logo et description Avyento */}
                 <div className="text-center mb-8 lg:mb-12">
                   <div className="w-12 h-12 lg:w-16 lg:h-16 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury mx-auto mb-4">
                     <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
                   </div>
                   <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                    Beauty Pro
+                    Avyento
                   </h2>
                   <p className="text-gray-600 text-sm lg:text-base">
-                    La plateforme complète pour gérer votre salon de beauté
+                    Révolutionnez votre salon avec l'intelligence artificielle
                   </p>
                 </div>
 
-                {/* Contenu du footer responsive */}
+                {/* Contenu footer 4 colonnes responsive */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-8 lg:mb-12 text-sm lg:text-base">
                   {/* Colonne Avyento */}
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Beauty Pro</h3>
+                    <h3 className="font-semibold text-gray-900 mb-3">Avyento</h3>
                     <ul className="space-y-2 text-gray-600">
                       <li><a href="#" className="hover:text-gray-900 transition-colors">À propos</a></li>
                       <li><a href="#" className="hover:text-gray-900 transition-colors">Notre vision</a></li>
@@ -505,9 +505,9 @@ export default function ClientsModern() {
                   </motion.a>
                 </div>
 
-                {/* Copyright style Landing */}
+                {/* Copyright Avyento */}
                 <div className="text-center text-xs lg:text-sm text-gray-600 border-t border-gray-200 pt-4 lg:pt-6">
-                  <p>&copy; 2025 Beauty Pro. Tous droits réservés.</p>
+                  <p>&copy; 2025 Avyento. Tous droits réservés.</p>
                   <div className="flex justify-center gap-4 lg:gap-6 mt-2">
                     <a href="#" className="hover:text-gray-900 transition-colors">Politique de confidentialité</a>
                     <a href="#" className="hover:text-gray-900 transition-colors">Conditions d'utilisation</a>
