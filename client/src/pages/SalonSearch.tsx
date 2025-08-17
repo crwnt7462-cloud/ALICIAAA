@@ -196,16 +196,17 @@ export default function SalonSearch() {
               <h2 className="text-xl text-gray-500 font-normal">Find your salon</h2>
             </div>
 
-            {/* Champs de recherche */}
+            {/* Champs de recherche simples */}
             <div className="space-y-4 mb-8">
               <div className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="barbier"
-                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
+                  placeholder="Extens"
+                  className="w-full h-12 px-4 bg-gray-100 rounded-xl text-base text-gray-900 placeholder:text-gray-500 border-0"
                 />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
               
               <div className="relative">
@@ -213,71 +214,11 @@ export default function SalonSearch() {
                   type="text"
                   value={locationQuery}
                   onChange={(e) => setLocationQuery(e.target.value)}
-                  placeholder="Paris"
-                  className="w-full h-12 px-4 glass-input rounded-2xl text-base text-gray-900 placeholder:text-gray-500"
+                  placeholder="Pari"
+                  className="w-full h-12 px-4 bg-gray-100 rounded-xl text-base text-gray-900 placeholder:text-gray-500 border-0"
                 />
+                <MapPin className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               </div>
-            </div>
-
-            {/* Bouton Search exactement comme page d'accueil */}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              whileHover={{ 
-                scale: 1.02,
-                y: -2,
-                transition: { duration: 0.2 }
-              }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleSearch}
-              className="relative w-full h-16 rounded-3xl overflow-hidden group"
-              style={{
-                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
-                <Search className="w-5 h-5 mr-3" />
-                Rechercher un salon
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-            </motion.button>
-
-            {/* Texte "or browse categories" */}
-            <div className="text-center my-8">
-              <p className="text-gray-400 text-sm">or browse categories</p>
-            </div>
-
-            {/* Catégories exactement comme page d'accueil */}
-            <div className="space-y-4">
-              <motion.button 
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full glass-button rounded-xl py-3 font-medium flex items-center justify-center text-white"
-                onClick={() => {
-                  setActiveFilter("coiffure");
-                  handleSearch();
-                }}
-              >
-                Coiffure
-              </motion.button>
-              
-              <motion.button 
-                whileHover={{ scale: 1.02, y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full glass-button rounded-xl py-3 font-medium text-white"
-                onClick={() => {
-                  setActiveFilter("esthetique");
-                  handleSearch();
-                }}
-              >
-                Esthétique
-              </motion.button>
             </div>
 
           </div>
