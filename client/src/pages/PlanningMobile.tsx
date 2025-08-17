@@ -571,69 +571,61 @@ export default function PlanningMobile() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: dayIndex * 0.1 }}
-                      className={`rounded-2xl border-2 overflow-hidden ${
+                      className={`rounded-xl border overflow-hidden ${
                         isToday 
-                          ? 'border-purple-300 bg-gradient-to-r from-purple-50 to-purple-100' 
-                          : 'border-gray-200 bg-white'
+                          ? 'border-violet-200 bg-violet-50/50' 
+                          : 'border-gray-200 bg-white/90'
                       }`}
                     >
                       {/* Header jour amélioré */}
-                      <div className={`p-4 border-b ${isToday ? 'bg-purple-200' : 'bg-gray-50'}`}>
+                      <div className={`p-3 border-b ${isToday ? 'bg-violet-100/50' : 'bg-gray-50/50'}`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                              isToday ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                              isToday ? 'bg-violet-500 text-white' : 'bg-gray-200 text-gray-700'
                             }`}>
                               <div className="text-center">
-                                <div className="text-lg font-bold">{date.getDate()}</div>
-                                <div className="text-xs">{weekDays[date.getDay()].substring(0, 2)}</div>
+                                <div className="text-sm font-bold">{date.getDate()}</div>
                               </div>
                             </div>
                             <div>
-                              <div className="font-bold text-gray-900">
+                              <div className="font-medium text-gray-900 text-sm">
                                 {weekDays[date.getDay()]}
                               </div>
-                              <div className="text-sm text-gray-500">
+                              <div className="text-xs text-gray-500">
                                 {dayAppointments.length} RDV • {dayAppointments.reduce((sum, apt) => sum + apt.price, 0)}€
                               </div>
                             </div>
                           </div>
                           
-                          <motion.div 
-                            whileTap={{ scale: 0.95 }}
-                            className="bg-purple-500 hover:bg-purple-600 text-white p-2 rounded-xl cursor-pointer"
+                          <div 
+                            className="bg-violet-500 hover:bg-violet-600 text-white p-2 rounded-lg cursor-pointer transition-colors"
                             onClick={() => handleTimeSlotClick("09:00", dayIndex, date)}
                           >
-                            <Calendar className="w-4 h-4" />
-                          </motion.div>
+                            <Calendar className="w-3 h-3" />
+                          </div>
                         </div>
                       </div>
                       
-                      {/* RDV du jour */}
-                      <div className="p-4 space-y-3">
+                      {/* RDV du jour minimalistes */}
+                      <div className="p-3 space-y-2">
                         {dayAppointments.length > 0 ? (
                           dayAppointments.map((appointment, aptIndex) => {
                             const employee = employees.find(e => e.id === appointment.employee);
                             return (
                               <div
                                 key={aptIndex}
-                                className="flex items-center p-3 rounded-xl bg-white border border-gray-200 hover:border-gray-300 transition-colors"
+                                className="flex items-center p-2 rounded-lg bg-white/50 border border-gray-100 hover:bg-white transition-colors"
                               >
-                                <div 
-                                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold mr-3"
-                                  style={{ backgroundColor: employee?.color }}
-                                >
-                                  {employee?.avatar}
-                                </div>
                                 <div className="flex-1">
-                                  <div className="font-bold text-gray-900 text-sm">{appointment.serviceName}</div>
+                                  <div className="font-medium text-gray-900 text-sm">{appointment.serviceName}</div>
                                   <div className="text-xs text-gray-600">{appointment.clientName}</div>
-                                  <div className="text-xs font-medium" style={{ color: employee?.color }}>
-                                    {appointment.startTime} - {appointment.endTime}
+                                  <div className="text-xs text-gray-500">
+                                    {appointment.startTime} • {employee?.name.split(' ')[0]}
                                   </div>
                                 </div>
                                 <div className="text-right">
-                                  <div className="font-bold text-lg" style={{ color: employee?.color }}>
+                                  <div className="font-semibold text-gray-900 text-sm">
                                     {appointment.price}€
                                   </div>
                                 </div>
@@ -642,14 +634,10 @@ export default function PlanningMobile() {
                           })
                         ) : (
                           <div 
-                            className="text-center p-6 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition-colors"
+                            className="text-center p-4 border border-dashed border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
                             onClick={() => handleTimeSlotClick("09:00", dayIndex, date)}
                           >
-                            <div className="text-gray-400 mb-2">
-                              <Calendar className="w-8 h-8 mx-auto" />
-                            </div>
-                            <div className="text-sm text-gray-500 font-medium">Aucun rendez-vous</div>
-                            <div className="text-xs text-gray-400">Cliquez pour ajouter</div>
+                            <div className="text-xs text-gray-400">+ Ajouter rendez-vous</div>
                           </div>
                         )}
                       </div>
@@ -819,62 +807,20 @@ export default function PlanningMobile() {
               </div>
             </div>
 
-            {/* Filtre employé mobile stylé pour vue jour */}
-            <div className="p-4 bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
-              <div className="space-y-2">
-                <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Équipe</div>
-                <div className="space-y-1">
-                  <div 
-                    onClick={() => setSelectedEmployee("all")}
-                    className={`flex items-center p-3 rounded-xl cursor-pointer transition-all ${
-                      selectedEmployee === "all" 
-                        ? 'bg-gradient-to-r from-purple-100 to-purple-200 border border-purple-300' 
-                        : 'bg-white/70 hover:bg-purple-50'
-                    }`}
-                  >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-purple-500 flex items-center justify-center mr-3">
-                      <span className="text-white text-sm font-bold">👥</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-medium text-gray-900">Tous les employés</div>
-                      <div className="text-xs text-gray-500">{employees.length} membres</div>
-                    </div>
-                    {selectedEmployee === "all" && (
-                      <div className="w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {employees.map(employee => (
-                    <div 
-                      key={employee.id}
-                      onClick={() => setSelectedEmployee(employee.id)}
-                      className={`flex items-center p-3 rounded-xl cursor-pointer transition-all ${
-                        selectedEmployee === employee.id 
-                          ? 'bg-white border border-gray-300 shadow-sm' 
-                          : 'bg-white/50 hover:bg-white'
-                      }`}
-                    >
-                      <div 
-                        className="w-8 h-8 rounded-full flex items-center justify-center mr-3 text-white text-sm font-bold"
-                        style={{ backgroundColor: employee.color }}
-                      >
-                        {employee.avatar}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium text-gray-900">{employee.name}</div>
-                        <div className="text-xs text-gray-500">{employee.specialties[0]}</div>
-                      </div>
-                      {selectedEmployee === employee.id && (
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: employee.color }}>
-                          <span className="text-white text-xs">✓</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Filtre employé - Select simple */}
+            <div className="p-4 border-b border-gray-100">
+              <select
+                value={selectedEmployee}
+                onChange={(e) => setSelectedEmployee(e.target.value)}
+                className="w-full p-3 rounded-xl border border-gray-200 bg-white/90 backdrop-blur-sm text-sm font-medium text-gray-700"
+              >
+                <option value="all">👥 Tous les employés</option>
+                {employees.map(employee => (
+                  <option key={employee.id} value={employee.id}>
+                    {employee.avatar} {employee.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Timeline mobile compacte */}
@@ -908,94 +854,55 @@ export default function PlanningMobile() {
                       .map((appointment) => {
                         const employee = employees.find(e => e.id === appointment.employee);
                         return (
-                          <motion.div
+                          <div
                             key={appointment.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="relative rounded-2xl p-4 mb-3 last:mb-0 shadow-lg border cursor-pointer hover:shadow-xl transition-all"
-                            style={{
-                              backgroundColor: employee?.color + '15',
-                              borderColor: employee?.color + '30',
-                              borderWidth: '2px'
-                            }}
+                            className="relative bg-white/90 backdrop-blur-sm rounded-xl p-3 mb-2 last:mb-0 border border-gray-100 hover:border-gray-200 transition-all"
                           >
-                            {/* Bande colorée gauche style desktop */}
+                            {/* Bande colorée gauche minimaliste */}
                             <div 
-                              className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+                              className="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl"
                               style={{ backgroundColor: employee?.color }}
                             />
                             
-                            <div className="flex justify-between items-start mb-3">
-                              <div className="flex-1">
-                                <div className="font-bold text-gray-900 text-base mb-1">
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1 ml-2">
+                                <div className="font-semibold text-gray-900 text-sm mb-1">
                                   {appointment.serviceName}
                                 </div>
-                                <div className="text-sm text-gray-700 font-medium flex items-center">
-                                  <div 
-                                    className="w-4 h-4 rounded-full mr-2"
-                                    style={{ backgroundColor: employee?.color + '40' }}
-                                  />
+                                <div className="text-xs text-gray-600 mb-1">
                                   {appointment.clientName}
                                 </div>
-                              </div>
-                              <div 
-                                className="px-3 py-1.5 rounded-full text-white font-bold text-sm shadow-md"
-                                style={{ backgroundColor: employee?.color }}
-                              >
-                                {appointment.price}€
-                              </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-3">
-                                <div 
-                                  className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm font-bold shadow-sm"
-                                  style={{ backgroundColor: employee?.color }}
-                                >
-                                  {employee?.avatar}
-                                </div>
-                                <div>
-                                  <div className="text-sm font-medium text-gray-900">
-                                    {employee?.name.split(' ')[0]}
-                                  </div>
-                                  <div className="text-xs text-gray-500">
-                                    {employee?.specialties[0]}
-                                  </div>
-                                </div>
-                              </div>
-                              
-                              <div className="bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-gray-200">
-                                <div className="text-sm font-bold" style={{ color: employee?.color }}>
+                                <div className="text-xs text-gray-500">
                                   {appointment.startTime} - {appointment.endTime}
                                 </div>
                               </div>
+                              
+                              <div className="text-right">
+                                <div className="text-sm font-bold text-gray-900">
+                                  {appointment.price}€
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {employee?.name.split(' ')[0]}
+                                </div>
+                              </div>
                             </div>
-                          </motion.div>
+                          </div>
                         );
                       })}
                       
-                    {/* Zone d'ajout élégante */}
+                    {/* Zone d'ajout minimaliste */}
                     {!simulatedAppointments.some(apt => {
                       const matchDate = new Date(apt.date).toDateString() === currentWeek[0].toDateString();
                       const matchTime = apt.startTime === timeSlot;
                       const matchEmployee = selectedEmployee === "all" || apt.employee === selectedEmployee;
                       return matchDate && matchTime && matchEmployee;
                     }) && (
-                      <motion.div 
-                        whileHover={{ scale: 1.02 }}
-                        className="opacity-0 hover:opacity-100 transition-all p-4 rounded-2xl border-2 border-dashed border-purple-300 text-center text-purple-600 bg-gradient-to-r from-purple-50/50 to-purple-100/50"
+                      <div 
+                        className="opacity-0 hover:opacity-60 transition-opacity p-3 text-center text-gray-400 text-sm"
                         onClick={() => handleTimeSlotClick(timeSlot, 0, currentWeek[0])}
                       >
-                        <div className="flex items-center justify-center space-x-3">
-                          <div className="w-8 h-8 rounded-xl bg-gradient-to-r from-purple-400 to-purple-500 flex items-center justify-center shadow-md">
-                            <span className="text-white text-sm font-bold">+</span>
-                          </div>
-                          <div>
-                            <div className="font-bold text-purple-700">Nouveau RDV</div>
-                            <div className="text-xs text-purple-500">Cliquez pour créer</div>
-                          </div>
-                        </div>
-                      </motion.div>
+                        + Ajouter RDV
+                      </div>
                     )}
                   </div>
                 </div>
