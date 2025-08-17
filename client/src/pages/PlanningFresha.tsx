@@ -1065,7 +1065,12 @@ export default function PlanningFresha() {
                             onClick={() => {
                               // Calculer l'offset de semaine pour naviguer vers cette date
                               const selectedDate = new Date(adjustedYear, month, day);
+                              
+                              // Normaliser les heures pour éviter les problèmes de fuseaux horaires
+                              selectedDate.setHours(12, 0, 0, 0);
+                              
                               const today = new Date();
+                              today.setHours(12, 0, 0, 0);
                               
                               // Trouver le lundi de la semaine sélectionnée
                               const selectedMonday = new Date(selectedDate);
@@ -1080,6 +1085,8 @@ export default function PlanningFresha() {
                               // Calculer la différence en semaines
                               const timeDiff = selectedMonday.getTime() - currentMonday.getTime();
                               const weeksDiff = Math.round(timeDiff / (7 * 24 * 60 * 60 * 1000));
+                              
+                              console.log('Date sélectionnée:', selectedDate, 'Offset calculé:', weeksDiff);
                               
                               setCurrentWeekOffset(weeksDiff);
                               setShowCalendar(false);
