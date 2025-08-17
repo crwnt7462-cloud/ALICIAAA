@@ -384,21 +384,14 @@ export default function ClientsModern() {
                             </span>
                           </div>
                           
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                          <div className="flex items-center justify-between text-sm text-gray-600">
                             <div className="flex items-center gap-1">
                               {[...Array(5)].map((_, i) => (
                                 <Star key={i} className={`w-3 h-3 lg:w-4 lg:h-4 ${i < Math.floor(client.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
                               ))}
                               <span className="ml-1">{client.rating}</span>
                             </div>
-                            <span>{client.totalVisits} visites</span>
-                          </div>
-                          
-                          <div className="flex justify-between items-center pt-2">
-                            <span className="text-lg lg:text-xl font-bold text-gray-900">€{client.totalSpent}</span>
-                            <span className="text-xs lg:text-sm text-gray-500">
-                              {new Date(client.lastVisit).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}
-                            </span>
+                            <span className="text-xs lg:text-sm text-gray-500">{client.totalVisits} visites</span>
                           </div>
                         </div>
                       </div>
