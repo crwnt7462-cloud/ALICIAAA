@@ -357,6 +357,7 @@ export default function PlanningFresha() {
   const [selectedSlot, setSelectedSlot] = useState<{ day: number; hour: string; appointment?: Appointment } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hoveredAppointment, setHoveredAppointment] = useState<{ id: string; x: number; y: number } | null>(null);
+  const [showCalendar, setShowCalendar] = useState(false);
 
   // Calcul des dates de la semaine courante
   const currentWeek = useMemo(() => {
@@ -383,7 +384,7 @@ export default function PlanningFresha() {
 
   // Fonction pour gérer le clic sur un créneau
   const handleSlotClick = (day: number, hour: string, appointment?: Appointment) => {
-    setSelectedSlot({ day, hour, appointment: appointment || undefined });
+    setSelectedSlot({ day, hour, appointment });
     setIsModalOpen(true);
   };
 
@@ -536,9 +537,13 @@ export default function PlanningFresha() {
                 <Button variant="ghost" size="sm" onClick={() => navigate('prev')}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="text-sm font-medium text-gray-700 min-w-[180px] text-center">
+                <Button 
+                  variant="ghost" 
+                  className="text-sm font-medium text-gray-700 min-w-[180px] hover:bg-gray-100"
+                  onClick={() => setShowCalendar(true)}
+                >
                   {formatWeekRange()}
-                </span>
+                </Button>
                 <Button variant="ghost" size="sm" onClick={() => navigate('next')}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -863,6 +868,153 @@ export default function PlanningFresha() {
               </div>
             );
           })()}
+        </div>
+      )}
+
+      {/* Calendrier de sélection */}
+      {showCalendar && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            {/* Header du calendrier */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset - 4)}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-lg font-medium">
+                  {formatWeekRange()}
+                </span>
+                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset + 4)}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setShowCalendar(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Calendrier double mois */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+              {[0, 1].map((monthOffset) => {
+                const currentDate = new Date();
+                currentDate.setMonth(currentDate.getMonth() + monthOffset);
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                
+                const monthNames = [
+                  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+                ];
+
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = (firstDay.getDay() + 6) % 7; // Lundi = 0
+
+                const days = [];
+                // Jours vides au début
+                for (let i = 0; i < startingDayOfWeek; i++) {
+                  days.push(null);
+                }
+                // Jours du mois
+                for (let day = 1; day <= daysInMonth; day++) {
+                  days.push(day);
+                }
+
+                return (
+                  <div key={monthOffset} className="text-center">
+                    <div className="flex items-center justify-between mb-4">
+                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <h3 className="text-lg font-semibold">
+                        {monthNames[month]} {year}
+                      </h3>
+                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* En-têtes des jours */}
+                    <div className="grid grid-cols-7 gap-1 mb-2">
+                      {['lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.', 'dim.'].map((day) => (
+                        <div key={day} className="text-xs text-gray-500 font-medium p-2">
+                          {day}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Grille des jours */}
+                    <div className="grid grid-cols-7 gap-1">
+                      {days.map((day, index) => {
+                        if (day === null) {
+                          return <div key={index} className="p-2"></div>;
+                        }
+
+                        const currentWeekStart = currentWeek[0];
+                        const currentWeekEnd = currentWeek[6];
+                        const dayDate = new Date(year, month, day);
+                        
+                        const isCurrentWeekStart = currentWeekStart && dayDate.toDateString() === currentWeekStart.toDateString();
+                        const isCurrentWeekEnd = currentWeekEnd && dayDate.toDateString() === currentWeekEnd.toDateString();
+                        const isInCurrentWeek = currentWeekStart && currentWeekEnd && 
+                          dayDate >= currentWeekStart && dayDate <= currentWeekEnd;
+
+                        return (
+                          <button
+                            key={day}
+                            className={`
+                              p-2 h-10 w-10 rounded-full text-sm font-medium transition-colors
+                              hover:bg-gray-100
+                              ${isCurrentWeekStart || isCurrentWeekEnd 
+                                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                                : isInCurrentWeek 
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'text-gray-700'
+                              }
+                            `}
+                            onClick={() => {
+                              // Logique pour sélectionner une semaine
+                              setShowCalendar(false);
+                            }}
+                          >
+                            {day}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Boutons de sélection rapide */}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {[
+                'Dans 1 semaine',
+                'Dans 2 semaines', 
+                'Dans 3 semaines',
+                'Dans 4 semaines',
+                'Dans 5 semaines'
+              ].map((option, index) => (
+                <Button 
+                  key={option}
+                  variant="outline" 
+                  size="sm"
+                  className="text-sm"
+                  onClick={() => {
+                    setCurrentWeekOffset(index + 1);
+                    setShowCalendar(false);
+                  }}
+                >
+                  {option}
+                </Button>
+              ))}
+              <Button variant="outline" size="sm" className="text-sm">
+                Plus
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>
