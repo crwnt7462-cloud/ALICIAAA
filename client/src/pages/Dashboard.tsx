@@ -252,19 +252,17 @@ export default function Dashboard() {
                   </svg>
                 </div>
                 
-                {/* Jours de la semaine */}
-                <div className="flex items-center justify-between text-xs text-gray-400 mb-4">
-                  <span>Lun</span>
-                  <span>Mar</span>
-                  <span>Mer</span>
-                  <span>Jeu</span>
-                  <span>Ven</span>
-                  <span>Sam</span>
-                  <span>Dim</span>
-                </div>
-                
-                {/* Bouton Voir */}
-                <div className="absolute bottom-6 right-6">
+                {/* Jours de la semaine et bouton Voir alignés */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between text-xs text-gray-400 flex-1 mr-4">
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mer</span>
+                    <span>Jeu</span>
+                    <span>Ven</span>
+                    <span>Sam</span>
+                    <span>Dim</span>
+                  </div>
                   <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors">
                     Voir
                   </button>
