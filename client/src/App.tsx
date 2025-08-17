@@ -26,6 +26,7 @@ import Dashboard from "@/pages/Dashboard";
 import DashboardPeymen from "@/pages/DashboardPeymen";
 
 import Planning from "@/pages/Planning";
+import PlanningFresha from "@/pages/PlanningFresha";
 import Clients from "@/pages/Clients";
 import Booking from "@/pages/Booking";
 
@@ -981,7 +982,7 @@ function Router() {
           
           {/* Contenu principal */}
           <div className="flex-1 overflow-hidden">
-            {location === '/planning' && <Planning />}
+            {location === '/planning' && <PlanningFresha />}
             {location === '/clients-modern' && <ClientsModern />}
             {location === '/services-management' && <ServicesManagement />}
             {location === '/messaging-hub' && <MessagingHub />}
