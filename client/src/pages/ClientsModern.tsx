@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { useToast } from '@/hooks/use-toast';
+
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Search, Plus, Star, Phone, 
@@ -635,26 +635,7 @@ export default function ClientsModern() {
 
 
 
-                {/* Avis client - STYLE LANDING */}
-                {currentClient?.review && (
-                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis laissé</h3>
-                    <div className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-5 h-5 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                          />
-                        ))}
-                        <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
-                      </div>
-                      <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
-                        "{currentClient.review}"
-                      </p>
-                    </div>
-                  </div>
-                )}
+
               </motion.div>
             </div>
 
