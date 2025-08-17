@@ -409,10 +409,10 @@ export default function PlanningResponsive() {
     </div>
   );
 
-  // Vue semaine responsive avec glassmorphism
+  // Vue semaine simplifiée avec calendrier 7 jours
   const renderWeekView = () => (
     <div className="space-y-4">
-      {/* En-têtes des jours - responsive grid */}
+      {/* Calendrier semaine - 7 jours en grille */}
       <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
         <CardContent className="p-4 lg:p-6">
           <div className="grid grid-cols-7 gap-2 lg:gap-4">
@@ -422,70 +422,94 @@ export default function PlanningResponsive() {
               const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === date);
               
               return (
-                <div
+                <motion.div
                   key={date}
-                  className={`text-center p-3 lg:p-4 rounded-xl transition-all cursor-pointer ${
-                    isToday 
+                  whileHover={{ scale: 1.02 }}
+                  className={`
+                    p-3 lg:p-4 rounded-xl cursor-pointer transition-all min-h-[120px] lg:min-h-[160px]
+                    ${isToday 
                       ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white' 
-                      : 'hover:bg-gray-50'
-                  }`}
+                      : 'bg-white/50 hover:bg-purple-50'
+                    }
+                  `}
                   onClick={() => setSelectedDate(date)}
                 >
-                  <div className="text-xs lg:text-sm font-medium mb-1">
-                    {weekDays[index]}
+                  {/* En-tête du jour */}
+                  <div className="text-center mb-2 lg:mb-3">
+                    <div className="text-xs lg:text-sm font-medium opacity-75">
+                      {weekDays[index]}
+                    </div>
+                    <div className="text-lg lg:text-xl font-bold">
+                      {dayDate.getDate()}
+                    </div>
                   </div>
-                  <div className="text-lg lg:text-2xl font-bold">
-                    {dayDate.getDate()}
+                  
+                  {/* Rendez-vous du jour */}
+                  <div className="space-y-1">
+                    {dayAppointments.slice(0, 3).map((apt, aptIndex) => {
+                      const client = allClients.find(c => c.id === apt.clientId);
+                      return (
+                        <div
+                          key={aptIndex}
+                          className={`text-xs p-1.5 rounded text-center truncate ${
+                            isToday 
+                              ? 'bg-white/20 text-white' 
+                              : 'bg-purple-100 text-purple-800'
+                          }`}
+                        >
+                          <div className="font-medium">{apt.startTime}</div>
+                          <div className="truncate">{client?.firstName}</div>
+                        </div>
+                      );
+                    })}
+                    {dayAppointments.length > 3 && (
+                      <div className={`text-xs text-center font-medium ${
+                        isToday ? 'text-white/80' : 'text-purple-600'
+                      }`}>
+                        +{dayAppointments.length - 3} autres
+                      </div>
+                    )}
+                    {dayAppointments.length === 0 && (
+                      <div className={`text-xs text-center ${
+                        isToday ? 'text-white/60' : 'text-gray-400'
+                      }`}>
+                        Libre
+                      </div>
+                    )}
                   </div>
-                  <div className="text-xs lg:text-sm opacity-75">
-                    {dayAppointments.length} RDV
-                  </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </CardContent>
       </Card>
 
-      {/* Résumé des RDV de la semaine */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {currentWeek.map((date) => {
-          const dayAppointments = filteredAppointments.filter(apt => apt.appointmentDate === date);
-          if (dayAppointments.length === 0) return null;
-          
-          return (
-            <Card key={date} className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
-              <CardContent className="p-4">
-                <div className="text-sm font-medium text-purple-600 mb-2">
-                  {formatDate(date)}
-                </div>
-                <div className="space-y-2">
-                  {dayAppointments.map((apt) => {
-                    const client = allClients.find(c => c.id === apt.clientId);
-                    const service = allServices.find(s => s.id === apt.serviceId);
-                    
-                    return (
-                      <div key={apt.id} className="flex justify-between items-center text-xs">
-                        <div>
-                          <div className="font-medium">
-                            {apt.startTime} - {client ? `${client.firstName} ${client.lastName}` : 'Client'}
-                          </div>
-                          <div className="text-gray-500">
-                            {service?.name}
-                          </div>
-                        </div>
-                        <div className="text-purple-600 font-bold">
-                          {service?.price}€
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      {/* Résumé hebdomadaire */}
+      <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
+        <CardContent className="p-4 lg:p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé de la semaine</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
+              <div className="text-2xl font-bold text-purple-600">
+                {filteredAppointments.length}
+              </div>
+              <div className="text-sm text-gray-600">RDV total</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl">
+              <div className="text-2xl font-bold text-emerald-600">
+                {filteredAppointments.filter(apt => apt.status === 'completed').length}
+              </div>
+              <div className="text-sm text-gray-600">Terminés</div>
+            </div>
+            <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
+              <div className="text-2xl font-bold text-amber-600">
+                {revenueStats.revenue.toFixed(0)}€
+              </div>
+              <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
