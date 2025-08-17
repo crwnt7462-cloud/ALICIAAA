@@ -4,13 +4,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Sparkles, Euro, Target } from "lucide-react";
+import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Euro, Target, Eye, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertAppointmentSchema, type Appointment, type Client, type Service } from "@shared/schema";
+import { insertAppointmentSchema } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +42,8 @@ export default function PlanningResponsive() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null);
+  const [paymentDetailsOpen, setPaymentDetailsOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -121,7 +123,12 @@ export default function PlanningResponsive() {
       endTime: "10:00",
       status: "confirmed",
       notes: "Coupe + Couleur",
-      employeeId: "1"
+      employeeId: "1",
+      paymentStatus: "payé",
+      totalAmount: 85,
+      depositAmount: 0,
+      remainingAmount: 0,
+      paymentMethod: "CB"
     },
     {
       id: 1002,
@@ -132,7 +139,12 @@ export default function PlanningResponsive() {
       endTime: "11:30",
       status: "scheduled",
       notes: "Manucure complète",
-      employeeId: "2"
+      employeeId: "2",
+      paymentStatus: "à compléter",
+      totalAmount: 45,
+      depositAmount: 15,
+      remainingAmount: 30,
+      paymentMethod: "Espèces"
     },
     // RDV simultanés pour tester le rendu multi-employés
     {
@@ -144,7 +156,12 @@ export default function PlanningResponsive() {
       endTime: "11:30",
       status: "confirmed",
       notes: "Coupe couleur premium",
-      employeeId: "1"
+      employeeId: "1",
+      paymentStatus: "à régler",
+      totalAmount: 85,
+      depositAmount: 0,
+      remainingAmount: 85,
+      paymentMethod: null
     },
     {
       id: 1015,
@@ -155,7 +172,12 @@ export default function PlanningResponsive() {
       endTime: "11:30",
       status: "scheduled",
       notes: "Soin visage relaxant",
-      employeeId: "3"
+      employeeId: "3",
+      paymentStatus: "à compléter",
+      totalAmount: 120,
+      depositAmount: 50,
+      remainingAmount: 70,
+      paymentMethod: "Virement"
     },
     {
       id: 1003,
@@ -166,7 +188,12 @@ export default function PlanningResponsive() {
       endTime: "15:30",
       status: "completed",
       notes: "Soin visage premium",
-      employeeId: "1"
+      employeeId: "1",
+      paymentStatus: "payé",
+      totalAmount: 120,
+      depositAmount: 0,
+      remainingAmount: 0,
+      paymentMethod: "CB"
     },
     {
       id: 1004,
@@ -177,7 +204,12 @@ export default function PlanningResponsive() {
       endTime: "17:30",
       status: "confirmed",
       notes: "Brushing + styling",
-      employeeId: "3"
+      employeeId: "3",
+      paymentStatus: "à compléter",
+      totalAmount: 45,
+      depositAmount: 20,
+      remainingAmount: 25,
+      paymentMethod: "CB"
     },
     // Autres RDV simultanés pour tester
     {
@@ -189,7 +221,12 @@ export default function PlanningResponsive() {
       endTime: "17:30",
       status: "scheduled",
       notes: "Coupe tendance",
-      employeeId: "1"
+      employeeId: "1",
+      paymentStatus: "à régler",
+      totalAmount: 85,
+      depositAmount: 0,
+      remainingAmount: 85,
+      paymentMethod: null
     },
     // Demain
     {
@@ -443,6 +480,24 @@ export default function PlanningResponsive() {
     return 'Ce mois';
   };
 
+  const getPaymentStatusBadge = (paymentStatus: string) => {
+    switch (paymentStatus) {
+      case 'à régler':
+        return <Badge variant="outline" className="text-red-600 border-red-300 bg-red-50">À régler</Badge>
+      case 'à compléter':
+        return <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50">À compléter</Badge>
+      case 'payé':
+        return <Badge variant="outline" className="text-green-600 border-green-300 bg-green-50">Payé</Badge>
+      default:
+        return <Badge variant="outline" className="text-gray-600 border-gray-300 bg-gray-50">À régler</Badge>
+    }
+  };
+
+  const handleAppointmentClick = (appointment: any) => {
+    setSelectedAppointment(appointment);
+    setPaymentDetailsOpen(true);
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       scheduled: { label: "Programmé", variant: "secondary" as const },
@@ -492,6 +547,7 @@ export default function PlanningResponsive() {
                             <motion.div
                               key={appointment.id}
                               whileHover={{ scale: 1.02 }}
+                              onClick={() => handleAppointmentClick(appointment)}
                               className={`bg-gradient-to-r ${employee?.cardColor || 'from-gray-50 to-purple-50/30'} p-3 lg:p-4 rounded-xl cursor-pointer border-l-4 ${employee?.borderColor || 'border-purple-300'}`}
                             >
                               <div className="flex items-center justify-between">
@@ -503,7 +559,7 @@ export default function PlanningResponsive() {
                                     <span className="font-medium text-gray-900 text-sm lg:text-base">
                                       {client ? `${client.firstName} ${client.lastName}` : 'Client'}
                                     </span>
-                                    {getStatusBadge(appointment.status)}
+                                    {getPaymentStatusBadge(appointment.paymentStatus || 'à régler')}
                                   </div>
                                   <div className="text-xs lg:text-sm text-gray-600">
                                     {service?.name} • {appointment.endTime}
@@ -1203,6 +1259,109 @@ export default function PlanningResponsive() {
             </Button>
           </div>
         </motion.nav>
+
+        {/* Modal détails de paiement */}
+        <Dialog open={paymentDetailsOpen} onOpenChange={setPaymentDetailsOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-purple-600" />
+                Détails du paiement
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedAppointment && (
+              <div className="space-y-4">
+                {/* Informations RDV */}
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium">
+                      {allClients.find(c => c.id === selectedAppointment.clientId)?.firstName} {allClients.find(c => c.id === selectedAppointment.clientId)?.lastName}
+                    </span>
+                    <span className="text-sm text-gray-600">
+                      {selectedAppointment.startTime} - {selectedAppointment.endTime}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {allServices.find(s => s.id === selectedAppointment.serviceId)?.name}
+                  </div>
+                </div>
+
+                {/* Statut de paiement */}
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Statut du paiement:</span>
+                  {getPaymentStatusBadge(selectedAppointment.paymentStatus || 'à régler')}
+                </div>
+
+                {/* Détails financiers */}
+                <div className="space-y-3 border-t pt-4">
+                  <div className="flex justify-between">
+                    <span>Montant total:</span>
+                    <span className="font-medium">{selectedAppointment.totalAmount}€</span>
+                  </div>
+                  
+                  {selectedAppointment.depositAmount > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Acompte versé:</span>
+                      <span className="font-medium">{selectedAppointment.depositAmount}€</span>
+                    </div>
+                  )}
+                  
+                  {selectedAppointment.remainingAmount > 0 && (
+                    <div className="flex justify-between text-amber-600">
+                      <span>Reste à payer:</span>
+                      <span className="font-medium">{selectedAppointment.remainingAmount}€</span>
+                    </div>
+                  )}
+                  
+                  {selectedAppointment.paymentMethod && (
+                    <div className="flex justify-between text-sm text-gray-600">
+                      <span>Mode de paiement:</span>
+                      <span>{selectedAppointment.paymentMethod}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Actions */}
+                {selectedAppointment.paymentStatus !== 'payé' && (
+                  <div className="flex gap-2 pt-4 border-t">
+                    {selectedAppointment.paymentStatus === 'à régler' && (
+                      <Button 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          toast({
+                            title: "Paiement enregistré",
+                            description: "Le paiement a été marqué comme payé."
+                          });
+                          setPaymentDetailsOpen(false);
+                        }}
+                      >
+                        Marquer comme payé
+                      </Button>
+                    )}
+                    
+                    {selectedAppointment.paymentStatus === 'à compléter' && (
+                      <Button 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => {
+                          toast({
+                            title: "Paiement complété",
+                            description: "Le solde restant a été encaissé."
+                          });
+                          setPaymentDetailsOpen(false);
+                        }}
+                      >
+                        Encaisser le solde
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </motion.div>
   );
