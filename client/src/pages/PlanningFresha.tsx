@@ -1063,36 +1063,27 @@ export default function PlanningFresha() {
                               }
                             `}
                             onClick={() => {
-                              // Calculer l'offset de semaine pour naviguer vers cette date
+                              // Utiliser EXACTEMENT la même logique que currentWeek
                               const selectedDate = new Date(adjustedYear, month, day);
-                              selectedDate.setHours(12, 0, 0, 0);
-                              
-                              // Date de référence : aujourd'hui
                               const today = new Date();
-                              today.setHours(12, 0, 0, 0);
                               
-                              // Trouver le lundi de la semaine sélectionnée
-                              const selectedDayOfWeek = selectedDate.getDay();
-                              const daysToMonday = selectedDayOfWeek === 0 ? 6 : selectedDayOfWeek - 1; // Dimanche = 6 jours, autres jours = jour-1
+                              // MÊME logique que currentWeek pour le lundi de référence (aujourd'hui)
+                              const todayMonday = new Date(today);
+                              todayMonday.setDate(today.getDate() - today.getDay() + 1); // EXACTEMENT comme currentWeek
+                              
+                              // MÊME logique pour le lundi de la date sélectionnée
                               const selectedMonday = new Date(selectedDate);
-                              selectedMonday.setDate(selectedDate.getDate() - daysToMonday);
-                              selectedMonday.setHours(12, 0, 0, 0);
+                              selectedMonday.setDate(selectedDate.getDate() - selectedDate.getDay() + 1);
                               
-                              // Trouver le lundi de la semaine actuelle (aujourd'hui)
-                              const todayDayOfWeek = today.getDay();
-                              const daysTodayToMonday = todayDayOfWeek === 0 ? 6 : todayDayOfWeek - 1;
-                              const currentMonday = new Date(today);
-                              currentMonday.setDate(today.getDate() - daysTodayToMonday);
-                              currentMonday.setHours(12, 0, 0, 0);
-                              
-                              // Calculer la différence en millisecondes puis en semaines
-                              const timeDiff = selectedMonday.getTime() - currentMonday.getTime();
-                              const weeksDiff = Math.round(timeDiff / (7 * 24 * 60 * 60 * 1000));
+                              // Calculer la différence en jours puis convertir en semaines
+                              const daysDiff = Math.round((selectedMonday.getTime() - todayMonday.getTime()) / (24 * 60 * 60 * 1000));
+                              const weeksDiff = Math.floor(daysDiff / 7);
                               
                               console.log('Date sélectionnée:', selectedDate.toLocaleDateString(), 
                                          'Lundi sélectionné:', selectedMonday.toLocaleDateString(),
-                                         'Lundi actuel:', currentMonday.toLocaleDateString(),
-                                         'Offset calculé:', weeksDiff);
+                                         'Lundi aujourd\'hui:', todayMonday.toLocaleDateString(),
+                                         'Différence jours:', daysDiff,
+                                         'Offset final:', weeksDiff);
                               
                               setCurrentWeekOffset(weeksDiff);
                               setShowCalendar(false);
