@@ -346,30 +346,16 @@ export default function ClientsModern() {
                       onClick={() => setSelectedClient(client.id)}
                       className="w-full text-left bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all"
                     >
-                      <div className="flex items-center gap-4 lg:gap-6">
-                        {/* Photo avec effet glassmorphism */}
-                        <div className="relative">
-                          {client.avatar ? (
-                            <img
-                              src={client.avatar}
-                              alt={client.name}
-                              className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover border-4 border-white shadow-luxury"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 lg:w-20 lg:h-20 gradient-bg rounded-full flex items-center justify-center border-4 border-white shadow-luxury">
-                              <User className="h-8 w-8 lg:h-10 lg:w-10 text-white" />
-                            </div>
-                          )}
-                          {client.status === 'VIP' && (
-                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
-                              <Crown className="h-3 w-3 text-white" />
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg lg:text-xl font-bold text-gray-900 truncate">
+                      <div className="space-y-4">
+                        {/* Première ligne : Nom + Badge + Nombre de visites */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            {client.status === 'VIP' && (
+                              <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                                <Crown className="h-4 w-4 text-white" />
+                              </div>
+                            )}
+                            <h3 className="text-lg lg:text-xl font-bold text-gray-900">
                               {client.name}
                             </h3>
                             <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(client.status)}`}>
@@ -377,15 +363,24 @@ export default function ClientsModern() {
                             </span>
                           </div>
                           
-                          <div className="flex items-center justify-between text-sm text-gray-600">
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className={`w-3 h-3 lg:w-4 lg:h-4 ${i < Math.floor(client.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                              ))}
-                              <span className="ml-1">{client.rating}</span>
-                            </div>
-                            <span className="text-xs lg:text-sm text-gray-500">{client.totalVisits} visites</span>
+                          <span className="text-sm lg:text-base text-gray-500 font-medium">{client.totalVisits} visites</span>
+                        </div>
+                        
+                        {/* Seconde ligne : Note + Date dernière visite */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className={`w-4 h-4 lg:w-5 lg:h-5 ${i < Math.floor(client.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                            ))}
+                            <span className="ml-2 text-sm lg:text-base font-semibold text-gray-700">{client.rating}</span>
                           </div>
+                          
+                          <span className="text-xs lg:text-sm text-gray-500">
+                            {new Date(client.lastVisit).toLocaleDateString('fr-FR', { 
+                              day: 'numeric', 
+                              month: 'short' 
+                            })}
+                          </span>
                         </div>
                       </div>
                     </motion.button>
