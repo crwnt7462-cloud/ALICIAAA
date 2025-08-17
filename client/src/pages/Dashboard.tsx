@@ -370,23 +370,23 @@ export default function Dashboard() {
               <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6">
                 {/* Graphique circulaire */}
                 <div className="relative self-center md:self-auto">
-                  <svg className="w-20 md:w-24 h-20 md:h-24 transform -rotate-90" viewBox="0 0 96 96">
+                  <svg className="w-24 md:w-28 h-24 md:h-28 transform -rotate-90" viewBox="0 0 112 112">
                     <circle
-                      cx="48"
-                      cy="48"
-                      r="36"
+                      cx="56"
+                      cy="56"
+                      r="44"
                       stroke="#e5e7eb"
                       strokeWidth="6"
                       fill="none"
                     />
                     <circle
-                      cx="48"
-                      cy="48"
-                      r="36"
+                      cx="56"
+                      cy="56"
+                      r="44"
                       stroke="url(#gradient)"
                       strokeWidth="6"
                       fill="none"
-                      strokeDasharray={`${95 * 2.26} ${(100 - 95) * 2.26}`}
+                      strokeDasharray={`${95 * 2.76} ${(100 - 95) * 2.76}`}
                       strokeLinecap="round"
                     />
                     <defs>
