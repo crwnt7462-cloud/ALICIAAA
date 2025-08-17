@@ -933,15 +933,15 @@ export default function PlanningFresha() {
                 return (
                   <div key={monthOffset} className="text-center">
                     <div className="flex items-center justify-between mb-4">
-                      <button className="glass-button-purple flex items-center justify-center w-8 h-8 rounded-lg">
-                        <ChevronLeft className="h-3 w-3" />
-                      </button>
-                      <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-amber-500 bg-clip-text text-transparent">
+                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <h3 className="text-lg font-semibold">
                         {monthNames[month]} {year}
                       </h3>
-                      <button className="glass-button-purple flex items-center justify-center w-8 h-8 rounded-lg">
-                        <ChevronRight className="h-3 w-3" />
-                      </button>
+                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </div>
 
                     {/* En-têtes des jours */}
@@ -1008,7 +1008,7 @@ export default function PlanningFresha() {
               ].map((option, index) => (
                 <button
                   key={option}
-                  className="glass-button-purple px-4 py-2 rounded-xl text-sm font-medium"
+                  className="px-4 py-2 rounded-xl text-sm font-medium bg-purple-100/40 backdrop-blur-sm border border-purple-200/30 text-purple-700 hover:bg-purple-200/40 hover:border-purple-300/40 transition-all duration-300"
                   onClick={() => {
                     setCurrentWeekOffset(index + 1);
                     setShowCalendar(false);
@@ -1017,7 +1017,7 @@ export default function PlanningFresha() {
                   {option}
                 </button>
               ))}
-              <button className="glass-button-purple px-4 py-2 rounded-xl text-sm font-medium opacity-60">
+              <button className="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100/40 backdrop-blur-sm border border-gray-200/30 text-gray-600 hover:bg-gray-200/40 hover:border-gray-300/40 transition-all duration-300">
                 Plus
               </button>
             </div>
