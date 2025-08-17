@@ -295,6 +295,56 @@ export default function PlanningFresha() {
     setSelectedSlot(null);
   };
 
+  // Fonctions pour gérer les actions des boutons
+  const handleCallClient = () => {
+    if (selectedSlot?.appointment?.client) {
+      alert(`Appeler ${selectedSlot.appointment.client}`);
+      // Ici vous pouvez intégrer avec un service de téléphonie
+    }
+  };
+
+  const handleMessageClient = () => {
+    if (selectedSlot?.appointment?.client) {
+      alert(`Envoyer un message à ${selectedSlot.appointment.client}`);
+      // Ici vous pouvez ouvrir l'interface de messagerie
+    }
+  };
+
+  const handleModifyAppointment = () => {
+    alert('Ouverture de l\'interface de modification...');
+    // Ici vous pouvez ouvrir un formulaire de modification
+    closeModal();
+  };
+
+  const handleCancelAppointment = () => {
+    if (selectedSlot?.appointment) {
+      const confirmed = confirm(`Êtes-vous sûr de vouloir annuler le rendez-vous avec ${selectedSlot.appointment.client} ?`);
+      if (confirmed) {
+        alert('Rendez-vous annulé avec succès');
+        closeModal();
+      }
+    }
+  };
+
+  const handleNewAppointment = () => {
+    alert('Ouverture du formulaire de nouveau rendez-vous...');
+    // Ici vous pouvez ouvrir un formulaire de création
+    closeModal();
+  };
+
+  const handleBlockSlot = () => {
+    if (selectedSlot) {
+      alert(`Créneau du ${weekDays.find(d => d.index === selectedSlot.day)?.full} à ${selectedSlot.hour} bloqué`);
+      closeModal();
+    }
+  };
+
+  const handleSearchClient = () => {
+    alert('Ouverture de la recherche client...');
+    // Ici vous pouvez ouvrir l'interface de recherche de clients
+    closeModal();
+  };
+
   // Fonction pour calculer la position des rendez-vous
   const getAppointmentStyle = (appointment: Appointment) => {
     const startTimeParts = appointment.startTime.split(':');
@@ -474,7 +524,14 @@ export default function PlanningFresha() {
 
       {/* Modal de détails du rendez-vous */}
       {isModalOpen && selectedSlot && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              closeModal();
+            }
+          }}
+        >
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             {selectedSlot.appointment ? (
               // Modal pour un rendez-vous existant
@@ -532,21 +589,21 @@ export default function PlanningFresha() {
 
                   {/* Actions */}
                   <div className="flex gap-2 pt-4 border-t">
-                    <Button className="flex-1" variant="outline">
+                    <Button className="flex-1" variant="outline" onClick={handleCallClient}>
                       <Phone className="w-4 h-4 mr-2" />
                       Appeler
                     </Button>
-                    <Button className="flex-1" variant="outline">
+                    <Button className="flex-1" variant="outline" onClick={handleMessageClient}>
                       <Mail className="w-4 h-4 mr-2" />
                       Message
                     </Button>
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1" variant="outline">
+                    <Button className="flex-1" variant="outline" onClick={handleModifyAppointment}>
                       Modifier
                     </Button>
-                    <Button className="flex-1" variant="outline" className="text-red-600 hover:text-red-700">
+                    <Button className="flex-1 text-red-600 hover:text-red-700" variant="outline" onClick={handleCancelAppointment}>
                       Annuler
                     </Button>
                   </div>
@@ -583,15 +640,15 @@ export default function PlanningFresha() {
 
                   {/* Boutons d'action */}
                   <div className="space-y-2">
-                    <Button className="w-full justify-start">
+                    <Button className="w-full justify-start" onClick={handleNewAppointment}>
                       <Plus className="w-4 h-4 mr-2" />
                       Réserver un client
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start" onClick={handleBlockSlot}>
                       <Clock className="w-4 h-4 mr-2" />
                       Bloquer le créneau
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start" onClick={handleSearchClient}>
                       <User className="w-4 h-4 mr-2" />
                       Rechercher un client
                     </Button>
