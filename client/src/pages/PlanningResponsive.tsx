@@ -1244,14 +1244,14 @@ export default function PlanningResponsive() {
         </div>
       </div>
       
-      {/* Footer Avyento complet - pleine largeur étiré sur toute la longueur */}
+      {/* Footer Avyento complet - pleine largeur, en dehors de tous les conteneurs */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.8 }}
-        className="bg-slate-800 text-white w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]"
+        className="bg-slate-800 text-white w-full"
       >
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-12 max-w-none">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Avyento */}
             <div>
@@ -1318,8 +1318,6 @@ export default function PlanningResponsive() {
               </button>
             </div>
           </div>
-          
-
         </div>
       </motion.footer>
         
