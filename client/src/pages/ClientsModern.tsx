@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Search, Plus, Star, Phone, 
-  MessageCircle, User, Crown, Sparkles, Users, ArrowRight, Calendar
+  MessageCircle, User, Crown, Users, Calendar
 } from 'lucide-react';
 import { getGenericGlassButton } from "@/lib/salonColors";
 
@@ -39,7 +39,6 @@ interface Appointment {
 // ✅ DESKTOP RESPONSIVE OPTIMISÉ - Version finale
 export default function ClientsModern() {
   const [, setLocation] = useLocation();
-  const { toast } = useToast();
   const [searchText, setSearchText] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
@@ -133,13 +132,7 @@ export default function ClientsModern() {
 
   const clients = clientsFromDB && clientsFromDB.length > 0 ? clientsFromDB : mockClients;
 
-  const filters = [
-    { id: 'all', label: 'Tous', count: clients?.length || 0 },
-    { id: 'VIP', label: 'VIP', count: clients?.filter((c: Client) => c.status === 'VIP').length || 0 },
-    { id: 'Fidèle', label: 'Fidèles', count: clients?.filter((c: Client) => c.status === 'Fidèle').length || 0 },
-    { id: 'Nouvelle', label: 'Nouvelles', count: clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0 },
-    { id: 'Inactive', label: 'Inactives', count: clients?.filter((c: Client) => c.status === 'Inactive').length || 0 }
-  ];
+
 
   const filteredClients = (clients || []).filter((client: Client) => {
     const matchesSearch = client.name.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -641,16 +634,51 @@ export default function ClientsModern() {
                   <p className="text-sm lg:text-base text-gray-500 mt-4 text-center">Cliquez pour ajouter des photos de réalisations</p>
                 </div>
 
-                {/* Historique des rendez-vous - STYLE LANDING */}
-                {currentClient?.appointments && (
+
+
+                {/* Avis client - STYLE LANDING */}
+                {currentClient?.review && (
                   <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Historique des rendez-vous</h3>
-                    <div className="space-y-4">
-                      {currentClient.appointments.map((appointment) => (
+                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis laissé</h3>
+                    <div className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`w-5 h-5 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                          />
+                        ))}
+                        <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
+                      </div>
+                      <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
+                        "{currentClient.review}"
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+
+            {/* Sections pleine largeur desktop */}
+            <div className="max-w-md lg:max-w-none lg:w-full space-y-8">
+              {/* Historique des rendez-vous - PLEINE LARGEUR DESKTOP */}
+              {currentClient?.appointments && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg"
+                >
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Historique des rendez-vous</h3>
+                  <div className="space-y-4">
+                    {/* Afficher seulement les 2 derniers */}
+                    {currentClient.appointments
+                      .slice(0, 2)
+                      .map((appointment) => (
                         <motion.div 
                           key={appointment.id}
                           whileHover={{ scale: 1.02 }}
-                          className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 transition-all"
+                          className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 lg:p-6 transition-all"
                         >
                           <div className="flex justify-between items-start mb-3">
                             <div>
@@ -677,31 +705,39 @@ export default function ClientsModern() {
                           </div>
                         </motion.div>
                       ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Avis client - STYLE LANDING */}
-                {currentClient?.review && (
-                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis laissé</h3>
-                    <div className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-5 h-5 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
-                          />
-                        ))}
-                        <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
+                    {/* Scroll indicator si plus de 2 rendez-vous */}
+                    {currentClient.appointments.length > 2 && (
+                      <div className="text-center py-2">
+                        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto opacity-60"></div>
+                        <p className="text-xs text-gray-500 mt-2">Scroll pour voir les {currentClient.appointments.length - 2} autres rendez-vous</p>
                       </div>
-                      <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
-                        "{currentClient.review}"
-                      </p>
-                    </div>
+                    )}
                   </div>
-                )}
-              </motion.div>
+                </motion.div>
+              )}
+
+              {/* Avis client - PLEINE LARGEUR DESKTOP */}
+              {currentClient?.review && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg"
+                >
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis client</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={`w-6 h-6 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                      ))}
+                      <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
+                    </div>
+                    <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
+                      "{currentClient.review}"
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {/* Footer identique à Landing.tsx */}
