@@ -13,14 +13,14 @@ import {
   X,
   User,
   Star,
-  Search,
   Settings,
-  Bell,
   LogOut,
   CheckCircle,
   AlertCircle,
   TrendingUp,
-  BarChart3
+  BarChart3,
+  MessageSquare,
+  HelpCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { format, isAfter, isBefore } from "date-fns";
@@ -87,10 +87,11 @@ export default function ClientDashboard() {
   if (appointmentsLoading || statsLoading) {
     return (
       <div className="flex h-screen bg-gray-50">
+        <div className="w-60 bg-white shadow-lg"></div>
         <div className="flex-1 p-8">
           <div className="animate-pulse space-y-6">
             <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-3 gap-6">
               {Array.from({length: 3}).map((_, i) => (
                 <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
               ))}
@@ -102,165 +103,201 @@ export default function ClientDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar - Style Peymen exact mais adapté client */}
+      <div className="hidden lg:flex lg:w-60 bg-white shadow-lg border-r border-gray-200">
+        <div className="flex flex-col w-full">
+          {/* Logo section - Style Peymen */}
+          <div className="px-6 py-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center mr-3">
                 <span className="text-white font-bold text-lg">A</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Mon Espace Client</h1>
-                <p className="text-gray-600">Bienvenue {clientData.firstName || 'Client'}</p>
+              <span className="text-xl font-bold text-gray-800">Avyento</span>
+            </div>
+          </div>
+          
+          {/* Navigation - Style Peymen avec icônes dans des carrés */}
+          <nav className="flex-1 px-4 space-y-1">
+            <div className="flex items-center space-x-4 px-4 py-4 bg-blue-50 rounded-2xl text-blue-600 font-medium">
+              <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                <BarChart3 className="w-4 h-4" />
               </div>
+              <span>Dashboard</span>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="relative hidden md:block">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Rechercher un salon..."
-                  className="pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent w-64"
-                />
+            <button 
+              onClick={() => setLocation('/client-profile')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <User className="w-4 h-4" />
               </div>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation('/salon-search')}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Nouveau RDV
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLocation('/client-settings')}
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <span className="font-medium">Profil</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/salon-search')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Calendar className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Réserver</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/client-favorites')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <Star className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Favoris</span>
+            </button>
+            
+            <button 
+              onClick={() => setLocation('/client-messages')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <MessageSquare className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Messages</span>
+            </button>
+
+            <button 
+              onClick={() => setLocation('/client-settings')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
                 <Settings className="w-4 h-4" />
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
-              
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
               </div>
-            </div>
+              <span className="font-medium">Paramètres</span>
+            </button>
+
+            <button 
+              onClick={() => setLocation('/support')}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <HelpCircle className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Support</span>
+            </button>
+          </nav>
+          
+          {/* Section inférieure avec déconnexion */}
+          <div className="px-4 pb-6">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center space-x-4 px-4 py-4 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-2xl transition-all duration-200"
+            >
+              <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center">
+                <LogOut className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Déconnexion</span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Cartes statistiques */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center justify-center w-10 h-10 bg-violet-100 rounded-lg">
-                    <Calendar className="w-6 h-6 text-violet-600" />
-                  </div>
-                  <TrendingUp className="w-4 h-4 text-green-500" />
-                </div>
-                <h3 className="font-bold text-2xl text-gray-900">{safeStats.totalAppointments}</h3>
-                <p className="text-sm text-gray-600">Rendez-vous total</p>
-              </CardContent>
-            </Card>
-          </motion.div>
+      {/* Main Content - Style Peymen exact */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full p-8">
+          {/* Header - Style Peymen */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-gray-500 text-sm mb-1">Bonjour {clientData.firstName || 'Client'},</p>
+              <h1 className="text-3xl font-bold text-gray-800">Bienvenue sur votre espace</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button
+                onClick={() => setLocation('/salon-search')}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-2xl font-medium"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Nouveau rendez-vous
+              </Button>
+            </div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
+          {/* Cards - Style Peymen exact */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {/* Total RDV */}
+            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg">
-                    <Clock className="w-6 h-6 text-blue-600" />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm font-medium">Total Rendez-vous</p>
+                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.totalAppointments}</h3>
+                    <div className="flex items-center mt-2">
+                      <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                      <span className="text-green-500 text-sm font-medium">+12%</span>
+                      <span className="text-gray-500 text-sm ml-1">ce mois</span>
+                    </div>
                   </div>
-                </div>
-                <h3 className="font-bold text-2xl text-gray-900">{safeStats.upcomingAppointments}</h3>
-                <p className="text-sm text-gray-600">RDV à venir</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg">
-                    <Star className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-blue-600" />
                   </div>
                 </div>
-                <h3 className="font-bold text-2xl text-gray-900">{safeStats.favoriteServices?.length || 0}</h3>
-                <p className="text-sm text-gray-600">Services favoris</p>
               </CardContent>
             </Card>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
+            {/* RDV à venir */}
+            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
               <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center justify-center w-10 h-10 bg-amber-100 rounded-lg">
-                    <BarChart3 className="w-6 h-6 text-amber-600" />
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm font-medium">À venir</p>
+                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.upcomingAppointments}</h3>
+                    <div className="flex items-center mt-2">
+                      <Clock className="w-4 h-4 text-blue-500 mr-1" />
+                      <span className="text-blue-500 text-sm font-medium">Cette semaine</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-green-600" />
                   </div>
                 </div>
-                <h3 className="font-bold text-2xl text-gray-900">{safeStats.totalSpent || 0}€</h3>
-                <p className="text-sm text-gray-600">Total dépensé</p>
               </CardContent>
             </Card>
-          </motion.div>
-        </div>
 
-        {/* Grille principale */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Rendez-vous à venir */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
+            {/* Total dépensé */}
+            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-500 text-sm font-medium">Total dépensé</p>
+                    <h3 className="text-3xl font-bold text-gray-900 mt-2">{safeStats.totalSpent}€</h3>
+                    <div className="flex items-center mt-2">
+                      <Star className="w-4 h-4 text-amber-500 mr-1" />
+                      <span className="text-amber-500 text-sm font-medium">Points fidélité</span>
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-purple-600" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Grid - Style Peymen */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Rendez-vous à venir */}
+            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900">Rendez-vous à venir</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Prochains rendez-vous</h2>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setLocation('/salon-search')}
-                    className="text-violet-600 border-violet-600 hover:bg-violet-50"
+                    className="text-blue-600 border-blue-200 hover:bg-blue-50 rounded-xl"
                   >
                     <Calendar className="w-4 h-4 mr-2" />
-                    Nouveau RDV
+                    Réserver
                   </Button>
                 </div>
                 
@@ -268,17 +305,17 @@ export default function ClientDashboard() {
                   {upcomingAppointments.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p>Aucun rendez-vous à venir</p>
+                      <p className="font-medium">Aucun rendez-vous à venir</p>
                       <p className="text-sm">Réservez votre prochain rendez-vous</p>
                     </div>
                   ) : (
                     upcomingAppointments.map((appointment) => (
-                      <div key={appointment.id} className="bg-white rounded-lg p-4 border border-gray-100 shadow-sm">
+                      <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
-                              <CheckCircle className="w-4 h-4 text-green-500" />
-                              <span className="font-medium text-gray-900">{appointment.service?.name}</span>
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <span className="font-semibold text-gray-900">{appointment.service?.name}</span>
                             </div>
                             <div className="space-y-1 text-sm text-gray-600">
                               <div className="flex items-center">
@@ -294,16 +331,16 @@ export default function ClientDashboard() {
                                 {appointment.staff?.firstName} {appointment.staff?.lastName}
                               </div>
                             </div>
-                            <div className="mt-2">
-                              <span className="text-lg font-semibold text-violet-600">{appointment.service?.price}€</span>
+                            <div className="mt-3">
+                              <span className="text-lg font-bold text-blue-600">{appointment.service?.price}€</span>
                             </div>
                           </div>
-                          <div className="flex space-x-2">
+                          <div className="flex space-x-2 ml-4">
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => setLocation(`/booking-edit/${appointment.id}`)}
-                              className="text-gray-600 hover:text-gray-900"
+                              className="text-gray-600 hover:text-gray-900 rounded-xl"
                             >
                               <Edit3 className="w-4 h-4" />
                             </Button>
@@ -311,7 +348,7 @@ export default function ClientDashboard() {
                               variant="outline"
                               size="sm"
                               onClick={() => setSelectedAppointment(appointment)}
-                              className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                              className="text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 rounded-xl"
                             >
                               <X className="w-4 h-4" />
                             </Button>
@@ -323,23 +360,17 @@ export default function ClientDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
 
-          {/* Historique des rendez-vous */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
-            <Card className="glass-card border-0 shadow-lg">
+            {/* Historique des rendez-vous */}
+            <Card className="bg-white rounded-3xl shadow-sm border-0 overflow-hidden">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900">Historique</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Historique</h2>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setLocation('/appointment-history')}
-                    className="text-gray-600 hover:text-gray-900"
+                    className="text-gray-600 hover:text-gray-900 rounded-xl"
                   >
                     Voir tout
                   </Button>
@@ -349,16 +380,16 @@ export default function ClientDashboard() {
                   {pastAppointments.length === 0 ? (
                     <div className="text-center py-8 text-gray-500">
                       <Clock className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p>Aucun rendez-vous passé</p>
+                      <p className="font-medium">Aucun rendez-vous passé</p>
                     </div>
                   ) : (
                     pastAppointments.slice(0, 3).map((appointment) => (
-                      <div key={appointment.id} className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                      <div key={appointment.id} className="bg-gray-50 rounded-2xl p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
-                              <CheckCircle className="w-4 h-4 text-gray-400" />
-                              <span className="font-medium text-gray-700">{appointment.service?.name}</span>
+                              <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                              <span className="font-semibold text-gray-700">{appointment.service?.name}</span>
                             </div>
                             <div className="space-y-1 text-sm text-gray-500">
                               <div className="flex items-center">
@@ -372,9 +403,9 @@ export default function ClientDashboard() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="text-sm font-medium text-gray-700">{appointment.service?.price}€</div>
+                            <div className="text-sm font-semibold text-gray-700">{appointment.service?.price}€</div>
                             {appointment.review ? (
-                              <div className="flex items-center mt-1">
+                              <div className="flex items-center mt-1 justify-end">
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
@@ -391,7 +422,7 @@ export default function ClientDashboard() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setLocation(`/review/${appointment.id}`)}
-                                className="mt-1 text-xs"
+                                className="mt-1 text-xs rounded-xl"
                               >
                                 Laisser un avis
                               </Button>
@@ -404,33 +435,33 @@ export default function ClientDashboard() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Modal d'annulation */}
+      {/* Modal d'annulation - Style Peymen */}
       {selectedAppointment && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full"
+            className="bg-white rounded-3xl p-6 max-w-md w-full shadow-xl"
           >
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <AlertCircle className="w-5 h-5 text-red-600" />
+              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                <AlertCircle className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Annuler le rendez-vous</h3>
+                <h3 className="text-lg font-bold text-gray-900">Annuler le rendez-vous</h3>
                 <p className="text-sm text-gray-600">Cette action est irréversible</p>
               </div>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="bg-gray-50 rounded-2xl p-4 mb-6">
               <div className="text-sm">
-                <div className="font-medium text-gray-900 mb-1">{selectedAppointment.service?.name}</div>
-                <div className="text-gray-600">
+                <div className="font-semibold text-gray-900 mb-1">{selectedAppointment.service?.name}</div>
+                <div className="text-gray-600 mb-1">
                   {format(new Date(selectedAppointment.dateTime), 'EEEE d MMMM yyyy à HH:mm', { locale: fr })}
                 </div>
                 <div className="text-gray-600">{selectedAppointment.salon?.name}</div>
@@ -441,15 +472,14 @@ export default function ClientDashboard() {
               <Button
                 variant="outline"
                 onClick={() => setSelectedAppointment(null)}
-                className="flex-1"
+                className="flex-1 rounded-2xl font-medium"
               >
                 Annuler
               </Button>
               <Button
-                variant="destructive"
                 onClick={() => cancelAppointmentMutation.mutate(selectedAppointment.id)}
                 disabled={cancelAppointmentMutation.isPending}
-                className="flex-1"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-medium"
               >
                 {cancelAppointmentMutation.isPending ? 'Annulation...' : 'Confirmer'}
               </Button>
