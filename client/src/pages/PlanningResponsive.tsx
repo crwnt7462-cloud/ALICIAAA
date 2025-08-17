@@ -50,10 +50,20 @@ const appointmentFormSchema = insertAppointmentSchema.extend({
   notes: insertAppointmentSchema.shape.notes.optional(),
 });
 
-// Configuration des créneaux horaires compacts (9h à 18h)
-const timeSlots = [
-  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
-];
+// Configuration des créneaux horaires étendus (minuit à 23h)
+// Créneaux horaires complets 24h avec demi-heures pour scroll détaillé
+const allTimeSlots = [];
+for (let hour = 0; hour <= 23; hour++) {
+  allTimeSlots.push(`${hour.toString().padStart(2, '0')}:00`);
+  allTimeSlots.push(`${hour.toString().padStart(2, '0')}:30`);
+}
+
+// Créneaux principaux visibles (9h à 19h)
+// Heures principales visibles (toutes les heures entières pour affichage)
+const mainTimeSlots = Array.from({ length: 24 }, (_, i) => {
+  const hour = i.toString().padStart(2, '0');
+  return `${hour}:00`;
+});
 
 const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
@@ -103,31 +113,107 @@ const beautyServices: ServiceType[] = [
   { id: 10, name: "Lissage Brésilien", category: "Coiffure", duration: 180, price: 150, color: "#86EFAC" }
 ];
 
+type EditAppointmentData = {
+  id: string;
+  clientName: string;
+  serviceName: string;
+  startTime: string;
+  endTime: string;
+  price: number;
+  services: ServiceType[];
+  products: any[];
+  totalPrice: number;
+  paymentMethod: string;
+  paymentStatus: string;
+};
+
 export default function PlanningResponsive() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{time: string, day: number, employee?: string} | null>(null);
+  const [isEditAppointmentOpen, setIsEditAppointmentOpen] = useState(false);
+  const [isEmployeePopupOpen, setIsEmployeePopupOpen] = useState(false);
+  const [isTimeSlotMenuOpen, setIsTimeSlotMenuOpen] = useState(false);
+  const [selectedEmployeeForPopup, setSelectedEmployeeForPopup] = useState<Employee | null>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{time: string, date: Date, dayIndex: number} | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<EditAppointmentData | null>(null);
+  const [blockFormData, setBlockFormData] = useState<{
+    date: string;
+    startTime: string;
+    reason: string;
+    duration: number;
+    employeeId: string;
+  } | null>(null);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [timeScrollContainer, setTimeScrollContainer] = useState<HTMLDivElement | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Utilisation des données simulées pour le planning beauté
-  // const { data: appointments = [] } = useQuery({
-  //   queryKey: ["/api/appointments"],
-  // });
+  // Données simulées pour le planning beauté avec rendez-vous réalistes
+  const simulatedAppointments = [
+    {
+      id: "1",
+      clientName: "Marie Dupont",
+      serviceName: "Coupe + Brushing",
+      employee: "1",
+      startTime: "10:00",
+      endTime: "11:00",
+      date: new Date(),
+      status: "confirmed",
+      price: 65,
+      services: [beautyServices[0]],
+      products: [],
+      totalPrice: 65,
+      paymentMethod: "card",
+      paymentStatus: "paid"
+    },
+    {
+      id: "2",
+      clientName: "Sophie Martin",
+      serviceName: "Manucure",
+      employee: "2",
+      startTime: "14:00",
+      endTime: "14:45",
+      date: new Date(),
+      status: "scheduled",
+      price: 35,
+      services: [beautyServices[3]],
+      products: [],
+      totalPrice: 35,
+      paymentMethod: "cash",
+      paymentStatus: "pending"
+    },
+    {
+      id: "3",
+      clientName: "Julie Bernard",
+      serviceName: "Soin Visage",
+      employee: "3",
+      startTime: "16:00",
+      endTime: "17:30",
+      date: new Date(),
+      status: "confirmed",
+      price: 80,
+      services: [beautyServices[6]],
+      products: [],
+      totalPrice: 80,
+      paymentMethod: "card",
+      paymentStatus: "partial"
+    }
+  ];
 
-  // const { data: clients = [] } = useQuery({
-  //   queryKey: ["/api/clients"],
-  // });
-
-  // const { data: services = [] } = useQuery({
-  //   queryKey: ["/api/services"],
-  // });
+  // Initialiser le scroll sur les heures principales
+  const initializeTimeScroll = () => {
+    if (timeScrollContainer) {
+      const targetTime = "09:00";
+      const targetIndex = allTimeSlots.indexOf(targetTime);
+      const scrollPosition = targetIndex * 60; // 60px par heure
+      timeScrollContainer.scrollTop = scrollPosition;
+    }
+  };
 
   const createMutation = useMutation({
     mutationFn: (data: InsertAppointmentForm) => 
@@ -150,6 +236,95 @@ export default function PlanningResponsive() {
       });
     },
   });
+
+  const handleAppointmentClick = (appointment: any) => {
+    setSelectedAppointment({
+      id: appointment.id,
+      clientName: appointment.clientName,
+      serviceName: appointment.serviceName,
+      startTime: appointment.startTime,
+      endTime: appointment.endTime,
+      price: appointment.price,
+      services: appointment.services,
+      products: appointment.products || [],
+      totalPrice: appointment.totalPrice,
+      paymentMethod: appointment.paymentMethod,
+      paymentStatus: appointment.paymentStatus
+    });
+    setIsEditAppointmentOpen(true);
+  };
+
+  const addServiceToAppointment = (service: ServiceType) => {
+    if (!selectedAppointment) return;
+    
+    const updatedServices = [...selectedAppointment.services, service];
+    const newTotal = updatedServices.reduce((sum, s) => sum + s.price, 0);
+    
+    setSelectedAppointment({
+      ...selectedAppointment,
+      services: updatedServices,
+      totalPrice: newTotal
+    });
+  };
+
+  const removeServiceFromAppointment = (serviceId: number) => {
+    if (!selectedAppointment) return;
+    
+    const updatedServices = selectedAppointment.services.filter(s => s.id !== serviceId);
+    const newTotal = updatedServices.reduce((sum, s) => sum + s.price, 0);
+    
+    setSelectedAppointment({
+      ...selectedAppointment,
+      services: updatedServices,
+      totalPrice: newTotal
+    });
+  };
+
+  const updatePaymentMethod = (method: string) => {
+    if (!selectedAppointment) return;
+    
+    setSelectedAppointment({
+      ...selectedAppointment,
+      paymentMethod: method
+    });
+  };
+
+  const handleEmployeeClick = (employee: Employee) => {
+    setSelectedEmployeeForPopup(employee);
+    setIsEmployeePopupOpen(true);
+  };
+
+  // Navigation depuis la vue mensuelle vers la vue hebdomadaire
+  const navigateToWeekFromDate = (selectedDate: Date) => {
+    // Calculer l'offset de semaine basé sur la date sélectionnée
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const startOfSelectedDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    
+    // Trouver le lundi de la semaine de la date sélectionnée
+    const dayOfWeek = selectedDate.getDay();
+    const mondayOfSelectedWeek = new Date(selectedDate);
+    mondayOfSelectedWeek.setDate(selectedDate.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    
+    // Trouver le lundi de la semaine actuelle
+    const todayDayOfWeek = today.getDay();
+    const mondayOfCurrentWeek = new Date(today);
+    mondayOfCurrentWeek.setDate(today.getDate() - (todayDayOfWeek === 0 ? 6 : todayDayOfWeek - 1));
+    
+    // Calculer la différence en semaines
+    const diffInMs = mondayOfSelectedWeek.getTime() - mondayOfCurrentWeek.getTime();
+    const diffInWeeks = Math.floor(diffInMs / (1000 * 60 * 60 * 24 * 7));
+    
+    // Changer vers la vue hebdomadaire avec le bon offset
+    setCurrentWeekOffset(diffInWeeks);
+    setViewMode('week');
+  };
+
+  // Navigation vers la semaine actuelle (bouton "Aujourd'hui")
+  const goToToday = () => {
+    setCurrentWeekOffset(0);
+    setViewMode('week');
+  };
 
   const form = useForm<InsertAppointmentForm>({
     resolver: zodResolver(appointmentFormSchema),
@@ -366,29 +541,50 @@ export default function PlanningResponsive() {
     return Math.max(duration / 60 * 32, 24); // 32px par heure, minimum 24px pour lisibilité mobile
   };
 
-  // Fonction pour gérer le clic sur un créneau vide
-  const handleTimeSlotClick = (timeSlot: string, dayIndex: number, employeeId?: string) => {
-    const appointmentDate = viewMode === 'week' 
-      ? currentWeek[dayIndex]?.toISOString().split('T')[0]
-      : new Date().toISOString().split('T')[0];
+  // Fonction pour gérer le clic sur un créneau vide - menu contextuel
+  const handleTimeSlotClick = (timeSlot: string, dayIndex: number, selectedDate: Date) => {
+    setSelectedTimeSlot({
+      time: timeSlot,
+      date: selectedDate,
+      dayIndex: dayIndex
+    });
+    setIsTimeSlotMenuOpen(true);
+  };
+
+  const handleCreateAppointment = () => {
+    if (!selectedTimeSlot) return;
+    
+    const appointmentDate = selectedTimeSlot.date.toISOString().split('T')[0];
     
     // Pré-remplir le formulaire avec les informations du créneau sélectionné
     quickForm.reset({
-      appointmentDate: appointmentDate || "",
-      startTime: timeSlot,
-      endTime: calculateEndTime(timeSlot, 60), // Durée par défaut de 60min
+      appointmentDate: appointmentDate,
+      startTime: selectedTimeSlot.time,
+      endTime: calculateEndTime(selectedTimeSlot.time, 60), // Durée par défaut de 60min
       notes: "",
       clientId: 0,
       serviceId: 0,
-      employeeId: employeeId || ""
+      employeeId: ""
     });
     
-    setSelectedTimeSlot({
-      time: timeSlot,
-      day: dayIndex,
-      employee: employeeId
-    });
+    setIsTimeSlotMenuOpen(false);
     setIsAppointmentDialogOpen(true);
+  };
+
+  const handleCreateBlock = () => {
+    if (!selectedTimeSlot) return;
+    
+    const dateString = selectedTimeSlot.date.toISOString().split('T')[0];
+    setBlockFormData({
+      date: dateString,
+      startTime: selectedTimeSlot.time,
+      reason: '',
+      duration: 60, // 1 heure par défaut
+      employeeId: 'all'
+    });
+    
+    setIsTimeSlotMenuOpen(false);
+    setIsBlockDialogOpen(true);
   };
 
   // Fonction pour calculer l'heure de fin
@@ -777,93 +973,145 @@ export default function PlanningResponsive() {
             </>
           ) : viewMode === 'week' ? (
             <>
-              {/* En-tête des jours - Vue hebdomadaire */}
-              <div className="grid grid-cols-8 border-b border-gray-200">
-                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="h-4 w-4" />
-                    <span>Heures</span>
+              {/* En-tête avec employé + heures + jours - Vue hebdomadaire responsive */}
+              <div className="grid grid-cols-9 lg:grid-cols-10 border-b border-gray-200 text-xs">
+                {/* Colonne employé */}
+                <div className="p-1 text-xs font-medium text-gray-500 border-r border-gray-200 w-12 lg:w-16">
+                  <div className="flex items-center justify-center">
+                    <User className="h-3 w-3" />
                   </div>
                 </div>
+                {/* Colonne heures */}
+                <div className="p-1 text-xs font-medium text-gray-500 border-r border-gray-200 w-8 lg:w-10">
+                  <div className="flex items-center justify-center">
+                    <Clock className="h-3 w-3" />
+                  </div>
+                </div>
+                {/* Colonnes des jours */}
                 {currentWeek.map((date, index) => {
                   const isToday = date.toDateString() === new Date().toDateString();
                   return (
-                    <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-50' : ''}`}>
-                      <div className="text-sm font-medium text-gray-500">
-                        {weekDays[date.getDay()]} {date.getDate()}
+                    <div key={index} className={`p-1 text-center border-r border-gray-200 last:border-r-0 min-w-0 ${isToday ? 'bg-purple-50' : ''}`}>
+                      <div className="text-xs font-medium text-gray-700 truncate">
+                        {weekDays[date.getDay()]}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {date.getDate()}
                       </div>
                       {isToday && (
-                        <Badge variant="secondary" className="mt-1 text-xs bg-purple-100 text-purple-700">
-                          Aujourd'hui
-                        </Badge>
+                        <div 
+                          className="w-2 h-2 bg-purple-500 rounded-full mx-auto mt-1 cursor-pointer hover:bg-purple-600" 
+                          onClick={() => goToToday()}
+                          title="Aller à la semaine actuelle"
+                        ></div>
                       )}
                     </div>
                   );
                 })}
               </div>
 
-              {/* Grille horaire - Vue hebdomadaire */}
-              <div className="relative max-h-96 lg:max-h-[500px] overflow-y-auto">
-                <div className="grid grid-cols-8">
-                  {/* Colonne des heures */}
-                  <div className="border-r border-gray-200 w-12 lg:w-16">
-                    {timeSlots.map((slot, index) => (
-                      <div key={index} className="h-8 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
-                        {slot}
+              {/* Grille horaire - Vue hebdomadaire avec scroll 24h complet */}
+              <div 
+                ref={setTimeScrollContainer}
+                className="relative max-h-[500px] lg:max-h-[600px] overflow-y-auto scroll-smooth"
+                style={{ scrollBehavior: 'smooth' }}
+              >
+                <div className="grid grid-cols-9 lg:grid-cols-10">
+                  {/* Colonne employé - affichage compact avec noms complets */}
+                  <div className="border-r border-gray-200 w-12 lg:w-16 sticky left-0 bg-white z-20">
+                    {employees.map((employee, empIndex) => (
+                      <div key={empIndex} className="relative">
+                        {/* Affichage employé sur plusieurs créneaux pour visibilité */}
+                        <div 
+                          className="sticky top-0 bg-white border-b border-gray-200 p-1 z-30"
+                          style={{ height: `${Math.ceil(allTimeSlots.length / employees.length) * 20}px` }}
+                        >
+                          <button
+                            onClick={() => handleEmployeeClick(employee)}
+                            className="w-full h-full flex flex-col items-center justify-center hover:bg-gray-50 rounded transition-colors"
+                          >
+                            <div 
+                              className="w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-xs font-bold text-white mb-1"
+                              style={{ backgroundColor: employee.color }}
+                            >
+                              {employee.avatar}
+                            </div>
+                            <span className="text-xs font-medium text-gray-700 truncate max-w-full leading-tight">
+                              {employee.name.split(' ')[0]}
+                            </span>
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Colonne des heures - largeur réduite */}
+                  <div className="border-r border-gray-200 w-8 lg:w-10 sticky left-12 lg:left-16 bg-white z-19">
+                    {allTimeSlots.map((slot, index) => {
+                      const isMainHour = mainTimeSlots.includes(slot);
+                      return (
+                        <div 
+                          key={index} 
+                          className={`flex items-center justify-center text-xs border-b border-gray-100 font-medium ${
+                            isMainHour 
+                              ? 'text-gray-800 bg-gray-50 h-6 lg:h-8' 
+                              : 'text-gray-400 h-4 lg:h-5'
+                          }`}
+                        >
+                          {isMainHour ? slot : slot.endsWith(':30') ? '30' : ''}
+                        </div>
+                      );
+                    })}
+                  </div>
 
-                  {/* Colonnes des jours */}
+                  {/* Colonnes des jours - hauteurs réduites et responsive */}
                   {currentWeek.map((date, dayIndex) => (
                     <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
-                      {timeSlots.map((slot, slotIndex) => (
-                        <div
-                          key={slotIndex}
-                          className="h-8 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150"
-                          onClick={() => handleTimeSlotClick(slot, dayIndex)}
-                          title={`Créer un rendez-vous à ${slot} le ${date.toLocaleDateString('fr-FR')}`}
-                        />
-                      ))}
+                      {allTimeSlots.map((slot, slotIndex) => {
+                        const isMainHour = mainTimeSlots.includes(slot);
+                        return (
+                          <div
+                            key={slotIndex}
+                            className={`border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150 ${
+                              isMainHour ? 'h-6 lg:h-8 bg-white' : 'h-4 lg:h-5 bg-gray-50/30'
+                            }`}
+                            onClick={() => handleTimeSlotClick(slot, dayIndex, date)}
+                            title={`Créer un rendez-vous à ${slot} le ${date.toLocaleDateString('fr-FR')}`}
+                          />
+                        );
+                      })}
                       
-                      {/* Événements pour ce jour */}
-                      {filteredEvents
-                        .filter(event => event.day === dayIndex)
-                        .map((event) => {
-                          const employee = getEmployee(event.employeeId);
-                          const isBlocked = event.isBlock;
-                          const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                      {/* Événements simulés pour ce jour - meilleure lisibilité */}
+                      {simulatedAppointments
+                        .filter(appointment => {
+                          const appointmentDate = new Date(appointment.date);
+                          return appointmentDate.toDateString() === date.toDateString();
+                        })
+                        .map((appointment) => {
+                          const employee = employees.find(e => e.id === appointment.employee);
                           
                           return (
                             <div
-                              key={event.id}
-                              className={`absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-sm z-10 border ${
-                                isBlocked 
-                                  ? 'bg-red-100 border-red-300 text-red-800' 
-                                  : 'border-gray-200'
-                              }`}
+                              key={appointment.id}
+                              className="absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-lg z-10 border cursor-pointer hover:shadow-xl transition-all bg-white border-gray-300 hover:border-gray-400"
                               style={{
-                                top: `${getEventPosition(event.time)}px`,
-                                height: `${getEventHeight(event.time)}px`,
-                                minHeight: '25px',
-                                backgroundColor: isBlocked ? '#FEE2E2' : serviceColor
+                                top: `${getEventPositionExtended(appointment.startTime)}px`,
+                                height: `${getEventHeightExtended(appointment.startTime, appointment.endTime)}px`,
+                                minHeight: '30px',
+                                borderLeftColor: employee?.color || '#6B7280',
+                                borderLeftWidth: '4px'
                               }}
+                              onClick={() => handleAppointmentClick(appointment)}
                             >
                               <div className="flex items-center justify-between mb-1">
-                                <div className="truncate font-semibold text-gray-800">{event.title}</div>
-                                {event.status === 'confirmed' && !isBlocked && (
-                                  <div className="w-1.5 h-1.5 bg-green-600 rounded-full flex-shrink-0"></div>
+                                <div className="truncate font-bold text-gray-900 text-xs">{appointment.serviceName}</div>
+                                {appointment.status === 'confirmed' && (
+                                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-green-600 rounded-full flex-shrink-0"></div>
                                 )}
                               </div>
-                              {!isBlocked && (
-                                <div className="truncate text-gray-700 text-xs">{event.client}</div>
-                              )}
-                              <div className="text-xs text-gray-600 truncate">{event.time}</div>
-                              {employee && selectedEmployee === "all" && (
-                                <div className="text-xs mt-1 font-medium text-gray-700">
-                                  {employee.name}
-                                </div>
-                              )}
+                              <div className="truncate text-gray-800 text-xs font-medium">{appointment.clientName}</div>
+                              <div className="text-xs text-gray-700 truncate font-medium">{appointment.startTime} - {appointment.endTime}</div>
+                              <div className="text-xs font-bold" style={{ color: employee?.color || '#6B7280' }}>{appointment.price}€</div>
                             </div>
                           );
                         })}
@@ -899,6 +1147,7 @@ export default function PlanningResponsive() {
                       className={`min-h-[80px] lg:min-h-[100px] p-1 lg:p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
                         !isCurrentMonth ? 'bg-gray-50/50 text-gray-400' : ''
                       } ${isToday ? 'bg-purple-50' : ''}`}
+                      onClick={() => navigateToWeekFromDate(date)}
                     >
                       <div className="flex items-center justify-between mb-2">
                         <span className={`text-sm font-medium ${isToday ? 'text-purple-600' : ''}`}>
@@ -974,6 +1223,95 @@ export default function PlanningResponsive() {
             ))}
           </div>
         </motion.div>
+
+        {/* Popup employé - comme dans l'image */}
+        <Dialog open={isEmployeePopupOpen} onOpenChange={setIsEmployeePopupOpen}>
+          <DialogContent className="max-w-sm p-0 bg-white/95 backdrop-blur-sm border-gray-200">
+            {selectedEmployeeForPopup && (
+              <div className="space-y-4">
+                {/* En-tête avec profil employé */}
+                <div className="flex items-center space-x-3 p-4 border-b border-gray-200">
+                  <div 
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+                    style={{ backgroundColor: selectedEmployeeForPopup.color }}
+                  >
+                    {selectedEmployeeForPopup.avatar}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">{selectedEmployeeForPopup.name}</h3>
+                    <p className="text-sm text-gray-500">{selectedEmployeeForPopup.specialties.join(', ')}</p>
+                  </div>
+                </div>
+
+                {/* Options de vue */}
+                <div className="px-4 space-y-3">
+                  <button 
+                    onClick={() => {
+                      setViewMode('day');
+                      setIsEmployeePopupOpen(false);
+                    }}
+                    className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <CalendarDays className="h-5 w-5 text-gray-600" />
+                    <span className="text-gray-700">Vue par jour</span>
+                  </button>
+                  
+                  <button className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                    <CalendarDays className="h-5 w-5 text-gray-600" />
+                    <span className="text-gray-700">Affichage sur 3 jours</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      setViewMode('week');
+                      setIsEmployeePopupOpen(false);
+                    }}
+                    className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <CalendarDays className="h-5 w-5 text-gray-600" />
+                    <span className="text-gray-700">Vue par semaine</span>
+                  </button>
+                  
+                  <button 
+                    onClick={() => {
+                      setViewMode('month');
+                      setIsEmployeePopupOpen(false);
+                    }}
+                    className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left"
+                  >
+                    <CalendarDays className="h-5 w-5 text-gray-600" />
+                    <span className="text-gray-700">Affichage du mois</span>
+                  </button>
+                </div>
+
+                {/* Actions */}
+                <div className="px-4 pb-4 space-y-2 border-t border-gray-200 pt-4">
+                  <h4 className="font-medium text-gray-900 text-sm mb-3">Actions</h4>
+                  
+                  <button className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                    <Plus className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-700 text-sm">Ajouter un rendez-vous</span>
+                  </button>
+                  
+                  <button className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                    <X className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-700 text-sm">Ajouter un créneau bloqué</span>
+                  </button>
+                  
+                  <button className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                    <Clock className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-700 text-sm">Ajouter des congés</span>
+                  </button>
+                  
+                  <button className="flex items-center space-x-3 w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left">
+                    <User className="h-4 w-4 text-gray-600" />
+                    <span className="text-gray-700 text-sm">Afficher le membre de l'équipe</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Dialog pour créer un RDV */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -1265,7 +1603,40 @@ export default function PlanningResponsive() {
           </DialogContent>
         </Dialog>
 
-        {/* Dialog pour bloquer un créneau */}
+        {/* Menu contextuel pour créneaux */}
+        <Dialog open={isTimeSlotMenuOpen} onOpenChange={setIsTimeSlotMenuOpen}>
+          <DialogContent className="max-w-sm p-4">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <Clock className="h-5 w-5 mr-2" />
+                Action sur le créneau
+              </DialogTitle>
+              {selectedTimeSlot && (
+                <p className="text-sm text-gray-600">
+                  {selectedTimeSlot.time} - {selectedTimeSlot.date.toLocaleDateString('fr-FR')}
+                </p>
+              )}
+            </DialogHeader>
+            <div className="space-y-3">
+              <Button
+                onClick={handleCreateAppointment}
+                className="w-full justify-start bg-purple-600 hover:bg-purple-700"
+              >
+                <Scissors className="h-4 w-4 mr-2" />
+                Créer un rendez-vous
+              </Button>
+              <Button
+                onClick={handleCreateBlock}
+                className="w-full justify-start bg-red-600 hover:bg-red-700"
+              >
+                <X className="h-4 w-4 mr-2" />
+                Bloquer ce créneau
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog pour bloquer un créneau - amélioré */}
         <Dialog open={isBlockDialogOpen} onOpenChange={setIsBlockDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
@@ -1274,60 +1645,216 @@ export default function PlanningResponsive() {
                 Bloquer un créneau
               </DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Motif du blocage</label>
-                <Input placeholder="Ex: Pause déjeuner, Formation..." className="mt-1" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Date</label>
-                  <Input type="date" className="mt-1" />
+            {blockFormData && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm font-medium">Créneau sélectionné</p>
+                  <p className="text-sm text-gray-600">
+                    {blockFormData.startTime} - {new Date(blockFormData.date).toLocaleDateString('fr-FR')}
+                  </p>
                 </div>
+                
                 <div>
-                  <label className="text-sm font-medium">Durée</label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Durée" />
+                  <label className="text-sm font-medium">Motif du blocage</label>
+                  <Input 
+                    placeholder="Ex: Pause déjeuner, Formation..." 
+                    className="mt-1" 
+                    value={blockFormData.reason}
+                    onChange={(e) => setBlockFormData({...blockFormData, reason: e.target.value})}
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Durée (minutes)</label>
+                  <Select 
+                    value={blockFormData.duration.toString()}
+                    onValueChange={(value) => setBlockFormData({...blockFormData, duration: parseInt(value)})}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="15">15 min</SelectItem>
                       <SelectItem value="30">30 min</SelectItem>
+                      <SelectItem value="45">45 min</SelectItem>
                       <SelectItem value="60">1 heure</SelectItem>
+                      <SelectItem value="90">1h30</SelectItem>
                       <SelectItem value="120">2 heures</SelectItem>
                       <SelectItem value="240">4 heures</SelectItem>
                       <SelectItem value="480">Journée complète</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+                
+                <div>
+                  <label className="text-sm font-medium">Employé(s) concerné(s)</label>
+                  <Select 
+                    value={blockFormData.employeeId}
+                    onValueChange={(value) => setBlockFormData({...blockFormData, employeeId: value})}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toute l'équipe</SelectItem>
+                      {employees.map((employee) => (
+                        <SelectItem key={employee.id} value={employee.id}>
+                          {employee.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex justify-end space-x-2 pt-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setIsBlockDialogOpen(false);
+                      setBlockFormData(null);
+                    }}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    className="bg-red-600 hover:bg-red-700"
+                    onClick={() => {
+                      // Ici on pourrait ajouter la logique de sauvegarde du blocage
+                      toast({
+                        title: "Créneau bloqué",
+                        description: `Créneau bloqué: ${blockFormData.reason || 'Sans motif'} (${blockFormData.duration}min)`,
+                      });
+                      setIsBlockDialogOpen(false);
+                      setBlockFormData(null);
+                    }}
+                  >
+                    Bloquer créneau
+                  </Button>
+                </div>
               </div>
-              <div>
-                <label className="text-sm font-medium">Employé(s) concerné(s)</label>
-                <Select>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Sélectionner" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Toute l'équipe</SelectItem>
-                    {employees.map((employee) => (
-                      <SelectItem key={employee.id} value={employee.id}>
-                        {employee.name}
-                      </SelectItem>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog d'édition de rendez-vous avec panier et paiement */}
+        <Dialog open={isEditAppointmentOpen} onOpenChange={setIsEditAppointmentOpen}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <Scissors className="h-5 w-5 mr-2" />
+                Éditer le rendez-vous
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedAppointment && (
+              <div className="space-y-6">
+                {/* Informations client */}
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-2">Client</h3>
+                  <p className="text-lg font-medium">{selectedAppointment.clientName}</p>
+                  <p className="text-sm text-gray-600">{selectedAppointment.startTime} - {selectedAppointment.endTime}</p>
+                </div>
+
+                {/* Services actuels */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3">Services sélectionnés</h3>
+                  <div className="space-y-2">
+                    {selectedAppointment.services.map((service) => (
+                      <div key={service.id} className="flex items-center justify-between bg-white p-3 rounded-lg border">
+                        <div>
+                          <div className="font-medium">{service.name}</div>
+                          <div className="text-sm text-gray-600">{service.duration} min</div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-semibold">{service.price}€</span>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => removeServiceFromAppointment(service.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </div>
+                </div>
+
+                {/* Ajouter des services */}
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3">Ajouter des services</h3>
+                  <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                    {beautyServices.map((service) => (
+                      <Button
+                        key={service.id}
+                        size="sm"
+                        variant="outline"
+                        onClick={() => addServiceToAppointment(service)}
+                        className="justify-start p-2 h-auto"
+                      >
+                        <div className="text-left">
+                          <div className="font-medium text-xs">{service.name}</div>
+                          <div className="text-xs text-gray-600">{service.duration}min - {service.price}€</div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Total et paiement */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-lg font-semibold">Total</span>
+                    <span className="text-xl font-bold text-purple-600">{selectedAppointment.totalPrice}€</span>
+                  </div>
+
+                  {/* Méthode de paiement */}
+                  <div className="mb-4">
+                    <label className="text-sm font-medium mb-2 block">Méthode de paiement</label>
+                    <Select value={selectedAppointment.paymentMethod} onValueChange={updatePaymentMethod}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="card">Carte bancaire</SelectItem>
+                        <SelectItem value="cash">Espèces</SelectItem>
+                        <SelectItem value="check">Chèque</SelectItem>
+                        <SelectItem value="transfer">Virement</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Statut de paiement */}
+                  <div className="flex items-center space-x-2 mb-4">
+                    <span className="text-sm font-medium">Statut:</span>
+                    <Badge 
+                      variant={selectedAppointment.paymentStatus === 'paid' ? 'default' : 
+                               selectedAppointment.paymentStatus === 'partial' ? 'secondary' : 'outline'}
+                    >
+                      {selectedAppointment.paymentStatus === 'paid' ? 'Payé' :
+                       selectedAppointment.paymentStatus === 'partial' ? 'Acompte versé' : 'En attente'}
+                    </Badge>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsEditAppointmentOpen(false)}
+                  >
+                    Fermer
+                  </Button>
+                  <Button className="bg-purple-600 hover:bg-purple-700">
+                    Enregistrer les modifications
+                  </Button>
+                  <Button className="bg-green-600 hover:bg-green-700">
+                    Encaisser
+                  </Button>
+                </div>
               </div>
-              <div className="flex justify-end space-x-2 pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsBlockDialogOpen(false)}
-                >
-                  Annuler
-                </Button>
-                <Button className="bg-red-600 hover:bg-red-700">
-                  Bloquer créneau
-                </Button>
-              </div>
-            </div>
+            )}
           </DialogContent>
         </Dialog>
       </div>
