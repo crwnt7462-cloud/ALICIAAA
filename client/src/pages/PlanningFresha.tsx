@@ -369,6 +369,10 @@ export default function PlanningFresha() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hoveredAppointment, setHoveredAppointment] = useState<{ id: string; x: number; y: number } | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarDate, setCalendarDate] = useState(() => {
+    const now = new Date();
+    return { year: now.getFullYear(), month: now.getMonth() };
+  });
 
   // Calcul des dates de la semaine courante
   const currentWeek = useMemo(() => {
@@ -391,6 +395,53 @@ export default function PlanningFresha() {
 
   const goToToday = () => {
     setCurrentWeekOffset(0);
+  };
+
+  // Navigation du calendrier
+  const navigateCalendar = (direction: 'prev' | 'next') => {
+    setCalendarDate(prev => {
+      const newMonth = direction === 'next' ? prev.month + 1 : prev.month - 1;
+      if (newMonth > 11) {
+        return { year: prev.year + 1, month: 0 };
+      } else if (newMonth < 0) {
+        return { year: prev.year - 1, month: 11 };
+      }
+      return { ...prev, month: newMonth };
+    });
+  };
+
+  const navigateMonthInCalendar = (monthOffset: number, direction: 'prev' | 'next') => {
+    setCalendarDate(prev => {
+      const targetMonth = prev.month + monthOffset;
+      const newMonth = direction === 'next' ? targetMonth + 1 : targetMonth - 1;
+      let finalMonth = newMonth;
+      let finalYear = prev.year;
+      
+      if (finalMonth > 11) {
+        finalYear += Math.floor(finalMonth / 12);
+        finalMonth = finalMonth % 12;
+      } else if (finalMonth < 0) {
+        finalYear += Math.floor(finalMonth / 12);
+        finalMonth = ((finalMonth % 12) + 12) % 12;
+      }
+      
+      return { year: finalYear, month: finalMonth };
+    });
+  };
+
+  // Fonctions utilitaires de formatage
+  const formatMonthYear = (year: number, month: number) => {
+    const monthNames = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    return `${monthNames[month]} ${year}`;
+  };
+
+  const formatWeekRangeFromDate = (year: number, month: number) => {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    return `${firstDay.getDate()} ${formatMonthYear(year, month).split(' ')[0].toLowerCase()} – ${lastDay.getDate()} ${formatMonthYear(year, month + 1).split(' ')[0].toLowerCase()}, ${year}`;
   };
 
   // Fonction pour gérer le clic sur un créneau
@@ -912,13 +963,17 @@ export default function PlanningFresha() {
             {/* Header du calendrier */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset - 4)}>
+                <Button variant="ghost" size="sm" onClick={() => navigateCalendar('prev')}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 <span className="text-lg font-medium">
-                  {formatWeekRange()}
+                  {formatMonthYear(calendarDate.year, calendarDate.month)} – {
+                    calendarDate.month === 11 
+                      ? formatMonthYear(calendarDate.year + 1, 0)
+                      : formatMonthYear(calendarDate.year, calendarDate.month + 1)
+                  }
                 </span>
-                <Button variant="ghost" size="sm" onClick={() => setCurrentWeekOffset(currentWeekOffset + 4)}>
+                <Button variant="ghost" size="sm" onClick={() => navigateCalendar('next')}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -930,18 +985,18 @@ export default function PlanningFresha() {
             {/* Calendrier double mois */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
               {[0, 1].map((monthOffset) => {
-                const currentDate = new Date();
-                currentDate.setMonth(currentDate.getMonth() + monthOffset);
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
+                const year = calendarDate.year;
+                const month = (calendarDate.month + monthOffset) % 12;
+                const yearAdjustment = Math.floor((calendarDate.month + monthOffset) / 12);
+                const adjustedYear = year + yearAdjustment;
                 
                 const monthNames = [
                   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
                   'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
                 ];
 
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
+                const firstDay = new Date(adjustedYear, month, 1);
+                const lastDay = new Date(adjustedYear, month + 1, 0);
                 const daysInMonth = lastDay.getDate();
                 const startingDayOfWeek = (firstDay.getDay() + 6) % 7; // Lundi = 0
 
@@ -958,13 +1013,13 @@ export default function PlanningFresha() {
                 return (
                   <div key={monthOffset} className="text-center">
                     <div className="flex items-center justify-between mb-4">
-                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                      <Button variant="ghost" size="sm" onClick={() => navigateMonthInCalendar(monthOffset, 'prev')}>
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
                       <h3 className="text-lg font-semibold">
-                        {monthNames[month]} {year}
+                        {monthNames[month]} {adjustedYear}
                       </h3>
-                      <Button variant="ghost" size="sm" onClick={() => {}}>
+                      <Button variant="ghost" size="sm" onClick={() => navigateMonthInCalendar(monthOffset, 'next')}>
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </div>
@@ -987,7 +1042,7 @@ export default function PlanningFresha() {
 
                         const currentWeekStart = currentWeek[0];
                         const currentWeekEnd = currentWeek[6];
-                        const dayDate = new Date(year, month, day);
+                        const dayDate = new Date(adjustedYear, month, day);
                         
                         const isCurrentWeekStart = currentWeekStart && dayDate.toDateString() === currentWeekStart.toDateString();
                         const isCurrentWeekEnd = currentWeekEnd && dayDate.toDateString() === currentWeekEnd.toDateString();
@@ -1009,7 +1064,7 @@ export default function PlanningFresha() {
                             `}
                             onClick={() => {
                               // Calculer l'offset de semaine pour naviguer vers cette date
-                              const selectedDate = new Date(year, month, day);
+                              const selectedDate = new Date(adjustedYear, month, day);
                               const today = new Date();
                               
                               // Trouver le lundi de la semaine sélectionnée
