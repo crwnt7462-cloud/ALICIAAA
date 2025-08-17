@@ -115,7 +115,7 @@ export default function ClientDashboard() {
           <div className="px-6 py-8">
             <div className="flex items-center justify-center">
               <img 
-                src="/attached_assets/Logo avyento._1755467984886.png" 
+                src="@assets/Logo avyento._1755467984886.png" 
                 alt="Avyento" 
                 className="h-[95px] w-auto object-contain"
               />
@@ -252,19 +252,19 @@ export default function ClientDashboard() {
 
       {/* Main Content - Glassmorphism scrollable */}
       <div className="flex-1 lg:ml-60 min-h-screen overflow-y-auto pb-20 lg:pb-8">
-        <div className="p-4 lg:p-8 max-w-7xl mx-auto">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
           {/* Header - Glassmorphism */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 space-y-4 lg:space-y-0">
-            <div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">
+            <div className="flex-1 min-w-0">
               <p className="text-gray-600 text-sm mb-1">Bonjour {clientData.firstName || 'Client'},</p>
-              <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent truncate">
                 Bienvenue sur votre espace
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 flex-shrink-0">
               <button
                 onClick={() => setLocation('/salon-search')}
-                className="px-6 py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105"
+                className="px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105 text-sm sm:text-base whitespace-nowrap"
                 style={{
                   background: 'rgba(139, 92, 246, 0.2)',
                   backdropFilter: 'blur(20px) saturate(180%)',
@@ -278,14 +278,14 @@ export default function ClientDashboard() {
             </div>
           </div>
 
-          {/* Cards - Style Peymen exact */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Cards - Glassmorphism responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
             {/* Total RDV */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="rounded-3xl p-6 overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden"
               style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.4)',
@@ -320,7 +320,7 @@ export default function ClientDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="rounded-3xl p-6 overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden"
               style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.4)',
@@ -354,7 +354,7 @@ export default function ClientDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="rounded-3xl p-6 overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden"
               style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.4)',
@@ -384,14 +384,14 @@ export default function ClientDashboard() {
             </motion.div>
           </div>
 
-          {/* Charts Grid - Style Peymen */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Charts Grid - Responsive */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
             {/* Rendez-vous à venir */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="rounded-3xl p-6 overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden"
               style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.4)',
@@ -487,7 +487,7 @@ export default function ClientDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="rounded-3xl p-6 overflow-hidden"
+              className="rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden"
               style={{
                 backdropFilter: 'blur(20px) saturate(180%)',
                 background: 'rgba(255, 255, 255, 0.4)',
