@@ -16,6 +16,7 @@ import {
   Navigation,
   Sparkles
 } from "lucide-react";
+import { motion } from "framer-motion";
 import avyentoLogo from "@assets/3_1753714421825.png";
 
 // Fonction pour obtenir la classe de couleur spécifique à chaque salon
@@ -155,25 +156,39 @@ export default function SalonSearch() {
     : salons.filter(salon => salon.category === activeFilter);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Layout ultra-minimaliste selon screenshot IMG_1258 */}
-      <div className="relative">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
+    >
+      <div className="max-w-md mx-auto lg:max-w-6xl space-y-8 lg:space-y-16">
         
         {/* Bouton retour en haut à gauche */}
-        <button
+        <motion.button
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
           onClick={() => window.history.back()}
-          className="absolute left-4 top-4 z-10 p-2"
+          className="absolute left-4 top-4 z-10 p-2 rounded-2xl backdrop-blur-sm bg-white/20 border border-white/30"
         >
           <ArrowLeft className="h-5 w-5 text-gray-700" />
-        </button>
+        </motion.button>
 
         {/* Container principal centré */}
-        <div className="px-6 pt-20 pb-8">
-          <div className="max-w-sm mx-auto">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="px-6 pt-20 pb-8"
+        >
+          <div className="max-w-sm mx-auto text-center space-y-6">
             
-            {/* Logo Avyento centré */}
+            {/* Titre Avyento */}
             <div className="text-center mb-8">
-              <img src={avyentoLogo} alt="Avyento" className="h-28 w-auto mx-auto" />
+              <span className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Avyento
+              </span>
             </div>
 
             {/* Titre en gris */}
@@ -270,8 +285,8 @@ export default function SalonSearch() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-50 rounded-xl flex-shrink-0 flex items-center justify-center">
-                        <span className="text-lg">{salon.image}</span>
+                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex-shrink-0 flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-indigo-600" />
                       </div>
 
                       <div className="flex-1 min-w-0">
@@ -283,7 +298,6 @@ export default function SalonSearch() {
                         </p>
                         <div className="flex items-center gap-3 text-xs text-gray-600">
                           <span className="flex items-center gap-1">
-                            <Star className="h-3 w-3 text-amber-400 fill-current" />
                             {salon.rating}
                           </span>
                           <span>{salon.distance}</span>
@@ -291,15 +305,17 @@ export default function SalonSearch() {
                         </div>
                       </div>
 
-                      <Button 
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={(e) => {
                           e.stopPropagation();
                           setLocation('/salon-booking');
                         }}
-                        className={`${getSalonButtonClass(salon.id)} rounded-xl px-3 py-1.5 text-xs font-medium`}
+                        className="glass-button rounded-xl px-3 py-1.5 text-xs font-medium text-white"
                       >
                         Book
-                      </Button>
+                      </motion.button>
                     </div>
                   </CardContent>
                 </Card>
@@ -311,13 +327,20 @@ export default function SalonSearch() {
 
       {/* Message si aucun résultat */}
       {(searchQuery || activeFilter !== "all") && filteredSalons.length === 0 && (
-        <div className="bg-gray-50 min-h-96 flex items-center justify-center">
+        <div className="min-h-96 flex items-center justify-center">
           <div className="text-center">
             <p className="text-gray-500">No salons found</p>
             <p className="text-sm text-gray-400 mt-1">Try different keywords</p>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Footer identique à la page d'accueil */}
+      <div className="text-center text-xs text-gray-500 pb-4">
+        <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+      </div>
+      
+      </div>
+    </motion.div>
   );
 }
