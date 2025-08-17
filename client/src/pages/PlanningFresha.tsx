@@ -873,8 +873,8 @@ export default function PlanningFresha() {
 
       {/* Calendrier de sélection */}
       {showCalendar && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-2xl p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             {/* Header du calendrier */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-4">
@@ -948,7 +948,7 @@ export default function PlanningFresha() {
                     <div className="grid grid-cols-7 gap-1">
                       {days.map((day, index) => {
                         if (day === null) {
-                          return <div key={index} className="p-2"></div>;
+                          return <div key={`empty-${monthOffset}-${index}`} className="p-2"></div>;
                         }
 
                         const currentWeekStart = currentWeek[0];
@@ -962,15 +962,15 @@ export default function PlanningFresha() {
 
                         return (
                           <button
-                            key={day}
+                            key={`day-${monthOffset}-${day}`}
                             className={`
-                              p-2 h-10 w-10 rounded-full text-sm font-medium transition-colors
-                              hover:bg-gray-100
+                              p-2 h-10 w-10 rounded-full text-sm font-medium transition-all duration-300
+                              hover:scale-105 hover:shadow-lg
                               ${isCurrentWeekStart || isCurrentWeekEnd 
-                                ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                                ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white shadow-lg shadow-purple-500/25 backdrop-blur-sm border border-purple-400/20' 
                                 : isInCurrentWeek 
-                                ? 'bg-blue-100 text-blue-700'
-                                : 'text-gray-700'
+                                ? 'bg-gradient-to-br from-purple-100/80 to-purple-200/60 text-purple-700 backdrop-blur-sm border border-purple-300/30 shadow-md'
+                                : 'text-gray-700 hover:bg-gradient-to-br hover:from-purple-50/50 hover:to-purple-100/30 hover:backdrop-blur-sm'
                               }
                             `}
                             onClick={() => {
@@ -1001,7 +1001,7 @@ export default function PlanningFresha() {
                   key={option}
                   variant="outline" 
                   size="sm"
-                  className="text-sm"
+                  className="text-sm bg-gradient-to-r from-purple-50/80 to-purple-100/60 backdrop-blur-sm border-purple-200/50 text-purple-700 hover:from-purple-100/80 hover:to-purple-200/70 hover:border-purple-300/60 transition-all duration-300"
                   onClick={() => {
                     setCurrentWeekOffset(index + 1);
                     setShowCalendar(false);
@@ -1010,7 +1010,11 @@ export default function PlanningFresha() {
                   {option}
                 </Button>
               ))}
-              <Button variant="outline" size="sm" className="text-sm">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-sm bg-gradient-to-r from-gray-50/80 to-gray-100/60 backdrop-blur-sm border-gray-200/50 text-gray-600 hover:from-gray-100/80 hover:to-gray-200/70 hover:border-gray-300/60 transition-all duration-300"
+              >
                 Plus
               </Button>
             </div>
