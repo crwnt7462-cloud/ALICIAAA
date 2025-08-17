@@ -4,23 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Plus, MoreHorizontal, X, User, Phone, Mail, Clock, Calendar } from "lucide-react";
 
-type Employee = {
-  id: string;
-  name: string;
-  avatar: string;
-  color: string;
-};
+// Interface Employee conservée pour compatibilité future
 
 type Appointment = {
   id: string;
   employeeId: string;
   title: string;
   client: string;
+  email?: string;
   startTime: string;
   endTime: string;
   day: number; // 0-6 (dimanche à samedi)
   color: string;
   status: 'confirmed' | 'pending';
+  price: number;
+  duration: string;
+  employee: string;
+  paymentStatus: 'à encaisser' | 'acompte réglé' | 'payé';
 };
 
 const appointments: Appointment[] = [
@@ -30,44 +30,64 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Coupe + Coloration',
     client: 'Sophie Martin',
+    email: 'sophie.martin@gmail.com',
     startTime: '09:00',
     endTime: '11:30',
     day: 1,
     color: '#EC4899',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 125,
+    duration: '2h 30',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   {
     id: '2',
     employeeId: '1',
     title: 'Brushing',
     client: 'Marie Dubois',
+    email: 'marie.dubois@yahoo.fr',
     startTime: '12:00',
     endTime: '12:45',
     day: 1,
     color: '#8B5CF6',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 35,
+    duration: '45 min',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   {
     id: '3',
     employeeId: '1',
     title: 'Coupe Homme',
     client: 'Pierre Laurent',
+    email: 'p.laurent@hotmail.com',
     startTime: '14:00',
     endTime: '14:30',
     day: 1,
     color: '#06B6D4',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 28,
+    duration: '30 min',
+    employee: 'Alicia',
+    paymentStatus: 'à encaisser'
   },
   {
     id: '4',
     employeeId: '1',
     title: 'Soin Capillaire',
     client: 'Emma Roussel',
+    email: 'emma.roussel@orange.fr',
     startTime: '15:30',
     endTime: '16:30',
     day: 1,
     color: '#10B981',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 55,
+    duration: '1h',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   // Mardi (jour 2) - Planning chargé
   {
@@ -75,33 +95,48 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Balayage',
     client: 'Julie Bernard',
+    email: 'julie.bernard@gmail.com',
     startTime: '09:00',
     endTime: '12:00',
     day: 2,
     color: '#F59E0B',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 180,
+    duration: '3h',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   {
     id: '6',
     employeeId: '1',
     title: 'Coupe Enfant',
     client: 'Lucas Petit',
+    email: 'parent.petit@free.fr',
     startTime: '13:30',
     endTime: '14:00',
     day: 2,
     color: '#EF4444',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 20,
+    duration: '30 min',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   {
     id: '7',
     employeeId: '1',
     title: 'Lissage',
     client: 'Camille Blanc',
+    email: 'c.blanc@gmail.com',
     startTime: '14:30',
     endTime: '16:30',
     day: 2,
     color: '#8B5CF6',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 90,
+    duration: '2h',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   // Mercredi (jour 3) - Planning modéré
   {
@@ -109,22 +144,32 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Permanente',
     client: 'Nina Roux',
+    email: 'nina.roux@yahoo.fr',
     startTime: '10:00',
     endTime: '13:00',
     day: 3,
     color: '#06B6D4',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 110,
+    duration: '3h',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   {
     id: '9',
     employeeId: '1',
     title: 'Coupe Femme',
     client: 'Sarah Dubois',
+    email: 's.dubois@outlook.com',
     startTime: '15:00',
     endTime: '16:00',
     day: 3,
     color: '#EC4899',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 45,
+    duration: '1h',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   // Jeudi (jour 4) - Journée légère
   {
@@ -132,22 +177,32 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Consultation',
     client: 'Amélie Moreau',
+    email: 'amelie.moreau@free.fr',
     startTime: '10:30',
     endTime: '11:00',
     day: 4,
     color: '#10B981',
-    status: 'pending'
+    status: 'pending',
+    price: 15,
+    duration: '30 min',
+    employee: 'Alicia',
+    paymentStatus: 'à encaisser'
   },
   {
     id: '11',
     employeeId: '1',
     title: 'Mèches',
     client: 'Léa Garcia',
+    email: 'lea.garcia@sfr.fr',
     startTime: '14:00',
     endTime: '16:00',
     day: 4,
     color: '#F59E0B',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 85,
+    duration: '2h',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   // Vendredi (jour 5) - Journée complète
   {
@@ -155,44 +210,64 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Coupe + Couleur',
     client: 'Isabelle Martin',
+    email: 'i.martin@laposte.net',
     startTime: '09:30',
     endTime: '12:30',
     day: 5,
     color: '#EC4899',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 95,
+    duration: '3h',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   {
     id: '13',
     employeeId: '1',
     title: 'Brushing',
     client: 'Céline Laurent',
+    email: 'celine.laurent@orange.fr',
     startTime: '13:30',
     endTime: '14:15',
     day: 5,
     color: '#8B5CF6',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 35,
+    duration: '45 min',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   {
     id: '14',
     employeeId: '1',
     title: 'Coupe Homme',
     client: 'Thomas Dupont',
+    email: 't.dupont@hotmail.com',
     startTime: '15:00',
     endTime: '15:30',
     day: 5,
     color: '#06B6D4',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 28,
+    duration: '30 min',
+    employee: 'Alicia',
+    paymentStatus: 'à encaisser'
   },
   {
     id: '15',
     employeeId: '1',
     title: 'Soin Profond',
     client: 'Manon Petit',
+    email: 'manon.petit@wanadoo.fr',
     startTime: '16:00',
     endTime: '17:00',
     day: 5,
     color: '#10B981',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 60,
+    duration: '1h',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   // Samedi (jour 6) - Week-end actif
   {
@@ -200,33 +275,48 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'Balayage',
     client: 'Clara Roussel',
+    email: 'clara.roussel@gmail.com',
     startTime: '09:00',
     endTime: '11:30',
     day: 6,
     color: '#F59E0B',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 140,
+    duration: '2h30',
+    employee: 'Alicia',
+    paymentStatus: 'acompte réglé'
   },
   {
     id: '17',
     employeeId: '1',
     title: 'Coupe + Styling',
     client: 'Océane Bernard',
+    email: 'oceane.bernard@sfr.fr',
     startTime: '12:30',
     endTime: '14:00',
     day: 6,
     color: '#EC4899',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 65,
+    duration: '1h30',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   },
   {
     id: '18',
     employeeId: '1',
     title: 'Coupe Enfant',
     client: 'Hugo Blanc',
+    email: 'parent.blanc@orange.fr',
     startTime: '14:30',
     endTime: '15:00',
     day: 6,
     color: '#EF4444',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 20,
+    duration: '30 min',
+    employee: 'Alicia',
+    paymentStatus: 'à encaisser'
   },
   // Dimanche (jour 0) - Fermé
   {
@@ -234,11 +324,16 @@ const appointments: Appointment[] = [
     employeeId: '1',
     title: 'FERMÉ',
     client: '',
+    email: '',
     startTime: '09:00',
     endTime: '19:00',
     day: 0,
     color: '#9CA3AF',
-    status: 'confirmed'
+    status: 'confirmed',
+    price: 0,
+    duration: '10h',
+    employee: 'Alicia',
+    paymentStatus: 'payé'
   }
 ];
 
@@ -260,6 +355,7 @@ export default function PlanningFresha() {
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<{ day: number; hour: string; appointment?: Appointment } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hoveredAppointment, setHoveredAppointment] = useState<{ id: string; x: number; y: number } | null>(null);
 
   // Calcul des dates de la semaine courante
   const currentWeek = useMemo(() => {
@@ -286,7 +382,7 @@ export default function PlanningFresha() {
 
   // Fonction pour gérer le clic sur un créneau
   const handleSlotClick = (day: number, hour: string, appointment?: Appointment) => {
-    setSelectedSlot({ day, hour, appointment });
+    setSelectedSlot({ day, hour, appointment: appointment || undefined });
     setIsModalOpen(true);
   };
 
@@ -343,6 +439,20 @@ export default function PlanningFresha() {
     alert('Ouverture de la recherche client...');
     // Ici vous pouvez ouvrir l'interface de recherche de clients
     closeModal();
+  };
+
+  // Gestionnaires pour le tooltip au survol
+  const handleMouseEnter = (appointmentId: string, event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setHoveredAppointment({
+      id: appointmentId,
+      x: rect.right + 10,
+      y: rect.top
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredAppointment(null);
   };
 
   // Fonction pour calculer la position des rendez-vous
@@ -506,6 +616,8 @@ export default function PlanningFresha() {
                           className="absolute left-1 right-1 rounded text-xs font-medium text-white p-2 z-10 border border-gray-300 cursor-pointer hover:shadow-lg transition-shadow"
                           style={getAppointmentStyle(appointment)}
                           onClick={() => handleSlotClick(weekDay.index, appointment.startTime, appointment)}
+                          onMouseEnter={(e) => handleMouseEnter(appointment.id, e)}
+                          onMouseLeave={handleMouseLeave}
                         >
                           <div className="font-semibold">{appointment.startTime} - {appointment.endTime}</div>
                           <div className="mt-1">{appointment.title}</div>
@@ -657,6 +769,68 @@ export default function PlanningFresha() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Tooltip au survol */}
+      {hoveredAppointment && (
+        <div
+          className="fixed z-50 pointer-events-none"
+          style={{
+            left: `${hoveredAppointment.x}px`,
+            top: `${hoveredAppointment.y}px`
+          }}
+        >
+          {(() => {
+            const appointment = appointments.find(apt => apt.id === hoveredAppointment.id);
+            if (!appointment) return null;
+
+            return (
+              <div className="bg-white rounded-xl shadow-2xl border border-gray-200 p-4 max-w-xs w-72">
+                {/* Header avec avatar et infos client */}
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                    <span className="text-purple-600 font-semibold">
+                      {appointment.client.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-800">{appointment.client}</h3>
+                    {appointment.email && (
+                      <p className="text-xs text-gray-500">{appointment.email}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Service et prix */}
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h4 className="font-medium text-gray-800">{appointment.title}</h4>
+                    <p className="text-xs text-gray-500">{appointment.employee} • {appointment.duration}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-800">{appointment.price} €</p>
+                  </div>
+                </div>
+
+                {/* Statut de paiement */}
+                <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+                  <span className="text-xs text-gray-500">Statut paiement:</span>
+                  <span 
+                    className={`text-xs px-2 py-1 rounded-full font-medium ${
+                      appointment.paymentStatus === 'payé' 
+                        ? 'bg-green-100 text-green-700'
+                        : appointment.paymentStatus === 'acompte réglé'
+                        ? 'bg-orange-100 text-orange-700'
+                        : 'bg-red-100 text-red-700'
+                    }`}
+                  >
+                    {appointment.paymentStatus}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
