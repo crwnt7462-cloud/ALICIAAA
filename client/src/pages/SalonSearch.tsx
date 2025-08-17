@@ -243,7 +243,7 @@ export default function SalonSearch() {
               {filteredSalons.map((salon) => (
                 <Card 
                   key={salon.id} 
-                  className={`border-0 bg-white rounded-2xl cursor-pointer hover:shadow-sm transition-all ${
+                  className={`border-0 bg-gradient-to-r from-purple-100 to-purple-200 rounded-2xl cursor-pointer hover:shadow-sm transition-all ${
                     salon.id === 'salon-pro-1' && lastUpdate > Date.now() - 5000 
                       ? 'ring-2 ring-green-200 ring-opacity-50' 
                       : ''
@@ -252,8 +252,8 @@ export default function SalonSearch() {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl flex-shrink-0 flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-indigo-600" />
+                      <div className="w-12 h-12 bg-white rounded-xl flex-shrink-0 flex items-center justify-center">
+                        <span className="text-lg">{salon.image}</span>
                       </div>
 
                       <div className="flex-1 min-w-0">
@@ -265,6 +265,7 @@ export default function SalonSearch() {
                         </p>
                         <div className="flex items-center gap-3 text-xs text-gray-600">
                           <span className="flex items-center gap-1">
+                            <Star className="h-3 w-3 text-amber-400 fill-current" />
                             {salon.rating}
                           </span>
                           <span>{salon.distance}</span>
