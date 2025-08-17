@@ -398,8 +398,8 @@ export default function Dashboard() {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-xl md:text-2xl font-bold text-gray-900">95%</span>
-                    <span className="text-[10px] md:text-xs text-gray-500 uppercase tracking-wide">OCCUPATION</span>
+                    <span className="text-lg md:text-xl font-bold text-gray-900">95%</span>
+                    <span className="text-[8px] md:text-[10px] text-gray-500 uppercase tracking-tight leading-none">OCCUPATION</span>
                   </div>
                 </div>
 
