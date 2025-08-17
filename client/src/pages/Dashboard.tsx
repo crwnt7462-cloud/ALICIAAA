@@ -406,16 +406,20 @@ export default function Dashboard() {
                 {/* Statistiques */}
                 <div className="flex-1 space-y-3 md:space-y-4">
                   <div>
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">25</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">
+                      {appointmentsLoading ? "..." : `${(todayAppointments as any[])?.length || 0}`}
+                    </div>
                     <div className="text-xs md:text-sm text-gray-500">Rendez-vous</div>
                   </div>
                   <div>
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">10</div>
-                    <div className="text-xs md:text-sm text-gray-500">Prestations</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">
+                      {(weeklyNewClients as any)?.count || 0}
+                    </div>
+                    <div className="text-xs md:text-sm text-gray-500">Nouveaux clients</div>
                   </div>
                   <div>
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">3</div>
-                    <div className="text-xs md:text-sm text-gray-500">Formations</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">8h</div>
+                    <div className="text-xs md:text-sm text-gray-500">Heures travaillées</div>
                   </div>
                 </div>
               </div>
