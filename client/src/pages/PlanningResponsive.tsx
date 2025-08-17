@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, ChevronLeft, ChevronRight, Plus, Filter, Share, Settings, Download, Euro, Target, TrendingUp, Clock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Filter, Share, Settings, Download, Euro, Target, TrendingUp, Clock, User, Users, Calendar, X, Scissors, Palette, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,6 +14,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -24,12 +25,30 @@ type InsertAppointmentForm = {
   notes?: string;
 };
 
+type Employee = {
+  id: string;
+  name: string;
+  color: string;
+  avatar: string;
+  specialties: string[];
+};
+
+type ServiceType = {
+  id: number;
+  name: string;
+  category: string;
+  duration: number;
+  price: number;
+  color: string;
+};
+
 const appointmentFormSchema = insertAppointmentSchema.extend({
   notes: insertAppointmentSchema.shape.notes.optional(),
 });
 
-// Configuration des créneaux horaires (12 PM à 8 PM comme dans l'image)
+// Configuration des créneaux horaires (9h à 20h)
 const timeSlots = [
+  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
   "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", 
   "18:00", "18:30", "19:00", "19:30", "20:00"
@@ -37,25 +56,62 @@ const timeSlots = [
 
 const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
-// Couleurs pour les différents types d'événements
-const eventColors = [
-  { bg: 'bg-green-200', border: 'border-green-300', text: 'text-green-800' }, // Lunch
-  { bg: 'bg-purple-200', border: 'border-purple-300', text: 'text-purple-800' }, // Meetings
-  { bg: 'bg-blue-200', border: 'border-blue-300', text: 'text-blue-800' }, // Projects
-  { bg: 'bg-yellow-200', border: 'border-yellow-300', text: 'text-yellow-800' }, // Creative
-  { bg: 'bg-pink-200', border: 'border-pink-300', text: 'text-pink-800' }, // Family
-  { bg: 'bg-indigo-200', border: 'border-indigo-300', text: 'text-indigo-800' }, // Networking
+// Employés du salon
+const employees: Employee[] = [
+  { 
+    id: "1", 
+    name: "Sarah Martin", 
+    color: "#8B5CF6", 
+    avatar: "SM",
+    specialties: ["Coiffure", "Coloration"]
+  },
+  { 
+    id: "2", 
+    name: "Emma Dubois", 
+    color: "#EC4899", 
+    avatar: "ED",
+    specialties: ["Manucure", "Pédicure"]
+  },
+  { 
+    id: "3", 
+    name: "Julie Moreau", 
+    color: "#06B6D4", 
+    avatar: "JM",
+    specialties: ["Soins visage", "Massage"]
+  },
+  { 
+    id: "4", 
+    name: "Léa Bernard", 
+    color: "#10B981", 
+    avatar: "LB",
+    specialties: ["Extensions", "Lissage"]
+  }
+];
+
+// Services beauté avec couleurs
+const beautyServices: ServiceType[] = [
+  { id: 1, name: "Coupe + Brushing", category: "Coiffure", duration: 60, price: 65, color: "#8B5CF6" },
+  { id: 2, name: "Coloration", category: "Coiffure", duration: 120, price: 85, color: "#7C3AED" },
+  { id: 3, name: "Mèches", category: "Coiffure", duration: 180, price: 120, color: "#6D28D9" },
+  { id: 4, name: "Manucure", category: "Ongles", duration: 45, price: 35, color: "#EC4899" },
+  { id: 5, name: "Pédicure", category: "Ongles", duration: 60, price: 45, color: "#DB2777" },
+  { id: 6, name: "Pose Vernis Semi", category: "Ongles", duration: 30, price: 25, color: "#BE185D" },
+  { id: 7, name: "Soin Visage", category: "Soins", duration: 90, price: 80, color: "#06B6D4" },
+  { id: 8, name: "Massage Relaxant", category: "Soins", duration: 60, price: 70, color: "#0891B2" },
+  { id: 9, name: "Extensions", category: "Coiffure", duration: 240, price: 200, color: "#10B981" },
+  { id: 10, name: "Lissage Brésilien", category: "Coiffure", duration: 180, price: 150, color: "#059669" }
 ];
 
 export default function PlanningResponsive() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'week'>('week');
+  const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
+  const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
+  const [appointmentType, setAppointmentType] = useState<"appointment" | "block">("appointment");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: appointments = [], isLoading } = useQuery({
+  const { data: appointments = [] } = useQuery({
     queryKey: ["/api/appointments"],
   });
 
@@ -73,6 +129,7 @@ export default function PlanningResponsive() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
       setIsDialogOpen(false);
+      setIsBlockDialogOpen(false);
       form.reset();
       toast({
         title: "Rendez-vous créé",
@@ -120,58 +177,173 @@ export default function PlanningResponsive() {
     };
   }, [currentWeekOffset]);
 
-  // Données d'exemple pour reproduire le planning de l'image
-  const sampleEvents = [
-    // Dimanche 18
-    { id: 1, title: "Lunch", time: "12:00-13:00", day: 0, color: 0, duration: 2 },
-    { id: 2, title: "Hobbies", time: "16:00-18:00", day: 0, color: 4, duration: 4 },
-    { id: 3, title: "Family Time", time: "18:00-19:00", day: 0, color: 4, duration: 2 },
-    
-    // Lundi 19
-    { id: 4, title: "Lunch", time: "12:00-13:00", day: 1, color: 0, duration: 2 },
-    { id: 5, title: "Meet", time: "15:00-16:00", day: 1, color: 1, duration: 2 },
-    { id: 6, title: "Creative Brainstorm", time: "16:00-20:00", day: 1, color: 3, duration: 8 },
-    
-    // Mardi 20
-    { id: 7, title: "Lunch with Emma", time: "12:00-13:00", day: 2, color: 1, duration: 2 },
-    { id: 8, title: "Meet with @Ei", time: "13:00-14:00", day: 2, color: 1, duration: 2 },
-    { id: 9, title: "Networking Event", time: "14:00-16:00", day: 2, color: 5, duration: 4 },
-    { id: 10, title: "Product Development", time: "16:00-17:00", day: 2, color: 2, duration: 2 },
-    
-    // Mercredi 21
-    { id: 11, title: "Lunch", time: "12:00-13:00", day: 3, color: 0, duration: 2 },
-    { id: 12, title: "Team Meeting", time: "14:00-15:00", day: 3, color: 2, duration: 2 },
-    { id: 13, title: "Project A", time: "17:00-18:00", day: 3, color: 2, duration: 2 },
-    
-    // Jeudi 22
-    { id: 14, title: "Lunch with Emma", time: "12:00-13:00", day: 4, color: 1, duration: 2 },
-    { id: 15, title: "Project Start", time: "14:00-15:00", day: 4, color: 2, duration: 2 },
-    { id: 16, title: "Project Review", time: "17:00-18:00", day: 4, color: 2, duration: 2 },
+  // Rendez-vous beauté simulés
+  const beautySampleEvents = [
+    // Aujourd'hui - Sarah Martin
+    { 
+      id: 1, 
+      title: "Coupe + Brushing", 
+      client: "Marie Durand",
+      time: "09:00-10:00", 
+      day: new Date().getDay(), 
+      serviceId: 1,
+      employeeId: "1",
+      status: "confirmed",
+      notes: "Première visite"
+    },
+    { 
+      id: 2, 
+      title: "Coloration", 
+      client: "Sophie Laurent",
+      time: "10:30-12:30", 
+      day: new Date().getDay(), 
+      serviceId: 2,
+      employeeId: "1",
+      status: "confirmed",
+      notes: "Châtain clair"
+    },
+    // Emma Dubois - même créneau
+    { 
+      id: 3, 
+      title: "Manucure", 
+      client: "Claire Moreau",
+      time: "10:00-10:45", 
+      day: new Date().getDay(), 
+      serviceId: 4,
+      employeeId: "2",
+      status: "scheduled",
+      notes: "French manucure"
+    },
+    { 
+      id: 4, 
+      title: "Pédicure", 
+      client: "Anna Petit",
+      time: "11:00-12:00", 
+      day: new Date().getDay(), 
+      serviceId: 5,
+      employeeId: "2",
+      status: "confirmed",
+      notes: ""
+    },
+    // Julie Moreau
+    { 
+      id: 5, 
+      title: "Soin Visage", 
+      client: "Lucie Bernard",
+      time: "14:00-15:30", 
+      day: new Date().getDay(), 
+      serviceId: 7,
+      employeeId: "3",
+      status: "confirmed",
+      notes: "Peau sensible"
+    },
+    // Léa Bernard
+    { 
+      id: 6, 
+      title: "Extensions", 
+      client: "Nina Roux",
+      time: "09:00-13:00", 
+      day: new Date().getDay(), 
+      serviceId: 9,
+      employeeId: "4",
+      status: "scheduled",
+      notes: "Extensions blondes 60cm"
+    },
+    // Demain
+    { 
+      id: 7, 
+      title: "Lissage Brésilien", 
+      client: "Emma Girard",
+      time: "09:00-12:00", 
+      day: (new Date().getDay() + 1) % 7, 
+      serviceId: 10,
+      employeeId: "1",
+      status: "confirmed",
+      notes: "Cheveux très frisés"
+    },
+    { 
+      id: 8, 
+      title: "Pose Vernis Semi", 
+      client: "Camille Blanc",
+      time: "14:00-14:30", 
+      day: (new Date().getDay() + 1) % 7, 
+      serviceId: 6,
+      employeeId: "2",
+      status: "scheduled",
+      notes: "Rouge classique"
+    },
+    // Blocage de créneau
+    { 
+      id: 9, 
+      title: "PAUSE DÉJEUNER", 
+      client: "",
+      time: "12:00-13:00", 
+      day: new Date().getDay(), 
+      serviceId: 0,
+      employeeId: "all",
+      status: "blocked",
+      notes: "Pause équipe",
+      isBlock: true
+    }
   ];
 
   // Fonction pour obtenir la position de l'événement
   const getEventPosition = (time: string) => {
-    const [hour, minute] = time.split(':').map(Number);
-    const totalMinutes = (hour - 12) * 60 + minute;
+    const startTime = time.split('-')[0];
+    if (!startTime) return 0;
+    const [hour, minute] = startTime.split(':').map(Number);
+    if (hour === undefined || minute === undefined) return 0;
+    const totalMinutes = (hour - 9) * 60 + minute;
     return (totalMinutes / 30) * 40; // 40px par demi-heure
   };
 
   // Fonction pour calculer la hauteur de l'événement
-  const getEventHeight = (duration: number) => {
-    return duration * 20; // 20px par demi-heure
+  const getEventHeight = (time: string) => {
+    const [start, end] = time.split('-');
+    if (!start || !end) return 40;
+    const [startHour, startMin] = start.split(':').map(Number);
+    const [endHour, endMin] = end.split(':').map(Number);
+    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 40;
+    const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
+    return Math.max((duration / 30) * 20, 30); // Minimum 30px
   };
 
   const navigateWeek = (direction: 'prev' | 'next') => {
     setCurrentWeekOffset(prev => direction === 'next' ? prev + 1 : prev - 1);
   };
 
+  // Fonction pour obtenir la couleur du service
+  const getServiceColor = (serviceId: number) => {
+    const service = beautyServices.find(s => s.id === serviceId);
+    return service ? service.color : "#6B7280";
+  };
+
+  // Fonction pour obtenir l'employé
+  const getEmployee = (employeeId: string) => {
+    return employees.find(emp => emp.id === employeeId);
+  };
+
+  // Filtrer les événements par employé
+  const filteredEvents = selectedEmployee === "all" 
+    ? beautySampleEvents 
+    : beautySampleEvents.filter(event => 
+        event.employeeId === selectedEmployee || event.employeeId === "all"
+      );
+
   // Calcul des insights CA
   const dailyRevenue = 1847;
   const weeklyRevenue = 8392;
   const monthlyRevenue = 28450;
-  const monthlyGoal = 35000;
-  const goalProgress = (monthlyRevenue / monthlyGoal) * 100;
   const avgTicket = 67;
+
+  const openQuickAdd = (type: "appointment" | "block") => {
+    setAppointmentType(type);
+    if (type === "appointment") {
+      setIsDialogOpen(true);
+    } else {
+      setIsBlockDialogOpen(true);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full">
@@ -237,7 +409,7 @@ export default function PlanningResponsive() {
           {/* Header du calendrier */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
-              <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Planning Beauté</h1>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="outline"
@@ -245,7 +417,7 @@ export default function PlanningResponsive() {
                   onClick={() => setCurrentWeekOffset(0)}
                   className="bg-white/80 backdrop-blur-sm border-gray-200"
                 >
-                  Today
+                  Aujourd'hui
                 </Button>
                 <Button
                   variant="ghost"
@@ -270,18 +442,23 @@ export default function PlanningResponsive() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <Select value="week">
-                <SelectTrigger className="w-24 bg-white/80 backdrop-blur-sm border-gray-200">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Week</SelectItem>
-                  <SelectItem value="month">Month</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
-                <Filter className="h-4 w-4 mr-1" />
-                Filter
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-white/80 backdrop-blur-sm"
+                onClick={() => openQuickAdd("appointment")}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                RDV
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="bg-white/80 backdrop-blur-sm"
+                onClick={() => openQuickAdd("block")}
+              >
+                <X className="h-4 w-4 mr-1" />
+                Bloquer
               </Button>
               <Button variant="outline" size="sm" className="bg-white/80 backdrop-blur-sm">
                 <Download className="h-4 w-4 mr-1" />
@@ -289,11 +466,44 @@ export default function PlanningResponsive() {
               </Button>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                 <Share className="h-4 w-4 mr-1" />
-                Share
+                Partager
               </Button>
-              <Button variant="ghost" size="sm" className="p-2">
-                <Settings className="h-4 w-4" />
+            </div>
+          </div>
+
+          {/* Sélection d'employé */}
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="flex items-center space-x-2">
+              <Users className="h-5 w-5 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">Équipe:</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant={selectedEmployee === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedEmployee("all")}
+                className="bg-white/80 backdrop-blur-sm"
+              >
+                <Users className="h-4 w-4 mr-1" />
+                Tous
               </Button>
+              {employees.map((employee) => (
+                <Button
+                  key={employee.id}
+                  variant={selectedEmployee === employee.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedEmployee(employee.id)}
+                  className="bg-white/80 backdrop-blur-sm"
+                  style={{
+                    backgroundColor: selectedEmployee === employee.id ? employee.color : undefined,
+                    borderColor: employee.color,
+                    color: selectedEmployee === employee.id ? 'white' : employee.color
+                  }}
+                >
+                  <User className="h-4 w-4 mr-1" />
+                  {employee.name}
+                </Button>
+              ))}
             </div>
           </div>
         </motion.div>
@@ -308,37 +518,26 @@ export default function PlanningResponsive() {
           {/* En-tête des jours */}
           <div className="grid grid-cols-8 border-b border-gray-200">
             <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
-              UTC +7
-            </div>
-            {currentWeek.map((date, index) => (
-              <div key={index} className="p-4 text-center border-r border-gray-200 last:border-r-0">
-                <div className="text-sm font-medium text-gray-500">
-                  {weekDays[date.getDay()]} {date.getDate()}
-                </div>
+              <div className="flex items-center space-x-2">
+                <Clock className="h-4 w-4" />
+                <span>Heures</span>
               </div>
-            ))}
-          </div>
-
-          {/* Événements all day */}
-          <div className="grid grid-cols-8 border-b border-gray-200">
-            <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
-              All day
             </div>
-            <div className="p-2 border-r border-gray-200 bg-blue-50">
-              <div className="text-sm font-medium text-blue-700">Photo Session</div>
-            </div>
-            <div className="p-2 border-r border-gray-200 bg-purple-50">
-              <div className="text-sm font-medium text-purple-700">Brain Training</div>
-            </div>
-            <div className="p-2 border-r border-gray-200 bg-green-50">
-              <div className="text-sm font-medium text-green-700">Skill Enhancement</div>
-            </div>
-            <div className="p-2 border-r border-gray-200 bg-yellow-50">
-              <div className="text-sm font-medium text-yellow-700">Call Mom</div>
-            </div>
-            <div className="p-2 border-r border-gray-200"></div>
-            <div className="p-2 border-r border-gray-200"></div>
-            <div className="p-2"></div>
+            {currentWeek.map((date, index) => {
+              const isToday = date.toDateString() === new Date().toDateString();
+              return (
+                <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-50' : ''}`}>
+                  <div className="text-sm font-medium text-gray-500">
+                    {weekDays[date.getDay()]} {date.getDate()}
+                  </div>
+                  {isToday && (
+                    <Badge variant="secondary" className="mt-1 text-xs bg-purple-100 text-purple-700">
+                      Aujourd'hui
+                    </Badge>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Grille horaire */}
@@ -364,22 +563,52 @@ export default function PlanningResponsive() {
                   ))}
                   
                   {/* Événements pour ce jour */}
-                  {sampleEvents
+                  {filteredEvents
                     .filter(event => event.day === dayIndex)
                     .map((event) => {
-                      const colorScheme = eventColors[event.color];
+                      const employee = getEmployee(event.employeeId);
+                      const isBlocked = event.isBlock;
+                      const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                      
                       return (
                         <div
                           key={event.id}
-                          className={`absolute left-1 right-1 ${colorScheme.bg} ${colorScheme.border} ${colorScheme.text} border rounded-md p-1 text-xs font-medium shadow-sm z-10`}
+                          className={`absolute left-1 right-1 border rounded-md p-2 text-xs font-medium shadow-sm z-10 ${
+                            isBlocked 
+                              ? 'bg-red-100 border-red-300 text-red-800' 
+                              : 'bg-white border-gray-300 text-gray-800'
+                          }`}
                           style={{
-                            top: `${getEventPosition(event.time.split('-')[0])}px`,
-                            height: `${getEventHeight(event.duration)}px`,
-                            minHeight: '30px'
+                            top: `${getEventPosition(event.time)}px`,
+                            height: `${getEventHeight(event.time)}px`,
+                            minHeight: '35px',
+                            borderLeftColor: serviceColor,
+                            borderLeftWidth: '4px'
                           }}
                         >
-                          <div className="truncate">{event.title}</div>
-                          <div className="text-xs opacity-75">{event.time}</div>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="truncate font-semibold">{event.title}</div>
+                            {event.status === 'confirmed' && !isBlocked && (
+                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                            )}
+                          </div>
+                          {!isBlocked && (
+                            <div className="truncate text-gray-600 mb-1">{event.client}</div>
+                          )}
+                          <div className="text-xs opacity-75 mb-1">{event.time}</div>
+                          {employee && selectedEmployee === "all" && (
+                            <div 
+                              className="text-xs px-1 py-0.5 rounded text-white"
+                              style={{ backgroundColor: employee.color }}
+                            >
+                              {employee.name}
+                            </div>
+                          )}
+                          {event.notes && (
+                            <div className="text-xs text-gray-500 truncate mt-1">
+                              {event.notes}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -389,136 +618,44 @@ export default function PlanningResponsive() {
           </div>
         </motion.div>
 
-        {/* Panel latéral Meet (reproduisant celui de l'image) */}
+        {/* Légende des services */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="fixed right-4 top-1/2 transform -translate-y-1/2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-6 hidden lg:block"
+          className="mt-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 p-6"
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Meet</h3>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">Thursday, 18 September</span>
-            </div>
-          </div>
-          
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 text-gray-400" />
-              <span className="text-sm text-gray-600">3:00</span>
-              <span className="text-sm text-gray-600">4:00</span>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <input type="checkbox" className="rounded" />
-              <span className="text-sm">All day</span>
-              <span className="text-sm">Yearly</span>
-            </div>
-            
-            <div className="border-t pt-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">
-                  N
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <Palette className="h-5 w-5 mr-2" />
+            Légende des Services
+          </h3>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            {beautyServices.map((service) => (
+              <div key={service.id} className="flex items-center space-x-2">
+                <div 
+                  className="w-4 h-4 rounded border"
+                  style={{ backgroundColor: service.color }}
+                />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{service.name}</div>
+                  <div className="text-xs text-gray-500">{service.duration}min - {service.price}€</div>
                 </div>
-                <span className="text-sm font-medium">Nazmi Javier</span>
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               </div>
-              
-              <div className="flex items-center space-x-2">
-                <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs">
-                  E
-                </div>
-                <span className="text-sm">Emilia Inder</span>
-              </div>
-            </div>
-            
-            <div className="border-t pt-4">
-              <div className="text-sm text-blue-600 underline">
-                https://meet.google.com/izp-srs...
-              </div>
-              <div className="text-sm text-gray-600 mt-1">
-                Jakarta, Indonesia
-              </div>
-            </div>
-            
-            <div className="text-sm text-gray-700 leading-relaxed">
-              You're invited to join our Google Meet session for an important discussion.
-            </div>
-            
-            <div className="text-sm text-blue-600">
-              Link: https://meet.google.com/izp-srsk-txf
-            </div>
-            
-            <div className="text-sm text-gray-600">
-              We look forward to your participation!
-            </div>
-            
-            <div className="border-t pt-4">
-              <div className="text-sm font-medium mb-2">Add Reminders</div>
-              <div className="flex space-x-2">
-                {['', '', '', '', '', '', '', ''].map((_, i) => (
-                  <div key={i} className={`w-6 h-6 rounded-full ${
-                    i === 0 ? 'bg-red-500' :
-                    i === 1 ? 'bg-orange-500' :
-                    i === 2 ? 'bg-pink-500' :
-                    i === 3 ? 'bg-yellow-500' :
-                    i === 4 ? 'bg-green-500' :
-                    i === 5 ? 'bg-blue-500' :
-                    i === 6 ? 'bg-purple-500' : 'bg-gray-400'
-                  }`} />
-                ))}
-              </div>
-            </div>
-            
-            <div className="flex justify-between pt-4">
-              <Button variant="ghost" className="text-gray-600">Cancel</Button>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Save</Button>
-            </div>
+            ))}
           </div>
         </motion.div>
 
         {/* Dialog pour créer un RDV */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button 
-              className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg lg:hidden"
-              size="icon"
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Nouveau rendez-vous</DialogTitle>
+              <DialogTitle className="flex items-center">
+                <Scissors className="h-5 w-5 mr-2" />
+                Nouveau rendez-vous
+              </DialogTitle>
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit((data) => createMutation.mutate(data))} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="clientId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Client</FormLabel>
-                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionner un client" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {clients.map((client: any) => (
-                            <SelectItem key={client.id} value={client.id.toString()}>
-                              {client.firstName} {client.lastName}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 <FormField
                   control={form.control}
                   name="serviceId"
@@ -532,9 +669,15 @@ export default function PlanningResponsive() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {services.map((service: any) => (
+                          {beautyServices.map((service) => (
                             <SelectItem key={service.id} value={service.id.toString()}>
-                              {service.name} - {service.price}€
+                              <div className="flex items-center space-x-2">
+                                <div 
+                                  className="w-3 h-3 rounded" 
+                                  style={{ backgroundColor: service.color }}
+                                />
+                                <span>{service.name} - {service.price}€ ({service.duration}min)</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -546,13 +689,24 @@ export default function PlanningResponsive() {
 
                 <FormField
                   control={form.control}
-                  name="appointmentDate"
+                  name="clientId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date</FormLabel>
-                      <FormControl>
-                        <Input type="date" {...field} />
-                      </FormControl>
+                      <FormLabel>Client</FormLabel>
+                      <Select onValueChange={(value) => field.onChange(parseInt(value))}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionner un client" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Array.isArray(clients) && clients.map((client: any) => (
+                            <SelectItem key={client.id} value={client.id.toString()}>
+                              {client.firstName} {client.lastName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -561,24 +715,13 @@ export default function PlanningResponsive() {
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="startTime"
+                    name="appointmentDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Heure début</FormLabel>
-                        <Select onValueChange={field.onChange}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Début" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {timeSlots.map((slot) => (
-                              <SelectItem key={slot} value={slot}>
-                                {slot}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Date</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -586,14 +729,14 @@ export default function PlanningResponsive() {
 
                   <FormField
                     control={form.control}
-                    name="endTime"
+                    name="startTime"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Heure fin</FormLabel>
+                        <FormLabel>Heure</FormLabel>
                         <Select onValueChange={field.onChange}>
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue placeholder="Fin" />
+                              <SelectValue placeholder="Début" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -617,7 +760,7 @@ export default function PlanningResponsive() {
                     <FormItem>
                       <FormLabel>Notes (optionnel)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Notes du rendez-vous..." {...field} />
+                        <Textarea placeholder="Notes du rendez-vous..." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -635,13 +778,79 @@ export default function PlanningResponsive() {
                   <Button 
                     type="submit" 
                     disabled={createMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className="bg-purple-600 hover:bg-purple-700"
                   >
-                    {createMutation.isPending ? "Création..." : "Créer"}
+                    {createMutation.isPending ? "Création..." : "Créer RDV"}
                   </Button>
                 </div>
               </form>
             </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Dialog pour bloquer un créneau */}
+        <Dialog open={isBlockDialogOpen} onOpenChange={setIsBlockDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <X className="h-5 w-5 mr-2" />
+                Bloquer un créneau
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Motif du blocage</label>
+                <Input placeholder="Ex: Pause déjeuner, Formation..." className="mt-1" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium">Date</label>
+                  <Input type="date" className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium">Durée</label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Durée" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="30">30 min</SelectItem>
+                      <SelectItem value="60">1 heure</SelectItem>
+                      <SelectItem value="120">2 heures</SelectItem>
+                      <SelectItem value="240">4 heures</SelectItem>
+                      <SelectItem value="480">Journée complète</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Employé(s) concerné(s)</label>
+                <Select>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Sélectionner" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toute l'équipe</SelectItem>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex justify-end space-x-2 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsBlockDialogOpen(false)}
+                >
+                  Annuler
+                </Button>
+                <Button className="bg-red-600 hover:bg-red-700">
+                  Bloquer créneau
+                </Button>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
