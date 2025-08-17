@@ -1,834 +1,338 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'wouter';
-
 import { motion } from 'framer-motion';
 import { 
-  ArrowLeft, Search, Plus, Star, Phone, 
-  MessageCircle, User, Crown, Users, Calendar
+  ArrowLeft, Grid3X3, List, Heart, X, Calendar
 } from 'lucide-react';
-import { getGenericGlassButton } from "@/lib/salonColors";
 
-interface Client {
+// Interface pour les rendez-vous du jour
+interface TodayAppointment {
   id: string;
   name: string;
-  email: string;
-  phone: string;
-  avatar?: string;
-  status: 'VIP' | 'Fidèle' | 'Nouvelle' | 'Inactive';
-  lastVisit: string;
-  totalVisits: number;
-  totalSpent: number;
-  rating: number;
-  notes?: string;
-  birthday?: string;
-  preferences?: string[];
-  appointments?: Appointment[];
-  review?: string;
-}
-
-interface Appointment {
-  id: string;
+  avatar: string;
+  status: string;
   date: string;
-  service: string;
-  price: number;
-  duration: string;
-  status: 'Terminé' | 'À venir' | 'Annulé';
+  time: string;
+  situation: string;
 }
 
-// ✅ DESKTOP RESPONSIVE OPTIMISÉ - Version finale
+// Interface Mediwave exacte reproduisant la capture d'écran
 export default function ClientsModern() {
-  const [, setLocation] = useLocation();
-  const [searchText, setSearchText] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
-  const [selectedClient, setSelectedClient] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
-  // Clients fictifs pour la démo
-  const mockClients: Client[] = [
+  // Statistiques du dashboard - exactement comme dans la capture
+  const dashboardStats = {
+    appointments: { count: 150, label: 'Todays', percentage: '+31%' },
+    consultations: { count: 22, label: 'Todays', percentage: '-6.4%' },
+    cancelled: { count: 3, label: 'Todays', percentage: '+30%' },
+    urgentResolve: { count: 5, label: 'Todays', percentage: '+31%' }
+  };
+
+  // Rendez-vous du jour - exactement comme dans la capture
+  const todayAppointments: TodayAppointment[] = [
     {
       id: '1',
-      name: 'Marie Dupont',
-      email: 'marie.dupont@email.com',
-      phone: '06 12 34 56 78',
-      status: 'VIP',
-      lastVisit: '2025-01-15',
-      totalVisits: 24,
-      totalSpent: 1850,
-      rating: 4.9,
-      notes: 'Préfère les rendez-vous le matin. Allergique aux sulfates.',
-      preferences: ['Coiffure', 'Coloration naturelle', 'Soins bio'],
-      review: 'Service impeccable ! Marie est très professionnelle et à l\'écoute. Je recommande vivement ce salon pour la qualité des prestations.',
-      appointments: [
-        { id: '1', date: '2024-03-15', service: 'Coupe + Brushing', price: 65, duration: '1h30', status: 'Terminé' },
-        { id: '2', date: '2024-02-20', service: 'Coloration + Coupe', price: 120, duration: '2h30', status: 'Terminé' },
-        { id: '3', date: '2024-01-18', service: 'Soin capillaire', price: 45, duration: '1h', status: 'Terminé' },
-        { id: '4', date: '2024-04-22', service: 'Coupe + Coloration', price: 135, duration: '3h', status: 'À venir' }
-      ]
+      name: 'Abdullah Al Ahmed Shawqi',
+      avatar: '👨🏽',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '10:00 AM',
+      situation: '🟢'
     },
     {
       id: '2',
-      name: 'Sophie Martin',
-      email: 'sophie.martin@gmail.com',
-      phone: '06 98 76 54 32',
-      status: 'Fidèle',
-      lastVisit: '2025-01-10',
-      totalVisits: 12,
-      totalSpent: 680,
-      rating: 4.7,
-      preferences: ['Manucure', 'Pédicure', 'Massage'],
-      review: 'Très satisfaite du service. L\'équipe est accueillante et les prestations sont de qualité.',
-      appointments: [
-        { id: '5', date: '2024-03-10', service: 'Manucure gel', price: 35, duration: '45min', status: 'Terminé' },
-        { id: '6', date: '2024-02-25', service: 'Pédicure spa', price: 55, duration: '1h', status: 'Terminé' }
-      ]
+      name: 'Al Shaheer Shasson',
+      avatar: '👨🏽',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '10:20 AM',
+      situation: '🟢'
     },
     {
       id: '3',
-      name: 'Emma Rodriguez',
-      email: 'emma.rodriguez@outlook.com',
-      phone: '07 45 67 89 12',
-      status: 'Nouvelle',
-      lastVisit: '2025-01-08',
-      totalVisits: 2,
-      totalSpent: 120,
-      rating: 4.5,
-      review: 'Première visite très réussie ! Je reviendrai certainement.',
-      appointments: [
-        { id: '7', date: '2024-03-08', service: 'Coupe découverte', price: 60, duration: '1h30', status: 'Terminé' },
-        { id: '8', date: '2024-04-15', service: 'Brushing', price: 35, duration: '45min', status: 'À venir' }
-      ]
+      name: 'Lyn R. Formus',
+      avatar: '👤',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '10:40 AM',
+      situation: '🟢'
     },
     {
       id: '4',
-      name: 'Lucas Leroy',
-      email: 'lucas.leroy@email.fr',
-      phone: '06 11 22 33 44',
-      status: 'VIP',
-      lastVisit: '2025-01-12',
-      totalVisits: 18,
-      totalSpent: 1200,
-      rating: 4.8,
-      preferences: ['Coupe homme', 'Barbe', 'Soins visage']
+      name: 'Katherine A. Sheriff',
+      avatar: '👩🏼',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '11:00 AM',
+      situation: '🟢'
     },
     {
       id: '5',
-      name: 'Amélie Thomas',
-      email: 'amelie.thomas@yahoo.fr',
-      phone: '06 55 44 33 22',
-      status: 'Fidèle',
-      lastVisit: '2025-01-05',
-      totalVisits: 8,
-      totalSpent: 450,
-      rating: 4.6,
-      preferences: ['Extensions', 'Lissage', 'Soins capillaires']
+      name: 'Robert S. Perez',
+      avatar: '👨🏻',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '11:20 AM',
+      situation: '🟢'
+    },
+    {
+      id: '6',
+      name: 'Jason L. Bowling',
+      avatar: '👨🏿',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '11:40 AM',
+      situation: '🟢'
+    },
+    {
+      id: '7',
+      name: 'Joseph A. Rose',
+      avatar: '👨🏼',
+      status: 'Consultation',
+      date: '03.01.2019',
+      time: '12:00 PM',
+      situation: '🟢'
     }
   ];
 
-  // Récupérer les clients depuis la BDD avec fallback sur les clients fictifs
-  const { data: clientsFromDB, isLoading } = useQuery<Client[]>({
-    queryKey: ['/api/clients'],
-    retry: 1
-  });
+  // Fonction pour créer le cercle de progression
+  const ProgressCircle = ({ percentage, color }: { percentage: number; color: string }) => {
+    const radius = 20;
+    const circumference = 2 * Math.PI * radius;
+    const strokeDasharray = circumference;
+    const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
-  const clients = clientsFromDB && clientsFromDB.length > 0 ? clientsFromDB : mockClients;
-
-
-
-  const filteredClients = (clients || []).filter((client: Client) => {
-    const matchesSearch = client.name.toLowerCase().includes(searchText.toLowerCase()) ||
-                         client.email.toLowerCase().includes(searchText.toLowerCase()) ||
-                         client.phone.includes(searchText);
-    const matchesFilter = selectedFilter === 'all' || client.status === selectedFilter;
-    return matchesSearch && matchesFilter;
-  });
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'VIP': return 'bg-purple-100 text-purple-600 border-purple-200';
-      case 'Fidèle': return 'bg-green-100 text-green-600 border-green-200';
-      case 'Nouvelle': return 'bg-blue-100 text-blue-600 border-blue-200';
-      case 'Inactive': return 'bg-gray-100 text-gray-600 border-gray-200';
-      default: return 'bg-gray-100 text-gray-600 border-gray-200';
-    }
-  };
-
-  const currentClient = selectedClient 
-    ? (clients || []).find((c: Client) => c.id === selectedClient)
-    : null;
-
-  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 relative overflow-hidden flex items-center justify-center">
-
-        
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center relative z-10"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-12 h-12 border-4 border-purple-100 border-t-purple-500 rounded-full mx-auto mb-6"
+      <div className="relative w-12 h-12">
+        <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 50 50">
+          <circle
+            cx="25"
+            cy="25"
+            r={radius}
+            stroke="#e5e7eb"
+            strokeWidth="3"
+            fill="transparent"
           />
-          <p className="text-purple-600 font-medium">Chargement de vos client(e)s...</p>
-        </motion.div>
+          <circle
+            cx="25"
+            cy="25"
+            r={radius}
+            stroke={color}
+            strokeWidth="3"
+            fill="transparent"
+            strokeDasharray={strokeDasharray}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            className="transition-all duration-1000 ease-out"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-xs font-bold text-gray-700">{percentage}%</span>
+        </div>
       </div>
     );
-  }
+  };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 relative overflow-hidden"
-    >
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
+      {/* Header avec bouton retour */}
+      <motion.button
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        onClick={() => window.history.back()}
+        className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
+      >
+        <ArrowLeft className="h-5 w-5 text-gray-700" />
+      </motion.button>
 
-      
-      {!selectedClient ? (
-        // Vue liste clients moderne - DESIGN EXACT CAPTURE D'ÉCRAN
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* En-tête principale */}
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="pt-16"
         >
-          <div className="max-w-md mx-auto lg:max-w-6xl space-y-8">
-            
-            {/* Header avec bouton retour - STYLE CAPTURE */}
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              onClick={() => window.history.back()}
-              className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
-            >
-              <ArrowLeft className="h-5 w-5 text-gray-700" />
-            </motion.button>
-
-            {/* Header avec icône et titre - STYLE CAPTURE */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-center space-y-6 pt-8"
-            >
-              {/* Icône glassmorphism violette avec Users */}
-              <div className="w-20 h-20 lg:w-24 lg:h-24 mx-auto rounded-3xl flex items-center justify-center shadow-luxury"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(124, 58, 237, 0.8) 50%, rgba(109, 40, 217, 0.9) 100%)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                }}
-              >
-                <Users className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
-              </div>
-              
-              <div>
-                <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 tracking-tight mb-3">
-                  Gestion Client(e)s
-                </h1>
-                <p className="text-gray-600 text-sm lg:text-lg leading-relaxed max-w-2xl mx-auto">
-                  Base de données client(e)s complète avec historique et préférences
-                </p>
-                <p className="text-gray-500 text-xs lg:text-sm mt-2">
-                  {filteredClients.length} client(e)s • Gestion intelligente
-                </p>
-              </div>
-            </motion.div>
-
-            {/* Cartes statistiques - STYLE CAPTURE (3 cartes horizontales) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-6 lg:p-8 shadow-lg"
-            >
-              <div className="grid grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
-                    {mockClients.filter(c => c.status === 'VIP').length}
-                  </div>
-                  <div className="text-sm lg:text-base text-gray-600">Client(e)s VIP</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
-                    {mockClients.filter(c => c.status === 'Fidèle').length}
-                  </div>
-                  <div className="text-sm lg:text-base text-gray-600">Fidèles</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
-                    {mockClients.filter(c => c.status === 'Nouvelle').length}
-                  </div>
-                  <div className="text-sm lg:text-base text-gray-600">Nouvelles</div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Barre de recherche - STYLE CAPTURE */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-4 shadow-lg"
-            >
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Rechercher une cliente..."
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-gray-900 placeholder-gray-500"
-                />
-              </div>
-            </motion.div>
-
-            {/* Filtres en onglets - STYLE CAPTURE (onglets arrondis noirs/blancs) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-wrap gap-2"
-            >
-              {[
-                { key: 'all', label: `Tous (${mockClients.length})` },
-                { key: 'VIP', label: `VIP (${mockClients.filter(c => c.status === 'VIP').length})` },
-                { key: 'Fidèle', label: `Fidèles (${mockClients.filter(c => c.status === 'Fidèle').length})` },
-                { key: 'Nouvelle', label: `Nouvelles (${mockClients.filter(c => c.status === 'Nouvelle').length})` },
-                { key: 'Inactive', label: `Inactives (${mockClients.filter(c => c.status === 'Inactive').length})` }
-              ].map((filter) => (
-                <motion.button
-                  key={filter.key}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedFilter(filter.key)}
-                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all shadow-md ${
-                    selectedFilter === filter.key
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-white/80 backdrop-blur-sm border border-gray-200/50 text-gray-700 hover:bg-white/90'
-                  }`}
-                >
-                  {filter.label}
-                </motion.button>
-              ))}
-            </motion.div>
-
-            {/* Liste des clients - STYLE LANDING GLASSMORPHISM */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="space-y-6"
-            >
-              {filteredClients.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="text-gray-500 text-lg">Aucune cliente trouvée</div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {filteredClients.map((client, index) => (
-                    <motion.button
-                      key={client.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.1 * index }}
-                      whileHover={{ 
-                        scale: 1.02,
-                        y: -4,
-                        transition: { duration: 0.2 }
-                      }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setSelectedClient(client.id)}
-                      className="w-full text-left bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all"
-                    >
-                      <div className="space-y-4">
-                        {/* Première ligne : Nom + Badge + Nombre de visites */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            {client.status === 'VIP' && (
-                              <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
-                                <Crown className="h-4 w-4 text-white" />
-                              </div>
-                            )}
-                            <h3 className="text-lg lg:text-xl font-bold text-gray-900">
-                              {client.name}
-                            </h3>
-                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(client.status)}`}>
-                              {client.status}
-                            </span>
-                          </div>
-                          
-                          <span className="text-sm lg:text-base text-gray-500 font-medium">{client.totalVisits} visites</span>
-                        </div>
-                        
-                        {/* Seconde ligne : Note + Date dernière visite */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1">
-                            {[...Array(5)].map((_, i) => (
-                              <Star key={i} className={`w-4 h-4 lg:w-5 lg:h-5 ${i < Math.floor(client.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                            ))}
-                            <span className="ml-2 text-sm lg:text-base font-semibold text-gray-700">{client.rating}</span>
-                          </div>
-                          
-                          <span className="text-xs lg:text-sm text-gray-500">
-                            {new Date(client.lastVisit).toLocaleDateString('fr-FR', { 
-                              day: 'numeric', 
-                              month: 'short' 
-                            })}
-                          </span>
-                        </div>
-                      </div>
-                    </motion.button>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          </div>
-          
-          {/* Footer professionnel Avyento - PLEINE LARGEUR */}
-          <motion.footer
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-slate-800 text-white py-12 mt-16 w-full relative z-50"
-          >
-            <div className="max-w-6xl mx-auto px-6 lg:px-8">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                {/* Avyento */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Avyento</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    La plateforme IA qui révolutionne la beauté et optimise vos revenus.
-                  </p>
-                </div>
-                
-                {/* Services */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Services</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Coiffure</li>
-                    <li>Esthétique</li>
-                    <li>Manucure</li>
-                    <li>Massage</li>
-                  </ul>
-                </div>
-                
-                {/* Partenaires */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Partenaires</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Devenir partenaire</li>
-                    <li>Tarifs professionnels</li>
-                    <li>Formation & Support</li>
-                    <li>Témoignages</li>
-                  </ul>
-                </div>
-                
-                {/* Support */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Support</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Centre d'aide</li>
-                    <li>Contact</li>
-                    <li>CGU</li>
-                    <li>Confidentialité</li>
-                  </ul>
-                </div>
-              </div>
-              
-              {/* Copyright et réseaux sociaux */}
-              <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
-                <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
-                <div className="flex space-x-4 mt-4 lg:mt-0">
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">tw</span>
-                  </div>
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">ig</span>
-                  </div>
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">tk</span>
-                  </div>
-                </div>
-              </div>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-800 mb-2">Overview</h1>
+              <p className="text-gray-600">Md Rayhan Islam • Central Clinic Dhaka • Today's</p>
             </div>
-          </motion.footer>
-        </motion.div>
-      ) : (
-        // Vue détail client moderne - DESIGN LANDING.TSX
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
-        >
-          <div className="max-w-md mx-auto lg:max-w-6xl space-y-8">
-            
-            {/* Header avec retour */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="flex items-center gap-4"
-            >
-              <button
-                onClick={() => setSelectedClient(null)}
-                className="p-3 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl hover:bg-white/90 transition-all shadow-md"
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
               >
-                <ArrowLeft className="h-5 w-5 text-gray-700" />
+                <List className="h-5 w-5" />
               </button>
-              
-              <div className="flex-1">
-                <h1 className="text-2xl lg:text-4xl font-bold text-gray-900 tracking-tight">
-                  {currentClient?.name}
-                </h1>
-                <p className="text-gray-600 text-sm lg:text-lg">{currentClient?.email}</p>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => window.open(`tel:${currentClient?.phone}`)}
-                  className="p-3 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl hover:bg-white/90 transition-all shadow-md"
-                >
-                  <Phone className="h-5 w-5 text-gray-600" />
-                </button>
-                <button 
-                  onClick={() => setLocation('/pro-messaging')}
-                  className="p-3 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl hover:bg-white/90 transition-all shadow-md"
-                >
-                  <MessageCircle className="h-5 w-5 text-gray-600" />
-                </button>
-              </div>
-            </motion.div>
-
-            {/* Contenu principal avec layout moderne */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-              
-              {/* Colonne gauche - Infos principales */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="space-y-8"
+              <button 
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
               >
-                {/* Photo et infos - DESIGN GLASSMORPHISM LANDING */}
-                <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                  <div className="flex flex-col sm:flex-row items-center gap-6 mb-8">
-                    {/* Photo avec upload */}
-                    <div className="relative group">
-                      {currentClient?.avatar ? (
-                        <img
-                          src={currentClient.avatar}
-                          alt={currentClient.name}
-                          className="w-24 h-24 lg:w-32 lg:h-32 rounded-full object-cover border-4 border-white shadow-luxury"
-                        />
-                      ) : (
-                        <div className="w-24 h-24 lg:w-32 lg:h-32 gradient-bg rounded-full flex items-center justify-center border-4 border-white shadow-luxury">
-                          <User className="h-12 w-12 lg:h-16 lg:w-16 text-white" />
-                        </div>
-                      )}
-                      <button className="absolute inset-0 bg-black/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Plus className="h-8 w-8 text-white" />
-                      </button>
-                    </div>
-                    
-                    <div className="text-center sm:text-left flex-1">
-                      <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">{currentClient?.name}</h2>
-                      <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium border ${getStatusColor(currentClient?.status || '')}`}>
-                        {currentClient?.status}
-                      </span>
-                      {/* Informations de contact */}
-                      <div className="mt-4 space-y-2 text-sm lg:text-base text-gray-600">
-                        <div className="flex items-center gap-3 justify-center sm:justify-start">
-                          <span>📧</span>
-                          <span>{currentClient?.email}</span>
-                        </div>
-                        <div className="flex items-center gap-3 justify-center sm:justify-start">
-                          <span>📞</span>
-                          <span>{currentClient?.phone || '+33 6 12 34 56 78'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Stats en grille - STYLE LANDING */}
-                  <div className="grid grid-cols-3 gap-6">
-                    <div className="text-center">
-                      <div className="text-3xl lg:text-4xl font-bold text-violet-600 mb-1">{currentClient?.totalVisits}</div>
-                      <div className="text-sm lg:text-base text-gray-600">Visites</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl lg:text-4xl font-bold text-green-600 mb-1">€{currentClient?.totalSpent}</div>
-                      <div className="text-sm lg:text-base text-gray-600">Dépensé</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-3xl lg:text-4xl font-bold text-yellow-600 mb-1">{currentClient?.rating}</div>
-                      <div className="text-sm lg:text-base text-gray-600">Note</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions rapides - STYLE GLASSMORPHISM LANDING */}
-                <div className="space-y-4">
-                  <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    whileHover={{ 
-                      scale: 1.02,
-                      y: -2,
-                      transition: { duration: 0.2 }
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setLocation('/booking')}
-                    className="relative w-full h-16 rounded-3xl overflow-hidden group"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
-                      backdropFilter: 'blur(20px)',
-                      WebkitBackdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
-                      <Calendar className="w-5 h-5 mr-3" />
-                      Prendre rendez-vous
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-                  </motion.button>
-                  
-                  <motion.button 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full h-14 ${getGenericGlassButton(1)} rounded-xl text-base font-medium flex items-center justify-center`}
-                    onClick={() => setLocation('/pro-messaging')}
-                  >
-                    <MessageCircle className="w-5 h-5 mr-3" />
-                    Envoyer un message
-                  </motion.button>
-                </div>
-
-                {/* Avis laissé - STYLE LANDING */}
-                {currentClient?.review && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg"
-                  >
-                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis laissé</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-6 h-6 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                        ))}
-                        <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
-                      </div>
-                      <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
-                        "{currentClient.review}"
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </motion.div>
-
-              {/* Colonne droite - Notes et Photos */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="space-y-8"
-              >
-                {/* Notes éditables - STYLE LANDING */}
-                <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Notes</h3>
-                  <textarea
-                    className="w-full h-40 p-4 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-sm lg:text-base"
-                    placeholder="Préfère les rendez-vous le matin. Allergique aux sulfates."
-                    defaultValue={currentClient?.notes || 'Préfère les rendez-vous le matin. Allergique aux sulfates.'}
-                  />
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="mt-4 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-2xl text-sm lg:text-base font-medium transition-all shadow-lg"
-                  >
-                    Sauvegarder
-                  </motion.button>
-                </div>
-
-                {/* Galerie photos - STYLE LANDING */}
-                <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
-                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Photos</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    {/* Placeholder photos */}
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-all shadow-md"
-                    >
-                      <Plus className="h-8 w-8 text-gray-400" />
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-all shadow-md"
-                    >
-                      <Plus className="h-8 w-8 text-gray-400" />
-                    </motion.div>
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-violet-400 cursor-pointer transition-all shadow-md"
-                    >
-                      <Plus className="h-8 w-8 text-gray-400" />
-                    </motion.div>
-                  </div>
-                  <p className="text-sm lg:text-base text-gray-500 mt-4 text-center">Cliquez pour ajouter des photos de réalisations</p>
-                </div>
-
-
-
-
-              </motion.div>
-            </div>
-
-            {/* Sections pleine largeur desktop */}
-            <div className="max-w-md lg:max-w-none lg:w-full space-y-8">
-              {/* Historique des rendez-vous - PLEINE LARGEUR DESKTOP */}
-              {currentClient?.appointments && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg"
-                >
-                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Historique des rendez-vous</h3>
-                  <div className="space-y-4">
-                    {/* Afficher seulement les 2 derniers */}
-                    {currentClient.appointments
-                      .slice(0, 2)
-                      .map((appointment) => (
-                        <motion.div 
-                          key={appointment.id}
-                          whileHover={{ scale: 1.02 }}
-                          className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 lg:p-6 transition-all"
-                        >
-                          <div className="flex justify-between items-start mb-3">
-                            <div>
-                              <h4 className="font-semibold text-gray-900 text-base lg:text-lg">{appointment.service}</h4>
-                              <p className="text-sm text-gray-600">{new Date(appointment.date).toLocaleDateString('fr-FR', { 
-                                day: 'numeric', 
-                                month: 'long', 
-                                year: 'numeric' 
-                              })}</p>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              appointment.status === 'Terminé' 
-                                ? 'bg-green-100 text-green-700 border border-green-200'
-                                : appointment.status === 'À venir'
-                                ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                                : 'bg-red-100 text-red-700 border border-red-200'
-                            }`}>
-                              {appointment.status}
-                            </span>
-                          </div>
-                          <div className="flex justify-between items-center text-sm text-gray-600">
-                            <span>⏱️ {appointment.duration}</span>
-                            <span className="font-semibold text-green-600">€{appointment.price}</span>
-                          </div>
-                        </motion.div>
-                      ))}
-                    {/* Scroll indicator si plus de 2 rendez-vous */}
-                    {currentClient.appointments.length > 2 && (
-                      <div className="text-center py-2">
-                        <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto opacity-60"></div>
-                        <p className="text-xs text-gray-500 mt-2">Scroll pour voir les {currentClient.appointments.length - 2} autres rendez-vous</p>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-
+                <Grid3X3 className="h-5 w-5" />
+              </button>
             </div>
           </div>
-          
-          {/* Footer professionnel Avyento - PLEINE LARGEUR */}
-          <motion.footer
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="bg-slate-800 text-white py-12 mt-16 w-full relative z-50"
-          >
-            <div className="max-w-6xl mx-auto px-6 lg:px-8">
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                {/* Avyento */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Avyento</h3>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    La plateforme IA qui révolutionne la beauté et optimise vos revenus.
-                  </p>
-                </div>
-                
-                {/* Services */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Services</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Coiffure</li>
-                    <li>Esthétique</li>
-                    <li>Manucure</li>
-                    <li>Massage</li>
-                  </ul>
-                </div>
-                
-                {/* Partenaires */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Partenaires</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Devenir partenaire</li>
-                    <li>Tarifs professionnels</li>
-                    <li>Formation & Support</li>
-                    <li>Témoignages</li>
-                  </ul>
-                </div>
-                
-                {/* Support */}
-                <div>
-                  <h3 className="font-bold text-lg mb-4">Support</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
-                    <li>Centre d'aide</li>
-                    <li>Contact</li>
-                    <li>CGU</li>
-                    <li>Confidentialité</li>
-                  </ul>
-                </div>
+        </motion.div>
+
+        {/* 4 Cartes statistiques colorées - exactement comme la capture */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
+          {/* Carte Appointments - Bleue */}
+          <div className="bg-blue-500 text-white rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Appointments</h3>
+              <Calendar className="h-6 w-6" />
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-4xl font-bold mb-1">{dashboardStats.appointments.count}</div>
+                <div className="text-blue-100 text-sm">{dashboardStats.appointments.label}</div>
               </div>
-              
-              {/* Copyright et réseaux sociaux */}
-              <div className="flex flex-col lg:flex-row justify-between items-center pt-8 mt-8 border-t border-gray-700">
-                <p className="text-gray-400 text-sm">© 2024 Avyento. Tous droits réservés.</p>
-                <div className="flex space-x-4 mt-4 lg:mt-0">
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">tw</span>
+              <ProgressCircle percentage={31} color="#ffffff" />
+            </div>
+            <div className="mt-2 text-sm text-blue-100">{dashboardStats.appointments.percentage}</div>
+          </div>
+
+          {/* Carte Consultations - Violette */}
+          <div className="bg-purple-500 text-white rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Consultations</h3>
+              <Calendar className="h-6 w-6" />
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-4xl font-bold mb-1">{dashboardStats.consultations.count}</div>
+                <div className="text-purple-100 text-sm">{dashboardStats.consultations.label}</div>
+              </div>
+              <ProgressCircle percentage={64} color="#ffffff" />
+            </div>
+            <div className="mt-2 text-sm text-purple-100">{dashboardStats.consultations.percentage}</div>
+          </div>
+
+          {/* Carte Cancelled - Rouge */}
+          <div className="bg-red-500 text-white rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Cancelled</h3>
+              <X className="h-6 w-6" />
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-4xl font-bold mb-1">0{dashboardStats.cancelled.count}</div>
+                <div className="text-red-100 text-sm">{dashboardStats.cancelled.label}</div>
+              </div>
+              <ProgressCircle percentage={30} color="#ffffff" />
+            </div>
+            <div className="mt-2 text-sm text-red-100">{dashboardStats.cancelled.percentage}</div>
+          </div>
+
+          {/* Carte Urgent Resolve - Verte */}
+          <div className="bg-green-500 text-white rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Urgent Resolve</h3>
+              <Heart className="h-6 w-6" />
+            </div>
+            <div className="flex items-end justify-between">
+              <div>
+                <div className="text-4xl font-bold mb-1">0{dashboardStats.urgentResolve.count}</div>
+                <div className="text-green-100 text-sm">{dashboardStats.urgentResolve.label}</div>
+              </div>
+              <ProgressCircle percentage={31} color="#ffffff" />
+            </div>
+            <div className="mt-2 text-sm text-green-100">{dashboardStats.urgentResolve.percentage}</div>
+          </div>
+        </motion.div>
+
+        {/* Section Todays avec liste des rendez-vous */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-2xl shadow-lg overflow-hidden"
+        >
+          {/* En-tête de la section */}
+          <div className="px-6 py-4 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-800">Todays</h2>
+              <span className="text-sm text-gray-500">150 Appointments</span>
+            </div>
+          </div>
+
+          {/* En-têtes des colonnes */}
+          <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+            <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-700">
+              <div className="col-span-3">Name</div>
+              <div className="col-span-2">Status</div>
+              <div className="col-span-2">Date</div>
+              <div className="col-span-2">Time</div>
+              <div className="col-span-1">Situation</div>
+              <div className="col-span-2">Actions</div>
+            </div>
+          </div>
+
+          {/* Liste des rendez-vous */}
+          <div className="divide-y divide-gray-100">
+            {todayAppointments.map((appointment, index) => (
+              <motion.div 
+                key={appointment.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 * index }}
+                className="px-6 py-4 hover:bg-gray-50 transition-colors"
+              >
+                <div className="grid grid-cols-12 gap-4 items-center">
+                  {/* Nom avec avatar */}
+                  <div className="col-span-3 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg">
+                      {appointment.avatar}
+                    </div>
+                    <span className="font-medium text-gray-900">{appointment.name}</span>
                   </div>
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">ig</span>
+
+                  {/* Status */}
+                  <div className="col-span-2">
+                    <span className="text-blue-600 text-sm">{appointment.status}</span>
                   </div>
-                  <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors cursor-pointer">
-                    <span className="text-xs">tk</span>
+
+                  {/* Date */}
+                  <div className="col-span-2">
+                    <span className="text-gray-600 text-sm">{appointment.date}</span>
+                  </div>
+
+                  {/* Time */}
+                  <div className="col-span-2">
+                    <span className="text-gray-900 font-medium text-sm">{appointment.time}</span>
+                  </div>
+
+                  {/* Situation */}
+                  <div className="col-span-1 flex justify-center">
+                    <span className="text-lg">{appointment.situation}</span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="col-span-2">
+                    <button className="bg-gray-800 text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-gray-700 transition-colors">
+                      VIEW DETAILS
+                    </button>
                   </div>
                 </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Footer avec pagination */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div className="flex items-center justify-between text-sm text-gray-600">
+              <span>Displaying 7 Record Data of 150 records</span>
+              <div className="flex items-center gap-2">
+                <span>1 2 3 4 5 6 7 ... 25 50</span>
               </div>
             </div>
-          </motion.footer>
+          </div>
         </motion.div>
-      )}
-    </motion.div>
+      </div>
+    </div>
   );
 }
