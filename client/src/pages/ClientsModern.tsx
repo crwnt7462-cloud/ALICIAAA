@@ -178,63 +178,63 @@ export default function ClientsModern() {
           </motion.button>
 
           {/* Layout responsive Desktop optimisé + Mobile */}
-          <div className="p-4 md:p-6 lg:p-12 xl:p-16">
-            <div className="max-w-md mx-auto lg:max-w-7xl xl:max-w-none">
+          <div className="p-4 md:p-6 lg:p-8 xl:p-12 2xl:p-16">
+            <div className="max-w-md mx-auto lg:max-w-6xl xl:max-w-7xl 2xl:max-w-none 2xl:px-8">
               
-              {/* Header style Landing page */}
+              {/* Header responsive desktop optimisé */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center space-y-6 pt-8 lg:pt-16 mb-8 lg:mb-16"
+                className="text-center space-y-4 lg:space-y-6 xl:space-y-8 pt-4 lg:pt-8 xl:pt-12 2xl:pt-16 mb-6 lg:mb-12 xl:mb-16 2xl:mb-20"
               >
-                <div className="w-16 h-16 lg:w-24 lg:h-24 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
-                  <Users className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
+                <div className="w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 2xl:w-28 2xl:h-28 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
+                  <Users className="w-8 h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 text-white" />
                 </div>
                 
                 <div>
-                  <h1 className="text-3xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-4">
+                  <h1 className="text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-3 xl:mb-4 2xl:mb-6">
                     Gestion Clients
                   </h1>
-                  <p className="text-gray-600 text-sm lg:text-xl leading-relaxed max-w-3xl mx-auto">
+                  <p className="text-gray-600 text-sm lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto">
                     Base de données clients complète avec historique et préférences
                   </p>
                 </div>
 
                 <div className="flex items-center justify-center space-x-1">
-                  <span className="text-sm lg:text-base text-gray-600">{(clients || []).length} clientes • Gestion intelligente</span>
+                  <span className="text-sm lg:text-base xl:text-lg 2xl:text-xl text-gray-600">{(clients || []).length} clientes • Gestion intelligente</span>
                 </div>
               </motion.div>
 
-              {/* Stats style Landing page */}
+              {/* Stats responsive desktop optimisé */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="mb-8 lg:mb-16"
+                className="mb-6 lg:mb-10 xl:mb-12 2xl:mb-16"
               >
-                <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
-                  <div className="p-4 lg:p-6">
-                    <div className="grid grid-cols-3 gap-4 lg:gap-8 text-center">
+                <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl xl:rounded-2xl 2xl:rounded-3xl overflow-hidden">
+                  <div className="p-4 lg:p-6 xl:p-8 2xl:p-10">
+                    <div className="grid grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12 text-center">
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'VIP').length || 0}</p>
-                        <p className="text-xs lg:text-sm text-gray-600">Clientes VIP</p>
+                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'VIP').length || 0}</p>
+                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Clientes VIP</p>
                       </div>
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Fidèle').length || 0}</p>
-                        <p className="text-xs lg:text-sm text-gray-600">Fidèles</p>
+                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Fidèle').length || 0}</p>
+                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Fidèles</p>
                       </div>
                       <div>
-                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0}</p>
-                        <p className="text-xs lg:text-sm text-gray-600">Nouvelles</p>
+                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0}</p>
+                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Nouvelles</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Contrôles style Landing page - Mobile/Desktop responsive */}
-              <div className="space-y-4 lg:space-y-8 mb-8 lg:mb-16">
+              {/* Contrôles responsive desktop optimisé */}
+              <div className="space-y-4 lg:space-y-6 xl:space-y-8 2xl:space-y-10 mb-6 lg:mb-10 xl:mb-12 2xl:mb-16">
                 
                 {/* Barre de recherche style Landing */}
                 <motion.div 
@@ -243,13 +243,13 @@ export default function ClientsModern() {
                   transition={{ duration: 0.6, delay: 0.6 }}
                   className="relative"
                 >
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-500" />
+                  <Search className="absolute left-4 lg:left-5 xl:left-6 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 text-gray-500" />
                   <input
                     type="text"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                     placeholder="Rechercher une cliente..."
-                    className="w-full h-12 lg:h-14 pl-12 lg:pl-14 pr-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300 transition-all shadow-md"
+                    className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 pl-12 lg:pl-14 xl:pl-16 2xl:pl-18 pr-4 lg:pr-6 xl:pr-8 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl xl:rounded-2xl 2xl:rounded-3xl text-base lg:text-lg xl:text-xl 2xl:text-2xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300 transition-all shadow-md"
                   />
                 </motion.div>
 
@@ -269,7 +269,7 @@ export default function ClientsModern() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setSelectedFilter(filter.id)}
-                      className={`px-3 py-2 lg:px-4 lg:py-3 rounded-xl text-xs lg:text-sm font-medium whitespace-nowrap transition-all ${
+                      className={`px-3 py-2 lg:px-4 lg:py-3 xl:px-5 xl:py-4 2xl:px-6 2xl:py-5 rounded-xl xl:rounded-2xl text-xs lg:text-sm xl:text-base 2xl:text-lg font-medium whitespace-nowrap transition-all ${
                         selectedFilter === filter.id
                           ? 'bg-gray-900 text-white shadow-lg'
                           : 'bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200/50 shadow-md'
@@ -291,7 +291,7 @@ export default function ClientsModern() {
                     title: "Nouvelle cliente", 
                     description: "Fonctionnalité à venir" 
                   })}
-                  className="w-full h-12 lg:h-14 gradient-bg text-white rounded-xl text-base lg:text-lg font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
+                  className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 gradient-bg text-white rounded-xl xl:rounded-2xl text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
                 >
                   <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
                   Ajouter une cliente
@@ -303,7 +303,7 @@ export default function ClientsModern() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.2 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6 xl:gap-8"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4 lg:gap-5 xl:gap-6 2xl:gap-7 3xl:gap-8"
               >
                 {filteredClients.length === 0 ? (
                   <div className="col-span-full">
@@ -333,7 +333,7 @@ export default function ClientsModern() {
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedClient(client.id)}
-                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200 text-left p-4 lg:p-6"
+                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl xl:rounded-2xl 2xl:rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-200 text-left p-4 lg:p-5 xl:p-6 2xl:p-8"
                   >
                     <div className="space-y-3">
                       {/* Avatar et statut */}
