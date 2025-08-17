@@ -12,6 +12,11 @@
   .xs\:hidden { display: none; }
 }
 
+@media (max-width: 479px) {
+  .xs\:hidden { display: none; }
+  .xs\:inline { display: inline; }
+}
+
 /* Force responsive navigation display */
 @media (max-width: 767px) {
   .desktop-sidebar-only {

@@ -114,11 +114,9 @@ export default function ClientDashboard() {
           {/* Logo section - Glassmorphism */}
           <div className="px-6 py-8">
             <div className="flex items-center justify-center">
-              <img 
-                src="@assets/Logo avyento._1755468508430.png" 
-                alt="Avyento" 
-                className="h-[95px] w-auto object-contain"
-              />
+              <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                Avyento
+              </span>
             </div>
           </div>
           
@@ -264,10 +262,11 @@ export default function ClientDashboard() {
             <div className="flex items-center space-x-4 flex-shrink-0">
               <button
                 onClick={() => setLocation('/salon-search')}
-                className="glass-button px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105 text-sm sm:text-base whitespace-nowrap"
+                className="glass-button px-3 sm:px-4 md:px-6 py-2 sm:py-3 rounded-2xl font-medium text-white shadow-lg border-0 transition-all duration-300 hover:scale-105 text-xs sm:text-sm md:text-base whitespace-nowrap flex items-center"
               >
-                <Calendar className="w-4 h-4 mr-2" />
-                Nouveau rendez-vous
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden xs:inline">Nouveau rendez-vous</span>
+                <span className="xs:hidden">RDV</span>
               </button>
             </div>
           </div>
@@ -398,9 +397,9 @@ export default function ClientDashboard() {
                   <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Prochains rendez-vous</h2>
                   <button
                     onClick={() => setLocation('/salon-search')}
-                    className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
+                    className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 hover:scale-105 flex items-center whitespace-nowrap"
                   >
-                    <Calendar className="w-4 h-4 mr-2" />
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                     Réserver
                   </button>
                 </div>
@@ -487,7 +486,7 @@ export default function ClientDashboard() {
                 <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Historique</h2>
                 <button
                   onClick={() => setLocation('/appointment-history')}
-                  className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-4 py-2 text-sm transition-all duration-300 hover:scale-105"
+                  className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap"
                 >
                   Voir tout
                 </button>
