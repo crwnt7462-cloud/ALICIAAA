@@ -23,6 +23,17 @@ interface Client {
   notes?: string;
   birthday?: string;
   preferences?: string[];
+  appointments?: Appointment[];
+  review?: string;
+}
+
+interface Appointment {
+  id: string;
+  date: string;
+  service: string;
+  price: number;
+  duration: string;
+  status: 'Terminé' | 'À venir' | 'Annulé';
 }
 
 // ✅ DESKTOP RESPONSIVE OPTIMISÉ - Version finale
@@ -46,7 +57,14 @@ export default function ClientsModern() {
       totalSpent: 1850,
       rating: 4.9,
       notes: 'Préfère les rendez-vous le matin. Allergique aux sulfates.',
-      preferences: ['Coiffure', 'Coloration naturelle', 'Soins bio']
+      preferences: ['Coiffure', 'Coloration naturelle', 'Soins bio'],
+      review: 'Service impeccable ! Marie est très professionnelle et à l\'écoute. Je recommande vivement ce salon pour la qualité des prestations.',
+      appointments: [
+        { id: '1', date: '2024-03-15', service: 'Coupe + Brushing', price: 65, duration: '1h30', status: 'Terminé' },
+        { id: '2', date: '2024-02-20', service: 'Coloration + Coupe', price: 120, duration: '2h30', status: 'Terminé' },
+        { id: '3', date: '2024-01-18', service: 'Soin capillaire', price: 45, duration: '1h', status: 'Terminé' },
+        { id: '4', date: '2024-04-22', service: 'Coupe + Coloration', price: 135, duration: '3h', status: 'À venir' }
+      ]
     },
     {
       id: '2',
@@ -58,7 +76,12 @@ export default function ClientsModern() {
       totalVisits: 12,
       totalSpent: 680,
       rating: 4.7,
-      preferences: ['Manucure', 'Pédicure', 'Massage']
+      preferences: ['Manucure', 'Pédicure', 'Massage'],
+      review: 'Très satisfaite du service. L\'équipe est accueillante et les prestations sont de qualité.',
+      appointments: [
+        { id: '5', date: '2024-03-10', service: 'Manucure gel', price: 35, duration: '45min', status: 'Terminé' },
+        { id: '6', date: '2024-02-25', service: 'Pédicure spa', price: 55, duration: '1h', status: 'Terminé' }
+      ]
     },
     {
       id: '3',
@@ -69,7 +92,12 @@ export default function ClientsModern() {
       lastVisit: '2025-01-08',
       totalVisits: 2,
       totalSpent: 120,
-      rating: 4.5
+      rating: 4.5,
+      review: 'Première visite très réussie ! Je reviendrai certainement.',
+      appointments: [
+        { id: '7', date: '2024-03-08', service: 'Coupe découverte', price: 60, duration: '1h30', status: 'Terminé' },
+        { id: '8', date: '2024-04-15', service: 'Brushing', price: 35, duration: '45min', status: 'À venir' }
+      ]
     },
     {
       id: '4',
@@ -166,258 +194,231 @@ export default function ClientsModern() {
 
       
       {!selectedClient ? (
-        // Vue liste des clients
-        <div className="relative z-10">
-          
-          {/* Header avec retour - style Landing */}
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            onClick={() => window.history.back()}
-            className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
-          >
-            <ArrowLeft className="h-5 w-5 text-gray-700" />
-          </motion.button>
+        // Vue liste clients moderne - DESIGN EXACT CAPTURE D'ÉCRAN
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 p-4 md:p-6 lg:p-8"
+        >
+          <div className="max-w-md mx-auto lg:max-w-6xl space-y-8">
+            
+            {/* Header avec bouton retour - STYLE CAPTURE */}
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              onClick={() => window.history.back()}
+              className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
+            >
+              <ArrowLeft className="h-5 w-5 text-gray-700" />
+            </motion.button>
 
-          {/* Layout responsive Desktop optimisé + Mobile */}
-          <div className="p-4 md:p-6 lg:p-8 xl:p-12 2xl:p-16">
-            <div className="max-w-md mx-auto lg:max-w-6xl xl:max-w-7xl 2xl:max-w-none 2xl:px-8">
-              
-              {/* Header responsive desktop optimisé */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-center space-y-4 lg:space-y-6 xl:space-y-8 pt-4 lg:pt-8 xl:pt-12 2xl:pt-16 mb-6 lg:mb-12 xl:mb-16 2xl:mb-20"
+            {/* Header avec icône et titre - STYLE CAPTURE */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-center space-y-6 pt-8"
+            >
+              {/* Icône glassmorphism violette avec Users */}
+              <div className="w-20 h-20 lg:w-24 lg:h-24 mx-auto rounded-3xl flex items-center justify-center shadow-luxury"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.9) 0%, rgba(124, 58, 237, 0.8) 50%, rgba(109, 40, 217, 0.9) 100%)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+                }}
               >
-                <div className="w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 2xl:w-28 2xl:h-28 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
-                  <Users className="w-8 h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 text-white" />
-                </div>
-                
-                <div>
-                  <h1 className="text-3xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-3 xl:mb-4 2xl:mb-6">
-                    Gestion Client(e)s
-                  </h1>
-                  <p className="text-gray-600 text-sm lg:text-lg xl:text-xl 2xl:text-2xl leading-relaxed max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl mx-auto">
-                    Base de données client(e)s complète avec historique et préférences
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-center space-x-1">
-                  <span className="text-sm lg:text-base xl:text-lg 2xl:text-xl text-gray-600">{(clients || []).length} client(e)s • Gestion intelligente</span>
-                </div>
-              </motion.div>
-
-              {/* Stats responsive desktop optimisé */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="mb-6 lg:mb-10 xl:mb-12 2xl:mb-16"
-              >
-                <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl xl:rounded-2xl 2xl:rounded-3xl overflow-hidden">
-                  <div className="p-4 lg:p-6 xl:p-8 2xl:p-10">
-                    <div className="grid grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-4 lg:gap-6 xl:gap-8 2xl:gap-12 text-center">
-                      <div>
-                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'VIP').length || 0}</p>
-                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Client(e)s VIP</p>
-                      </div>
-                      <div>
-                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Fidèle').length || 0}</p>
-                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Fidèles</p>
-                      </div>
-                      <div>
-                        <p className="text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-gray-900">{clients?.filter((c: Client) => c.status === 'Nouvelle').length || 0}</p>
-                        <p className="text-xs lg:text-sm xl:text-base 2xl:text-lg text-gray-600">Nouveau/elles</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Contrôles responsive desktop optimisé */}
-              <div className="space-y-4 lg:space-y-6 xl:space-y-8 2xl:space-y-10 mb-6 lg:mb-10 xl:mb-12 2xl:mb-16">
-                
-                {/* Barre de recherche style Landing */}
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
-                  className="relative"
-                >
-                  <Search className="absolute left-4 lg:left-5 xl:left-6 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 xl:h-6 xl:w-6 2xl:h-7 2xl:w-7 text-gray-500" />
-                  <input
-                    type="text"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                    placeholder="Rechercher une cliente..."
-                    className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 pl-12 lg:pl-14 xl:pl-16 2xl:pl-18 pr-4 lg:pr-6 xl:pr-8 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl xl:rounded-2xl 2xl:rounded-3xl text-base lg:text-lg xl:text-xl 2xl:text-2xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300 transition-all shadow-md"
-                  />
-                </motion.div>
-
-                {/* Filtres style Landing avec grid responsive */}
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  className="grid grid-cols-2 lg:flex gap-2 lg:gap-4"
-                >
-                  {filters.map((filter, index) => (
-                    <motion.button
-                      key={filter.id}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setSelectedFilter(filter.id)}
-                      className={`px-3 py-2 lg:px-4 lg:py-3 xl:px-5 xl:py-4 2xl:px-6 2xl:py-5 rounded-xl xl:rounded-2xl text-xs lg:text-sm xl:text-base 2xl:text-lg font-medium whitespace-nowrap transition-all ${
-                        selectedFilter === filter.id
-                          ? 'bg-gray-900 text-white shadow-lg'
-                          : 'bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200/50 shadow-md'
-                      }`}
-                    >
-                      {filter.label} ({filter.count})
-                    </motion.button>
-                  ))}
-                </motion.div>
-
-                {/* Bouton nouvelle cliente style Landing */}
-                <motion.button
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 1.0 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => toast({ 
-                    title: "Nouveau(elle) client(e)", 
-                    description: "Fonctionnalité à venir" 
-                  })}
-                  className="w-full h-12 lg:h-14 xl:h-16 2xl:h-18 text-white rounded-xl xl:rounded-2xl text-base lg:text-lg xl:text-xl 2xl:text-2xl font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                  }}
-                >
-                  <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
-                  Ajouter un(e) client(e)
-                </motion.button>
+                <Users className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
               </div>
+              
+              <div>
+                <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 tracking-tight mb-3">
+                  Gestion Client(e)s
+                </h1>
+                <p className="text-gray-600 text-sm lg:text-lg leading-relaxed max-w-2xl mx-auto">
+                  Base de données client(e)s complète avec historique et préférences
+                </p>
+                <p className="text-gray-500 text-xs lg:text-sm mt-2">
+                  {filteredClients.length} client(e)s • Gestion intelligente
+                </p>
+              </div>
+            </motion.div>
 
-              {/* Liste des clients responsive desktop optimisée */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.2 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4 lg:gap-5 xl:gap-6 2xl:gap-7 3xl:gap-8"
-              >
-                {filteredClients.length === 0 ? (
-                  <div className="col-span-full">
-                    <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden text-center py-16">
-                      <div className="relative mb-6">
-                        <User className="h-16 w-16 lg:h-20 lg:w-20 mx-auto text-gray-400" />
-                        <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-gray-400 animate-pulse" />
-                      </div>
-                      <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">Aucun(e) client(e) trouvé(e)</h3>
-                      <p className="text-gray-600 text-sm lg:text-base mb-4">Commencez par ajouter vos premier(ère)s client(e)s</p>
-                      <motion.div
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                        className="text-2xl"
-                      >
-                        👥
-                      </motion.div>
-                    </div>
+            {/* Cartes statistiques - STYLE CAPTURE (3 cartes horizontales) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-6 lg:p-8 shadow-lg"
+            >
+              <div className="grid grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+                    {mockClients.filter(c => c.status === 'VIP').length}
                   </div>
-                ) : (
-                  filteredClients.map((client: Client, index: number) => (
-                  <motion.button
-                    key={client.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 1.3 + index * 0.1 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedClient(client.id)}
-                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl xl:rounded-2xl 2xl:rounded-3xl overflow-hidden hover:shadow-lg transition-all duration-200 text-left p-4 lg:p-5 xl:p-6 2xl:p-8"
-                  >
-                    <div className="space-y-3">
-                      {/* Avatar et statut */}
-                      <div className="flex items-center gap-3">
+                  <div className="text-sm lg:text-base text-gray-600">Client(e)s VIP</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+                    {mockClients.filter(c => c.status === 'Fidèle').length}
+                  </div>
+                  <div className="text-sm lg:text-base text-gray-600">Fidèles</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+                    {mockClients.filter(c => c.status === 'Nouvelle').length}
+                  </div>
+                  <div className="text-sm lg:text-base text-gray-600">Nouvelles</div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Barre de recherche - STYLE CAPTURE */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-4 shadow-lg"
+            >
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  type="text"
+                  placeholder="Rechercher une cliente..."
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="w-full pl-12 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent text-gray-900 placeholder-gray-500"
+                />
+              </div>
+            </motion.div>
+
+            {/* Filtres en onglets - STYLE CAPTURE (onglets arrondis noirs/blancs) */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-wrap gap-2"
+            >
+              {[
+                { key: 'all', label: `Tous (${mockClients.length})` },
+                { key: 'VIP', label: `VIP (${mockClients.filter(c => c.status === 'VIP').length})` },
+                { key: 'Fidèle', label: `Fidèles (${mockClients.filter(c => c.status === 'Fidèle').length})` },
+                { key: 'Nouvelle', label: `Nouvelles (${mockClients.filter(c => c.status === 'Nouvelle').length})` },
+                { key: 'Inactive', label: `Inactives (${mockClients.filter(c => c.status === 'Inactive').length})` }
+              ].map((filter) => (
+                <motion.button
+                  key={filter.key}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedFilter(filter.key)}
+                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all shadow-md ${
+                    selectedFilter === filter.key
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-white/80 backdrop-blur-sm border border-gray-200/50 text-gray-700 hover:bg-white/90'
+                  }`}
+                >
+                  {filter.label}
+                </motion.button>
+              ))}
+            </motion.div>
+
+            {/* Liste des clients - STYLE LANDING GLASSMORPHISM */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="space-y-6"
+            >
+              {filteredClients.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="text-gray-500 text-lg">Aucune cliente trouvée</div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {filteredClients.map((client, index) => (
+                    <motion.button
+                      key={client.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 * index }}
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -4,
+                        transition: { duration: 0.2 }
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setSelectedClient(client.id)}
+                      className="w-full text-left bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-6 lg:p-8 shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <div className="flex items-center gap-4 lg:gap-6">
+                        {/* Photo avec effet glassmorphism */}
                         <div className="relative">
                           {client.avatar ? (
                             <img
                               src={client.avatar}
                               alt={client.name}
-                              className="w-12 h-12 lg:w-16 lg:h-16 rounded-full object-cover"
+                              className="w-16 h-16 lg:w-20 lg:h-20 rounded-full object-cover border-4 border-white shadow-luxury"
                             />
                           ) : (
-                            <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                              <User className="h-6 w-6 lg:h-8 lg:w-8 text-gray-700" />
+                            <div className="w-16 h-16 lg:w-20 lg:h-20 gradient-bg rounded-full flex items-center justify-center border-4 border-white shadow-luxury">
+                              <User className="h-8 w-8 lg:h-10 lg:w-10 text-white" />
                             </div>
                           )}
                           {client.status === 'VIP' && (
-                            <Crown className="absolute -top-1 -right-1 h-4 w-4 text-gray-700" />
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                              <Crown className="h-3 w-3 text-white" />
+                            </div>
                           )}
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
-                            {client.name}
-                          </h3>
-                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(client.status)}`}>
-                            {client.status}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      {/* Infos client */}
-                      <div className="space-y-2">
-                        <p className="text-xs lg:text-sm text-gray-600">{client.email}</p>
-                        
-                        {/* Rating et visites */}
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star 
-                                key={i} 
-                                className={`h-3 w-3 ${
-                                  i < Math.floor(client.rating) 
-                                    ? 'text-yellow-400 fill-current' 
-                                    : 'text-gray-300'
-                                }`} 
-                              />
-                            ))}
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-lg lg:text-xl font-bold text-gray-900 truncate">
+                              {client.name}
+                            </h3>
+                            <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(client.status)}`}>
+                              {client.status}
+                            </span>
                           </div>
-                          <span className="text-xs text-gray-500">{client.totalVisits} visites</span>
-                        </div>
-                        
-                        {/* Total dépensé */}
-                        <div className="flex justify-between items-center pt-2">
-                          <span className="text-lg lg:text-xl font-bold text-gray-900">€{client.totalSpent}</span>
-                          <span className="text-xs lg:text-sm text-gray-500">
-                            {new Date(client.lastVisit).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}
-                          </span>
+                          
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={`w-3 h-3 lg:w-4 lg:h-4 ${i < Math.floor(client.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+                              ))}
+                              <span className="ml-1">{client.rating}</span>
+                            </div>
+                            <span>{client.totalVisits} visites</span>
+                          </div>
+                          
+                          <div className="flex justify-between items-center pt-2">
+                            <span className="text-lg lg:text-xl font-bold text-gray-900">€{client.totalSpent}</span>
+                            <span className="text-xs lg:text-sm text-gray-500">
+                              {new Date(client.lastVisit).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.button>
-                  ))
-                )}
-              </motion.div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
+            </motion.div>
 
-            </div>
+            {/* Footer identique à Landing.tsx */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="text-center text-xs lg:text-sm text-gray-500 pb-4 pt-8"
+            >
+              <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+            </motion.div>
           </div>
-          
-          {/* Footer identique à Landing.tsx */}
-          <div className="text-center text-xs text-gray-500 pb-4 mt-16">
-            <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-          </div>
-        </div>
+        </motion.div>
       ) : (
         // Vue détail client moderne - DESIGN LANDING.TSX
         <motion.div 
@@ -646,6 +647,67 @@ export default function ClientsModern() {
                   </div>
                   <p className="text-sm lg:text-base text-gray-500 mt-4 text-center">Cliquez pour ajouter des photos de réalisations</p>
                 </div>
+
+                {/* Historique des rendez-vous - STYLE LANDING */}
+                {currentClient?.appointments && (
+                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
+                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Historique des rendez-vous</h3>
+                    <div className="space-y-4">
+                      {currentClient.appointments.map((appointment) => (
+                        <motion.div 
+                          key={appointment.id}
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-4 transition-all"
+                        >
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-semibold text-gray-900 text-base lg:text-lg">{appointment.service}</h4>
+                              <p className="text-sm text-gray-600">{new Date(appointment.date).toLocaleDateString('fr-FR', { 
+                                day: 'numeric', 
+                                month: 'long', 
+                                year: 'numeric' 
+                              })}</p>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              appointment.status === 'Terminé' 
+                                ? 'bg-green-100 text-green-700 border border-green-200'
+                                : appointment.status === 'À venir'
+                                ? 'bg-blue-100 text-blue-700 border border-blue-200'
+                                : 'bg-red-100 text-red-700 border border-red-200'
+                            }`}>
+                              {appointment.status}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-sm text-gray-600">
+                            <span>⏱️ {appointment.duration}</span>
+                            <span className="font-semibold text-green-600">€{appointment.price}</span>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Avis client - STYLE LANDING */}
+                {currentClient?.review && (
+                  <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg">
+                    <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis laissé</h3>
+                    <div className="bg-white/60 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6">
+                      <div className="flex items-center gap-2 mb-4">
+                        {[...Array(5)].map((_, i) => (
+                          <Star 
+                            key={i} 
+                            className={`w-5 h-5 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                          />
+                        ))}
+                        <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
+                      </div>
+                      <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
+                        "{currentClient.review}"
+                      </p>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             </div>
 
