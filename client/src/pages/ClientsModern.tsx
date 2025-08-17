@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Search, Plus, Filter, Star, Phone, 
   Mail, Calendar, MessageCircle, User, Crown, Sparkles,
-  Heart, Zap
+  Heart, Zap, Users
 } from 'lucide-react';
 
 interface Client {
@@ -116,60 +116,50 @@ export default function ClientsModern() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50 relative overflow-hidden"
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50/50 to-purple-50/30 relative overflow-hidden"
     >
-      {/* Émojis flottants diffus - style Avyento */}
+      {/* Émojis flottants diffus - style vraie page d'accueil */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ 
             y: [-20, 20],
-            rotate: [0, 10, 0]
+            rotate: [0, 5, 0]
           }}
-          transition={{ duration: 6, repeat: Infinity, repeatType: "reverse" }}
-          className="absolute top-20 left-10 text-4xl opacity-10"
-        >
-          💄
-        </motion.div>
-        <motion.div
-          animate={{ 
-            y: [20, -20],
-            rotate: [0, -15, 0]
-          }}
-          transition={{ duration: 4, repeat: Infinity, repeatType: "reverse", delay: 1 }}
-          className="absolute top-40 right-16 text-3xl opacity-10"
+          transition={{ duration: 8, repeat: Infinity, repeatType: "reverse" }}
+          className="absolute top-20 left-10 text-3xl opacity-20"
         >
           ✨
         </motion.div>
         <motion.div
           animate={{ 
-            y: [-15, 15],
-            x: [-10, 10]
+            y: [20, -20],
+            rotate: [0, -8, 0]
           }}
-          transition={{ duration: 5, repeat: Infinity, repeatType: "reverse", delay: 2 }}
-          className="absolute bottom-32 left-20 text-3xl opacity-10"
+          transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", delay: 1 }}
+          className="absolute top-40 right-16 text-2xl opacity-15"
+        >
+          💄
+        </motion.div>
+        <motion.div
+          animate={{ 
+            y: [-15, 15],
+            x: [-5, 5]
+          }}
+          transition={{ duration: 7, repeat: Infinity, repeatType: "reverse", delay: 2 }}
+          className="absolute bottom-32 left-20 text-2xl opacity-20"
         >
           💅
         </motion.div>
         <motion.div
           animate={{ 
             y: [10, -10],
-            rotate: [0, 20, 0]
+            rotate: [0, 10, 0]
           }}
-          transition={{ duration: 7, repeat: Infinity, repeatType: "reverse", delay: 3 }}
-          className="absolute top-60 left-1/2 text-2xl opacity-10"
+          transition={{ duration: 9, repeat: Infinity, repeatType: "reverse", delay: 3 }}
+          className="absolute top-60 right-1/4 text-2xl opacity-15"
         >
           🌸
-        </motion.div>
-        <motion.div
-          animate={{ 
-            y: [-25, 25],
-            x: [15, -15]
-          }}
-          transition={{ duration: 4.5, repeat: Infinity, repeatType: "reverse", delay: 4 }}
-          className="absolute bottom-40 right-12 text-3xl opacity-10"
-        >
-          💆‍♀️
         </motion.div>
       </div>
       
@@ -177,227 +167,233 @@ export default function ClientsModern() {
         // Vue liste des clients
         <div className="relative z-10">
           
-          {/* Header avec retour */}
+          {/* Header avec retour - style Landing */}
           <motion.button
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
             onClick={() => window.history.back()}
-            className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/40 shadow-lg hover:bg-white/90 transition-all"
+            className="absolute left-4 top-4 z-20 p-3 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/50 shadow-md hover:bg-white/90 transition-all"
           >
-            <ArrowLeft className="h-5 w-5 text-purple-600" />
+            <ArrowLeft className="h-5 w-5 text-gray-700" />
           </motion.button>
 
-          <div className="px-6 pt-16 pb-6">
-            <div className="max-w-md mx-auto">
+          {/* Layout responsive Desktop + Mobile */}
+          <div className="p-4 md:p-6 lg:p-8">
+            <div className="max-w-md mx-auto lg:max-w-6xl">
               
-              {/* Header avec logo Avyento */}
+              {/* Header style Landing page */}
               <motion.div 
-                initial={{ opacity: 0, y: -30 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                className="text-center mb-8"
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-center space-y-6 pt-8 lg:pt-16 mb-8 lg:mb-16"
               >
-                <div className="relative inline-block">
-                  <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 bg-clip-text text-transparent mb-2">
-                    Clientes
-                  </h1>
-                  <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-purple-400 animate-pulse" />
+                <div className="w-16 h-16 lg:w-24 lg:h-24 gradient-bg rounded-3xl flex items-center justify-center shadow-luxury mx-auto">
+                  <Users className="w-8 h-8 lg:w-12 lg:h-12 text-white" />
                 </div>
-                <p className="text-purple-600/70 font-medium">Gérez votre clientèle avec élégance</p>
-                <p className="text-sm text-gray-500 mt-1">{(clients || []).length} clientes au total</p>
+                
+                <div>
+                  <h1 className="text-3xl lg:text-6xl font-bold text-gray-900 tracking-tight mb-2 lg:mb-4">
+                    Gestion Clients
+                  </h1>
+                  <p className="text-gray-600 text-sm lg:text-xl leading-relaxed max-w-3xl mx-auto">
+                    Base de données clients complète avec historique et préférences
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-center space-x-1">
+                  <span className="text-sm lg:text-base text-gray-600">{(clients || []).length} clientes • Gestion intelligente</span>
+                </div>
               </motion.div>
 
-              {/* Stats rapides - Design Avyento */}
-              <motion.div 
+              {/* Stats style Landing page */}
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="grid grid-cols-3 gap-3 mb-8"
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="mb-8 lg:mb-16"
               >
+                <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
+                  <div className="p-4 lg:p-6">
+                    <div className="grid grid-cols-3 gap-4 lg:gap-8 text-center">
+                      <div>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'VIP').length || 0}</p>
+                        <p className="text-xs lg:text-sm text-gray-600">Clientes VIP</p>
+                      </div>
+                      <div>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'Fidèle').length || 0}</p>
+                        <p className="text-xs lg:text-sm text-gray-600">Fidèles</p>
+                      </div>
+                      <div>
+                        <p className="text-xl lg:text-3xl font-bold text-gray-900">{clients?.filter(c => c.status === 'Nouvelle').length || 0}</p>
+                        <p className="text-xs lg:text-sm text-gray-600">Nouvelles</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Contrôles style Landing page - Mobile/Desktop responsive */}
+              <div className="space-y-4 lg:space-y-8 mb-8 lg:mb-16">
+                
+                {/* Barre de recherche style Landing */}
                 <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-white/60 backdrop-blur-lg rounded-2xl p-4 text-center border border-white/40 shadow-lg hover:shadow-xl transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="relative"
                 >
-                  <Crown className="h-5 w-5 text-purple-600 mx-auto mb-2" />
-                  <div className="text-lg font-bold text-purple-600">{clients?.filter(c => c.status === 'VIP').length || 0}</div>
-                  <div className="text-xs text-purple-600/80 font-medium">VIP</div>
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 lg:h-5 lg:w-5 text-gray-500" />
+                  <input
+                    type="text"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="Rechercher une cliente..."
+                    className="w-full h-12 lg:h-14 pl-12 lg:pl-14 pr-4 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-xl text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-300 transition-all shadow-md"
+                  />
                 </motion.div>
+
+                {/* Filtres style Landing avec grid responsive */}
                 <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-white/60 backdrop-blur-lg rounded-2xl p-4 text-center border border-white/40 shadow-lg hover:shadow-xl transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  className="grid grid-cols-2 lg:flex gap-2 lg:gap-4"
                 >
-                  <Heart className="h-5 w-5 text-pink-500 mx-auto mb-2" />
-                  <div className="text-lg font-bold text-pink-500">{clients?.filter(c => c.status === 'Fidèle').length || 0}</div>
-                  <div className="text-xs text-pink-500/80 font-medium">Fidèles</div>
+                  {filters.map((filter, index) => (
+                    <motion.button
+                      key={filter.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.9 + index * 0.1 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setSelectedFilter(filter.id)}
+                      className={`px-3 py-2 lg:px-4 lg:py-3 rounded-xl text-xs lg:text-sm font-medium whitespace-nowrap transition-all ${
+                        selectedFilter === filter.id
+                          ? 'bg-gray-900 text-white shadow-lg'
+                          : 'bg-white/80 backdrop-blur-sm text-gray-700 hover:bg-white border border-gray-200/50 shadow-md'
+                      }`}
+                    >
+                      {filter.label} ({filter.count})
+                    </motion.button>
+                  ))}
                 </motion.div>
-                <motion.div 
-                  whileHover={{ scale: 1.05 }}
-                  className="bg-white/60 backdrop-blur-lg rounded-2xl p-4 text-center border border-white/40 shadow-lg hover:shadow-xl transition-all"
+
+                {/* Bouton nouvelle cliente style Landing */}
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => toast({ 
+                    title: "Nouvelle cliente", 
+                    description: "Fonctionnalité à venir" 
+                  })}
+                  className="w-full h-12 lg:h-14 gradient-bg text-white rounded-xl text-base lg:text-lg font-semibold transition-all flex items-center justify-center gap-3 shadow-luxury hover:shadow-xl"
                 >
-                  <Sparkles className="h-5 w-5 text-amber-500 mx-auto mb-2" />
-                  <div className="text-lg font-bold text-amber-500">{clients?.filter(c => c.status === 'Nouvelle').length || 0}</div>
-                  <div className="text-xs text-amber-500/80 font-medium">Nouvelles</div>
-                </motion.div>
-              </motion.div>
+                  <Plus className="h-4 w-4 lg:h-5 lg:w-5" />
+                  Ajouter une cliente
+                </motion.button>
+              </div>
 
-              {/* Barre de recherche moderne */}
+              {/* Liste des clients style Landing Cards */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="relative mb-6"
-              >
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-purple-400" />
-                <input
-                  type="text"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Rechercher une cliente..."
-                  className="w-full h-14 pl-12 pr-4 bg-white/70 backdrop-blur-lg border border-white/50 rounded-2xl text-base text-gray-900 placeholder:text-purple-400/60 focus:outline-none focus:ring-2 focus:ring-purple-300/50 focus:border-purple-300 transition-all shadow-lg"
-                />
-              </motion.div>
-
-              {/* Filtres modernes */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex gap-2 mb-8 overflow-x-auto pb-2"
-              >
-                {filters.map((filter, index) => (
-                  <motion.button
-                    key={filter.id}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setSelectedFilter(filter.id)}
-                    className={`px-4 py-3 rounded-2xl text-sm font-medium whitespace-nowrap transition-all ${
-                      selectedFilter === filter.id
-                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg'
-                        : 'bg-white/60 backdrop-blur-lg text-purple-600 hover:bg-white/80 border border-white/40'
-                    }`}
-                  >
-                    {filter.label} ({filter.count})
-                  </motion.button>
-                ))}
-              </motion.div>
-
-              {/* Bouton nouvelle cliente avec style Avyento */}
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => toast({ 
-                  title: "Nouvelle cliente", 
-                  description: "Cette fonctionnalité sera bientôt disponible ✨" 
-                })}
-                className="w-full h-14 bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white rounded-2xl text-base font-semibold transition-all flex items-center justify-center gap-3 mb-8 shadow-lg hover:shadow-xl"
-              >
-                <Plus className="h-5 w-5" />
-                Ajouter une cliente
-                <Sparkles className="h-4 w-4" />
-              </motion.button>
-
-              {/* Liste des clients moderne */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1 }}
-                className="space-y-4"
+                transition={{ duration: 0.6, delay: 1.2 }}
+                className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6"
               >
                 {filteredClients.length === 0 ? (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="text-center py-16"
-                  >
-                    <div className="bg-white/60 backdrop-blur-lg rounded-3xl p-8 border border-white/40 shadow-lg">
+                  <div className="col-span-full">
+                    <div className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden text-center py-16">
                       <div className="relative mb-6">
-                        <User className="h-16 w-16 mx-auto text-purple-300" />
-                        <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-pink-400 animate-pulse" />
+                        <User className="h-16 w-16 lg:h-20 lg:w-20 mx-auto text-gray-400" />
+                        <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-gray-400 animate-pulse" />
                       </div>
-                      <h3 className="text-lg font-semibold text-purple-600 mb-2">Aucune cliente trouvée</h3>
-                      <p className="text-purple-400/80 text-sm mb-4">Commencez votre aventure beauté en ajoutant vos premières clientes</p>
+                      <h3 className="text-lg lg:text-xl font-semibold text-gray-900 mb-2">Aucune cliente trouvée</h3>
+                      <p className="text-gray-600 text-sm lg:text-base mb-4">Commencez par ajouter vos premières clientes</p>
                       <motion.div
                         animate={{ scale: [1, 1.1, 1] }}
                         transition={{ duration: 2, repeat: Infinity }}
                         className="text-2xl"
                       >
-                        💅
+                        👥
                       </motion.div>
                     </div>
-                  </motion.div>
+                  </div>
                 ) : (
                   filteredClients.map((client, index) => (
                   <motion.button
                     key={client.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 1.1 + index * 0.1 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
+                    transition={{ duration: 0.5, delay: 1.3 + index * 0.1 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedClient(client.id)}
-                    className="w-full bg-white/70 backdrop-blur-lg hover:bg-white/90 rounded-2xl p-4 transition-all text-left border border-white/50 shadow-lg hover:shadow-xl"
+                    className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden hover:shadow-lg transition-all duration-200 text-left p-4 lg:p-6"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        {client.avatar ? (
-                          <img
-                            src={client.avatar}
-                            alt={client.name}
-                            className="w-14 h-14 rounded-full object-cover ring-2 ring-white/50"
-                          />
-                        ) : (
-                          <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center ring-2 ring-white/50">
-                            <User className="h-7 w-7 text-purple-500" />
-                          </div>
-                        )}
-                        {client.status === 'VIP' && (
-                          <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="absolute -top-1 -right-1"
-                          >
-                            <Crown className="h-5 w-5 text-purple-600" />
-                          </motion.div>
-                        )}
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900 text-base">{client.name}</h3>
-                          <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(client.status)}`}>
+                    <div className="space-y-3">
+                      {/* Avatar et statut */}
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          {client.avatar ? (
+                            <img
+                              src={client.avatar}
+                              alt={client.name}
+                              className="w-12 h-12 lg:w-16 lg:h-16 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
+                              <User className="h-6 w-6 lg:h-8 lg:w-8 text-gray-700" />
+                            </div>
+                          )}
+                          {client.status === 'VIP' && (
+                            <Crown className="absolute -top-1 -right-1 h-4 w-4 text-gray-700" />
+                          )}
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-gray-900 text-sm lg:text-base mb-1">
+                            {client.name}
+                          </h3>
+                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(client.status)}`}>
                             {client.status}
                           </span>
                         </div>
-                        <p className="text-sm text-purple-600/70 mb-2">{client.email}</p>
-                        <div className="flex items-center gap-3">
+                      </div>
+                      
+                      {/* Infos client */}
+                      <div className="space-y-2">
+                        <p className="text-xs lg:text-sm text-gray-600">{client.email}</p>
+                        
+                        {/* Rating et visites */}
+                        <div className="flex items-center gap-2">
                           <div className="flex items-center">
                             {[...Array(5)].map((_, i) => (
                               <Star 
                                 key={i} 
                                 className={`h-3 w-3 ${
                                   i < Math.floor(client.rating) 
-                                    ? 'text-amber-400 fill-current' 
+                                    ? 'text-yellow-400 fill-current' 
                                     : 'text-gray-300'
                                 }`} 
                               />
                             ))}
                           </div>
-                          <span className="text-xs text-gray-400">•</span>
-                          <span className="text-xs text-purple-600/60 font-medium">{client.totalVisits} visites</span>
+                          <span className="text-xs text-gray-500">{client.totalVisits} visites</span>
                         </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-purple-600">€{client.totalSpent}</div>
-                        <div className="text-xs text-purple-400/70">{new Date(client.lastVisit).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}</div>
+                        
+                        {/* Total dépensé */}
+                        <div className="flex justify-between items-center pt-2">
+                          <span className="text-lg lg:text-xl font-bold text-gray-900">€{client.totalSpent}</span>
+                          <span className="text-xs lg:text-sm text-gray-500">
+                            {new Date(client.lastVisit).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' })}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </motion.button>
@@ -408,111 +404,114 @@ export default function ClientsModern() {
             </div>
           </div>
           
-          {/* Pied de page Avyento */}
+          {/* Footer style Landing page */}
           <motion.footer 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.5 }}
-            className="w-full bg-white/80 backdrop-blur-lg border-t border-white/50 shadow-lg"
+            transition={{ duration: 0.6, delay: 1.5 }}
+            className="w-full border-0 shadow-md bg-white/80 backdrop-blur-sm border-t border-gray-200/50 mt-16"
           >
-            <div className="px-6 py-8">
-              <div className="max-w-6xl mx-auto">
-                {/* Logo et description */}
-                <div className="text-center mb-8">
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-500 to-amber-500 bg-clip-text text-transparent mb-2">
-                    Avyento
+            <div className="p-4 md:p-6 lg:p-8">
+              <div className="max-w-md mx-auto lg:max-w-6xl">
+                {/* Logo et description style Landing */}
+                <div className="text-center mb-8 lg:mb-12">
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 gradient-bg rounded-2xl flex items-center justify-center shadow-luxury mx-auto mb-4">
+                    <Sparkles className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+                    Beauty Pro
                   </h2>
-                  <p className="text-purple-600/70 text-sm">
-                    Révolutionnez votre salon avec l'IA
+                  <p className="text-gray-600 text-sm lg:text-base">
+                    La plateforme complète pour gérer votre salon de beauté
                   </p>
                 </div>
 
-                {/* Contenu du footer en 4 colonnes */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8 text-sm">
+                {/* Contenu du footer responsive */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-8 lg:mb-12 text-sm lg:text-base">
                   {/* Colonne Avyento */}
                   <div>
-                    <h3 className="font-semibold text-purple-600 mb-3">Avyento</h3>
-                    <ul className="space-y-2 text-purple-600/70">
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">À propos</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Notre vision</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Équipe</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Carrières</a></li>
+                    <h3 className="font-semibold text-gray-900 mb-3">Beauty Pro</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">À propos</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Notre vision</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Équipe</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Carrières</a></li>
                     </ul>
                   </div>
 
                   {/* Colonne Services */}
                   <div>
-                    <h3 className="font-semibold text-purple-600 mb-3">Services</h3>
-                    <ul className="space-y-2 text-purple-600/70">
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Gestion salon</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">IA Assistant</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Analytics</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Marketing</a></li>
+                    <h3 className="font-semibold text-gray-900 mb-3">Services</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Gestion salon</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">IA Assistant</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Analytics</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Marketing</a></li>
                     </ul>
                   </div>
 
                   {/* Colonne Partenaires */}
                   <div>
-                    <h3 className="font-semibold text-purple-600 mb-3">Partenaires</h3>
-                    <ul className="space-y-2 text-purple-600/70">
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Devenir partenaire</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Fournisseurs</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Intégrations</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">API</a></li>
+                    <h3 className="font-semibold text-gray-900 mb-3">Partenaires</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Devenir partenaire</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Fournisseurs</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Intégrations</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">API</a></li>
                     </ul>
                   </div>
 
                   {/* Colonne Support */}
                   <div>
-                    <h3 className="font-semibold text-purple-600 mb-3">Support</h3>
-                    <ul className="space-y-2 text-purple-600/70">
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Centre d'aide</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Contact</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Formation</a></li>
-                      <li><a href="#" className="hover:text-purple-600 transition-colors">Documentation</a></li>
+                    <h3 className="font-semibold text-gray-900 mb-3">Support</h3>
+                    <ul className="space-y-2 text-gray-600">
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Centre d'aide</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Contact</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Formation</a></li>
+                      <li><a href="#" className="hover:text-gray-900 transition-colors">Documentation</a></li>
                     </ul>
                   </div>
                 </div>
 
-                {/* Réseaux sociaux */}
-                <div className="flex justify-center gap-4 mb-6">
+                {/* Réseaux sociaux style Landing */}
+                <div className="flex justify-center gap-4 mb-6 lg:mb-8">
                   <motion.a 
                     whileHover={{ scale: 1.1 }}
                     href="#" 
-                    className="w-10 h-10 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors"
+                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
                   >
-                    <span className="text-purple-600 font-semibold">f</span>
+                    <span className="text-gray-700 font-semibold text-sm lg:text-base">f</span>
                   </motion.a>
                   <motion.a 
                     whileHover={{ scale: 1.1 }}
                     href="#" 
-                    className="w-10 h-10 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors"
+                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
                   >
-                    <span className="text-purple-600 font-semibold">ig</span>
+                    <span className="text-gray-700 font-semibold text-sm lg:text-base">ig</span>
                   </motion.a>
                   <motion.a 
                     whileHover={{ scale: 1.1 }}
                     href="#" 
-                    className="w-10 h-10 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors"
+                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
                   >
-                    <span className="text-purple-600 font-semibold">tw</span>
+                    <span className="text-gray-700 font-semibold text-sm lg:text-base">tw</span>
                   </motion.a>
                   <motion.a 
                     whileHover={{ scale: 1.1 }}
                     href="#" 
-                    className="w-10 h-10 bg-purple-100 hover:bg-purple-200 rounded-full flex items-center justify-center transition-colors"
+                    className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-100 hover:bg-gray-200 rounded-xl flex items-center justify-center transition-colors"
                   >
-                    <span className="text-purple-600 font-semibold">li</span>
+                    <span className="text-gray-700 font-semibold text-sm lg:text-base">li</span>
                   </motion.a>
                 </div>
 
-                {/* Copyright */}
-                <div className="text-center text-xs text-purple-600/60 border-t border-purple-100 pt-4">
-                  <p>&copy; 2025 Avyento. Tous droits réservés.</p>
-                  <div className="flex justify-center gap-4 mt-2">
-                    <a href="#" className="hover:text-purple-600 transition-colors">Politique de confidentialité</a>
-                    <a href="#" className="hover:text-purple-600 transition-colors">Conditions d'utilisation</a>
-                    <a href="#" className="hover:text-purple-600 transition-colors">Mentions légales</a>
+                {/* Copyright style Landing */}
+                <div className="text-center text-xs lg:text-sm text-gray-600 border-t border-gray-200 pt-4 lg:pt-6">
+                  <p>&copy; 2025 Beauty Pro. Tous droits réservés.</p>
+                  <div className="flex justify-center gap-4 lg:gap-6 mt-2">
+                    <a href="#" className="hover:text-gray-900 transition-colors">Politique de confidentialité</a>
+                    <a href="#" className="hover:text-gray-900 transition-colors">Conditions d'utilisation</a>
+                    <a href="#" className="hover:text-gray-900 transition-colors">Mentions légales</a>
                   </div>
                 </div>
               </div>
