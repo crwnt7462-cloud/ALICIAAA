@@ -711,28 +711,7 @@ export default function ClientsModern() {
                 </motion.div>
               )}
 
-              {/* Avis client - PLEINE LARGEUR DESKTOP */}
-              {currentClient?.review && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
-                  className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl p-8 shadow-lg"
-                >
-                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-6">Avis client</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-6 h-6 ${i < Math.floor(currentClient.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-                      ))}
-                      <span className="text-lg font-semibold text-gray-700 ml-2">{currentClient.rating}/5</span>
-                    </div>
-                    <p className="text-gray-700 text-sm lg:text-base leading-relaxed italic">
-                      "{currentClient.review}"
-                    </p>
-                  </div>
-                </motion.div>
-              )}
+
             </div>
 
             {/* Footer identique à Landing.tsx */}
