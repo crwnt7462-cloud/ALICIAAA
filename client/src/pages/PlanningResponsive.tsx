@@ -41,6 +41,7 @@ export default function PlanningResponsive() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('day');
+  const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -110,7 +111,7 @@ export default function PlanningResponsive() {
   };
 
   const simulatedAppointments = [
-    // Aujourd'hui
+    // Aujourd'hui - Sarah Martin
     {
       id: 1001,
       clientId: 1,
@@ -119,7 +120,8 @@ export default function PlanningResponsive() {
       startTime: "09:00",
       endTime: "10:00",
       status: "confirmed",
-      notes: "Coupe + Couleur"
+      notes: "Coupe + Couleur",
+      employeeId: "1"
     },
     {
       id: 1002,
@@ -129,7 +131,8 @@ export default function PlanningResponsive() {
       startTime: "10:30",
       endTime: "11:30",
       status: "scheduled",
-      notes: "Manucure complète"
+      notes: "Manucure complète",
+      employeeId: "2"
     },
     {
       id: 1003,
@@ -139,7 +142,8 @@ export default function PlanningResponsive() {
       startTime: "14:00",
       endTime: "15:30",
       status: "completed",
-      notes: "Soin visage premium"
+      notes: "Soin visage premium",
+      employeeId: "1"
     },
     {
       id: 1004,
@@ -149,7 +153,8 @@ export default function PlanningResponsive() {
       startTime: "16:30",
       endTime: "17:30",
       status: "confirmed",
-      notes: "Brushing + styling"
+      notes: "Brushing + styling",
+      employeeId: "3"
     },
     // Demain
     {
@@ -160,7 +165,8 @@ export default function PlanningResponsive() {
       startTime: "09:30",
       endTime: "10:30",
       status: "scheduled",
-      notes: "Coupe moderne"
+      notes: "Coupe moderne",
+      employeeId: "2"
     },
     {
       id: 1006,
@@ -170,7 +176,19 @@ export default function PlanningResponsive() {
       startTime: "15:00",
       endTime: "16:30",
       status: "confirmed",
-      notes: "Soin anti-âge"
+      notes: "Soin anti-âge",
+      employeeId: "1"
+    },
+    {
+      id: 1011,
+      clientId: 1,
+      serviceId: 2,
+      appointmentDate: getDateOffset(1),
+      startTime: "11:00",
+      endTime: "12:00",
+      status: "confirmed",
+      notes: "Manucure française",
+      employeeId: "3"
     },
     // Dans 3 jours
     {
@@ -181,7 +199,19 @@ export default function PlanningResponsive() {
       startTime: "11:00",
       endTime: "12:00",
       status: "scheduled",
-      notes: "Pédicure"
+      notes: "Pédicure",
+      employeeId: "2"
+    },
+    {
+      id: 1012,
+      clientId: 2,
+      serviceId: 1,
+      appointmentDate: getDateOffset(3),
+      startTime: "14:00",
+      endTime: "15:00",
+      status: "confirmed",
+      notes: "Coupe tendance",
+      employeeId: "1"
     },
     // Dans 5 jours
     {
@@ -192,7 +222,8 @@ export default function PlanningResponsive() {
       startTime: "14:30",
       endTime: "15:30",
       status: "confirmed",
-      notes: "Retouche couleur"
+      notes: "Retouche couleur",
+      employeeId: "1"
     },
     {
       id: 1009,
@@ -202,7 +233,19 @@ export default function PlanningResponsive() {
       startTime: "16:00",
       endTime: "17:00",
       status: "scheduled",
-      notes: "Consultation beauté"
+      notes: "Consultation beauté",
+      employeeId: "2"
+    },
+    {
+      id: 1013,
+      clientId: 1,
+      serviceId: 2,
+      appointmentDate: getDateOffset(5),
+      startTime: "10:00",
+      endTime: "11:00",
+      status: "scheduled",
+      notes: "Nail art",
+      employeeId: "3"
     },
     // Dans une semaine
     {
@@ -213,7 +256,8 @@ export default function PlanningResponsive() {
       startTime: "10:00",
       endTime: "11:30",
       status: "scheduled",
-      notes: "Coupe + Brushing"
+      notes: "Coupe + Brushing",
+      employeeId: "1"
     }
   ];
 
@@ -231,6 +275,14 @@ export default function PlanningResponsive() {
     { id: 3, name: "Soin Visage", price: 120 }
   ];
 
+  // Employés simulés
+  const simulatedEmployees = [
+    { id: "all", name: "Vue d'ensemble", color: "purple" },
+    { id: "1", name: "Sarah Martin", color: "blue" },
+    { id: "2", name: "Julie Dupont", color: "emerald" },
+    { id: "3", name: "Emma Laurent", color: "amber" }
+  ];
+
   // Fusionner les vraies données avec les données simulées
   const allAppointments = [...(appointments || []), ...simulatedAppointments];
   const allClients = [...(clients || []), ...simulatedClients];
@@ -240,8 +292,9 @@ export default function PlanningResponsive() {
   const filteredAppointments = useMemo(() => {
     if (!allAppointments || !Array.isArray(allAppointments) || allAppointments.length === 0) return [];
     
-    return (allAppointments as Appointment[]).filter(apt => {
+    return (allAppointments as any[]).filter(apt => {
       if (statusFilter !== 'all' && apt.status !== statusFilter) return false;
+      if (selectedEmployee !== 'all' && apt.employeeId !== selectedEmployee) return false;
       
       if (viewMode === 'day') {
         return apt.appointmentDate === selectedDate;
@@ -254,7 +307,7 @@ export default function PlanningResponsive() {
                aptDate.getFullYear() === selectedDateObj.getFullYear();
       }
     });
-  }, [allAppointments, statusFilter, selectedDate, viewMode, currentWeek]);
+  }, [allAppointments, statusFilter, selectedEmployee, selectedDate, viewMode, currentWeek]);
 
   // Navigation de date
   const changeDate = (days: number) => {
@@ -448,17 +501,28 @@ export default function PlanningResponsive() {
                   <div className="space-y-1">
                     {dayAppointments.slice(0, 3).map((apt, aptIndex) => {
                       const client = allClients.find(c => c.id === apt.clientId);
+                      const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
+                      const employeeColor = employee?.color || 'purple';
+                      
                       return (
                         <div
                           key={aptIndex}
                           className={`text-xs p-1.5 rounded text-center truncate ${
                             isToday 
                               ? 'bg-white/20 text-white' 
-                              : 'bg-purple-100 text-purple-800'
+                              : selectedEmployee === 'all' 
+                                ? employeeColor === 'blue' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
+                                  employeeColor === 'emerald' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                                  employeeColor === 'amber' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                                  'bg-purple-100 text-purple-800 border border-purple-200'
+                                : 'bg-purple-100 text-purple-800'
                           }`}
                         >
-                          <div className="font-medium">{apt.startTime}</div>
-                          <div className="truncate">{client?.firstName}</div>
+                          <div className="font-bold text-xs">{apt.startTime}</div>
+                          <div className="truncate font-medium">{client?.firstName}</div>
+                          {selectedEmployee === 'all' && (
+                            <div className="text-xs opacity-75 truncate">{employee?.name.split(' ')[0]}</div>
+                          )}
                         </div>
                       );
                     })}
@@ -572,12 +636,25 @@ export default function PlanningResponsive() {
                         <div className="flex-1 space-y-1">
                           {dayAppointments.slice(0, 2).map((apt, aptIndex) => {
                             const client = allClients.find(c => c.id === apt.clientId);
+                            const employee = simulatedEmployees.find(e => e.id === apt.employeeId);
+                            const employeeColor = employee?.color || 'purple';
+                            
                             return (
                               <div
                                 key={aptIndex}
-                                className="text-xs p-1 bg-purple-100 text-purple-800 rounded truncate"
+                                className={`text-xs p-1 rounded truncate font-medium ${
+                                  isToday 
+                                    ? 'bg-white/20 text-white' 
+                                    : selectedEmployee === 'all' 
+                                      ? employeeColor === 'blue' ? 'bg-blue-100 text-blue-800' :
+                                        employeeColor === 'emerald' ? 'bg-emerald-100 text-emerald-800' :
+                                        employeeColor === 'amber' ? 'bg-amber-100 text-amber-800' :
+                                        'bg-purple-100 text-purple-800'
+                                      : 'bg-purple-100 text-purple-800'
+                                }`}
                               >
-                                {apt.startTime} {client?.firstName}
+                                <div className="font-bold">{apt.startTime}</div>
+                                <div className="truncate">{client?.firstName}</div>
                               </div>
                             );
                           })}
@@ -669,7 +746,23 @@ export default function PlanningResponsive() {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              {/* Sélecteur d'employé */}
+              <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-white/40">
+                <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
+                  <SelectTrigger className="border-0 shadow-none bg-transparent min-w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {simulatedEmployees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               {/* Sélecteur de mode */}
               <div className="flex bg-white/80 backdrop-blur-sm rounded-xl p-1 border border-white/40">
                 <Button
@@ -944,10 +1037,17 @@ export default function PlanningResponsive() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="space-y-4"
         >
-          <h2 className="text-xl font-bold text-gray-900 text-center lg:text-left">
-            {viewMode === 'day' ? 'Planning du jour' : 
-             viewMode === 'week' ? 'Aperçu de la semaine' : 'Aperçu du mois'}
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-900">
+              {viewMode === 'day' ? 'Planning du jour' : 
+               viewMode === 'week' ? 'Aperçu de la semaine' : 'Aperçu du mois'}
+            </h2>
+            {selectedEmployee !== 'all' && (
+              <div className="text-sm text-purple-600 font-medium">
+                {simulatedEmployees.find(e => e.id === selectedEmployee)?.name}
+              </div>
+            )}
+          </div>
           
           {filteredAppointments.length === 0 ? (
             <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden">
