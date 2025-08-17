@@ -795,7 +795,7 @@ export default function PlanningFresha() {
                     </span>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-800">{appointment.client}</h3>
+                    <h3 className="font-semibold text-gray-800 text-sm">{appointment.client}</h3>
                     {appointment.email && (
                       <p className="text-xs text-gray-500">{appointment.email}</p>
                     )}
