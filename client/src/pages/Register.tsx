@@ -110,9 +110,10 @@ export default function Register() {
       if (response.ok) {
         toast({
           title: "Salon créé avec succès !",
-          description: `Abonnement ${subscriptionPlans.find(p => p.id === selectedPlan)?.name} activé`
+          description: `Redirection vers le paiement ${subscriptionPlans.find(p => p.id === selectedPlan)?.name}`
         });
-        setLocation("/pro-login");
+        // Redirection vers la page de paiement avec les informations du plan
+        setLocation(`/professional-plans?plan=${selectedPlan}&email=${encodeURIComponent(formData.email)}&business=${encodeURIComponent(formData.businessName)}`);
       } else {
         throw new Error(data.error || "Erreur lors de la création du salon");
       }
@@ -431,18 +432,21 @@ export default function Register() {
             {/* CGU et bouton d'inscription */}
             <div className="glass-card rounded-3xl shadow-2xl transition-all duration-300 hover:shadow-3xl mt-6 p-6">
               <div className="max-w-md mx-auto">
-                <div className="flex items-start space-x-3 mb-6">
+                <div className="flex items-center justify-center space-x-3 mb-6">
                   <input
                     type="checkbox"
                     id="acceptTerms"
                     checked={acceptTerms}
                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                    className="mt-1 w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
+                    className="w-4 h-4 text-violet-600 bg-transparent border-2 border-gray-300 rounded focus:ring-violet-500 focus:ring-2"
                     required
                   />
                   <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
                     J'accepte les{" "}
-                    <span className="text-violet-600 hover:text-violet-700 underline cursor-pointer">
+                    <span 
+                      className="text-violet-600 hover:text-violet-700 underline cursor-pointer"
+                      onClick={() => setLocation('/cgu')}
+                    >
                       CGU Avyento
                     </span>
                     {" "}*
