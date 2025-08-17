@@ -24,6 +24,7 @@ interface Client {
   preferences?: string[];
 }
 
+// ✅ DESKTOP RESPONSIVE OPTIMISÉ - Version finale
 export default function ClientsModern() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
