@@ -897,20 +897,20 @@ export default function PlanningResponsive() {
         >
           {viewMode === 'week' ? (
             <>
-              {/* En-tête desktop classique - Colonne employé + 7 jours */}
-              <div className="grid grid-cols-8 border-b border-gray-200">
-                {/* Colonne employé */}
-                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200 bg-gray-50">
+              {/* En-tête style Fresha - Colonne heures + 7 jours */}
+              <div className="grid grid-cols-8 border-b border-gray-200 bg-gray-50">
+                {/* Colonne des heures */}
+                <div className="p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
                   <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4" />
-                    <span>Employé</span>
+                    <Clock className="h-4 w-4" />
+                    <span>Heures</span>
                   </div>
                 </div>
                 {/* 7 colonnes des jours */}
                 {currentWeek.map((date, index) => {
                   const isToday = date.toDateString() === new Date().toDateString();
                   return (
-                    <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-purple-50' : 'bg-gray-50'}`}>
+                    <div key={index} className={`p-4 text-center border-r border-gray-200 last:border-r-0 ${isToday ? 'bg-blue-50' : ''}`}>
                       <div className="text-sm font-medium text-gray-700">
                         {weekDays[date.getDay()]}
                       </div>
@@ -918,88 +918,67 @@ export default function PlanningResponsive() {
                         {date.getDate()}
                       </div>
                       {isToday && (
-                        <div className="w-3 h-3 bg-purple-500 rounded-full mx-auto mt-1"></div>
+                        <div className="w-2 h-2 rounded-full bg-blue-500 mx-auto mt-1"></div>
                       )}
                     </div>
                   );
                 })}
               </div>
 
-              {/* Grille desktop avec employés en lignes */}
-              <div className="max-h-[600px] overflow-y-auto">
-                {employees.map((employee) => (
-                  <div key={employee.id} className="grid grid-cols-8 border-b border-gray-100 hover:bg-gray-50/50">
-                    {/* Colonne employé */}
-                    <div className="p-4 border-r border-gray-200 bg-white sticky left-0 z-10">
-                      <div className="flex items-center space-x-3">
-                        <div 
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
-                          style={{ backgroundColor: employee.color }}
-                        >
-                          {employee.avatar}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">{employee.name}</div>
-                          <div className="text-sm text-gray-500">{employee.specialties.join(', ')}</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* 7 colonnes des jours */}
-                    {currentWeek.map((date, dayIndex) => (
-                      <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-h-[80px] p-2">
-                        {/* Timeline visuelle des créneaux */}
-                        <div className="space-y-1">
-                          {mainTimeSlots.slice(8, 20).map((slot) => (
-                            <div
-                              key={slot}
-                              className="h-6 bg-gray-50 rounded border cursor-pointer hover:bg-purple-50 hover:border-purple-200 transition-colors flex items-center justify-center text-xs text-gray-500"
-                              onClick={() => handleTimeSlotClick(slot, dayIndex, employee.id)}
-                              title={`${slot} - ${employee.name}`}
-                            >
-                              {slot}
-                            </div>
-                          ))}
-                        </div>
-                        
-                        {/* Événements pour cet employé et ce jour */}
-                        {filteredEvents
-                          .filter(event => event.employeeId === employee.id && event.day === dayIndex)
-                          .map((event) => {
-                            const isBlocked = event.isBlock;
-                            const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
-                            
-                            return (
-                              <div
-                                key={event.id}
-                                className={`absolute left-1 right-1 rounded-lg p-2 text-xs font-medium shadow-md z-20 border ${
-                                  isBlocked 
-                                    ? 'bg-red-100 border-red-300 text-red-800' 
-                                    : 'bg-white border-gray-300'
-                                }`}
-                                style={{
-                                  top: '10px',
-                                  backgroundColor: isBlocked ? '#FEE2E2' : serviceColor,
-                                  borderColor: isBlocked ? '#FCA5A5' : serviceColor
-                                }}
-                              >
-                                <div className="font-semibold text-gray-900 truncate">{event.title}</div>
-                                {!isBlocked && (
-                                  <div className="text-gray-700 truncate mt-1">{event.client}</div>
-                                )}
-                                <div className="text-gray-600 text-xs mt-1 flex items-center justify-between">
-                                  <span>{event.time}</span>
-                                  {event.status === 'confirmed' && !isBlocked && (
-                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
+              {/* Grille horaire style Fresha */}
+              <div className="relative max-h-[600px] overflow-y-auto">
+                <div className="grid grid-cols-8">
+                  {/* Colonne des heures */}
+                  <div className="border-r border-gray-200 bg-white">
+                    {mainTimeSlots.map((slot, index) => (
+                      <div key={index} className="flex items-start justify-center pt-2 text-xs text-gray-500 border-b border-gray-100 font-medium" style={{ height: '60px' }}>
+                        {slot}
                       </div>
                     ))}
                   </div>
-                ))}
+
+                  {/* Colonnes des jours */}
+                  {currentWeek.map((date, dayIndex) => (
+                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
+                      {/* Créneaux horaires */}
+                      {mainTimeSlots.map((slot, slotIndex) => (
+                        <div
+                          key={slotIndex}
+                          className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                          style={{ height: '60px' }}
+                          onClick={() => handleTimeSlotClick(slot, dayIndex, date)}
+                        />
+                      ))}
+                      
+                      {/* Rendez-vous pour ce jour */}
+                      {filteredEvents
+                        .filter(event => event.day === dayIndex)
+                        .map((event) => {
+                          const isBlocked = event.isBlock;
+                          const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                          
+                          return (
+                            <div
+                              key={event.id}
+                              className="absolute left-1 right-1 rounded text-xs font-medium text-white p-2 z-10 border border-gray-300 cursor-pointer hover:shadow-lg transition-shadow"
+                              style={{
+                                top: `${getEventPosition(event.time)}px`,
+                                height: `${Math.max(getEventHeight(event.time), 40)}px`,
+                                backgroundColor: serviceColor,
+                                opacity: 0.9
+                              }}
+                            >
+                              <div className="font-semibold">{event.time}</div>
+                              <div className="mt-1">{event.title}</div>
+                              {event.client && (
+                                <div className="text-gray-200 text-xs">{event.client}</div>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  ))}
+                </div>
               </div>
             </>
           ) : viewMode === 'day' ? (
