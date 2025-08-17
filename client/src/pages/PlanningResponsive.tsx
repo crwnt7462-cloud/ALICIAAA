@@ -293,6 +293,39 @@ export default function PlanningResponsive() {
       notes: "Manucure française",
       employeeId: "3"
     },
+    // Dans 2 jours (pour vue semaine)
+    {
+      id: 1017,
+      clientId: 2,
+      serviceId: 1,
+      appointmentDate: getDateOffset(2),
+      startTime: "09:00",
+      endTime: "10:00",
+      status: "confirmed",
+      notes: "Coupe moderne",
+      employeeId: "2",
+      paymentStatus: "à régler",
+      totalAmount: 85,
+      depositAmount: 0,
+      remainingAmount: 85,
+      paymentMethod: null
+    },
+    {
+      id: 1018,
+      clientId: 1,
+      serviceId: 3,
+      appointmentDate: getDateOffset(2),
+      startTime: "14:30",
+      endTime: "16:00",
+      status: "scheduled",
+      notes: "Soin visage complet",
+      employeeId: "1",
+      paymentStatus: "à compléter",
+      totalAmount: 120,
+      depositAmount: 40,
+      remainingAmount: 80,
+      paymentMethod: "CB"
+    },
     // Dans 3 jours
     {
       id: 1007,
@@ -580,7 +613,7 @@ export default function PlanningResponsive() {
                                     {getPaymentStatusBadge(appointment.paymentStatus || 'à régler')}
                                   </div>
                                   <div className="text-xs lg:text-sm text-gray-600">
-                                    {service?.name} • {appointment.endTime} • {service?.price}€
+                                    {service?.name} • {appointment.endTime}
                                   </div>
                                 </div>
                               </div>
@@ -655,8 +688,9 @@ export default function PlanningResponsive() {
                               : `${employee?.bgColor || 'bg-purple-100'} ${employee?.textColor || 'text-purple-800'} ${employee?.borderColor || 'border-purple-200'}`
                           }`}
                         >
-                          <div className="flex items-center mb-1">
-                            <div className="font-bold">{apt.startTime} • {service?.price}€</div>
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="font-bold">{apt.startTime}</div>
+                            <div className="text-xs opacity-75">{service?.price}€</div>
                           </div>
                           <div className="truncate font-medium">{client?.firstName} {client?.lastName}</div>
                           <div className="text-xs opacity-75 truncate">{service?.name}</div>
