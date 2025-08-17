@@ -322,7 +322,7 @@ export default function PlanningMobile() {
   }, [viewMode]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50 p-2 lg:p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50 p-2 lg:p-4 pb-24">
       <div className="max-w-md mx-auto lg:max-w-7xl">
         
         {/* Analytics rapides - Mobile d'abord */}
