@@ -13,6 +13,7 @@ type Appointment = {
   title: string;
   client: string;
   email?: string;
+  phone?: string;
   startTime: string;
   endTime: string;
   day: number; // 0-6 (dimanche à samedi)
@@ -22,6 +23,8 @@ type Appointment = {
   duration: string;
   employee: string;
   paymentStatus: 'à encaisser' | 'acompte réglé' | 'payé';
+  missedAppointments?: number;
+  notes?: string;
 };
 
 const appointments: Appointment[] = [
@@ -48,6 +51,7 @@ const appointments: Appointment[] = [
     title: 'Brushing',
     client: 'Marie Dubois',
     email: 'marie.dubois@yahoo.fr',
+    phone: '+33 6 12 34 56 78',
     startTime: '12:00',
     endTime: '12:45',
     day: 1,
@@ -56,7 +60,8 @@ const appointments: Appointment[] = [
     price: 35,
     duration: '45 min',
     employee: 'Alicia',
-    paymentStatus: 'payé'
+    paymentStatus: 'payé',
+    notes: 'Préfère les brushings ondulés, allergique aux produits sans sulfate'
   },
   {
     id: '3',
@@ -97,6 +102,7 @@ const appointments: Appointment[] = [
     title: 'Balayage',
     client: 'Julie Bernard',
     email: 'julie.bernard@gmail.com',
+    phone: '+33 6 87 65 43 21',
     startTime: '09:00',
     endTime: '12:00',
     day: 2,
@@ -105,7 +111,9 @@ const appointments: Appointment[] = [
     price: 180,
     duration: '3h',
     employee: 'Alicia',
-    paymentStatus: 'acompte réglé'
+    paymentStatus: 'acompte réglé',
+    missedAppointments: 1,
+    notes: 'A annulé le RDV du 15/08 à la dernière minute. Veut un balayage naturel.'
   },
   {
     id: '6',
@@ -146,6 +154,7 @@ const appointments: Appointment[] = [
     title: 'Permanente',
     client: 'Nina Roux',
     email: 'nina.roux@yahoo.fr',
+    phone: '+33 6 98 76 54 32',
     startTime: '10:00',
     endTime: '13:00',
     day: 3,
@@ -154,7 +163,9 @@ const appointments: Appointment[] = [
     price: 110,
     duration: '3h',
     employee: 'Alicia',
-    paymentStatus: 'acompte réglé'
+    paymentStatus: 'acompte réglé',
+    missedAppointments: 2,
+    notes: 'ATTENTION: 2 RDV manqués. Cheveux très fins, permanente douce recommandée.'
   },
   {
     id: '9',
@@ -833,22 +844,45 @@ export default function PlanningFresha() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-800 text-sm">{appointment.client}</h3>
-                    {appointment.email && (
-                      <p className="text-xs text-gray-500">{appointment.email}</p>
+                    {appointment.phone && (
+                      <p className="text-xs text-gray-500">{appointment.phone}</p>
                     )}
                   </div>
                 </div>
 
+                {/* Alerte rendez-vous manqués */}
+                {appointment.missedAppointments && appointment.missedAppointments > 0 && (
+                  <div className="flex items-center space-x-2 p-2 mb-3 bg-red-50 rounded-lg border border-red-200">
+                    <span className="text-xs px-2 py-1 rounded-full text-red-700 bg-red-100 font-medium">
+                      {appointment.missedAppointments} rendez-vous manqué{appointment.missedAppointments > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                )}
+
                 {/* Service et prix */}
                 <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <h4 className="font-medium text-gray-800">{appointment.title}</h4>
-                    <p className="text-xs text-gray-500">{appointment.employee} • {appointment.duration}</p>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h4 className="font-medium text-gray-800">{appointment.title}</h4>
+                      <p className="text-xs text-gray-500">{appointment.employee} • {appointment.duration}</p>
+                    </div>
+                    {appointment.notes && (
+                      <div className="w-5 h-5 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs">⚠️</span>
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     <p className="font-semibold text-gray-800">{appointment.price} €</p>
                   </div>
                 </div>
+
+                {/* Notes */}
+                {appointment.notes && (
+                  <div className="mb-3 p-2 bg-gray-50 rounded-lg border">
+                    <p className="text-xs text-gray-700">{appointment.notes}</p>
+                  </div>
+                )}
 
                 {/* Statut de paiement */}
                 <div className="flex justify-between items-center pt-2 border-t border-gray-100">
