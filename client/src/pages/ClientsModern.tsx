@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Search, Plus, Star, Phone, 
-  MessageCircle, User, Crown, Sparkles, Users, ArrowRight
+  MessageCircle, User, Crown, Sparkles, Users, ArrowRight, Calendar
 } from 'lucide-react';
 import { getGenericGlassButton } from "@/lib/salonColors";
 
