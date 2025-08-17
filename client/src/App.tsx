@@ -120,6 +120,7 @@ import ClientParametres from "@/pages/ClientParametres";
 import ClientLoginWhite from "@/pages/ClientLoginWhite";
 import FuturisticClientLogin from "@/pages/FuturisticClientLogin";
 import ClientLoginModern from "@/pages/ClientLoginModern";
+import ClientDashboard from "@/pages/ClientDashboard";
 import ProLogin from "@/pages/ProLogin";
 
 import AvyentoStyleClientLogin from "@/pages/AvyentoStyleClientLogin";
@@ -367,6 +368,10 @@ function Router() {
   
   if (location === '/client-login-modern') {
     return <div className="h-full"><ClientLoginModern /></div>;
+  }
+  
+  if (location === '/client-dashboard') {
+    return <div className="h-full"><ClientDashboard /></div>;
   }
   
   if (location === '/client-register') {

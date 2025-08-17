@@ -3137,6 +3137,158 @@ ${insight.actions_recommandees.map((action, index) => `${index + 1}. ${action}`)
     }
   });
 
+  // Client Dashboard Routes
+  app.get('/api/client/appointments', async (req, res) => {
+    try {
+      // Pour la démo, retourner des données simulées de rendez-vous
+      const appointments = [
+        {
+          id: 1,
+          dateTime: '2025-08-20T14:00:00Z',
+          service: {
+            name: 'Coupe & Brushing',
+            price: 65,
+            duration: 60
+          },
+          salon: {
+            id: 1,
+            name: 'Beauty Lash Studio',
+            address: '12 Rue des Fleurs, Paris 16'
+          },
+          staff: {
+            firstName: 'Marie',
+            lastName: 'Dubois'
+          },
+          status: 'confirmed'
+        },
+        {
+          id: 2,
+          dateTime: '2025-08-25T16:30:00Z',
+          service: {
+            name: 'Manucure',
+            price: 45,
+            duration: 45
+          },
+          salon: {
+            id: 2,
+            name: 'Excellence Paris',
+            address: '8 Avenue Montaigne, Paris 8'
+          },
+          staff: {
+            firstName: 'Sophie',
+            lastName: 'Martin'
+          },
+          status: 'confirmed'
+        },
+        {
+          id: 3,
+          dateTime: '2025-08-15T10:00:00Z',
+          service: {
+            name: 'Soin visage',
+            price: 80,
+            duration: 90
+          },
+          salon: {
+            id: 1,
+            name: 'Beauty Lash Studio',
+            address: '12 Rue des Fleurs, Paris 16'
+          },
+          staff: {
+            firstName: 'Marie',
+            lastName: 'Dubois'
+          },
+          status: 'completed',
+          review: {
+            rating: 5,
+            comment: 'Excellent service!'
+          }
+        },
+        {
+          id: 4,
+          dateTime: '2025-08-10T15:00:00Z',
+          service: {
+            name: 'Coloration',
+            price: 120,
+            duration: 120
+          },
+          salon: {
+            id: 2,
+            name: 'Excellence Paris',
+            address: '8 Avenue Montaigne, Paris 8'
+          },
+          staff: {
+            firstName: 'Julie',
+            lastName: 'Leroy'
+          },
+          status: 'completed'
+        }
+      ];
+      
+      console.log('📅 Récupération rendez-vous client:', appointments.length, 'RDV');
+      res.json(appointments);
+    } catch (error: any) {
+      console.error('❌ Erreur récupération rendez-vous client:', error);
+      res.status(500).json({ error: 'Erreur lors de la récupération des rendez-vous' });
+    }
+  });
+
+  app.get('/api/client/stats', async (req, res) => {
+    try {
+      // Pour la démo, calculer des stats basées sur les rendez-vous
+      const stats = {
+        totalAppointments: 4,
+        upcomingAppointments: 2,
+        favoriteServices: ['Coupe & Brushing', 'Manucure', 'Soin visage'],
+        totalSpent: 310,
+        lastVisit: '2025-08-15T10:00:00Z',
+        nextAppointment: '2025-08-20T14:00:00Z',
+        favoritesSalons: [
+          {
+            id: 1,
+            name: 'Beauty Lash Studio',
+            visits: 2
+          },
+          {
+            id: 2,
+            name: 'Excellence Paris',
+            visits: 2
+          }
+        ]
+      };
+      
+      console.log('📊 Récupération stats client:', stats);
+      res.json(stats);
+    } catch (error: any) {
+      console.error('❌ Erreur récupération stats client:', error);
+      res.status(500).json({ error: 'Erreur lors de la récupération des statistiques' });
+    }
+  });
+
+  app.post('/api/client/appointments/:id/cancel', async (req, res) => {
+    try {
+      const appointmentId = req.params.id;
+      console.log('❌ Annulation rendez-vous:', appointmentId);
+      
+      // Pour la démo, simuler l'annulation
+      const canceledAppointment = {
+        id: appointmentId,
+        status: 'canceled',
+        canceledAt: new Date(),
+        cancelReason: 'Annulation client'
+      };
+      
+      console.log('✅ Rendez-vous annulé:', appointmentId);
+      res.json({ 
+        success: true, 
+        appointment: canceledAppointment,
+        message: 'Rendez-vous annulé avec succès'
+      });
+    } catch (error: any) {
+      console.error('❌ Erreur annulation rendez-vous:', error);
+      res.status(500).json({ error: 'Erreur lors de l\'annulation du rendez-vous' });
+    }
+  });
+
   // API pour récupérer un salon par ID - POSTGRESQL UNIQUEMENT
   app.get('/api/salon/public/:id', async (req, res) => {
     try {
