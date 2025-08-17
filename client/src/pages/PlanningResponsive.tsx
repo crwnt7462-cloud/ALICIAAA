@@ -46,12 +46,9 @@ const appointmentFormSchema = insertAppointmentSchema.extend({
   notes: insertAppointmentSchema.shape.notes.optional(),
 });
 
-// Configuration des créneaux horaires (9h à 20h)
+// Configuration des créneaux horaires compacts (9h à 18h)
 const timeSlots = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
-  "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", 
-  "18:00", "18:30", "19:00", "19:30", "20:00"
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
 ];
 
 const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
@@ -88,18 +85,18 @@ const employees: Employee[] = [
   }
 ];
 
-// Services beauté avec couleurs
+// Services beauté avec couleurs pastel
 const beautyServices: ServiceType[] = [
-  { id: 1, name: "Coupe + Brushing", category: "Coiffure", duration: 60, price: 65, color: "#8B5CF6" },
-  { id: 2, name: "Coloration", category: "Coiffure", duration: 120, price: 85, color: "#7C3AED" },
-  { id: 3, name: "Mèches", category: "Coiffure", duration: 180, price: 120, color: "#6D28D9" },
-  { id: 4, name: "Manucure", category: "Ongles", duration: 45, price: 35, color: "#EC4899" },
-  { id: 5, name: "Pédicure", category: "Ongles", duration: 60, price: 45, color: "#DB2777" },
-  { id: 6, name: "Pose Vernis Semi", category: "Ongles", duration: 30, price: 25, color: "#BE185D" },
-  { id: 7, name: "Soin Visage", category: "Soins", duration: 90, price: 80, color: "#06B6D4" },
-  { id: 8, name: "Massage Relaxant", category: "Soins", duration: 60, price: 70, color: "#0891B2" },
-  { id: 9, name: "Extensions", category: "Coiffure", duration: 240, price: 200, color: "#10B981" },
-  { id: 10, name: "Lissage Brésilien", category: "Coiffure", duration: 180, price: 150, color: "#059669" }
+  { id: 1, name: "Coupe + Brushing", category: "Coiffure", duration: 60, price: 65, color: "#E9D5FF" },
+  { id: 2, name: "Coloration", category: "Coiffure", duration: 120, price: 85, color: "#DDD6FE" },
+  { id: 3, name: "Mèches", category: "Coiffure", duration: 180, price: 120, color: "#C4B5FD" },
+  { id: 4, name: "Manucure", category: "Ongles", duration: 45, price: 35, color: "#FBCFE8" },
+  { id: 5, name: "Pédicure", category: "Ongles", duration: 60, price: 45, color: "#F9A8D4" },
+  { id: 6, name: "Pose Vernis Semi", category: "Ongles", duration: 30, price: 25, color: "#F472B6" },
+  { id: 7, name: "Soin Visage", category: "Soins", duration: 90, price: 80, color: "#A5F3FC" },
+  { id: 8, name: "Massage Relaxant", category: "Soins", duration: 60, price: 70, color: "#67E8F9" },
+  { id: 9, name: "Extensions", category: "Coiffure", duration: 240, price: 200, color: "#A7F3D0" },
+  { id: 10, name: "Lissage Brésilien", category: "Coiffure", duration: 180, price: 150, color: "#86EFAC" }
 ];
 
 export default function PlanningResponsive() {
@@ -107,7 +104,7 @@ export default function PlanningResponsive() {
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
+  const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const { toast } = useToast();
@@ -161,8 +158,20 @@ export default function PlanningResponsive() {
   });
 
   // Calcul des dates selon le mode de vue
-  const { currentWeek, currentMonth, currentYear, monthDays } = useMemo(() => {
-    if (viewMode === 'week') {
+  const { currentWeek, currentMonth, currentYear, monthDays, currentDay } = useMemo(() => {
+    if (viewMode === 'day') {
+      const today = new Date();
+      const selectedDay = new Date(today);
+      selectedDay.setDate(today.getDate() + currentWeekOffset);
+      
+      return {
+        currentWeek: [],
+        currentMonth: selectedDay.toLocaleDateString('fr-FR', { month: 'long' }),
+        currentYear: selectedDay.getFullYear(),
+        monthDays: [],
+        currentDay: selectedDay
+      };
+    } else if (viewMode === 'week') {
       const today = new Date();
       const startOfWeek = new Date(today);
       startOfWeek.setDate(today.getDate() - today.getDay() + (currentWeekOffset * 7));
@@ -178,7 +187,8 @@ export default function PlanningResponsive() {
         currentWeek: week,
         currentMonth: startOfWeek.toLocaleDateString('fr-FR', { month: 'long' }),
         currentYear: startOfWeek.getFullYear(),
-        monthDays: []
+        monthDays: [],
+        currentDay: null
       };
     } else {
       // Vue mensuelle
@@ -198,7 +208,8 @@ export default function PlanningResponsive() {
         currentWeek: [],
         currentMonth: firstDay.toLocaleDateString('fr-FR', { month: 'long' }),
         currentYear: selectedYear,
-        monthDays
+        monthDays,
+        currentDay: null
       };
     }
   }, [currentWeekOffset, viewMode, selectedMonth, selectedYear]);
@@ -313,52 +324,52 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Fonction pour obtenir la position de l'événement
+  // Fonction pour obtenir la position de l'événement (optimisée pour créneaux par heure)
   const getEventPosition = (time: string) => {
     const startTime = time.split('-')[0];
     if (!startTime) return 0;
     const [hour, minute] = startTime.split(':').map(Number);
     if (hour === undefined || minute === undefined) return 0;
-    const totalMinutes = (hour - 9) * 60 + minute;
-    return (totalMinutes / 30) * 40; // 40px par demi-heure
+    const slotIndex = timeSlots.findIndex(slot => slot === `${hour.toString().padStart(2, '0')}:00`);
+    return slotIndex >= 0 ? slotIndex * 48 + (minute / 60) * 48 : 0; // 48px par heure (responsive mobile/desktop)
   };
 
-  // Fonction pour calculer la hauteur de l'événement
+  // Fonction pour calculer la hauteur de l'événement (optimisée pour responsive)
   const getEventHeight = (time: string) => {
     const [start, end] = time.split('-');
-    if (!start || !end) return 40;
+    if (!start || !end) return 48;
     const [startHour, startMin] = start.split(':').map(Number);
     const [endHour, endMin] = end.split(':').map(Number);
-    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 40;
+    if (startHour === undefined || startMin === undefined || endHour === undefined || endMin === undefined) return 48;
     const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
-    return Math.max((duration / 30) * 20, 30); // Minimum 30px
+    return Math.max(duration / 60 * 48, 30); // 48px par heure, minimum 30px pour lisibilité mobile
   };
 
-  const navigateWeek = (direction: 'prev' | 'next') => {
-    setCurrentWeekOffset(prev => direction === 'next' ? prev + 1 : prev - 1);
-  };
-
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    if (direction === 'next') {
-      if (selectedMonth === 11) {
-        setSelectedMonth(0);
-        setSelectedYear(selectedYear + 1);
-      } else {
-        setSelectedMonth(selectedMonth + 1);
-      }
+  const navigate = (direction: 'prev' | 'next') => {
+    if (viewMode === 'day' || viewMode === 'week') {
+      setCurrentWeekOffset(prev => direction === 'next' ? prev + 1 : prev - 1);
     } else {
-      if (selectedMonth === 0) {
-        setSelectedMonth(11);
-        setSelectedYear(selectedYear - 1);
+      if (direction === 'next') {
+        if (selectedMonth === 11) {
+          setSelectedMonth(0);
+          setSelectedYear(selectedYear + 1);
+        } else {
+          setSelectedMonth(selectedMonth + 1);
+        }
       } else {
-        setSelectedMonth(selectedMonth - 1);
+        if (selectedMonth === 0) {
+          setSelectedMonth(11);
+          setSelectedYear(selectedYear - 1);
+        } else {
+          setSelectedMonth(selectedMonth - 1);
+        }
       }
     }
   };
 
   const goToToday = () => {
     const today = new Date();
-    if (viewMode === 'week') {
+    if (viewMode === 'day' || viewMode === 'week') {
       setCurrentWeekOffset(0);
     } else {
       setSelectedMonth(today.getMonth());
@@ -391,7 +402,6 @@ export default function PlanningResponsive() {
   const avgTicket = 67;
 
   const openQuickAdd = (type: "appointment" | "block") => {
-    setAppointmentType(type);
     if (type === "appointment") {
       setIsDialogOpen(true);
     } else {
@@ -476,7 +486,7 @@ export default function PlanningResponsive() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => viewMode === 'week' ? navigateWeek('prev') : navigateMonth('prev')}
+                  onClick={() => navigate('prev')}
                   className="p-2"
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -484,7 +494,7 @@ export default function PlanningResponsive() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => viewMode === 'week' ? navigateWeek('next') : navigateMonth('next')}
+                  onClick={() => navigate('next')}
                   className="p-2"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -523,22 +533,42 @@ export default function PlanningResponsive() {
                   </div>
                 ) : (
                   <span className="text-lg font-medium text-gray-700 capitalize">
-                    {currentMonth} {currentYear}
+                    {viewMode === 'day' && currentDay ? 
+                      `${currentDay.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}` :
+                      `${currentMonth} ${currentYear}`
+                    }
                   </span>
                 )}
               </div>
             </div>
 
             <div className="flex items-center space-x-2">
-              <Select value={viewMode} onValueChange={(value: 'week' | 'month') => setViewMode(value)}>
-                <SelectTrigger className="w-28 bg-white/80 backdrop-blur-sm border-gray-200">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Semaine</SelectItem>
-                  <SelectItem value="month">Mois</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'day' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('day')}
+                  className={`px-3 py-1 text-xs ${viewMode === 'day' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  Jour
+                </Button>
+                <Button
+                  variant={viewMode === 'week' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('week')}
+                  className={`px-3 py-1 text-xs ${viewMode === 'week' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  Semaine
+                </Button>
+                <Button
+                  variant={viewMode === 'month' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('month')}
+                  className={`px-3 py-1 text-xs ${viewMode === 'month' ? 'bg-purple-600 text-white' : 'text-gray-600 hover:text-gray-900'}`}
+                >
+                  Mois
+                </Button>
+              </div>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -612,7 +642,83 @@ export default function PlanningResponsive() {
           transition={{ delay: 0.1 }}
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
         >
-          {viewMode === 'week' ? (
+          {viewMode === 'day' ? (
+            <>
+              {/* Vue jour - 4 colonnes (professionnels) */}
+              <div className="grid grid-cols-5 border-b border-gray-200">
+                <div className="p-2 lg:p-4 text-sm font-medium text-gray-500 border-r border-gray-200">
+                  <div className="flex items-center space-x-1 lg:space-x-2">
+                    <Clock className="h-3 w-3 lg:h-4 lg:w-4" />
+                    <span className="hidden lg:inline">Heures</span>
+                  </div>
+                </div>
+                {employees.map((employee) => (
+                  <div key={employee.id} className="p-2 lg:p-4 text-center border-r border-gray-200 last:border-r-0">
+                    <div className="text-xs lg:text-sm font-medium text-gray-700">{employee.name}</div>
+                    <div className="text-xs text-gray-500 mt-1">{employee.specialties[0]}</div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Grille horaire jour */}
+              <div className="grid grid-cols-5 max-h-96 lg:max-h-[500px] overflow-y-auto">
+                <div className="border-r border-gray-200 w-12 lg:w-16">
+                  {timeSlots.map((slot, index) => (
+                    <div key={index} className="h-12 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
+                      {slot}
+                    </div>
+                  ))}
+                </div>
+                
+                {employees.map((employee, empIndex) => (
+                  <div key={employee.id} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
+                    {timeSlots.map((slot, slotIndex) => (
+                      <div
+                        key={slotIndex}
+                        className="h-12 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                      />
+                    ))}
+                    
+                    {/* Événements pour cet employé */}
+                    {beautySampleEvents
+                      .filter(event => event.employeeId === employee.id)
+                      .map((event) => {
+                        const isBlocked = event.isBlock;
+                        const serviceColor = isBlocked ? "#EF4444" : getServiceColor(event.serviceId);
+                        
+                        return (
+                          <div
+                            key={event.id}
+                            className={`absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-sm z-10 border ${
+                              isBlocked 
+                                ? 'bg-red-100 border-red-300 text-red-800' 
+                                : 'border-gray-200'
+                            }`}
+                            style={{
+                              top: `${getEventPosition(event.time)}px`,
+                              height: `${getEventHeight(event.time)}px`,
+                              minHeight: '25px',
+                              backgroundColor: isBlocked ? '#FEE2E2' : serviceColor
+                            }}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <div className="truncate font-semibold text-gray-800">{event.title}</div>
+                              {event.status === 'confirmed' && !isBlocked && (
+                                <div className="w-1.5 h-1.5 bg-green-600 rounded-full flex-shrink-0"></div>
+                              )}
+                            </div>
+                            {!isBlocked && (
+                              <div className="truncate text-gray-700 text-xs">{event.client}</div>
+                            )}
+                            <div className="text-xs text-gray-600 truncate">{event.time}</div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : viewMode === 'week' ? (
             <>
               {/* En-tête des jours - Vue hebdomadaire */}
               <div className="grid grid-cols-8 border-b border-gray-200">
@@ -640,12 +746,12 @@ export default function PlanningResponsive() {
               </div>
 
               {/* Grille horaire - Vue hebdomadaire */}
-              <div className="relative">
+              <div className="relative max-h-96 lg:max-h-[500px] overflow-y-auto">
                 <div className="grid grid-cols-8">
                   {/* Colonne des heures */}
-                  <div className="border-r border-gray-200">
+                  <div className="border-r border-gray-200 w-12 lg:w-16">
                     {timeSlots.map((slot, index) => (
-                      <div key={index} className="h-20 flex items-start justify-end pr-2 pt-1 text-xs text-gray-500 border-b border-gray-100">
+                      <div key={index} className="h-12 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
                         {slot}
                       </div>
                     ))}
@@ -653,11 +759,11 @@ export default function PlanningResponsive() {
 
                   {/* Colonnes des jours */}
                   {currentWeek.map((date, dayIndex) => (
-                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0">
+                    <div key={dayIndex} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
                       {timeSlots.map((slot, slotIndex) => (
                         <div
                           key={slotIndex}
-                          className="h-20 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
+                          className="h-12 border-b border-gray-100 hover:bg-gray-50 cursor-pointer relative"
                         />
                       ))}
                       
@@ -672,40 +778,31 @@ export default function PlanningResponsive() {
                           return (
                             <div
                               key={event.id}
-                              className={`absolute left-1 right-1 border rounded-md p-2 text-xs font-medium shadow-sm z-10 ${
+                              className={`absolute left-0.5 right-0.5 rounded-md p-1 lg:p-2 text-xs font-medium shadow-sm z-10 border ${
                                 isBlocked 
                                   ? 'bg-red-100 border-red-300 text-red-800' 
-                                  : 'bg-white border-gray-300 text-gray-800'
+                                  : 'border-gray-200'
                               }`}
                               style={{
                                 top: `${getEventPosition(event.time)}px`,
                                 height: `${getEventHeight(event.time)}px`,
-                                minHeight: '35px',
-                                borderLeftColor: serviceColor,
-                                borderLeftWidth: '4px'
+                                minHeight: '25px',
+                                backgroundColor: isBlocked ? '#FEE2E2' : serviceColor
                               }}
                             >
                               <div className="flex items-center justify-between mb-1">
-                                <div className="truncate font-semibold">{event.title}</div>
+                                <div className="truncate font-semibold text-gray-800">{event.title}</div>
                                 {event.status === 'confirmed' && !isBlocked && (
-                                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                  <div className="w-1.5 h-1.5 bg-green-600 rounded-full flex-shrink-0"></div>
                                 )}
                               </div>
                               {!isBlocked && (
-                                <div className="truncate text-gray-600 mb-1">{event.client}</div>
+                                <div className="truncate text-gray-700 text-xs">{event.client}</div>
                               )}
-                              <div className="text-xs opacity-75 mb-1">{event.time}</div>
+                              <div className="text-xs text-gray-600 truncate">{event.time}</div>
                               {employee && selectedEmployee === "all" && (
-                                <div 
-                                  className="text-xs px-1 py-0.5 rounded text-white"
-                                  style={{ backgroundColor: employee.color }}
-                                >
+                                <div className="text-xs mt-1 font-medium text-gray-700">
                                   {employee.name}
-                                </div>
-                              )}
-                              {event.notes && (
-                                <div className="text-xs text-gray-500 truncate mt-1">
-                                  {event.notes}
                                 </div>
                               )}
                             </div>
@@ -721,8 +818,8 @@ export default function PlanningResponsive() {
               {/* En-tête des jours - Vue mensuelle */}
               <div className="grid grid-cols-7 border-b border-gray-200">
                 {weekDays.map((day, index) => (
-                  <div key={index} className="p-4 text-center border-r border-gray-200 last:border-r-0">
-                    <div className="text-sm font-medium text-gray-500">{day}</div>
+                  <div key={index} className="p-1 lg:p-3 text-center border-r border-gray-200 last:border-r-0">
+                    <div className="text-xs lg:text-sm font-medium text-gray-500">{day}</div>
                   </div>
                 ))}
               </div>
@@ -740,7 +837,7 @@ export default function PlanningResponsive() {
                   return (
                     <div 
                       key={index} 
-                      className={`min-h-[120px] p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
+                      className={`min-h-[80px] lg:min-h-[100px] p-1 lg:p-2 border-r border-b border-gray-200 last:border-r-0 hover:bg-gray-50 cursor-pointer ${
                         !isCurrentMonth ? 'bg-gray-50/50 text-gray-400' : ''
                       } ${isToday ? 'bg-purple-50' : ''}`}
                     >
