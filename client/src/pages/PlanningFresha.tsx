@@ -527,7 +527,7 @@ export default function PlanningFresha() {
         <div className="flex items-center justify-between">
           {/* Logo et navigation */}
           <div className="flex items-center space-x-6">
-            <img src={avyentoProLogo} alt="Avyento Pro" className="h-8" />
+            <img src={avyentoProLogo} alt="Avyento Pro" className="h-[90px]" />
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm" onClick={goToToday} className="text-sm">
                 Aujourd'hui
