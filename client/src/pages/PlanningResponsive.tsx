@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, ChevronLeft, ChevronRight, Plus, User, Filter, Sparkles, Euro, Target } from "lucide-react";
+import { Calendar, CalendarDays, CalendarRange, ChevronLeft, ChevronRight, Plus, User, Filter, Sparkles, Euro, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -468,7 +468,7 @@ export default function PlanningResponsive() {
       {/* Calendrier semaine - 7 jours en grille */}
       <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
         <CardContent className="p-4 lg:p-6">
-          <div className="grid grid-cols-7 gap-2 lg:gap-4">
+          <div className="grid grid-cols-7 gap-1 sm:gap-2 lg:gap-4">
             {currentWeek.map((date, index) => {
               const dayDate = new Date(date);
               const isToday = date === new Date().toISOString().split('T')[0];
@@ -479,10 +479,11 @@ export default function PlanningResponsive() {
                   key={date}
                   whileHover={{ scale: 1.02 }}
                   className={`
-                    p-3 lg:p-4 rounded-xl cursor-pointer transition-all min-h-[120px] lg:min-h-[160px]
+                    p-2 sm:p-3 lg:p-4 rounded-lg sm:rounded-xl cursor-pointer transition-all 
+                    min-h-[100px] sm:min-h-[120px] lg:min-h-[160px]
                     ${isToday 
-                      ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white' 
-                      : 'bg-white/50 hover:bg-purple-50'
+                      ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' 
+                      : 'bg-white/60 hover:bg-purple-50 border border-white/40'
                     }
                   `}
                   onClick={() => setSelectedDate(date)}
@@ -600,7 +601,7 @@ export default function PlanningResponsive() {
         {/* En-têtes des jours de la semaine */}
         <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 lg:p-6">
-            <div className="grid grid-cols-7 gap-2 mb-4">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4">
               {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
                 <div key={day} className="text-center font-semibold text-purple-600 p-2">
                   {day}
@@ -609,7 +610,7 @@ export default function PlanningResponsive() {
             </div>
             
             {/* Grille du calendrier */}
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
               {calendarDays.map((day, index) => {
                 const isCurrentMonth = day.getMonth() === selectedDateObj.getMonth();
                 const isToday = day.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
@@ -621,9 +622,9 @@ export default function PlanningResponsive() {
                     key={index}
                     whileHover={{ scale: 1.05 }}
                     className={`
-                      aspect-square p-2 rounded-xl cursor-pointer transition-all
-                      ${isCurrentMonth ? 'bg-white/50' : 'bg-gray-50/30'} 
-                      ${isToday ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white' : ''}
+                      aspect-square p-1 sm:p-2 rounded-lg sm:rounded-xl cursor-pointer transition-all
+                      ${isCurrentMonth ? 'bg-white/60 border border-white/40' : 'bg-gray-50/30'} 
+                      ${isToday ? 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-lg' : ''}
                       hover:bg-purple-100
                     `}
                     onClick={() => setSelectedDate(dayString)}
@@ -677,24 +678,24 @@ export default function PlanningResponsive() {
         <Card className="border-0 shadow-md bg-white/80 backdrop-blur-sm rounded-xl">
           <CardContent className="p-4 lg:p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Résumé du mois</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl">
-                <div className="text-2xl font-bold text-purple-600">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl border border-white/40 shadow-sm">
+                <div className="text-xl sm:text-2xl font-bold text-purple-600">
                   {filteredAppointments.length}
                 </div>
-                <div className="text-sm text-gray-600">RDV total</div>
+                <div className="text-xs sm:text-sm text-gray-600">RDV total</div>
               </div>
-              <div className="text-center p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl">
-                <div className="text-2xl font-bold text-emerald-600">
+              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl border border-white/40 shadow-sm">
+                <div className="text-xl sm:text-2xl font-bold text-emerald-600">
                   {filteredAppointments.filter(apt => apt.status === 'completed').length}
                 </div>
-                <div className="text-sm text-gray-600">Terminés</div>
+                <div className="text-xs sm:text-sm text-gray-600">Terminés</div>
               </div>
-              <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl">
-                <div className="text-2xl font-bold text-amber-600">
+              <div className="text-center p-3 sm:p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-white/40 shadow-sm sm:col-span-2 lg:col-span-1">
+                <div className="text-xl sm:text-2xl font-bold text-amber-600">
                   {revenueStats.revenue.toFixed(0)}€
                 </div>
-                <div className="text-sm text-gray-600">Chiffre d'affaires</div>
+                <div className="text-xs sm:text-sm text-gray-600">Chiffre d'affaires</div>
               </div>
             </div>
           </CardContent>
@@ -725,7 +726,9 @@ export default function PlanningResponsive() {
 
 
       {/* Container responsive avec glassmorphism */}
-      <div className="relative z-10 container mx-auto px-4 py-6 max-w-md lg:max-w-none lg:w-full xl:max-w-7xl min-h-screen">
+      <div className="relative z-10 min-h-screen">
+        <div className="container mx-auto px-4 py-6 max-w-md lg:max-w-none lg:w-full xl:max-w-7xl">
+          <div className="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl p-4 lg:p-8">
         {/* Header avec navigation - Responsive */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -1079,12 +1082,65 @@ export default function PlanningResponsive() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="mt-12 pt-8 border-t border-white/20"
+          className="mt-12 pt-8 border-t border-gray-200/30"
         >
           <div className="text-center text-xs text-gray-500 pb-4">
             <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
           </div>
         </motion.div>
+
+          </div>
+        </div>
+        
+        {/* Bottom Navigation Mobile */}
+        <motion.nav 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-white/30 z-50 shadow-2xl"
+        >
+          <div className="flex justify-around py-3 px-4">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setViewMode('day')}
+              className={`flex flex-col items-center gap-1 ${viewMode === 'day' ? 'text-purple-600' : 'text-gray-500'}`}
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="text-xs">Jour</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setViewMode('week')}
+              className={`flex flex-col items-center gap-1 ${viewMode === 'week' ? 'text-purple-600' : 'text-gray-500'}`}
+            >
+              <CalendarDays className="w-5 h-5" />
+              <span className="text-xs">Semaine</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setViewMode('month')}
+              className={`flex flex-col items-center gap-1 ${viewMode === 'month' ? 'text-purple-600' : 'text-gray-500'}`}
+            >
+              <CalendarRange className="w-5 h-5" />
+              <span className="text-xs">Mois</span>
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setIsDialogOpen(true)}
+              className="flex flex-col items-center gap-1 text-purple-600"
+            >
+              <Plus className="w-5 h-5" />
+              <span className="text-xs">Nouveau</span>
+            </Button>
+          </div>
+        </motion.nav>
       </div>
     </motion.div>
   );
