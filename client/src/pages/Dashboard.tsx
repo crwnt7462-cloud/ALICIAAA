@@ -399,7 +399,7 @@ export default function Dashboard() {
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className="text-2xl font-bold text-gray-900">95%</span>
-                    <span className="text-xs text-gray-500 uppercase tracking-wide">ACTIVITÉ</span>
+                    <span className="text-xs text-gray-500 uppercase tracking-wide">OCCUPATION</span>
                   </div>
                 </div>
 
@@ -407,15 +407,15 @@ export default function Dashboard() {
                 <div className="flex-1 space-y-3 md:space-y-4">
                   <div>
                     <div className="text-xl md:text-2xl font-bold text-gray-900">25</div>
-                    <div className="text-xs md:text-sm text-gray-500">Consultations</div>
+                    <div className="text-xs md:text-sm text-gray-500">Rendez-vous</div>
                   </div>
                   <div>
                     <div className="text-xl md:text-2xl font-bold text-gray-900">10</div>
-                    <div className="text-xs md:text-sm text-gray-500">Analyses</div>
+                    <div className="text-xs md:text-sm text-gray-500">Soins visage</div>
                   </div>
                   <div>
                     <div className="text-xl md:text-2xl font-bold text-gray-900">3</div>
-                    <div className="text-xs md:text-sm text-gray-500">Réunions</div>
+                    <div className="text-xs md:text-sm text-gray-500">Formations</div>
                   </div>
                 </div>
               </div>
