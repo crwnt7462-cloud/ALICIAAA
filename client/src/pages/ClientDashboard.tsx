@@ -255,7 +255,7 @@ export default function ClientDashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 space-y-4 sm:space-y-0">
             <div className="flex-1 min-w-0">
               <p className="text-gray-600 text-sm mb-1">Bonjour {clientData.firstName || 'Client'},</p>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent truncate">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold truncate" style={{ color: '#8b5cf6' }}>
                 Bienvenue sur votre espace
               </h1>
             </div>
@@ -289,7 +289,7 @@ export default function ClientDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total Rendez-vous</p>
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mt-2">
+                  <h3 className="text-3xl font-bold text-gray-900 mt-2">
                     {safeStats.totalAppointments}
                   </h3>
                   <div className="flex items-center mt-2">
@@ -324,7 +324,7 @@ export default function ClientDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">À venir</p>
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mt-2">
+                  <h3 className="text-3xl font-bold text-gray-900 mt-2">
                     {safeStats.upcomingAppointments}
                   </h3>
                   <div className="flex items-center mt-2">
@@ -394,7 +394,7 @@ export default function ClientDashboard() {
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Prochains rendez-vous</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Prochains rendez-vous</h2>
                   <button
                     onClick={() => setLocation('/salon-search')}
                     className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 hover:scale-105 flex items-center whitespace-nowrap"
@@ -483,7 +483,7 @@ export default function ClientDashboard() {
               }}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">Historique</h2>
+                <h2 className="text-xl font-bold text-gray-900">Historique</h2>
                 <button
                   onClick={() => setLocation('/appointment-history')}
                   className="glass-button text-white rounded-xl border-0 shadow-lg font-medium px-3 sm:px-4 py-2 text-xs sm:text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap"
