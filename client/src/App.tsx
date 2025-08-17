@@ -1010,6 +1010,23 @@ function Router() {
     );
   }
 
+  // Page Clients en plein écran desktop avec navigation mobile conservée
+  if (location === '/clients') {
+    return (
+      <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
+        <div className="lg:hidden">
+          <Header />
+        </div>
+        <main className="flex-1 overflow-y-auto">
+          <ClientsModern />
+        </main>
+        <div className="lg:hidden">
+          <BottomNavigation />
+        </div>
+      </div>
+    );
+  }
+
 
 
   // Application principale avec navigation
@@ -1020,8 +1037,7 @@ function Router() {
         <Switch>
           <Route path="/dashboard-old" component={DashboardPeymen} />
           <Route path="/admin-dashboard" component={AdminDashboard} />
-          {/* Planning géré séparément pour plein écran desktop */}
-          <Route path="/clients" component={ClientsModern} />
+          {/* Planning et Clients gérés séparément pour plein écran desktop */}
           <Route path="/staff-management" component={StaffManagement} />
           <Route path="/services-management" component={ServicesManagement} />
           <Route path="/professional-settings-demo" component={ProfessionalSettingsDemo} />
