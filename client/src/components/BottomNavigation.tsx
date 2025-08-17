@@ -34,6 +34,11 @@ export function BottomNavigation() {
   // Force log current state
   console.log('🔍 Current isMobile state:', isMobile, 'Window width:', typeof window !== 'undefined' ? window.innerWidth : 'undefined');
 
+  // Masquer complètement la navigation sur la page planning en mobile
+  if (isMobile && location === '/planning') {
+    return null;
+  }
+
   const navItems = [
     {
       label: 'Accueil',
