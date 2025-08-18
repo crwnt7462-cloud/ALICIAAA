@@ -75,7 +75,21 @@ export default function StaffManagement() {
     queryKey: [`/api/salon/${salonId}/staff`]
   });
 
-  const services: Service[] = (servicesData as any)?.services || [];
+  // Services fictifs pour test si pas de données
+  const defaultServices = [
+    { id: 1, name: "Coupe femme", price: 35, duration: 45 },
+    { id: 2, name: "Coupe homme", price: 25, duration: 30 },
+    { id: 3, name: "Coloration complète", price: 65, duration: 120 },
+    { id: 4, name: "Brushing", price: 20, duration: 30 },
+    { id: 5, name: "Permanente", price: 55, duration: 90 },
+    { id: 6, name: "Soin capillaire", price: 30, duration: 45 },
+    { id: 7, name: "Mèches", price: 45, duration: 75 },
+    { id: 8, name: "Défrisage", price: 60, duration: 90 },
+    { id: 9, name: "Extensions", price: 80, duration: 120 },
+    { id: 10, name: "Shampoing", price: 15, duration: 15 }
+  ];
+
+  const services: Service[] = (servicesData as any)?.services || defaultServices;
   const staffMembers: StaffMember[] = (staffData as any)?.staff || [];
 
   // Mutation pour créer un professionnel
@@ -163,7 +177,7 @@ export default function StaffManagement() {
     <div className="min-h-screen bg-gray-50 relative">
       <MobileBottomNav userType="pro" />
       
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 xl:px-12 py-4 md:py-6 lg:py-8 pb-20 lg:pb-8">
+      <div className="w-full max-w-none lg:max-w-7xl mx-auto px-4 md:px-6 lg:px-8 xl:px-12 py-4 md:py-6 lg:py-8 pb-20 lg:pb-8">
         {/* Header avec logo Avyento - Desktop optimisé */}
         <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mb-6 lg:mb-10">
           <div className="flex items-center space-x-6">
@@ -195,7 +209,7 @@ export default function StaffManagement() {
 
         {/* Formulaire d'ajout - Style Fresha Desktop Responsive */}
         {showAddForm && (
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-8 mb-8 lg:mb-10">
+          <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-8 mb-8 lg:mb-10">
             {/* Sidebar Navigation - Responsive */}
             <div className="lg:col-span-1 order-2 lg:order-1">
               <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md lg:sticky lg:top-6">
