@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Grid3X3, List, Heart, X, Calendar, Users, Star, TrendingUp
 } from 'lucide-react';
+import ProBottomNavigation from '@/components/ProBottomNavigation';
 
 // Interface pour les rendez-vous du jour
 interface TodayAppointment {
@@ -158,7 +159,7 @@ export default function ClientsModern() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-3 sm:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-3 sm:p-6 pb-20 lg:pb-6">
       {/* Header avec bouton retour */}
       <motion.button
         initial={{ opacity: 0, x: -20 }}
@@ -494,6 +495,7 @@ export default function ClientsModern() {
           </div>
         </motion.div>
       </div>
+      <ProBottomNavigation />
     </div>
   );
 }

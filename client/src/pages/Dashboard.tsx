@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ProBottomNavigation from "@/components/ProBottomNavigation";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -62,7 +63,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 pb-20 lg:pb-0">
       {/* Sidebar Glassmorphism Violet - Style exact de l'image - Masquée sur mobile */}
       <div className="w-20 flex flex-col items-center py-6 hidden md:flex" style={{
         background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
@@ -369,6 +370,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <ProBottomNavigation />
     </div>
   );
 }

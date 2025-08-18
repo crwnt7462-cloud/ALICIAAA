@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import ProBottomNavigation from '@/components/ProBottomNavigation';
 
 interface Message {
   id: string;
@@ -158,7 +159,7 @@ export default function AIAssistantFixed() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 max-w-md mx-auto relative overflow-hidden">
+    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 max-w-md mx-auto relative overflow-hidden pb-20 lg:pb-0">
       {/* Header glassmorphism violet */}
       <div className="px-6 py-4 flex items-center justify-between relative bg-white/80 backdrop-blur-md border-b border-gray-200">
         <div 
@@ -260,6 +261,7 @@ export default function AIAssistantFixed() {
           </button>
         </div>
       </div>
+      <ProBottomNavigation />
     </div>
   );
 }

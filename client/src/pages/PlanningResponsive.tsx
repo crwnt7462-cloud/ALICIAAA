@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import ProBottomNavigation from "@/components/ProBottomNavigation";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -659,7 +660,7 @@ export default function PlanningResponsive() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full pb-20 lg:pb-0">
       <div className="container mx-auto p-4 lg:p-6">
         
         {/* Header avec insights */}
@@ -1867,6 +1868,7 @@ export default function PlanningResponsive() {
           </DialogContent>
         </Dialog>
       </div>
+      <ProBottomNavigation />
     </div>
   );
 }
