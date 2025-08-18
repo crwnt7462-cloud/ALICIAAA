@@ -833,11 +833,11 @@ export default function PlanningResponsive() {
               </Button>
               <Button 
                 variant="default" 
-                size="sm" 
-                className="bg-blue-600 hover:bg-blue-700 text-white sm:hidden rounded-full"
+                size="icon"
+                className="w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white sm:hidden rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 fixed bottom-24 right-6 z-50"
                 onClick={() => openQuickAdd("appointment")}
               >
-                <Plus className="h-4 w-4" />
+                <Plus className="h-6 w-6" />
               </Button>
               <Button 
                 variant="outline" 
@@ -896,19 +896,18 @@ export default function PlanningResponsive() {
           </div>
         </motion.div>
 
-        {/* Vue calendrier */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
-        >
-          {/* Vue mobile moderne - Liste verticale */}
-          <div className="block lg:hidden">
-            <div className="p-4 border-b border-gray-100">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Today's Tasks</h3>
-                <span className="text-sm text-gray-500">
+        {/* Vue mobile uniquement - Design moderne exact */}
+        <div className="lg:hidden">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 overflow-hidden"
+          >
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Today's Tasks</h3>
+                <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
                   {new Date().toLocaleDateString('en-US', { 
                     weekday: 'short', 
                     month: 'short', 
@@ -916,89 +915,144 @@ export default function PlanningResponsive() {
                   })}
                 </span>
               </div>
-            </div>
             
-            <div className="p-4 space-y-3">
-              {simulatedAppointments
-                .filter(apt => apt.date.toDateString() === new Date().toDateString())
-                .map((appointment, index) => {
-                  const service = beautyServices.find(s => s.id === appointment.services[0]?.id);
-                  const employee = employees.find(e => e.id === appointment.employee);
-                  const colors = ['bg-blue-50 border-blue-200', 'bg-green-50 border-green-200', 'bg-orange-50 border-orange-200', 'bg-purple-50 border-purple-200'];
-                  const dotColors = ['bg-blue-400', 'bg-green-400', 'bg-orange-400', 'bg-purple-400'];
-                  
-                  return (
-                    <motion.div
-                      key={appointment.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`${colors[index % colors.length]} rounded-2xl p-4 border-2 relative`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-3">
-                          <div className={`w-3 h-3 rounded-full ${dotColors[index % dotColors.length]} mt-2 flex-shrink-0`} />
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                              {appointment.serviceName}
-                            </h4>
-                            <p className="text-gray-600 text-xs mb-2">
-                              {appointment.clientName}
-                            </p>
-                            <div className="flex items-center text-xs text-gray-500">
-                              <Clock className="h-3 w-3 mr-1" />
-                              {appointment.startTime} - {appointment.endTime}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right flex-shrink-0">
-                          <div className="text-sm font-semibold text-gray-900">
-                            {appointment.price}€
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {employee?.name.split(' ')[0]}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Status badge */}
-                      <div className="absolute top-2 right-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full" />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-                
-              {/* Blocked time slot example */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-red-50 border-red-200 rounded-2xl p-4 border-2 relative"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-3 h-3 rounded-full bg-red-400 mt-2 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900 text-sm mb-1">
-                        Pause déjeuner
+              {/* Liste verticale des tâches avec design exact de votre maquette */}
+              <div className="space-y-4">
+                {/* Carte 1 - Turquoise/Bleu */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="relative overflow-hidden rounded-3xl p-6 shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)',
+                  }}
+                >
+                  <div className="flex items-start justify-between text-white">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-1">
+                        Morning Skincare
                       </h4>
-                      <p className="text-gray-600 text-xs mb-2">
-                        Créneau bloqué
+                      <p className="text-blue-100 text-sm mb-3">
+                        Marie Dubois • 09:00-10:30
                       </p>
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Clock className="h-3 w-3 mr-1" />
-                        12:30 - 13:30
+                      <div className="flex items-center text-sm text-blue-100">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>1h 30min</span>
                       </div>
                     </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold">85€</div>
+                      <div className="w-3 h-3 bg-green-400 rounded-full mt-2 ml-auto" />
+                    </div>
                   </div>
-                </div>
-                
-                {/* Status badge */}
-                <div className="absolute top-2 right-2">
-                  <div className="w-2 h-2 bg-red-400 rounded-full" />
-                </div>
-              </motion.div>
+                  
+                  {/* Décoration d'arrière-plan */}
+                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/5 rounded-full" />
+                </motion.div>
+
+                {/* Carte 2 - Violet/Rose */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="relative overflow-hidden rounded-3xl p-6 shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+                  }}
+                >
+                  <div className="flex items-start justify-between text-white">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-1">
+                        Hair Treatment
+                      </h4>
+                      <p className="text-purple-100 text-sm mb-3">
+                        Sophie Martin • 11:00-12:15
+                      </p>
+                      <div className="flex items-center text-sm text-purple-100">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>1h 15min</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold">120€</div>
+                      <div className="w-3 h-3 bg-green-400 rounded-full mt-2 ml-auto" />
+                    </div>
+                  </div>
+                  
+                  {/* Décoration d'arrière-plan */}
+                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/5 rounded-full" />
+                </motion.div>
+
+                {/* Carte 3 - Orange/Rouge */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="relative overflow-hidden rounded-3xl p-6 shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #f97316 0%, #ef4444 100%)',
+                  }}
+                >
+                  <div className="flex items-start justify-between text-white">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-1">
+                        Lunch Break
+                      </h4>
+                      <p className="text-orange-100 text-sm mb-3">
+                        Blocked • 12:30-13:30
+                      </p>
+                      <div className="flex items-center text-sm text-orange-100">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>1h</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="w-3 h-3 bg-red-300 rounded-full mt-2 ml-auto" />
+                    </div>
+                  </div>
+                  
+                  {/* Décoration d'arrière-plan */}
+                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/5 rounded-full" />
+                </motion.div>
+
+                {/* Carte 4 - Vert/Emeraude */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="relative overflow-hidden rounded-3xl p-6 shadow-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                  }}
+                >
+                  <div className="flex items-start justify-between text-white">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-1">
+                        Nail Art Session
+                      </h4>
+                      <p className="text-emerald-100 text-sm mb-3">
+                        Emma Laurent • 14:00-15:30
+                      </p>
+                      <div className="flex items-center text-sm text-emerald-100">
+                        <Clock className="h-4 w-4 mr-2" />
+                        <span>1h 30min</span>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold">95€</div>
+                      <div className="w-3 h-3 bg-yellow-400 rounded-full mt-2 ml-auto" />
+                    </div>
+                  </div>
+                  
+                  {/* Décoration d'arrière-plan */}
+                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
+                  <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/5 rounded-full" />
+                </motion.div>
+              </div>
             </div>
           </div>
 
