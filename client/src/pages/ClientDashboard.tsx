@@ -630,61 +630,7 @@ export default function ClientDashboard() {
         </div>
       )}
 
-      {/* Navigation Mobile Bottom - Glassmorphism moderne */}
-      <div className="lg:hidden fixed bottom-4 left-4 right-4 z-40 rounded-3xl" 
-           style={{
-             backdropFilter: 'blur(20px) saturate(180%)',
-             background: 'rgba(255, 255, 255, 0.95)',
-             border: '1px solid rgba(255, 255, 255, 0.4)',
-             boxShadow: '0 8px 32px rgba(31, 38, 135, 0.25)'
-           }}>
-        <div className="grid grid-cols-4 gap-1 p-3">
-          <button
-            onClick={() => setLocation('/client-dashboard')}
-            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200"
-            style={{
-              background: 'rgba(99, 102, 241, 0.1)',
-              color: '#6366f1'
-            }}
-          >
-            <BarChart3 className="w-5 h-5 mb-1" />
-            <span className="text-xs font-medium">Dashboard</span>
-          </button>
-          
-          <button
-            onClick={() => setLocation('/search')}
-            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
-            style={{
-              background: 'rgba(255, 255, 255, 0.5)'
-            }}
-          >
-            <Calendar className="w-5 h-5 mb-1" />
-            <span className="text-xs font-medium">Réserver</span>
-          </button>
-          
-          <button
-            onClick={() => setLocation('/client-rdv')}
-            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
-            style={{
-              background: 'rgba(255, 255, 255, 0.5)'
-            }}
-          >
-            <Star className="w-5 h-5 mb-1" />
-            <span className="text-xs font-medium">Mes RDV</span>
-          </button>
-          
-          <button
-            onClick={() => setLocation('/client-parametres')}
-            className="flex flex-col items-center justify-center p-3 rounded-2xl transition-all duration-200 text-gray-600"
-            style={{
-              background: 'rgba(255, 255, 255, 0.5)'
-            }}
-          >
-            <Settings className="w-5 h-5 mb-1" />
-            <span className="text-xs font-medium">Paramètres</span>
-          </button>
-        </div>
-      </div>
+
       
       {/* Navigation mobile */}
       <MobileBottomNav userType="client" />
