@@ -151,87 +151,102 @@ export default function StaffManagement() {
     <div className="min-h-screen bg-gray-50 relative">
       <MobileBottomNav userType="pro" />
       
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8 pb-20 lg:pb-8">
-        {/* Header avec logo Avyento */}
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 lg:mb-8">
-          <div className="flex items-center space-x-4">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 xl:px-12 py-4 md:py-6 lg:py-8 pb-20 lg:pb-8">
+        {/* Header avec logo Avyento - Desktop optimisé */}
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mb-6 lg:mb-10">
+          <div className="flex items-center space-x-6">
             <img 
               src={avyentoLogo} 
               alt="Avyento" 
-              className="w-12 h-12 md:w-16 md:h-16"
+              className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20"
             />
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Gestion de l'équipe</h1>
-              <p className="text-gray-600 mt-1 text-sm md:text-base">Gérez votre équipe et assignez les services</p>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Gestion de l'équipe</h1>
+              <p className="text-gray-600 mt-1 text-sm md:text-base lg:text-lg">Gérez votre équipe et assignez les services</p>
             </div>
           </div>
-          <Button 
-            onClick={() => setShowAddForm(true)}
-            className="bg-purple-600 hover:bg-purple-700 text-white w-full md:w-auto"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Ajouter un professionnel</span>
-            <span className="sm:hidden">Ajouter</span>
-          </Button>
+          <div className="flex items-center gap-4">
+            <div className="hidden lg:flex items-center text-sm text-gray-500">
+              <Users className="h-4 w-4 mr-2" />
+              {staffMembers.length} membre{staffMembers.length > 1 ? 's' : ''} d'équipe
+            </div>
+            <Button 
+              onClick={() => setShowAddForm(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white w-full lg:w-auto lg:px-6 lg:py-3"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Ajouter un professionnel</span>
+              <span className="sm:hidden">Ajouter</span>
+            </Button>
+          </div>
         </div>
 
-        {/* Formulaire d'ajout - Responsive */}
+        {/* Formulaire d'ajout - Desktop optimisé */}
         {showAddForm && (
-          <Card className="mb-6 rounded-3xl shadow-sm border-0 bg-white/80 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between text-lg md:text-xl">
-                Nouveau professionnel
+          <Card className="mb-8 lg:mb-10 rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center justify-between text-lg md:text-xl lg:text-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <Plus className="h-5 w-5 text-purple-600" />
+                  </div>
+                  Nouveau professionnel
+                </div>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAddForm(false)}
+                  className="hover:bg-gray-100"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Prénom"
-                  value={newStaff.firstName}
-                  onChange={(e) => setNewStaff(prev => ({ ...prev, firstName: e.target.value }))}
-                  className="rounded-xl"
-                />
-                <Input
-                  placeholder="Nom"
-                  value={newStaff.lastName}
-                  onChange={(e) => setNewStaff(prev => ({ ...prev, lastName: e.target.value }))}
-                  className="rounded-xl"
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Email"
-                  type="email"
-                  value={newStaff.email}
-                  onChange={(e) => setNewStaff(prev => ({ ...prev, email: e.target.value }))}
-                  className="rounded-xl"
-                />
-                <Input
-                  placeholder="Téléphone"
-                  value={newStaff.phone}
-                  onChange={(e) => setNewStaff(prev => ({ ...prev, phone: e.target.value }))}
-                  className="rounded-xl"
-                />
+            <CardContent className="space-y-6">
+              {/* Informations personnelles */}
+              <div>
+                <h5 className="text-sm font-medium text-gray-700 mb-3">Informations personnelles</h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                  <Input
+                    placeholder="Prénom"
+                    value={newStaff.firstName}
+                    onChange={(e) => setNewStaff(prev => ({ ...prev, firstName: e.target.value }))}
+                    className="rounded-xl"
+                  />
+                  <Input
+                    placeholder="Nom"
+                    value={newStaff.lastName}
+                    onChange={(e) => setNewStaff(prev => ({ ...prev, lastName: e.target.value }))}
+                    className="rounded-xl"
+                  />
+                  <Input
+                    placeholder="Email"
+                    type="email"
+                    value={newStaff.email}
+                    onChange={(e) => setNewStaff(prev => ({ ...prev, email: e.target.value }))}
+                    className="rounded-xl"
+                  />
+                  <Input
+                    placeholder="Téléphone"
+                    value={newStaff.phone}
+                    onChange={(e) => setNewStaff(prev => ({ ...prev, phone: e.target.value }))}
+                    className="rounded-xl"
+                  />
+                </div>
               </div>
               
+              {/* Services */}
               <div>
-                <h4 className="font-medium mb-3 text-sm md:text-base">Services que ce professionnel peut effectuer :</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                <h5 className="text-sm font-medium text-gray-700 mb-3">Services que ce professionnel peut effectuer</h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                   {services.map((service) => (
-                    <div key={service.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
+                    <div key={service.id} className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 border border-gray-100 transition-colors">
                       <Checkbox
                         id={`service-${service.id}`}
                         checked={newStaff.serviceIds.includes(service.id.toString())}
                         onCheckedChange={(checked) => handleServiceToggle(service.id.toString(), !!checked)}
                       />
-                      <label htmlFor={`service-${service.id}`} className="text-sm flex-1 cursor-pointer">
+                      <label htmlFor={`service-${service.id}`} className="text-sm flex-1 cursor-pointer font-medium">
                         {service.name}
                       </label>
                     </div>
@@ -239,11 +254,11 @@ export default function StaffManagement() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
                 <Button 
                   onClick={handleSubmit}
                   disabled={createStaffMutation.isPending}
-                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl flex-1 sm:flex-none"
+                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl flex-1 sm:flex-none lg:px-8"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   Enregistrer
@@ -251,7 +266,7 @@ export default function StaffManagement() {
                 <Button 
                   variant="outline" 
                   onClick={() => setShowAddForm(false)}
-                  className="rounded-xl"
+                  className="rounded-xl lg:px-8"
                 >
                   Annuler
                 </Button>
@@ -260,42 +275,53 @@ export default function StaffManagement() {
           </Card>
         )}
 
-        {/* Liste de l'équipe - Responsive Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        {/* Liste de l'équipe - Desktop Grid optimisé */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-6 xl:gap-8">
           {isLoadingStaff ? (
-            <div className="col-span-full text-center py-8">
-              <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-2"></div>
-              <p className="text-sm md:text-base">Chargement de l'équipe...</p>
+            <div className="col-span-full text-center py-12 lg:py-16">
+              <div className="animate-spin w-10 h-10 lg:w-12 lg:h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-base lg:text-lg font-medium text-gray-600">Chargement de l'équipe...</p>
             </div>
           ) : staffMembers.length === 0 ? (
-            <Card className="col-span-full rounded-3xl shadow-sm border-0 bg-white/80 backdrop-blur-sm">
-              <CardContent className="text-center py-8 md:py-12">
-                <Users className="h-10 md:h-12 w-10 md:w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun professionnel</h3>
-                <p className="text-gray-600 mb-4 text-sm md:text-base">Commencez par ajouter des professionnels à votre équipe</p>
+            <Card className="col-span-full rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md">
+              <CardContent className="text-center py-12 lg:py-16">
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <Users className="h-8 w-8 lg:h-10 lg:w-10 text-purple-600" />
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3">Aucun professionnel</h3>
+                <p className="text-gray-600 mb-6 text-base lg:text-lg max-w-md mx-auto">Commencez par ajouter des professionnels à votre équipe pour optimiser votre planning</p>
                 <Button 
                   onClick={() => setShowAddForm(true)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl"
+                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl lg:px-8 lg:py-3"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   Ajouter le premier professionnel
                 </Button>
               </CardContent>
             </Card>
           ) : (
             staffMembers.map((member) => (
-              <Card key={member.id} className="rounded-3xl shadow-sm border-0 bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4 md:p-6">
+              <Card key={member.id} className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-4 md:p-6 lg:p-8">
                   {editingStaff?.id === member.id ? (
-                    // Mode édition - Responsive
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    // Mode édition - Desktop optimisé
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                          <Edit className="h-5 w-5 text-green-600" />
+                        </div>
+                        <h4 className="font-semibold text-lg">Modification du profil</h4>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <Input
+                          placeholder="Prénom"
                           value={editingStaff.firstName}
                           onChange={(e) => setEditingStaff(prev => prev ? { ...prev, firstName: e.target.value } : null)}
                           className="rounded-xl"
                         />
                         <Input
+                          placeholder="Nom"
                           value={editingStaff.lastName}
                           onChange={(e) => setEditingStaff(prev => prev ? { ...prev, lastName: e.target.value } : null)}
                           className="rounded-xl"
@@ -303,16 +329,16 @@ export default function StaffManagement() {
                       </div>
                       
                       <div>
-                        <h4 className="font-medium mb-3 text-sm md:text-base">Services :</h4>
-                        <div className="grid grid-cols-1 gap-2">
+                        <h5 className="font-medium mb-3 text-base">Services assignés :</h5>
+                        <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
                           {services.map((service) => (
-                            <div key={service.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
+                            <div key={service.id} className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 border border-gray-100">
                               <Checkbox
                                 id={`edit-service-${service.id}`}
                                 checked={(editingStaff.serviceIds || []).includes(service.id.toString())}
                                 onCheckedChange={(checked) => handleServiceToggle(service.id.toString(), !!checked, true)}
                               />
-                              <label htmlFor={`edit-service-${service.id}`} className="text-sm flex-1 cursor-pointer">
+                              <label htmlFor={`edit-service-${service.id}`} className="text-sm flex-1 cursor-pointer font-medium">
                                 {service.name}
                               </label>
                             </div>
@@ -320,71 +346,74 @@ export default function StaffManagement() {
                         </div>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row gap-2">
+                      <div className="flex flex-col lg:flex-row gap-3 pt-4 border-t">
                         <Button 
                           onClick={handleUpdate}
                           disabled={updateStaffMutation.isPending}
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700 text-white rounded-xl flex-1 sm:flex-none"
+                          className="bg-green-600 hover:bg-green-700 text-white rounded-xl flex-1 lg:flex-none lg:px-6"
                         >
                           <Save className="h-4 w-4 mr-2" />
                           Sauvegarder
                         </Button>
                         <Button 
                           variant="outline" 
-                          size="sm"
                           onClick={() => setEditingStaff(null)}
-                          className="rounded-xl"
+                          className="rounded-xl lg:px-6"
                         >
                           Annuler
                         </Button>
                       </div>
                     </div>
                   ) : (
-                    // Mode affichage - Responsive
-                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg md:text-xl font-semibold text-gray-900">
-                          {member.firstName} {member.lastName}
-                        </h3>
-                        {member.email && (
-                          <p className="text-sm text-gray-600 mt-1">{member.email}</p>
-                        )}
-                        {member.phone && (
-                          <p className="text-sm text-gray-600">{member.phone}</p>
-                        )}
-                        
-                        <div className="mt-3">
-                          <p className="text-sm font-medium text-gray-700 mb-2">Services :</p>
-                          <div className="flex flex-wrap gap-1">
-                            {(member.serviceIds || []).length === 0 ? (
-                              <Badge variant="outline" className="text-gray-500 rounded-full">
-                                Aucun service assigné
-                              </Badge>
-                            ) : (
-                              member.serviceIds?.map((serviceId) => (
-                                <Badge 
-                                  key={serviceId} 
-                                  className="bg-purple-100 text-purple-800 hover:bg-purple-200 rounded-full text-xs"
-                                >
-                                  {getServiceName(serviceId)}
-                                </Badge>
-                              ))
+                    // Mode affichage - Desktop optimisé
+                    <div className="space-y-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg lg:text-xl">
+                            {member.firstName[0]}{member.lastName[0]}
+                          </div>
+                          <div>
+                            <h3 className="text-lg lg:text-xl font-bold text-gray-900">
+                              {member.firstName} {member.lastName}
+                            </h3>
+                            {member.email && (
+                              <p className="text-sm text-gray-600 mt-1">{member.email}</p>
+                            )}
+                            {member.phone && (
+                              <p className="text-sm text-gray-500">{member.phone}</p>
                             )}
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="flex gap-2 sm:ml-4">
+                        
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setEditingStaff(member)}
-                          className="rounded-xl"
+                          className="rounded-xl hover:bg-purple-50 border-purple-200"
                         >
                           <Edit className="h-4 w-4" />
-                          <span className="ml-2 hidden sm:inline">Modifier</span>
+                          <span className="ml-2 hidden lg:inline">Modifier</span>
                         </Button>
+                      </div>
+                      
+                      <div className="border-t pt-4">
+                        <p className="text-sm font-semibold text-gray-700 mb-3">Services assignés :</p>
+                        <div className="flex flex-wrap gap-2">
+                          {(member.serviceIds || []).length === 0 ? (
+                            <Badge variant="outline" className="text-gray-500 rounded-full px-3 py-1">
+                              Aucun service assigné
+                            </Badge>
+                          ) : (
+                            member.serviceIds?.map((serviceId) => (
+                              <Badge 
+                                key={serviceId} 
+                                className="bg-purple-100 text-purple-800 hover:bg-purple-200 rounded-full text-xs px-3 py-1 font-medium"
+                              >
+                                {getServiceName(serviceId)}
+                              </Badge>
+                            ))
+                          )}
+                        </div>
                       </div>
                     </div>
                   )}
