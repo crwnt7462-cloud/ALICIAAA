@@ -644,12 +644,6 @@ export default function PublicLanding() {
               >
                 Réserver
               </button>
-              <button 
-                className="glass-button text-black p-3 rounded-2xl shadow-xl hover:shadow-2xl"
-                onClick={() => setLocation("/pro-login")}
-              >
-                <LogIn className="w-5 h-5" />
-              </button>
             </div>
           </div>
         </div>
