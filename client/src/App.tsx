@@ -182,7 +182,7 @@ function Router() {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
   
-  // Pages qui nécessitent une authentification (pages professionnelles)
+  // Pages qui nécessitent une authentification (pages professionnelles + pages clients personnelles)
   const protectedPages = [
     '/dashboard',
     '/dashboard-peymen', 
@@ -212,7 +212,13 @@ function Router() {
     '/professional-settings-demo',
     '/pro-pages',
     '/direct-messaging',
-    '/client-analytics'
+    '/client-analytics',
+    // Pages clients protégées (comptes personnels)
+    '/client-dashboard',
+    '/client-parametres',
+    '/client-rdv',
+    '/avyento-account',
+    '/notifications'
   ];
   
   // Vérifier si la page actuelle nécessite une authentification
