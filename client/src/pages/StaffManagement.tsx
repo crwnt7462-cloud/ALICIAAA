@@ -22,8 +22,12 @@ interface StaffMember {
   id: number;
   firstName: string;
   lastName: string;
+  jobTitle?: string;
+  calendarColor?: string;
   email?: string;
   phone?: string;
+  birthday?: string;
+  photoUrl?: string;
   specialties?: string;
   serviceIds?: string[];
   isActive: boolean;
@@ -32,8 +36,12 @@ interface StaffMember {
 interface NewStaffMember {
   firstName: string;
   lastName: string;
+  jobTitle: string;
+  calendarColor: string;
   email: string;
   phone: string;
+  birthday: string;
+  photoUrl: string;
   serviceIds: string[];
 }
 
@@ -48,8 +56,12 @@ export default function StaffManagement() {
   const [newStaff, setNewStaff] = useState<NewStaffMember>({
     firstName: '',
     lastName: '',
+    jobTitle: '',
+    calendarColor: '#8b5cf6',
     email: '',
     phone: '',
+    birthday: '',
+    photoUrl: '',
     serviceIds: []
   });
 
@@ -73,7 +85,7 @@ export default function StaffManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [`/api/salon/${salonId}/staff`] });
-      setNewStaff({ firstName: '', lastName: '', email: '', phone: '', serviceIds: [] });
+      setNewStaff({ firstName: '', lastName: '', jobTitle: '', calendarColor: '#8b5cf6', email: '', phone: '', birthday: '', photoUrl: '', serviceIds: [] });
       setShowAddForm(false);
       toast({
         title: "Professionnel ajouté",
@@ -181,98 +193,210 @@ export default function StaffManagement() {
           </div>
         </div>
 
-        {/* Formulaire d'ajout - Desktop optimisé */}
+        {/* Formulaire d'ajout - Style Fresha Desktop */}
         {showAddForm && (
-          <Card className="mb-8 lg:mb-10 rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center justify-between text-lg md:text-xl lg:text-2xl">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                    <Plus className="h-5 w-5 text-purple-600" />
-                  </div>
-                  Nouveau professionnel
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAddForm(false)}
-                  className="hover:bg-gray-100"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Informations personnelles */}
-              <div>
-                <h5 className="text-sm font-medium text-gray-700 mb-3">Informations personnelles</h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                  <Input
-                    placeholder="Prénom"
-                    value={newStaff.firstName}
-                    onChange={(e) => setNewStaff(prev => ({ ...prev, firstName: e.target.value }))}
-                    className="rounded-xl"
-                  />
-                  <Input
-                    placeholder="Nom"
-                    value={newStaff.lastName}
-                    onChange={(e) => setNewStaff(prev => ({ ...prev, lastName: e.target.value }))}
-                    className="rounded-xl"
-                  />
-                  <Input
-                    placeholder="Email"
-                    type="email"
-                    value={newStaff.email}
-                    onChange={(e) => setNewStaff(prev => ({ ...prev, email: e.target.value }))}
-                    className="rounded-xl"
-                  />
-                  <Input
-                    placeholder="Téléphone"
-                    value={newStaff.phone}
-                    onChange={(e) => setNewStaff(prev => ({ ...prev, phone: e.target.value }))}
-                    className="rounded-xl"
-                  />
-                </div>
-              </div>
-              
-              {/* Services */}
-              <div>
-                <h5 className="text-sm font-medium text-gray-700 mb-3">Services que ce professionnel peut effectuer</h5>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  {services.map((service) => (
-                    <div key={service.id} className="flex items-center space-x-3 p-3 rounded-xl hover:bg-purple-50 border border-gray-100 transition-colors">
-                      <Checkbox
-                        id={`service-${service.id}`}
-                        checked={newStaff.serviceIds.includes(service.id.toString())}
-                        onCheckedChange={(checked) => handleServiceToggle(service.id.toString(), !!checked)}
-                      />
-                      <label htmlFor={`service-${service.id}`} className="text-sm flex-1 cursor-pointer font-medium">
-                        {service.name}
-                      </label>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 mb-8 lg:mb-10">
+            {/* Sidebar Navigation */}
+            <div className="xl:col-span-1">
+              <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md sticky top-6">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-4">Sections</h3>
+                  <div className="space-y-2">
+                    <div className="p-3 bg-purple-50 rounded-xl border-l-4 border-purple-500">
+                      <div className="font-medium text-purple-900">Personnel</div>
+                      <div className="text-sm text-purple-600">Profil de base</div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                    <div className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+                      <div className="font-medium">Contact</div>
+                      <div className="text-sm text-gray-500">Email et téléphone</div>
+                    </div>
+                    <div className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+                      <div className="font-medium">Services</div>
+                      <div className="text-sm text-gray-500">Compétences</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                <Button 
-                  onClick={handleSubmit}
-                  disabled={createStaffMutation.isPending}
-                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl flex-1 sm:flex-none lg:px-8"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  Enregistrer
-                </Button>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowAddForm(false)}
-                  className="rounded-xl lg:px-8"
-                >
-                  Annuler
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+            {/* Main Form */}
+            <div className="xl:col-span-3">
+              <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md">
+                <CardHeader className="pb-6">
+                  <CardTitle className="flex items-center justify-between text-2xl">
+                    <div>Nouveau professionnel</div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowAddForm(false)}
+                      className="hover:bg-gray-100"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </CardTitle>
+                  <p className="text-gray-600">Gérer le profil personnel des membres de votre équipe</p>
+                </CardHeader>
+                
+                <CardContent className="space-y-8">
+                  {/* Section Profil avec photo */}
+                  <div className="space-y-6">
+                    <div className="text-center">
+                      <div className="relative inline-block">
+                        <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-3xl font-bold text-gray-400 overflow-hidden">
+                          {newStaff.photoUrl ? (
+                            <img src={newStaff.photoUrl} alt="Profil" className="w-full h-full object-cover" />
+                          ) : (
+                            newStaff.firstName[0] || 'A'
+                          )}
+                        </div>
+                        <button className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700">
+                          <Edit className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Informations visibles aux clients */}
+                    <div>
+                      <h4 className="font-semibold text-lg mb-4 text-purple-900">Informations publiques</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Prénom * <span className="text-xs text-green-600">(visible par les clients)</span>
+                          </label>
+                          <Input
+                            placeholder="Prénom"
+                            value={newStaff.firstName}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, firstName: e.target.value }))}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Intitulé du poste <span className="text-xs text-green-600">(visible par les clients)</span>
+                          </label>
+                          <Input
+                            placeholder="Ex: Coiffeur, Esthéticienne..."
+                            value={newStaff.jobTitle}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, jobTitle: e.target.value }))}
+                            className="rounded-xl"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Informations privées */}
+                    <div>
+                      <h4 className="font-semibold text-lg mb-4 text-red-900">Informations privées</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Nom de famille <span className="text-xs text-red-600">(non visible par les clients)</span>
+                          </label>
+                          <Input
+                            placeholder="Nom"
+                            value={newStaff.lastName}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, lastName: e.target.value }))}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Couleur du calendrier <span className="text-xs text-red-600">(non visible par les clients)</span>
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="color"
+                              value={newStaff.calendarColor}
+                              onChange={(e) => setNewStaff(prev => ({ ...prev, calendarColor: e.target.value }))}
+                              className="w-12 h-10 rounded-lg border-2 border-gray-200"
+                            />
+                            <Input
+                              value={newStaff.calendarColor}
+                              onChange={(e) => setNewStaff(prev => ({ ...prev, calendarColor: e.target.value }))}
+                              className="rounded-xl flex-1"
+                              placeholder="#8b5cf6"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            E-mail <span className="text-xs text-red-600">(non visible par les clients)</span>
+                          </label>
+                          <Input
+                            placeholder="email@exemple.com"
+                            type="email"
+                            value={newStaff.email}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, email: e.target.value }))}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Téléphone <span className="text-xs text-red-600">(non visible par les clients)</span>
+                          </label>
+                          <Input
+                            placeholder="+33 6 12 34 56 78"
+                            value={newStaff.phone}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, phone: e.target.value }))}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div className="lg:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Anniversaire <span className="text-xs text-red-600">(non visible par les clients)</span>
+                          </label>
+                          <Input
+                            type="date"
+                            value={newStaff.birthday}
+                            onChange={(e) => setNewStaff(prev => ({ ...prev, birthday: e.target.value }))}
+                            className="rounded-xl max-w-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Services assignés */}
+                    <div>
+                      <h4 className="font-semibold text-lg mb-4">Services assignés</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1">
+                        {services.map((service) => (
+                          <div key={service.id} className="flex items-center space-x-3 p-4 rounded-xl hover:bg-purple-50 border border-gray-100 transition-colors">
+                            <Checkbox
+                              id={`service-${service.id}`}
+                              checked={newStaff.serviceIds.includes(service.id.toString())}
+                              onCheckedChange={(checked) => handleServiceToggle(service.id.toString(), !!checked)}
+                            />
+                            <label htmlFor={`service-${service.id}`} className="text-sm flex-1 cursor-pointer font-medium">
+                              {service.name}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-4 pt-6 border-t">
+                      <Button 
+                        onClick={handleSubmit}
+                        disabled={createStaffMutation.isPending}
+                        className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-8 py-3 flex-1 sm:flex-none"
+                      >
+                        <Save className="h-5 w-5 mr-2" />
+                        Sauvegarder
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setShowAddForm(false)}
+                        className="rounded-xl px-8 py-3"
+                      >
+                        Annuler
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         )}
 
         {/* Liste de l'équipe - Desktop Grid optimisé */}
@@ -369,18 +493,31 @@ export default function StaffManagement() {
                     <div className="space-y-4">
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg lg:text-xl">
-                            {member.firstName[0]}{member.lastName[0]}
+                          <div className="relative">
+                            <div 
+                              className="w-12 h-12 lg:w-16 lg:h-16 rounded-full flex items-center justify-center text-white font-bold text-lg lg:text-xl overflow-hidden"
+                              style={{ backgroundColor: member.calendarColor || '#8b5cf6' }}
+                            >
+                              {member.photoUrl ? (
+                                <img src={member.photoUrl} alt={`${member.firstName} ${member.lastName}`} className="w-full h-full object-cover" />
+                              ) : (
+                                `${member.firstName[0]}${member.lastName[0]}`
+                              )}
+                            </div>
+                            <div 
+                              className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white"
+                              style={{ backgroundColor: member.calendarColor || '#8b5cf6' }}
+                            ></div>
                           </div>
                           <div>
                             <h3 className="text-lg lg:text-xl font-bold text-gray-900">
                               {member.firstName} {member.lastName}
                             </h3>
-                            {member.email && (
-                              <p className="text-sm text-gray-600 mt-1">{member.email}</p>
+                            {member.jobTitle && (
+                              <p className="text-sm font-medium text-purple-600">{member.jobTitle}</p>
                             )}
-                            {member.phone && (
-                              <p className="text-sm text-gray-500">{member.phone}</p>
+                            {member.email && (
+                              <p className="text-xs text-gray-500 mt-1">{member.email}</p>
                             )}
                           </div>
                         </div>
