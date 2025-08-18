@@ -99,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Import dynamique pour éviter les erreurs de dépendances
       const { aiService } = await import("./aiService");
-      const response = await aiService.chatWithAssistant(message, userId);
+      const response = await aiService.generateResponse(message);
       
       res.json({ response });
     } catch (error) {
