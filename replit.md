@@ -60,6 +60,13 @@ Cette plateforme web vise à révolutionner la gestion des salons et instituts d
 - **Communication**: Services d'envoi d'emails et SMS
 
 ## Recent Changes (Août 2025)
+- **SÉCURITÉ MAJEURE - Authentification Renforcée (18/08/2025 21h26)**:
+  * Suppression du système de démo utilisateur automatique qui bypassait l'authentification
+  * Protection complète de toutes les pages professionnelles (/dashboard, /planning, /services-management, /business-features, /clients, etc.)
+  * Protection des pages clients (/avyento-booking, /avyento-account, /original-booking, /notifications, etc.)
+  * Messages d'erreur élégants avec design glassmorphism pour accès non autorisé
+  * Système d'authentification Replit Auth maintenant pleinement fonctionnel
+  * Toutes les routes sensibles nécessitent maintenant une vraie authentification
 - **Planning Pro Optimisé Créé**: Page `/planning` complètement repensée avec vue employés + vue d'ensemble, navigation jour/semaine/mois, analytics CA temps réel
 - **Analytics Avancées Intégrées**: CA journalier/hebdomadaire/mensuel avec ticket moyen, objectifs et pourcentages d'atteinte en temps réel
 - **Layout Pleine Largeur Desktop**: Planning sort du container mobile (`max-w-md`) pour utiliser toute la largeur desktop avec `lg:max-w-none lg:w-full`

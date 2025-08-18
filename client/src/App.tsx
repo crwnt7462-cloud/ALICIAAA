@@ -1139,8 +1139,31 @@ function Router() {
     );
   }
 
-  // Page Business Features en plein écran desktop avec navigation mobile conservée
+  // Page Business Features PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/business-features') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Fonctionnalités Professionnelles</h2>
+              <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour accéder à vos outils business.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
         <div className="lg:hidden">
@@ -1156,8 +1179,31 @@ function Router() {
     );
   }
 
-  // Page Clients en plein écran desktop avec navigation mobile conservée
+  // Page Clients PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/clients' || location === '/clients-modern') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Gestion Clients</h2>
+              <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour gérer votre clientèle.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
         <div className="lg:hidden">
@@ -1237,9 +1283,23 @@ function Router() {
           <Route path="/salon-settings" component={() => <ProtectedRoute><SalonSettingsModern /></ProtectedRoute>} />
           <Route path="/booking-customization" component={() => <ProtectedRoute><BookingCustomization /></ProtectedRoute>} />
 
+          {/* ROUTES PROFESSIONNELLES PROTÉGÉES - SUITE */}
+          <Route path="/salon-booking-editor" component={() => <ProtectedRoute><SalonBookingEditor /></ProtectedRoute>} />
+          <Route path="/edit-salon" component={() => <ProtectedRoute><EditSalon /></ProtectedRoute>} />
+          <Route path="/salon-page-editor" component={() => <ProtectedRoute><SalonPageEditor /></ProtectedRoute>} />
+          
+          {/* ROUTES CLIENTS PROTÉGÉES */}
+          <Route path="/client-messaging-search" component={() => <ProtectedRoute><ClientMessagingMobile /></ProtectedRoute>} />
+          <Route path="/avyento-booking" component={() => <ProtectedRoute><AvyentoStyleBooking /></ProtectedRoute>} />
+          <Route path="/avyento-account" component={() => <ProtectedRoute><AvyentoStyleAccount /></ProtectedRoute>} />
+          <Route path="/original-booking" component={() => <ProtectedRoute><ModernBooking /></ProtectedRoute>} />
+          <Route path="/advanced-booking" component={() => <ProtectedRoute><AdvancedBookingManager /></ProtectedRoute>} />
+          <Route path="/booking-success" component={() => <ProtectedRoute><BookingSuccess /></ProtectedRoute>} />
+          <Route path="/salon-booking" component={() => <ProtectedRoute><SalonBookingFlow /></ProtectedRoute>} />
+          <Route path="/notifications" component={() => <ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
+
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
-          <Route path="/notifications" component={NotificationCenter} />
           <Route path="/share" component={ShareBooking} />
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
@@ -1251,11 +1311,8 @@ function Router() {
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
-          <Route path="/client-messaging-search" component={ClientMessagingMobile} />
-          <Route path="/salon-booking-editor" component={SalonBookingEditor} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />
-          <Route path="/edit-salon" component={EditSalon} />
           <Route path="/category-selection" component={CategorySelection} />
           <Route path="/salon-selection" component={SalonSelection} />
           <Route path="/salon-payment" component={SalonPayment} />
@@ -1264,20 +1321,13 @@ function Router() {
           <Route path="/stripe/demo" component={StripeDemo} />
           <Route path="/stripe/success" component={StripeSuccess} />
           <Route path="/stripe/cancel" component={StripeCancel} />
-          <Route path="/salon-page-editor" component={SalonPageEditor} />
-          <Route path="/salon-booking" component={SalonBookingFlow} />
           <Route path="/stripe-checkout" component={StripeCheckout} />
           <Route path="/improved-subscription-plans" component={ImprovedSubscriptionPlans} />
           <Route path="/salon-registration-password" component={SalonRegistrationWithPassword} />
-          <Route path="/original-booking" component={ModernBooking} />
-          <Route path="/advanced-booking" component={AdvancedBookingManager} />
-          <Route path="/booking-success" component={BookingSuccess} />
           
-          {/* Pages style Avyento */}
+          {/* Pages style Avyento - PUBLIQUES */}
           <Route path="/avyento-client-login" component={AvyentoStyleClientLogin} />
-          <Route path="/avyento-booking" component={AvyentoStyleBooking} />
           <Route path="/avyento-professionals" component={AvyentoStyleProfessionalList} />
-          <Route path="/avyento-account" component={AvyentoStyleAccount} />
           <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
 
           {/* Routes Salon Mobile - Composant supprimé */}
