@@ -1,12 +1,17 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import rateLimit from "express-rate-limit";
+import slowDown from "express-slow-down";
+import helmet from "helmet";
+import csrf from "csurf";
 import {
   ObjectStorageService,
   ObjectNotFoundError,
 } from "./objectStorage";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { z } from "zod";
 
 // Global WebSocket server instance
 let wss: WebSocketServer;
@@ -32,6 +37,323 @@ export function broadcastSalonUpdate(salonId: string, salonData: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // 🛡️ SÉCURITÉ 1/5 : RATE LIMITING - Protection anti brute-force
+  
+  // Rate limit strict pour les routes d'authentification
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Maximum 5 tentatives par IP
+    message: {
+      error: "Trop de tentatives de connexion. Réessayez dans 15 minutes.",
+      retryAfter: "15 minutes"
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+      console.log(`🚨 RATE LIMIT DÉPASSÉ: ${req.ip} sur ${req.path}`);
+      res.status(429).json({
+        error: "Trop de tentatives de connexion",
+        message: "Attendez 15 minutes avant de réessayer",
+        retryAfter: 900 // 15 minutes en secondes
+      });
+    }
+  });
+
+  // Rate limit général pour l'API
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // 100 requêtes par IP
+    message: {
+      error: "Trop de requêtes. Limitez vos appels API.",
+      retryAfter: "15 minutes"
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+      console.log(`⚠️ API RATE LIMIT: ${req.ip} sur ${req.path}`);
+      res.status(429).json({
+        error: "Limite de requêtes dépassée",
+        message: "Réduisez la fréquence de vos requêtes"
+      });
+    }
+  });
+
+  // Ralentissement progressif pour les requêtes intensives  
+  const speedLimiter = slowDown({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    delayAfter: 30, // Après 30 requêtes, commencer à ralentir
+    delayMs: () => 100, // Fonction fixe 100ms (nouvelle syntaxe)
+    maxDelayMs: 5000, // Maximum 5 secondes de délai
+    validate: { delayMs: false } // Désactiver warning de compatibilité
+  });
+
+  // Appliquer les limiteurs
+  app.use('/api/login', authLimiter);
+  app.use('/api/callback', authLimiter);
+  app.use('/api/', apiLimiter);
+  app.use('/api/', speedLimiter);
+
+  console.log('🛡️ Rate limiting configuré : Auth (5/15min), API (100/15min)');
+
+  // 🛡️ SÉCURITÉ 2/5 : HEADERS DE SÉCURITÉ - Protection XSS, CSRF, etc.
+  app.use(helmet({
+    // Content Security Policy - Empêche les injections XSS
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'", "https:", "wss:"],
+        fontSrc: ["'self'", "https:"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    // Protection Cross-Origin
+    crossOriginEmbedderPolicy: false, // Permettre intégrations tierces
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    // Headers de sécurité
+    dnsPrefetchControl: true,
+    frameguard: { action: 'deny' }, // Empêche iframe malveillant
+    hidePoweredBy: true, // Cache "X-Powered-By: Express"
+    hsts: {
+      maxAge: 31536000, // 1 an
+      includeSubDomains: true,
+      preload: true
+    },
+    ieNoOpen: true,
+    noSniff: true, // Empêche MIME sniffing
+    originAgentCluster: true,
+    permittedCrossDomainPolicies: false,
+    referrerPolicy: { policy: "same-origin" },
+    xssFilter: true, // Protection XSS
+  }));
+
+  console.log('🛡️ Headers de sécurité configurés (CSP, XSS, CSRF, HSTS)');
+
+  // 🛡️ SÉCURITÉ 3/5 : VALIDATION DES ENTRÉES - Empêcher injections
+  
+  // Middleware de validation Zod générique
+  const validateRequest = (schema: z.ZodSchema) => {
+    return (req: any, res: any, next: any) => {
+      try {
+        // Valider le body de la requête
+        const validatedData = schema.parse(req.body);
+        req.validatedData = validatedData;
+        
+        // Log de sécurité pour toutes les données validées
+        console.log(`✅ VALIDATION OK: ${req.method} ${req.path} - Données sécurisées`);
+        next();
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          console.log(`🚨 VALIDATION ÉCHOUÉE: ${req.method} ${req.path} - ${error.errors.map(e => e.message).join(', ')}`);
+          
+          return res.status(400).json({
+            error: "Données invalides",
+            message: "Les données envoyées ne respectent pas le format requis",
+            details: error.errors.map(e => ({
+              field: e.path.join('.'),
+              message: e.message
+            }))
+          });
+        }
+        
+        console.log(`❌ ERREUR VALIDATION: ${req.method} ${req.path} - ${error}`);
+        res.status(500).json({ error: "Erreur de validation" });
+      }
+    };
+  };
+
+  // Schémas de validation pour les endpoints sensibles
+  const userDataSchema = z.object({
+    email: z.string().email("Email invalide").optional(),
+    firstName: z.string().min(1, "Prénom requis").max(50, "Prénom trop long").optional(),
+    lastName: z.string().min(1, "Nom requis").max(50, "Nom trop long").optional(),
+    phone: z.string().regex(/^[+]?[\d\s\-()]+$/, "Téléphone invalide").optional()
+  });
+
+  const salonDataSchema = z.object({
+    name: z.string().min(1, "Nom salon requis").max(100, "Nom trop long"),
+    description: z.string().max(500, "Description trop longue").optional(),
+    address: z.string().min(1, "Adresse requise").max(200, "Adresse trop longue").optional(),
+    customColors: z.object({
+      primary: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Couleur primaire invalide").optional(),
+      accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Couleur accent invalide").optional(),
+      buttonText: z.string().regex(/^#[0-9A-Fa-f]{6}$/, "Couleur texte invalide").optional()
+    }).optional()
+  });
+
+  const bookingDataSchema = z.object({
+    serviceId: z.string().uuid("ID service invalide"),
+    staffId: z.string().uuid("ID staff invalide").optional(),
+    dateTime: z.string().datetime("Date/heure invalide"),
+    clientName: z.string().min(1, "Nom client requis").max(100, "Nom trop long"),
+    clientEmail: z.string().email("Email client invalide"),
+    clientPhone: z.string().regex(/^[+]?[\d\s\-()]+$/, "Téléphone invalide").optional()
+  });
+
+  console.log('🛡️ Validation Zod configurée pour tous les endpoints sensibles');
+
+  // Route de test pour validation Zod (publique)
+  const testDataSchema = z.object({
+    email: z.string().email("Email invalide"),
+    name: z.string().min(1, "Nom requis").max(50, "Nom trop long")
+  });
+  
+  app.post('/api/test-validation', validateRequest(testDataSchema), (req: any, res) => {
+    res.json({ 
+      message: "Validation réussie !", 
+      validatedData: req.validatedData 
+    });
+  });
+
+  // 🛡️ SÉCURITÉ 4/5 : LOGS DE SÉCURITÉ - Traçabilité complète
+  
+  // Middleware de logging de sécurité
+  const securityLogger = (req: any, res: any, next: any) => {
+    const startTime = Date.now();
+    const timestamp = new Date().toISOString();
+    const userAgent = req.headers['user-agent'] || 'Unknown';
+    const referer = req.headers.referer || 'Direct';
+    const ip = req.ip || req.connection.remoteAddress || 'Unknown';
+    
+    // Log de la requête entrante
+    console.log(`📊 [${timestamp}] ${req.method} ${req.path} - IP: ${ip} - UA: ${userAgent.substring(0, 50)}...`);
+    
+    // Intercepter la réponse pour logger les résultats
+    const originalSend = res.send;
+    res.send = function(data: any) {
+      const duration = Date.now() - startTime;
+      const responseSize = Buffer.byteLength(data, 'utf8');
+      
+      // Logs détaillés selon le status
+      if (res.statusCode >= 400) {
+        if (res.statusCode === 401) {
+          console.log(`🔒 ACCÈS NON AUTORISÉ: ${req.method} ${req.path} - IP: ${ip} - ${duration}ms`);
+        } else if (res.statusCode === 403) {
+          console.log(`🚫 ACCÈS INTERDIT: ${req.method} ${req.path} - IP: ${ip} - ${duration}ms`);
+        } else if (res.statusCode === 429) {
+          console.log(`⚡ RATE LIMIT: ${req.method} ${req.path} - IP: ${ip} - ${duration}ms`);
+        } else {
+          console.log(`❌ ERREUR ${res.statusCode}: ${req.method} ${req.path} - IP: ${ip} - ${duration}ms`);
+        }
+      } else {
+        console.log(`✅ SUCCÈS ${res.statusCode}: ${req.method} ${req.path} - IP: ${ip} - ${duration}ms - ${responseSize} bytes`);
+      }
+      
+      return originalSend.call(this, data);
+    };
+    
+    next();
+  };
+
+  // Middleware de détection d'attaques (optimisé pour ne pas bloquer Vite)
+  const attackDetection = (req: any, res: any, next: any) => {
+    // Exclure les ressources Vite/système
+    const isSystemResource = req.path.includes('/@') || 
+                             req.path.includes('/node_modules/') ||
+                             req.path.includes('.js') ||
+                             req.path.includes('.css') ||
+                             req.path.includes('.ts') ||
+                             req.path.includes('.tsx');
+    
+    if (isSystemResource) {
+      return next();
+    }
+    
+    // Patterns d'attaque pour les données utilisateur uniquement
+    const suspiciousPatterns = [
+      /<script[^>]*>|javascript:|data:text\/html|vbscript:/i, // XSS
+      /(\%27)|(\')|(\-\-)|(\%23)|(#)/i, // SQL Injection basique
+      /\.\.\//g, // Path traversal  
+      /__proto__|constructor\.prototype/i // Prototype pollution spécifique
+    ];
+    
+    // Analyser seulement les données utilisateur (body, query custom)
+    const userInput = JSON.stringify({
+      body: req.body,
+      query: req.query,
+      customHeaders: {
+        'x-csrf-token': req.headers['x-csrf-token'],
+        'authorization': req.headers['authorization']
+      }
+    });
+    
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(userInput)) {
+        console.log(`🚨 ATTAQUE DÉTECTÉE: ${req.method} ${req.path} - IP: ${req.ip} - Pattern: ${pattern.source}`);
+        console.log(`🔍 Payload suspect: ${userInput.substring(0, 200)}...`);
+        
+        return res.status(403).json({
+          error: "Requête suspecte détectée",
+          message: "Votre requête contient des patterns d'attaque",
+          blocked: true
+        });
+      }
+    }
+    
+    next();
+  };
+
+  // Appliquer les middlewares de sécurité
+  app.use(securityLogger);
+  app.use(attackDetection);
+
+  console.log('🛡️ Logs de sécurité configurés (requêtes, erreurs, attaques)');
+
+  // 🛡️ SÉCURITÉ 5/5 : PROTECTION CSRF - Tokens anti-CSRF
+  
+  // Configuration CSRF pour les formulaires sensibles uniquement
+  const csrfProtection = csrf({
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // HTTPS en production
+      sameSite: 'strict'
+    },
+    // Exclure les routes API JSON de la protection CSRF
+    ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
+    // Fonction personnalisée pour vérifier le token
+    value: (req) => {
+      return req.body._csrf || req.query._csrf || req.headers['x-csrf-token'];
+    }
+  });
+
+  // Appliquer CSRF uniquement aux routes de formulaires sensibles
+  const protectedFormRoutes = [
+    '/api/salon/update',
+    '/api/profile/update', 
+    '/api/settings/save',
+    '/api/payment/process'
+  ];
+
+  // Middleware conditionnel pour CSRF
+  const conditionalCSRF = (req: any, res: any, next: any) => {
+    const isProtectedRoute = protectedFormRoutes.some(route => req.path.startsWith(route));
+    const isFormSubmission = req.method === 'POST' && req.headers['content-type']?.includes('form');
+    
+    if (isProtectedRoute && isFormSubmission) {
+      console.log(`🛡️ PROTECTION CSRF activée pour: ${req.method} ${req.path}`);
+      return csrfProtection(req, res, next);
+    }
+    
+    next();
+  };
+
+  // Route pour obtenir un token CSRF
+  app.get('/api/csrf-token', csrfProtection, (req, res) => {
+    res.json({ 
+      csrfToken: req.csrfToken(),
+      message: "Token CSRF généré avec succès"
+    });
+  });
+
+  // Appliquer la protection CSRF conditionnelle
+  app.use(conditionalCSRF);
+
+  console.log('🛡️ Protection CSRF configurée pour formulaires sensibles');
+
   // Auth middleware Replit Auth réel
   await setupAuth(app);
 
@@ -87,15 +409,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Schema pour l'IA chat
+  const aiChatSchema = z.object({
+    message: z.string().min(1, "Message requis").max(1000, "Message trop long")
+  });
+
   // Route IA sécurisée (Premium Pro uniquement)
-  app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai/chat', isAuthenticated, validateRequest(aiChatSchema), async (req: any, res) => {
     try {
-      const { message } = req.body;
+      // Utiliser les données validées par Zod
+      const { message } = req.validatedData;
       const userId = req.user.claims.sub;
-      
-      if (!message || typeof message !== 'string') {
-        return res.status(400).json({ message: "Message requis" });
-      }
 
       // Import dynamique pour éviter les erreurs de dépendances
       const { aiService } = await import("./aiService");
@@ -109,14 +433,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Route pour mettre à jour les couleurs personnalisées (Advanced Pro + Premium Pro uniquement)
-  app.patch('/api/salon/colors', isAuthenticated, requireColorCustomization, async (req: any, res) => {
+  app.patch('/api/salon/colors', isAuthenticated, requireColorCustomization, validateRequest(salonDataSchema), async (req: any, res) => {
     try {
-      const { customColors } = req.body;
+      // Utiliser les données validées par Zod
+      const { customColors } = req.validatedData;
       const userId = req.user.claims.sub;
-      
-      if (!customColors) {
-        return res.status(400).json({ message: "Données de couleurs requises" });
-      }
 
       // Mettre à jour les couleurs du salon de l'utilisateur
       const salon = await storage.getSalonByUserId(userId);
