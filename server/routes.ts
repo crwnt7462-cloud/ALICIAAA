@@ -88,7 +88,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Route IA sécurisée (Premium Pro uniquement)
-  app.post('/api/ai/chat', isAuthenticated, requirePremiumPro, async (req: any, res) => {
+  app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
     try {
       const { message } = req.body;
       const userId = req.user.claims.sub;
