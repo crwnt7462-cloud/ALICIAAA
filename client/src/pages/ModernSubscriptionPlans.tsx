@@ -510,20 +510,12 @@ export default function ModernSubscriptionPlans() {
                   <Button
                     onClick={() => handleSelectPlan(plan.id)}
                     className={`w-full h-14 text-lg font-semibold transition-all duration-300 ${
-                      currentPrice <= 0
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
-                        : plan.popular
+                      plan.popular
                         ? 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                         : 'bg-white/80 backdrop-blur-sm text-gray-900 hover:bg-white/90 border border-white/50 shadow-md'
                     }`}
                   >
-                    {currentPrice <= 0 ? (
-                      <>
-                        <Gift className="w-5 h-5 mr-2" />
-                        Activer gratuitement
-                        <ArrowRight className="w-5 h-5 ml-2" />
-                      </>
-                    ) : plan.popular ? (
+                    {plan.popular ? (
                       <>
                         <Rocket className="w-5 h-5 mr-2" />
                         Dominer le marché
