@@ -17,6 +17,183 @@ const storage = memoryStorage; // Using PostgreSQL storage only
 // 🔥 STOCKAGE EN MÉMOIRE POUR LES SALONS PUBLICS
 const publicSalonsStorage = new Map<string, any>();
 
+// Fonction pour charger les salons de démonstration depuis PostgreSQL
+async function loadSalonsFromDatabase() {
+  try {
+    console.log('🔄 Chargement des salons de démonstration...');
+    
+    // Créer des salons de démonstration basés sur les salons existants sur la page d'accueil
+    const demoSalons = [
+      {
+        id: "barbier-gentleman-marais",
+        name: "Barbier Gentleman Marais",
+        slug: "barbier-gentleman-marais",
+        description: "Barbier traditionnel spécialisé dans la coupe masculine classique et moderne",
+        address: "15 rue des Rosiers, 75004 Paris",
+        phone: "01 42 71 20 30",
+        email: "contact@barbier-gentleman.fr",
+        rating: 4.8,
+        reviews: ["Service exceptionnel, ambiance authentique", "Coupe parfaite, très professionnel"],
+        reviewsCount: 156,
+        image: "https://images.unsplash.com/photo-1503951458645-643d53bfd90f?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1503951458645-643d53bfd90f?w=800&h=600&fit=crop&auto=format"],
+        services: ["Coupe homme", "Barbe", "Rasage traditionnel", "Soin visage"],
+        nextSlot: "Disponible aujourd'hui",
+        category: "barbier",
+        city: "Paris",
+        priceRange: "€€",
+        verified: true,
+        popular: true,
+        shareableUrl: "/salon/barbier-gentleman-marais",
+        route: "/salon/barbier-gentleman-marais",
+        customColors: { primary: "#8B4513", accent: "#D2691E", intensity: 70 },
+        distance: "0.3 km",
+        location: "Le Marais"
+      },
+      {
+        id: "beauty-lash-studio",
+        name: "Beauty Lash Studio",
+        slug: "beauty-lash-studio",
+        description: "Studio spécialisé dans les extensions de cils et soins du regard",
+        address: "8 avenue de la République, 75011 Paris",
+        phone: "01 48 05 14 22",
+        email: "hello@beautylash.fr",
+        rating: 4.9,
+        reviews: ["Extensions magnifiques, très naturelles", "Professionnalisme au top"],
+        reviewsCount: 78,
+        image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&h=600&fit=crop&auto=format"],
+        services: ["Extensions de cils", "Rehaussement cils", "Teinture sourcils", "Épilation"],
+        nextSlot: "Disponible demain",
+        category: "esthetique",
+        city: "Paris",
+        priceRange: "€€€",
+        verified: true,
+        popular: false,
+        shareableUrl: "/salon/beauty-lash-studio",
+        route: "/salon/beauty-lash-studio", 
+        customColors: { primary: "#E91E63", accent: "#AD1457", intensity: 65 },
+        distance: "0.8 km",
+        location: "République"
+      },
+      {
+        id: "salon-excellence-paris",
+        name: "Salon Excellence Paris",
+        slug: "salon-excellence-paris",
+        description: "Salon de coiffure haut de gamme, spécialiste coloration et soins",
+        address: "45 avenue des Champs-Élysées, 75008 Paris",
+        phone: "01 42 25 33 40",
+        email: "info@salon-excellence.com",
+        rating: 4.8,
+        reviews: ["Coiffeur d'exception, résultat parfait", "Service premium, très satisfaite"],
+        reviewsCount: 127,
+        image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&auto=format"],
+        services: ["Coupe femme", "Coloration", "Mèches", "Soins cheveux"],
+        nextSlot: "Disponible cette semaine",
+        category: "coiffure",
+        city: "Paris",
+        priceRange: "€€€€",
+        verified: true,
+        popular: true,
+        shareableUrl: "/salon/salon-excellence-paris",
+        route: "/salon/salon-excellence-paris",
+        customColors: { primary: "#673AB7", accent: "#512DA8", intensity: 80 },
+        distance: "1.2 km",
+        location: "Champs-Élysées"
+      },
+      {
+        id: "institut-beaute-saint-germain",
+        name: "Institut Beauté Saint-Germain",
+        slug: "institut-beaute-saint-germain",
+        description: "Institut de beauté complet, soins visage et corps",
+        address: "12 boulevard Saint-Germain, 75006 Paris",
+        phone: "01 43 26 18 55",
+        email: "contact@institut-sg.fr",
+        rating: 4.7,
+        reviews: ["Soins relaxants exceptionnels", "Équipe très professionnelle"],
+        reviewsCount: 89,
+        image: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=600&fit=crop&auto=format"],
+        services: ["Soin visage", "Massage", "Épilation", "Manucure"],
+        nextSlot: "Disponible cette semaine",
+        category: "esthetique",
+        city: "Paris",
+        priceRange: "€€€",
+        verified: true,
+        popular: false,
+        shareableUrl: "/salon/institut-beaute-saint-germain",
+        route: "/salon/institut-beaute-saint-germain",
+        customColors: { primary: "#4CAF50", accent: "#388E3C", intensity: 60 },
+        distance: "0.9 km",
+        location: "Saint-Germain"
+      },
+      {
+        id: "beauty-lounge-montparnasse",
+        name: "Beauty Lounge Montparnasse",
+        slug: "beauty-lounge-montparnasse",
+        description: "Salon moderne proposant coiffure, esthétique et bien-être",
+        address: "33 avenue du Maine, 75014 Paris",
+        phone: "01 45 38 62 17",
+        email: "hello@beauty-lounge.fr",
+        rating: 4.6,
+        reviews: ["Ambiance moderne et accueillante", "Services variés de qualité"],
+        reviewsCount: 94,
+        image: "https://images.unsplash.com/photo-1562322140-8198e7e2e3f0?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1562322140-8198e7e2e3f0?w=800&h=600&fit=crop&auto=format"],
+        services: ["Coiffure", "Onglerie", "Massage", "Soins"],
+        nextSlot: "Disponible demain",
+        category: "coiffure",
+        city: "Paris",
+        priceRange: "€€",
+        verified: true,
+        popular: false,
+        shareableUrl: "/salon/beauty-lounge-montparnasse",
+        route: "/salon/beauty-lounge-montparnasse",
+        customColors: { primary: "#FF5722", accent: "#D84315", intensity: 55 },
+        distance: "1.5 km",
+        location: "Montparnasse"
+      },
+      {
+        id: "salon-moderne-republique",
+        name: "Salon Moderne République",
+        slug: "salon-moderne-republique",
+        description: "Salon tendance au cœur de République, spécialiste coupes modernes",
+        address: "7 place de la République, 75011 Paris",
+        phone: "01 48 87 23 45",
+        email: "contact@salon-moderne.fr",
+        rating: 4.5,
+        reviews: ["Coupes tendance, stylistes créatifs", "Bon rapport qualité-prix"],
+        reviewsCount: 67,
+        image: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format",
+        photos: ["https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=800&h=600&fit=crop&auto=format"],
+        services: ["Coupe moderne", "Styling", "Coloration", "Brushing"],
+        nextSlot: "Disponible aujourd'hui",
+        category: "coiffure",
+        city: "Paris",
+        priceRange: "€€",
+        verified: true,
+        popular: false,
+        shareableUrl: "/salon/salon-moderne-republique",
+        route: "/salon/salon-moderne-republique",
+        customColors: { primary: "#2196F3", accent: "#1976D2", intensity: 50 },
+        distance: "1.1 km",
+        location: "République"
+      }
+    ];
+
+    // Ajouter les salons dans le cache
+    demoSalons.forEach(salon => {
+      publicSalonsStorage.set(salon.id, salon);
+    });
+
+    console.log(`✅ ${demoSalons.length} salons de démonstration chargés`);
+    
+  } catch (error) {
+    console.error('❌ Erreur lors du chargement des salons de démonstration:', error);
+  }
+}
+
 // Logging de l'état des services temps réel
 FIREBASE_CONFIG.logStatus();
 SUPABASE_CONFIG.logStatus();
