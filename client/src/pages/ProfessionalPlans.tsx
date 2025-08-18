@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import avyentoLogo from "@assets/avyento. (1)_1755286272417.png";
 
@@ -8,6 +9,27 @@ export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
   const [, setSelectedPlan] = useState<string | null>(null);
   const [isYearly, setIsYearly] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
+
+  // Codes promo disponibles (gardés pour /register)
+  const availablePromoCodes = {
+    'AVYENTO2025': { discount: 20, type: 'percentage' as const, description: '20% de réduction' },
+    'SALON50': { discount: 50, type: 'fixed' as const, description: '50€ de réduction' },
+    'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
+    'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
+    'EMPIRE100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction sur Beauty Empire' },
+    'FREE149': { discount: 149, type: 'fixed' as const, description: 'Abonnement gratuit - 149€ de réduction' },
+  };
+
+  const getDiscountedPrice = (originalPrice: number) => {
+    if (!appliedPromo) return originalPrice;
+    
+    if (appliedPromo.type === 'percentage') {
+      return originalPrice * (1 - appliedPromo.discount / 100);
+    } else {
+      return Math.max(0, originalPrice - appliedPromo.discount);
+    }
+  };
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
@@ -210,21 +232,11 @@ export default function ProfessionalPlans() {
           <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
             <CardContent className="p-6 text-center">
               <div className="text-gray-800 mb-4">
-                {appliedPromo && getDiscountedPrice(149) !== 149 && (
-                  <div className="text-sm text-gray-500 line-through mb-1">€149 / mois</div>
-                )}
                 <div className="flex items-baseline justify-center mb-2">
                   <span className="text-3xl font-light">€</span>
-                  <span className="text-5xl font-bold text-green-600">
-                    {getDiscountedPrice(149) <= 0 ? 'GRATUIT' : Math.round(getDiscountedPrice(149))}
-                  </span>
-                  {getDiscountedPrice(149) > 0 && <span className="text-base font-normal ml-2">/ mois</span>}
+                  <span className="text-5xl font-bold text-green-600">149</span>
+                  <span className="text-base font-normal ml-2">/ mois</span>
                 </div>
-                {appliedPromo && getDiscountedPrice(149) !== 149 && (
-                  <Badge className="bg-violet-100/80 text-violet-700 border border-violet-300/50 text-xs">
-                    Code {appliedPromo.code}: -{Math.round(149 - getDiscountedPrice(149))}€
-                  </Badge>
-                )}
               </div>
               
               <h3 className="text-xl font-bold text-gray-800 mb-2">
