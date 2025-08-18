@@ -226,15 +226,17 @@ function Router() {
     '/notifications'
   ];
   
-  // Vérifier si la page actuelle nécessite une authentification
+  // VÉRIFICATION IMMÉDIATE - AVANT TOUT RENDU
   const isProtectedPage = protectedPages.some(page => location.startsWith(page));
   
-  // REDIRECTION IMMÉDIATE - SYSTÈME UNIFIÉ
-  // Si page protégée ET pas authentifié ET pas en cours de chargement
-  if (isProtectedPage && !isAuthenticated && !isLoading) {
-    console.log(`🔒 Page protégée ${location} - Redirection vers /`);
-    window.location.href = '/';
-    return null;
+  // REDIRECTION INSTANTANÉE - PENDANT ET APRÈS CHARGEMENT
+  if (isProtectedPage && !isAuthenticated) {
+    // Redirection synchrone immédiate pour éviter tout flash
+    if (typeof window !== 'undefined') {
+      console.log(`🔒 ACCÈS REFUSÉ ${location} - Redirection immédiate`);
+      window.location.replace('/'); // replace() évite l'historique
+    }
+    return null; // Empêche absolument tout rendu
   }
   
   // Pages qui ne doivent pas avoir la barre violette en bas + toutes les pages pro
