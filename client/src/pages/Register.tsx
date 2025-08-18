@@ -26,7 +26,7 @@ export default function Register() {
     city: ""
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState<string>("basic-pro");
+  const [selectedPlan, setSelectedPlan] = useState<string>("essentiel");
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
 
@@ -40,7 +40,7 @@ export default function Register() {
     'FREE149': { discount: 149, type: 'fixed' as const },
   };
 
-  // Charger le code promo depuis localStorage au montage du composant
+  // Charger le code promo ET le plan sélectionné depuis localStorage au montage du composant
   useEffect(() => {
     const savedPromo = localStorage.getItem('appliedPromoCode');
     if (savedPromo) {
@@ -51,6 +51,12 @@ export default function Register() {
       } catch (error) {
         console.error('Erreur lors du chargement du code promo:', error);
       }
+    }
+    
+    // Charger le plan sélectionné
+    const savedPlan = localStorage.getItem('selectedPlan');
+    if (savedPlan) {
+      setSelectedPlan(savedPlan);
     }
   }, []);
 
@@ -96,42 +102,41 @@ export default function Register() {
 
   const subscriptionPlans = [
     {
-      id: "basic-pro",
-      name: "Basic Pro",
+      id: "essentiel",
+      name: "Essentiel",
       price: 29,
       features: [
         "Gestion des rendez-vous",
         "Base de données clients", 
         "Calendrier intégré",
         "Support email",
-        "Design par défaut uniquement"
+        "Jusqu'à 200 RDV/mois"
       ],
       icon: User,
       popular: false
     },
     {
-      id: "advanced-pro",
-      name: "Advanced Pro",
+      id: "professionnel",
+      name: "Professionnel",
       price: 79,
       features: [
-        "Tout du plan Basic Pro",
-        "Personnalisation des couleurs",
+        "Tout de l'Essentiel",
+        "Analytics avancés",
         "Gestion des stocks",
         "Notifications SMS",
-        "Système de fidélité",
-        "Statistiques détaillées"
+        "Jusqu'à 1000 RDV/mois"
       ],
       icon: Star,
       popular: true
     },
     {
-      id: "premium-pro",
-      name: "Premium Pro",
+      id: "premium",
+      name: "Premium",
       price: 149,
       features: [
-        "Tout du plan Advanced Pro",
-        "Assistant IA exclusif",
-        "Optimisation intelligente du planning",
+        "Tout du Professionnel",
+        "Assistant IA intégré",
+        "RDV illimités",
         "Analytics avancés avec IA",
         "Support prioritaire 24/7"
       ],
