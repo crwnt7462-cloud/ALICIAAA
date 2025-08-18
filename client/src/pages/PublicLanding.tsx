@@ -624,6 +624,10 @@ export default function PublicLanding() {
                   />
                 </div>
               </motion.button>
+
+              <div>
+                <img src={logoImage} alt="Logo" className="h-24 w-auto" />
+              </div>
             </div>
             
             <div className="flex items-center gap-3 md:gap-5">
