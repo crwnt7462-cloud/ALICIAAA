@@ -832,9 +832,9 @@ export default function PlanningResponsive() {
                 RDV
               </Button>
               <Button 
-                variant="outline" 
+                variant="default" 
                 size="sm" 
-                className="bg-white/80 backdrop-blur-sm sm:hidden"
+                className="bg-blue-600 hover:bg-blue-700 text-white sm:hidden rounded-full"
                 onClick={() => openQuickAdd("appointment")}
               >
                 <Plus className="h-4 w-4" />
@@ -903,6 +903,107 @@ export default function PlanningResponsive() {
           transition={{ delay: 0.1 }}
           className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 overflow-hidden"
         >
+          {/* Vue mobile moderne - Liste verticale */}
+          <div className="block lg:hidden">
+            <div className="p-4 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">Today's Tasks</h3>
+                <span className="text-sm text-gray-500">
+                  {new Date().toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
+            </div>
+            
+            <div className="p-4 space-y-3">
+              {simulatedAppointments
+                .filter(apt => apt.date.toDateString() === new Date().toDateString())
+                .map((appointment, index) => {
+                  const service = beautyServices.find(s => s.id === appointment.services[0]?.id);
+                  const employee = employees.find(e => e.id === appointment.employee);
+                  const colors = ['bg-blue-50 border-blue-200', 'bg-green-50 border-green-200', 'bg-orange-50 border-orange-200', 'bg-purple-50 border-purple-200'];
+                  const dotColors = ['bg-blue-400', 'bg-green-400', 'bg-orange-400', 'bg-purple-400'];
+                  
+                  return (
+                    <motion.div
+                      key={appointment.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`${colors[index % colors.length]} rounded-2xl p-4 border-2 relative`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-3">
+                          <div className={`w-3 h-3 rounded-full ${dotColors[index % dotColors.length]} mt-2 flex-shrink-0`} />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900 text-sm mb-1">
+                              {appointment.serviceName}
+                            </h4>
+                            <p className="text-gray-600 text-xs mb-2">
+                              {appointment.clientName}
+                            </p>
+                            <div className="flex items-center text-xs text-gray-500">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {appointment.startTime} - {appointment.endTime}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-sm font-semibold text-gray-900">
+                            {appointment.price}€
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {employee?.name.split(' ')[0]}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Status badge */}
+                      <div className="absolute top-2 right-2">
+                        <div className="w-2 h-2 bg-green-400 rounded-full" />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+                
+              {/* Blocked time slot example */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+                className="bg-red-50 border-red-200 rounded-2xl p-4 border-2 relative"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-3 h-3 rounded-full bg-red-400 mt-2 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 text-sm mb-1">
+                        Pause déjeuner
+                      </h4>
+                      <p className="text-gray-600 text-xs mb-2">
+                        Créneau bloqué
+                      </p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Clock className="h-3 w-3 mr-1" />
+                        12:30 - 13:30
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Status badge */}
+                <div className="absolute top-2 right-2">
+                  <div className="w-2 h-2 bg-red-400 rounded-full" />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Vue desktop - grille existante */}
+          <div className="hidden lg:block">
           {viewMode === 'day' ? (
             <>
               {/* Vue jour - 4 colonnes (professionnels) */}
@@ -1467,28 +1568,169 @@ export default function PlanningResponsive() {
 
         {/* Dialog pour créer un RDV depuis un créneau cliqué */}
         <Dialog open={isAppointmentDialogOpen} onOpenChange={setIsAppointmentDialogOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle className="flex items-center">
-                <CalendarDays className="h-5 w-5 mr-2" />
-                Nouveau rendez-vous
-                {selectedTimeSlot && (
-                  <Badge variant="secondary" className="ml-2">
-                    {selectedTimeSlot.time} - {selectedTimeSlot.employee ? getEmployee(selectedTimeSlot.employee)?.name : 'Équipe'}
-                  </Badge>
-                )}
-              </DialogTitle>
-            </DialogHeader>
-            <Form {...quickForm}>
-              <form onSubmit={quickForm.handleSubmit((data) => {
-                createMutation.mutate(data);
-                setIsAppointmentDialogOpen(false);
-              })} className="space-y-4">
+          <DialogContent className="max-w-sm mx-auto p-0 bg-gradient-to-br from-blue-500 to-purple-600 border-0 rounded-3xl lg:max-w-md lg:bg-white lg:bg-none lg:border lg:rounded-xl">
+            {/* Version mobile moderne */}
+            <div className="lg:hidden">
+              <div className="text-white p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold">Add Task</h2>
+                  <button 
+                    onClick={() => setIsAppointmentDialogOpen(false)}
+                    className="text-white/70 hover:text-white"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
                 
-                <FormField
-                  control={quickForm.control}
-                  name="serviceId"
-                  render={({ field }) => (
+                <div className="mb-6">
+                  <div className="flex items-center justify-center space-x-1 text-sm mb-2">
+                    <span className="text-white/70">March 2020</span>
+                    <span className="font-semibold">April 2020</span>
+                    <span className="text-white/70">May 2020</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-7 gap-2 text-center text-sm">
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+                      <div key={i} className="text-white/70 py-1">
+                        {day}
+                      </div>
+                    ))}
+                    {Array.from({ length: 30 }, (_, i) => {
+                      const day = i + 1;
+                      const isSelected = day === 17;
+                      return (
+                        <button
+                          key={day}
+                          className={`p-2 rounded-lg text-sm font-medium ${
+                            isSelected 
+                              ? 'bg-white text-blue-600 shadow-lg' 
+                              : 'text-white/70 hover:text-white hover:bg-white/10'
+                          }`}
+                        >
+                          {day}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-t-3xl p-6">
+                <Form {...quickForm}>
+                  <form onSubmit={quickForm.handleSubmit((data) => {
+                    createMutation.mutate(data);
+                    setIsAppointmentDialogOpen(false);
+                  })} className="space-y-4">
+                
+                    <FormField
+                      control={quickForm.control}
+                      name="clientId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-900 font-medium">Task Name</FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="Daily UI Challenge"
+                              className="border-gray-200 rounded-lg" 
+                              {...field}
+                              value={field.value?.toString() || ''}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={quickForm.control}
+                        name="startTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-gray-900 font-medium">Start Time</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="time" 
+                                className="border-gray-200 rounded-lg" 
+                                {...field} 
+                                defaultValue="10:00"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={quickForm.control}
+                        name="endTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-gray-900 font-medium">End Time</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="time" 
+                                className="border-gray-200 rounded-lg" 
+                                {...field} 
+                                defaultValue="11:00"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="text-gray-900 font-medium text-sm block mb-3">Color</label>
+                      <div className="flex space-x-3">
+                        {[
+                          'bg-blue-400', 'bg-teal-400', 'bg-green-400', 'bg-orange-400'
+                        ].map((color, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            className={`w-8 h-8 rounded-full ${color} ${index === 0 ? 'ring-2 ring-offset-2 ring-blue-400' : ''}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      disabled={createMutation.isPending}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-medium"
+                    >
+                      {createMutation.isPending ? "Adding..." : "Add"}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
+            </div>
+            
+            {/* Version desktop classique */}
+            <div className="hidden lg:block p-6">
+              <DialogHeader>
+                <DialogTitle className="flex items-center">
+                  <CalendarDays className="h-5 w-5 mr-2" />
+                  Nouveau rendez-vous
+                  {selectedTimeSlot && (
+                    <Badge variant="secondary" className="ml-2">
+                      {selectedTimeSlot.time} - {selectedTimeSlot.employee ? getEmployee(selectedTimeSlot.employee)?.name : 'Équipe'}
+                    </Badge>
+                  )}
+                </DialogTitle>
+              </DialogHeader>
+              <Form {...quickForm}>
+                <form onSubmit={quickForm.handleSubmit((data) => {
+                  createMutation.mutate(data);
+                  setIsAppointmentDialogOpen(false);
+                })} className="space-y-4">
+                  
+                  <FormField
+                    control={quickForm.control}
+                    name="serviceId"
+                    render={({ field }) => (
                     <FormItem>
                       <FormLabel>Service</FormLabel>
                       <Select onValueChange={(value) => {
@@ -1608,8 +1850,9 @@ export default function PlanningResponsive() {
                     {createMutation.isPending ? "Création..." : "Créer RDV"}
                   </Button>
                 </div>
-              </form>
-            </Form>
+                </form>
+              </Form>
+            </div>
           </DialogContent>
         </Dialog>
 
