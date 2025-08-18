@@ -1164,31 +1164,10 @@ function Router() {
 
   // Page Dashboard - PROTÉGÉE - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Restreint</h2>
-              <p className="text-gray-600 mb-6">Cette page est réservée aux professionnels authentifiés. Connectez-vous pour accéder à votre dashboard professionnel.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
-              <p className="text-sm text-gray-500 mt-4">
-                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      );
+    // Redirection immédiate vers l'accueil si pas authentifié
+    if (!isAuthenticated && !isLoading) {
+      window.location.href = '/';
+      return null;
     }
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50">
@@ -1200,31 +1179,10 @@ function Router() {
   // Pages professionnelles PROTÉGÉES avec sidebar persistant
   const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
   if (proPages.includes(location)) {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Professionnel Requis</h2>
-              <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour accéder à vos outils de gestion.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
-              <p className="text-sm text-gray-500 mt-4">
-                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      );
+    // Redirection immédiate vers l'accueil si pas authentifié
+    if (!isAuthenticated && !isLoading) {
+      window.location.href = '/';
+      return null;
     }
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
