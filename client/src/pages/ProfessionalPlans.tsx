@@ -1,79 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
-import { Gift, Check } from "lucide-react";
 import avyentoLogo from "@assets/avyento. (1)_1755286272417.png";
 
 export default function ProfessionalPlans() {
   const [, setLocation] = useLocation();
   const [, setSelectedPlan] = useState<string | null>(null);
   const [isYearly, setIsYearly] = useState(false);
-  const [promoCode, setPromoCode] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
-  const [promoError, setPromoError] = useState('');
-  const [isValidatingPromo, setIsValidatingPromo] = useState(false);
-
-  // Codes promo disponibles
-  const availablePromoCodes = {
-    'AVYENTO2025': { discount: 20, type: 'percentage' as const, description: '20% de réduction' },
-    'SALON50': { discount: 50, type: 'fixed' as const, description: '50€ de réduction' },
-    'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
-    'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
-    'EMPIRE100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction sur Beauty Empire' },
-    'FREE149': { discount: 149, type: 'fixed' as const, description: 'Abonnement gratuit - 149€ de réduction' },
-  };
-
-  const validatePromoCode = () => {
-    if (!promoCode.trim()) return;
-    
-    setIsValidatingPromo(true);
-    setPromoError('');
-    
-    // Simuler une validation API
-    setTimeout(() => {
-      const code = promoCode.toUpperCase();
-      const validPromo = availablePromoCodes[code as keyof typeof availablePromoCodes];
-      
-      if (validPromo) {
-        setAppliedPromo({
-          code,
-          discount: validPromo.discount,
-          type: validPromo.type
-        });
-        setPromoError('');
-        // Sauvegarder le code promo pour la page de register
-        localStorage.setItem('appliedPromoCode', JSON.stringify({
-          code,
-          discount: validPromo.discount,
-          type: validPromo.type
-        }));
-      } else {
-        setPromoError('Code promo invalide ou expiré');
-        setAppliedPromo(null);
-        localStorage.removeItem('appliedPromoCode');
-      }
-      setIsValidatingPromo(false);
-    }, 1000);
-  };
-
-  const removePromoCode = () => {
-    setAppliedPromo(null);
-    setPromoCode('');
-    setPromoError('');
-    localStorage.removeItem('appliedPromoCode');
-  };
-
-  const getDiscountedPrice = (originalPrice: number) => {
-    if (!appliedPromo) return originalPrice;
-    
-    if (appliedPromo.type === 'percentage') {
-      return originalPrice * (1 - appliedPromo.discount / 100);
-    } else {
-      return Math.max(0, originalPrice - appliedPromo.discount);
-    }
-  };
 
   const handleSelectPlan = (planId: string) => {
     setSelectedPlan(planId);
@@ -171,74 +105,7 @@ export default function ProfessionalPlans() {
           </Button>
         </div>
 
-        {/* Code Promo Section */}
-        <div className="max-w-md mx-auto mb-12">
-          <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6">
-            <div className="flex items-center justify-center mb-4">
-              <Gift className="w-5 h-5 text-violet-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-800">Code Promo</h3>
-            </div>
-            
-            {!appliedPromo ? (
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                    onKeyPress={(e) => e.key === 'Enter' && validatePromoCode()}
-                    placeholder="Entrez votre code promo"
-                    className="flex-1 px-4 py-3 bg-white/50 border border-white/40 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
-                    disabled={isValidatingPromo}
-                  />
-                  <Button
-                    onClick={validatePromoCode}
-                    disabled={!promoCode.trim() || isValidatingPromo}
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
-                  >
-                    {isValidatingPromo ? (
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    ) : (
-                      'Appliquer'
-                    )}
-                  </Button>
-                </div>
-                
-                {promoError && (
-                  <p className="text-red-500 text-sm text-center">{promoError}</p>
-                )}
-                
-                <div className="text-xs text-gray-600 text-center">
-                  Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100, EMPIRE100, FREE149
-                </div>
-              </div>
-            ) : (
-              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                      <Check className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-green-800">Code {appliedPromo.code} appliqué!</p>
-                      <p className="text-sm text-green-600">
-                        {appliedPromo.type === 'percentage' ? `${appliedPromo.discount}%` : `${appliedPromo.discount}€`} de réduction
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={removePromoCode}
-                    variant="ghost"
-                    size="sm"
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ✕
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+
 
         {/* Pricing Cards - Responsive: Stack on mobile, Asymmetric Slay layout on desktop */}
         
@@ -248,21 +115,11 @@ export default function ProfessionalPlans() {
           <Card className="bg-white shadow-lg rounded-3xl border-0 overflow-hidden">
             <CardContent className="p-6 text-center">
               <div className="text-gray-800 mb-4">
-                {appliedPromo && getDiscountedPrice(29) !== 29 && (
-                  <div className="text-sm text-gray-500 line-through mb-1">€29 / mois</div>
-                )}
                 <div className="flex items-baseline justify-center mb-2">
                   <span className="text-3xl font-light">€</span>
-                  <span className="text-5xl font-bold text-green-600">
-                    {getDiscountedPrice(29) <= 0 ? 'GRATUIT' : Math.round(getDiscountedPrice(29))}
-                  </span>
-                  {getDiscountedPrice(29) > 0 && <span className="text-base font-normal ml-2">/ mois</span>}
+                  <span className="text-5xl font-bold text-green-600">29</span>
+                  <span className="text-base font-normal ml-2">/ mois</span>
                 </div>
-                {appliedPromo && getDiscountedPrice(29) !== 29 && (
-                  <Badge className="bg-violet-100/80 text-violet-700 border border-violet-300/50 text-xs">
-                    Code {appliedPromo.code}: -{Math.round(29 - getDiscountedPrice(29))}€
-                  </Badge>
-                )}
               </div>
               
               <h3 className="text-xl font-bold text-gray-800 mb-2">
@@ -308,21 +165,11 @@ export default function ProfessionalPlans() {
             <Card className="glass-card-violet shadow-2xl rounded-3xl border-0 overflow-hidden">
               <CardContent className="p-6 text-center">
                 <div className="text-white mb-4 pt-4">
-                  {appliedPromo && getDiscountedPrice(79) !== 79 && (
-                    <div className="text-sm text-gray-200 line-through mb-1">€79 / mois</div>
-                  )}
                   <div className="flex items-baseline justify-center mb-2">
                     <span className="text-3xl font-light">€</span>
-                    <span className="text-5xl font-bold text-white">
-                      {getDiscountedPrice(79) <= 0 ? 'GRATUIT' : Math.round(getDiscountedPrice(79))}
-                    </span>
-                    {getDiscountedPrice(79) > 0 && <span className="text-base font-normal ml-2">/ mois</span>}
+                    <span className="text-5xl font-bold text-white">79</span>
+                    <span className="text-base font-normal ml-2">/ mois</span>
                   </div>
-                  {appliedPromo && getDiscountedPrice(79) !== 79 && (
-                    <Badge className="bg-white/20 text-white border border-white/30 text-xs">
-                      Code {appliedPromo.code}: -{Math.round(79 - getDiscountedPrice(79))}€
-                    </Badge>
-                  )}
                 </div>
                 
                 <h3 className="text-2xl font-bold text-white mb-2">
