@@ -924,7 +924,7 @@ export default function PlanningResponsive() {
               {/* Grille horaire jour */}
               <div className="grid grid-cols-5 max-h-96 lg:max-h-[500px] overflow-y-auto">
                 <div className="border-r border-gray-200 w-12 lg:w-16">
-                  {timeSlots.map((slot, index) => (
+                  {allTimeSlots.map((slot, index) => (
                     <div key={index} className="h-12 flex items-center justify-center text-xs text-gray-500 border-b border-gray-100 font-medium">
                       {slot}
                     </div>
@@ -933,11 +933,11 @@ export default function PlanningResponsive() {
                 
                 {employees.map((employee, empIndex) => (
                   <div key={employee.id} className="relative border-r border-gray-200 last:border-r-0 min-w-0">
-                    {timeSlots.map((slot, slotIndex) => (
+                    {allTimeSlots.map((slot, slotIndex) => (
                       <div
                         key={slotIndex}
                         className="h-8 border-b border-gray-100 hover:bg-purple-50 hover:border-purple-200 cursor-pointer relative transition-all duration-150"
-                        onClick={() => handleTimeSlotClick(slot, new Date().getDay(), employee.id)}
+                        onClick={() => handleTimeSlotClick(slot, new Date().getDay(), new Date())}
                         title={`Créer un rendez-vous à ${slot} avec ${employee.name}`}
                       />
                     ))}
@@ -1417,7 +1417,7 @@ export default function PlanningResponsive() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {timeSlots.map((slot) => (
+                            {allTimeSlots.map((slot) => (
                               <SelectItem key={slot} value={slot}>
                                 {slot}
                               </SelectItem>
