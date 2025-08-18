@@ -6,9 +6,7 @@ import {
   ObjectNotFoundError,
 } from "./objectStorage";
 import { storage } from "./storage";
-// import { setupAuth, isAuthenticated } from "./replitAuth";
-// Utilisation temporaire d'un système d'auth simplifié pour les tests
-import { setupTempAuth, isAuthenticated } from "./tempAuth";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 // Global WebSocket server instance
 let wss: WebSocketServer;
@@ -34,8 +32,8 @@ export function broadcastSalonUpdate(salonId: string, salonData: any) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware temporaire (remplacer par setupAuth(app) une fois Replit Auth corrigé)
-  setupTempAuth(app);
+  // Auth middleware Replit Auth réel
+  await setupAuth(app);
 
   // Middleware pour vérifier l'accès Premium Pro
   const requirePremiumPro = async (req: any, res: any, next: any) => {

@@ -73,33 +73,11 @@ async function upsertUser(
 
 async function createPersonalSalonIfNeeded(user: any) {
   try {
-    // Vérifier si l'utilisateur a déjà un salon
-    const existingSalons = await storage.getSalonsByOwner(user.id);
-    
-    if (existingSalons.length === 0) {
-      console.log('🏗️ Création salon personnel pour nouvel utilisateur:', user.email);
-      
-      // Importer la fonction de création automatique
-      const { createAutomaticSalonPage } = await import('./autoSalonCreation');
-      
-      // Créer les données professionnelles par défaut
-      const professionalData = {
-        businessName: `Salon de ${user.firstName || 'Professionnel'}`,
-        email: user.email,
-        phone: '+33 1 XX XX XX XX',
-        address: 'À définir',
-        description: 'Votre salon de beauté professionnel',
-        subscriptionPlan: 'basic' as 'basic' | 'premium' | 'enterprise'
-      };
-      
-      // Créer le salon automatiquement
-      const newSalon = await createAutomaticSalonPage(professionalData);
-      console.log('✅ Salon personnel créé:', newSalon.id);
-      
-      return newSalon;
-    }
+    // Pour l'instant, ne pas créer de salon automatiquement
+    // Cette fonctionnalité sera implémentée plus tard
+    console.log('👤 Utilisateur connecté:', user.email);
   } catch (error) {
-    console.error('❌ Erreur création salon personnel:', error);
+    console.error('❌ Erreur gestion utilisateur:', error);
   }
 }
 
@@ -133,6 +111,20 @@ export async function setupAuth(app: Express) {
       verify,
     );
     passport.use(strategy);
+  }
+
+  // Ajouter une stratégie pour localhost en développement
+  if (process.env.NODE_ENV === 'development') {
+    const localStrategy = new Strategy(
+      {
+        name: `replitauth:localhost`,
+        config,
+        scope: "openid email profile offline_access",
+        callbackURL: `http://localhost:5000/api/callback`,
+      },
+      verify,
+    );
+    passport.use(localStrategy);
   }
 
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
