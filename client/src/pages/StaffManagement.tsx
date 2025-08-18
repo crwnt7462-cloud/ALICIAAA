@@ -193,37 +193,37 @@ export default function StaffManagement() {
           </div>
         </div>
 
-        {/* Formulaire d'ajout - Style Fresha Desktop */}
+        {/* Formulaire d'ajout - Style Fresha Desktop Responsive */}
         {showAddForm && (
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-8 mb-8 lg:mb-10">
-            {/* Sidebar Navigation */}
-            <div className="xl:col-span-1">
-              <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md sticky top-6">
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg mb-4">Sections</h3>
-                  <div className="space-y-2">
-                    <div className="p-3 bg-purple-50 rounded-xl border-l-4 border-purple-500">
-                      <div className="font-medium text-purple-900">Personnel</div>
-                      <div className="text-sm text-purple-600">Profil de base</div>
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-8 mb-8 lg:mb-10">
+            {/* Sidebar Navigation - Responsive */}
+            <div className="lg:col-span-1 order-2 lg:order-1">
+              <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md lg:sticky lg:top-6">
+                <CardContent className="p-4 lg:p-6">
+                  <h3 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4">Sections</h3>
+                  <div className="flex lg:flex-col gap-2 lg:space-y-2">
+                    <div className="p-2 lg:p-3 bg-purple-50 rounded-xl border-l-4 border-purple-500 flex-1 lg:flex-none">
+                      <div className="font-medium text-purple-900 text-sm lg:text-base">Personnel</div>
+                      <div className="text-xs lg:text-sm text-purple-600 hidden lg:block">Profil de base</div>
                     </div>
-                    <div className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
-                      <div className="font-medium">Contact</div>
-                      <div className="text-sm text-gray-500">Email et téléphone</div>
+                    <div className="p-2 lg:p-3 rounded-xl hover:bg-gray-50 cursor-pointer flex-1 lg:flex-none">
+                      <div className="font-medium text-sm lg:text-base">Contact</div>
+                      <div className="text-xs lg:text-sm text-gray-500 hidden lg:block">Email et téléphone</div>
                     </div>
-                    <div className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
-                      <div className="font-medium">Services</div>
-                      <div className="text-sm text-gray-500">Compétences</div>
+                    <div className="p-2 lg:p-3 rounded-xl hover:bg-gray-50 cursor-pointer flex-1 lg:flex-none">
+                      <div className="font-medium text-sm lg:text-base">Services</div>
+                      <div className="text-xs lg:text-sm text-gray-500 hidden lg:block">Compétences</div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Main Form */}
-            <div className="xl:col-span-3">
+            {/* Main Form - Responsive */}
+            <div className="lg:col-span-3 order-1 lg:order-2">
               <Card className="rounded-3xl shadow-lg border-0 bg-white/90 backdrop-blur-md">
-                <CardHeader className="pb-6">
-                  <CardTitle className="flex items-center justify-between text-2xl">
+                <CardHeader className="pb-4 lg:pb-6">
+                  <CardTitle className="flex items-center justify-between text-xl lg:text-2xl">
                     <div>Nouveau professionnel</div>
                     <Button
                       variant="ghost"
@@ -234,34 +234,34 @@ export default function StaffManagement() {
                       <X className="h-4 w-4" />
                     </Button>
                   </CardTitle>
-                  <p className="text-gray-600">Gérer le profil personnel des membres de votre équipe</p>
+                  <p className="text-gray-600 text-sm lg:text-base">Gérer le profil personnel des membres de votre équipe</p>
                 </CardHeader>
                 
-                <CardContent className="space-y-8">
-                  {/* Section Profil avec photo */}
-                  <div className="space-y-6">
+                <CardContent className="space-y-6 lg:space-y-8 p-4 lg:p-6">
+                  {/* Section Profil avec photo - Responsive */}
+                  <div className="space-y-4 lg:space-y-6">
                     <div className="text-center">
                       <div className="relative inline-block">
-                        <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-3xl font-bold text-gray-400 overflow-hidden">
+                        <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gray-200 rounded-full flex items-center justify-center text-2xl lg:text-3xl font-bold text-gray-400 overflow-hidden">
                           {newStaff.photoUrl ? (
                             <img src={newStaff.photoUrl} alt="Profil" className="w-full h-full object-cover" />
                           ) : (
                             newStaff.firstName[0] || 'A'
                           )}
                         </div>
-                        <button className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700">
-                          <Edit className="h-4 w-4" />
+                        <button className="absolute bottom-0 right-0 w-6 h-6 lg:w-8 lg:h-8 bg-purple-600 rounded-full flex items-center justify-center text-white hover:bg-purple-700">
+                          <Edit className="h-3 w-3 lg:h-4 lg:w-4" />
                         </button>
                       </div>
                     </div>
 
-                    {/* Informations visibles aux clients */}
+                    {/* Informations visibles aux clients - Responsive */}
                     <div>
-                      <h4 className="font-semibold text-lg mb-4 text-purple-900">Informations publiques</h4>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <h4 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4 text-purple-900">Informations publiques</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Prénom * <span className="text-xs text-green-600">(visible par les clients)</span>
+                            Prénom *
                           </label>
                           <Input
                             placeholder="Prénom"
@@ -272,7 +272,7 @@ export default function StaffManagement() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Intitulé du poste <span className="text-xs text-green-600">(visible par les clients)</span>
+                            Intitulé du poste
                           </label>
                           <Input
                             placeholder="Ex: Coiffeur, Esthéticienne..."
@@ -284,13 +284,13 @@ export default function StaffManagement() {
                       </div>
                     </div>
 
-                    {/* Informations privées */}
+                    {/* Informations privées - Responsive */}
                     <div>
-                      <h4 className="font-semibold text-lg mb-4 text-red-900">Informations privées</h4>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <h4 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4 text-red-900">Informations privées</h4>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Nom de famille <span className="text-xs text-red-600">(non visible par les clients)</span>
+                            Nom de famille
                           </label>
                           <Input
                             placeholder="Nom"
@@ -301,7 +301,7 @@ export default function StaffManagement() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Couleur du calendrier <span className="text-xs text-red-600">(non visible par les clients)</span>
+                            Couleur du calendrier
                           </label>
                           <div className="flex gap-2">
                             <input
@@ -320,7 +320,7 @@ export default function StaffManagement() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            E-mail <span className="text-xs text-red-600">(non visible par les clients)</span>
+                            E-mail
                           </label>
                           <Input
                             placeholder="email@exemple.com"
@@ -332,7 +332,7 @@ export default function StaffManagement() {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Téléphone <span className="text-xs text-red-600">(non visible par les clients)</span>
+                            Téléphone
                           </label>
                           <Input
                             placeholder="+33 6 12 34 56 78"
@@ -343,7 +343,7 @@ export default function StaffManagement() {
                         </div>
                         <div className="lg:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Anniversaire <span className="text-xs text-red-600">(non visible par les clients)</span>
+                            Anniversaire
                           </label>
                           <Input
                             type="date"
@@ -355,18 +355,18 @@ export default function StaffManagement() {
                       </div>
                     </div>
 
-                    {/* Services assignés */}
+                    {/* Services assignés - Responsive */}
                     <div>
-                      <h4 className="font-semibold text-lg mb-4">Services assignés</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-60 overflow-y-auto p-1">
+                      <h4 className="font-semibold text-base lg:text-lg mb-3 lg:mb-4">Services assignés</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-3 max-h-48 lg:max-h-60 overflow-y-auto p-1">
                         {services.map((service) => (
-                          <div key={service.id} className="flex items-center space-x-3 p-4 rounded-xl hover:bg-purple-50 border border-gray-100 transition-colors">
+                          <div key={service.id} className="flex items-center space-x-2 lg:space-x-3 p-3 lg:p-4 rounded-xl hover:bg-purple-50 border border-gray-100 transition-colors">
                             <Checkbox
                               id={`service-${service.id}`}
                               checked={newStaff.serviceIds.includes(service.id.toString())}
                               onCheckedChange={(checked) => handleServiceToggle(service.id.toString(), !!checked)}
                             />
-                            <label htmlFor={`service-${service.id}`} className="text-sm flex-1 cursor-pointer font-medium">
+                            <label htmlFor={`service-${service.id}`} className="text-xs lg:text-sm flex-1 cursor-pointer font-medium">
                               {service.name}
                             </label>
                           </div>
@@ -374,20 +374,20 @@ export default function StaffManagement() {
                       </div>
                     </div>
 
-                    {/* Actions */}
-                    <div className="flex gap-4 pt-6 border-t">
+                    {/* Actions - Responsive */}
+                    <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 pt-4 lg:pt-6 border-t">
                       <Button 
                         onClick={handleSubmit}
                         disabled={createStaffMutation.isPending}
-                        className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-8 py-3 flex-1 sm:flex-none"
+                        className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl px-6 lg:px-8 py-2 lg:py-3 flex-1 sm:flex-none"
                       >
-                        <Save className="h-5 w-5 mr-2" />
+                        <Save className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
                         Sauvegarder
                       </Button>
                       <Button 
                         variant="outline" 
                         onClick={() => setShowAddForm(false)}
-                        className="rounded-xl px-8 py-3"
+                        className="rounded-xl px-6 lg:px-8 py-2 lg:py-3"
                       >
                         Annuler
                       </Button>
