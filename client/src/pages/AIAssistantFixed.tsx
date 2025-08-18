@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import avyentoLogo from '@assets/Avyento transparent_1755518589119.png';
 
 interface Message {
   id: string;
@@ -158,70 +159,93 @@ export default function AIAssistantFixed() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 max-w-md mx-auto lg:max-w-none lg:w-full relative overflow-hidden">
-      {/* Header glassmorphism violet - Desktop Responsive */}
-      <div className="px-6 lg:px-8 xl:px-12 py-4 lg:py-6 flex items-center justify-between relative bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div 
-          className="w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-violet-500 hover:bg-violet-600 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:scale-105 transition-transform border-none"
-          onClick={() => setShowChatHistory(!showChatHistory)}
-        >
-          <div className="w-3 h-3 lg:w-4 lg:h-4 bg-white rounded-full"></div>
-        </div>
-        
-        {/* Titre centré Desktop */}
-        <div className="hidden lg:flex items-center space-x-3">
-          <h1 className="text-xl xl:text-2xl font-semibold text-gray-900">Assistant IA Premium Pro</h1>
-          <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm font-medium">
-            {subscription?.planName || 'Premium Pro'} ({subscription?.price || 149}€)
-          </span>
-        </div>
-        
-        <div className="w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-violet-500 hover:bg-violet-600 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg border-none">
-          <ArrowLeft 
-            className="w-4 h-4 lg:w-5 lg:h-5 text-white cursor-pointer" 
-            onClick={() => setLocation('/dashboard')}
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 max-w-md mx-auto lg:max-w-none lg:w-full relative overflow-hidden">
+      {/* Bulles décoratives flottantes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-8 w-20 h-20 lg:w-32 lg:h-32 bg-gradient-to-br from-blue-300/30 to-purple-400/30 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-32 right-12 w-16 h-16 lg:w-24 lg:h-24 bg-gradient-to-br from-pink-300/30 to-orange-400/30 rounded-full blur-lg animate-bounce"></div>
+        <div className="absolute bottom-20 left-16 w-12 h-12 lg:w-20 lg:h-20 bg-gradient-to-br from-cyan-300/30 to-blue-400/30 rounded-full blur-md animate-pulse delay-1000"></div>
+        <div className="absolute bottom-40 right-8 w-14 h-14 lg:w-28 lg:h-28 bg-gradient-to-br from-purple-300/30 to-pink-400/30 rounded-full blur-xl animate-bounce delay-500"></div>
+        <div className="absolute top-1/2 right-4 w-8 h-8 lg:w-16 lg:h-16 bg-gradient-to-br from-green-300/30 to-cyan-400/30 rounded-full blur-sm animate-pulse delay-2000"></div>
       </div>
 
-      {/* Container Chat - Desktop Optimisé */}
-      <div className="flex-1 flex items-center justify-center relative lg:max-w-4xl lg:mx-auto lg:w-full">
+      {/* Header minimaliste */}
+      <div className="relative z-10 px-6 lg:px-8 py-4 lg:py-6 flex items-center justify-between">
+        <button
+          onClick={() => setLocation('/dashboard')}
+          className="w-10 h-10 lg:w-12 lg:h-12 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-white/20"
+        >
+          <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
+        </button>
+        
+        <div className="text-center">
+          <p className="text-sm lg:text-base text-blue-600 font-medium">AI Assistant</p>
+        </div>
+
+        <div className="w-10 h-10 lg:w-12 lg:h-12"></div>
+      </div>
+
+      {/* Container Chat - Style moderne */}
+      <div className="flex-1 flex flex-col justify-center relative z-10 px-6 lg:px-8">
         {messages.length === 0 ? (
-          <div className="text-center px-8 lg:px-12">
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-light text-violet-600 mb-4 lg:mb-6">
-              Bonjour, Demo
-            </h1>
-            <p className="text-gray-600 text-sm lg:text-base xl:text-lg mb-2 lg:mb-4">
-              Votre assistant IA Premium Pro est prêt à vous aider
-            </p>
-            <div className="lg:hidden inline-flex items-center px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-medium">
-              Plan actuel : {subscription?.planName || 'Premium Pro'} ({subscription?.price || 149}€)
+          <div className="text-center space-y-6 lg:space-y-8">
+            {/* Logo Avyento Central */}
+            <div className="flex justify-center mb-6 lg:mb-8">
+              <div className="relative">
+                <img 
+                  src={avyentoLogo} 
+                  alt="Avyento" 
+                  className="w-24 h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 drop-shadow-lg"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full blur-2xl scale-150"></div>
+              </div>
+            </div>
+
+            {/* Message d'accueil */}
+            <div className="space-y-2 lg:space-y-4">
+              <h1 className="text-2xl lg:text-3xl xl:text-4xl font-light text-gray-800">
+                Hello there, <span className="text-blue-600 font-medium">human!</span>
+              </h1>
+              <p className="text-lg lg:text-xl text-gray-600">
+                How can I assist you?
+              </p>
             </div>
             
-            {/* Suggestions d'actions - Desktop */}
-            <div className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-4 mt-8 max-w-3xl mx-auto">
-              <div className="p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100 hover:border-violet-200 cursor-pointer transition-all">
-                <h3 className="font-medium text-violet-900 mb-2">📊 Analyse du salon</h3>
-                <p className="text-sm text-gray-600">Obtenez des insights sur vos performances</p>
+            {/* Cartes de suggestions */}
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mt-8 lg:mt-12 max-w-lg lg:max-w-4xl mx-auto">
+              <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mb-3 lg:mb-4 flex items-center justify-center">
+                  <span className="text-white text-sm lg:text-base">📊</span>
+                </div>
+                <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Salon Analytics</h3>
+                <p className="text-xs lg:text-sm text-gray-600">Analyze performance metrics</p>
               </div>
-              <div className="p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100 hover:border-violet-200 cursor-pointer transition-all">
-                <h3 className="font-medium text-violet-900 mb-2">📅 Optimiser planning</h3>
-                <p className="text-sm text-gray-600">Conseils pour améliorer vos horaires</p>
+
+              <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full mb-3 lg:mb-4 flex items-center justify-center">
+                  <span className="text-white text-sm lg:text-base">📅</span>
+                </div>
+                <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Planning</h3>
+                <p className="text-xs lg:text-sm text-gray-600">Optimize your schedule</p>
               </div>
-              <div className="p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-violet-100 hover:border-violet-200 cursor-pointer transition-all">
-                <h3 className="font-medium text-violet-900 mb-2">💡 Stratégies marketing</h3>
-                <p className="text-sm text-gray-600">Développez votre clientèle</p>
+
+              <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg col-span-2 lg:col-span-1">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-pink-400 to-orange-500 rounded-full mb-3 lg:mb-4 flex items-center justify-center">
+                  <span className="text-white text-sm lg:text-base">💡</span>
+                </div>
+                <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Marketing</h3>
+                <p className="text-xs lg:text-sm text-gray-600">Grow your business</p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="w-full px-4 lg:px-8 xl:px-12 py-4 lg:py-6 space-y-4 lg:space-y-6 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto space-y-4 lg:space-y-6 max-w-4xl mx-auto w-full">
             {messages.map((message) => (
               <div key={message.id} className="flex flex-col">
                 {message.role === 'assistant' ? (
                   <div className="self-start max-w-[85%] lg:max-w-[75%] xl:max-w-[70%]">
-                    <div className="bg-purple-50 border border-purple-200 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-sm">
-                      <p className="text-purple-900 text-sm lg:text-base leading-relaxed whitespace-pre-wrap">
+                    <div className="bg-white/70 backdrop-blur-md border border-white/30 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-lg">
+                      <p className="text-gray-800 text-sm lg:text-base leading-relaxed whitespace-pre-wrap">
                         {message.content}
                       </p>
                     </div>
@@ -231,7 +255,7 @@ export default function AIAssistantFixed() {
                   </div>
                 ) : (
                   <div className="self-end max-w-[85%] lg:max-w-[75%] xl:max-w-[70%]">
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-600 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-lg">
+                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-lg">
                       <p className="text-white text-sm lg:text-base leading-relaxed whitespace-pre-wrap">
                         {message.content}
                       </p>
@@ -246,11 +270,11 @@ export default function AIAssistantFixed() {
             
             {isLoading && (
               <div className="self-start max-w-[85%] lg:max-w-[75%]">
-                <div className="bg-purple-50 border border-purple-200 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-sm">
+                <div className="bg-white/70 backdrop-blur-md border border-white/30 rounded-2xl px-4 lg:px-6 py-3 lg:py-4 shadow-lg">
                   <div className="flex items-center space-x-2 lg:space-x-3">
-                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-purple-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-blue-400 rounded-full animate-bounce"></div>
                     <div className="w-2 h-2 lg:w-3 lg:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 lg:w-3 lg:h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                   </div>
                 </div>
               </div>
@@ -260,29 +284,31 @@ export default function AIAssistantFixed() {
         )}
       </div>
 
-      {/* Barre de saisie - Desktop Responsive */}
-      <div className="px-4 lg:px-8 xl:px-12 py-3 lg:py-4 bg-white border-t border-gray-200">
+      {/* Barre de saisie moderne */}
+      <div className="relative z-10 px-6 lg:px-8 py-4 lg:py-6">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center space-x-3 lg:space-x-4">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Tapez votre message..."
-                className="w-full px-4 lg:px-6 py-3 lg:py-4 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm lg:text-base"
-                disabled={isLoading}
-              />
+          <div className="bg-white/70 backdrop-blur-md rounded-full border border-white/30 shadow-lg p-2 lg:p-3">
+            <div className="flex items-center space-x-3 lg:space-x-4">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Message AI assistant"
+                  className="w-full px-4 lg:px-6 py-2 lg:py-3 bg-transparent border-none focus:outline-none text-sm lg:text-base text-gray-700 placeholder-gray-500"
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isLoading}
+                className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-full flex items-center justify-center hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-105 shadow-lg"
+              >
+                <Send className="w-4 h-4 lg:w-5 lg:h-5" />
+              </button>
             </div>
-            
-            <button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isLoading}
-              className="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-full flex items-center justify-center hover:from-purple-600 hover:to-violet-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-            >
-              <Send className="w-4 h-4 lg:w-5 lg:h-5" />
-            </button>
           </div>
         </div>
       </div>
