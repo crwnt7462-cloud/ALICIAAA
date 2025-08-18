@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   Calendar, 
   Users, 
@@ -177,6 +178,83 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 function Router() {
   const [location, setLocation] = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  // Pages qui nécessitent une authentification (pages professionnelles)
+  const protectedPages = [
+    '/dashboard',
+    '/dashboard-peymen', 
+    '/planning',
+    '/planning-responsive',
+    '/clients',
+    '/staff',
+    '/services',
+    '/inventory',
+    '/ai-assistant-fixed',
+    '/ai-pro-complete',
+    '/salon-settings',
+    '/staff-management',
+    '/services-management',
+    '/analytics-dashboard',
+    '/client-management',
+    '/pro-messaging',
+    '/admin-dashboard',
+    '/salon-page-editor',
+    '/business-features',
+    '/messaging-system',
+    '/booking-pages',
+    '/stock-alerts',
+    '/salon-policies',
+    '/promo-codes',
+    '/client-reliability',
+    '/professional-settings-demo',
+    '/pro-pages',
+    '/direct-messaging',
+    '/client-analytics'
+  ];
+  
+  // Vérifier si la page actuelle nécessite une authentification
+  const isProtectedPage = protectedPages.some(page => location.startsWith(page));
+  
+  // Afficher un écran de chargement pendant la vérification d'authentification
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Vérification de l'authentification...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié et tente d'accéder à une page protégée
+  if (isProtectedPage && !isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-md w-full mx-4">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Restreint</h2>
+            <p className="text-gray-600 mb-6">Cette page est réservée aux professionnels authentifiés. Connectez-vous pour accéder à votre espace professionnel.</p>
+            <a 
+              href="/api/login" 
+              className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+            >
+              Se connecter
+            </a>
+            <p className="text-sm text-gray-500 mt-4">
+              Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   // Pages qui ne doivent pas avoir la barre violette en bas + toutes les pages pro
   const hideBottomNavPages = [
