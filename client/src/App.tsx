@@ -218,17 +218,8 @@ function Router() {
   // Vérifier si la page actuelle nécessite une authentification
   const isProtectedPage = protectedPages.some(page => location.startsWith(page));
   
-  // Afficher un écran de chargement pendant la vérification d'authentification
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Vérification de l'authentification...</p>
-        </div>
-      </div>
-    );
-  }
+  // Pas d'écran de chargement - redirection immédiate si nécessaire
+  // L'authentification se fait en arrière-plan
   
   // Redirection immédiate vers l'accueil si pas authentifié et page protégée
   if (isProtectedPage && !isAuthenticated) {

@@ -36,17 +36,8 @@ export default function ProtectedRoute({
     }
   }, [isAuthenticated, isLoading, requireAuth, toast, pageType]);
 
-  // Afficher un loader pendant la vérification
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
-        <div className="glass-card p-8 rounded-3xl text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-violet-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Vérification en cours...</p>
-        </div>
-      </div>
-    );
-  }
+  // Pas d'écran de chargement - redirection immédiate
+  // L'authentification se vérifie en arrière-plan
 
   // Si pas authentifié, pas d'affichage (redirection immédiate via useEffect)
   if (requireAuth && !isAuthenticated) {
