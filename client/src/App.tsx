@@ -1409,7 +1409,12 @@ function Router() {
           {/* Route désactivée temporairement - Composant InstitutBelleEpoque non disponible */}
           {/* Route désactivée temporairement - Composant ModernHairStudio non disponible */}
 
-          <Route component={NotFound} />
+          <Route component={() => {
+            // Redirection immédiate pour pages inexistantes
+            console.log(`🔍 Page inexistante ${location} - Redirection vers /`);
+            window.location.replace('/');
+            return null;
+          }} />
         </Switch>
       </main>
       {!hideBottomNavPages.includes(location) && <BottomNavigation />}
