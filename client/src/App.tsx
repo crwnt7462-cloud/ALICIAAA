@@ -1465,14 +1465,14 @@ function Router() {
           <Route path="/salon-page-editor" component={() => <ProtectedRoute><SalonPageEditor /></ProtectedRoute>} />
           
           {/* ROUTES CLIENTS PROTÉGÉES */}
-          <Route path="/client-messaging-search" component={() => <ProtectedRoute><ClientMessagingMobile /></ProtectedRoute>} />
-          <Route path="/avyento-booking" component={() => <ProtectedRoute><AvyentoStyleBooking /></ProtectedRoute>} />
-          <Route path="/avyento-account" component={() => <ProtectedRoute><AvyentoStyleAccount /></ProtectedRoute>} />
-          <Route path="/original-booking" component={() => <ProtectedRoute><ModernBooking /></ProtectedRoute>} />
-          <Route path="/advanced-booking" component={() => <ProtectedRoute><AdvancedBookingManager /></ProtectedRoute>} />
-          <Route path="/booking-success" component={() => <ProtectedRoute><BookingSuccess /></ProtectedRoute>} />
-          <Route path="/salon-booking" component={() => <ProtectedRoute><SalonBookingFlow /></ProtectedRoute>} />
-          <Route path="/notifications" component={() => <ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
+          <Route path="/client-messaging-search" component={() => <ProtectedRoute pageType="client"><ClientMessagingMobile /></ProtectedRoute>} />
+          <Route path="/avyento-booking" component={() => <ProtectedRoute pageType="client"><AvyentoStyleBooking /></ProtectedRoute>} />
+          <Route path="/avyento-account" component={() => <ProtectedRoute pageType="client"><AvyentoStyleAccount /></ProtectedRoute>} />
+          <Route path="/original-booking" component={() => <ProtectedRoute pageType="client"><ModernBooking /></ProtectedRoute>} />
+          <Route path="/advanced-booking" component={() => <ProtectedRoute pageType="client"><AdvancedBookingManager /></ProtectedRoute>} />
+          <Route path="/booking-success" component={() => <ProtectedRoute pageType="client"><BookingSuccess /></ProtectedRoute>} />
+          <Route path="/salon-booking" component={() => <ProtectedRoute pageType="client"><SalonBookingFlow /></ProtectedRoute>} />
+          <Route path="/notifications" component={() => <ProtectedRoute pageType="client"><NotificationCenter /></ProtectedRoute>} />
 
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />

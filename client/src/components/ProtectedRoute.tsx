@@ -6,30 +6,43 @@ interface ProtectedRouteProps {
   children: React.ReactNode;
   redirectTo?: string;
   requireAuth?: boolean;
+  pageType?: 'professional' | 'client';
 }
 
 export default function ProtectedRoute({ 
   children, 
-  redirectTo = "/api/login",
-  requireAuth = true 
+  redirectTo,
+  requireAuth = true,
+  pageType = 'professional'
 }: ProtectedRouteProps) {
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
 
+  // Déterminer la page de redirection selon le type
+  const getRedirectUrl = () => {
+    if (redirectTo) return redirectTo;
+    
+    return pageType === 'client' ? '/client-login-modern' : '/api/login';
+  };
+
   useEffect(() => {
     if (!isLoading && requireAuth && !isAuthenticated) {
+      const message = pageType === 'client' 
+        ? "Vous devez vous connecter à votre compte client pour accéder à cette page."
+        : "Vous devez vous connecter à votre compte professionnel pour accéder à cette page.";
+      
       toast({
         title: "Accès non autorisé",
-        description: "Vous devez vous connecter pour accéder à cette page.",
+        description: message,
         variant: "destructive",
       });
       
-      // Rediriger vers la page de connexion après un court délai
+      // Rediriger vers la bonne page de connexion après un court délai
       setTimeout(() => {
-        window.location.href = redirectTo;
+        window.location.href = getRedirectUrl();
       }, 1500);
     }
-  }, [isAuthenticated, isLoading, requireAuth, toast, redirectTo]);
+  }, [isAuthenticated, isLoading, requireAuth, toast, pageType]);
 
   // Afficher un loader pendant la vérification
   if (isLoading) {
@@ -50,10 +63,13 @@ export default function ProtectedRoute({
         <div className="glass-card p-8 rounded-3xl text-center max-w-md w-full">
           <div className="text-6xl mb-4">🔒</div>
           <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            Accès Protégé
+            {pageType === 'client' ? 'Espace Client Protégé' : 'Espace Professionnel Protégé'}
           </h1>
           <p className="text-gray-600 mb-6">
-            Cette page nécessite une authentification. Vous allez être redirigé vers la page de connexion...
+            {pageType === 'client' 
+              ? 'Cette page nécessite une connexion client. Vous allez être redirigé vers la page de connexion client...'
+              : 'Cette page nécessite une connexion professionnelle. Vous allez être redirigé vers la page de connexion pro...'
+            }
           </p>
           <div className="animate-pulse h-2 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full"></div>
         </div>
