@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -62,9 +63,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar Glassmorphism Violet - Style exact de l'image */}
-      <div className="w-20 flex flex-col items-center py-6" style={{
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* Sidebar Desktop uniquement */}
+      <div className="hidden md:flex md:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30" style={{
         background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
         backdropFilter: 'blur(20px) saturate(180%)',
         border: '1px solid rgba(255, 255, 255, 0.125)',
@@ -133,7 +134,8 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content - Style exact de l'image */}
-      <div className="flex-1 bg-gray-50 overflow-auto">
+      <div className="md:ml-20 bg-gray-50 min-h-screen">
+        <MobileBottomNav userType="pro" />
         <div className="p-8">
           {/* Header - Exact comme l'image */}
           <div className="flex items-center justify-between mb-8">

@@ -23,6 +23,7 @@ import {
 import { motion } from "framer-motion";
 import { format, isAfter, isBefore } from "date-fns";
 import { fr } from "date-fns/locale";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 export default function ClientDashboard() {
   const [, setLocation] = useLocation();
@@ -684,6 +685,9 @@ export default function ClientDashboard() {
           </button>
         </div>
       </div>
+      
+      {/* Navigation mobile */}
+      <MobileBottomNav userType="client" />
     </div>
   );
 }

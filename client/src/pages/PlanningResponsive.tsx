@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 
 type InsertAppointmentForm = {
   clientId: number;
@@ -1867,6 +1868,9 @@ export default function PlanningResponsive() {
           </DialogContent>
         </Dialog>
       </div>
+      
+      {/* Navigation mobile */}
+      <MobileBottomNav userType="pro" />
     </div>
   );
 }
