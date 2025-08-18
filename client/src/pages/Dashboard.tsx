@@ -46,15 +46,20 @@ export default function Dashboard() {
 
   if (statsLoading) {
     return (
-      <div className="flex h-screen bg-gray-50">
-        <div className="w-20 bg-gradient-to-b from-purple-600 to-purple-700"></div>
-        <div className="flex-1 p-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
-            <div className="grid grid-cols-3 gap-6">
-              {Array.from({length: 3}).map((_, i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
-              ))}
+      <div className="min-h-screen bg-gray-50 relative">
+        {/* Sidebar Desktop uniquement */}
+        <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full bg-gradient-to-b from-purple-600 to-purple-700"></div>
+        
+        <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 lg:pb-0">
+          <MobileBottomNav userType="pro" />
+          <div className="p-4 md:p-6 lg:p-8">
+            <div className="animate-pulse space-y-4 md:space-y-6">
+              <div className="h-8 md:h-12 bg-gray-200 rounded-lg w-1/2 md:w-1/3"></div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                {Array.from({length: 3}).map((_, i) => (
+                  <div key={i} className="h-24 md:h-32 bg-gray-200 rounded-2xl"></div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -65,7 +70,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Sidebar Desktop uniquement */}
-      <div className="hidden md:flex md:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30" style={{
+      <div className="hidden lg:flex lg:w-20 fixed left-0 top-0 h-full flex-col items-center py-6 z-30" style={{
         background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
         backdropFilter: 'blur(20px) saturate(180%)',
         border: '1px solid rgba(255, 255, 255, 0.125)',
@@ -134,23 +139,23 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content - Style exact de l'image */}
-      <div className="md:ml-20 bg-gray-50 min-h-screen">
+      <div className="lg:ml-20 bg-gray-50 min-h-screen pb-20 lg:pb-0">
         <MobileBottomNav userType="pro" />
-        <div className="p-8">
-          {/* Header - Exact comme l'image */}
-          <div className="flex items-center justify-between mb-8">
+        <div className="p-4 md:p-6 lg:p-8">
+          {/* Header - Responsive */}
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6 lg:mb-8">
             <div>
               <p className="text-gray-500 text-sm mb-1">Avyento</p>
-              <h1 className="text-3xl font-bold text-gray-800">Tableau de Bord</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Tableau de Bord</h1>
             </div>
             
-            <div className="flex items-center space-x-4">
-              <div className="relative">
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <div className="relative flex-1 md:flex-none">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-64"
+                  className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-full md:w-64"
                 />
               </div>
               
@@ -175,7 +180,7 @@ export default function Dashboard() {
                 }}
                 variant="outline"
                 size="sm"
-                className="flex items-center space-x-2"
+                className="hidden lg:flex items-center space-x-2"
               >
                 <Globe className="w-4 h-4" />
                 <span>Ma Page</span>
@@ -185,7 +190,7 @@ export default function Dashboard() {
                 onClick={() => setLocation('/salon-settings-modern')}
                 variant="outline"
                 size="sm"
-                className="flex items-center space-x-2"
+                className="hidden md:flex items-center space-x-2"
               >
                 <SettingsIcon className="w-4 h-4" />
                 <span>Settings</span>
@@ -197,38 +202,38 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Content Grid - Exactement comme l'image */}
-          <div className="grid grid-cols-12 gap-6">
+          {/* Content Grid - Responsive */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
             {/* Graphique des revenus - Section principale gauche */}
-            <div className="col-span-8">
+            <div className="lg:col-span-8">
               <Card className="bg-white rounded-3xl shadow-sm border-0">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900">Revenus - Cette Semaine</h3>
-                      <div className="flex items-center space-x-4 mt-2">
-                        <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 mt-2 overflow-x-auto">
+                        <div className="flex items-center space-x-1 md:space-x-2">
                           <button 
                             onClick={() => setSelectedPeriod("Day")}
-                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
                             Day
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Week")}
-                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
                             Week
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Month")}
-                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
                             Month
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Year")}
-                            className={`px-3 py-1 text-sm rounded-lg ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
+                            className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
                             Year
                           </button>
@@ -236,7 +241,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                     
-                    <Button variant="outline" size="sm" className="flex items-center space-x-2">
+                    <Button variant="outline" size="sm" className="hidden md:flex items-center space-x-2">
                       <Eye className="w-4 h-4" />
                       <span>View</span>
                     </Button>
@@ -244,7 +249,7 @@ export default function Dashboard() {
                   
                   {/* Montant principal */}
                   <div className="mb-6">
-                    <div className="text-4xl font-bold text-gray-900 mb-2">{stats?.monthlyRevenue || 0}€</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats?.monthlyRevenue || 0}€</div>
                   </div>
                   
                   {/* Graphique simulé - Courbe comme dans l'image */}
@@ -291,7 +296,7 @@ export default function Dashboard() {
             </div>
 
             {/* Services Populaires - Section droite */}
-            <div className="col-span-4">
+            <div className="lg:col-span-4">
               <Card className="bg-white rounded-3xl shadow-sm border-0">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-6">
@@ -323,10 +328,10 @@ export default function Dashboard() {
           </div>
 
           {/* Section Planning Aujourd'hui - En bas comme l'image */}
-          <div className="mt-8">
+          <div className="mt-6 lg:mt-8">
             <Card className="bg-white rounded-3xl shadow-sm border-0">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-6">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
                   <div className="flex items-center space-x-3">
                     <Clock className="w-6 h-6 text-purple-600" />
                     <div>
@@ -335,33 +340,33 @@ export default function Dashboard() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-4">
-                    <div className="text-2xl font-bold text-gray-900">{todayAppointments?.length || 0} RDV</div>
-                    <Button variant="outline" size="sm">
+                  <div className="flex items-center justify-between md:justify-start md:space-x-4">
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">{todayAppointments?.length || 0} RDV</div>
+                    <Button variant="outline" size="sm" className="hidden md:flex">
                       <Calendar className="w-4 h-4 mr-2" />
                       Today
                     </Button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                   {todayAppointments && todayAppointments.length > 0 ? (
                     todayAppointments.slice(0, 6).map((appointment: any, index: number) => (
-                      <div key={index} className="bg-gray-50 rounded-2xl p-4">
+                      <div key={index} className="bg-gray-50 rounded-2xl p-3 md:p-4">
                         <div className="flex items-start justify-between mb-2">
-                          <div className="font-medium text-gray-900">{appointment.service?.name || 'Service'}</div>
-                          <div className="text-sm text-gray-500">{appointment.time || '10:00'}</div>
+                          <div className="font-medium text-gray-900 text-sm md:text-base">{appointment.service?.name || 'Service'}</div>
+                          <div className="text-xs md:text-sm text-gray-500">{appointment.time || '10:00'}</div>
                         </div>
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                          <User className="w-4 h-4" />
+                        <div className="flex items-center space-x-2 text-xs md:text-sm text-gray-600">
+                          <User className="w-3 md:w-4 h-3 md:h-4" />
                           <span>{appointment.client?.name || 'Client'}</span>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="col-span-full text-center py-12 text-gray-500">
-                      <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="text-lg font-medium">Aucun rendez-vous aujourd'hui</p>
+                    <div className="col-span-full text-center py-8 md:py-12 text-gray-500">
+                      <Calendar className="w-10 md:w-12 h-10 md:h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-base md:text-lg font-medium">Aucun rendez-vous aujourd'hui</p>
                       <p className="text-sm">Votre planning est libre</p>
                     </div>
                   )}
