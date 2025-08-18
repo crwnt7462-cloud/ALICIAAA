@@ -182,7 +182,7 @@ function Router() {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, isLoading } = useAuth();
   
-  // Pages qui nécessitent une authentification (pages professionnelles + pages clients personnelles)
+  // Pages qui nécessitent une authentification (pages professionnelles + pages clients personnelles)  
   const protectedPages = [
     '/dashboard',
     '/dashboard-peymen', 
@@ -192,8 +192,11 @@ function Router() {
     '/staff',
     '/services',
     '/inventory',
+    '/ai',
+    '/ai-chat',
     '/ai-assistant-fixed',
     '/ai-pro-complete',
+    '/ai-pro',
     '/salon-settings',
     '/staff-management',
     '/services-management',
@@ -213,6 +216,9 @@ function Router() {
     '/pro-pages',
     '/direct-messaging',
     '/client-analytics',
+    '/pro-messaging',
+    '/pro-messaging-search',
+    '/messaging-test',
     // Pages clients protégées (comptes personnels)
     '/client-dashboard',
     '/client-parametres',
