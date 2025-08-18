@@ -39,6 +39,7 @@ export default function ModernSubscriptionPlans() {
     'SALON50': { discount: 50, type: 'fixed' as const, description: '50€ de réduction' },
     'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
     'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
+    'EMPIRE100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction sur Beauty Empire' },
   };
 
   // Fonction pour valider un code promo
@@ -320,7 +321,7 @@ export default function ModernSubscriptionPlans() {
                   )}
                   
                   <div className="text-xs text-gray-600 text-center">
-                    Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100
+                    Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100, EMPIRE100
                   </div>
                 </div>
               ) : (
