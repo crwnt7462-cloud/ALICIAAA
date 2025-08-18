@@ -154,8 +154,10 @@ export default function AIAssistantFixed() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 max-w-md mx-auto lg:max-w-none lg:w-full relative overflow-hidden">
-      {/* Navigation mobile */}
-      <MobileBottomNav userType="pro" />
+      {/* Navigation mobile - remplace BottomNavigation */}
+      <div className="lg:hidden">
+        <MobileBottomNav userType="pro" />
+      </div>
       
       {/* Bulles décoratives flottantes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

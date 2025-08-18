@@ -183,6 +183,7 @@ function Router() {
     '/salon-page-editor',
     '/dashboard',
     '/ai',
+    '/ai-assistant-fixed',
     '/planning-responsive',
     '/planning',
     '/salon-booking-editor',
