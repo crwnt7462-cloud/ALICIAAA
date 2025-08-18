@@ -34,11 +34,17 @@ export default function ProBottomNavigation() {
       icon: Settings,
       label: 'Services',
       active: location === '/services-management'
+    },
+    {
+      path: '/messaging-hub',
+      icon: BarChart3,
+      label: 'Messages',
+      active: location === '/messaging-hub'
     }
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg lg:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-lg">
       <div className="flex items-center justify-around px-2 py-3">
         {navItems.map((item) => (
           <button
