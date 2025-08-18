@@ -9,6 +9,13 @@ import logoImage from "@assets/3_1753714421825.png";
 
 // Composant HeroSlash avec animations de frappe
 function HeroSlash() {
+  const [, setLocation] = useLocation();
+
+  // États pour les champs de recherche fonctionnels
+  const [searchService, setSearchService] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  
+  // États pour l'effet typewriter
   const [cityText, setCityText] = useState("");
   const [cityIndex, setCityIndex] = useState(0);
   const [cityCharIndex, setCityCharIndex] = useState(0);
@@ -43,57 +50,58 @@ function HeroSlash() {
     "Soins visage"
   ];
 
-  // Animation pour les villes
+  // Animation synchronisée et fluide pour les villes et services
   useEffect(() => {
-    const currentCity = frenchCities[cityIndex];
-    if (!currentCity) return;
-    
-    const typeSpeed = isCityDeleting ? 50 : 100;
-    const pauseTime = isCityDeleting ? 500 : 2000;
-
-    const timeout = setTimeout(() => {
+    const interval = setInterval(() => {
+      // Changement de ville 
+      const currentCity = frenchCities[cityIndex];
       if (!isCityDeleting && cityCharIndex < currentCity.length) {
         setCityText(currentCity.slice(0, cityCharIndex + 1));
-        setCityCharIndex(cityCharIndex + 1);
+        setCityCharIndex(prev => prev + 1);
       } else if (isCityDeleting && cityCharIndex > 0) {
         setCityText(currentCity.slice(0, cityCharIndex - 1));
-        setCityCharIndex(cityCharIndex - 1);
+        setCityCharIndex(prev => prev - 1);
       } else if (!isCityDeleting && cityCharIndex === currentCity.length) {
-        setTimeout(() => setIsCityDeleting(true), pauseTime);
+        setTimeout(() => setIsCityDeleting(true), 2000);
       } else if (isCityDeleting && cityCharIndex === 0) {
         setIsCityDeleting(false);
-        setCityIndex((cityIndex + 1) % frenchCities.length);
+        setCityIndex(prev => (prev + 1) % frenchCities.length);
       }
-    }, typeSpeed);
 
-    return () => clearTimeout(timeout);
-  }, [cityText, cityCharIndex, cityIndex, isCityDeleting, frenchCities]);
+      // Changement de service (décalé de 1 seconde pour éviter la simultanéité)
+      setTimeout(() => {
+        const currentService = beautyServices[serviceIndex];
+        if (!isServiceDeleting && serviceCharIndex < currentService.length) {
+          setServiceText(currentService.slice(0, serviceCharIndex + 1));
+          setServiceCharIndex(prev => prev + 1);
+        } else if (isServiceDeleting && serviceCharIndex > 0) {
+          setServiceText(currentService.slice(0, serviceCharIndex - 1));
+          setServiceCharIndex(prev => prev - 1);
+        } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
+          setTimeout(() => setIsServiceDeleting(true), 2000);
+        } else if (isServiceDeleting && serviceCharIndex === 0) {
+          setIsServiceDeleting(false);
+          setServiceIndex(prev => (prev + 1) % beautyServices.length);
+        }
+      }, 1000);
+    }, 80);
 
-  // Animation pour les services
-  useEffect(() => {
-    const currentService = beautyServices[serviceIndex];
-    if (!currentService) return;
+    return () => clearInterval(interval);
+  }, [cityCharIndex, cityIndex, isCityDeleting, serviceCharIndex, serviceIndex, isServiceDeleting, frenchCities, beautyServices]);
+
+  // Fonction de recherche
+  const handleSearch = () => {
+    const query = searchService.trim();
+    const location = searchLocation.trim();
     
-    const typeSpeed = isServiceDeleting ? 60 : 120;
-    const pauseTime = isServiceDeleting ? 600 : 2500;
-
-    const timeout = setTimeout(() => {
-      if (!isServiceDeleting && serviceCharIndex < currentService.length) {
-        setServiceText(currentService.slice(0, serviceCharIndex + 1));
-        setServiceCharIndex(serviceCharIndex + 1);
-      } else if (isServiceDeleting && serviceCharIndex > 0) {
-        setServiceText(currentService.slice(0, serviceCharIndex - 1));
-        setServiceCharIndex(serviceCharIndex - 1);
-      } else if (!isServiceDeleting && serviceCharIndex === currentService.length) {
-        setTimeout(() => setIsServiceDeleting(true), pauseTime);
-      } else if (isServiceDeleting && serviceCharIndex === 0) {
-        setIsServiceDeleting(false);
-        setServiceIndex((serviceIndex + 1) % beautyServices.length);
-      }
-    }, typeSpeed);
-
-    return () => clearTimeout(timeout);
-  }, [serviceText, serviceCharIndex, serviceIndex, isServiceDeleting, beautyServices]);
+    // Construire l'URL avec les paramètres de recherche
+    const searchParams = new URLSearchParams();
+    if (query) searchParams.set('q', query);
+    if (location) searchParams.set('location', location);
+    
+    const searchUrl = `/search-results${searchParams.toString() ? '?' + searchParams.toString() : ''}`;
+    setLocation(searchUrl);
+  };
 
   return (
     <section className="heroSlash">
@@ -116,13 +124,15 @@ function HeroSlash() {
 
           {/* Barre de recherche + CTA */}
           <div className="heroSlash__search heroSlash__search--double">
-            {/* Champ Service avec animation */}
+            {/* Champ Service fonctionnel avec animation en placeholder */}
             <div className="field">
               <input 
-                value={serviceText} 
-                placeholder={serviceText || "Service"} 
-                readOnly
-                style={{ cursor: 'pointer' }}
+                type="text"
+                value={searchService}
+                onChange={(e) => setSearchService(e.target.value)}
+                placeholder={serviceText || "Service (coiffure, massage...)"}
+                className="w-full"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
               <span className="icon">
                 {/* loupe */}
@@ -133,13 +143,15 @@ function HeroSlash() {
               </span>
             </div>
 
-            {/* Champ Ville avec animation */}
+            {/* Champ Ville fonctionnel avec animation en placeholder */}
             <div className="field">
               <input 
-                value={cityText} 
-                placeholder={cityText || "Ville"} 
-                readOnly
-                style={{ cursor: 'pointer' }}
+                type="text"
+                value={searchLocation}
+                onChange={(e) => setSearchLocation(e.target.value)}
+                placeholder={cityText || "Ville"}
+                className="w-full"
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
               <span className="icon location">
                 {/* pin */}
@@ -151,7 +163,12 @@ function HeroSlash() {
               </span>
             </div>
 
-            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl">Rechercher un salon</button>
+            <button 
+              onClick={handleSearch}
+              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            >
+              Rechercher un salon
+            </button>
           </div>
 
           {/* KPIs */}
