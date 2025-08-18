@@ -905,6 +905,15 @@ function Router() {
     );
   }
 
+  // Page planning en plein écran
+  if (location === '/planning') {
+    return (
+      <div className="h-full">
+        <PlanningResponsive />
+      </div>
+    );
+  }
+
   // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
 
   // Page Dashboard - Plein écran sans contraintes avec glassmorphism
@@ -912,14 +921,14 @@ function Router() {
     return <Dashboard />;
   }
 
-  // Pages professionnelles avec sidebar persistant
-  const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
+  // Pages professionnelles avec sidebar persistant  
+  const proPages = ['/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
   if (proPages.includes(location)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
         <div className="flex min-h-screen">
-          {/* Sidebar Glass - Identique au Dashboard */}
-          <div className="w-20 flex flex-col items-center py-6" style={{
+          {/* Sidebar Glass - Identique au Dashboard - Masquée sur mobile */}
+          <div className="w-20 flex flex-col items-center py-6 hidden lg:flex" style={{
             backdropFilter: 'blur(20px) saturate(180%)',
             background: 'rgba(128, 128, 128, 0.15)',
             border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -992,7 +1001,7 @@ function Router() {
           
           {/* Contenu principal */}
           <div className="flex-1 overflow-hidden">
-            {location === '/planning' && <PlanningFresha />}
+
             {location === '/clients-modern' && <ClientsModern />}
             {location === '/services-management' && <ServicesManagement />}
             {location === '/messaging-hub' && <MessagingHub />}

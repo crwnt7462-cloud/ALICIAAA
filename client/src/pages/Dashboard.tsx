@@ -65,7 +65,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-gray-50 pb-20 lg:pb-0">
       {/* Sidebar Glassmorphism Violet - Style exact de l'image - Masquée sur mobile */}
-      <div className="w-20 flex flex-col items-center py-6 hidden md:flex" style={{
+      <div className="w-20 flex flex-col items-center py-6 hidden lg:flex" style={{
         background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
         backdropFilter: 'blur(20px) saturate(180%)',
         border: '1px solid rgba(255, 255, 255, 0.125)',
