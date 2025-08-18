@@ -8,7 +8,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Scissors, Edit, Trash2, Save, X, Clock, Euro } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
-import ProBottomNavigation from '@/components/ProBottomNavigation';
 
 interface Service {
   id: number;
@@ -105,7 +104,7 @@ export default function ServicesManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 pb-20 lg:pb-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -324,7 +323,6 @@ export default function ServicesManagement() {
           </p>
         </div>
       </div>
-      <ProBottomNavigation />
     </div>
   );
 }

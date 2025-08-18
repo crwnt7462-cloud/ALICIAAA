@@ -23,7 +23,6 @@ import {
 import { motion } from "framer-motion";
 import { format, isAfter, isBefore } from "date-fns";
 import { fr } from "date-fns/locale";
-import ProBottomNavigation from "@/components/ProBottomNavigation";
 
 export default function ClientDashboard() {
   const [, setLocation] = useLocation();
@@ -86,7 +85,7 @@ export default function ClientDashboard() {
   if (appointmentsLoading || statsLoading) {
     return (
       <div className="flex h-screen bg-gray-50">
-        <div className="w-60 bg-white shadow-lg hidden md:block"></div>
+        <div className="w-60 bg-white shadow-lg"></div>
         <div className="flex-1 p-8">
           <div className="animate-pulse space-y-6">
             <div className="h-12 bg-gray-200 rounded-lg w-1/3"></div>
@@ -685,7 +684,6 @@ export default function ClientDashboard() {
           </button>
         </div>
       </div>
-      <ProBottomNavigation />
     </div>
   );
 }

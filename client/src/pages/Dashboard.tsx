@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import ProBottomNavigation from "@/components/ProBottomNavigation";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
@@ -63,9 +62,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 pb-20 lg:pb-0">
-      {/* Sidebar Glassmorphism Violet - Style exact de l'image - Masquée sur mobile */}
-      <div className="w-20 flex flex-col items-center py-6 hidden md:flex" style={{
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar Glassmorphism Violet - Style exact de l'image */}
+      <div className="w-20 flex flex-col items-center py-6" style={{
         background: 'linear-gradient(135deg, rgba(139, 69, 219, 0.9) 0%, rgba(109, 40, 217, 0.9) 100%)',
         backdropFilter: 'blur(20px) saturate(180%)',
         border: '1px solid rgba(255, 255, 255, 0.125)',
@@ -133,8 +132,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Content - Style exact de l'image - Pleine largeur sur mobile */}
-      <div className="flex-1 bg-gray-50 overflow-auto md:ml-0">
+      {/* Main Content - Style exact de l'image */}
+      <div className="flex-1 bg-gray-50 overflow-auto">
         <div className="p-8">
           {/* Header - Exact comme l'image */}
           <div className="flex items-center justify-between mb-8">
@@ -370,7 +369,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <ProBottomNavigation />
     </div>
   );
 }

@@ -1042,7 +1042,7 @@ function Router() {
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
       <Header />
-      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll pt-16 lg:pt-0">
+      <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
           <Route path="/dashboard-old" component={DashboardPeymen} />
           <Route path="/admin-dashboard" component={AdminDashboard} />

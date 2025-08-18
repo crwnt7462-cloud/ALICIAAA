@@ -14,7 +14,6 @@ import {
   Trash2,
   Edit3
 } from "lucide-react";
-import ProBottomNavigation from "@/components/ProBottomNavigation";
 
 interface SalonData {
   id: string;
@@ -151,7 +150,7 @@ export default function SalonEditor() {
 
       <div className="flex h-[calc(100vh-80px)]">
         {/* Sidebar Navigation */}
-        <div className="w-64 bg-white border-r border-gray-200 p-6 hidden md:block">
+        <div className="w-64 bg-white border-r border-gray-200 p-6">
           <nav className="space-y-2">
             <button
               onClick={() => setActiveTab('info')}
@@ -429,7 +428,6 @@ export default function SalonEditor() {
           )}
         </div>
       </div>
-      <ProBottomNavigation />
     </div>
   );
 }
