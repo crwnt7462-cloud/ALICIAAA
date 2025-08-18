@@ -1,12 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Calendar, Users, TrendingUp, Sparkles, ArrowRight, Star, Search, MapPin } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { getGenericGlassButton } from "@/lib/salonColors";
+import { useState } from "react";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
+  const [searchService, setSearchService] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
+
+  // Fonction de recherche pour salon par service et ville
+  const handleSearch = () => {
+    const query = searchService.trim();
+    const location = searchLocation.trim();
+    
+    // Construire l'URL avec les paramètres de recherche
+    const searchParams = new URLSearchParams();
+    if (query) searchParams.set('q', query);
+    if (location) searchParams.set('location', location);
+    
+    const searchUrl = `/search-results${searchParams.toString() ? '?' + searchParams.toString() : ''}`;
+    setLocation(searchUrl);
+  };
 
   const features = [
     {
@@ -276,36 +294,76 @@ export default function Landing() {
           </div>
         </motion.div>
 
+        {/* Barre de Recherche avec Service et Ville */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="space-y-4"
+        >
+          <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm rounded-3xl overflow-hidden">
+            <CardContent className="p-6 lg:p-8">
+              <h3 className="text-lg lg:text-xl font-bold text-gray-900 text-center mb-6">
+                Trouvez votre salon de beauté
+              </h3>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                {/* Champ Service */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Service (coiffure, massage, esthétique...)"
+                    value={searchService}
+                    onChange={(e) => setSearchService(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    className="pl-10 h-12 rounded-xl border-0 bg-gray-50 focus:bg-white transition-all duration-200"
+                  />
+                </div>
+
+                {/* Champ Ville */}
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Ville (Paris, Lyon, Marseille...)"
+                    value={searchLocation}
+                    onChange={(e) => setSearchLocation(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    className="pl-10 h-12 rounded-xl border-0 bg-gray-50 focus:bg-white transition-all duration-200"
+                  />
+                </div>
+              </div>
+
+              {/* Bouton de recherche */}
+              <Button
+                onClick={handleSearch}
+                className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Search className="w-5 h-5 mr-2" />
+                Rechercher des salons
+              </Button>
+
+              {/* Suggestions rapides */}
+              <div className="mt-4 flex flex-wrap gap-2 justify-center">
+                {['Coiffure', 'Massage', 'Esthétique', 'Onglerie', 'Barbier'].map((service) => (
+                  <button
+                    key={service}
+                    onClick={() => {
+                      setSearchService(service);
+                    }}
+                    className="px-3 py-1 text-sm bg-gray-100 hover:bg-purple-100 text-gray-700 hover:text-purple-700 rounded-full transition-colors duration-200"
+                  >
+                    {service}
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
         {/* CTA Buttons with Glassmorphism */}
         <div className="space-y-4">
-          {/* Bouton Glassmorphism Principal - Rechercher un salon */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            whileHover={{ 
-              scale: 1.02,
-              y: -2,
-              transition: { duration: 0.2 }
-            }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setLocation('/search')}
-            className="relative w-full h-16 rounded-3xl overflow-hidden group"
-            style={{
-              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(124, 58, 237, 0.4) 100%)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              boxShadow: '0 8px 32px rgba(168, 85, 247, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="relative flex items-center justify-center h-full text-white font-semibold text-lg">
-              <Search className="w-5 h-5 mr-3" />
-              Rechercher un salon
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-          </motion.button>
           
           {/* Bouton secondaire */}
           <motion.button 
