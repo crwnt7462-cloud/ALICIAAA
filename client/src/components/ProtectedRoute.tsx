@@ -18,18 +18,18 @@ export default function ProtectedRoute({
   const { toast } = useToast();
   const { isAuthenticated, isLoading } = useAuth();
 
-  // Déterminer la page de redirection selon le type
+  // Rediriger vers l'accueil pour toutes les pages protégées
   const getRedirectUrl = () => {
     if (redirectTo) return redirectTo;
     
-    return pageType === 'client' ? '/client-login-modern' : '/api/login';
+    return '/'; // Redirection vers l'accueil
   };
 
   useEffect(() => {
     if (!isLoading && requireAuth && !isAuthenticated) {
       const message = pageType === 'client' 
-        ? "Vous devez vous connecter à votre compte client pour accéder à cette page."
-        : "Vous devez vous connecter à votre compte professionnel pour accéder à cette page.";
+        ? "Cette page est réservée aux clients connectés. Retour à l'accueil..."
+        : "Cette page est réservée aux professionnels connectés. Retour à l'accueil...";
       
       toast({
         title: "Accès non autorisé",
@@ -67,8 +67,8 @@ export default function ProtectedRoute({
           </h1>
           <p className="text-gray-600 mb-6">
             {pageType === 'client' 
-              ? 'Cette page nécessite une connexion client. Vous allez être redirigé vers la page de connexion client...'
-              : 'Cette page nécessite une connexion professionnelle. Vous allez être redirigé vers la page de connexion pro...'
+              ? 'Cette page nécessite une connexion client. Retour à l\'accueil...'
+              : 'Cette page nécessite une connexion professionnelle. Retour à l\'accueil...'
             }
           </p>
           <div className="animate-pulse h-2 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full"></div>

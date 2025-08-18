@@ -1464,15 +1464,17 @@ function Router() {
           <Route path="/edit-salon" component={() => <ProtectedRoute><EditSalon /></ProtectedRoute>} />
           <Route path="/salon-page-editor" component={() => <ProtectedRoute><SalonPageEditor /></ProtectedRoute>} />
           
-          {/* ROUTES CLIENTS PROTÉGÉES */}
-          <Route path="/client-messaging-search" component={() => <ProtectedRoute pageType="client"><ClientMessagingMobile /></ProtectedRoute>} />
-          <Route path="/avyento-booking" component={() => <ProtectedRoute pageType="client"><AvyentoStyleBooking /></ProtectedRoute>} />
+          {/* ROUTES CLIENTS - SEULES LES PAGES COMPTES PERSONNELS PROTÉGÉES */}
+          <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/avyento-account" component={() => <ProtectedRoute pageType="client"><AvyentoStyleAccount /></ProtectedRoute>} />
-          <Route path="/original-booking" component={() => <ProtectedRoute pageType="client"><ModernBooking /></ProtectedRoute>} />
-          <Route path="/advanced-booking" component={() => <ProtectedRoute pageType="client"><AdvancedBookingManager /></ProtectedRoute>} />
-          <Route path="/booking-success" component={() => <ProtectedRoute pageType="client"><BookingSuccess /></ProtectedRoute>} />
-          <Route path="/salon-booking" component={() => <ProtectedRoute pageType="client"><SalonBookingFlow /></ProtectedRoute>} />
           <Route path="/notifications" component={() => <ProtectedRoute pageType="client"><NotificationCenter /></ProtectedRoute>} />
+          
+          {/* ROUTES DE RÉSERVATION - PUBLIQUES */}
+          <Route path="/avyento-booking" component={AvyentoStyleBooking} />
+          <Route path="/original-booking" component={ModernBooking} />
+          <Route path="/advanced-booking" component={AdvancedBookingManager} />
+          <Route path="/booking-success" component={BookingSuccess} />
+          <Route path="/salon-booking" component={SalonBookingFlow} />
 
           {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
