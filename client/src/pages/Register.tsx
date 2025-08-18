@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft, Check, Star, Crown } from "lucide-react";
+import { Mail, Lock, User, Building, Phone, MapPin, ArrowLeft, Check, Star, Crown, Gift } from "lucide-react";
 import avyentoProLogo from "@assets/Logo avyento pro._1755359490006.png";
 import { getGenericGlassButton } from "@/lib/salonColors";
 
@@ -27,6 +27,72 @@ export default function Register() {
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<string>("basic-pro");
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
+
+  // Codes promo disponibles (identiques à ProfessionalPlans)
+  const availablePromoCodes = {
+    'AVYENTO2025': { discount: 20, type: 'percentage' as const },
+    'SALON50': { discount: 50, type: 'fixed' as const },
+    'PREMIUM15': { discount: 15, type: 'percentage' as const },
+    'FIRST100': { discount: 100, type: 'fixed' as const },
+    'EMPIRE100': { discount: 100, type: 'fixed' as const },
+    'FREE149': { discount: 149, type: 'fixed' as const },
+  };
+
+  // Charger le code promo depuis localStorage au montage du composant
+  useEffect(() => {
+    const savedPromo = localStorage.getItem('appliedPromoCode');
+    if (savedPromo) {
+      try {
+        const promoData = JSON.parse(savedPromo);
+        setAppliedPromo(promoData);
+        setPromoCode(promoData.code);
+      } catch (error) {
+        console.error('Erreur lors du chargement du code promo:', error);
+      }
+    }
+  }, []);
+
+  const validatePromoCode = () => {
+    if (!promoCode.trim()) return;
+    
+    const code = promoCode.toUpperCase();
+    const validPromo = availablePromoCodes[code as keyof typeof availablePromoCodes];
+    
+    if (validPromo) {
+      setAppliedPromo({
+        code,
+        discount: validPromo.discount,
+        type: validPromo.type
+      });
+      localStorage.setItem('appliedPromoCode', JSON.stringify({
+        code,
+        discount: validPromo.discount,
+        type: validPromo.type
+      }));
+      toast({
+        title: "Code promo appliqué !",
+        description: `${validPromo.type === 'percentage' ? `${validPromo.discount}%` : `${validPromo.discount}€`} de réduction appliquée`,
+      });
+    } else {
+      toast({
+        title: "Code promo invalide",
+        description: "Ce code promo n'existe pas ou a expiré",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const removePromoCode = () => {
+    setAppliedPromo(null);
+    setPromoCode('');
+    localStorage.removeItem('appliedPromoCode');
+    toast({
+      title: "Code promo retiré",
+      description: "Le code promo a été supprimé",
+    });
+  };
 
   const subscriptionPlans = [
     {
@@ -477,6 +543,74 @@ export default function Register() {
             </div>
           </form>
         </motion.div>
+      </div>
+
+      {/* Section Code Promo en bas de page */}
+      <div className="w-full bg-gradient-to-br from-violet-50 to-purple-50 py-12">
+        <div className="max-w-md mx-auto px-4">
+          <div className="bg-white/70 backdrop-blur-sm border border-white/50 rounded-2xl p-6 shadow-lg">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full mb-3">
+                <Gift className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Code Promo</h3>
+              <p className="text-sm text-gray-600">
+                Avez-vous un code promo ? Saisissez-le pour bénéficier d'une réduction sur votre abonnement.
+              </p>
+            </div>
+
+            {!appliedPromo ? (
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                    onKeyPress={(e) => e.key === 'Enter' && validatePromoCode()}
+                    placeholder="CODE PROMO"
+                    className="flex-1 px-4 py-3 bg-white/80 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent text-center font-medium"
+                  />
+                  <button
+                    type="button"
+                    onClick={validatePromoCode}
+                    disabled={!promoCode.trim()}
+                    className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Valider
+                  </button>
+                </div>
+                
+                <div className="text-xs text-gray-500 text-center">
+                  Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100, EMPIRE100, FREE149
+                </div>
+              </div>
+            ) : (
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-green-800">Code {appliedPromo.code} appliqué!</p>
+                      <p className="text-sm text-green-600">
+                        {appliedPromo.type === 'percentage' ? `${appliedPromo.discount}%` : `${appliedPromo.discount}€`} de réduction
+                        {appliedPromo.code === 'FREE149' && ' - Abonnement GRATUIT!'}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removePromoCode}
+                    className="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Footer identique à la page d'accueil */}
