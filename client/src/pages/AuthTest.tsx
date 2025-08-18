@@ -25,11 +25,11 @@ export default function AuthTest() {
             <p className="text-white mb-2">
               <strong>Chargement:</strong> {isLoading ? 'Oui' : 'Non'}
             </p>
-            {user && (
+            {user && typeof user === 'object' && (
               <div className="mt-4">
-                <p className="text-white mb-1"><strong>ID:</strong> {user.id}</p>
-                <p className="text-white mb-1"><strong>Email:</strong> {user.email}</p>
-                <p className="text-white mb-1"><strong>Nom:</strong> {user.firstName} {user.lastName}</p>
+                <p className="text-white mb-1"><strong>ID:</strong> {(user as any).id}</p>
+                <p className="text-white mb-1"><strong>Email:</strong> {(user as any).email}</p>
+                <p className="text-white mb-1"><strong>Nom:</strong> {(user as any).firstName} {(user as any).lastName}</p>
               </div>
             )}
           </div>
