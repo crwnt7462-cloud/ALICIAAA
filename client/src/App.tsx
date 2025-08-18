@@ -1359,8 +1359,8 @@ function Router() {
           
           {/* ROUTES CLIENTS - SEULES LES PAGES COMPTES PERSONNELS PROTÉGÉES */}
           <Route path="/client-messaging-search" component={ClientMessagingMobile} />
-          <Route path="/avyento-account" component={() => <ProtectedRoute pageType="client"><AvyentoStyleAccount /></ProtectedRoute>} />
-          <Route path="/notifications" component={() => <ProtectedRoute pageType="client"><NotificationCenter /></ProtectedRoute>} />
+          <Route path="/avyento-account" component={() => <ProtectedRoute><AvyentoStyleAccount /></ProtectedRoute>} />
+          <Route path="/notifications" component={() => <ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
           
           {/* ROUTES DE RÉSERVATION - PUBLIQUES */}
           <Route path="/avyento-booking" component={AvyentoStyleBooking} />
