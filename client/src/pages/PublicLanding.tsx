@@ -1398,7 +1398,10 @@ export default function PublicLanding() {
         <div className="mx-auto px-6 lg:px-12 xl:px-20">
           <div className="grid md:grid-cols-5 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">Avyento</h3>
+              <div className="flex items-center gap-3 mb-4">
+                <img src={logoImage} alt="Avyento Logo" className="h-8 w-auto" />
+                <h3 className="text-xl font-bold">Avyento</h3>
+              </div>
               <p className="text-gray-400 text-sm">
                 La plateforme IA qui révolutionne la beauté et optimise vos revenus.
               </p>
