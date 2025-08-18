@@ -203,6 +203,8 @@ function Router() {
     '/analytics-dashboard',
     '/client-management',
     '/pro-messaging',
+    '/pro-messaging-search',
+    '/messaging-test',
     '/admin-dashboard',
     '/salon-page-editor',
     '/business-features',
@@ -216,9 +218,6 @@ function Router() {
     '/pro-pages',
     '/direct-messaging',
     '/client-analytics',
-    '/pro-messaging',
-    '/pro-messaging-search',
-    '/messaging-test',
     // Pages clients protégées (comptes personnels)
     '/client-dashboard',
     '/client-parametres',
@@ -230,11 +229,10 @@ function Router() {
   // Vérifier si la page actuelle nécessite une authentification
   const isProtectedPage = protectedPages.some(page => location.startsWith(page));
   
-  // Pas d'écran de chargement - redirection immédiate si nécessaire
-  // L'authentification se fait en arrière-plan
-  
-  // Redirection immédiate vers l'accueil si pas authentifié et page protégée
-  if (isProtectedPage && !isAuthenticated) {
+  // REDIRECTION IMMÉDIATE - SYSTÈME UNIFIÉ
+  // Si page protégée ET pas authentifié ET pas en cours de chargement
+  if (isProtectedPage && !isAuthenticated && !isLoading) {
+    console.log(`🔒 Page protégée ${location} - Redirection vers /`);
     window.location.href = '/';
     return null;
   }
@@ -1296,11 +1294,7 @@ function Router() {
 
   // Page Clients PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/clients' || location === '/clients-modern') {
-    // Redirection immédiate vers l'accueil si pas authentifié
-    if (!isAuthenticated && !isLoading) {
-      window.location.href = '/';
-      return null;
-    }
+    // Protection déjà gérée par le système unifié ci-dessus
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
         <div className="lg:hidden">
@@ -1316,12 +1310,10 @@ function Router() {
 
 
 
-  // COMPOSANT DE PROTECTION POUR LES ROUTES PROFESSIONNELLES
+  // COMPOSANT DE PROTECTION - RENDU DIRECT CAR PROTECTION DÉJÀ GÉRÉE
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    if (!isAuthenticated && !isLoading) {
-      window.location.href = '/';
-      return null;
-    }
+    // La protection est déjà gérée par le système unifié ci-dessus
+    // Ce composant sert juste de wrapper maintenant
     return <>{children}</>;
   };
 
