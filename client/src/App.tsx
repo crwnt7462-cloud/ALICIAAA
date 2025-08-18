@@ -984,16 +984,72 @@ function Router() {
     );
   }
 
+  // VÉRIFICATION D'AUTHENTIFICATION POUR TOUTES LES PAGES SUIVANTES
+  // Si l'utilisateur n'est pas authentifié ET qu'il essaie d'accéder à une page protégée,
+  // alors rediriger vers la page de connexion
+  
   // Note: /planning est maintenant géré dans la section "Pages professionnelles avec sidebar persistant"
 
-  // Page Dashboard - Plein écran sans contraintes avec glassmorphism
+  // Page Dashboard - PROTÉGÉE - Plein écran sans contraintes avec glassmorphism
   if (location === '/dashboard') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Restreint</h2>
+              <p className="text-gray-600 mb-6">Cette page est réservée aux professionnels authentifiés. Connectez-vous pour accéder à votre dashboard professionnel.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+              <p className="text-sm text-gray-500 mt-4">
+                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return <Dashboard />;
   }
 
-  // Pages professionnelles avec sidebar persistant
+  // Pages professionnelles PROTÉGÉES avec sidebar persistant
   const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
   if (proPages.includes(location)) {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Professionnel Requis</h2>
+              <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour accéder à vos outils de gestion.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+              <p className="text-sm text-gray-500 mt-4">
+                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-50 w-full">
         <div className="flex min-h-screen">
@@ -1117,56 +1173,85 @@ function Router() {
 
 
 
+  // COMPOSANT DE PROTECTION POUR LES ROUTES PROFESSIONNELLES
+  const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Connexion Requise</h2>
+              <p className="text-gray-600 mb-6">Vous devez être connecté pour accéder à cette fonctionnalité professionnelle.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+              <p className="text-sm text-gray-500 mt-4">
+                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return <>{children}</>;
+  };
+
   // Application principale avec navigation
   return (
     <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
       <Header />
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
-          <Route path="/dashboard-old" component={DashboardPeymen} />
-          <Route path="/admin-dashboard" component={AdminDashboard} />
-          {/* Planning et Clients gérés séparément pour plein écran desktop */}
-          <Route path="/staff-management" component={StaffManagement} />
-          <Route path="/services-management" component={ServicesManagement} />
-          <Route path="/professional-settings-demo" component={ProfessionalSettingsDemo} />
-          <Route path="/business-features" component={BusinessFeaturesWithBottomSheets} />
-          <Route path="/messaging-system" component={MessagingSystem} />
-          <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
-          <Route path="/stock-alerts" component={StockAlerts} />
+          {/* ROUTES PROFESSIONNELLES PROTÉGÉES */}
+          <Route path="/dashboard-old" component={() => <ProtectedRoute><DashboardPeymen /></ProtectedRoute>} />
+          <Route path="/admin-dashboard" component={() => <ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+          <Route path="/staff-management" component={() => <ProtectedRoute><StaffManagement /></ProtectedRoute>} />
+          <Route path="/services-management" component={() => <ProtectedRoute><ServicesManagement /></ProtectedRoute>} />
+          <Route path="/professional-settings-demo" component={() => <ProtectedRoute><ProfessionalSettingsDemo /></ProtectedRoute>} />
+          <Route path="/business-features" component={() => <ProtectedRoute><BusinessFeaturesWithBottomSheets /></ProtectedRoute>} />
+          <Route path="/messaging-system" component={() => <ProtectedRoute><MessagingSystem /></ProtectedRoute>} />
+          <Route path="/analytics-dashboard" component={() => <ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>} />
+          <Route path="/stock-alerts" component={() => <ProtectedRoute><StockAlerts /></ProtectedRoute>} />
+          <Route path="/services" component={() => <ProtectedRoute><Services /></ProtectedRoute>} />
+          <Route path="/staff" component={() => <ProtectedRoute><Staff /></ProtectedRoute>} />
+          <Route path="/inventory" component={() => <ProtectedRoute><InventoryModern /></ProtectedRoute>} />
+          <Route path="/booking-pages" component={() => <ProtectedRoute><BookingPages /></ProtectedRoute>} />
+          <Route path="/promo-codes" component={() => <ProtectedRoute><PromoCodeManagement /></ProtectedRoute>} />
+          <Route path="/client-reliability" component={() => <ProtectedRoute><ClientReliabilityDashboard /></ProtectedRoute>} />
+          <Route path="/ai-pro" component={() => <ProtectedRoute><AIAssistantFixed /></ProtectedRoute>} />
+          <Route path="/ai-pro-complete" component={() => <ProtectedRoute><AIProComplete /></ProtectedRoute>} />
+          <Route path="/salon-photos" component={() => <ProtectedRoute><SalonPhotosManager userId="demo" /></ProtectedRoute>} />
+          <Route path="/monthly-calendar" component={() => <ProtectedRoute><MonthlyCalendar userId="demo" /></ProtectedRoute>} />
+          <Route path="/messaging-test" component={() => <ProtectedRoute><RealTimeMessaging currentUserId="demo" currentUserType="professional" currentUserName="Demo User" otherUserId="client" otherUserType="client" otherUserName="Client Demo" /></ProtectedRoute>} />
+          <Route path="/pro-messaging-search" component={() => <ProtectedRoute><ProMessaging /></ProtectedRoute>} />
+          <Route path="/client-management" component={() => <ProtectedRoute><ClientManagement /></ProtectedRoute>} />
+          <Route path="/pro-pages" component={() => <ProtectedRoute><ProPagesManager /></ProtectedRoute>} />
+          <Route path="/salon-settings" component={() => <ProtectedRoute><SalonSettingsModern /></ProtectedRoute>} />
+          <Route path="/booking-customization" component={() => <ProtectedRoute><BookingCustomization /></ProtectedRoute>} />
 
+          {/* ROUTES PUBLIQUES - PAS DE PROTECTION */}
           <Route path="/share-booking" component={ShareBooking} />
-          <Route path="/services" component={Services} />
-          <Route path="/staff" component={Staff} />
-          <Route path="/inventory" component={InventoryModern} />
-          <Route path="/booking-pages" component={BookingPages} />
-          <Route path="/promo-codes" component={PromoCodeManagement} />
-          <Route path="/client-reliability" component={ClientReliabilityDashboard} />
-
           <Route path="/notifications" component={NotificationCenter} />
           <Route path="/share" component={ShareBooking} />
-          {/* <Route path="/test-booking" component={SimpleBooking} /> */}
           <Route path="/support" component={Support} />
           <Route path="/contact" component={Contact} />
           <Route path="/centre-aide" component={CentreAide} />
           <Route path="/cgu" component={CGU} />
           <Route path="/confidentialite" component={Confidentialite} />
-          <Route path="/ai-pro" component={AIAssistantFixed} />
-          <Route path="/ai-pro-complete" component={AIProComplete} />
-          <Route path="/salon-photos" component={() => <SalonPhotosManager userId="demo" />} />
-          <Route path="/monthly-calendar" component={() => <MonthlyCalendar userId="demo" />} />
-          <Route path="/messaging-test" component={() => <RealTimeMessaging currentUserId="demo" currentUserType="professional" currentUserName="Demo User" otherUserId="client" otherUserType="client" otherUserName="Client Demo" />} />
-          <Route path="/pro-messaging-search" component={ProMessaging} />
-          <Route path="/client-messaging-search" component={ClientMessagingMobile} />
-          <Route path="/notifications" component={NotificationCenter} />
-          <Route path="/client-management" component={ClientManagement} />
           <Route path="/services/coiffure" component={ServiceCoiffure} />
           <Route path="/services/esthetique" component={ServiceEsthetique} />
           <Route path="/services/massage" component={ServiceMassage} />
           <Route path="/services/onglerie" component={ServiceOnglerie} />
           <Route path="/pro" component={Landing} />
-          <Route path="/pro-pages" component={ProPagesManager} />
-          <Route path="/salon-settings" component={SalonSettingsModern} />
-          <Route path="/booking-customization" component={BookingCustomization} />
+          <Route path="/client-messaging-search" component={ClientMessagingMobile} />
           <Route path="/salon-booking-editor" component={SalonBookingEditor} />
           <Route path="/payment-methods-simple" component={PaymentMethodsSimple} />
           <Route path="/salon-registration" component={SalonRegistration} />

@@ -165,30 +165,30 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  // Bypass authentication completely - always provide demo user
-  req.user = {
-    claims: {
-      sub: "demo-user",
-      email: "demo@beautyapp.com",
-      first_name: "Demo",
-      last_name: "User"
-    },
-    access_token: "demo-token",
-    expires_at: Math.floor(Date.now() / 1000) + 86400 // 24 hours
-  };
-  
-  // Ensure demo user exists in storage
-  try {
-    await storage.upsertUser({
-      id: "demo-user",
-      email: "demo@beautyapp.com",
-      firstName: "Demo",
-      lastName: "User",
-      profileImageUrl: null
-    });
-  } catch (error) {
-    console.log("Demo user creation error:", error);
+  const user = req.user as any;
+
+  if (!req.isAuthenticated() || !user?.expires_at) {
+    return res.status(401).json({ message: "Unauthorized" });
   }
-  
-  return next();
+
+  const now = Math.floor(Date.now() / 1000);
+  if (now <= user.expires_at) {
+    return next();
+  }
+
+  const refreshToken = user.refresh_token;
+  if (!refreshToken) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+
+  try {
+    const config = await getOidcConfig();
+    const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
+    updateUserSession(user, tokenResponse);
+    return next();
+  } catch (error) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
 };
