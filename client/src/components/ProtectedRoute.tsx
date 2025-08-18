@@ -31,16 +31,8 @@ export default function ProtectedRoute({
         ? "Cette page est réservée aux clients connectés. Retour à l'accueil..."
         : "Cette page est réservée aux professionnels connectés. Retour à l'accueil...";
       
-      toast({
-        title: "Accès non autorisé",
-        description: message,
-        variant: "destructive",
-      });
-      
-      // Rediriger vers la bonne page de connexion après un court délai
-      setTimeout(() => {
-        window.location.href = getRedirectUrl();
-      }, 1500);
+      // Redirection immédiate vers l'accueil sans affichage d'interface
+      window.location.href = getRedirectUrl();
     }
   }, [isAuthenticated, isLoading, requireAuth, toast, pageType]);
 
@@ -56,25 +48,9 @@ export default function ProtectedRoute({
     );
   }
 
-  // Si l'authentification est requise mais que l'utilisateur n'est pas connecté
+  // Si pas authentifié, pas d'affichage (redirection immédiate via useEffect)
   if (requireAuth && !isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50 p-4">
-        <div className="glass-card p-8 rounded-3xl text-center max-w-md w-full">
-          <div className="text-6xl mb-4">🔒</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            {pageType === 'client' ? 'Espace Client Protégé' : 'Espace Professionnel Protégé'}
-          </h1>
-          <p className="text-gray-600 mb-6">
-            {pageType === 'client' 
-              ? 'Cette page nécessite une connexion client. Retour à l\'accueil...'
-              : 'Cette page nécessite une connexion professionnelle. Retour à l\'accueil...'
-            }
-          </p>
-          <div className="animate-pulse h-2 bg-gradient-to-r from-violet-500 to-pink-500 rounded-full"></div>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   // Si tout va bien, afficher le contenu
