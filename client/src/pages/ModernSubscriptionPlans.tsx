@@ -40,6 +40,7 @@ export default function ModernSubscriptionPlans() {
     'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
     'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
     'EMPIRE100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction sur Beauty Empire' },
+    'FREE149': { discount: 149, type: 'fixed' as const, description: 'Abonnement gratuit - 149€ de réduction' },
   };
 
   // Fonction pour valider un code promo
@@ -77,7 +78,29 @@ export default function ModernSubscriptionPlans() {
   };
 
   const handleSelectPlan = (planId: string) => {
-    // Mapper les IDs de plan vers les plans corrects
+    const selectedPlan = plans.find(p => p.id === planId);
+    if (!selectedPlan) return;
+    
+    const finalPrice = getCurrentPrice(selectedPlan);
+    
+    // Si le prix final est 0€ ou négatif (abonnement gratuit), pas besoin de paiement
+    if (finalPrice <= 0) {
+      alert(`🎉 Félicitations ! Votre abonnement ${selectedPlan.name} est maintenant GRATUIT grâce au code ${appliedPromo?.code} !\n\nVotre abonnement a été activé directement sans paiement.`);
+      
+      // Dans un vrai système, on activerait directement l'abonnement en base de données
+      console.log('Abonnement gratuit activé:', { 
+        plan: selectedPlan.name, 
+        promo: appliedPromo?.code,
+        originalPrice: billingPeriod === 'monthly' ? selectedPlan.monthlyPrice : selectedPlan.yearlyPrice,
+        finalPrice: finalPrice 
+      });
+      
+      // Rediriger vers le dashboard ou page de confirmation
+      // setLocation('/dashboard');
+      return;
+    }
+    
+    // Mapper les IDs de plan vers les plans corrects pour le paiement
     const planMapping = {
       'starter': 'basic-pro',
       'professional': 'advanced-pro', 
@@ -89,12 +112,13 @@ export default function ModernSubscriptionPlans() {
     // Sauvegarder le plan sélectionné dans localStorage pour MultiStepSubscription
     localStorage.setItem('selectedPlan', mappedPlan);
     
-    // Sauvegarder le code promo appliqué
+    // Sauvegarder le code promo appliqué pour le processus de paiement
     if (appliedPromo) {
       localStorage.setItem('appliedPromoCode', JSON.stringify(appliedPromo));
+      console.log('Code promo sauvegardé pour paiement:', appliedPromo);
     }
     
-    // Rediriger vers le workflow d'inscription avec le plan correct
+    // Rediriger vers le workflow d'inscription avec paiement
     setLocation(`/multi-step-subscription?plan=${mappedPlan}`);
   };
 
@@ -321,7 +345,7 @@ export default function ModernSubscriptionPlans() {
                   )}
                   
                   <div className="text-xs text-gray-600 text-center">
-                    Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100, EMPIRE100
+                    Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100, EMPIRE100, FREE149
                   </div>
                 </div>
               ) : (
@@ -405,12 +429,20 @@ export default function ModernSubscriptionPlans() {
                             {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}€
                           </span>
                           <div className="flex items-baseline">
-                            <span className="text-4xl font-bold text-green-600">
-                              {Math.round(currentPrice)}€ TTC
-                            </span>
-                            <span className="text-gray-700 ml-2">
-                              /{billingPeriod === 'monthly' ? 'mois' : 'an'}
-                            </span>
+                            {currentPrice <= 0 ? (
+                              <span className="text-4xl font-bold text-green-600">
+                                GRATUIT
+                              </span>
+                            ) : (
+                              <>
+                                <span className="text-4xl font-bold text-green-600">
+                                  {Math.round(currentPrice)}€ TTC
+                                </span>
+                                <span className="text-gray-700 ml-2">
+                                  /{billingPeriod === 'monthly' ? 'mois' : 'an'}
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                       ) : (
@@ -478,12 +510,20 @@ export default function ModernSubscriptionPlans() {
                   <Button
                     onClick={() => handleSelectPlan(plan.id)}
                     className={`w-full h-14 text-lg font-semibold transition-all duration-300 ${
-                      plan.popular
+                      currentPrice <= 0
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                        : plan.popular
                         ? 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                         : 'bg-white/80 backdrop-blur-sm text-gray-900 hover:bg-white/90 border border-white/50 shadow-md'
                     }`}
                   >
-                    {plan.popular ? (
+                    {currentPrice <= 0 ? (
+                      <>
+                        <Gift className="w-5 h-5 mr-2" />
+                        Activer gratuitement
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </>
+                    ) : plan.popular ? (
                       <>
                         <Rocket className="w-5 h-5 mr-2" />
                         Dominer le marché
