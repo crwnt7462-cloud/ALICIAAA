@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Users, Edit, Trash2, Save, X } from 'lucide-react';
+import { Plus, Users, Edit, Save, X } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { MobileBottomNav } from '@/components/MobileBottomNav';
 import avyentoLogo from '@assets/Avyento transparent_1755515838937.png';
@@ -92,7 +92,7 @@ export default function StaffManagement() {
         description: "Le professionnel a été ajouté avec succès"
       });
     },
-    onError: (error: any) => {
+    onError: () => {
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter le professionnel",
