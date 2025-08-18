@@ -851,8 +851,31 @@ function Router() {
     );
   }
 
-  // Page de messagerie avancée avec mentions @
+  // Page de messagerie avancée PROTÉGÉE avec mentions @
   if (location === '/messaging') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Messagerie Professionnelle</h2>
+              <p className="text-gray-600 mb-6">Accédez à vos conversations avec vos clients. Connexion requise.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <MessagingHub />
@@ -860,8 +883,31 @@ function Router() {
     );
   }
 
-  // Page de test des mentions @
+  // Page de test des mentions @ PROTÉGÉE
   if (location === '/mention-test') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Test Mentions</h2>
+              <p className="text-gray-600 mb-6">Cette fonctionnalité est réservée aux professionnels connectés.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <MessagingHub />
@@ -869,8 +915,31 @@ function Router() {
     );
   }
 
-  // PageBuilder en plein écran (sans navigation)
+  // PageBuilder PROTÉGÉ - plein écran (sans navigation)
   if (location === '/page-builder') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Créateur de Pages</h2>
+              <p className="text-gray-600 mb-6">Créez des pages personnalisées pour votre salon. Connexion professionnelle requise.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-screen w-full">
         <PageCreator />
@@ -878,8 +947,31 @@ function Router() {
     );
   }
 
-  // Page de réservation salon
+  // Page de réservation salon PROTÉGÉE
   if (location === '/salon-booking-flow') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l6 6M6 13l6-6" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Salon</h2>
+              <p className="text-gray-600 mb-6">Connectez-vous pour accéder au système de réservation.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <SalonBookingFlow />
@@ -887,8 +979,31 @@ function Router() {
     );
   }
 
-  // Page de réservation style Planity
+  // Page de réservation style Planity PROTÉGÉE
   if (location === '/planity-booking') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l6 6M6 13l6-6" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Planity</h2>
+              <p className="text-gray-600 mb-6">Connectez-vous pour accéder au système de réservation Planity.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <PlanityStyleBookingFixed />
@@ -896,8 +1011,31 @@ function Router() {
     );
   }
 
-  // Page de sélection des professionnels
+  // Page de sélection des professionnels PROTÉGÉE 
   if (location === '/professional-selection') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Sélection Professionnels</h2>
+              <p className="text-gray-600 mb-6">Connectez-vous pour choisir votre professionnel.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <ProfessionalSelection />
@@ -905,8 +1043,31 @@ function Router() {
     );
   }
 
-  // Page de choix date/heure
+  // Page de choix date/heure PROTÉGÉE
   if (location === '/booking-datetime') {
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
+          <div className="max-w-md w-full mx-4">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l6 6M6 13l6-6" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Réservation Date/Heure</h2>
+              <p className="text-gray-600 mb-6">Connectez-vous pour choisir votre créneau de rendez-vous.</p>
+              <a 
+                href="/api/login" 
+                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
+              >
+                Se connecter
+              </a>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="h-full">
         <BookingDateTime />
