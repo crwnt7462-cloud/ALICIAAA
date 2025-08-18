@@ -230,32 +230,10 @@ function Router() {
     );
   }
   
-  // Rediriger vers la page de connexion si l'utilisateur n'est pas authentifié et tente d'accéder à une page protégée
+  // Redirection immédiate vers l'accueil si pas authentifié et page protégée
   if (isProtectedPage && !isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-        <div className="max-w-md w-full mx-4">
-          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Accès Restreint</h2>
-            <p className="text-gray-600 mb-6">Cette page est réservée aux professionnels authentifiés. Connectez-vous pour accéder à votre espace professionnel.</p>
-            <a 
-              href="/api/login" 
-              className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-            >
-              Se connecter
-            </a>
-            <p className="text-sm text-gray-500 mt-4">
-              Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    window.location.href = '/';
+    return null;
   }
   
   // Pages qui ne doivent pas avoir la barre violette en bas + toutes les pages pro
@@ -1315,28 +1293,10 @@ function Router() {
 
   // Page Clients PROTÉGÉE - plein écran desktop avec navigation mobile conservée
   if (location === '/clients' || location === '/clients-modern') {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Gestion Clients</h2>
-              <p className="text-gray-600 mb-6">Cette section est réservée aux professionnels authentifiés. Connectez-vous pour gérer votre clientèle.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
-            </div>
-          </div>
-        </div>
-      );
+    // Redirection immédiate vers l'accueil si pas authentifié
+    if (!isAuthenticated && !isLoading) {
+      window.location.href = '/';
+      return null;
     }
     return (
       <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto lg:shadow-none shadow-lg overflow-hidden">
@@ -1355,31 +1315,9 @@ function Router() {
 
   // COMPOSANT DE PROTECTION POUR LES ROUTES PROFESSIONNELLES
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    if (!isAuthenticated) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50">
-          <div className="max-w-md w-full mx-4">
-            <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-8 text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Connexion Requise</h2>
-              <p className="text-gray-600 mb-6">Vous devez être connecté pour accéder à cette fonctionnalité professionnelle.</p>
-              <a 
-                href="/api/login" 
-                className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-600 text-white font-medium rounded-full hover:from-purple-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-105"
-              >
-                Se connecter
-              </a>
-              <p className="text-sm text-gray-500 mt-4">
-                Pas encore inscrit ? <a href="/register" className="text-purple-600 hover:text-purple-700 font-medium">Créer un compte</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      );
+    if (!isAuthenticated && !isLoading) {
+      window.location.href = '/';
+      return null;
     }
     return <>{children}</>;
   };
