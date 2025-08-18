@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Mic, MicOff } from 'lucide-react';
+import { ArrowLeft, Send } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import avyentoLogo from '@assets/Avyento transparent_1755518589119.png';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 interface Message {
   id: string;
@@ -17,11 +18,6 @@ export default function AIAssistantFixed() {
   const [, setLocation] = useLocation();
   
   // TOUS LES HOOKS EN PREMIER - JAMAIS CONDITIONNELS
-  const { data: user } = useQuery({
-    queryKey: ["/api/auth/user"],
-    retry: false,
-  });
-
   const { data: subscription, isLoading: subscriptionLoading } = useQuery<{
     planId: string;
     planName: string;
@@ -37,8 +33,6 @@ export default function AIAssistantFixed() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showChatHistory, setShowChatHistory] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -160,6 +154,9 @@ export default function AIAssistantFixed() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 max-w-md mx-auto lg:max-w-none lg:w-full relative overflow-hidden">
+      {/* Navigation mobile */}
+      <MobileBottomNav userType="pro" />
+      
       {/* Bulles décoratives flottantes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-10 left-8 w-20 h-20 lg:w-32 lg:h-32 bg-gradient-to-br from-blue-300/30 to-purple-400/30 rounded-full blur-xl animate-pulse"></div>
@@ -169,56 +166,59 @@ export default function AIAssistantFixed() {
         <div className="absolute top-1/2 right-4 w-8 h-8 lg:w-16 lg:h-16 bg-gradient-to-br from-green-300/30 to-cyan-400/30 rounded-full blur-sm animate-pulse delay-2000"></div>
       </div>
 
-      {/* Header minimaliste */}
-      <div className="relative z-10 px-6 lg:px-8 py-4 lg:py-6 flex items-center justify-between">
-        <button
-          onClick={() => setLocation('/dashboard')}
-          className="w-10 h-10 lg:w-12 lg:h-12 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-white/20"
-        >
-          <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
-        </button>
-        
-        <div className="text-center">
-          <p className="text-sm lg:text-base text-blue-600 font-medium">AI Assistant</p>
-        </div>
+      {/* Header minimaliste - Desktop uniquement */}
+      <div className="hidden lg:block relative z-10 px-6 lg:px-8 py-4 lg:py-6">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setLocation('/dashboard')}
+            className="w-10 h-10 lg:w-12 lg:h-12 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 border border-white/20"
+          >
+            <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6 text-gray-700" />
+          </button>
+          
+          <div className="text-center">
+            <p className="text-sm lg:text-base text-blue-600 font-medium">Assistant IA</p>
+          </div>
 
-        <div className="w-10 h-10 lg:w-12 lg:h-12"></div>
+          <div className="w-10 h-10 lg:w-12 lg:h-12"></div>
+        </div>
       </div>
 
       {/* Container Chat - Style moderne */}
-      <div className="flex-1 flex flex-col justify-center relative z-10 px-6 lg:px-8">
+      <div className="flex-1 flex flex-col justify-center relative z-10 px-6 lg:px-8 pb-20 lg:pb-8">
         {messages.length === 0 ? (
           <div className="text-center space-y-6 lg:space-y-8">
-            {/* Logo Avyento Central */}
+            {/* Logo Avyento Central - Proportions réelles */}
             <div className="flex justify-center mb-6 lg:mb-8">
               <div className="relative">
                 <img 
                   src={avyentoLogo} 
                   alt="Avyento" 
-                  className="w-24 h-24 lg:w-32 lg:h-32 xl:w-40 xl:h-40 drop-shadow-lg"
+                  className="w-32 h-auto lg:w-40 lg:h-auto xl:w-48 xl:h-auto drop-shadow-lg"
+                  style={{ aspectRatio: 'auto' }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full blur-2xl scale-150"></div>
               </div>
             </div>
 
-            {/* Message d'accueil */}
+            {/* Message d'accueil en français */}
             <div className="space-y-2 lg:space-y-4">
               <h1 className="text-2xl lg:text-3xl xl:text-4xl font-light text-gray-800">
-                Hello there, <span className="text-blue-600 font-medium">human!</span>
+                Bonjour, <span className="text-blue-600 font-medium">comment puis-je vous aider ?</span>
               </h1>
               <p className="text-lg lg:text-xl text-gray-600">
-                How can I assist you?
+                Votre assistant IA Premium Pro est à votre service
               </p>
             </div>
             
-            {/* Cartes de suggestions */}
+            {/* Cartes de suggestions en français */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4 mt-8 lg:mt-12 max-w-lg lg:max-w-4xl mx-auto">
               <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg">
                 <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mb-3 lg:mb-4 flex items-center justify-center">
                   <span className="text-white text-sm lg:text-base">📊</span>
                 </div>
-                <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Salon Analytics</h3>
-                <p className="text-xs lg:text-sm text-gray-600">Analyze performance metrics</p>
+                <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Analyse du salon</h3>
+                <p className="text-xs lg:text-sm text-gray-600">Analysez vos performances</p>
               </div>
 
               <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg">
@@ -226,7 +226,7 @@ export default function AIAssistantFixed() {
                   <span className="text-white text-sm lg:text-base">📅</span>
                 </div>
                 <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Planning</h3>
-                <p className="text-xs lg:text-sm text-gray-600">Optimize your schedule</p>
+                <p className="text-xs lg:text-sm text-gray-600">Optimisez vos horaires</p>
               </div>
 
               <div className="group bg-white/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/30 hover:bg-white/80 transition-all cursor-pointer hover:scale-105 hover:shadow-lg col-span-2 lg:col-span-1">
@@ -234,7 +234,7 @@ export default function AIAssistantFixed() {
                   <span className="text-white text-sm lg:text-base">💡</span>
                 </div>
                 <h3 className="font-medium text-gray-800 mb-1 lg:mb-2 text-sm lg:text-base">Marketing</h3>
-                <p className="text-xs lg:text-sm text-gray-600">Grow your business</p>
+                <p className="text-xs lg:text-sm text-gray-600">Développez votre clientèle</p>
               </div>
             </div>
           </div>
@@ -295,7 +295,7 @@ export default function AIAssistantFixed() {
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Message AI assistant"
+                  placeholder="Tapez votre message..."
                   className="w-full px-4 lg:px-6 py-2 lg:py-3 bg-transparent border-none focus:outline-none text-sm lg:text-base text-gray-700 placeholder-gray-500"
                   disabled={isLoading}
                 />
