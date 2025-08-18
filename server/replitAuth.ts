@@ -27,7 +27,7 @@ export function getSession() {
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: true, // Permet de créer la table si elle n'existe pas
     ttl: sessionTtl,
     tableName: "sessions",
   });
@@ -38,7 +38,7 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production', // Secure uniquement en production
       maxAge: sessionTtl,
     },
   });

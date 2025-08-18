@@ -170,6 +170,7 @@ import SalonRegistrationWithPassword from "@/pages/SalonRegistrationWithPassword
 import BookingSuccess from "@/pages/BookingSuccess";
 import SalonBookingFixed from "@/pages/SalonBookingFixed";
 import ClientLoginBooking from "@/pages/ClientLoginBooking";
+import AuthTest from "@/pages/AuthTest";
 
 import StripePayment from "@/pages/StripePayment";
 
@@ -491,6 +492,15 @@ function Router() {
     return (
       <div className="h-full">
         <PublicLanding />
+      </div>
+    );
+  }
+
+  // Page de test d'authentification
+  if (location === '/auth-test') {
+    return (
+      <div className="h-full">
+        <AuthTest />
       </div>
     );
   }
