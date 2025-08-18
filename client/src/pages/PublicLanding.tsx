@@ -516,7 +516,7 @@ export default function PublicLanding() {
               }}
             >
               {/* Header du menu plein écran */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
+              <div className="flex items-center justify-start p-6 border-b border-gray-100">
                 <motion.div 
                   className="flex items-center gap-3"
                   initial={{ x: -20, opacity: 0 }}
@@ -526,18 +526,6 @@ export default function PublicLanding() {
                   <img src={logoImage} alt="Logo" className="h-10 w-auto" />
                   <span className="text-xl font-bold text-gray-900">Menu</span>
                 </motion.div>
-                
-                <motion.button
-                  onClick={closeMenu}
-                  className="p-3 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <X className="w-6 h-6 text-gray-600" />
-                </motion.button>
               </div>
 
               {/* Navigation simple et épurée */}
