@@ -26,6 +26,54 @@ import {
 export default function ModernSubscriptionPlans() {
   const [, setLocation] = useLocation();
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  
+  // États pour le système de codes promo
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{code: string, discount: number, type: 'percentage' | 'fixed'} | null>(null);
+  const [promoError, setPromoError] = useState('');
+  const [isValidatingPromo, setIsValidatingPromo] = useState(false);
+
+  // Codes promo disponibles (en prod, ceci serait une API call)
+  const availablePromoCodes = {
+    'AVYENTO2025': { discount: 20, type: 'percentage' as const, description: '20% de réduction' },
+    'SALON50': { discount: 50, type: 'fixed' as const, description: '50€ de réduction' },
+    'PREMIUM15': { discount: 15, type: 'percentage' as const, description: '15% de réduction' },
+    'FIRST100': { discount: 100, type: 'fixed' as const, description: '100€ de réduction' },
+  };
+
+  // Fonction pour valider un code promo
+  const validatePromoCode = async () => {
+    if (!promoCode.trim()) return;
+    
+    setIsValidatingPromo(true);
+    setPromoError('');
+    
+    // Simuler une validation API
+    setTimeout(() => {
+      const code = promoCode.toUpperCase();
+      const validPromo = availablePromoCodes[code as keyof typeof availablePromoCodes];
+      
+      if (validPromo) {
+        setAppliedPromo({
+          code,
+          discount: validPromo.discount,
+          type: validPromo.type
+        });
+        setPromoError('');
+      } else {
+        setPromoError('Code promo invalide ou expiré');
+        setAppliedPromo(null);
+      }
+      setIsValidatingPromo(false);
+    }, 1000);
+  };
+
+  // Fonction pour supprimer un code promo appliqué
+  const removePromoCode = () => {
+    setAppliedPromo(null);
+    setPromoCode('');
+    setPromoError('');
+  };
 
   const handleSelectPlan = (planId: string) => {
     // Mapper les IDs de plan vers les plans corrects
@@ -39,6 +87,11 @@ export default function ModernSubscriptionPlans() {
     
     // Sauvegarder le plan sélectionné dans localStorage pour MultiStepSubscription
     localStorage.setItem('selectedPlan', mappedPlan);
+    
+    // Sauvegarder le code promo appliqué
+    if (appliedPromo) {
+      localStorage.setItem('appliedPromoCode', JSON.stringify(appliedPromo));
+    }
     
     // Rediriger vers le workflow d'inscription avec le plan correct
     setLocation(`/multi-step-subscription?plan=${mappedPlan}`);
@@ -126,7 +179,18 @@ export default function ModernSubscriptionPlans() {
   ];
 
   const getCurrentPrice = (plan: typeof plans[0]) => {
-    return billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
+    const basePrice = billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
+    
+    // Appliquer la réduction du code promo
+    if (appliedPromo) {
+      if (appliedPromo.type === 'percentage') {
+        return basePrice * (1 - appliedPromo.discount / 100);
+      } else {
+        return Math.max(0, basePrice - appliedPromo.discount);
+      }
+    }
+    
+    return basePrice;
   };
 
   const getOriginalPrice = (plan: typeof plans[0]) => {
@@ -139,6 +203,14 @@ export default function ModernSubscriptionPlans() {
       return Math.round((savings / plan.originalYearlyPrice) * 100);
     }
     return 0;
+  };
+
+  const getPromoSavings = (plan: typeof plans[0]) => {
+    if (!appliedPromo) return 0;
+    
+    const basePrice = billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice;
+    const discountedPrice = getCurrentPrice(plan);
+    return basePrice - discountedPrice;
   };
 
   return (
@@ -184,7 +256,7 @@ export default function ModernSubscriptionPlans() {
           </div>
 
           {/* Billing Toggle */}
-          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm border border-white/40 rounded-xl p-1 mb-12">
+          <div className="inline-flex items-center bg-white/30 backdrop-blur-sm border border-white/40 rounded-xl p-1 mb-8">
             <button
               onClick={() => setBillingPeriod('monthly')}
               className={`px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
@@ -208,6 +280,75 @@ export default function ModernSubscriptionPlans() {
                 -17%
               </Badge>
             </button>
+          </div>
+
+          {/* Code Promo Section */}
+          <div className="max-w-md mx-auto mb-12">
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6">
+              <div className="flex items-center justify-center mb-4">
+                <Gift className="w-5 h-5 text-violet-600 mr-2" />
+                <h3 className="text-lg font-semibold text-gray-800">Code Promo</h3>
+              </div>
+              
+              {!appliedPromo ? (
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      onKeyPress={(e) => e.key === 'Enter' && validatePromoCode()}
+                      placeholder="Entrez votre code promo"
+                      className="flex-1 px-4 py-3 bg-white/50 border border-white/40 rounded-xl text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:border-transparent"
+                      disabled={isValidatingPromo}
+                    />
+                    <Button
+                      onClick={validatePromoCode}
+                      disabled={!promoCode.trim() || isValidatingPromo}
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
+                    >
+                      {isValidatingPromo ? (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        'Appliquer'
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {promoError && (
+                    <p className="text-red-500 text-sm text-center">{promoError}</p>
+                  )}
+                  
+                  <div className="text-xs text-gray-600 text-center">
+                    Codes disponibles: AVYENTO2025, SALON50, PREMIUM15, FIRST100
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-green-800">Code {appliedPromo.code} appliqué!</p>
+                        <p className="text-sm text-green-600">
+                          {appliedPromo.type === 'percentage' ? `${appliedPromo.discount}%` : `${appliedPromo.discount}€`} de réduction
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={removePromoCode}
+                      variant="ghost"
+                      size="sm"
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ✕
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -255,20 +396,53 @@ export default function ModernSubscriptionPlans() {
                           {originalPrice}€
                         </span>
                       )}
-                      <span className="text-4xl font-bold text-gray-900">
-                        {currentPrice}€ TTC
-                      </span>
-                      <span className="text-gray-700 ml-2">
-                        /{billingPeriod === 'monthly' ? 'mois' : 'an'}
-                      </span>
+                      
+                      {/* Prix avec code promo appliqué */}
+                      {appliedPromo ? (
+                        <div className="flex flex-col">
+                          <span className="text-lg text-gray-600 line-through">
+                            {billingPeriod === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}€
+                          </span>
+                          <div className="flex items-baseline">
+                            <span className="text-4xl font-bold text-green-600">
+                              {Math.round(currentPrice)}€ TTC
+                            </span>
+                            <span className="text-gray-700 ml-2">
+                              /{billingPeriod === 'monthly' ? 'mois' : 'an'}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <span className="text-4xl font-bold text-gray-900">
+                            {currentPrice}€ TTC
+                          </span>
+                          <span className="text-gray-700 ml-2">
+                            /{billingPeriod === 'monthly' ? 'mois' : 'an'}
+                          </span>
+                        </>
+                      )}
                     </div>
                     
-                    {savings > 0 && (
-                      <Badge className="bg-green-100/80 text-green-700 border border-green-300/50">
-                        <Gift className="w-3 h-3 mr-1" />
-                        Économisez {savings}% avec l'abonnement annuel
-                      </Badge>
-                    )}
+                    <div className="space-y-2">
+                      {/* Badge d'économie annuelle */}
+                      {savings > 0 && (
+                        <Badge className="bg-green-100/80 text-green-700 border border-green-300/50">
+                          <Gift className="w-3 h-3 mr-1" />
+                          Économisez {savings}% avec l'abonnement annuel
+                        </Badge>
+                      )}
+                      
+                      {/* Badge de réduction code promo */}
+                      {appliedPromo && getPromoSavings(plan) > 0 && (
+                        <div>
+                          <Badge className="bg-violet-100/80 text-violet-700 border border-violet-300/50">
+                            <Gift className="w-3 h-3 mr-1" />
+                            Code {appliedPromo.code}: -{Math.round(getPromoSavings(plan))}€
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Limits */}
