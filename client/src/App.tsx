@@ -161,6 +161,7 @@ import ClientManagement from "@/pages/ClientManagement";
 import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
+import LoginClassic from "@/pages/LoginClassic";
 
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
@@ -1400,6 +1401,9 @@ function Router() {
           <Route path="/avyento-client-login" component={AvyentoStyleClientLogin} />
           <Route path="/avyento-professionals" component={AvyentoStyleProfessionalList} />
           <Route path="/avyento-beauty-institute" component={AvyentoStyleBeautyInstitute} />
+          
+          {/* CONNEXION PROFESSIONNELLE CLASSIQUE */}
+          <Route path="/login-classic" component={LoginClassic} />
 
           {/* Routes Salon Mobile - Composant supprimé */}
           

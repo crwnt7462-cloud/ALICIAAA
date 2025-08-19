@@ -35,7 +35,15 @@ Couleurs Premium configurées :
 
 ### 🔑 Comment se Connecter
 
-1. **Cliquez sur "Se connecter"** dans l'application
+**MÉTHODE SIMPLE (Recommandée) :**
+1. **Allez sur** : `/login-classic`
+2. **Utilisez les identifiants** :
+   - Email : `pro@avyento.com`
+   - Mot de passe : `avyento2025`
+3. **Cliquez sur "Se connecter"**
+
+**MÉTHODE ALTERNATIVE :**
+1. **Cliquez sur "Se connecter"** dans l'application  
 2. **Utilisez l'authentification Replit** avec vos identifiants
 3. **Accès automatique** aux fonctionnalités Premium Pro :
    - Dashboard professionnel complet

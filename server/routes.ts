@@ -476,6 +476,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   console.log('🎯 Route création compte professionnel configurée');
 
+  // 🔐 ROUTE : Connexion avec email/mot de passe classique
+  app.post('/api/login-classic', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      // Créer un compte demo si email = pro@avyento.com
+      if (email === 'pro@avyento.com' && password === 'avyento2025') {
+        // Créer une session manuelle pour le compte pro
+        const proUser = {
+          claims: {
+            sub: 'pro-account-avyento-2025',
+            email: 'pro@avyento.com',
+            first_name: 'Professionnel',
+            last_name: 'Avyento'
+          },
+          access_token: 'demo-token',
+          expires_at: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24h
+        };
+
+        // Stocker dans la session
+        req.session.user = proUser;
+        
+        console.log('✅ Connexion compte pro réussie:', email);
+        
+        res.json({
+          success: true,
+          message: 'Connexion réussie !',
+          user: {
+            id: proUser.claims.sub,
+            email: proUser.claims.email,
+            firstName: proUser.claims.first_name,
+            lastName: proUser.claims.last_name
+          },
+          redirectUrl: '/dashboard'
+        });
+      } else {
+        res.status(401).json({
+          error: 'Identifiants incorrects',
+          message: 'Email ou mot de passe invalide'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur connexion:', error);
+      res.status(500).json({
+        error: 'Erreur de connexion',
+        message: error.message
+      });
+    }
+  });
+
+  // 🔓 Route de déconnexion classique
+  app.post('/api/logout-classic', (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Erreur de déconnexion' });
+      }
+      res.json({ success: true, message: 'Déconnexion réussie' });
+    });
+  });
+
+  // Middleware pour vérifier l'auth classique
+  const isAuthenticatedClassic = (req: any, res: any, next: any) => {
+    if (req.session && req.session.user) {
+      req.user = req.session.user;
+      return next();
+    }
+    res.status(401).json({ message: "Unauthorized" });
+  };
+
+  // Route utilisateur avec auth classique
+  app.get('/api/auth/user-classic', isAuthenticatedClassic, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  console.log('🔐 Authentification classique configurée');
+
   // Auth middleware Replit Auth réel
   await setupAuth(app);
 
