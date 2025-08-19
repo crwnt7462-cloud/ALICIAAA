@@ -354,6 +354,128 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   console.log('🛡️ Protection CSRF configurée pour formulaires sensibles');
 
+  // 🎯 ROUTE SPÉCIALE : Création compte professionnel automatique
+  app.post('/api/create-pro-account', async (req, res) => {
+    try {
+      // Créer automatiquement un compte pro avec accès complet
+      const proUser = {
+        id: 'pro-account-avyento-2025',
+        email: 'pro@avyento.com',
+        firstName: 'Professionnel',
+        lastName: 'Avyento',
+        businessName: 'Salon Avyento Pro',
+        phone: '+33 1 23 45 67 89',
+        address: '123 Rue de la Beauté, Paris',
+        isProfessional: true,
+        isVerified: true,
+        subscriptionPlan: 'premium-pro',
+        subscriptionStatus: 'active',
+        trialEndDate: new Date('2026-08-18'),
+        mentionHandle: '@avyentopro'
+      };
+
+      // Créer l'utilisateur pro dans la base
+      const user = await storage.createUser(proUser);
+      
+      // Créer un salon associé
+      const salonData = {
+        id: 'salon-avyento-pro-2025',
+        name: 'Salon Avyento Pro',
+        slug: 'avyento-pro',
+        userId: user.id,
+        description: 'Salon de beauté professionnel avec tous les services premium',
+        address: '123 Rue de la Beauté, 75001 Paris',
+        phone: '+33 1 23 45 67 89',
+        email: 'pro@avyento.com',
+        customColors: JSON.stringify({
+          primary: '#8b5cf6',
+          accent: '#f59e0b', 
+          buttonText: '#ffffff',
+          buttonClass: 'glass-button-purple',
+          priceColor: '#7c3aed',
+          neonFrame: '#a855f7',
+          intensity: 70
+        }),
+        serviceCategories: 'Coiffure,Esthétique,Manucure,Massage',
+        photos: JSON.stringify(['https://images.unsplash.com/photo-1560066984-138dadb4c035']),
+        isPublished: true
+      };
+
+      const salon = await storage.createSalon(salonData);
+
+      // Créer des services de base
+      const services = [
+        {
+          userId: user.id,
+          name: 'Coupe Femme Premium',
+          description: 'Coupe personnalisée avec shampoing et brushing',
+          price: 65,
+          duration: 60,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: true,
+          depositPercentage: 30
+        },
+        {
+          userId: user.id,
+          name: 'Coloration Complète',
+          description: 'Coloration racines + longueurs avec soin',
+          price: 120,
+          duration: 120,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: true,
+          depositPercentage: 50
+        },
+        {
+          userId: user.id,
+          name: 'Soin Visage Anti-âge',
+          description: 'Soin complet avec masque hydratant',
+          price: 85,
+          duration: 75,
+          isActive: true,
+          isOnlineBookable: true,
+          requiresDeposit: false,
+          depositPercentage: 0
+        }
+      ];
+
+      for (const service of services) {
+        await storage.createService(service);
+      }
+
+      console.log('✅ Compte professionnel créé avec succès:', user.email);
+      
+      res.json({
+        success: true,
+        message: 'Compte professionnel créé avec succès !',
+        user: {
+          id: user.id,
+          email: user.email,
+          businessName: user.businessName,
+          subscriptionPlan: user.subscriptionPlan,
+          subscriptionStatus: user.subscriptionStatus
+        },
+        salon: {
+          id: salon.id,
+          name: salon.name,
+          slug: salon.slug
+        },
+        loginUrl: '/api/login',
+        dashboardUrl: '/dashboard'
+      });
+
+    } catch (error) {
+      console.error('❌ Erreur création compte pro:', error);
+      res.status(500).json({
+        error: 'Erreur lors de la création du compte professionnel',
+        message: error.message
+      });
+    }
+  });
+
+  console.log('🎯 Route création compte professionnel configurée');
+
   // Auth middleware Replit Auth réel
   await setupAuth(app);
 
