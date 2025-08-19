@@ -162,6 +162,7 @@ import RealTimeMessaging from "@/pages/RealTimeMessaging";
 import ClientMessaging from "@/pages/ClientMessaging";
 import ClientMessagingMobile from "@/pages/ClientMessagingMobile";
 import LoginClassic from "@/pages/LoginClassic";
+import Search from "@/pages/Search";
 
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
@@ -468,6 +469,11 @@ function Router() {
   
   if (location === '/client-parametres') {
     return <div className="h-full"><ClientParametres /></div>;
+  }
+
+  // Page de recherche
+  if (location === '/search') {
+    return <div className="h-full"><Search /></div>;
   }
 
   // Page d'accueil publique (sans header/nav mobile)
