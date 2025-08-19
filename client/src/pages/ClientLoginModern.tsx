@@ -192,8 +192,39 @@ export default function ClientLoginModern() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        // Ne pas throw une erreur, traiter comme échec de connexion
+        const data = await response.json().catch(() => ({ success: false, message: "Invalid credentials" }));
+        
+        if (isLogin) {
+          // Récupérer le nombre actuel d'tentatives avant d'incrémenter
+          const currentAttempts = getStoredAttempts(formData.email)?.attempts || 0;
+          const nextAttemptCount = currentAttempts + 1;
+          
+          // Appeler handleFailedLogin pour incrémenter et potentiellement bloquer
+          handleFailedLogin(formData.email);
+          
+          if (nextAttemptCount >= 3) {
+            const blockDuration = calculateBlockDuration(nextAttemptCount);
+            toast({
+              title: "Email ou mot de passe incorrect",
+              description: `Compte bloqué après ${nextAttemptCount} tentatives. Réessayez dans ${formatBlockTime(Math.ceil(blockDuration / 1000))}.`,
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: "Email ou mot de passe incorrect", 
+              description: `Tentative ${nextAttemptCount}/3. Après 3 échecs, votre compte sera temporairement bloqué.`,
+              variant: "destructive"
+            });
+          }
+        } else {
+          toast({
+            title: "Erreur de création",
+            description: data.message || "Une erreur est survenue",
+            variant: "destructive"
+          });
+        }
+        return; // Sortir de la fonction ici
       }
 
       const data = await response.json();
