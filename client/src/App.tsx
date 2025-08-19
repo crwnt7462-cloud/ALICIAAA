@@ -1330,8 +1330,10 @@ function Router() {
 
   // Application principale avec navigation
   return (
-    <div className="h-full flex flex-col max-w-md mx-auto bg-white/95 backdrop-blur-sm shadow-lg overflow-hidden">
-      <Header />
+    <div className="h-full flex flex-col lg:max-w-none lg:w-full max-w-md mx-auto bg-white/95 backdrop-blur-sm lg:shadow-none shadow-lg overflow-hidden">
+      <div className="lg:hidden">
+        <Header />
+      </div>
       <main className="flex-1 overflow-y-auto bg-gradient-to-br from-gray-50/30 to-purple-50/20 smooth-scroll">
         <Switch>
           {/* ROUTES PROFESSIONNELLES PROTÉGÉES */}
@@ -1429,7 +1431,7 @@ function Router() {
           }} />
         </Switch>
       </main>
-      {!hideBottomNavPages.includes(location) && <BottomNavigation />}
+      <BottomNavigation />
     </div>
   );
 }
