@@ -109,11 +109,14 @@ export default function ClientLoginModern() {
     stored.attempts += 1;
     stored.lastAttempt = now;
     
+    console.log(`[DEBUG] Tentative échouée #${stored.attempts} pour ${email}`);
+    
     if (stored.attempts >= 3) {
       const blockDuration = calculateBlockDuration(stored.attempts);
       stored.blockedUntil = now + blockDuration;
       setIsBlocked(true);
       setBlockTimeLeft(Math.ceil(blockDuration / 1000));
+      console.log(`[DEBUG] Compte bloqué pour ${Math.ceil(blockDuration / 1000)}s`);
     }
     
     setAttemptCount(stored.attempts);
@@ -221,19 +224,27 @@ export default function ClientLoginModern() {
       } else {
         // Incrémenter les tentatives échouées uniquement pour la connexion
         if (isLogin) {
+          // Récupérer le nombre actuel d'tentatives avant d'incrémenter
+          const currentAttempts = getStoredAttempts(formData.email)?.attempts || 0;
+          const nextAttemptCount = currentAttempts + 1;
+          
+          // Appeler handleFailedLogin pour incrémenter et potentiellement bloquer
           handleFailedLogin(formData.email);
           
-          const warningMessages = [
-            `Tentative ${attemptCount + 1}/3. Attention : après 3 tentatives, votre compte sera temporairement bloqué.`,
-            `Tentative ${attemptCount + 1}/3. Dernière chance avant blocage temporaire !`,
-            `Compte bloqué pour ${formatBlockTime(blockTimeLeft)}. Trop de tentatives échouées.`
-          ];
-          
-          toast({
-            title: "Erreur de connexion",
-            description: attemptCount >= 2 ? warningMessages[2] : warningMessages[attemptCount],
-            variant: "destructive"
-          });
+          if (nextAttemptCount >= 3) {
+            const blockDuration = calculateBlockDuration(nextAttemptCount);
+            toast({
+              title: "Email ou mot de passe incorrect",
+              description: `Compte bloqué après ${nextAttemptCount} tentatives. Réessayez dans ${formatBlockTime(Math.ceil(blockDuration / 1000))}.`,
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: "Email ou mot de passe incorrect", 
+              description: `Tentative ${nextAttemptCount}/3. Après 3 échecs, votre compte sera temporairement bloqué.`,
+              variant: "destructive"
+            });
+          }
         } else {
           toast({
             title: "Erreur de création",
@@ -245,12 +256,36 @@ export default function ClientLoginModern() {
     } catch (error) {
       console.error('Erreur authentification:', error);
       
-      // En cas d'erreur réseau, on ne compte pas comme tentative échouée
-      toast({
-        title: "Erreur de connexion",
-        description: "Impossible de contacter le serveur. Vérifiez votre connexion internet.",
-        variant: "destructive"
-      });
+      // En cas d'erreur réseau/serveur, comptabiliser comme tentative échouée pour la connexion
+      if (isLogin) {
+        // Récupérer le nombre actuel d'tentatives avant d'incrémenter
+        const currentAttempts = getStoredAttempts(formData.email)?.attempts || 0;
+        const nextAttemptCount = currentAttempts + 1;
+        
+        // Appeler handleFailedLogin pour incrémenter et potentiellement bloquer
+        handleFailedLogin(formData.email);
+        
+        if (nextAttemptCount >= 3) {
+          const blockDuration = calculateBlockDuration(nextAttemptCount);
+          toast({
+            title: "Email ou mot de passe incorrect",
+            description: `Compte bloqué après ${nextAttemptCount} tentatives. Réessayez dans ${formatBlockTime(Math.ceil(blockDuration / 1000))}.`,
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Email ou mot de passe incorrect",
+            description: `Tentative ${nextAttemptCount}/3. Après 3 échecs, votre compte sera temporairement bloqué.`,
+            variant: "destructive"
+          });
+        }
+      } else {
+        toast({
+          title: "Erreur de création",
+          description: "Impossible de créer le compte. Vérifiez votre connexion internet.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsLoading(false);
     }
