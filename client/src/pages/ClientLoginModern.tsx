@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, ArrowLeft, Eye, EyeOff, User, Smartphone } from "lucide-react";
+import { Mail, Lock, ArrowLeft, Eye, EyeOff, User, Smartphone, Shield, AlertTriangle } from "lucide-react";
 import avyentoLogo from "@assets/3_1753714421825.png";
+
+// Types pour le système de limitation
+interface LoginAttempt {
+  email: string;
+  attempts: number;
+  lastAttempt: number;
+  blockedUntil?: number;
+}
 
 export default function ClientLoginModern() {
   const [, setLocation] = useLocation();
@@ -14,6 +22,9 @@ export default function ClientLoginModern() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockTimeLeft, setBlockTimeLeft] = useState(0);
+  const [attemptCount, setAttemptCount] = useState(0);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,9 +34,119 @@ export default function ClientLoginModern() {
     phone: ""
   });
 
+  // Gestion du système de limitation des tentatives
+  const getStoredAttempts = (email: string): LoginAttempt | null => {
+    try {
+      const stored = localStorage.getItem(`login_attempts_${email}`);
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const updateStoredAttempts = (email: string, attempts: LoginAttempt) => {
+    localStorage.setItem(`login_attempts_${email}`, JSON.stringify(attempts));
+  };
+
+  const calculateBlockDuration = (attemptCount: number): number => {
+    // Blocage progressif : 1min, 5min, 15min, 30min, 1h, 2h, etc.
+    const baseDuration = 60000; // 1 minute en ms
+    const multipliers = [1, 5, 15, 30, 60, 120, 240]; // minutes
+    const index = Math.min(attemptCount - 3, multipliers.length - 1);
+    const multiplier = multipliers[Math.max(0, index)] || 1;
+    return baseDuration * multiplier;
+  };
+
+  const checkIfBlocked = (email: string) => {
+    if (!email) return;
+    
+    const attempts = getStoredAttempts(email);
+    if (!attempts || attempts.attempts < 3) {
+      setIsBlocked(false);
+      setAttemptCount(attempts?.attempts || 0);
+      return;
+    }
+
+    const now = Date.now();
+    if (attempts.blockedUntil && now < attempts.blockedUntil) {
+      setIsBlocked(true);
+      setBlockTimeLeft(Math.ceil((attempts.blockedUntil - now) / 1000));
+      setAttemptCount(attempts.attempts);
+    } else {
+      setIsBlocked(false);
+      setAttemptCount(attempts.attempts);
+    }
+  };
+
+  // Vérifier le blocage quand l'email change
+  useEffect(() => {
+    if (formData.email) {
+      checkIfBlocked(formData.email);
+    }
+  }, [formData.email]);
+
+  // Timer pour le décompte du blocage
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isBlocked && blockTimeLeft > 0) {
+      timer = setInterval(() => {
+        setBlockTimeLeft(prev => {
+          if (prev <= 1) {
+            setIsBlocked(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isBlocked, blockTimeLeft]);
+
+  const handleFailedLogin = (email: string) => {
+    const now = Date.now();
+    const stored = getStoredAttempts(email) || { email, attempts: 0, lastAttempt: now };
+    
+    stored.attempts += 1;
+    stored.lastAttempt = now;
+    
+    if (stored.attempts >= 3) {
+      const blockDuration = calculateBlockDuration(stored.attempts);
+      stored.blockedUntil = now + blockDuration;
+      setIsBlocked(true);
+      setBlockTimeLeft(Math.ceil(blockDuration / 1000));
+    }
+    
+    setAttemptCount(stored.attempts);
+    updateStoredAttempts(email, stored);
+  };
+
+  const handleSuccessfulLogin = (email: string) => {
+    localStorage.removeItem(`login_attempts_${email}`);
+    setAttemptCount(0);
+    setIsBlocked(false);
+    setBlockTimeLeft(0);
+  };
+
+  const formatBlockTime = (seconds: number): string => {
+    if (seconds < 60) return `${seconds} secondes`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}min ${remainingSeconds}s`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Vérifier si l'utilisateur est bloqué
+    if (isLogin && isBlocked) {
+      toast({
+        title: "Compte temporairement bloqué",
+        description: `Trop de tentatives. Réessayez dans ${formatBlockTime(blockTimeLeft)}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!isLogin && formData.password !== formData.confirmPassword) {
       toast({
         title: "Erreur",
@@ -75,6 +196,11 @@ export default function ClientLoginModern() {
       const data = await response.json();
       
       if (data.success && data.client) {
+        // Réinitialiser les tentatives en cas de succès
+        if (isLogin) {
+          handleSuccessfulLogin(formData.email);
+        }
+        
         localStorage.setItem('clientToken', data.client.token);
         localStorage.setItem('clientData', JSON.stringify(data.client));
         
@@ -93,17 +219,36 @@ export default function ClientLoginModern() {
           setLocation('/client-dashboard');
         }
       } else {
-        toast({
-          title: isLogin ? "Erreur de connexion" : "Erreur de création",
-          description: data.error || "Une erreur est survenue",
-          variant: "destructive"
-        });
+        // Incrémenter les tentatives échouées uniquement pour la connexion
+        if (isLogin) {
+          handleFailedLogin(formData.email);
+          
+          const warningMessages = [
+            `Tentative ${attemptCount + 1}/3. Attention : après 3 tentatives, votre compte sera temporairement bloqué.`,
+            `Tentative ${attemptCount + 1}/3. Dernière chance avant blocage temporaire !`,
+            `Compte bloqué pour ${formatBlockTime(blockTimeLeft)}. Trop de tentatives échouées.`
+          ];
+          
+          toast({
+            title: "Erreur de connexion",
+            description: attemptCount >= 2 ? warningMessages[2] : warningMessages[attemptCount],
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "Erreur de création",
+            description: data.error || "Une erreur est survenue",
+            variant: "destructive"
+          });
+        }
       }
     } catch (error) {
       console.error('Erreur authentification:', error);
+      
+      // En cas d'erreur réseau, on ne compte pas comme tentative échouée
       toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Erreur serveur",
+        title: "Erreur de connexion",
+        description: "Impossible de contacter le serveur. Vérifiez votre connexion internet.",
         variant: "destructive"
       });
     } finally {
@@ -157,7 +302,50 @@ export default function ClientLoginModern() {
               <p className="text-gray-600">
                 {isLogin ? "Accédez à votre espace personnel" : "Rejoignez Avyento"}
               </p>
+              
+              {/* Indicateur de sécurité */}
+              {isLogin && (
+                <div className="mt-4 flex items-center justify-center gap-2 text-sm">
+                  <Shield className="w-4 h-4 text-green-600" />
+                  <span className="text-gray-600">Connexion sécurisée</span>
+                </div>
+              )}
             </div>
+
+            {/* Alerte de blocage */}
+            {isBlocked && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3"
+              >
+                <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-red-800 mb-1">
+                    Compte temporairement bloqué
+                  </h3>
+                  <p className="text-sm text-red-700">
+                    Trop de tentatives de connexion. Réessayez dans <strong>{formatBlockTime(blockTimeLeft)}</strong>
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Avertissement tentatives */}
+            {isLogin && attemptCount > 0 && attemptCount < 3 && !isBlocked && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3"
+              >
+                <AlertTriangle className="w-5 h-5 text-amber-500 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm text-amber-800">
+                    <strong>Attention :</strong> {attemptCount}/3 tentatives. Après 3 échecs, votre compte sera bloqué temporairement.
+                  </p>
+                </div>
+              </motion.div>
+            )}
 
             {/* Toggle Login/Register */}
             <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
@@ -315,11 +503,13 @@ export default function ClientLoginModern() {
               {/* Bouton de connexion */}
               <Button
                 type="submit"
-                disabled={isLoading}
-                className="w-full glass-button-purple text-white font-medium py-3 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+                disabled={isLoading || (isLogin && isBlocked)}
+                className="w-full glass-button-purple text-white font-medium py-3 rounded-xl transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading ? (
                   isLogin ? "Connexion..." : "Création du compte..."
+                ) : isBlocked ? (
+                  `Bloqué ${formatBlockTime(blockTimeLeft)}`
                 ) : (
                   isLogin ? "Se connecter" : "Créer mon compte"
                 )}
