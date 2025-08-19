@@ -895,7 +895,225 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ==========================================
+  // 🎯 ROUTES ABONNEMENT & PAIEMENT STRIPE
+  // ==========================================
 
+  const stripeService = await import('./stripeService');
+
+  // Route pour récupérer les plans d'abonnement
+  app.get('/api/subscription-plans', async (req, res) => {
+    try {
+      const { SUBSCRIPTION_PLANS } = await import('../shared/subscriptionPlans');
+      res.json(SUBSCRIPTION_PLANS);
+    } catch (error) {
+      console.error('❌ Erreur récupération plans:', error);
+      res.status(500).json({ error: 'Erreur serveur' });
+    }
+  });
+
+  // Route pour créer une session Stripe Checkout pour abonnement
+  app.post('/api/stripe/create-subscription-checkout', async (req, res) => {
+    try {
+      const { planType, customerEmail, customerName, successUrl, cancelUrl } = req.body;
+
+      if (!planType || !customerEmail || !customerName) {
+        return res.status(400).json({ 
+          error: 'Paramètres manquants: planType, customerEmail, customerName requis' 
+        });
+      }
+
+      const session = await stripeService.createSubscriptionCheckout({
+        planType,
+        customerEmail,
+        customerName,
+        successUrl,
+        cancelUrl
+      });
+
+      console.log(`✅ Session abonnement créée: ${session.sessionId}`);
+      res.json(session);
+    } catch (error) {
+      console.error('❌ Erreur création session abonnement:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création de la session de paiement',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour créer une session Stripe Checkout pour paiement unique
+  app.post('/api/stripe/create-payment-checkout', async (req, res) => {
+    try {
+      const { 
+        amount, 
+        description, 
+        customerEmail, 
+        customerName, 
+        appointmentId, 
+        salonName,
+        successUrl,
+        cancelUrl 
+      } = req.body;
+
+      if (!amount || !description || !customerEmail) {
+        return res.status(400).json({ 
+          error: 'Paramètres manquants: amount, description, customerEmail requis' 
+        });
+      }
+
+      const session = await stripeService.createPaymentCheckout({
+        amount: parseFloat(amount),
+        description,
+        customerEmail,
+        customerName,
+        appointmentId,
+        salonName,
+        successUrl,
+        cancelUrl
+      });
+
+      console.log(`✅ Session paiement créée: ${session.sessionId}`);
+      res.json(session);
+    } catch (error) {
+      console.error('❌ Erreur création session paiement:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création de la session de paiement',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour vérifier le statut d'une session Stripe
+  app.get('/api/stripe/session/:sessionId', async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      const session = await stripeService.getCheckoutSession(sessionId);
+      
+      res.json({
+        success: true,
+        paymentStatus: session.payment_status,
+        metadata: session.metadata,
+        amount: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session.currency,
+      });
+    } catch (error) {
+      console.error('❌ Erreur récupération session:', error);
+      res.status(404).json({ 
+        error: 'Session introuvable',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour confirmer un paiement
+  app.post('/api/stripe/confirm-payment', async (req, res) => {
+    try {
+      const { sessionId } = req.body;
+      
+      if (!sessionId) {
+        return res.status(400).json({ error: 'sessionId requis' });
+      }
+
+      const result = await stripeService.confirmPayment(sessionId);
+      res.json(result);
+    } catch (error) {
+      console.error('❌ Erreur confirmation paiement:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la confirmation du paiement',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour récupérer les abonnements d'un utilisateur
+  app.get('/api/user/subscription', isAuthenticated, async (req, res) => {
+    try {
+      const user = req.user as any;
+      const email = user?.claims?.email;
+      
+      if (!email) {
+        return res.status(400).json({ error: 'Email utilisateur requis' });
+      }
+
+      const subscriptions = await stripeService.listCustomerSubscriptions(email);
+      
+      // Renvoyer les informations d'abonnement ou plan par défaut
+      if (subscriptions.length > 0) {
+        const activeSubscription = subscriptions.find(sub => sub.status === 'active');
+        if (activeSubscription) {
+          res.json({
+            planId: activeSubscription.metadata?.planType || 'basic-pro',
+            status: activeSubscription.status,
+            currentPeriodEnd: activeSubscription.current_period_end,
+            subscriptionId: activeSubscription.id,
+          });
+        } else {
+          res.json({
+            planId: 'basic-pro',
+            status: 'inactive',
+          });
+        }
+      } else {
+        res.json({
+          planId: 'basic-pro',
+          status: 'inactive',
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur récupération abonnement utilisateur:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la récupération de l\'abonnement',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour créer un abonnement gratuit avec code promo FREE149
+  app.post('/api/create-free-subscription', async (req, res) => {
+    try {
+      const { planType, customerEmail, customerName, promoCode, duration } = req.body;
+
+      // Vérifier le code promo FREE149
+      if (promoCode !== 'FREE149' || planType !== 'premium-pro') {
+        return res.status(400).json({ 
+          error: 'Code promo invalide ou plan incompatible' 
+        });
+      }
+
+      // Simuler la création d'un abonnement gratuit
+      // Dans un vrai système, vous créeriez un enregistrement en base
+      const freeSubscription = {
+        id: 'free_' + Date.now(),
+        customerEmail,
+        customerName,
+        planType,
+        status: 'active',
+        startDate: new Date(),
+        endDate: new Date(Date.now() + (duration * 30 * 24 * 60 * 60 * 1000)), // duration en mois
+        amount: 0,
+        promoCode,
+        isFree: true
+      };
+
+      console.log(`🎉 Abonnement gratuit créé avec FREE149: ${customerEmail} - ${planType}`);
+
+      res.json({
+        success: true,
+        subscription: freeSubscription,
+        message: 'Abonnement Premium Pro gratuit activé pour 1 mois'
+      });
+    } catch (error) {
+      console.error('❌ Erreur création abonnement gratuit:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la création de l\'abonnement gratuit',
+        details: error.message 
+      });
+    }
+  });
+
+  console.log('🎯 Routes Stripe configurées : abonnements et paiements uniques');
+  console.log('🎁 Route abonnement gratuit FREE149 configurée');
 
   const httpServer = createServer(app);
   

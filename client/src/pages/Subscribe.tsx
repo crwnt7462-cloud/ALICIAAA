@@ -25,6 +25,12 @@ export default function Subscribe() {
   });
   const [selectedPlan, setSelectedPlan] = useState<string>('');
   const [billingCycle, setBillingCycle] = useState<string>('');
+  const [promoCode, setPromoCode] = useState<string>('');
+  const [discount, setDiscount] = useState<number>(0);
+  const [finalPrice, setFinalPrice] = useState<number>(0);
+  const [failedAttempts, setFailedAttempts] = useState<number>(0);
+  const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [blockTimeRemaining, setBlockTimeRemaining] = useState<number>(0);
 
   // Extraire les paramètres de l'URL
   useEffect(() => {
@@ -55,13 +61,112 @@ export default function Subscribe() {
   };
 
   const currentPlan = planDetails[selectedPlan as keyof typeof planDetails];
-  const price = currentPlan ? (billingCycle === 'annual' ? currentPlan.yearlyPrice : currentPlan.monthlyPrice) : 0;
+  const basePrice = currentPlan ? (billingCycle === 'annual' ? currentPlan.yearlyPrice : currentPlan.monthlyPrice) : 0;
+  
+  // Calcul du prix final avec code promo
+  useEffect(() => {
+    setFinalPrice(Math.max(0, basePrice - discount));
+  }, [basePrice, discount]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  // Système de limitation progressive
+  const getBlockDuration = (attempts: number) => {
+    if (attempts === 3) return 1; // 1 minute
+    if (attempts === 4) return 5; // 5 minutes
+    if (attempts === 5) return 15; // 15 minutes
+    if (attempts >= 6) return 60; // 1 heure
+    return 0;
+  };
+
+  const handlePromoCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isBlocked) {
+      toast({
+        title: "Trop de tentatives",
+        description: `Veuillez attendre ${blockTimeRemaining} minutes avant de réessayer.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const code = e.target.value.toUpperCase();
+    setPromoCode(code);
+    
+    // Codes promo valides
+    const validCodes = {
+      'FREE149': { discount: 149, requiresPremium: true, description: "🎉 Abonnement Premium Pro GRATUIT pour 1 mois !" },
+      'WELCOME25': { discount: 25, requiresPremium: false, description: "25€ de réduction sur votre premier mois !" },
+      'SAVE50': { discount: 50, requiresPremium: false, description: "50€ de réduction sur votre abonnement !" }
+    };
+
+    if (code === '') {
+      setDiscount(0);
+      setFailedAttempts(0); // Reset des tentatives si l'utilisateur efface
+      return;
+    }
+
+    if (code.length >= 5) {
+      const codeData = validCodes[code as keyof typeof validCodes];
+      
+      if (codeData) {
+        // Code valide
+        if (codeData.requiresPremium && selectedPlan !== 'premium') {
+          toast({
+            title: "Code incompatible",
+            description: "Ce code promo est uniquement valide pour le plan Premium Pro.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        setDiscount(codeData.discount);
+        setFailedAttempts(0); // Reset des tentatives
+        toast({
+          title: "Code promo appliqué !",
+          description: codeData.description,
+        });
+      } else {
+        // Code invalide - système de limitation
+        const newFailedAttempts = failedAttempts + 1;
+        setFailedAttempts(newFailedAttempts);
+        
+        const blockDuration = getBlockDuration(newFailedAttempts);
+        
+        if (blockDuration > 0) {
+          setIsBlocked(true);
+          setBlockTimeRemaining(blockDuration);
+          
+          // Timer pour débloquer
+          const timer = setInterval(() => {
+            setBlockTimeRemaining(prev => {
+              if (prev <= 1) {
+                setIsBlocked(false);
+                clearInterval(timer);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 60000); // Décrémenter chaque minute
+          
+          toast({
+            title: "Trop de tentatives échouées",
+            description: `Compte bloqué ${blockDuration} minute${blockDuration > 1 ? 's' : ''}. Tentative ${newFailedAttempts}/∞`,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Code promo invalide",
+            description: `Ce code n'existe pas (tentative ${newFailedAttempts}/3).`,
+            variant: "destructive",
+          });
+        }
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,11 +193,35 @@ export default function Subscribe() {
 
     setIsLoading(true);
     try {
-      // Créer la session de checkout Stripe
+      // Vérifier si c'est gratuit avec FREE149
+      if (promoCode === 'FREE149' && selectedPlan === 'premium' && finalPrice === 0) {
+        // Créer directement l'abonnement gratuit sans passer par Stripe
+        const freeResponse = await apiRequest("POST", "/api/create-free-subscription", {
+          planType: 'premium-pro',
+          customerEmail: formData.email,
+          customerName: `${formData.firstName} ${formData.lastName}`,
+          promoCode: promoCode,
+          duration: 1 // 1 mois gratuit
+        });
+
+        if (freeResponse.ok) {
+          toast({
+            title: "Abonnement activé !",
+            description: "🎉 Votre Premium Pro gratuit est maintenant actif !",
+          });
+          setLocation('/dashboard');
+          return;
+        }
+      }
+
+      // Sinon, utiliser Stripe pour le paiement
       const response = await apiRequest('POST', '/api/stripe/create-subscription-checkout', {
         planType: selectedPlan,
         customerEmail: formData.email,
-        customerName: `${formData.firstName} ${formData.lastName}`
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        amount: finalPrice, // Prix avec réduction
+        promoCode: promoCode,
+        discount: discount
       });
 
       if (response.url) {
@@ -101,6 +230,8 @@ export default function Subscribe() {
           ...formData,
           planType: selectedPlan,
           billingCycle,
+          promoCode: promoCode,
+          discount: discount,
           sessionId: response.sessionId
         }));
         
@@ -250,6 +381,48 @@ export default function Subscribe() {
                 />
               </div>
 
+              {/* Code promo */}
+              <div>
+                <Label htmlFor="promoCode" className="text-sm font-medium text-gray-700">
+                  Code promotionnel
+                </Label>
+                <div className="mt-1 relative">
+                  <Input
+                    id="promoCode"
+                    name="promoCode"
+                    type="text"
+                    value={promoCode}
+                    onChange={handlePromoCodeChange}
+                    disabled={isBlocked}
+                    className={`pr-20 ${isBlocked ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    placeholder={isBlocked ? `Bloqué ${blockTimeRemaining}min` : "Entrez votre code (ex: FREE149)"}
+                  />
+                  {discount > 0 && (
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <Check className="w-5 h-5 text-green-500" />
+                    </div>
+                  )}
+                </div>
+                {isBlocked && (
+                  <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-red-800">
+                      <Clock className="w-4 h-4" />
+                      <span className="text-sm font-medium">
+                        Trop de tentatives. Réessayez dans {blockTimeRemaining} minute{blockTimeRemaining > 1 ? 's' : ''}.
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {promoCode === 'FREE149' && selectedPlan === 'premium' && (
+                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div className="flex items-center gap-2 text-green-800">
+                      <Check className="w-4 h-4" />
+                      <span className="text-sm font-medium">Premium Pro GRATUIT pour 1 mois ! 🎉</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="md:col-span-2">
                   <Label htmlFor="address" className="text-sm font-medium text-gray-700">
@@ -310,7 +483,10 @@ export default function Subscribe() {
                   ) : (
                     <>
                       <CreditCard className="w-4 h-4 mr-2" />
-                      Commencer l'essai gratuit
+                      {promoCode === 'FREE149' && finalPrice === 0 ? 
+                        'Activer mon Premium Pro GRATUIT' : 
+                        'Commencer l\'essai gratuit'
+                      }
                     </>
                   )}
                 </Button>
@@ -344,11 +520,26 @@ export default function Subscribe() {
               </CardHeader>
               <CardContent className="p-6">
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-3xl font-bold text-gray-900">{price}€</span>
-                  <span className="text-gray-500">/mois</span>
+                  {discount > 0 && basePrice > 0 ? (
+                    <div className="flex flex-col">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-xl text-gray-400 line-through">{basePrice}€</span>
+                        <span className="text-3xl font-bold text-green-600">{finalPrice}€</span>
+                        <span className="text-gray-500">/mois</span>
+                      </div>
+                      <div className="text-sm text-green-600 font-medium">
+                        Économie de {discount}€ avec {promoCode}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-3xl font-bold text-gray-900">{basePrice}€</span>
+                      <span className="text-gray-500">/mois</span>
+                    </>
+                  )}
                   {billingCycle === 'annual' && (
                     <span className="text-sm text-green-600 font-medium">
-                      (Économisez {(currentPlan.monthlyPrice - price) * 12}€/an)
+                      (Économisez {(currentPlan.monthlyPrice - basePrice) * 12}€/an)
                     </span>
                   )}
                 </div>
