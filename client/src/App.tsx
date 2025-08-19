@@ -1159,7 +1159,7 @@ function Router() {
   }
 
   // Pages professionnelles PROTÉGÉES avec sidebar persistant
-  const proPages = ['/planning', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics'];
+  const proPages = ['/planning', '/clients', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics', '/business-features', '/ai'];
   if (proPages.includes(location)) {
     // Redirection immédiate vers l'accueil si pas authentifié
     if (!isAuthenticated && !isLoading) {
@@ -1198,8 +1198,8 @@ function Router() {
               </div>
               
               <div 
-                onClick={() => setLocation('/clients-modern')}
-                className={`w-12 h-12 ${location === '/clients-modern' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+                onClick={() => setLocation('/clients')}
+                className={`w-12 h-12 ${location === '/clients' || location === '/clients-modern' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
               >
                 <Users className="w-6 h-6 text-gray-600" />
               </div>
@@ -1219,17 +1219,24 @@ function Router() {
               </div>
               
               <div 
-                onClick={() => setLocation('/ai-assistant-fixed')}
-                className={`w-12 h-12 ${location === '/ai-assistant-fixed' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+                onClick={() => setLocation('/ai')}
+                className={`w-12 h-12 ${location === '/ai' || location === '/ai-assistant-fixed' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
               >
                 <Sparkles className="w-6 h-6 text-gray-600" />
+              </div>
+              
+              <div 
+                onClick={() => setLocation('/business-features')}
+                className={`w-12 h-12 ${location === '/business-features' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
+              >
+                <BarChart3 className="w-6 h-6 text-gray-600" />
               </div>
               
               <div 
                 onClick={() => setLocation('/client-analytics')}
                 className={`w-12 h-12 ${location === '/client-analytics' ? 'bg-white/25 backdrop-blur-sm border border-gray-300/40 shadow-sm' : 'bg-transparent hover:bg-white/15'} rounded-2xl flex items-center justify-center transition-colors cursor-pointer`}
               >
-                <BarChart3 className="w-6 h-6 text-gray-600" />
+                <User className="w-6 h-6 text-gray-600" />
               </div>
             </div>
             
@@ -1244,10 +1251,11 @@ function Router() {
           {/* Contenu principal */}
           <div className="flex-1 overflow-hidden">
             {location === '/planning' && <PlanningFresha />}
-            {location === '/clients-modern' && <ClientsModern />}
+            {(location === '/clients' || location === '/clients-modern') && <ClientsModern />}
             {location === '/services-management' && <ServicesManagement />}
             {location === '/messaging-hub' && <MessagingHub />}
-            {location === '/ai-assistant-fixed' && <AIAssistantFixed />}
+            {(location === '/ai-assistant-fixed' || location === '/ai') && <AIAssistantFixed />}
+            {location === '/business-features' && <BusinessFeaturesWithBottomSheets />}
             {location === '/client-analytics' && <ClientAnalytics />}
           </div>
         </div>
