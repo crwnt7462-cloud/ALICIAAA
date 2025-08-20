@@ -406,7 +406,7 @@ export default function PlanningResponsive() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex">
       {/* Sidebar Desktop */}
-      {!isMobile && <Sidebar />}
+      {/* Sidebar supprimée - navigation desktop intégrée directement dans le planning */}
       
       {/* Contenu principal */}
       <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto' : 'lg:ml-20 lg:max-w-none lg:w-full'}`}>
