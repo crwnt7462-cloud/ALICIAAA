@@ -56,17 +56,25 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
     depositAmount: '0'
   });
 
-  // Utiliser les données fournies ou des données par défaut
-  const activeSalonData = salonData || {
-    name: "Salon Avyento",
-    description: "Excellence et innovation au service de votre beauté",
-    address: "123 Boulevard Haussmann, 75008 Paris",
-    phone: "01 42 65 78 90",
-    email: "contact@avyento.fr",
-    images: ["/api/placeholder/400/300"],
-    rating: 4.8,
-    reviewCount: 247,
-    services: [
+  // Utiliser les vraies données du salon avec fallback
+  const activeSalonData = {
+    name: salonData?.name || "Salon Avyento",
+    description: salonData?.description || "Excellence et innovation au service de votre beauté",
+    address: salonData?.address || "123 Boulevard Haussmann, 75008 Paris",
+    phone: salonData?.phone || "01 42 65 78 90",
+    email: salonData?.email || "contact@avyento.fr",
+    images: salonData?.photos || ["/api/placeholder/400/300"],
+    rating: salonData?.rating || 4.8,
+    reviewCount: salonData?.reviewCount || 247,
+    services: salonData?.serviceCategories?.flatMap(cat => 
+      cat.services.map(service => ({
+        id: service.id,
+        name: service.name,
+        duration: `${Math.floor(service.duration / 60)}h${service.duration % 60 > 0 ? `${service.duration % 60}min` : ''}`,
+        price: service.price,
+        description: service.description || ''
+      }))
+    ) || [
       {
         id: 1,
         name: "Coupe & Brushing",
