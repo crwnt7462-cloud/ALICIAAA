@@ -107,7 +107,7 @@ export default function PlanningResponsive() {
     },
     {
       id: 2, 
-      serviceName: "Coloration EN COURS",
+      serviceName: "Coloration",
       clientName: "Emma Dubois",
       startTime: String(Math.max(8, currentHour - 1)).padStart(2, '0') + ":00",
       endTime: String(Math.min(20, currentHour + 1)).padStart(2, '0') + ":00",
@@ -271,12 +271,7 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Instructions de démonstration */}
-        <div className="bg-purple-50 px-4 py-2 border-b border-purple-100">
-          <p className="text-xs text-purple-700 text-center">
-            🎯 CLIQUEZ sur une date du calendrier | Points: Vert=Confirmé, Violet=En cours, Gris=Terminé
-          </p>
-        </div>
+
 
         {/* Sélecteur de mois */}
         <div className="bg-white px-4 py-2 border-b border-gray-100">
@@ -322,8 +317,10 @@ export default function PlanningResponsive() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log('Date cliquée:', date);
+                    console.log('🎯 Date MOBILE cliquée:', date.toDateString());
                     setSelectedDate(date);
+                    // Forcer un re-render avec une notification visuelle
+                    console.log('🎯 Date sélectionnée mise à jour:', date.toDateString());
                   }}
                   className={`w-10 h-10 text-sm rounded-lg transition-all relative cursor-pointer select-none flex items-center justify-center ${
                     !isCurrentMonth 
@@ -382,9 +379,9 @@ export default function PlanningResponsive() {
                         isCurrentAppointment 
                           ? 'bg-purple-500 border-purple-500 animate-pulse' 
                           : isFinishedAppointment
-                            ? 'bg-gray-400 border-gray-400'
+                            ? 'bg-green-500 border-green-500'
                             : appointment.status === 'confirmed'
-                              ? 'bg-green-500 border-green-500'
+                              ? 'bg-gray-400 border-gray-400'
                               : 'bg-gray-300 border-gray-300'
                       }`}></div>
                       
@@ -663,8 +660,9 @@ export default function PlanningResponsive() {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('Date desktop cliquée:', date);
+                        console.log('🖥️ Date DESKTOP cliquée:', date.toDateString());
                         setSelectedDate(date);
+                        console.log('🖥️ Date desktop sélectionnée:', date.toDateString());
                       }}
                       className={`min-h-[120px] p-2 border rounded-lg cursor-pointer transition-all ${
                         !isCurrentMonth 
