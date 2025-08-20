@@ -270,46 +270,128 @@ export default function ModernSalonMobile({ }: SalonMobileProps) {
         {/* Contenu des onglets - Panel responsive */}
         <div className="bg-white rounded-t-3xl lg:rounded-3xl shadow-2xl max-h-[50vh] lg:max-h-none overflow-y-auto lg:mx-8 lg:max-w-7xl lg:mx-auto lg:mb-8">
           {activeTab === 'services' && (
-            <div className="p-6">
-              <div className="space-y-4">
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="p-4 bg-gray-50">
+            <div className="p-6 lg:p-8">
+              <div className="space-y-6">
+                {/* Catégorie Coiffure */}
+                <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="p-4 bg-gradient-to-r from-purple-50/80 to-pink-50/80 backdrop-blur-sm border-b border-white/20">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-lg">Coupe & Styling</h3>
-                        <p className="text-sm text-gray-600">(voir +)</p>
+                        <h3 className="font-semibold text-lg text-gray-800">Coiffure</h3>
+                        <p className="text-sm text-gray-600">Coupes, colorations et coiffages</p>
                       </div>
-                      <div className="text-sm text-gray-500">2 services</div>
+                      <div className="text-sm text-gray-500 bg-white/60 px-3 py-1 rounded-full">3 services</div>
                     </div>
                   </div>
                   
-                  {/* Service détail */}
-                  <div className="p-4 space-y-4 border-t">
-                    <div className="space-y-3">
-                      <h4 className="font-medium text-gray-900">Coupe homme classique</h4>
-                      <p className="text-sm text-gray-600">Coupe traditionnelle avec finition soignée</p>
+                  {/* Services détaillés avec prix alignés */}
+                  <div className="p-4 space-y-4">
+                    <div className="bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl p-4 hover:bg-white/60 transition-all">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900 text-lg">Coupe homme classique</h4>
+                        <div className="text-xl font-bold text-purple-600">35€</div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">Coupe traditionnelle avec finition soignée</p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1 text-sm">
-                            <Clock className="h-4 w-4 text-gray-400" />
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
                             <span>45 min</span>
                           </div>
-                          <div className="flex items-center gap-1 text-sm">
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                            <span>4,5 (2)</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm">
-                            <Users className="h-4 w-4 text-gray-400" />
-                            <span>3</span>
+                            <span>4,5 (12)</span>
                           </div>
                         </div>
+                        <button className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg">
+                          Réserver
+                        </button>
                       </div>
+                    </div>
+
+                    <div className="bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl p-4 hover:bg-white/60 transition-all">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900 text-lg">Coupe & Brushing femme</h4>
+                        <div className="text-xl font-bold text-purple-600">55€</div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">Coupe personnalisée avec mise en forme</p>
                       
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="text-xl font-bold text-gray-900">35€</div>
-                        <button className="bg-purple-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
-                          RDV
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
+                            <span>75 min</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                            <span>4,8 (28)</span>
+                          </div>
+                        </div>
+                        <button className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg">
+                          Réserver
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Catégorie Manucure & Pédicure - ESPACEMENT AUGMENTÉ */}
+                <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg mt-8">
+                  <div className="p-4 bg-gradient-to-r from-pink-50/80 to-purple-50/80 backdrop-blur-sm border-b border-white/20">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-lg text-gray-800">Manucure & Pédicure</h3>
+                        <p className="text-sm text-gray-600">Soins des ongles et nail art</p>
+                      </div>
+                      <div className="text-sm text-gray-500 bg-white/60 px-3 py-1 rounded-full">2 services</div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4 space-y-4">
+                    <div className="bg-white/40 backdrop-blur-sm border border-white/30 rounded-xl p-4 hover:bg-white/60 transition-all">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-900 text-lg">Manucure classique</h4>
+                        <div className="text-xl font-bold text-purple-600">30€</div>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3">Soin complet avec pose de vernis</p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
+                            <span>45 min</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                            <span>4,6 (18)</span>
+                          </div>
+                        </div>
+                        <button className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg">
+                          Réserver
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Vue du salon sur la carte */}
+                <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg mt-8">
+                  <div className="p-4 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 backdrop-blur-sm border-b border-white/20">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-5 w-5 text-blue-600" />
+                      <h3 className="font-semibold text-lg text-gray-800">Localisation</h3>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <div className="bg-gradient-to-br from-blue-100/80 to-indigo-100/80 backdrop-blur-sm border border-white/30 rounded-xl h-48 flex items-center justify-center">
+                      <div className="text-center">
+                        <MapPin className="h-12 w-12 text-blue-500 mx-auto mb-2" />
+                        <p className="text-gray-600 font-medium">Vue du salon sur la carte</p>
+                        <p className="text-sm text-gray-500 mt-1">{salonData.address}</p>
+                        <button className="mt-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-blue-800 transition-all">
+                          Voir sur Google Maps
                         </button>
                       </div>
                     </div>
@@ -320,41 +402,84 @@ export default function ModernSalonMobile({ }: SalonMobileProps) {
           )}
 
           {activeTab === 'equipe' && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                <Users className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                <p>Informations sur l'équipe à venir</p>
+            <div className="p-6 lg:p-8">
+              <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center shadow-lg">
+                <div className="bg-gradient-to-br from-purple-100/80 to-pink-100/80 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-10 w-10 text-purple-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Notre Équipe</h3>
+                <p className="text-gray-600">Informations sur l'équipe à venir</p>
               </div>
             </div>
           )}
 
           {activeTab === 'galerie' && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                <div className="h-12 w-12 mx-auto mb-3 text-gray-300 flex items-center justify-center">
-                  📸
+            <div className="p-6 lg:p-8">
+              <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center shadow-lg">
+                <div className="bg-gradient-to-br from-pink-100/80 to-purple-100/80 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <div className="text-3xl">📸</div>
                 </div>
-                <p>Galerie photos à venir</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Galerie Photos</h3>
+                <p className="text-gray-600">Découvrez nos réalisations prochainement</p>
               </div>
             </div>
           )}
 
           {activeTab === 'infos' && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                <div className="h-12 w-12 mx-auto mb-3 text-gray-300 flex items-center justify-center">
-                  ℹ️
+            <div className="p-6 lg:p-8">
+              <div className="space-y-6">
+                {/* Horaires d'ouverture avec design glassmorphism */}
+                <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="p-4 bg-gradient-to-r from-indigo-50/80 to-blue-50/80 backdrop-blur-sm border-b border-white/20">
+                    <h3 className="font-semibold text-lg text-gray-800">Horaires d'ouverture</h3>
+                  </div>
+                  <div className="p-4 space-y-3">
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700 font-medium">Lundi - Vendredi</span>
+                      <span className="text-gray-600">9h00 - 19h00</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700 font-medium">Samedi</span>
+                      <span className="text-gray-600">9h00 - 18h00</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-700 font-medium">Dimanche</span>
+                      <span className="text-red-500 font-medium">Fermé</span>
+                    </div>
+                  </div>
                 </div>
-                <p>Informations détaillées à venir</p>
+
+                {/* Note client */}
+                <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="p-4 bg-gradient-to-r from-yellow-50/80 to-orange-50/80 backdrop-blur-sm border-b border-white/20">
+                    <div className="flex items-center gap-2">
+                      <Star className="h-5 w-5 text-yellow-500" />
+                      <h3 className="font-semibold text-lg text-gray-800">Note client</h3>
+                    </div>
+                  </div>
+                  <div className="p-4 text-center">
+                    <div className="text-4xl font-bold text-yellow-600 mb-2">4.8/5</div>
+                    <p className="text-gray-600 mb-2">Basé sur 142 avis</p>
+                    <div className="flex justify-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {activeTab === 'avis' && (
-            <div className="p-6">
-              <div className="text-center text-gray-500">
-                <Star className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                <p>Avis clients à venir</p>
+            <div className="p-6 lg:p-8">
+              <div className="bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl p-8 text-center shadow-lg">
+                <div className="bg-gradient-to-br from-yellow-100/80 to-orange-100/80 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-10 w-10 text-yellow-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Avis Clients</h3>
+                <p className="text-gray-600 mb-4">Les retours de nos clients arrivent bientôt</p>
+                <div className="text-3xl font-bold text-yellow-600">4.8/5</div>
               </div>
             </div>
           )}
