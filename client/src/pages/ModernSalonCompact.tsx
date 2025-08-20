@@ -205,13 +205,13 @@ export default function ModernSalonCompact() {
       {/* Contenu principal avec image compacte */}
       <div className="p-4 lg:p-8 max-w-7xl mx-auto">
         
-        {/* Image compacte avec informations superposées - MOBILE RESPONSIVE */}
+        {/* Image de fond salon avec informations superposées - MOBILE RESPONSIVE */}
         <div className="relative mb-6 sm:mb-8">
           <div 
-            className="h-48 sm:h-64 lg:h-80 w-full bg-cover bg-center bg-no-repeat rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl"
+            className="h-64 sm:h-80 lg:h-96 w-full bg-cover bg-center bg-no-repeat rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl"
             style={{ backgroundImage: `url(${salonData.backgroundImage})` }}
           >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
             
             {/* Informations superposées - RESPONSIVE */}
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
