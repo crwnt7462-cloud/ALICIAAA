@@ -35,8 +35,8 @@ export default function LoginClassic() {
           description: `Bienvenue ${data.user.firstName}`,
         });
         
-        // Redirection vers la page d'accueil qui gérera l'authentification
-        window.location.href = "/";
+        // Redirection vers le dashboard professionnel
+        window.location.href = "/dashboard";
       } else {
         toast({
           title: "Erreur de connexion",

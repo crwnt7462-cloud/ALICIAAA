@@ -32,8 +32,8 @@ export default function ProLogin() {
           title: "Connexion réussie !",
           description: "Bienvenue dans votre espace professionnel"
         });
-        // Redirection vers la page d'accueil qui gérera l'authentification
-        window.location.href = "/";
+        // Redirection vers le dashboard professionnel
+        window.location.href = "/dashboard";
       } else {
         throw new Error(data.error || "Erreur de connexion");
       }
