@@ -10,14 +10,10 @@ import {
   Calendar, 
   Users, 
   MessageSquare, 
-  MapPin, 
   BarChart3, 
   Activity, 
   User, 
-  TrendingUp, 
   Clock, 
-  DollarSign,
-  ChevronDown,
   Eye,
   LogOut
 } from "lucide-react";
@@ -41,9 +37,7 @@ export default function Dashboard() {
     queryKey: ["/api/dashboard/popular-services"],
   });
 
-  const { data: weeklyNewClients } = useQuery({
-    queryKey: ["/api/dashboard/weekly-new-clients"],
-  });
+  // Supprimé car non utilisé dans l'interface
 
   if (statsLoading) {
     return (
@@ -189,7 +183,7 @@ export default function Dashboard() {
                 className="hidden md:flex items-center space-x-2"
               >
                 <SettingsIcon className="w-4 h-4" />
-                <span>Settings</span>
+                <span>Paramètres</span>
               </Button>
 
               <Button 
@@ -224,25 +218,25 @@ export default function Dashboard() {
                             onClick={() => setSelectedPeriod("Day")}
                             className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Day" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
-                            Day
+                            Jour
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Week")}
                             className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Week" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
-                            Week
+                            Semaine
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Month")}
                             className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Month" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
-                            Month
+                            Mois
                           </button>
                           <button 
                             onClick={() => setSelectedPeriod("Year")}
                             className={`px-2 md:px-3 py-1 text-xs md:text-sm rounded-lg whitespace-nowrap ${selectedPeriod === "Year" ? 'text-purple-600 bg-purple-50' : 'text-gray-500'}`}
                           >
-                            Year
+                            Année
                           </button>
                         </div>
                       </div>
@@ -250,13 +244,13 @@ export default function Dashboard() {
                     
                     <Button variant="outline" size="sm" className="hidden md:flex items-center space-x-2">
                       <Eye className="w-4 h-4" />
-                      <span>View</span>
+                      <span>Afficher</span>
                     </Button>
                   </div>
                   
                   {/* Montant principal */}
                   <div className="mb-6">
-                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{stats?.monthlyRevenue || 0}€</div>
+                    <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{(stats as any)?.monthlyRevenue || 0}€</div>
                   </div>
                   
                   {/* Graphique simulé - Courbe comme dans l'image */}
@@ -291,12 +285,12 @@ export default function Dashboard() {
                   
                   {/* Labels des jours */}
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Mon</span>
-                    <span>Tue</span>
-                    <span>Wed</span>
-                    <span>Thu</span>
-                    <span>Fri</span>
-                    <span>Sat</span>
+                    <span>Lun</span>
+                    <span>Mar</span>
+                    <span>Mer</span>
+                    <span>Jeu</span>
+                    <span>Ven</span>
+                    <span>Sam</span>
                   </div>
                 </CardContent>
               </Card>
@@ -311,7 +305,7 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="space-y-4">
-                    {popularServices && popularServices.length > 0 ? (
+                    {popularServices && Array.isArray(popularServices) && popularServices.length > 0 ? (
                       popularServices.map((service: any, index: number) => (
                         <div key={index} className="flex items-center justify-between">
                           <div className="flex-1">
@@ -348,16 +342,16 @@ export default function Dashboard() {
                   </div>
                   
                   <div className="flex items-center justify-between md:justify-start md:space-x-4">
-                    <div className="text-xl md:text-2xl font-bold text-gray-900">{todayAppointments?.length || 0} RDV</div>
+                    <div className="text-xl md:text-2xl font-bold text-gray-900">{Array.isArray(todayAppointments) ? todayAppointments.length : 0} RDV</div>
                     <Button variant="outline" size="sm" className="hidden md:flex">
                       <Calendar className="w-4 h-4 mr-2" />
-                      Today
+                      Aujourd'hui
                     </Button>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                  {todayAppointments && todayAppointments.length > 0 ? (
+                  {todayAppointments && Array.isArray(todayAppointments) && todayAppointments.length > 0 ? (
                     todayAppointments.slice(0, 6).map((appointment: any, index: number) => (
                       <div key={index} className="bg-gray-50 rounded-2xl p-3 md:p-4">
                         <div className="flex items-start justify-between mb-2">
