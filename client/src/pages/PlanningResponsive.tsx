@@ -425,51 +425,293 @@ export default function PlanningResponsive() {
         <MobileBottomNav />
       </div>
 
-      {/* Version Desktop - Inchangée - Affichage simple pour maintenir la fonctionnalité */}
+      {/* Version Desktop - Fonctionnelle avec vues dynamiques */}
       <div className="hidden lg:block min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20">
         <div className="container mx-auto p-6">
-          <div className="text-center py-20">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Planning Desktop</h1>
-            <p className="text-lg text-gray-600">Version desktop préservée sans modification</p>
-            <div className="mt-8 grid grid-cols-4 gap-4">
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">CA Jour</p>
-                    <p className="text-2xl font-bold text-purple-600">1847€</p>
+          {/* Header avec insights */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8"
+          >
+            {/* Insights CA au-dessus */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">CA Jour</p>
+                      <p className="text-2xl font-bold text-purple-600">1847€</p>
+                    </div>
+                    <Euro className="h-8 w-8 text-purple-500" />
                   </div>
-                  <Euro className="h-8 w-8 text-purple-500" />
-                </div>
+                </CardContent>
               </Card>
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">CA Semaine</p>
-                    <p className="text-2xl font-bold text-blue-600">8392€</p>
+
+              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">CA Semaine</p>
+                      <p className="text-2xl font-bold text-blue-600">8392€</p>
+                    </div>
+                    <TrendingUp className="h-8 w-8 text-blue-500" />
                   </div>
-                  <TrendingUp className="h-8 w-8 text-blue-500" />
-                </div>
+                </CardContent>
               </Card>
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">CA Mois</p>
-                    <p className="text-2xl font-bold text-amber-600">28450€</p>
+
+              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">CA Mois</p>
+                      <p className="text-2xl font-bold text-amber-600">28450€</p>
+                    </div>
+                    <Target className="h-8 w-8 text-amber-500" />
                   </div>
-                  <Target className="h-8 w-8 text-amber-500" />
-                </div>
+                </CardContent>
               </Card>
-              <Card className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-600">Ticket Moyen</p>
-                    <p className="text-2xl font-bold text-green-600">67€</p>
+
+              <Card className="bg-white/60 backdrop-blur-sm border-0 shadow-lg">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Ticket Moyen</p>
+                      <p className="text-2xl font-bold text-green-600">67€</p>
+                    </div>
+                    <Clock className="h-8 w-8 text-green-500" />
                   </div>
-                  <Clock className="h-8 w-8 text-green-500" />
-                </div>
+                </CardContent>
               </Card>
             </div>
-          </div>
+
+            {/* Header du calendrier */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-3xl font-bold text-gray-900">Planning</h1>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentWeekOffset(currentWeekOffset - 1)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-lg font-medium text-gray-700 px-4">
+                    {viewMode === 'month' 
+                      ? new Date(selectedYear, selectedMonth).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+                      : currentMonth + ' ' + new Date().getFullYear()
+                    }
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentWeekOffset(currentWeekOffset + 1)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                {/* Sélecteur de vue */}
+                <Select value={viewMode} onValueChange={(value: 'week' | 'month') => setViewMode(value)}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="week">Semaine</SelectItem>
+                    <SelectItem value="month">Mois</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Sélecteur d'employé */}
+                <Select value={selectedEmployee} onValueChange={setSelectedEmployee}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les employés</SelectItem>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        <div className="flex items-center space-x-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: employee.color }}
+                          />
+                          <span>{employee.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Button onClick={() => setIsDialogOpen(true)} className="bg-purple-600 hover:bg-purple-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Nouveau RDV
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Vue Semaine */}
+          {viewMode === 'week' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 p-6"
+            >
+              <div className="grid grid-cols-8 gap-4">
+                {/* Colonne des heures */}
+                <div className="space-y-16 pt-12">
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <div key={i} className="text-sm text-gray-500 text-right">
+                      {String(8 + i).padStart(2, '0')}:00
+                    </div>
+                  ))}
+                </div>
+
+                {/* Colonnes des jours */}
+                {currentWeek.map((day, dayIndex) => {
+                  const isToday = day.toDateString() === new Date().toDateString();
+                  const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.7);
+
+                  return (
+                    <div key={dayIndex} className="space-y-2">
+                      {/* En-tête du jour */}
+                      <div className={`text-center p-3 rounded-lg ${
+                        isToday ? 'bg-purple-100 text-purple-700' : 'bg-gray-50 text-gray-700'
+                      }`}>
+                        <div className="text-xs font-medium">
+                          {weekDays[day.getDay()]}
+                        </div>
+                        <div className={`text-lg font-bold ${isToday ? 'text-purple-700' : 'text-gray-900'}`}>
+                          {day.getDate()}
+                        </div>
+                      </div>
+
+                      {/* Événements de la journée */}
+                      <div className="space-y-2 min-h-[600px] relative">
+                        {dayEvents.map((event, eventIndex) => {
+                          const service = beautyServices.find(s => s.id === event.serviceId);
+                          const serviceColor = service?.color || '#8B5CF6';
+
+                          return (
+                            <div
+                              key={eventIndex}
+                              className="bg-white p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                              style={{ borderLeftColor: serviceColor }}
+                            >
+                              <div className="font-medium text-sm">{event.title}</div>
+                              <div className="text-xs text-gray-600">{event.client}</div>
+                              <div className="text-xs text-gray-500">{event.time}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Vue Mois */}
+          {viewMode === 'month' && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 p-6"
+            >
+              {/* En-tête des jours de la semaine */}
+              <div className="grid grid-cols-7 gap-4 mb-4">
+                {weekDays.map((day) => (
+                  <div key={day} className="text-center font-medium text-gray-700 py-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+
+              {/* Grille du mois */}
+              <div className="grid grid-cols-7 gap-2">
+                {monthDays.map((date, index) => {
+                  const isToday = date.toDateString() === new Date().toDateString();
+                  const isCurrentMonth = date.getMonth() === selectedMonth;
+                  const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.8).slice(0, 3);
+
+                  return (
+                    <div
+                      key={index}
+                      className={`min-h-[120px] p-2 border rounded-lg ${
+                        !isCurrentMonth 
+                          ? 'bg-gray-50 text-gray-400' 
+                          : isToday
+                            ? 'bg-purple-50 border-purple-200'
+                            : 'bg-white border-gray-200'
+                      }`}
+                    >
+                      <div className={`text-sm font-medium mb-2 ${
+                        isToday ? 'text-purple-700' : 'text-gray-900'
+                      }`}>
+                        {date.getDate()}
+                      </div>
+                      
+                      <div className="space-y-1">
+                        {dayEvents.map((event, eventIndex) => {
+                          const service = beautyServices.find(s => s.id === event.serviceId);
+                          const serviceColor = service?.color || '#8B5CF6';
+
+                          return (
+                            <div
+                              key={eventIndex}
+                              className="text-xs p-1 rounded border-l-2 bg-white"
+                              style={{ borderLeftColor: serviceColor }}
+                            >
+                              <div className="truncate font-medium">{event.title}</div>
+                              <div className="truncate text-gray-600">{event.client}</div>
+                              <div className="text-xs opacity-75">{event.time.split('-')[0]}</div>
+                            </div>
+                          );
+                        })}
+                        {dayEvents.length > 3 && (
+                          <div className="text-xs text-gray-500 text-center">
+                            +{dayEvents.length - 3} autre{dayEvents.length - 3 > 1 ? 's' : ''}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Légende des services */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200/50 p-6"
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Palette className="h-5 w-5 mr-2" />
+              Légende des Services
+            </h3>
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+              {beautyServices.map((service) => (
+                <div key={service.id} className="flex items-center space-x-2">
+                  <div 
+                    className="w-4 h-4 rounded border"
+                    style={{ backgroundColor: service.color }}
+                  />
+                  <div>
+                    <div className="text-sm font-medium text-gray-900">{service.name}</div>
+                    <div className="text-xs text-gray-500">{service.duration}min - {service.price}€</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </div>
 
