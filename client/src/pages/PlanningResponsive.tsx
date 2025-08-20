@@ -1007,7 +1007,7 @@ export default function PlanningResponsive() {
 
       {/* Dialog de choix d'action - OPTIMISÉ MOBILE selon l'image */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="max-w-[90vw] w-[340px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
+        <DialogContent className="max-w-[85vw] w-[320px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
           <div className="relative">
             {/* Bouton fermer optimisé */}
             <button
@@ -1029,20 +1029,20 @@ export default function PlanningResponsive() {
                   onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
                   className="w-full h-14 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
                 >
-                  <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center mr-4">
+                  <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center mr-3">
                     <User className="h-5 w-5 text-purple-700" />
                   </div>
-                  Ajouter un rendez-vous client
+                  <span className="text-left">Ajouter un rendez-vous client</span>
                 </Button>
                 
                 <Button 
                   onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
                   className="w-full h-14 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
                 >
-                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                     <Clock className="h-5 w-5 text-gray-700" />
                   </div>
-                  Bloquer ce créneau
+                  <span className="text-left">Bloquer ce créneau</span>
                 </Button>
               </div>
             </div>
@@ -1205,22 +1205,75 @@ export default function PlanningResponsive() {
             </div>
 
             <div>
-              <Label htmlFor="duration">Durée (minutes)</Label>
-              <Select 
-                value={newAppointment.duration.toString()} 
-                onValueChange={(value) => setNewAppointment({...newAppointment, duration: parseInt(value)})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 minutes</SelectItem>
-                  <SelectItem value="60">1 heure</SelectItem>
-                  <SelectItem value="90">1h30</SelectItem>
-                  <SelectItem value="120">2 heures</SelectItem>
-                  <SelectItem value="180">3 heures</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="timeRange">Date & Heure</Label>
+              <div className="grid grid-cols-3 gap-2 items-center">
+                <Select 
+                  value={newAppointment.time} 
+                  onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Début" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="08:00">08:00</SelectItem>
+                    <SelectItem value="08:30">08:30</SelectItem>
+                    <SelectItem value="09:00">09:00</SelectItem>
+                    <SelectItem value="09:30">09:30</SelectItem>
+                    <SelectItem value="10:00">10:00</SelectItem>
+                    <SelectItem value="10:30">10:30</SelectItem>
+                    <SelectItem value="11:00">11:00</SelectItem>
+                    <SelectItem value="11:30">11:30</SelectItem>
+                    <SelectItem value="12:00">12:00</SelectItem>
+                    <SelectItem value="12:30">12:30</SelectItem>
+                    <SelectItem value="13:00">13:00</SelectItem>
+                    <SelectItem value="13:30">13:30</SelectItem>
+                    <SelectItem value="14:00">14:00</SelectItem>
+                    <SelectItem value="14:30">14:30</SelectItem>
+                    <SelectItem value="15:00">15:00</SelectItem>
+                    <SelectItem value="15:30">15:30</SelectItem>
+                    <SelectItem value="16:00">16:00</SelectItem>
+                    <SelectItem value="16:30">16:30</SelectItem>
+                    <SelectItem value="17:00">17:00</SelectItem>
+                    <SelectItem value="17:30">17:30</SelectItem>
+                    <SelectItem value="18:00">18:00</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <div className="text-center text-gray-600 font-medium">à</div>
+                
+                <Select 
+                  value={newAppointment.endTime || ""} 
+                  onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value})}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue placeholder="Fin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="08:30">08:30</SelectItem>
+                    <SelectItem value="09:00">09:00</SelectItem>
+                    <SelectItem value="09:30">09:30</SelectItem>
+                    <SelectItem value="10:00">10:00</SelectItem>
+                    <SelectItem value="10:30">10:30</SelectItem>
+                    <SelectItem value="11:00">11:00</SelectItem>
+                    <SelectItem value="11:30">11:30</SelectItem>
+                    <SelectItem value="12:00">12:00</SelectItem>
+                    <SelectItem value="12:30">12:30</SelectItem>
+                    <SelectItem value="13:00">13:00</SelectItem>
+                    <SelectItem value="13:30">13:30</SelectItem>
+                    <SelectItem value="14:00">14:00</SelectItem>
+                    <SelectItem value="14:30">14:30</SelectItem>
+                    <SelectItem value="15:00">15:00</SelectItem>
+                    <SelectItem value="15:30">15:30</SelectItem>
+                    <SelectItem value="16:00">16:00</SelectItem>
+                    <SelectItem value="16:30">16:30</SelectItem>
+                    <SelectItem value="17:00">17:00</SelectItem>
+                    <SelectItem value="17:30">17:30</SelectItem>
+                    <SelectItem value="18:00">18:00</SelectItem>
+                    <SelectItem value="18:30">18:30</SelectItem>
+                    <SelectItem value="19:00">19:00</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div>
