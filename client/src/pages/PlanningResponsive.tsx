@@ -92,8 +92,11 @@ export default function PlanningResponsive() {
   // États pour la date sélectionnée
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   
-  // États pour la popup de nouveau RDV
+  // États pour les popups
+  const [isActionChoiceOpen, setIsActionChoiceOpen] = useState(false);
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
+  const [isBlockTimeOpen, setIsBlockTimeOpen] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<{time: string, date: Date} | null>(null);
   const [newAppointment, setNewAppointment] = useState({
     clientName: '',
     service: '',
@@ -101,8 +104,10 @@ export default function PlanningResponsive() {
     date: '',
     time: '',
     duration: 60,
-    notes: ''
+    notes: '',
+    type: 'client' // 'client' ou 'blocked'
   });
+  const [blockReason, setBlockReason] = useState('');
 
   // Suppression des fonctions non utilisées pour corriger les erreurs
 
@@ -160,7 +165,13 @@ export default function PlanningResponsive() {
     return currentTime > appointment.endTime;
   };
 
-  // Fonction pour gérer le nouveau RDV
+  // Fonction pour gérer le clic sur un créneau
+  const handleTimeSlotClick = (timeSlot: string, date: Date) => {
+    setSelectedTimeSlot({ time: timeSlot, date });
+    setIsActionChoiceOpen(true);
+  };
+
+  // Fonction pour créer un nouveau RDV client
   const handleNewAppointment = (timeSlot?: string, date?: Date) => {
     setNewAppointment({
       clientName: '',
@@ -169,9 +180,28 @@ export default function PlanningResponsive() {
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       time: timeSlot || '',
       duration: 60,
-      notes: ''
+      notes: '',
+      type: 'client'
     });
     setIsNewAppointmentOpen(true);
+    setIsActionChoiceOpen(false);
+  };
+
+  // Fonction pour bloquer un créneau
+  const handleBlockTime = (timeSlot?: string, date?: Date) => {
+    setNewAppointment({
+      clientName: '',
+      service: '',
+      employee: selectedEmployee === 'all' ? '' : selectedEmployee,
+      date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      time: timeSlot || '',
+      duration: 60,
+      notes: '',
+      type: 'blocked'
+    });
+    setBlockReason('');
+    setIsBlockTimeOpen(true);
+    setIsActionChoiceOpen(false);
   };
 
   // Fonction pour sauvegarder le nouveau RDV
@@ -179,6 +209,26 @@ export default function PlanningResponsive() {
     console.log("Nouveau RDV créé:", newAppointment);
     // Ici on ajouterait la logique pour sauvegarder en base
     setIsNewAppointmentOpen(false);
+    resetAppointmentForm();
+  };
+
+  // Fonction pour sauvegarder le blocage de créneau
+  const handleSaveBlockTime = () => {
+    const blockedSlot = {
+      ...newAppointment,
+      type: 'blocked',
+      clientName: 'BLOQUÉ',
+      service: blockReason || 'Créneau bloqué',
+      notes: blockReason
+    };
+    console.log("Créneau bloqué:", blockedSlot);
+    // Ici on ajouterait la logique pour sauvegarder en base
+    setIsBlockTimeOpen(false);
+    resetAppointmentForm();
+  };
+
+  // Fonction pour réinitialiser le formulaire
+  const resetAppointmentForm = () => {
     setNewAppointment({
       clientName: '',
       service: '',
@@ -186,8 +236,11 @@ export default function PlanningResponsive() {
       date: '',
       time: '',
       duration: 60,
-      notes: ''
+      notes: '',
+      type: 'client'
     });
+    setBlockReason('');
+    setSelectedTimeSlot(null);
   };
 
   // Calcul des données calendrier
@@ -229,7 +282,7 @@ export default function PlanningResponsive() {
     }
   }, [currentWeekOffset, viewMode, selectedMonth, selectedYear]);
 
-  // Rendez-vous simulés
+  // Rendez-vous simulés avec types
   const beautySampleEvents = [
     { 
       id: 1, 
@@ -239,7 +292,8 @@ export default function PlanningResponsive() {
       serviceId: 1,
       employeeId: "1",
       status: "confirmed",
-      notes: "Première visite"
+      notes: "Première visite",
+      type: "client"
     },
     { 
       id: 2, 
@@ -249,7 +303,8 @@ export default function PlanningResponsive() {
       serviceId: 2,
       employeeId: "1",
       status: "confirmed",
-      notes: "Châtain clair"
+      notes: "Châtain clair",
+      type: "client"
     },
     { 
       id: 3, 
@@ -259,7 +314,8 @@ export default function PlanningResponsive() {
       serviceId: 4,
       employeeId: "2",
       status: "scheduled",
-      notes: "French manucure"
+      notes: "French manucure",
+      type: "client"
     },
     { 
       id: 4, 
@@ -269,7 +325,31 @@ export default function PlanningResponsive() {
       serviceId: 7,
       employeeId: "3",
       status: "confirmed",
-      notes: "Peau sensible"
+      notes: "Peau sensible",
+      type: "client"
+    },
+    // Exemples de créneaux bloqués
+    { 
+      id: 5, 
+      title: "BLOQUÉ", 
+      client: "Pause déjeuner",
+      time: "12:00-13:00", 
+      serviceId: null,
+      employeeId: "1",
+      status: "blocked",
+      notes: "Pause déjeuner",
+      type: "blocked"
+    },
+    { 
+      id: 6, 
+      title: "BLOQUÉ", 
+      client: "Formation",
+      time: "16:00-17:00", 
+      serviceId: null,
+      employeeId: "2",
+      status: "blocked",
+      notes: "Formation produits",
+      type: "blocked"
     }
   ];
 
@@ -729,41 +809,77 @@ export default function PlanningResponsive() {
                         {Array.from({ length: 12 }, (_, i) => {
                           const hour = 8 + i;
                           const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
-                          const hasEvent = dayEvents.some(event => event.time.startsWith(timeSlot));
+                          const eventsAtThisTime = dayEvents.filter(event => event.time.startsWith(timeSlot));
+                          const hasClientEvent = eventsAtThisTime.some(event => event.type === 'client');
+                          const hasBlockedEvent = eventsAtThisTime.some(event => event.type === 'blocked');
                           
                           return (
                             <div key={`slot-${hour}`} className="relative h-16 mb-2">
-                              {!hasEvent && (
+                              {/* Zone cliquable seulement s'il n'y a pas de RDV client */}
+                              {!hasClientEvent && (
                                 <div
                                   className="absolute inset-0 border-2 border-dashed border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 cursor-pointer transition-colors flex items-center justify-center text-gray-400 hover:text-purple-600"
                                   onClick={() => {
                                     console.log(`🕒 Clic sur le créneau: ${timeSlot}`);
-                                    handleNewAppointment(timeSlot, day);
+                                    handleTimeSlotClick(timeSlot, day);
                                   }}
                                 >
                                   <Plus className="h-4 w-4" />
                                 </div>
                               )}
                               
-                              {/* Événements existants à cette heure */}
-                              {dayEvents
-                                .filter(event => event.time.startsWith(timeSlot))
-                                .map((event, eventIndex) => {
+                              {/* Événements existants à cette heure - superposition possible */}
+                              {eventsAtThisTime.map((event, eventIndex) => {
+                                let eventColor = '#8B5CF6';
+                                let eventStyle = {};
+                                let eventClass = "absolute p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer";
+                                
+                                if (event.type === 'blocked') {
+                                  // Créneau bloqué - style orange avec transparence
+                                  eventColor = '#F59E0B';
+                                  eventStyle = { 
+                                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                                    borderLeft: '4px solid #F59E0B',
+                                    border: '1px dashed #F59E0B'
+                                  };
+                                  eventClass += " z-10"; // Au-dessus des autres
+                                } else {
+                                  // RDV client - style normal
                                   const service = beautyServices.find(s => s.id === event.serviceId);
-                                  const serviceColor = service?.color || '#8B5CF6';
+                                  eventColor = service?.color || '#8B5CF6';
+                                  eventStyle = { 
+                                    backgroundColor: 'white',
+                                    borderLeft: `4px solid ${eventColor}`
+                                  };
+                                  eventClass += " z-20"; // Au-dessus des bloqués
+                                }
 
-                                  return (
-                                    <div
-                                      key={eventIndex}
-                                      className="absolute inset-0 bg-white p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                      style={{ borderLeftColor: serviceColor }}
-                                    >
-                                      <div className="font-medium text-sm">{event.title}</div>
-                                      <div className="text-xs text-gray-600">{event.client}</div>
-                                      <div className="text-xs text-gray-500">{event.time}</div>
+                                // Position en fonction du nombre d'événements
+                                const offset = eventIndex * 4;
+                                
+                                return (
+                                  <div
+                                    key={eventIndex}
+                                    className={eventClass}
+                                    style={{
+                                      ...eventStyle,
+                                      inset: `${offset}px`,
+                                      left: `${offset}px`,
+                                      right: `${offset}px`
+                                    }}
+                                  >
+                                    <div className={`font-medium text-sm ${event.type === 'blocked' ? 'text-orange-700' : 'text-gray-900'}`}>
+                                      {event.title}
                                     </div>
-                                  );
-                                })}
+                                    <div className={`text-xs ${event.type === 'blocked' ? 'text-orange-600' : 'text-gray-600'}`}>
+                                      {event.client}
+                                    </div>
+                                    <div className={`text-xs ${event.type === 'blocked' ? 'text-orange-500' : 'text-gray-500'}`}>
+                                      {event.time}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
                           );
                         })}
@@ -885,11 +1001,37 @@ export default function PlanningResponsive() {
         </div>
       </div>
 
+      {/* Dialog de choix d'action */}
+      <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Que souhaitez-vous faire ?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Button 
+              onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
+              className="w-full bg-purple-600 hover:bg-purple-700"
+            >
+              <User className="h-4 w-4 mr-2" />
+              Ajouter un rendez-vous client
+            </Button>
+            <Button 
+              onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
+              variant="outline"
+              className="w-full"
+            >
+              <Clock className="h-4 w-4 mr-2" />
+              Bloquer ce créneau
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Dialog pour nouveau RDV */}
       <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Nouveau Rendez-vous</DialogTitle>
+            <DialogTitle>Nouveau Rendez-vous Client</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -986,6 +1128,103 @@ export default function PlanningResponsive() {
                 disabled={!newAppointment.clientName || !newAppointment.service || !newAppointment.date || !newAppointment.time}
               >
                 Créer le RDV
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog pour bloquer un créneau */}
+      <Dialog open={isBlockTimeOpen} onOpenChange={setIsBlockTimeOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Bloquer un créneau</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="employee">Employé</Label>
+              <Select 
+                value={newAppointment.employee} 
+                onValueChange={(value) => setNewAppointment({...newAppointment, employee: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choisir un employé" />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id}>
+                      {employee.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="date">Date</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={newAppointment.date}
+                  onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="time">Heure</Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={newAppointment.time}
+                  onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="duration">Durée (minutes)</Label>
+              <Select 
+                value={newAppointment.duration.toString()} 
+                onValueChange={(value) => setNewAppointment({...newAppointment, duration: parseInt(value)})}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="30">30 minutes</SelectItem>
+                  <SelectItem value="60">1 heure</SelectItem>
+                  <SelectItem value="90">1h30</SelectItem>
+                  <SelectItem value="120">2 heures</SelectItem>
+                  <SelectItem value="180">3 heures</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="blockReason">Raison du blocage</Label>
+              <Textarea
+                id="blockReason"
+                value={blockReason}
+                onChange={(e) => setBlockReason(e.target.value)}
+                placeholder="Pause déjeuner, formation, congé..."
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsBlockTimeOpen(false)}
+                className="flex-1"
+              >
+                Annuler
+              </Button>
+              <Button 
+                onClick={handleSaveBlockTime}
+                className="flex-1 bg-orange-600 hover:bg-orange-700"
+                disabled={!newAppointment.employee || !newAppointment.date || !newAppointment.time}
+              >
+                Bloquer le créneau
               </Button>
             </div>
           </div>
