@@ -369,12 +369,12 @@ export default function ModernSalonCompact() {
             <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6" />
           </button>
 
-          {/* Logo Avyento centré - 90px */}
+          {/* Logo Avyento centré - 115px */}
           <div className="flex-1 flex justify-center">
             <img 
               src={logoAvyento} 
               alt="Avyento" 
-              className="h-[90px] w-auto object-contain drop-shadow-sm"
+              className="h-[115px] w-auto object-contain drop-shadow-sm"
             />
           </div>
 
