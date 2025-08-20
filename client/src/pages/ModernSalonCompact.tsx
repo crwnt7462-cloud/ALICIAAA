@@ -4,6 +4,7 @@ import { ArrowLeft, Share2, Heart, MapPin, Star, Clock, ChevronDown, ChevronUp, 
 import { FaTiktok } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { getGenericGlassButton } from "@/lib/salonColors";
+import { useSalonColors } from "@/hooks/useSalonColors";
 import logoAvyento from '@assets/Logo avyento._1755714467098.png';
 
 export default function ModernSalonCompact() {
@@ -13,6 +14,9 @@ export default function ModernSalonCompact() {
   const [selectedServiceReviews, setSelectedServiceReviews] = useState<{serviceName: string, reviews: any[]} | null>(null);
   const [activeGalleryCategory, setActiveGalleryCategory] = useState('coiffure');
   const [selectedServiceGallery, setSelectedServiceGallery] = useState<{serviceName: string, photos: any[]} | null>(null);
+  
+  // Récupération des couleurs personnalisées du salon
+  const { primaryColor, isLoading: colorsLoading } = useSalonColors('avyento-demo');
   
   // Données du salon - STATIQUES UNIQUEMENT
   const salonData = {
@@ -551,7 +555,11 @@ export default function ModernSalonCompact() {
                                   </div>
                                   <button 
                                     onClick={() => setLocation('/booking')}
-                                    className="bg-gradient-to-r from-purple-600/90 to-violet-600/90 backdrop-blur-xl border border-white/30 text-white px-4 sm:px-6 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold hover:from-purple-700/90 hover:to-violet-700/90 transition-all duration-300 shadow-2xl hover:shadow-purple/20 w-full sm:w-auto"
+                                    className="backdrop-blur-xl border border-white/30 text-white px-4 sm:px-6 py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 shadow-2xl w-full sm:w-auto"
+                                    style={{
+                                      backgroundColor: `${primaryColor}90`,
+                                      borderColor: 'rgba(255, 255, 255, 0.3)',
+                                    }}
                                   >
                                     Réserver
                                   </button>
@@ -584,7 +592,11 @@ export default function ModernSalonCompact() {
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                       <button 
                         onClick={() => window.open('https://maps.google.com/?q=123+Avenue+des+Champs-Élysées,+75008+Paris', '_blank')}
-                        className="flex-1 bg-gradient-to-r from-purple-600/90 to-violet-600/90 backdrop-blur-xl border border-white/30 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold hover:from-purple-700/90 hover:to-violet-700/90 transition-all duration-300 shadow-2xl hover:shadow-purple/20 text-center"
+                        className="flex-1 backdrop-blur-xl border border-white/30 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base font-semibold transition-all duration-300 shadow-2xl text-center"
+                        style={{
+                          backgroundColor: `${primaryColor}90`,
+                          borderColor: 'rgba(255, 255, 255, 0.3)',
+                        }}
                       >
                         Ouvrir dans Maps
                       </button>

@@ -1120,6 +1120,102 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour sauvegarder les couleurs personnalisées du salon
+  app.post('/api/salon/colors', isAuthenticatedHybrid, async (req, res) => {
+    try {
+      const { primaryColor, salonId } = req.body;
+      
+      if (!primaryColor || !salonId) {
+        return res.status(400).json({ 
+          error: 'Paramètres manquants: primaryColor et salonId requis' 
+        });
+      }
+
+      // Sauvegarder les couleurs du salon
+      await storage.saveSalonColors(salonId, { primaryColor });
+      
+      console.log(`✅ Couleurs salon sauvegardées: ${salonId} -> ${primaryColor}`);
+      
+      res.json({ 
+        success: true, 
+        message: 'Couleurs sauvegardées avec succès',
+        primaryColor 
+      });
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde couleurs salon:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la sauvegarde des couleurs',
+        details: error.message 
+      });
+    }
+  });
+
+  // Endpoint GET pour récupérer les couleurs d'un salon (public)
+  app.get('/api/salon/:salonId/colors', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      
+      if (!salonId) {
+        return res.status(400).json({ 
+          error: 'salonId requis dans l\'URL' 
+        });
+      }
+
+      // Récupérer les couleurs du salon
+      const colors = await storage.getSalonColors(salonId);
+      
+      if (colors) {
+        console.log(`🎨 Couleurs salon récupérées: ${salonId} ->`, colors);
+        res.json({ 
+          success: true, 
+          colors 
+        });
+      } else {
+        console.log(`🎨 Aucune couleur personnalisée pour salon: ${salonId}, retour couleur par défaut`);
+        res.json({ 
+          success: true, 
+          colors: { primaryColor: '#8b5cf6' } // Violet par défaut
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur récupération couleurs salon:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la récupération des couleurs',
+        details: error.message 
+      });
+    }
+  });
+
+  // Route pour récupérer les couleurs personnalisées du salon
+  app.get('/api/salon/:salonId/colors', async (req, res) => {
+    try {
+      const { salonId } = req.params;
+      
+      const colors = await storage.getSalonColors(salonId);
+      
+      if (colors) {
+        res.json({ 
+          success: true, 
+          colors 
+        });
+      } else {
+        // Couleurs par défaut si pas de personnalisation
+        res.json({ 
+          success: true, 
+          colors: { 
+            primaryColor: '#8b5cf6' // Violet par défaut
+          } 
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur récupération couleurs salon:', error);
+      res.status(500).json({ 
+        error: 'Erreur lors de la récupération des couleurs',
+        details: error.message 
+      });
+    }
+  });
+
   // Route pour créer un abonnement gratuit avec code promo FREE149
   app.post('/api/create-free-subscription', async (req, res) => {
     try {

@@ -172,6 +172,10 @@ export interface IStorage {
   getUserSubscription(userId: string): Promise<UserSubscription | undefined>;
   createUserSubscription(subscription: InsertUserSubscription): Promise<UserSubscription>;
   updateUserSubscription(userId: string, data: Partial<UserSubscription>): Promise<UserSubscription>;
+  
+  // Salon Colors operations
+  saveSalonColors(salonId: string, colors: { primaryColor: string }): Promise<void>;
+  getSalonColors(salonId: string): Promise<{ primaryColor: string } | null>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1627,6 +1631,23 @@ export class DatabaseStorage implements IStorage {
       console.error('Erreur hasColorCustomizationAccess:', error);
       return false;
     }
+  }
+
+  // =============================================
+  // SALON COLORS OPERATIONS
+  // =============================================
+  
+  private salonColors = new Map<string, { primaryColor: string }>();
+
+  async saveSalonColors(salonId: string, colors: { primaryColor: string }): Promise<void> {
+    this.salonColors.set(salonId, colors);
+    console.log(`💾 Couleurs salon sauvegardées en mémoire: ${salonId} -> ${colors.primaryColor}`);
+  }
+
+  async getSalonColors(salonId: string): Promise<{ primaryColor: string } | null> {
+    const colors = this.salonColors.get(salonId);
+    console.log(`🎨 Récupération couleurs salon: ${salonId} ->`, colors || 'par défaut');
+    return colors || null;
   }
 }
 

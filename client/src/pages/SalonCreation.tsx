@@ -232,9 +232,32 @@ export default function SalonCreation() {
     };
   };
 
+  // Fonction pour sauvegarder les couleurs du salon
+  const saveSalonColors = async (color: string) => {
+    try {
+      const response = await fetch('/api/salon/colors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          primaryColor: color,
+          salonId: 'demo-user' // ID du salon actuel
+        }),
+      });
+      
+      if (response.ok) {
+        console.log('✅ Couleurs sauvegardées:', color);
+      }
+    } catch (error) {
+      console.error('❌ Erreur sauvegarde couleurs:', error);
+    }
+  };
+
   // Fonction pour appliquer une palette
   const applyColorPreset = (preset: typeof colorPresets[0]) => {
     setPrimaryColor(preset.color);
+    saveSalonColors(preset.color); // Sauvegarder automatiquement
     toast({
       title: "Couleur appliquée",
       description: `Palette "${preset.name}" appliquée avec succès`,
@@ -1015,14 +1038,19 @@ export default function SalonCreation() {
               </Button>
               <Button
                 onClick={() => {
+                  saveSalonColors(primaryColor); // Sauvegarder la couleur
                   setIsColorModalOpen(false);
                   toast({
                     title: "Couleur appliquée",
                     description: "La couleur de votre salon a été mise à jour",
                   });
                 }}
-                style={getButtonStyle('solid')}
-                className="flex-1 h-12 shadow-lg hover:shadow-xl transition-all duration-200 text-white font-semibold rounded-xl"
+                style={{
+                  backgroundColor: primaryColor,
+                  color: 'white',
+                  border: 'none'
+                }}
+                className="flex-1 h-12 shadow-lg hover:shadow-xl transition-all duration-200 font-semibold rounded-xl hover:opacity-90"
               >
                 Appliquer
               </Button>
