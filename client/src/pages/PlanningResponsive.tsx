@@ -307,26 +307,53 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Boutons d'action rapide */}
-        <div className="bg-white px-4 py-2 border-b border-gray-100">
-          <div className="flex gap-2">
+        {/* Navigation par jours de la semaine */}
+        <div className="bg-white px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center justify-between mb-2">
             <Button 
-              onClick={() => handleNewAppointment()} 
-              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
-              size="sm"
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newDate = new Date(selectedDate);
+                newDate.setDate(newDate.getDate() - 1);
+                setSelectedDate(newDate);
+              }}
+              className="h-8 w-8 p-0"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Nouveau RDV
+              <ChevronLeft className="h-4 w-4" />
             </Button>
+            
+            <h3 className="text-base font-semibold text-gray-900">
+              {selectedDate.toLocaleDateString('fr-FR', { 
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+              })}
+            </h3>
+            
             <Button 
-              variant="outline" 
-              className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-50"
-              size="sm"
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newDate = new Date(selectedDate);
+                newDate.setDate(newDate.getDate() + 1);
+                setSelectedDate(newDate);
+              }}
+              className="h-8 w-8 p-0"
             >
-              <Clock className="h-4 w-4 mr-2" />
-              Bloquer créneau
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
+          
+          {/* Bouton d'action unique */}
+          <Button 
+            onClick={() => handleNewAppointment()} 
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            size="sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Nouveau RDV
+          </Button>
         </div>
 
 
@@ -385,78 +412,110 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Timeline des rendez-vous avec ligne violette d'heure actuelle */}
+        {/* Grille horaire complète 6h-23h */}
         <div className="bg-white flex-1 overflow-y-auto pb-20">
-          <div className="relative p-4">
-            {/* Ligne violette d'heure actuelle - indicateur temps réel */}
-            <div className="absolute left-0 right-0 z-20 flex items-center px-4" style={{ top: '20%' }}>
-              <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
-              <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
-              <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow border border-purple-200">
-                {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-              </div>
-            </div>
+          <div className="relative">
+            {/* Ligne violette d'heure actuelle */}
+            {(() => {
+              const now = new Date();
+              const currentHour = now.getHours();
+              const currentMinutes = now.getMinutes();
+              const isToday = selectedDate.toDateString() === now.toDateString();
+              
+              if (isToday && currentHour >= 6 && currentHour <= 23) {
+                const topPosition = ((currentHour - 6) * 60 + currentMinutes) * (60 / 60); // 60px par heure
+                return (
+                  <div 
+                    className="absolute left-0 right-0 z-20 flex items-center px-4" 
+                    style={{ top: `${topPosition + 40}px` }}
+                  >
+                    <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
+                    <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
+                    <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow border border-purple-200">
+                      {now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
 
-            {/* Rendez-vous de la journée sélectionnée */}
-            {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
-              const isCurrentAppointment = isAppointmentCurrent(appointment);
-              const isFinishedAppointment = isAppointmentFinished(appointment);
+            {/* Grille des heures */}
+            {Array.from({ length: 18 }, (_, i) => {
+              const hour = i + 6; // De 6h à 23h
+              const hourStr = `${hour.toString().padStart(2, '0')}:00`;
+              const appointments = getAppointmentsForDate(selectedDate).filter(apt => 
+                parseInt(apt.startTime.split(':')[0]) === hour
+              );
               
               return (
-                <div key={index} className="relative mb-6">
-                  {/* Ligne de temps verticale grise */}
-                  <div className="absolute left-6 top-6 bottom-0 w-0.5 bg-gray-200"></div>
-                  
-                  {/* Point de temps */}
-                  <div className="flex items-start">
-                    <div className="flex flex-col items-center mr-4">
-                      <span className="text-xs text-gray-500 mb-2 font-medium">
-                        {appointment.startTime}
-                      </span>
-                      <div className={`w-3 h-3 rounded-full border-2 ${
-                        isCurrentAppointment 
-                          ? 'bg-purple-500 border-purple-500 animate-pulse' 
-                          : isFinishedAppointment
-                            ? 'bg-green-500 border-green-500'
-                            : appointment.status === 'confirmed'
-                              ? 'bg-gray-400 border-gray-400'
-                              : 'bg-gray-300 border-gray-300'
-                      }`}></div>
-                      
-                      {/* Point violet pour RDV en cours */}
+                <div key={hour} className="border-b border-gray-100 relative">
+                  {/* Ligne d'heure */}
+                  <div className="flex items-start p-4 min-h-[60px]">
+                    {/* Heure */}
+                    <div className="w-16 text-sm font-medium text-gray-600 pt-1">
+                      {hourStr}
                     </div>
                     
-                    <div className={`flex-1 p-3 rounded-lg border ${
-                      isCurrentAppointment 
-                        ? 'bg-purple-50 border-purple-200' 
-                        : 'bg-gray-50 border-gray-200'
-                    }`}>
-                      <h3 className="font-semibold text-gray-900 mb-1">{appointment.serviceName}</h3>
-                      <div className="flex items-center text-xs text-gray-500 mb-1">
-                        <User className="w-3 h-3 mr-1" />
-                        <span>{appointment.clientName}</span>
-                      </div>
-                      <div className="flex items-center text-xs text-gray-500 mb-1">
-                        <CalendarDays className="w-3 h-3 mr-1" />
-                        <span>{selectedDate?.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                      </div>
-                      <div className="flex items-center text-xs text-gray-500">
-                        <Clock className="w-3 h-3 mr-1" />
-                        <span>{appointment.startTime} - {appointment.endTime}</span>
-                      </div>
+                    {/* Zone cliquable pour ajouter RDV */}
+                    <div 
+                      className="flex-1 min-h-[40px] cursor-pointer rounded-lg transition-all hover:bg-purple-50 border border-transparent hover:border-purple-200 p-2"
+                      onClick={() => {
+                        console.log(`🕒 Clic sur le créneau: ${hourStr}`);
+                        // Ici on pourrait ouvrir un modal pour ajouter un RDV
+                        handleNewAppointment();
+                      }}
+                    >
+                      {/* RDV existants pour cette heure */}
+                      {appointments.map((appointment, index) => {
+                        const isCurrentAppointment = isAppointmentCurrent(appointment);
+                        const isFinishedAppointment = isAppointmentFinished(appointment);
+                        
+                        return (
+                          <div 
+                            key={index} 
+                            className={`mb-2 p-3 rounded-lg border-l-4 ${
+                              isCurrentAppointment 
+                                ? 'bg-purple-100 border-purple-500 animate-pulse shadow-lg' 
+                                : isFinishedAppointment
+                                  ? 'bg-green-50 border-green-500'
+                                  : 'bg-gray-50 border-gray-400'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-medium text-gray-900 text-sm">{appointment.serviceName}</h4>
+                              <span className="text-xs text-gray-500">
+                                {appointment.startTime} - {appointment.endTime}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600">{appointment.clientName}</p>
+                            <div className={`inline-block px-2 py-1 rounded-full text-xs mt-1 ${
+                              isCurrentAppointment
+                                ? 'bg-purple-200 text-purple-800'
+                                : isFinishedAppointment
+                                  ? 'bg-green-200 text-green-800'
+                                  : appointment.status === 'confirmed' 
+                                    ? 'bg-gray-200 text-gray-700' 
+                                    : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {isCurrentAppointment ? 'En cours' : isFinishedAppointment ? 'Terminé' : appointment.status === 'confirmed' ? 'Confirmé' : 'En attente'}
+                            </div>
+                          </div>
+                        );
+                      })}
+                      
+                      {/* Zone vide cliquable */}
+                      {appointments.length === 0 && (
+                        <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                          <Plus className="h-4 w-4 mr-1" />
+                          Cliquer pour ajouter un RDV
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               );
             })}
-            
-            {/* Message si pas de rendez-vous */}
-            {getAppointmentsForDate(selectedDate || new Date()).length === 0 && (
-              <div className="p-8 text-center">
-                <CalendarDays className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">Aucun rendez-vous prévu</p>
-              </div>
-            )}
           </div>
         </div>
 
