@@ -17,7 +17,8 @@ import {
   Plus,
   Palette,
   ExternalLink,
-  Eye
+  Eye,
+  X
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -25,6 +26,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function SalonCreation() {
   const [, setLocation] = useLocation();
@@ -32,7 +34,16 @@ export default function SalonCreation() {
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [isEditing, setIsEditing] = useState(true); // En mode édition par défaut
   const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [isColorModalOpen, setIsColorModalOpen] = useState(false);
   const { toast } = useToast();
+
+  // Couleurs personnalisées - MODIFIABLES
+  const [customColors, setCustomColors] = useState({
+    primary: '#8b5cf6',
+    accent: '#f59e0b',
+    intensity: 'medium' as 'light' | 'medium' | 'dark',
+    buttonText: '#ffffff'
+  });
   
   // Données du salon - MODIFIABLES
   const [salonData, setSalonData] = useState({
@@ -188,6 +199,42 @@ export default function SalonCreation() {
     setTeamMembers(prev => [...prev, newMember]);
   };
 
+  // Palettes de couleurs prédéfinies
+  const colorPresets = [
+    { name: 'Violet & Amber', primary: '#8b5cf6', accent: '#f59e0b' },
+    { name: 'Rose & Teal', primary: '#ec4899', accent: '#06b6d4' },
+    { name: 'Indigo & Orange', primary: '#6366f1', accent: '#f97316' },
+    { name: 'Emerald & Purple', primary: '#10b981', accent: '#a855f7' },
+    { name: 'Blue & Yellow', primary: '#3b82f6', accent: '#eab308' },
+    { name: 'Cyan & Pink', primary: '#06b6d4', accent: '#ec4899' }
+  ];
+
+  // Fonction pour appliquer les couleurs aux boutons
+  const getButtonStyle = (type: 'primary' | 'accent' = 'primary') => {
+    const color = customColors[type];
+    const textColor = customColors.buttonText;
+    
+    return {
+      backgroundColor: color,
+      color: textColor,
+      border: 'none'
+    };
+  };
+
+  // Fonction pour appliquer une palette
+  const applyColorPreset = (preset: typeof colorPresets[0]) => {
+    setCustomColors(prev => ({
+      ...prev,
+      primary: preset.primary,
+      accent: preset.accent
+    }));
+    
+    toast({
+      title: "Couleurs appliquées",
+      description: `Palette "${preset.name}" appliquée avec succès`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* En-tête fixe avec actions d'édition */}
@@ -310,7 +357,10 @@ export default function SalonCreation() {
               </div>
             </div>
             
-            <Button className="mt-8 bg-violet-600 hover:bg-violet-700 text-white">
+            <Button 
+              className="mt-8" 
+              style={getButtonStyle('primary')}
+            >
               Réserver
             </Button>
           </div>
@@ -532,7 +582,11 @@ export default function SalonCreation() {
                           )}
                         </div>
                         
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          style={getButtonStyle('accent')}
+                        >
                           Réserver avec {member.name.split(' ')[0]}
                         </Button>
                       </div>
@@ -738,6 +792,7 @@ export default function SalonCreation() {
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => setIsColorModalOpen(true)}
             className="rounded-full"
           >
             <Palette className="h-4 w-4" />
@@ -752,6 +807,127 @@ export default function SalonCreation() {
           </Button>
         </div>
       </div>
+
+      {/* Modal de personnalisation des couleurs */}
+      <Dialog open={isColorModalOpen} onOpenChange={setIsColorModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Palette className="h-5 w-5 text-violet-600" />
+              Personnaliser les couleurs
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Palettes prédéfinies */}
+            <div>
+              <h4 className="font-medium mb-3">Palettes prédéfinies</h4>
+              <div className="grid grid-cols-2 gap-3">
+                {colorPresets.map((preset, index) => (
+                  <button
+                    key={index}
+                    onClick={() => applyColorPreset(preset)}
+                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex gap-1">
+                      <div 
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: preset.primary }}
+                      />
+                      <div 
+                        className="w-4 h-4 rounded-full"
+                        style={{ backgroundColor: preset.accent }}
+                      />
+                    </div>
+                    <span className="text-sm font-medium">{preset.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Couleurs personnalisées */}
+            <div>
+              <h4 className="font-medium mb-3">Couleurs personnalisées</h4>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Couleur principale
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={customColors.primary}
+                      onChange={(e) => setCustomColors(prev => ({ ...prev, primary: e.target.value }))}
+                      className="w-12 h-10 rounded border cursor-pointer"
+                    />
+                    <Input
+                      value={customColors.primary}
+                      onChange={(e) => setCustomColors(prev => ({ ...prev, primary: e.target.value }))}
+                      placeholder="#8b5cf6"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-2 block">
+                    Couleur d'accent
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={customColors.accent}
+                      onChange={(e) => setCustomColors(prev => ({ ...prev, accent: e.target.value }))}
+                      className="w-12 h-10 rounded border cursor-pointer"
+                    />
+                    <Input
+                      value={customColors.accent}
+                      onChange={(e) => setCustomColors(prev => ({ ...prev, accent: e.target.value }))}
+                      placeholder="#f59e0b"
+                      className="flex-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Aperçu */}
+            <div>
+              <h4 className="font-medium mb-3">Aperçu</h4>
+              <div className="space-y-3">
+                <Button style={getButtonStyle('primary')} className="w-full">
+                  Bouton principal - Réserver maintenant
+                </Button>
+                <Button style={getButtonStyle('accent')} className="w-full" variant="outline">
+                  Bouton d'accent - Voir plus
+                </Button>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={() => setIsColorModalOpen(false)}
+              >
+                Annuler
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsColorModalOpen(false);
+                  toast({
+                    title: "Couleurs sauvegardées",
+                    description: "Vos couleurs personnalisées ont été appliquées",
+                  });
+                }}
+                style={getButtonStyle('primary')}
+              >
+                Appliquer
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
