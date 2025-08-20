@@ -1096,12 +1096,13 @@ function Router() {
     );
   }
 
-  // Page salon mobile moderne - Route spéciale "/salon" - PRIORITAIRE
+  // TEST DIRECT - SALON ROUTE
   if (location === '/salon') {
-    console.log('ROUTE SALON MATCH - Loading ModernSalonMobileFixed');
     return (
-      <div className="h-full">
-        <ModernSalonMobileFixed />
+      <div className="min-h-screen bg-purple-600 text-white p-8">
+        <h1 className="text-4xl font-bold mb-4">SALON PAGE TEST</h1>
+        <p>Si vous voyez ceci, la route /salon fonctionne !</p>
+        <p>Location actuelle: {location}</p>
       </div>
     );
   }
