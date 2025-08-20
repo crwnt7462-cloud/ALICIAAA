@@ -92,8 +92,6 @@ export default function PlanningResponsive() {
 
   // Rendez-vous d'exemple pour démonstration avec différents statuts
   const currentHour = new Date().getHours();
-  const currentMinutes = new Date().getMinutes();
-  const currentTimeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}`;
   
   const sampleAppointmentsMobile = [
     {
@@ -273,25 +271,65 @@ export default function PlanningResponsive() {
 
 
 
-        {/* Sélecteur de mois */}
-        <div className="bg-white px-4 py-2 border-b border-gray-100">
-          <Select value={currentMonth.toLowerCase()} onValueChange={(value) => {
-            const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-            const monthIndex = monthNames.indexOf(value);
-            if (monthIndex !== -1) {
-              setSelectedMonth(monthIndex);
-            }
-          }}>
-            <SelectTrigger className="w-32 h-8">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'].map((month) => (
-                <SelectItem key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        {/* Navigation mois avec flèches */}
+        <div className="bg-white px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+                setSelectedMonth(newMonth);
+              }}
+              className="h-8 w-8 p-0"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <h2 className="text-lg font-semibold text-gray-900">
+              {new Date(selectedYear, selectedMonth).toLocaleDateString('fr-FR', { 
+                month: 'long', 
+                year: 'numeric' 
+              })}
+            </h2>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newMonth = selectedMonth === 11 ? 0 : selectedMonth + 1;
+                setSelectedMonth(newMonth);
+              }}
+              className="h-8 w-8 p-0"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        {/* Boutons d'action rapide */}
+        <div className="bg-white px-4 py-2 border-b border-gray-100">
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => handleNewAppointment()} 
+              className="flex-1 bg-purple-600 hover:bg-purple-700 text-white"
+              size="sm"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Nouveau RDV
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex-1 border-amber-300 text-amber-700 hover:bg-amber-50"
+              size="sm"
+            >
+              <Clock className="h-4 w-4 mr-2" />
+              Bloquer créneau
+            </Button>
+          </div>
+        </div>
+
+
 
         {/* Calendrier mensuel compact */}
         <div className="bg-white p-4 border-b border-gray-200">
