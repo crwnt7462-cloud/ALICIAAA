@@ -1098,6 +1098,7 @@ function Router() {
 
   // Page salon mobile moderne - Route spéciale "/salon" - PRIORITAIRE
   if (location === '/salon') {
+    console.log('ROUTE SALON MATCH - Loading ModernSalonMobileFixed');
     return (
       <div className="h-full">
         <ModernSalonMobileFixed />
@@ -1107,7 +1108,6 @@ function Router() {
 
   // Pages de salon dynamiques (/salon/[slug]) - APRÈS /salon
   if (location.startsWith('/salon/')) {
-    const salonSlug = location.substring(7); // Remove '/salon/'
     return (
       <div className="h-full">
         <SalonDynamicPage />
