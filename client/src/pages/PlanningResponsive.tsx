@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette, X } from "lucide-react";
 import { motion } from "framer-motion";
-import { BottomNavigation } from "@/components/BottomNavigation";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { Sidebar } from "@/components/Sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types simplifiés pour éviter les erreurs
 
@@ -106,6 +108,7 @@ const beautyServices: ServiceType[] = [
 ];
 
 export default function PlanningResponsive() {
+  const isMobile = useIsMobile();
   // Variables simplifiées sans dépendances externes problématiques
 
   // États pour la navigation
@@ -389,9 +392,14 @@ export default function PlanningResponsive() {
   // Fonction supprimée car dupliquée plus haut
 
   return (
-    <>
-      {/* Version Mobile - Interface propre SANS AUCUNE SIDEBAR */}
-<div className="lg:hidden w-full min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex">
+      {/* Sidebar Desktop */}
+      {!isMobile && <Sidebar />}
+      
+      {/* Contenu principal */}
+      <div className={`flex-1 relative ${isMobile ? 'max-w-md mx-auto' : 'lg:max-w-none lg:w-full'}`}>
+        {/* Version Mobile - Interface propre */}
+        <div className="lg:hidden w-full min-h-screen bg-gray-50">
         {/* Header mobile simple */}
         <div className="bg-white p-4 border-b border-gray-200">
           <h1 className="text-xl font-bold text-center text-gray-900">Planning</h1>
@@ -1041,22 +1049,22 @@ export default function PlanningResponsive() {
               <div className="space-y-4">
                 <Button 
                   onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
-                  className="w-full h-14 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-sm flex items-center justify-start px-4"
+                  className="w-full h-12 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-medium text-xs flex items-center justify-start px-3"
                 >
-                  <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-purple-200 rounded-full flex items-center justify-center mr-2">
                     <User className="h-5 w-5 text-purple-700" />
                   </div>
-                  <span className="text-left">Ajouter un rendez-vous client</span>
+                  <span className="text-left leading-tight">Ajouter un RDV client</span>
                 </Button>
                 
                 <Button 
                   onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
-                  className="w-full h-14 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-sm flex items-center justify-start px-4"
+                  className="w-full h-12 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-medium text-xs flex items-center justify-start px-3"
                 >
-                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-3">
+                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">
                     <Clock className="h-5 w-5 text-gray-700" />
                   </div>
-                  <span className="text-left">Bloquer ce créneau</span>
+                  <span className="text-left leading-tight">Bloquer créneau</span>
                 </Button>
               </div>
             </div>
@@ -1282,6 +1290,10 @@ export default function PlanningResponsive() {
           </div>
         </DialogContent>
       </Dialog>
-    </>
+      
+      {/* Navigation mobile en bas - SEULEMENT SUR MOBILE */}
+      {isMobile && <MobileBottomNav />}
+      </div>
+    </div>
   );
 }
