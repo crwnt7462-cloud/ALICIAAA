@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { 
   ArrowLeft, 
@@ -10,7 +10,7 @@ import {
   Clock,
   Users,
   Phone,
-  Calendar
+
 } from 'lucide-react';
 import logoAvyento from '@assets/Logo avyento._1755714467098.png';
 

@@ -1096,21 +1096,21 @@ function Router() {
     );
   }
 
-  // Pages de salon dynamiques (/salon/[slug])
+  // Page salon mobile moderne - Route spéciale "/salon" - PRIORITAIRE
+  if (location === '/salon') {
+    return (
+      <div className="h-full">
+        <ModernSalonMobileFixed />
+      </div>
+    );
+  }
+
+  // Pages de salon dynamiques (/salon/[slug]) - APRÈS /salon
   if (location.startsWith('/salon/')) {
     const salonSlug = location.substring(7); // Remove '/salon/'
     return (
       <div className="h-full">
         <SalonDynamicPage />
-      </div>
-    );
-  }
-
-  // Page salon mobile moderne - Route spéciale "/salon"
-  if (location === '/salon') {
-    return (
-      <div className="h-full">
-        <ModernSalonMobileFixed />
       </div>
     );
   }
