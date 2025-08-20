@@ -1144,14 +1144,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.user = professionalUser;
         req.session.user = professionalUser;
         
-        // Créer ou mettre à jour l'utilisateur dans la base
-        await storage.upsertUser({
-          id: 'pro-user-1',
-          email: 'pro@avyento.com',
-          firstName: 'Professionnel',
-          lastName: 'Avyento'
-        });
-
         console.log('✅ Connexion professionnelle réussie + session créée:', email);
         
         res.json({
@@ -1203,14 +1195,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.user = professionalUser;
         req.session.user = professionalUser;
         
-        // Créer ou mettre à jour l'utilisateur dans la base
-        await storage.upsertUser({
-          id: 'pro-user-1',
-          email: 'pro@avyento.com',
-          firstName: 'Professionnel',
-          lastName: 'Avyento'
-        });
-
         console.log('✅ Connexion classique réussie + session créée:', email);
         
         res.json({
