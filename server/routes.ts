@@ -1115,6 +1115,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
   console.log('🎯 Routes Stripe configurées : abonnements et paiements uniques');
   console.log('🎁 Route abonnement gratuit FREE149 configurée');
 
+  // Schema flexible pour la connexion professionnelle (sans pattern strict)
+  const professionalLoginSchema = z.object({
+    email: z.string().email("Email invalide"), // Validation basique sans regex strict
+    password: z.string().min(6, "Mot de passe requis")
+  });
+
+  // Route de connexion professionnelle
+  app.post('/api/login/professional', validateRequest(professionalLoginSchema), async (req: any, res) => {
+    try {
+      const { email, password } = req.validatedData;
+      
+      // Vérifier les identifiants du compte pro
+      if (email === 'pro@avyento.com' && password === 'avyento2025') {
+        // Simuler une session utilisateur professionnelle
+        const professionalUser = {
+          id: 'pro-user-1',
+          email: 'pro@avyento.com',
+          firstName: 'Professionnel',
+          lastName: 'Avyento',
+          subscriptionType: 'premium-pro',
+          subscriptionStatus: 'active',
+          subscriptionExpiry: new Date('2026-08-20').toISOString()
+        };
+
+        // Dans un vrai système, vous créeriez une vraie session
+        // Ici nous retournons juste les données pour le frontend
+        console.log('✅ Connexion professionnelle réussie:', email);
+        
+        res.json({
+          success: true,
+          user: professionalUser,
+          message: 'Connexion réussie'
+        });
+      } else {
+        console.log('❌ Échec connexion professionnelle:', email);
+        res.status(401).json({
+          error: 'Identifiants invalides',
+          message: 'Email ou mot de passe incorrect'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur connexion professionnelle:', error);
+      res.status(500).json({
+        error: 'Erreur serveur',
+        message: 'Une erreur est survenue lors de la connexion'
+      });
+    }
+  });
+
+  // Route de connexion classique (compatible avec LoginClassic.tsx)
+  app.post('/api/login-classic', validateRequest(professionalLoginSchema), async (req: any, res) => {
+    try {
+      const { email, password } = req.validatedData;
+      
+      // Vérifier les identifiants du compte pro
+      if (email === 'pro@avyento.com' && password === 'avyento2025') {
+        const professionalUser = {
+          id: 'pro-user-1',
+          email: 'pro@avyento.com',
+          firstName: 'Professionnel',
+          lastName: 'Avyento',
+          subscriptionType: 'premium-pro',
+          subscriptionStatus: 'active',
+          subscriptionExpiry: new Date('2026-08-20').toISOString()
+        };
+
+        console.log('✅ Connexion classique réussie:', email);
+        
+        res.json({
+          success: true,
+          user: professionalUser,
+          message: 'Connexion réussie'
+        });
+      } else {
+        console.log('❌ Échec connexion classique:', email);
+        res.status(401).json({
+          success: false,
+          message: 'Email ou mot de passe incorrect'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Erreur connexion classique:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Une erreur est survenue lors de la connexion'
+      });
+    }
+  });
+
+  console.log('🔐 Routes de connexion professionnelle configurées');
+
   const httpServer = createServer(app);
   
   // Setup WebSocket server for real-time synchronization
