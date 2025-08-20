@@ -962,10 +962,75 @@ export default function ModernSalonCompact() {
         </motion.button>
       </div>
 
-      {/* Footer - Identique à Landing.tsx */}
-      <div className="text-center text-xs text-gray-500 pb-4 mt-8">
-        <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-      </div>
+      {/* Footer complet Avyento - Pleine largeur */}
+      <footer className="w-screen relative -mx-4 lg:-mx-8 mt-12 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            
+            {/* Colonne Avyento */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 bg-gradient-to-r from-purple-500 to-violet-500 rounded-lg"></div>
+                <h3 className="text-lg font-bold">Avyento</h3>
+              </div>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+              </p>
+            </div>
+
+            {/* Colonne Services */}
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold">Services</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Coiffure</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Esthétique</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Manucure</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Massage</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne Partenaires */}
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold">Partenaires</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Devenir partenaire</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Tarifs professionnels</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Formation & Support</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Témoignages</a></li>
+              </ul>
+            </div>
+
+            {/* Colonne Support */}
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold">Support</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="/centre-aide" className="hover:text-white transition-colors">Centre d'aide</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">CGU</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Confidentialité</a></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Ligne de séparation et copyright */}
+          <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-gray-400">© 2024 Avyento. Tous droits réservés.</p>
+            
+            {/* Réseaux sociaux */}
+            <div className="flex items-center gap-4 mt-4 md:mt-0">
+              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
+                <X className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
+                <FaTiktok className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
