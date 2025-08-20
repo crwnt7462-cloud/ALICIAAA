@@ -122,14 +122,8 @@ export default function ModernSalonCompact() {
           </div>
         </div>
 
-        {/* Boutons d'action principaux */}
+        {/* Bouton d'action principal - SUPPRIMÉ SUR DEMANDE */}
         <div className="flex gap-4 mb-8">
-          <button 
-            onClick={() => setLocation('/booking')}
-            className="flex-1 bg-gradient-to-r from-purple-600 to-violet-600 text-white py-4 px-8 rounded-2xl font-semibold text-lg hover:from-purple-700 hover:to-violet-700 transition-all duration-300 shadow-xl"
-          >
-            Réserver un rendez-vous
-          </button>
           <button 
             onClick={() => window.open(`tel:+33123456789`)}
             className="bg-white/90 backdrop-blur-xl border border-gray-200/50 text-gray-700 py-4 px-6 rounded-2xl font-medium hover:bg-white transition-all duration-300 shadow-lg"
