@@ -29,6 +29,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ImageCropper from '@/components/ImageCropper';
 
 export default function SalonCreation() {
   const [, setLocation] = useLocation();
@@ -37,6 +38,8 @@ export default function SalonCreation() {
   const [isEditing, setIsEditing] = useState(true); // En mode édition par défaut
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [isColorModalOpen, setIsColorModalOpen] = useState(false);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [tempImageUrl, setTempImageUrl] = useState<string>('');
   const { toast } = useToast();
 
   // Couleurs personnalisées - MODIFIABLES
@@ -214,6 +217,38 @@ export default function SalonCreation() {
   // État pour la couleur unique
   const [primaryColor, setPrimaryColor] = useState('#8b5cf6');
 
+  // Fonction pour gérer l'upload d'image
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageUrl = event.target?.result as string;
+        setTempImageUrl(imageUrl);
+        setIsCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Fonction pour ouvrir le recadreur avec l'image actuelle
+  const handleCropImage = () => {
+    setTempImageUrl(salonData.backgroundImage);
+    setIsCropperOpen(true);
+  };
+
+  // Fonction appelée après le recadrage
+  const handleCropComplete = (croppedImageUrl: string) => {
+    setSalonData(prev => ({
+      ...prev,
+      backgroundImage: croppedImageUrl
+    }));
+    toast({
+      title: "Image mise à jour",
+      description: "Votre photo de couverture a été recadrée avec succès",
+    });
+  };
+
   // Fonction pour appliquer la couleur aux boutons
   const getButtonStyle = (variant: 'solid' | 'outline' = 'solid') => {
     if (variant === 'outline') {
@@ -372,14 +407,30 @@ export default function SalonCreation() {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
           {isEditing && (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="absolute top-2 right-2 bg-white/90 hover:bg-white"
-            >
-              <Upload className="h-4 w-4 mr-1" />
-              Changer l'image
-            </Button>
+            <div className="absolute top-2 right-2 flex gap-2">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="cover-image-upload"
+              />
+              <label 
+                htmlFor="cover-image-upload"
+                className="flex items-center gap-1 px-3 py-2 bg-white/90 hover:bg-white rounded-lg text-sm font-medium cursor-pointer transition-colors"
+              >
+                <Upload className="h-4 w-4" />
+                Changer
+              </label>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleCropImage}
+                className="bg-violet-600/90 hover:bg-violet-700 text-white"
+              >
+                <Camera className="h-4 w-4" />
+              </Button>
+            </div>
           )}
         </div>
         
@@ -1058,6 +1109,15 @@ export default function SalonCreation() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Recadreur d'image */}
+      <ImageCropper
+        isOpen={isCropperOpen}
+        onClose={() => setIsCropperOpen(false)}
+        onCropComplete={handleCropComplete}
+        imageUrl={tempImageUrl}
+        aspectRatio={16/9}
+      />
     </div>
   );
 }

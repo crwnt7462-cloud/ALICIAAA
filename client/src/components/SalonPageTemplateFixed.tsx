@@ -130,8 +130,8 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-amber-50">
-      {/* En-tête avec image */}
-      <div className="relative h-64 overflow-hidden">
+      {/* En-tête avec image - TAILLE RÉDUITE */}
+      <div className="relative h-48 overflow-hidden">
         <img
           src={activeSalonData.images[currentImageIndex]}
           alt={activeSalonData.name}
@@ -179,19 +179,19 @@ export default function SalonPageTemplateFixed({ salonSlug, salonData, customCol
           </Button>
         </div>
 
-        {/* Informations salon */}
-        <div className="absolute bottom-4 left-4 right-4">
-          <div className="bg-white/90 backdrop-blur-md rounded-lg p-4">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{activeSalonData.name}</h1>
-            <div className="flex items-center space-x-4 text-sm text-gray-600">
+        {/* Informations salon - VERSION COMPACTE */}
+        <div className="absolute bottom-2 left-4 right-4">
+          <div className="bg-white/90 backdrop-blur-md rounded-lg p-3">
+            <h1 className="text-xl font-bold text-gray-900 mb-1">{activeSalonData.name}</h1>
+            <div className="flex items-center space-x-3 text-xs text-gray-600">
               <div className="flex items-center">
-                <Star className="h-4 w-4 text-yellow-400 mr-1" />
+                <Star className="h-3 w-3 text-yellow-400 mr-1" />
                 <span className="font-medium">{activeSalonData.rating}</span>
-                <span className="ml-1">({activeSalonData.reviewCount} avis)</span>
+                <span className="ml-1">({activeSalonData.reviewCount})</span>
               </div>
               <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span>{activeSalonData.address}</span>
+                <MapPin className="h-3 w-3 mr-1" />
+                <span className="truncate">{activeSalonData.address}</span>
               </div>
             </div>
           </div>
