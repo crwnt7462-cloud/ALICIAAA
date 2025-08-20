@@ -938,29 +938,7 @@ export default function ModernSalonCompact() {
         </div>
       )}
 
-      {/* CTA Buttons with Glassmorphism - Identique à Landing.tsx */}
-      <div className="space-y-4 px-4 sm:px-6 lg:px-8 mt-8 max-w-md mx-auto">
-        
-        {/* Bouton secondaire */}
-        <motion.button 
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
-          className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
-          onClick={() => setLocation('/dashboard')}
-        >
-          Accéder au tableau de bord
-          <ArrowRight className="w-4 h-4 ml-2" />
-        </motion.button>
-        
-        <motion.button 
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
-          className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
-          onClick={() => setLocation('/client-login-modern')}
-        >
-          Espace client
-        </motion.button>
-      </div>
+
 
       {/* Footer complet Avyento - Pleine largeur */}
       <footer className="w-screen relative left-1/2 -translate-x-1/2 mt-12 bg-gray-900 text-white">
