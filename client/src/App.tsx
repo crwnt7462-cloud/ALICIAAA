@@ -483,6 +483,13 @@ function Router() {
 
   // Page d'accueil publique (sans header/nav mobile)
   if (location === '/') {
+    // Si l'utilisateur est connecté, rediriger vers le dashboard
+    if (isAuthenticated && !isLoading) {
+      console.log('🔄 Utilisateur connecté détecté, redirection vers /dashboard');
+      setLocation('/dashboard');
+      return null;
+    }
+    
     return (
       <div className="h-full">
         <PublicLanding />
