@@ -105,6 +105,20 @@ const employees: Employee[] = [
   }
 ];
 
+// Clients existants pour l'autocomplétion
+const existingClients = [
+  { id: 1, name: "Sophie Martin", phone: "06 12 34 56 78", email: "sophie.martin@email.com", lastVisit: "2024-08-15" },
+  { id: 2, name: "Emma Dubois", phone: "06 23 45 67 89", email: "emma.dubois@email.com", lastVisit: "2024-08-18" },
+  { id: 3, name: "Julie Laurent", phone: "06 34 56 78 90", email: "julie.laurent@email.com", lastVisit: "2024-08-10" },
+  { id: 4, name: "Marie Dupont", phone: "06 45 67 89 01", email: "marie.dupont@email.com", lastVisit: "2024-08-12" },
+  { id: 5, name: "Claire Moreau", phone: "06 56 78 90 12", email: "claire.moreau@email.com", lastVisit: "2024-08-19" },
+  { id: 6, name: "Léa Bernard", phone: "06 67 89 01 23", email: "lea.bernard@email.com", lastVisit: "2024-08-14" },
+  { id: 7, name: "Camille Rousseau", phone: "06 78 90 12 34", email: "camille.rousseau@email.com", lastVisit: "2024-08-16" },
+  { id: 8, name: "Manon Petit", phone: "06 89 01 23 45", email: "manon.petit@email.com", lastVisit: "2024-08-17" },
+  { id: 9, name: "Alice Roux", phone: "06 90 12 34 56", email: "alice.roux@email.com", lastVisit: "2024-08-13" },
+  { id: 10, name: "Lucie Simon", phone: "06 01 23 45 67", email: "lucie.simon@email.com", lastVisit: "2024-08-11" }
+];
+
 // Services beauté
 const beautyServices: ServiceType[] = [
   { id: 1, name: "Coupe + Brushing", category: "Coiffure", duration: 60, price: 45, color: "#8B5CF6" },
@@ -149,6 +163,11 @@ export default function PlanningResponsive() {
     type: 'client' // 'client' ou 'blocked'
   });
   const [blockReason, setBlockReason] = useState('');
+  
+  // États pour l'autocomplétion des clients
+  const [clientSearchTerm, setClientSearchTerm] = useState("");
+  const [showClientSuggestions, setShowClientSuggestions] = useState(false);
+  const [filteredClients, setFilteredClients] = useState([]);
 
   // Suppression des fonctions non utilisées pour corriger les erreurs
 
@@ -212,6 +231,32 @@ export default function PlanningResponsive() {
     setIsActionChoiceOpen(true);
   };
 
+  // Fonction pour filtrer les clients selon la recherche
+  const handleClientSearch = (searchTerm: string) => {
+    setClientSearchTerm(searchTerm);
+    setNewAppointment({...newAppointment, clientName: searchTerm});
+    
+    if (searchTerm.length > 0) {
+      const filtered = existingClients.filter(client =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.phone.includes(searchTerm) ||
+        client.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredClients(filtered);
+      setShowClientSuggestions(filtered.length > 0);
+    } else {
+      setFilteredClients([]);
+      setShowClientSuggestions(false);
+    }
+  };
+
+  // Fonction pour sélectionner un client suggéré
+  const handleSelectClient = (client: any) => {
+    setNewAppointment({...newAppointment, clientName: client.name});
+    setClientSearchTerm(client.name);
+    setShowClientSuggestions(false);
+  };
+
   // Fonction pour créer un nouveau RDV client
   const handleNewAppointment = (timeSlot?: string, date?: Date) => {
     setNewAppointment({
@@ -224,6 +269,8 @@ export default function PlanningResponsive() {
       notes: '',
       type: 'client'
     });
+    setClientSearchTerm('');
+    setShowClientSuggestions(false);
     setIsNewAppointmentOpen(true);
     setIsActionChoiceOpen(false);
   };
@@ -1089,14 +1136,41 @@ export default function PlanningResponsive() {
             <DialogTitle>Nouveau Rendez-vous Client</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div>
+            <div className="relative">
               <Label htmlFor="clientName">Nom du client</Label>
               <Input
                 id="clientName"
-                value={newAppointment.clientName}
-                onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
-                placeholder="Nom et prénom"
+                value={clientSearchTerm || newAppointment.clientName}
+                onChange={(e) => handleClientSearch(e.target.value)}
+                onFocus={() => {
+                  if (clientSearchTerm.length > 0 && filteredClients.length > 0) {
+                    setShowClientSuggestions(true);
+                  }
+                }}
+                placeholder="Commencez à taper le nom du client..."
+                className="w-full"
               />
+              
+              {/* Suggestions d'autocomplétion */}
+              {showClientSuggestions && filteredClients.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {filteredClients.map((client) => (
+                    <div
+                      key={client.id}
+                      onClick={() => handleSelectClient(client)}
+                      className="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0"
+                    >
+                      <div className="font-medium text-gray-900">{client.name}</div>
+                      <div className="text-sm text-gray-500">
+                        📞 {client.phone} • ✉️ {client.email}
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        Dernière visite: {new Date(client.lastVisit).toLocaleDateString('fr-FR')}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             
             <div>
