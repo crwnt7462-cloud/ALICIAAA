@@ -56,13 +56,13 @@ export function BottomNavigation() {
       active: location === '/clients'
     },
     {
-      label: 'Pro Tools',
+      label: 'Analytics',
       icon: BarChart3,
       path: '/business-features',
       active: location === '/business-features' || location.includes('/pro-')
     },
     {
-      label: 'IA',
+      label: 'Messages',
       icon: Sparkles,
       path: '/ai',
       active: location === '/ai' || location.includes('/ai-')
@@ -95,32 +95,7 @@ export function BottomNavigation() {
         </div>
       )}
 
-      {/* DESKTOP : Sidebar à gauche - VISIBLE UNIQUEMENT SUR DESKTOP */}
-      {!isMobile && (
-        <div className="fixed left-4 top-1/2 transform -translate-y-1/2 z-50">
-          <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 shadow-xl rounded-2xl px-3 py-4">
-            <div className="flex flex-col gap-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.path}
-                  onClick={() => setLocation(item.path)}
-                  className={`flex flex-col items-center gap-1.5 transition-all duration-200 p-3 rounded-xl ${
-                    item.active
-                      ? 'text-purple-600 bg-purple-50'
-                      : 'text-gray-600 hover:text-purple-600 hover:bg-gray-50'
-                  }`}
-                  title={item.label}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="text-xs font-medium text-center">
-                    {item.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* DESKTOP : Sidebar complètement SUPPRIMÉE */}
     </>
   );
 }
