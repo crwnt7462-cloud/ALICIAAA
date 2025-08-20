@@ -35,8 +35,11 @@ export default function LoginClassic() {
           description: `Bienvenue ${data.user.firstName}`,
         });
         
-        // Redirection vers le dashboard professionnel
-        window.location.href = "/dashboard";
+        // Délai court pour s'assurer que la session est créée côté serveur
+        setTimeout(() => {
+          // Force redirection vers dashboard
+          window.location.replace("/dashboard");
+        }, 100);
       } else {
         toast({
           title: "Erreur de connexion",

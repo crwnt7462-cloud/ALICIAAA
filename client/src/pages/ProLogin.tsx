@@ -32,8 +32,11 @@ export default function ProLogin() {
           title: "Connexion réussie !",
           description: "Bienvenue dans votre espace professionnel"
         });
-        // Redirection vers le dashboard professionnel
-        window.location.href = "/dashboard";
+        // Délai court pour s'assurer que la session est créée côté serveur
+        setTimeout(() => {
+          // Force redirection vers dashboard
+          window.location.replace("/dashboard");
+        }, 100);
       } else {
         throw new Error(data.error || "Erreur de connexion");
       }
