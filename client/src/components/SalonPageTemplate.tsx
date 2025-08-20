@@ -227,57 +227,124 @@ export function SalonPageTemplate({
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header avec photo de couverture */}
-      <div className="relative h-80 bg-gradient-to-br from-amber-600 to-orange-700">
-        <img 
-          src={salonData.coverImageUrl || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'}
-          alt={salonData.name}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40"></div>
-        
-        {/* Bouton retour */}
-        <button 
-          onClick={() => window.history.back()}
-          className="absolute top-6 left-6 p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all z-10"
-        >
-          <ArrowLeft className="h-5 w-5 text-white" />
-        </button>
-
-        {/* Actions header */}
-        <div className="absolute top-6 right-6 flex gap-3 z-10">
-          <button 
-            onClick={() => setIsFavorite(!isFavorite)}
-            className="p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all"
-          >
-            <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-          </button>
-          <button 
-            onClick={() => navigator.share?.({ title: salonData.name, url: window.location.href })}
-            className="p-3 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all"
-          >
-            <Share2 className="h-5 w-5 text-white" />
-          </button>
-        </div>
-
-        {/* Informations salon - Overlay */}
-        <div className="absolute bottom-6 left-6 right-6 text-white">
-          <div className="flex items-center gap-2 mb-2">
-            <h1 className="text-3xl font-bold">{salonData.name}</h1>
-            <CheckCircle className="h-6 w-6 text-blue-400" />
-          </div>
-          <div className="flex items-center gap-4 mb-2">
-            <div className="flex items-center gap-1">
-              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium">{salonData.rating || 4.8}</span>
-              <span className="text-white/80">({salonData.reviewsCount || 0} avis)</span>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Navigation - Style Fresha */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo/Titre */}
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={() => window.history.back()}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5 text-gray-600" />
+              </button>
+              <h1 className="text-xl font-bold text-gray-900">fresha</h1>
             </div>
-            <span className="text-white/80">{salonData.priceRange}</span>
+
+            {/* Navigation Center */}
+            <div className="hidden md:flex items-center gap-6">
+              <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                Tous les soins
+              </button>
+              <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                Position actuelle
+              </button>
+              <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                N'importe quelle...
+              </button>
+              <button className="text-gray-700 hover:text-gray-900 transition-colors">
+                N'importe quelle...
+              </button>
+            </div>
+
+            {/* Menu Button */}
+            <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <span>Menu</span>
+              <div className="space-y-1">
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+                <div className="w-4 h-0.5 bg-gray-600"></div>
+              </div>
+            </button>
           </div>
-          <div className="flex items-center gap-1 text-white/90">
-            <MapPin className="h-4 w-4" />
-            <span className="text-sm">{salonData.address}</span>
+        </div>
+      </div>
+
+      {/* Breadcrumb */}
+      <div className="bg-gray-50 px-4 py-3">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <span>Accueil</span>
+            <span>•</span>
+            <span>Instituts de beauté</span>
+            <span>•</span>
+            <span>Londres</span>
+            <span>•</span>
+            <span>Whetstone</span>
+            <span>•</span>
+            <span className="text-gray-900">{salonData.name}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Salon avec photo de couverture intégrée */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex items-start gap-6">
+            {/* Photo de couverture du salon */}
+            <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
+              <img 
+                src={salonData.coverImageUrl || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}
+                alt={salonData.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Informations salon */}
+            <div className="flex-1">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900">{salonData.name}</h1>
+                    <CheckCircle className="h-6 w-6 text-blue-500" />
+                  </div>
+                  
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium text-gray-900">{salonData.rating || 5.0}</span>
+                      <span className="text-gray-600">({salonData.reviewsCount || 749})</span>
+                    </div>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-gray-600">Fermé</span>
+                    <span className="text-gray-600">- opens on jeudi at 10:00</span>
+                    <span className="text-gray-600">•</span>
+                    <span className="text-gray-600">{salonData.address || 'Whetstone, London'}</span>
+                    <button className="text-blue-600 hover:text-blue-700 font-medium">
+                      Afficher l'itinéraire
+                    </button>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setIsFavorite(!isFavorite)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                  </button>
+                  <button 
+                    onClick={() => navigator.share?.({ title: salonData.name, url: window.location.href })}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <Share2 className="h-5 w-5 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
