@@ -602,10 +602,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Middleware hybride pour vérifier l'auth Replit OU professionnelle
+  const isAuthenticatedHybrid = async (req: any, res: any, next: any) => {
+    // Vérifier d'abord l'auth professionnelle (sessions classiques)
+    if (req.session && req.session.user) {
+      req.user = req.session.user;
+      return next();
+    }
+    
+    // Sinon utiliser l'auth Replit
+    return isAuthenticated(req, res, next);
+  };
+
   // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+  app.get('/api/auth/user', isAuthenticatedHybrid, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      let userId;
+      
+      // Adapter selon le type d'auth
+      if (req.session && req.session.user) {
+        // Auth professionnelle classique
+        userId = req.user.id;
+      } else {
+        // Auth Replit
+        userId = req.user.claims.sub;
+      }
+      
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
