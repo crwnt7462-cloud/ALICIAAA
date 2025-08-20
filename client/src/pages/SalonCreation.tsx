@@ -349,6 +349,24 @@ export default function SalonCreation() {
     });
   };
 
+  // Fonction pour mettre à jour un champ de service
+  const updateServiceField = (categoryId: string, serviceIndex: number, field: string, value: any) => {
+    setServiceCategories(prev => 
+      prev.map(cat => 
+        cat.id === categoryId 
+          ? {
+              ...cat,
+              services: cat.services.map((service, index) => 
+                index === serviceIndex 
+                  ? { ...service, [field]: value }
+                  : service
+              )
+            }
+          : cat
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* En-tête fixe avec actions d'édition */}
@@ -592,29 +610,68 @@ export default function SalonCreation() {
                                 <div className="space-y-2">
                                   <Input
                                     value={service.name}
+                                    onChange={(e) => updateServiceField(category.id, index, 'name', e.target.value)}
                                     className="font-medium"
                                     placeholder="Nom du service"
                                   />
                                   <Textarea
                                     value={service.description}
+                                    onChange={(e) => updateServiceField(category.id, index, 'description', e.target.value)}
                                     className="text-sm text-gray-600"
                                     placeholder="Description du service"
                                     rows={2}
                                   />
                                   <div className="flex gap-2">
-                                    <Input
-                                      type="number"
-                                      value={service.price}
-                                      className="w-20"
-                                      placeholder="Prix"
-                                    />
+                                    {/* Champ Prix avec boutons +/- */}
+                                    <div className="relative">
+                                      <Input
+                                        type="number"
+                                        value={service.price}
+                                        onChange={(e) => updateServiceField(category.id, index, 'price', parseInt(e.target.value) || 0)}
+                                        className="w-20 pr-8"
+                                        placeholder="Prix"
+                                      />
+                                      <div className="absolute right-1 top-0 bottom-0 flex flex-col">
+                                        <button
+                                          onClick={() => updateServiceField(category.id, index, 'price', service.price + 5)}
+                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                        >
+                                          <ChevronUp className="w-3 h-3" />
+                                        </button>
+                                        <button
+                                          onClick={() => updateServiceField(category.id, index, 'price', Math.max(0, service.price - 5))}
+                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                        >
+                                          <ChevronDown className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    </div>
                                     <span className="self-center text-sm text-gray-500">€</span>
-                                    <Input
-                                      type="number"
-                                      value={service.duration}
-                                      className="w-20"
-                                      placeholder="Durée"
-                                    />
+                                    
+                                    {/* Champ Durée avec boutons +/- */}
+                                    <div className="relative">
+                                      <Input
+                                        type="number"
+                                        value={service.duration}
+                                        onChange={(e) => updateServiceField(category.id, index, 'duration', parseInt(e.target.value) || 0)}
+                                        className="w-20 pr-8"
+                                        placeholder="Durée"
+                                      />
+                                      <div className="absolute right-1 top-0 bottom-0 flex flex-col">
+                                        <button
+                                          onClick={() => updateServiceField(category.id, index, 'duration', service.duration + 15)}
+                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                        >
+                                          <ChevronUp className="w-3 h-3" />
+                                        </button>
+                                        <button
+                                          onClick={() => updateServiceField(category.id, index, 'duration', Math.max(15, service.duration - 15))}
+                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                        >
+                                          <ChevronDown className="w-3 h-3" />
+                                        </button>
+                                      </div>
+                                    </div>
                                     <span className="self-center text-sm text-gray-500">min</span>
                                   </div>
                                 </div>
