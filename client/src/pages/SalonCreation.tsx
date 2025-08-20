@@ -18,7 +18,11 @@ import {
   Palette,
   ExternalLink,
   Eye,
-  X
+  X,
+  GripVertical,
+  Camera,
+  Facebook,
+  Instagram
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -235,6 +239,56 @@ export default function SalonCreation() {
     });
   };
 
+  // Fonction pour déplacer une catégorie
+  const moveCategoryUp = (categoryId: string) => {
+    setServiceCategories(prev => {
+      const index = prev.findIndex(cat => cat.id === categoryId);
+      if (index > 0) {
+        const newOrder = [...prev];
+        [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+        return newOrder;
+      }
+      return prev;
+    });
+  };
+
+  const moveCategoryDown = (categoryId: string) => {
+    setServiceCategories(prev => {
+      const index = prev.findIndex(cat => cat.id === categoryId);
+      if (index < prev.length - 1) {
+        const newOrder = [...prev];
+        [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+        return newOrder;
+      }
+      return prev;
+    });
+  };
+
+  // Fonction pour changer la photo d'un membre
+  const changeMemberPhoto = (memberId: number) => {
+    // Simulation du changement de photo
+    const photos = [
+      'https://images.unsplash.com/photo-1494790108755-2616b00bd264?w=150&h=150&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+    ];
+    const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
+    
+    setTeamMembers(prev => 
+      prev.map(member => 
+        member.id === memberId 
+          ? { ...member, avatar: randomPhoto }
+          : member
+      )
+    );
+    
+    toast({
+      title: "Photo mise à jour",
+      description: "La photo du membre a été changée",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* En-tête fixe avec actions d'édition */}
@@ -394,25 +448,45 @@ export default function SalonCreation() {
               <Card key={category.id}>
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <button
-                      onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
-                      className="flex items-center gap-2 text-left flex-1"
-                    >
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{category.name}</h3>
-                        <p className="text-sm text-gray-600">{category.description}</p>
-                      </div>
-                      <div className="ml-auto flex items-center gap-2">
-                        <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                          {category.services.length} service{category.services.length > 1 ? 's' : ''}
-                        </span>
-                        {expandedCategory === category.id ? (
-                          <ChevronUp className="w-4 h-4 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-400" />
-                        )}
-                      </div>
-                    </button>
+                    <div className="flex items-center gap-2 flex-1">
+                      {isEditing && (
+                        <div className="flex flex-col gap-1 mr-2">
+                          <button
+                            onClick={() => moveCategoryUp(category.id)}
+                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            disabled={serviceCategories.findIndex(cat => cat.id === category.id) === 0}
+                          >
+                            <ChevronUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={() => moveCategoryDown(category.id)}
+                            className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                            disabled={serviceCategories.findIndex(cat => cat.id === category.id) === serviceCategories.length - 1}
+                          >
+                            <ChevronDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
+                        className="flex items-center gap-2 text-left flex-1"
+                      >
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                          <p className="text-sm text-gray-600">{category.description}</p>
+                        </div>
+                        <div className="ml-auto flex items-center gap-2">
+                          <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                            {category.services.length} service{category.services.length > 1 ? 's' : ''}
+                          </span>
+                          {expandedCategory === category.id ? (
+                            <ChevronUp className="w-4 h-4 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
+                          )}
+                        </div>
+                      </button>
+                    </div>
                     
                     {isEditing && (
                       <Button
@@ -520,11 +594,21 @@ export default function SalonCreation() {
               <Card key={member.id}>
                 <CardContent className="p-4">
                   <div className="flex items-start gap-4">
-                    <img 
-                      src={member.avatar}
-                      className="w-16 h-16 rounded-full object-cover"
-                      alt={member.name}
-                    />
+                    <div className="relative">
+                      <img 
+                        src={member.avatar}
+                        className="w-16 h-16 rounded-full object-cover"
+                        alt={member.name}
+                      />
+                      {isEditing && (
+                        <button
+                          onClick={() => changeMemberPhoto(member.id)}
+                          className="absolute -bottom-1 -right-1 bg-white border-2 border-gray-200 rounded-full p-1 hover:bg-gray-50"
+                        >
+                          <Camera className="w-3 h-3 text-gray-600" />
+                        </button>
+                      )}
+                    </div>
                     <div className="flex-1">
                       {isEditing ? (
                         <div className="space-y-2">
@@ -648,8 +732,12 @@ export default function SalonCreation() {
                       <Input placeholder="01 23 45 67 89" />
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1 block">Site web</label>
-                      <Input placeholder="https://votre-site.fr" />
+                      <label className="text-sm font-medium text-gray-700 mb-1 block">Facebook</label>
+                      <Input placeholder="https://facebook.com/votre-salon" />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-1 block">Instagram</label>
+                      <Input placeholder="https://instagram.com/votre-salon" />
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-1 block">Horaires</label>
@@ -671,6 +759,14 @@ export default function SalonCreation() {
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4 text-gray-400" />
                       <span className="text-sm">01 23 45 67 89</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Facebook className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm">@salon-avyento</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Instagram className="w-4 h-4 text-pink-600" />
+                      <span className="text-sm">@salon.avyento</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-gray-400" />
