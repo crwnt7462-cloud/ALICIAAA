@@ -658,9 +658,7 @@ export default function PlanningResponsive() {
         </div>
 
         {/* Navigation mobile - Barre en bas REMISE */}
-        <div className="lg:hidden">
-          <BottomNavigation />
-        </div>
+
       </div>
 
       {/* Version Desktop - Fonctionnelle avec vues dynamiques */}
