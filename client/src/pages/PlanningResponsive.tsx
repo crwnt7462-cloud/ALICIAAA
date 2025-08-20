@@ -621,7 +621,62 @@ export default function PlanningResponsive() {
 
 
 
-        {/* Navigation mobile */}
+        {/* Interface de création de créneaux mobile */}
+        <div className="bg-white p-4 space-y-2">
+          {Array.from({ length: 12 }, (_, i) => {
+            const hour = 8 + i;
+            const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
+            const dayEvents = beautySampleEvents.filter(() => Math.random() > 0.7);
+            const eventsAtThisTime = dayEvents.filter(event => event.time.startsWith(timeSlot));
+            const hasClientEvent = eventsAtThisTime.some(event => event.type === 'client');
+            
+            return (
+              <div key={`mobile-slot-${hour}`} className="relative min-h-[60px] border border-gray-200 rounded-lg">
+                {/* Heure */}
+                <div className="absolute left-3 top-3 text-sm font-medium text-gray-600">
+                  {timeSlot}
+                </div>
+                
+                {/* Zone cliquable si pas de RDV client */}
+                {!hasClientEvent && eventsAtThisTime.length === 0 && (
+                  <div
+                    className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-400 hover:bg-purple-50 transition-colors cursor-pointer"
+                    onClick={() => {
+                      console.log(`📱 Mobile - Clic sur créneau: ${timeSlot}`);
+                      handleTimeSlotClick(timeSlot, selectedDate);
+                    }}
+                  >
+                    <Plus className="h-5 w-5 text-gray-400" />
+                    <span className="ml-2 text-sm text-gray-500">Ajouter</span>
+                  </div>
+                )}
+                
+                {/* Événements existants */}
+                <div className="pl-16 pr-3 py-3 space-y-1">
+                  {eventsAtThisTime.map((event, eventIndex) => (
+                    <div
+                      key={eventIndex}
+                      className={`p-2 rounded border-l-4 ${
+                        event.type === 'blocked' 
+                          ? 'bg-orange-50 border-orange-400 border-dashed'
+                          : 'bg-white border-l-purple-400'
+                      }`}
+                    >
+                      <div className={`text-sm font-medium ${event.type === 'blocked' ? 'text-orange-700' : 'text-gray-900'}`}>
+                        {event.title}
+                      </div>
+                      <div className={`text-xs ${event.type === 'blocked' ? 'text-orange-600' : 'text-gray-600'}`}>
+                        {event.client}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Navigation mobile SANS sidebar */}
         <MobileBottomNav />
       </div>
 
