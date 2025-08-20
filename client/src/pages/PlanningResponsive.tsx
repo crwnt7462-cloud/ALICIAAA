@@ -255,8 +255,15 @@ export default function PlanningResponsive() {
   return (
     <>
       {/* Version Mobile - Interface COMPLÈTEMENT indépendante pleine largeur SANS SIDEBAR */}
-      <div className="lg:hidden fixed inset-0 bg-white z-50 overflow-hidden"
-           style={{ width: '100vw', height: '100vh', left: 0, top: 0 }}>
+      <div className="lg:hidden block fixed inset-0 bg-white z-[9999] overflow-hidden"
+           style={{ 
+             width: '100vw', 
+             height: '100vh', 
+             left: 0, 
+             top: 0,
+             position: 'fixed !important',
+             display: 'block !important'
+           }}>
         {/* Header mobile avec navigation */}
         <div className="bg-white p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
