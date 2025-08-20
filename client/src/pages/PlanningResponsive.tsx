@@ -217,7 +217,8 @@ export default function PlanningResponsive() {
     const blockedSlot = {
       ...newAppointment,
       type: 'blocked',
-      clientName: 'BLOQUÉ',
+      title: newAppointment.clientName || 'BLOQUÉ',
+      client: newAppointment.clientName || 'Créneau bloqué',
       service: blockReason || 'Créneau bloqué',
       notes: blockReason
     };
@@ -363,24 +364,11 @@ export default function PlanningResponsive() {
 
   return (
     <>
-      {/* Version Mobile - Interface scrollable */}
-      <div className="lg:hidden block min-h-screen bg-white overflow-y-auto">
-        {/* Header mobile avec navigation */}
+      {/* Version Mobile - Interface propre SANS sidebar */}
+      <div className="lg:hidden block min-h-screen bg-gray-50">
+        {/* Header mobile simple */}
         <div className="bg-white p-4 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <h1 className="text-lg font-semibold">Planning</h1>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <User className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
+          <h1 className="text-xl font-bold text-center text-gray-900">Planning</h1>
         </div>
 
 
@@ -868,13 +856,13 @@ export default function PlanningResponsive() {
                                       right: `${offset}px`
                                     }}
                                   >
-                                    <div className={`font-medium text-sm ${event.type === 'blocked' ? 'text-orange-700' : 'text-gray-900'}`}>
+                                    <div className={`font-medium text-xs truncate ${event.type === 'blocked' ? 'text-orange-700' : 'text-gray-900'}`}>
                                       {event.title}
                                     </div>
-                                    <div className={`text-xs ${event.type === 'blocked' ? 'text-orange-600' : 'text-gray-600'}`}>
+                                    <div className={`text-xs truncate ${event.type === 'blocked' ? 'text-orange-600' : 'text-gray-600'}`}>
                                       {event.client}
                                     </div>
-                                    <div className={`text-xs ${event.type === 'blocked' ? 'text-orange-500' : 'text-gray-500'}`}>
+                                    <div className={`text-xs truncate ${event.type === 'blocked' ? 'text-orange-500' : 'text-gray-500'}`}>
                                       {event.time}
                                     </div>
                                   </div>
@@ -1201,13 +1189,23 @@ export default function PlanningResponsive() {
             </div>
 
             <div>
-              <Label htmlFor="blockReason">Raison du blocage</Label>
+              <Label htmlFor="blockTitle">Nom du créneau bloqué</Label>
+              <Input
+                id="blockTitle"
+                value={newAppointment.clientName}
+                onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
+                placeholder="Ex: Pause déjeuner, Formation..."
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="blockReason">Raison du blocage (optionnel)</Label>
               <Textarea
                 id="blockReason"
                 value={blockReason}
                 onChange={(e) => setBlockReason(e.target.value)}
-                placeholder="Pause déjeuner, formation, congé..."
-                rows={3}
+                placeholder="Détails supplémentaires..."
+                rows={2}
               />
             </div>
 
