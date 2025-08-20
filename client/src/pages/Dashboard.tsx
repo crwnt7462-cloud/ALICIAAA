@@ -18,7 +18,8 @@ import {
   Clock, 
   DollarSign,
   ChevronDown,
-  Eye
+  Eye,
+  LogOut
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -194,6 +195,17 @@ export default function Dashboard() {
               >
                 <SettingsIcon className="w-4 h-4" />
                 <span>Settings</span>
+              </Button>
+
+              <Button 
+                onClick={() => window.location.href = '/api/logout'}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                title="Se déconnecter"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">Déconnexion</span>
               </Button>
               
               <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
