@@ -367,12 +367,12 @@ export default function ModernSalonCompact() {
             <ArrowLeft className="h-5 w-5 lg:h-6 lg:w-6" />
           </button>
 
-          {/* Logo Avyento centré */}
+          {/* Logo Avyento centré - 90px */}
           <div className="flex-1 flex justify-center">
             <img 
               src={logoAvyento} 
               alt="Avyento" 
-              className="h-8 lg:h-12 w-auto object-contain drop-shadow-sm"
+              className="h-[90px] w-auto object-contain drop-shadow-sm"
             />
           </div>
 
@@ -577,21 +577,6 @@ export default function ModernSalonCompact() {
                         <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 mt-0.5 flex-shrink-0" />
                         <span>{salonData.address}</span>
                       </div>
-                    </div>
-                    
-                    {/* Carte interactive (iframe Google Maps) */}
-                    <div className="bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden border border-white/40">
-                      <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.2739374821735!2d2.2944813156743623!3d48.873792007928746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66fda5b1a8af5%3A0x6ea9a6a56b1c6a3a!2sChamps-%C3%89lys%C3%A9es%2C%2075008%20Paris!5e0!3m2!1sfr!2sfr!4v1629800000000!5m2!1sfr!2sfr"
-                        width="100%"
-                        height="200"
-                        style={{ border: 0 }}
-                        allowFullScreen
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        className="w-full h-32 sm:h-48 lg:h-56"
-                        title="Localisation du salon"
-                      />
                     </div>
                     
                     <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
