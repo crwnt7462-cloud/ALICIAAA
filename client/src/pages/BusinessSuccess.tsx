@@ -51,8 +51,8 @@ export default function BusinessSuccess() {
               <h3 className="font-medium text-gray-900 mb-2">Support client :</h3>
               <p className="text-sm text-gray-600">
                 Une question ? Contactez-nous à{" "}
-                <a href="mailto:support@avyento.fr" className="text-violet-600 hover:underline">
-                  support@avyento.fr
+                <a href="mailto:support@avyento.com" className="text-violet-600 hover:underline">
+                  support@avyento.com
                 </a>
               </p>
             </div>

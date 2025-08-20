@@ -122,11 +122,11 @@ export default function StripeCancel() {
               </p>
               <div className="flex items-center justify-center gap-4">
                 <a 
-                  href="mailto:support@salon-app.com" 
+                  href="mailto:support@avyento.com" 
                   className="text-sm text-violet-600 hover:underline flex items-center gap-1"
                 >
                   <CreditCard className="w-4 h-4" />
-                  support@salon-app.com
+                  support@avyento.com
                 </a>
                 <span className="text-gray-300">•</span>
                 <a 

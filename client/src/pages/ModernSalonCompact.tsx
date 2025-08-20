@@ -1002,7 +1002,7 @@ export default function ModernSalonCompact() {
               <h4 className="text-base font-semibold">Support</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="/centre-aide" className="hover:text-white transition-colors">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="mailto:support@avyento.com?subject=Contact%20depuis%20le%20salon%20Avyento" className="hover:text-white transition-colors">Contact</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">CGU</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Confidentialité</a></li>
               </ul>

@@ -1380,10 +1380,13 @@ export default function PublicLanding() {
             className="text-center mt-12"
           >
             <p className="text-gray-600 mb-4">Vous ne trouvez pas la réponse à votre question ?</p>
-            <button className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center">
+            <a 
+              href="mailto:support@avyento.com?subject=Question%20depuis%20le%20site%20Avyento"
+              className="glass-button text-black px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl inline-flex items-center"
+            >
               Contactez notre support
               <ArrowRight className="w-4 h-4 ml-2" />
-            </button>
+            </a>
           </motion.div>
         </div>
       </section>

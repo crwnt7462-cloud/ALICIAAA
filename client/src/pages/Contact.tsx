@@ -13,7 +13,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      description: "contact@beautyapp.com",
+      description: "support@avyento.com",
       subtitle: "Réponse sous 24h",
       color: "from-blue-100 to-cyan-100"
     },
