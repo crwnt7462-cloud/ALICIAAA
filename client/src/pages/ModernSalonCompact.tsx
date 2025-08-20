@@ -417,16 +417,7 @@ export default function ModernSalonCompact() {
           </div>
         </div>
 
-        {/* Bouton d'action principal - MOBILE RESPONSIVE */}
-        <div className="flex gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <button 
-            onClick={() => window.open(`tel:+33123456789`)}
-            className="flex items-center gap-2 bg-white/80 backdrop-blur-xl border border-white/40 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium hover:bg-white/90 transition-all duration-300 shadow-2xl hover:shadow-white/10"
-          >
-            <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-            <span className="text-sm sm:text-base">Appeler</span>
-          </button>
-        </div>
+
 
         {/* Onglets modernes - MOBILE RESPONSIVE */}
         <div className="mb-6 sm:mb-8">
