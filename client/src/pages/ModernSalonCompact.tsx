@@ -9,6 +9,7 @@ export default function ModernSalonCompact() {
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategory, setExpandedCategory] = useState<string | null>('coiffure');
   const [selectedServiceReviews, setSelectedServiceReviews] = useState<{serviceName: string, reviews: any[]} | null>(null);
+  const [activeGalleryCategory, setActiveGalleryCategory] = useState('coiffure');
   
   // Données du salon - STATIQUES UNIQUEMENT
   const salonData = {
@@ -198,6 +199,121 @@ export default function ModernSalonCompact() {
       date: '3 semaines',
       comment: 'Balayage sublime ! Emma a parfaitement cerné mes attentes. Résultat naturel et lumineux.',
       service: 'Mèches & Balayage'
+    }
+  ];
+
+  // Galerie organisée par catégories avec noms de prestations
+  const galleryCategories = [
+    {
+      id: 'coiffure',
+      name: 'Coiffure',
+      count: 8,
+      images: [
+        {
+          url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&h=400&fit=crop&q=80',
+          service: 'Coupe & Brushing femme',
+          description: 'Coupe moderne avec brushing'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=400&fit=crop&q=80',
+          service: 'Coupe homme classique',
+          description: 'Coupe traditionnelle masculine'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400&h=400&fit=crop&q=80',
+          service: 'Coloration complète',
+          description: 'Coloration châtain doré'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&h=400&fit=crop&q=80',
+          service: 'Mèches & Balayage',
+          description: 'Balayage naturel blond'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&h=400&fit=crop&q=80',
+          service: 'Coupe tendance homme',
+          description: 'Coupe moderne dégradée'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&h=400&fit=crop&q=80',
+          service: 'Mise en plis',
+          description: 'Brushing volume et brillance'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=400&fit=crop&q=80',
+          service: 'Coloration fantasy',
+          description: 'Couleurs créatives'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=400&fit=crop&q=80',
+          service: 'Coiffage mariée',
+          description: 'Chignon élégant'
+        }
+      ]
+    },
+    {
+      id: 'esthetique',
+      name: 'Esthétique',
+      count: 6,
+      images: [
+        {
+          url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&q=80',
+          service: 'Soin visage hydratant',
+          description: 'Soin complet du visage'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=400&h=400&fit=crop&q=80',
+          service: 'Épilation jambes',
+          description: 'Épilation à la cire'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=400&h=400&fit=crop&q=80',
+          service: 'Soin anti-âge',
+          description: 'Traitement raffermissant'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&q=80',
+          service: 'Manucure française',
+          description: 'Pose vernis classique'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop&q=80',
+          service: 'Extension de cils',
+          description: 'Pose cils volume'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop&q=80',
+          service: 'Massage relaxant',
+          description: 'Massage bien-être'
+        }
+      ]
+    },
+    {
+      id: 'avant-apres',
+      name: 'Avant/Après',
+      count: 4,
+      images: [
+        {
+          url: 'https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400&h=400&fit=crop&q=80',
+          service: 'Transformation coloration',
+          description: 'Du brun au blond'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1535130720025-72bc6eb37c44?w=400&h=400&fit=crop&q=80',
+          service: 'Relooking complet',
+          description: 'Coupe et couleur'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1494790108755-2616c479e32?w=400&h=400&fit=crop&q=80',
+          service: 'Soin réparateur',
+          description: 'Cheveux abîmés à sains'
+        },
+        {
+          url: 'https://images.unsplash.com/photo-1542596594-b5c2c2f51af9?w=400&h=400&fit=crop&q=80',
+          service: 'Coiffage événement',
+          description: 'Style casual à glamour'
+        }
+      ]
     }
   ];
 
@@ -500,25 +616,43 @@ export default function ModernSalonCompact() {
           {activeTab === 'galerie' && (
             <div className="p-6 lg:p-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Nos réalisations</h2>
+              
+              {/* Navigation des catégories */}
+              <div className="mb-6">
+                <div className="flex justify-center gap-2 sm:gap-4 p-1 sm:p-2 bg-gray-100/80 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-lg overflow-x-auto">
+                  {galleryCategories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setActiveGalleryCategory(category.id)}
+                      className={`py-2 sm:py-3 px-3 sm:px-6 rounded-lg sm:rounded-xl font-medium transition-all duration-300 text-sm sm:text-base whitespace-nowrap flex-shrink-0 ${
+                        activeGalleryCategory === category.id 
+                          ? 'bg-white text-gray-900 shadow-lg' 
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-white/50'
+                      }`}
+                    >
+                      {category.name} ({category.count})
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Galerie de la catégorie active */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[
-                  'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=300&h=300&fit=crop&q=80',
-                  'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=300&fit=crop&q=80'
-                ].map((image, index) => (
-                  <div key={index} className="bg-white/60 backdrop-blur-xl border border-white/40 rounded-2xl p-2 hover:bg-white/80 transition-all duration-300 shadow-lg">
-                    <img
-                      src={image}
-                      alt={`Réalisation ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-xl"
-                    />
-                  </div>
-                ))}
+                {galleryCategories
+                  .find(cat => cat.id === activeGalleryCategory)
+                  ?.images.map((image, index) => (
+                    <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl overflow-hidden hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300 shadow-lg">
+                      <img
+                        src={image.url}
+                        alt={image.service}
+                        className="w-full h-32 sm:h-40 object-cover"
+                      />
+                      <div className="p-3">
+                        <h4 className="font-semibold text-gray-900 text-sm mb-1">{image.service}</h4>
+                        <p className="text-gray-600 text-xs">{image.description}</p>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
           )}
