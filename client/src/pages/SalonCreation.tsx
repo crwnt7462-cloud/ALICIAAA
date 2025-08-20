@@ -971,16 +971,37 @@ export default function SalonCreation() {
             {/* Aperçu simplifié */}
             <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
               <h4 className="font-semibold mb-4 text-gray-900">Aperçu</h4>
-              <Button 
+              <div 
                 style={{
                   backgroundColor: primaryColor,
                   color: 'white',
-                  border: 'none'
+                  borderRadius: '12px',
+                  padding: '12px 16px',
+                  textAlign: 'center',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  border: 'none',
+                  boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                  transition: 'all 0.2s',
+                  width: '100%',
+                  height: '48px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
-                className="w-full h-12 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 font-semibold hover:opacity-90"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = '0.9';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = '1';
+                  e.currentTarget.style.transform = 'translateY(0px)';
+                  e.currentTarget.style.boxShadow = '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)';
+                }}
               >
                 Réserver maintenant
-              </Button>
+              </div>
             </div>
 
             {/* Actions */}
