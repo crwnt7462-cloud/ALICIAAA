@@ -659,9 +659,217 @@ export default function PlanningResponsive() {
     }
   };
 
+  // Fonctions pour version mobile selon maquette
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
+  const getCurrentTimePosition = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    // Calcul position en fonction des heures (8h = position 0, chaque heure = 80px)
+    return Math.max(0, (hours - 8) * 80 + (minutes / 60) * 80);
+  };
+
+  const getAppointmentsForDate = (date: Date) => {
+    return beautySampleEvents.filter(event => {
+      // Simuler des rendez-vous pour la date sélectionnée
+      const eventDate = new Date();
+      eventDate.setHours(parseInt(event.time.split(':')[0]));
+      return date.toDateString() === new Date().toDateString();
+    }).map(event => ({
+      id: event.id,
+      serviceName: event.title,
+      clientName: event.client,
+      startTime: event.time.split('-')[0],
+      endTime: event.time.split('-')[1],
+      status: event.status,
+      notes: event.notes
+    }));
+  };
+
+  const isAppointmentCurrent = (appointment: any) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTime = currentHour * 60 + currentMinute;
+    
+    const [startHour, startMinute] = appointment.startTime.split(':').map(Number);
+    const [endHour, endMinute] = appointment.endTime.split(':').map(Number);
+    const startTime = startHour * 60 + startMinute;
+    const endTime = endHour * 60 + endMinute;
+    
+    return currentTime >= startTime && currentTime <= endTime;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full">
-      <div className="container mx-auto p-4 lg:p-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Version Mobile - Interface selon maquette */}
+      <div className="lg:hidden min-h-screen bg-white">
+        {/* Header mobile avec navigation */}
+        <div className="bg-white p-4 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-lg font-semibold">Appointment date</h1>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Share className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Download className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sélecteur de mois */}
+        <div className="bg-white px-4 py-2 border-b border-gray-100">
+          <Select value={currentMonth.toLowerCase()} onValueChange={(value) => {
+            const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            const monthIndex = monthNames.indexOf(value);
+            if (monthIndex !== -1) {
+              setSelectedMonth(monthIndex);
+            }
+          }}>
+            <SelectTrigger className="w-32 h-8">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'].map((month) => (
+                <SelectItem key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Calendrier mensuel compact */}
+        <div className="bg-white p-4 border-b border-gray-200">
+          {/* En-tête des jours */}
+          <div className="grid grid-cols-7 gap-1 mb-2">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+              <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
+                {day}
+              </div>
+            ))}
+          </div>
+          
+          {/* Grille du calendrier */}
+          <div className="grid grid-cols-7 gap-1">
+            {monthDays.slice(0, 35).map((date, index) => {
+              const isToday = date.toDateString() === new Date().toDateString();
+              const isCurrentMonth = date.getMonth() === selectedMonth;
+              const isSelected = selectedDate?.toDateString() === date.toDateString();
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => setSelectedDate(date)}
+                  className={`w-10 h-10 text-sm rounded-lg transition-all ${
+                    !isCurrentMonth 
+                      ? 'text-gray-300' 
+                      : isSelected
+                        ? 'bg-green-500 text-white font-bold'
+                        : isToday
+                          ? 'bg-purple-100 text-purple-700 font-bold'
+                          : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {date.getDate()}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Timeline des rendez-vous */}
+        <div className="bg-white flex-1 overflow-y-auto pb-20">
+          <div className="relative p-4">
+            {/* Ligne d'heure actuelle (violette selon votre demande) */}
+            <div 
+              className="absolute left-0 right-0 z-10 flex items-center px-4"
+              style={{ top: `${getCurrentTimePosition()}px` }}
+            >
+              <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white"></div>
+              <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
+            </div>
+
+            {/* Rendez-vous de la journée sélectionnée */}
+            {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
+              const isCurrentAppointment = isAppointmentCurrent(appointment);
+              
+              return (
+                <div key={index} className="relative mb-6">
+                  {/* Ligne de temps */}
+                  <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  
+                  {/* Point de temps */}
+                  <div className="flex items-start">
+                    <div className="flex flex-col items-center mr-4">
+                      <span className="text-xs text-gray-500 mb-2 font-medium">
+                        {appointment.startTime}
+                      </span>
+                      <div className={`w-3 h-3 rounded-full border-2 ${
+                        isCurrentAppointment 
+                          ? 'bg-purple-500 border-purple-500' 
+                          : appointment.status === 'confirmed'
+                            ? 'bg-green-500 border-green-500'
+                            : 'bg-gray-300 border-gray-300'
+                      }`}></div>
+                    </div>
+                    
+                    <div className={`flex-1 p-3 rounded-lg border ${
+                      isCurrentAppointment 
+                        ? 'bg-purple-50 border-purple-200' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
+                      <h3 className="font-semibold text-gray-900 mb-1">{appointment.serviceName}</h3>
+                      <div className="flex items-center text-xs text-gray-500 mb-1">
+                        <User className="w-3 h-3 mr-1" />
+                        <span>{appointment.clientName}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500 mb-1">
+                        <CalendarDays className="w-3 h-3 mr-1" />
+                        <span>{selectedDate?.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Clock className="w-3 h-3 mr-1" />
+                        <span>{appointment.startTime} - {appointment.endTime}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* Message si pas de rendez-vous */}
+            {getAppointmentsForDate(selectedDate || new Date()).length === 0 && (
+              <div className="p-8 text-center">
+                <CalendarDays className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">Aucun rendez-vous prévu</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Bouton flottant d'ajout */}
+        <div className="fixed bottom-20 right-4">
+          <Button 
+            size="lg" 
+            className="w-14 h-14 rounded-full bg-black hover:bg-gray-800 shadow-xl"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            <Plus className="h-6 w-6 text-white" />
+          </Button>
+        </div>
+
+        {/* Navigation mobile */}
+        <MobileBottomNav />
+      </div>
+
+      {/* Version Desktop - Inchangée */}
+      <div className="hidden lg:block min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20 lg:max-w-none lg:w-full">
+        <div className="container mx-auto p-4 lg:p-6">
         
         {/* Header avec insights */}
         <motion.div
