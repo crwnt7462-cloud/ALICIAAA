@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
-import { Sidebar } from "@/components/Sidebar";
+// import { Sidebar } from "@/components/Sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types simplifiés pour éviter les erreurs
@@ -41,6 +41,18 @@ type AppointmentType = {
   duration: number;
   notes: string;
   type: 'client' | 'blocked';
+};
+
+type BlockTimeState = {
+  clientName: string;
+  service: string;
+  employee: string;
+  date: string;
+  time: string;
+  endTime?: string;
+  duration: number;
+  notes: string;
+  type: string;
 };
 
 // Suppression temporaire du schema pour corriger l'erreur
@@ -1188,26 +1200,41 @@ export default function PlanningResponsive() {
 
       {/* Dialog pour bloquer un créneau - RESPONSIVE SELON L'IMAGE */}
       <Dialog open={isBlockTimeOpen} onOpenChange={setIsBlockTimeOpen}>
-        <DialogContent className="max-w-[95vw] w-[380px] sm:w-[420px] mx-auto bg-white rounded-3xl border-0 shadow-2xl overflow-hidden p-0">
-          <div className="p-6 sm:p-8">
-            <DialogHeader className="pb-6">
-              <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900 text-center">
+        <DialogContent 
+          className="max-w-[95vw] w-[300px] sm:w-[380px] mx-auto bg-white rounded-3xl border-0 shadow-2xl overflow-hidden p-0"
+          aria-describedby="block-time-description"
+        >
+          <div className="relative p-4 sm:p-6">
+            {/* Bouton fermer responsive */}
+            <button
+              onClick={() => setIsBlockTimeOpen(false)}
+              className="absolute right-3 top-3 z-10 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+              aria-label="Fermer"
+            >
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
+            
+            <DialogHeader className="pb-4 sm:pb-6">
+              <DialogTitle className="text-lg sm:text-xl font-bold text-gray-900 text-center pr-8">
                 Bloquer un créneau
               </DialogTitle>
+              <p id="block-time-description" className="sr-only">
+                Formulaire pour bloquer un créneau horaire dans le planning
+              </p>
             </DialogHeader>
 
-            <div className="space-y-5 sm:space-y-6">
-              {/* Employé */}
+            <div className="space-y-4 sm:space-y-5">
+              {/* Employé - Mobile optimisé */}
               <div>
-                <Label htmlFor="employee" className="text-base font-semibold text-gray-900 block mb-3">
+                <Label htmlFor="employee" className="text-sm sm:text-base font-semibold text-gray-900 block mb-2">
                   Employé
                 </Label>
                 <Select 
                   value={newAppointment.employee} 
                   onValueChange={(value) => setNewAppointment({...newAppointment, employee: value})}
                 >
-                  <SelectTrigger className="w-full h-14 text-base border-2 border-purple-200 rounded-2xl focus:border-purple-500">
-                    <SelectValue placeholder="Choisir un employé" className="text-gray-500" />
+                  <SelectTrigger className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-purple-200 rounded-xl sm:rounded-2xl focus:border-purple-500">
+                    <SelectValue placeholder="Choisir un employé" />
                   </SelectTrigger>
                   <SelectContent>
                     {employees.map((employee) => (
@@ -1219,9 +1246,9 @@ export default function PlanningResponsive() {
                 </Select>
               </div>
 
-              {/* Date */}
+              {/* Date - Mobile optimisé */}
               <div>
-                <Label htmlFor="date" className="text-base font-semibold text-gray-900 block mb-3">
+                <Label htmlFor="date" className="text-sm sm:text-base font-semibold text-gray-900 block mb-2">
                   Date
                 </Label>
                 <Input
@@ -1229,40 +1256,40 @@ export default function PlanningResponsive() {
                   type="date"
                   value={newAppointment.date}
                   onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
-                  className="w-full h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500"
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-purple-500"
                 />
               </div>
 
-              {/* Heure de début et fin */}
+              {/* Heure - Responsive pour mobile */}
               <div>
-                <Label className="text-base font-semibold text-gray-900 block mb-3">
-                  Date & Heure
+                <Label className="text-sm sm:text-base font-semibold text-gray-900 block mb-2">
+                  Horaires
                 </Label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <Select 
                     value={newAppointment.time} 
                     onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
                   >
-                    <SelectTrigger className="flex-1 h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500">
-                      <SelectValue placeholder="06:00" className="text-gray-500" />
+                    <SelectTrigger className="flex-1 h-12 sm:h-14 text-sm sm:text-base border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-purple-500">
+                      <SelectValue placeholder="Début" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-48">
                       {timeSlots.map((time) => (
                         <SelectItem key={time} value={time}>{time}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                   
-                  <span className="text-gray-500 text-lg font-medium">à</span>
+                  <span className="text-gray-500 text-sm sm:text-lg font-medium">à</span>
                   
                   <Select 
                     value={newAppointment.endTime || ""} 
-                    onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value})}
+                    onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value} as any)}
                   >
-                    <SelectTrigger className="flex-1 h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500">
-                      <SelectValue placeholder="Fin" className="text-gray-500" />
+                    <SelectTrigger className="flex-1 h-12 sm:h-14 text-sm sm:text-base border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-purple-500">
+                      <SelectValue placeholder="Fin" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-48">
                       {timeSlots.map((time) => (
                         <SelectItem key={time} value={time}>{time}</SelectItem>
                       ))}
@@ -1271,49 +1298,50 @@ export default function PlanningResponsive() {
                 </div>
               </div>
 
-              {/* Nom du créneau bloqué */}
+              {/* Nom du créneau - Mobile optimisé */}
               <div>
-                <Label htmlFor="blockTitle" className="text-base font-semibold text-gray-900 block mb-3">
-                  Nom du créneau bloqué
+                <Label htmlFor="blockTitle" className="text-sm sm:text-base font-semibold text-gray-900 block mb-2">
+                  Nom du créneau
                 </Label>
                 <Input
                   id="blockTitle"
                   value={newAppointment.clientName}
                   onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
-                  placeholder="Ex: Pause déjeuner, Formation..."
-                  className="w-full h-14 text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500"
+                  placeholder="Ex: Pause déjeuner..."
+                  className="w-full h-12 sm:h-14 text-sm sm:text-base border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-purple-500"
                 />
               </div>
 
-              {/* Raison du blocage */}
+              {/* Raison - Mobile optimisé */}
               <div>
-                <Label htmlFor="blockReason" className="text-base font-semibold text-gray-900 block mb-3">
-                  Raison du blocage (optionnel)
+                <Label htmlFor="blockReason" className="text-sm sm:text-base font-semibold text-gray-900 block mb-2">
+                  Raison (optionnel)
                 </Label>
                 <Textarea
                   id="blockReason"
                   value={blockReason}
                   onChange={(e) => setBlockReason(e.target.value)}
-                  placeholder="Détails supplémentaires..."
-                  rows={3}
-                  className="w-full text-base border-2 border-gray-200 rounded-2xl focus:border-purple-500 resize-none"
+                  placeholder="Détails..."
+                  rows={2}
+                  className="w-full text-sm sm:text-base border-2 border-gray-200 rounded-xl sm:rounded-2xl focus:border-purple-500 resize-none"
                 />
               </div>
 
-              <div className="flex gap-4 pt-6">
+              {/* Boutons - Stack mobile, row desktop */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
                 <Button 
                   variant="outline" 
                   onClick={() => setIsBlockTimeOpen(false)}
-                  className="flex-1 h-14 text-base font-semibold border-2 border-gray-200 rounded-2xl hover:bg-gray-50"
+                  className="w-full sm:flex-1 h-12 sm:h-14 text-sm sm:text-base font-semibold border-2 border-gray-200 rounded-xl sm:rounded-2xl hover:bg-gray-50"
                 >
                   Annuler
                 </Button>
                 <Button 
                   onClick={handleSaveBlockTime}
-                  className="flex-1 h-14 text-base font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-2xl"
+                  className="w-full sm:flex-1 h-12 sm:h-14 text-sm sm:text-base font-semibold bg-purple-600 hover:bg-purple-700 text-white rounded-xl sm:rounded-2xl"
                   disabled={!newAppointment.employee || !newAppointment.date || !newAppointment.time}
                 >
-                  Bloquer le créneau
+                  Bloquer
                 </Button>
               </div>
             </div>
