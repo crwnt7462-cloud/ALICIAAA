@@ -213,13 +213,6 @@ export default function SalonPage() {
                 </Badge>
               </div>
             </div>
-            
-            <Button 
-              className="mt-8" 
-              style={getButtonStyle('solid')}
-            >
-              Réserver
-            </Button>
           </div>
         </div>
       </div>
@@ -482,6 +475,11 @@ export default function SalonPage() {
             ))}
           </div>
         )}
+
+        {/* Footer identique à la page d'accueil */}
+        <div className="text-center text-xs text-gray-500 pb-4 mt-8">
+          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+        </div>
       </div>
     </div>
   );
