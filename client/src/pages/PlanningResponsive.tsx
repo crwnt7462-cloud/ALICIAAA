@@ -45,6 +45,20 @@ type AppointmentType = {
 
 const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
+// Générer les heures de 06h00 à 23h00 par tranches de 5min
+const generateTimeSlots = () => {
+  const slots = [];
+  for (let hour = 6; hour <= 23; hour++) {
+    for (let minute = 0; minute < 60; minute += 5) {
+      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      slots.push(timeString);
+    }
+  }
+  return slots;
+};
+
+const timeSlots = generateTimeSlots();
+
 // Employés du salon
 const employees: Employee[] = [
   { 
@@ -1007,7 +1021,7 @@ export default function PlanningResponsive() {
 
       {/* Dialog de choix d'action - OPTIMISÉ MOBILE selon l'image */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="max-w-[85vw] w-[320px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
+        <DialogContent className="max-w-[90vw] w-[300px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
           <div className="relative">
             {/* Bouton fermer optimisé */}
             <button
@@ -1159,7 +1173,7 @@ export default function PlanningResponsive() {
 
       {/* Dialog pour bloquer un créneau */}
       <Dialog open={isBlockTimeOpen} onOpenChange={setIsBlockTimeOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="max-w-[90vw] w-[300px] p-4 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
           <DialogHeader>
             <DialogTitle>Bloquer un créneau</DialogTitle>
           </DialogHeader>
@@ -1183,59 +1197,30 @@ export default function PlanningResponsive() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="date">Date</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={newAppointment.date}
-                  onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label htmlFor="time">Heure</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={newAppointment.time}
-                  onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
-                />
-              </div>
+            <div>
+              <Label htmlFor="date">Date</Label>
+              <Input
+                id="date"
+                type="date"
+                value={newAppointment.date}
+                onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+              />
             </div>
 
             <div>
               <Label htmlFor="timeRange">Date & Heure</Label>
-              <div className="grid grid-cols-3 gap-2 items-center">
+              <div className="grid grid-cols-3 gap-1 items-center">
                 <Select 
                   value={newAppointment.time} 
                   onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
                 >
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger className="h-10 text-sm">
                     <SelectValue placeholder="Début" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="08:00">08:00</SelectItem>
-                    <SelectItem value="08:30">08:30</SelectItem>
-                    <SelectItem value="09:00">09:00</SelectItem>
-                    <SelectItem value="09:30">09:30</SelectItem>
-                    <SelectItem value="10:00">10:00</SelectItem>
-                    <SelectItem value="10:30">10:30</SelectItem>
-                    <SelectItem value="11:00">11:00</SelectItem>
-                    <SelectItem value="11:30">11:30</SelectItem>
-                    <SelectItem value="12:00">12:00</SelectItem>
-                    <SelectItem value="12:30">12:30</SelectItem>
-                    <SelectItem value="13:00">13:00</SelectItem>
-                    <SelectItem value="13:30">13:30</SelectItem>
-                    <SelectItem value="14:00">14:00</SelectItem>
-                    <SelectItem value="14:30">14:30</SelectItem>
-                    <SelectItem value="15:00">15:00</SelectItem>
-                    <SelectItem value="15:30">15:30</SelectItem>
-                    <SelectItem value="16:00">16:00</SelectItem>
-                    <SelectItem value="16:30">16:30</SelectItem>
-                    <SelectItem value="17:00">17:00</SelectItem>
-                    <SelectItem value="17:30">17:30</SelectItem>
-                    <SelectItem value="18:00">18:00</SelectItem>
+                    {timeSlots.map((time) => (
+                      <SelectItem key={time} value={time}>{time}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 
@@ -1245,32 +1230,13 @@ export default function PlanningResponsive() {
                   value={newAppointment.endTime || ""} 
                   onValueChange={(value) => setNewAppointment({...newAppointment, endTime: value})}
                 >
-                  <SelectTrigger className="h-12">
+                  <SelectTrigger className="h-10 text-sm">
                     <SelectValue placeholder="Fin" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="08:30">08:30</SelectItem>
-                    <SelectItem value="09:00">09:00</SelectItem>
-                    <SelectItem value="09:30">09:30</SelectItem>
-                    <SelectItem value="10:00">10:00</SelectItem>
-                    <SelectItem value="10:30">10:30</SelectItem>
-                    <SelectItem value="11:00">11:00</SelectItem>
-                    <SelectItem value="11:30">11:30</SelectItem>
-                    <SelectItem value="12:00">12:00</SelectItem>
-                    <SelectItem value="12:30">12:30</SelectItem>
-                    <SelectItem value="13:00">13:00</SelectItem>
-                    <SelectItem value="13:30">13:30</SelectItem>
-                    <SelectItem value="14:00">14:00</SelectItem>
-                    <SelectItem value="14:30">14:30</SelectItem>
-                    <SelectItem value="15:00">15:00</SelectItem>
-                    <SelectItem value="15:30">15:30</SelectItem>
-                    <SelectItem value="16:00">16:00</SelectItem>
-                    <SelectItem value="16:30">16:30</SelectItem>
-                    <SelectItem value="17:00">17:00</SelectItem>
-                    <SelectItem value="17:30">17:30</SelectItem>
-                    <SelectItem value="18:00">18:00</SelectItem>
-                    <SelectItem value="18:30">18:30</SelectItem>
-                    <SelectItem value="19:00">19:00</SelectItem>
+                    {timeSlots.map((time) => (
+                      <SelectItem key={time} value={time}>{time}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
