@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'wouter';
-import { SalonPageTemplate } from '@/components/SalonPageTemplate';
+import SalonPageTemplateFixed from '@/components/SalonPageTemplateFixed';
 import { useSalonPageTemplate, getDefaultSalonData } from '@/hooks/useSalonPageTemplate';
 
 export default function SalonDynamicPage() {
@@ -39,12 +39,10 @@ export default function SalonDynamicPage() {
   }
 
   return (
-    <SalonPageTemplate
+    <SalonPageTemplateFixed
+      salonSlug={salonSlug}
       salonData={finalSalonData}
-      services={finalServices}
-      staff={finalStaff}
-      reviews={finalReviews}
-      isOwner={isOwner}
+      customColors={finalSalonData?.customColors}
     />
   );
 }

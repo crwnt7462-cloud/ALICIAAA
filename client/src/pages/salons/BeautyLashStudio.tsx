@@ -1,6 +1,12 @@
-import React from 'react';
-import SalonPageFixed from '@/pages/SalonPageFixed';
+import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
+import { beautyLashStudioSalon } from "@/utils/salonTemplateData";
 
 export default function BeautyLashStudio() {
-  return <SalonPageFixed pageUrl="beauty-lash-studio" />;
+  return (
+    <SalonPageTemplateFixed 
+      salonSlug="beauty-lash-studio"
+      salonData={beautyLashStudioSalon}
+      customColors={beautyLashStudioSalon.customColors}
+    />
+  );
 }

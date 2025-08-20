@@ -1,743 +1,473 @@
-import { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useCustomColors } from '@/hooks/useCustomColors';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { MobileBottomNav } from '@/components/MobileBottomNav';
+import { useState, useEffect } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import { 
-  MapPin, 
-  Phone, 
-  Clock, 
-  Star, 
-  Heart, 
-  Share2,
-  Calendar,
-  Users,
-  Camera,
-  ChevronDown,
-  ChevronUp,
-  ArrowLeft,
-  CheckCircle,
-  Home,
-  Sparkles,
-  BarChart3
-} from 'lucide-react';
+  MapPin, Phone, Mail, Star, Calendar, 
+  CreditCard, Check, Sparkles 
+} from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
-interface SalonService {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  duration: number;
-  category: string;
-  rating?: number;
-  reviewCount?: number;
-  photos?: string[];
-}
-
-interface SalonStaff {
-  id: number;
-  name: string;
-  role: string;
-  avatar?: string;
-  specialties: string[];
-  rating: number;
-  reviewsCount: number;
-}
-
-interface SalonReview {
-  id: number;
-  clientName: string;
-  rating: number;
-  comment: string;
-  date: string;
-  service: string;
-  verified: boolean;
-  ownerResponse?: {
-    message: string;
-    date: string;
-  };
-}
-
-interface SalonData {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  address: string;
-  phone: string;
-  rating: number;
-  reviewsCount: number;
-  coverImageUrl?: string;
-  logo?: string;
-  openingHours: {
-    [key: string]: { open: string; close: string; closed?: boolean };
-  };
-  amenities: string[];
-  priceRange: string;
+interface SalonPageTemplateProps {
+  salonSlug?: string;
+  salonData?: any;
   customColors?: {
     primary: string;
     accent: string;
     buttonText: string;
-    buttonClass: string;
-    priceColor: string;
-    neonFrame: string;
-    intensity: number;
+    intensity?: number;
   };
 }
 
-interface SalonPageTemplateProps {
-  salonData: SalonData;
-  services: SalonService[];
-  staff: SalonStaff[];
-  reviews: SalonReview[];
-  isOwner?: boolean;
-}
-
-/**
- * Template complet de page salon standardisé avec personnalisations
- * Inclut : Header, onglets (Services, Équipe, Galerie, Infos, Avis), couleurs personnalisées
- * Layout responsive et cohérent pour tous les salons
- */
-export function SalonPageTemplate({ 
-  salonData, 
-  services = [], 
-  staff = [], 
-  reviews = []
-}: SalonPageTemplateProps) {
-  console.log('🎨 SalonPageTemplate - CustomColors appliquées:', salonData?.customColors);
+function SalonPageTemplate({ salonSlug, salonData, customColors }: SalonPageTemplateProps) {
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
   
-  // ✅ Utiliser les couleurs personnalisées du salon
-  const { customColors } = useCustomColors(salonData.slug);
-  const isMobile = useIsMobile();
-  const [, setLocation] = useLocation();
-  
-  const [activeTab, setActiveTab] = useState('services');
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([1]));
-  const [expandedDescriptions, setExpandedDescriptions] = useState<Set<number>>(new Set());
-  const [selectedGalleryCategory, setSelectedGalleryCategory] = useState('Toutes');
-  const [isFavorite, setIsFavorite] = useState(false);
+  // Utiliser le slug fourni ou l'extraire de l'URL
+  const currentSalonSlug = salonSlug || location.split('/').pop();
 
-  // Appliquer les variables CSS dynamiquement
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    serviceId: "",
+    date: "",
+    time: "",
+    depositAmount: 0
+  });
+
+  // Récupérer les données du salon si pas fournies en props
+  const { data: fetchedSalonData, isLoading: salonLoading } = useQuery({
+    queryKey: [`/api/salon/${currentSalonSlug}`],
+    enabled: !!currentSalonSlug && !salonData
+  });
+
+  // Utiliser les données fournies ou récupérées
+  const activeSalonData = salonData || fetchedSalonData;
+
+  // Récupérer les services disponibles
+  const { data: allServices = [] } = useQuery({
+    queryKey: ["/api/services"],
+  });
+
+  // Services disponibles pour ce salon
+  const availableServices = Array.isArray(allServices) ? allServices.filter((service: any) => 
+    activeSalonData?.serviceCategories?.some((category: any) => 
+      category.services?.some((s: any) => s.id === service.id || s.name === service.name)
+    )
+  ) : [];
+
+  const selectedService = availableServices.find((s: any) => s.id?.toString() === formData.serviceId);
+
+  // Calculer l'acompte si nécessaire
   useEffect(() => {
-    if (customColors) {
-      const root = document.documentElement;
-      root.style.setProperty('--salon-primary', customColors.primary);
-      root.style.setProperty('--salon-accent', customColors.accent);
-      root.style.setProperty('--salon-button-text', customColors.buttonText);
-      root.style.setProperty('--salon-price-color', customColors.priceColor);
-      root.style.setProperty('--salon-neon-frame', customColors.neonFrame);
-      root.style.setProperty('--salon-intensity', (customColors.intensity / 100).toString());
-      
-      console.log('✅ Variables CSS salon appliquées globally');
+    if (selectedService && activeSalonData?.requireDeposit) {
+      const depositPercentage = activeSalonData.depositPercentage || 30;
+      const deposit = Math.round((selectedService.price * depositPercentage) / 100);
+      setFormData(prev => ({ ...prev, depositAmount: deposit }));
     }
-  }, [customColors]);
+  }, [selectedService, activeSalonData]);
 
-  // ✅ UTILISER DIRECTEMENT LES SERVICE CATEGORIES DU SALON
-  // Récupérer les catégories depuis les props salonData ou créer à partir des services
-  const displayServiceCategories = (() => {
-    // Si on a accès aux serviceCategories directes du salon, les utiliser
-    if (salonData && (salonData as any).serviceCategories) {
-      return (salonData as any).serviceCategories.map((cat: any) => ({
-        ...cat,
-        expanded: expandedCategories.has(cat.id)
-      }));
+  // Générer les créneaux horaires
+  const getTimeSlots = () => {
+    const slots = [];
+    for (let hour = 9; hour <= 18; hour++) {
+      for (let minute = 0; minute < 60; minute += 30) {
+        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+        slots.push(timeString);
+      }
     }
+    return slots;
+  };
+
+  // Générer les dates disponibles
+  const getAvailableDates = () => {
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      dates.push(date.toISOString().split('T')[0]);
+    }
+    return dates;
+  };
+
+  // Mutation pour créer la réservation
+  const createBookingMutation = useMutation({
+    mutationFn: async (bookingData: any) => {
+      const response = await apiRequest("POST", "/api/appointments", bookingData);
+      if (!response.ok) throw new Error("Erreur lors de la réservation");
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ 
+        title: "Réservation confirmée!", 
+        description: "Votre rendez-vous a été confirmé avec succès" 
+      });
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        phone: "",
+        serviceId: "",
+        date: "",
+        time: "",
+        depositAmount: 0
+      });
+    },
+    onError: () => {
+      toast({ 
+        title: "Erreur", 
+        description: "Impossible de créer la réservation",
+        variant: "destructive" 
+      });
+    }
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // Sinon, organiser les services par catégorie (fallback)
-    const servicesByCategory = services.reduce((acc: any, service: any) => {
-      if (!acc[service.category]) {
-        acc[service.category] = [];
-      }
-      acc[service.category].push(service);
-      return acc;
-    }, {});
+    if (!selectedService) {
+      toast({
+        title: "Service requis",
+        description: "Veuillez sélectionner un service pour continuer.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    return Object.keys(servicesByCategory).map((categoryName, index) => ({
-      id: index + 1,
-      name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
-      services: servicesByCategory[categoryName],
-      expanded: expandedCategories.has(index + 1)
-    }));
-  })();
-
-  console.log('🎯 Services à afficher:', displayServiceCategories);
-
-  const toggleCategory = (categoryId: number) => {
-    setExpandedCategories(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
-      } else {
-        newSet.add(categoryId);
-      }
-      return newSet;
-    });
-  };
-
-  const toggleDescription = (categoryId: number) => {
-    setExpandedDescriptions(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
-      } else {
-        newSet.add(categoryId);
-      }
-      return newSet;
-    });
-  };
-
-  // Générer des données d'avis par service (simulation)
-  const getServiceReviews = (serviceId: number) => {
-    const allReviews = [
-      { id: 1, rating: 5, comment: "Service impeccable !", clientName: "Marie L.", serviceId: 1 },
-      { id: 2, rating: 4, comment: "Très satisfait du résultat", clientName: "Paul M.", serviceId: 1 },
-      { id: 3, rating: 5, comment: "Rasage parfait, ambiance top", clientName: "Thomas K.", serviceId: 3 },
-      { id: 4, rating: 5, comment: "Antoine est un vrai pro", clientName: "Pierre D.", serviceId: 2 },
-      { id: 5, rating: 4, comment: "Excellent soin, très relaxant", clientName: "Jean R.", serviceId: 5 }
-    ];
-    return allReviews.filter(review => review.serviceId === serviceId);
-  };
-
-  // Générer des photos par service (simulation)
-  const getServicePhotos = (serviceId: number) => {
-    const photosByService: { [key: number]: string[] } = {
-      1: [
-        "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400&h=300&fit=crop"
-      ],
-      2: [
-        "https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop"
-      ],
-      3: [
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=400&h=300&fit=crop",
-        "https://images.unsplash.com/photo-1559599538-ecae83ba5934?w=400&h=300&fit=crop"
-      ]
+    // Préparer les données de réservation
+    const preBookingData = {
+      salonId: currentSalonSlug,
+      serviceId: formData.serviceId,
+      serviceName: selectedService.name,
+      servicePrice: selectedService.price,
+      serviceDuration: selectedService.duration,
+      selectedDate: formData.date,
+      selectedTime: formData.time,
+      depositAmount: formData.depositAmount,
+      requireDeposit: activeSalonData?.requireDeposit || false
     };
-    return photosByService[serviceId] || [];
+    
+    sessionStorage.setItem('preBookingData', JSON.stringify(preBookingData));
+    
+    // Rediriger vers la page de réservation
+    setTimeout(() => {
+      setLocation(`/salon-booking?salon=${encodeURIComponent(currentSalonSlug || '')}`);
+    }, 100);
   };
 
-  // Calculer la note moyenne d'un service
-  const getServiceRating = (serviceId: number) => {
-    const reviews = getServiceReviews(serviceId);
-    if (reviews.length === 0) return 4.5; // Note par défaut
-    return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+  if (salonLoading && !salonData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-violet-600 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!activeSalonData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-md">
+          <CardContent className="text-center py-8">
+            <h2 className="text-lg font-semibold mb-2">Salon non trouvé</h2>
+            <p className="text-gray-600 mb-4">Ce salon n'existe pas ou a été supprimé.</p>
+            <Button onClick={() => window.history.back()}>
+              Retour
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Couleurs personnalisées avec fallback
+  const colors = customColors || activeSalonData?.customColors || {
+    primary: '#8b5cf6',
+    accent: '#f59e0b',
+    buttonText: '#ffffff'
+  };
+  
+  const styles = {
+    background: `linear-gradient(135deg, ${colors.primary}20, ${colors.accent}20)`,
+    headerBg: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    buttonBg: `linear-gradient(to right, ${colors.primary}, ${colors.accent})`
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header Navigation - Style Fresha */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo/Titre */}
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={() => window.history.back()}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5 text-gray-600" />
-              </button>
-              <h1 className="text-xl font-bold text-gray-900">fresha</h1>
-            </div>
-
-            {/* Navigation Center */}
-            <div className="hidden md:flex items-center gap-6">
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                Tous les soins
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                Position actuelle
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                N'importe quelle...
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                N'importe quelle...
-              </button>
-            </div>
-
-            {/* Menu Button */}
-            <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <span>Menu</span>
-              <div className="space-y-1">
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Breadcrumb */}
-      <div className="bg-gray-50 px-4 py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span>Accueil</span>
-            <span>•</span>
-            <span>Instituts de beauté</span>
-            <span>•</span>
-            <span>Londres</span>
-            <span>•</span>
-            <span>Whetstone</span>
-            <span>•</span>
-            <span className="text-gray-900">{salonData.name}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Header Salon avec photo de couverture intégrée */}
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-start gap-6">
-            {/* Photo de couverture du salon */}
-            <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
-              <img 
-                src={salonData.coverImageUrl || 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80'}
-                alt={salonData.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Informations salon */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h1 className="text-3xl font-bold text-gray-900">{salonData.name}</h1>
-                    <CheckCircle className="h-6 w-6 text-blue-500" />
-                  </div>
-                  
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-gray-900">{salonData.rating || 5.0}</span>
-                      <span className="text-gray-600">({salonData.reviewsCount || 749})</span>
-                    </div>
-                    <span className="text-gray-600">•</span>
-                    <span className="text-gray-600">Fermé</span>
-                    <span className="text-gray-600">- opens on jeudi at 10:00</span>
-                    <span className="text-gray-600">•</span>
-                    <span className="text-gray-600">{salonData.address || 'Whetstone, London'}</span>
-                    <button className="text-blue-600 hover:text-blue-700 font-medium">
-                      Afficher l'itinéraire
-                    </button>
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-3">
-                  <button 
-                    onClick={() => setIsFavorite(!isFavorite)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-                  </button>
-                  <button 
-                    onClick={() => navigator.share?.({ title: salonData.name, url: window.location.href })}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <Share2 className="h-5 w-5 text-gray-600" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation par onglets avec couleurs personnalisées */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="flex">
-          {[
-            { id: 'services', label: 'Services', icon: Calendar },
-            { id: 'equipe', label: 'Équipe', icon: Users },
-            { id: 'galerie', label: 'Galerie', icon: Camera },
-            { id: 'infos', label: 'Infos', icon: MapPin },
-            { id: 'avis', label: 'Avis', icon: Star }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 text-xs sm:text-sm font-medium transition-all ${
-                activeTab === tab.id
-                  ? 'border-b-2 text-gray-900'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-              style={{ 
-                borderColor: activeTab === tab.id ? (customColors?.primary || '#8b5cf6') : 'transparent',
-                color: activeTab === tab.id ? (customColors?.primary || '#1f2937') : undefined,
-                backgroundColor: activeTab === tab.id ? `${customColors?.primary || '#8b5cf6'}10` : 'transparent'
-              }}
-            >
-              <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.label.slice(0, 3)}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Contenu des onglets avec couleurs personnalisées */}
-      <div className="p-6">
-        {activeTab === 'services' && (
-          <div className="space-y-4">
-            {displayServiceCategories.map((category: any) => (
-              <div key={category.id} className="bg-white/95 backdrop-blur-xl rounded-3xl border border-white/20 shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
-                <button
-                  onClick={() => toggleCategory(category.id)}
-                  className="w-full px-8 py-6 flex items-center justify-between hover:bg-gradient-to-r hover:from-gray-50/50 hover:to-white/80 transition-all duration-300"
-                >
-                  <div className="flex-1 text-left">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 tracking-tight">{category.name}</h3>
-                    <div className="flex items-center gap-2">
-                      <p className={`text-sm text-gray-600 leading-relaxed ${expandedDescriptions.has(category.id) ? '' : 'truncate max-w-xs sm:max-w-md'}`}>
-                        {category.name === 'Coupe' && 'Services de coupe et styling professionnels avec techniques modernes'}
-                        {category.name === 'Rasage' && 'Rasage traditionnel et moderne au coupe-chou avec soins premium'}
-                        {category.name === 'Soins' && 'Soins du visage et de la barbe avec produits haut de gamme'}
-                      </p>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleDescription(category.id);
-                        }}
-                        className="text-xs text-gray-500 hover:text-gray-700 font-medium whitespace-nowrap"
-                      >
-                        {expandedDescriptions.has(category.id) ? 'voir -' : '(voir +)'}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 ml-4">
-                    <div className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-xs font-semibold">
-                      {category.services.length} service{category.services.length > 1 ? 's' : ''}
-                    </div>
-                    {category.expanded ? 
-                      <ChevronUp className="h-6 w-6 text-violet-500 transition-transform duration-300" /> : 
-                      <ChevronDown className="h-6 w-6 text-violet-500 transition-transform duration-300" />
-                    }
-                  </div>
-                </button>
-                
-                {category.expanded && (
-                  <div className="border-t border-gradient-to-r from-gray-100 to-violet-100 bg-gradient-to-br from-gray-50/30 to-violet-50/30">
-                    {category.services.map((service: any) => {
-                      const serviceReviews = getServiceReviews(service.id);
-                      const serviceRating = getServiceRating(service.id);
-                      const servicePhotos = getServicePhotos(service.id);
-                      
-                      return (
-                        <div key={service.id} className="px-8 py-6 border-b border-gray-100/60 last:border-b-0 hover:bg-white/40 transition-all duration-300">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                            {/* Info principale du service */}
-                            <div className="flex-1 min-w-0">
-                              <h4 className="font-bold text-gray-900 text-base sm:text-lg truncate salon-service-name mb-2">{service.name}</h4>
-                              <p className="text-sm text-gray-600 leading-relaxed salon-text-muted">{service.description}</p>
-                              <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-gray-500">
-                                <span className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
-                                  <Clock className="h-3 w-3" />
-                                  <span className="whitespace-nowrap">{service.duration} min</span>
-                                </span>
-                                <button 
-                                  onClick={() => setActiveTab('avis')}
-                                  className="flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1 rounded-full text-xs font-medium hover:bg-amber-100 transition-colors whitespace-nowrap"
-                                >
-                                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                                  <span>{serviceRating.toFixed(1)}</span>
-                                  <span className="hidden xs:inline">({serviceReviews.length} avis)</span>
-                                  <span className="xs:hidden">({serviceReviews.length})</span>
-                                </button>
-                                {servicePhotos.length > 0 && (
-                                  <button 
-                                    onClick={() => setActiveTab('galerie')}
-                                    className="flex items-center gap-1 hover:text-gray-700 transition-colors whitespace-nowrap"
-                                  >
-                                    <Camera className="h-3 w-3" />
-                                    <span className="hidden xs:inline">{servicePhotos.length} photos</span>
-                                    <span className="xs:hidden">{servicePhotos.length}</span>
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Prix et bouton */}
-                            <div className="flex items-center justify-between sm:flex-col sm:items-end gap-4 sm:gap-3">
-                              <div className="text-left sm:text-right">
-                                <div className="professional-price-badge text-white px-4 py-2 rounded-2xl shadow-lg">
-                                  <p className="text-xl font-extrabold" style={{ color: 'white' }}>{service.price}€</p>
-                                </div>
-                              </div>
-                              <button 
-                                className="px-6 py-3 rounded-2xl text-sm font-bold shadow-2xl hover:shadow-3xl whitespace-nowrap flex items-center gap-2 transition-all duration-500 transform hover:scale-105 active:scale-95"
-                                style={{
-                                  background: customColors?.primary ? 
-                                    `linear-gradient(135deg, ${customColors.primary}f0, ${customColors.primary}d0, ${customColors.primary}f0)` :
-                                    'linear-gradient(135deg, #8b5cf6, #a855f7, #8b5cf6)',
-                                  backdropFilter: 'blur(20px) saturate(180%)',
-                                  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                                  border: `2px solid ${customColors?.primary ? `${customColors.primary}60` : 'rgba(139, 92, 246, 0.6)'}`,
-                                  color: customColors?.buttonText || '#ffffff',
-                                  boxShadow: `0 12px 32px ${customColors?.primary ? `${customColors.primary}40` : 'rgba(139, 92, 246, 0.4)'}, 
-                                             inset 0 1px 0 rgba(255, 255, 255, 0.3)`
-                                }}
-                                onClick={() => window.location.href = '/professional-selection'}
-                              >
-                                <Calendar className="h-4 w-4" />
-                                <span className="font-extrabold tracking-wide">RÉSERVER</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'equipe' && (
-          <div className="grid gap-4">
-            {staff.map((member: any) => (
-              <div key={member.id} className="professional-card rounded-3xl p-6 hover:shadow-2xl transition-all duration-300">
-                <div className="flex items-center gap-6">
-                  <div className="relative">
-                    <img 
-                      src={member.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&q=80`}
-                      alt={member.name}
-                      className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
-                    />
-                    <div className="absolute -bottom-1 -right-1 bg-green-500 w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
-                      <div className="w-2 h-2 bg-white rounded-full"></div>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-xl font-bold text-gray-900 salon-text-content">{member.name}</h4>
-                    <p className="text-violet-600 font-semibold text-sm mb-2">{member.role}</p>
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="flex items-center gap-1 bg-amber-50 px-3 py-1 rounded-full">
-                        <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                        <span className="text-sm font-bold text-amber-700">{member.rating}</span>
-                        <span className="text-xs text-amber-600">({member.reviewsCount} avis)</span>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {member.specialties.map((specialty: string) => (
-                        <span 
-                          key={specialty} 
-                          className="professional-badge text-violet-700 px-3 py-1 rounded-full text-xs font-medium"
-                        >
-                          {specialty}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'galerie' && (
-          <div className="space-y-6">
-            {/* Filtres par catégorie */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {['Toutes', 'Coupes', 'Rasages', 'Soins', 'Ambiance'].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedGalleryCategory(category)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    category === selectedGalleryCategory 
-                      ? 'bg-gray-900 text-white' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            {/* Galerie photos responsive */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {[
-                { url: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Ambiance' },
-                { url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' },
-                { url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' },
-                { url: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Rasages' },
-                { url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Ambiance' },
-                { url: 'https://images.unsplash.com/photo-1633681926022-84c23e8cb2d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Soins' },
-                { url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Rasages' },
-                { url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80', category: 'Coupes' }
-              ]
-              .filter(photo => selectedGalleryCategory === 'Toutes' || photo.category === selectedGalleryCategory)
-              .map((photo, index) => (
-                <div 
-                  key={index}
-                  className="relative aspect-square rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer hover:scale-105 transition-transform"
-                  style={{ 
-                    boxShadow: `0 2px 8px ${customColors?.primary || '#8b5cf6'}15` 
-                  }}
-                >
-                  <img 
-                    src={photo.url}
-                    alt={`${photo.category} ${index + 1}`}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
-                  <div 
-                    className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity flex flex-col items-center justify-center"
-                    style={{ 
-                      backgroundColor: `${customColors?.primary || '#8b5cf6'}90` 
-                    }}
-                  >
-                    <Camera className="h-6 w-6 sm:h-8 sm:w-8 text-white mb-1" />
-                    <span className="text-white text-xs font-medium">{photo.category}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'infos' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold mb-4" style={{ color: customColors?.primary || '#1f2937' }}>
-                Informations pratiques
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="p-2 rounded-lg"
-                    style={{ 
-                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
-                      color: customColors?.primary || '#8b5cf6'
-                    }}
-                  >
-                    <MapPin className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Adresse</p>
-                    <p className="text-sm text-gray-600">{salonData.address}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="p-2 rounded-lg"
-                    style={{ 
-                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
-                      color: customColors?.primary || '#8b5cf6'
-                    }}
-                  >
-                    <Phone className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Téléphone</p>
-                    <a 
-                      href={`tel:${salonData.phone}`} 
-                      className="text-sm hover:underline"
-                      style={{ color: customColors?.primary || '#3b82f6' }}
-                    >
-                      {salonData.phone}
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div 
-                    className="p-2 rounded-lg"
-                    style={{ 
-                      backgroundColor: `${customColors?.primary || '#8b5cf6'}20`,
-                      color: customColors?.primary || '#8b5cf6'
-                    }}
-                  >
-                    <Clock className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="font-medium mb-2">Horaires d'ouverture</p>
-                    <div className="space-y-1 text-sm text-gray-600">
-                      {salonData.openingHours && Object.entries(salonData.openingHours).map(([day, hours]: [string, any]) => (
-                        <div key={day} className="flex justify-between">
-                          <span className="capitalize font-medium">{day}</span>
-                          <span>
-                            {hours.closed ? 'Fermé' : `${hours.open} - ${hours.close}`}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {salonData.amenities && (
-              <div className="bg-white rounded-2xl p-6 border border-gray-200">
-                <h3 className="text-lg font-semibold mb-4" style={{ color: customColors?.primary || '#1f2937' }}>
-                  Équipements et services
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {salonData.amenities.map((amenity: string) => (
-                    <span 
-                      key={amenity} 
-                      className="px-3 py-2 text-sm rounded-full font-medium"
-                      style={{ 
-                        backgroundColor: `${customColors?.primary || '#8b5cf6'}15`,
-                        color: customColors?.primary || '#374151',
-                        border: `1px solid ${customColors?.primary || '#8b5cf6'}30`
-                      }}
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
-              </div>
+    <div 
+      className="min-h-screen"
+      style={{ background: styles.background }}
+    >
+      {/* Photo de couverture avec header */}
+      <div className="relative h-80 overflow-hidden">
+        <img 
+          src={activeSalonData?.photos?.[0] || activeSalonData?.coverImageUrl || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center"}
+          alt={`${activeSalonData?.name || 'Salon'} - Photo de couverture`}
+          className="w-full h-full object-cover"
+          onError={(e: any) => {
+            e.target.src = "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=600&fit=crop&crop=center";
+          }}
+        />
+        
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        
+        {/* Contenu centré sur la photo */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center text-white px-4">
+            <h1 className="text-4xl font-bold mb-4 drop-shadow-lg">{activeSalonData?.name || 'Salon'}</h1>
+            {activeSalonData?.description && (
+              <p className="text-xl opacity-90 mb-6 drop-shadow-lg max-w-2xl">{activeSalonData.description}</p>
             )}
+            
+            <div className="flex flex-wrap justify-center gap-6 text-sm bg-black/20 backdrop-blur-sm rounded-lg p-4">
+              {activeSalonData?.address && (
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  {activeSalonData.address}
+                </div>
+              )}
+              {activeSalonData?.phone && (
+                <div className="flex items-center">
+                  <Phone className="w-4 h-4 mr-2" />
+                  {activeSalonData.phone}
+                </div>
+              )}
+              {activeSalonData?.email && (
+                <div className="flex items-center">
+                  <Mail className="w-4 h-4 mr-2" />
+                  {activeSalonData.email}
+                </div>
+              )}
+              {activeSalonData?.rating && (
+                <div className="flex items-center">
+                  <Star className="w-4 h-4 mr-2 fill-yellow-400 text-yellow-400" />
+                  {activeSalonData.rating} ({activeSalonData.reviewCount || 0} avis)
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {activeTab === 'avis' && (
-          <div className="space-y-4">
-            {reviews.map((review: any) => (
-              <div key={review.id} className="bg-white rounded-2xl p-4 border border-gray-200">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-900 salon-text-content">{review.clientName}</h4>
-                      {review.verified && <CheckCircle className="h-4 w-4 text-green-500" />}
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Services disponibles */}
+          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Sparkles className="w-5 h-5 mr-2" style={{ color: colors.primary }} />
+                Nos services
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {availableServices.length > 0 ? availableServices.map((service: any) => (
+                  <div 
+                    key={service.id}
+                    className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    onClick={() => setFormData(prev => ({ ...prev, serviceId: service.id?.toString() || '' }))}
+                  >
+                    <div>
+                      <h4 className="font-medium">{service.name}</h4>
+                      <p className="text-sm text-gray-500">{service.duration || 60} minutes</p>
                     </div>
-                    <div className="flex items-center gap-1 mt-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-4 w-4 ${
-                            i < review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
+                    <div className="text-right">
+                      <p className="font-semibold" style={{ color: colors.primary }}>
+                        {service.price}€
+                      </p>
                     </div>
                   </div>
-                  <span className="text-xs text-gray-500">{review.date}</span>
-                </div>
-                <p className="text-gray-700 mb-2 salon-text-content">{review.comment}</p>
-                <p className="text-xs text-gray-500">{review.service}</p>
-                
-                {review.ownerResponse && (
-                  <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-gray-900">Réponse du salon</span>
-                      <span className="text-xs text-gray-500">{review.ownerResponse.date}</span>
-                    </div>
-                    <p className="text-sm text-gray-700">{review.ownerResponse.message}</p>
+                )) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <p>Aucun service disponible pour le moment</p>
                   </div>
                 )}
               </div>
-            ))}
+            </CardContent>
+          </Card>
+
+          {/* Formulaire de réservation */}
+          <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="w-5 h-5 mr-2" style={{ color: colors.primary }} />
+                Réserver maintenant
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="firstName">Prénom *</Label>
+                    <Input
+                      id="firstName"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData(prev => ({...prev, firstName: e.target.value}))}
+                      placeholder="Votre prénom"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="lastName">Nom</Label>
+                    <Input
+                      id="lastName"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData(prev => ({...prev, lastName: e.target.value}))}
+                      placeholder="Votre nom"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
+                    placeholder="votre@email.com"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="phone">Téléphone</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData(prev => ({...prev, phone: e.target.value}))}
+                    placeholder="06 12 34 56 78"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="service">Service *</Label>
+                  <Select 
+                    value={formData.serviceId} 
+                    onValueChange={(value) => setFormData(prev => ({...prev, serviceId: value}))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un service" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableServices.map((service: any) => (
+                        <SelectItem key={service.id} value={service.id?.toString() || ''}>
+                          <div className="flex justify-between w-full">
+                            <span>{service.name}</span>
+                            <span className="ml-4 font-medium">{service.price}€</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="date">Date *</Label>
+                  <Select 
+                    value={formData.date} 
+                    onValueChange={(value) => setFormData(prev => ({...prev, date: value}))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir une date" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getAvailableDates().map((date) => (
+                        <SelectItem key={date} value={date}>
+                          {new Date(date).toLocaleDateString('fr-FR', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long'
+                          })}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="time">Heure *</Label>
+                  <Select 
+                    value={formData.time} 
+                    onValueChange={(value) => setFormData(prev => ({...prev, time: value}))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un créneau" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getTimeSlots().map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Acompte */}
+                {selectedService && activeSalonData?.requireDeposit && (
+                  <div className="bg-orange-50 p-4 rounded-lg">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-sm text-gray-700">Prix total: {selectedService.price}€</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Acompte à régler:</span>
+                      <span className="text-xl font-bold text-orange-600">{formData.depositAmount}€</span>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      Reste à payer sur place: {selectedService.price - formData.depositAmount}€
+                    </p>
+                  </div>
+                )}
+
+                <Button 
+                  type="submit" 
+                  className="w-full h-12 text-white font-medium rounded-lg"
+                  style={{ background: styles.buttonBg }}
+                  disabled={createBookingMutation.isPending}
+                >
+                  {createBookingMutation.isPending ? (
+                    <div className="flex items-center">
+                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                      Réservation...
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <Check className="w-5 h-5 mr-2" />
+                      Réserver maintenant
+                      {selectedService && activeSalonData?.requireDeposit && ` (${formData.depositAmount}€)`}
+                    </div>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-8 text-sm text-gray-600">
+          <div className="flex items-center justify-center space-x-4">
+            <span>✅ Paiement sécurisé</span>
+            <span>✅ Confirmation immédiate</span>
+            <span>✅ Annulation gratuite 24h</span>
           </div>
-        )}
+          <p className="mt-4">
+            Propulsé par Avyento - Solution de réservation pour professionnels de la beauté
+          </p>
+        </div>
       </div>
     </div>
   );
 }
+
+export default SalonPageTemplate;
+export { SalonPageTemplate };

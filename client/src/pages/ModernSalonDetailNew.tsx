@@ -1,6 +1,6 @@
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { SalonPageTemplate } from "@/components/SalonPageTemplate";
+import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
 
 // Import des données par défaut (simulé car le fichier server n'est pas accessible côté client)
 const defaultServices = [

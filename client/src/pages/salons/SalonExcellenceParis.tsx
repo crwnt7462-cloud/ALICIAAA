@@ -1,7 +1,12 @@
-import React from 'react';
-import SalonPageFixed from '@/pages/SalonPageFixed';
+import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
+import { excellenceParisSalon } from "@/utils/salonTemplateData";
 
 export default function SalonExcellenceParis() {
-  
-  return <SalonPageFixed pageUrl="salon-excellence-paris" />;
+  return (
+    <SalonPageTemplateFixed 
+      salonSlug="salon-excellence-paris"
+      salonData={excellenceParisSalon}
+      customColors={excellenceParisSalon.customColors}
+    />
+  );
 }

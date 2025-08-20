@@ -96,6 +96,7 @@ import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
+import SalonPage from "@/pages/SalonPage";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
@@ -1093,7 +1094,7 @@ function Router() {
   if (location === '/salon') {
     return (
       <div className="h-full">
-        <ModernSalonCompact />
+        <SalonPage />
       </div>
     );
   }

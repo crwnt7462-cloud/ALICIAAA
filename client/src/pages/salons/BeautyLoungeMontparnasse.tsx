@@ -1,6 +1,12 @@
-import React from 'react';
-import SalonPageFixed from '@/pages/SalonPageFixed';
+import SalonPageTemplateFixed from "@/components/SalonPageTemplateFixed";
+import { beautyLoungeMontparnasseSalon } from "@/utils/salonTemplateData";
 
 export default function BeautyLoungeMontparnasse() {
-  return <SalonPageFixed pageUrl="beauty-lounge-montparnasse" />;
+  return (
+    <SalonPageTemplateFixed 
+      salonSlug="beauty-lounge-montparnasse"
+      salonData={beautyLoungeMontparnasseSalon}
+      customColors={beautyLoungeMontparnasseSalon.customColors}
+    />
+  );
 }

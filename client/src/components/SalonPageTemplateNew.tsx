@@ -1,5 +1,5 @@
 import React from 'react';
-import { SalonPageTemplate } from '@/components/SalonPageTemplate';
+import SalonPageTemplateFixed from '@/components/SalonPageTemplateFixed';
 import { useSalonPageTemplate, getDefaultSalonData } from '@/hooks/useSalonPageTemplate';
 
 export default function BarbierGentlemanMarais() {
@@ -158,7 +158,7 @@ export default function BarbierGentlemanMarais() {
   }
 
   return (
-    <SalonPageTemplate
+    <SalonPageTemplateFixed
       salonData={customizedSalonData}
       services={customizedServices}
       staff={customizedStaff}
