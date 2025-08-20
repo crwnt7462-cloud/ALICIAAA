@@ -73,7 +73,7 @@ import DirectMessaging from "@/pages/DirectMessaging";
 import StaffManagement from "@/pages/StaffManagement";
 import ServicesManagement from "@/pages/ServicesManagement";
 import ProfessionalSettingsDemo from "@/pages/ProfessionalSettingsDemo";
-import ModernSalonMobileFixed from "@/pages/ModernSalonMobileFixed";
+import ModernSalonCompact from "@/pages/ModernSalonCompact";
 import TestSalon from "@/pages/TestSalon";
 import ClientAnalytics from "@/pages/ClientAnalytics";
 import SalonSearchComplete from "@/pages/SalonSearchComplete";
@@ -1092,7 +1092,7 @@ function Router() {
   if (location === '/salon') {
     return (
       <div className="h-full">
-        <ModernSalonMobileFixed />
+        <ModernSalonCompact />
       </div>
     );
   }
