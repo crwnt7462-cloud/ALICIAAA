@@ -94,6 +94,7 @@ import SalonDynamicPage from "@/pages/SalonDynamicPage";
 import SalonBooking from "@/pages/SalonBooking";
 
 import SalonPageFixed from "@/pages/SalonPageFixed";
+import ModernSalonMobile from "@/pages/ModernSalonMobile";
 import Inventory from "@/pages/Inventory";
 import BookingPages from "@/pages/BookingPages";
 import MessagingSystem from "@/pages/MessagingSystem";
@@ -1101,6 +1102,15 @@ function Router() {
     return (
       <div className="h-full">
         <SalonDynamicPage />
+      </div>
+    );
+  }
+
+  // Page salon mobile moderne - Route spéciale "/salon"
+  if (location === '/salon') {
+    return (
+      <div className="h-full">
+        <ModernSalonMobile pageUrl="salon-demo" />
       </div>
     );
   }
