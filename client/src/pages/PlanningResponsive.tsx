@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette } from "lucide-react";
 import { motion } from "framer-motion";
-import { MobileBottomNav } from "@/components/MobileBottomNav";
+// MobileBottomNav supprimé - plus de sidebar mobile
 
 // Types simplifiés pour éviter les erreurs
 
@@ -376,8 +376,8 @@ export default function PlanningResponsive() {
 
   return (
     <>
-      {/* Version Mobile - Interface propre SANS sidebar */}
-      <div className="lg:hidden block min-h-screen bg-gray-50">
+      {/* Version Mobile - Interface propre SANS AUCUNE SIDEBAR */}
+<div className="lg:hidden w-full min-h-screen bg-gray-50">
         {/* Header mobile simple */}
         <div className="bg-white p-4 border-b border-gray-200">
           <h1 className="text-xl font-bold text-center text-gray-900">Planning</h1>
@@ -635,8 +635,7 @@ export default function PlanningResponsive() {
           })}
         </div>
 
-        {/* Navigation mobile SANS sidebar */}
-        <MobileBottomNav />
+        {/* PLUS DE NAVIGATION MOBILE - SUPPRIMÉE DÉFINITIVEMENT */}
       </div>
 
       {/* Version Desktop - Fonctionnelle avec vues dynamiques */}
