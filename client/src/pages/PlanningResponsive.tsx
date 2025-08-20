@@ -29,6 +29,18 @@ type ServiceType = {
   color: string;
 };
 
+type AppointmentType = {
+  clientName: string;
+  service: string;
+  employee: string;
+  date: string;
+  time: string;
+  endTime?: string;
+  duration: number;
+  notes: string;
+  type: 'client' | 'blocked';
+};
+
 // Suppression temporaire du schema pour corriger l'erreur
 
 const weekDays = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
@@ -991,28 +1003,33 @@ export default function PlanningResponsive() {
         </div>
       </div>
 
-      {/* Dialog de choix d'action */}
+      {/* Dialog de choix d'action - Design Glassmorphism épuré */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Que souhaitez-vous faire ?</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Button 
-              onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
-              className="w-full bg-purple-600 hover:bg-purple-700"
-            >
-              <User className="h-4 w-4 mr-2" />
-              Ajouter un rendez-vous client
-            </Button>
-            <Button 
-              onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
-              variant="outline"
-              className="w-full"
-            >
-              <Clock className="h-4 w-4 mr-2" />
-              Bloquer ce créneau
-            </Button>
+        <DialogContent className="sm:max-w-[320px] max-w-[280px] p-0 bg-white/90 backdrop-blur-xl border border-white/30 shadow-2xl rounded-3xl">
+          <div className="p-6">
+            <DialogHeader className="pb-5">
+              <DialogTitle className="text-lg font-semibold text-gray-800 text-center">
+                Que souhaitez-vous faire ?
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-3">
+              <Button 
+                onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
+                className="w-full h-12 bg-gradient-to-r from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 text-purple-800 border border-purple-300/40 backdrop-blur-sm rounded-2xl transition-all duration-200 font-medium"
+              >
+                <User className="h-4 w-4 mr-2" />
+                Ajouter un rendez-vous client
+              </Button>
+              
+              <Button 
+                onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
+                className="w-full h-12 bg-gradient-to-r from-orange-400/15 to-orange-500/15 hover:from-orange-400/25 hover:to-orange-500/25 text-orange-700 border border-orange-300/40 backdrop-blur-sm rounded-2xl transition-all duration-200 font-medium"
+              >
+                <Clock className="h-4 w-4 mr-2" />
+                Bloquer ce créneau
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
