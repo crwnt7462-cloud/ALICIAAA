@@ -723,7 +723,7 @@ export default function SearchResults() {
             <div>
               <h3 className="text-xl font-bold mb-4">Avyento</h3>
               <p className="text-gray-400 text-sm">
-                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+                La solution intelligente qui anticipe, planifie et maximise vos résultats.
               </p>
             </div>
             <div>

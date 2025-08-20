@@ -971,7 +971,7 @@ export default function ModernSalonCompact() {
             <div className="space-y-4">
               <h3 className="text-lg font-bold">Avyento</h3>
               <p className="text-gray-400 text-sm leading-relaxed">
-                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+                La solution intelligente qui anticipe, planifie et maximise vos résultats.
               </p>
             </div>
 

@@ -1401,7 +1401,7 @@ export default function PublicLanding() {
                 <h3 className="text-xl font-bold">Avyento</h3>
               </div>
               <p className="text-gray-400 text-sm">
-                La plateforme IA qui révolutionne la beauté et optimise vos revenus.
+                La solution intelligente qui anticipe, planifie et maximise vos résultats.
               </p>
             </div>
             <div>
