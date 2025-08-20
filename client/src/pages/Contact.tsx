@@ -18,25 +18,11 @@ export default function Contact() {
       color: "from-blue-100 to-cyan-100"
     },
     {
-      icon: Phone,
-      title: "Téléphone",
-      description: "01 23 45 67 89",
-      subtitle: "Lun-Ven 9h-18h",
-      color: "from-green-100 to-emerald-100"
-    },
-    {
       icon: MessageCircle,
       title: "Chat en direct",
       description: "Support instantané",
       subtitle: "Disponible 9h-18h",
       color: "from-purple-100 to-violet-100"
-    },
-    {
-      icon: MapPin,
-      title: "Adresse",
-      description: "123 Rue de la Beauté",
-      subtitle: "75001 Paris, France",
-      color: "from-orange-100 to-amber-100"
     }
   ];
 
