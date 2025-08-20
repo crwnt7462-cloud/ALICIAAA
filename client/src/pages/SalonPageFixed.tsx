@@ -117,122 +117,86 @@ export default function SalonPageFixed({ pageUrl }: SalonPageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header Navigation - Style Fresha */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo/Titre */}
-            <div className="flex items-center gap-4">
-              <button 
-                onClick={() => setLocation('/dashboard')}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <ArrowLeft className="h-5 w-5 text-gray-600" />
-              </button>
-              <h1 className="text-xl font-bold text-gray-900">fresha</h1>
-            </div>
-
-            {/* Navigation Center */}
-            <div className="hidden md:flex items-center gap-6">
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                Tous les soins
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                Position actuelle
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                N'importe quelle...
-              </button>
-              <button className="text-gray-700 hover:text-gray-900 transition-colors">
-                N'importe quelle...
-              </button>
-            </div>
-
-            {/* Menu Button */}
-            <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-              <span>Menu</span>
-              <div className="space-y-1">
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-                <div className="w-4 h-0.5 bg-gray-600"></div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Breadcrumb */}
-      <div className="bg-gray-50 px-4 py-3">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span>Accueil</span>
-            <span>•</span>
-            <span>Instituts de beauté</span>
-            <span>•</span>
-            <span>Londres</span>
-            <span>•</span>
-            <span>Whetstone</span>
-            <span>•</span>
-            <span className="text-gray-900">{pageData.salonName || "Excellence Beauty Salon"}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Header Salon avec photo de couverture intégrée */}
-      <div className="bg-white">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-start gap-6">
-            {/* Photo de couverture du salon */}
-            <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-200 flex-shrink-0">
-              <img 
-                src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
-                alt={pageData.salonName || "Excellence Beauty Salon"}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Informations salon */}
-            <div className="flex-1">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h1 className="text-3xl font-bold text-gray-900">{pageData.salonName || "Excellence Beauty Salon"}</h1>
-                    <CheckCircle className="h-6 w-6 text-blue-500" />
-                  </div>
-                  
-                  <div className="flex items-center gap-4 mb-2 text-sm">
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-gray-900">5.0</span>
-                      <span className="text-gray-600">(749)</span>
-                    </div>
-                    <span className="text-gray-600">•</span>
-                    <span className="text-gray-600">Fermé</span>
-                    <span className="text-gray-600">- opens on jeudi at 10:00</span>
-                    <span className="text-gray-600">•</span>
-                    <span className="text-gray-600">{pageData.salonAddress || 'Whetstone, London'}</span>
-                    <button className="text-blue-600 hover:text-blue-700 font-medium">
-                      Afficher l'itinéraire
-                    </button>
-                  </div>
-                </div>
-
-                {/* Actions - Gestion favoris et partage */}
-                <div className="flex items-center gap-3">
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <Heart className="h-5 w-5 text-gray-600" />
-                  </button>
-                  <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    <Star className="h-5 w-5 text-gray-600" />
-                  </button>
-                </div>
-              </div>
-            </div>
+      {/* Header avec bouton retour */}
+      <div className="sticky top-0 z-40 bg-white border-b shadow-sm">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setLocation('/dashboard')}
+            className="text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Retour Dashboard
+          </Button>
+          
+          <div className="flex items-center space-x-3">
+            <Button 
+              size="sm" 
+              variant="outline"
+              className="text-xs"
+            >
+              <Edit3 className="w-3 h-3 mr-1" />
+              Modifier
+            </Button>
+            <Button 
+              size="sm" 
+              className="gradient-bg text-white text-xs"
+            >
+              <Settings className="w-3 h-3 mr-1" />
+              Paramètres
+            </Button>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6">
+        
+        {/* En-tête salon */}
+        <div 
+          className="relative bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-8 mb-8 text-white overflow-hidden"
+          style={{
+            background: pageData.primaryColor 
+              ? `linear-gradient(135deg, ${pageData.primaryColor}, ${pageData.secondaryColor || '#8B5CF6'})` 
+              : undefined
+          }}
+        >
+          <div className="relative z-10">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold mb-3">
+                  {pageData.salonName || "Mon Salon"}
+                </h1>
+                <p className="text-lg opacity-90 mb-4 max-w-2xl">
+                  {pageData.salonDescription || "Votre salon de beauté professionnel"}
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 opacity-75" />
+                    <span>{pageData.salonAddress || "Adresse du salon"}</span>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Phone className="w-4 h-4 mr-2 opacity-75" />
+                    <span>{pageData.salonPhone || "Téléphone"}</span>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <Mail className="w-4 h-4 mr-2 opacity-75" />
+                    <span>{pageData.salonEmail || "Email"}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="hidden md:block">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6">
+                  <Sparkles className="w-12 h-12" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Services disponibles */}
         <Card className="mb-8">
