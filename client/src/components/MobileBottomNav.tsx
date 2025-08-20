@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'wouter';
-import { Home, Calendar, Users, BarChart3, Settings, MessageSquare } from 'lucide-react';
+import { Home, Calendar, Users, BarChart3, Settings } from 'lucide-react';
 
 interface MobileBottomNavProps {
   userType?: 'pro' | 'client';
@@ -34,12 +34,7 @@ export function MobileBottomNav({ userType = 'pro' }: MobileBottomNavProps) {
       path: '/client-analytics',
       active: location === '/client-analytics'
     },
-    {
-      label: 'Messages',
-      icon: MessageSquare,
-      path: '/messaging-hub',
-      active: location === '/messaging-hub'
-    }
+
   ];
 
   const clientNavItems = [

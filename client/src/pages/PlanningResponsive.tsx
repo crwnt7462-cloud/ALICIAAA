@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { BottomNavigation } from "@/components/BottomNavigation";
 
@@ -1005,32 +1005,46 @@ export default function PlanningResponsive() {
         </div>
       </div>
 
-      {/* Dialog de choix d'action - Design ULTRA COMPACT comme l'image */}
+      {/* Dialog de choix d'action - OPTIMISÉ MOBILE selon l'image */}
       <Dialog open={isActionChoiceOpen} onOpenChange={setIsActionChoiceOpen}>
-        <DialogContent className="max-w-[300px] w-[280px] p-0 bg-white/95 backdrop-blur-xl border-0 shadow-2xl rounded-2xl mx-auto">
-          <div className="p-5">
-            <DialogHeader className="pb-4">
-              <DialogTitle className="text-lg font-semibold text-gray-900 text-center">
-                Que souhaitez-vous faire ?
-              </DialogTitle>
-            </DialogHeader>
+        <DialogContent className="max-w-[90vw] w-[340px] p-0 bg-white rounded-3xl border-0 shadow-2xl mx-auto">
+          <div className="relative">
+            {/* Bouton fermer optimisé */}
+            <button
+              onClick={() => setIsActionChoiceOpen(false)}
+              className="absolute right-4 top-4 z-10 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            >
+              <X className="h-4 w-4 text-gray-600" />
+            </button>
             
-            <div className="space-y-3">
-              <Button 
-                onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
-                className="w-full h-11 bg-gradient-to-r from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 text-gray-900 border-0 rounded-xl transition-all duration-200 font-medium shadow-sm"
-              >
-                <User className="h-4 w-4 mr-2" />
-                Ajouter un rendez-vous client
-              </Button>
+            <div className="p-6">
+              <DialogHeader className="pb-6">
+                <DialogTitle className="text-xl font-bold text-gray-900 text-center pr-8">
+                  Que souhaitez-vous faire ?
+                </DialogTitle>
+              </DialogHeader>
               
-              <Button 
-                onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
-                className="w-full h-11 bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 text-gray-900 border-0 rounded-xl transition-all duration-200 font-medium shadow-sm"
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                Bloquer ce créneau
-              </Button>
+              <div className="space-y-4">
+                <Button 
+                  onClick={() => selectedTimeSlot && handleNewAppointment(selectedTimeSlot.time, selectedTimeSlot.date)}
+                  className="w-full h-14 bg-purple-100 hover:bg-purple-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
+                >
+                  <div className="w-10 h-10 bg-purple-200 rounded-full flex items-center justify-center mr-4">
+                    <User className="h-5 w-5 text-purple-700" />
+                  </div>
+                  Ajouter un rendez-vous client
+                </Button>
+                
+                <Button 
+                  onClick={() => selectedTimeSlot && handleBlockTime(selectedTimeSlot.time, selectedTimeSlot.date)}
+                  className="w-full h-14 bg-gray-100 hover:bg-gray-200 text-gray-900 border-0 rounded-2xl transition-all duration-200 font-semibold text-base flex items-center justify-start px-6"
+                >
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center mr-4">
+                    <Clock className="h-5 w-5 text-gray-700" />
+                  </div>
+                  Bloquer ce créneau
+                </Button>
+              </div>
             </div>
           </div>
         </DialogContent>
