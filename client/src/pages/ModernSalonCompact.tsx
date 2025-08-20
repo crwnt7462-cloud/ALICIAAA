@@ -663,7 +663,18 @@ export default function ModernSalonCompact() {
                 {galleryCategories
                   .find(cat => cat.id === activeGalleryCategory)
                   ?.images.map((image, index) => (
-                    <div key={index} className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl overflow-hidden hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300 shadow-lg">
+                    <div 
+                      key={index} 
+                      className="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl overflow-hidden hover:bg-white/90 hover:shadow-xl hover:shadow-purple/10 transition-all duration-300 shadow-lg cursor-pointer"
+                      onClick={() => {
+                        // Créer un tableau de photos pour la galerie de cette catégorie
+                        const categoryImages = galleryCategories.find(cat => cat.id === activeGalleryCategory)?.images || [];
+                        openServiceGallery(`Galerie ${activeGalleryCategory}`, categoryImages.map(img => ({
+                          url: img.url,
+                          description: `${img.service} - ${img.description}`
+                        })));
+                      }}
+                    >
                       <img
                         src={image.url}
                         alt={image.service}
