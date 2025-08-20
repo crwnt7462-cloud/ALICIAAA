@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, Calendar, Info, Map, Instagram, Facebook, X } from 'lucide-react';
+import { ArrowLeft, Share2, Heart, Phone, MapPin, Star, Clock, ChevronDown, ChevronUp, Calendar, Info, Map, Instagram, Facebook, X, ArrowRight } from 'lucide-react';
 import { FaTiktok } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { getGenericGlassButton } from "@/lib/salonColors";
 import logoAvyento from '@assets/Logo avyento._1755714467098.png';
 
 export default function ModernSalonCompact() {
@@ -924,6 +926,35 @@ export default function ModernSalonCompact() {
           </div>
         </div>
       )}
+
+      {/* CTA Buttons with Glassmorphism - Identique à Landing.tsx */}
+      <div className="space-y-4 px-4 sm:px-6 lg:px-8 mt-8 max-w-md mx-auto">
+        
+        {/* Bouton secondaire */}
+        <motion.button 
+          whileHover={{ scale: 1.02, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full ${getGenericGlassButton(0)} rounded-xl py-3 font-medium flex items-center justify-center`}
+          onClick={() => setLocation('/dashboard')}
+        >
+          Accéder au tableau de bord
+          <ArrowRight className="w-4 h-4 ml-2" />
+        </motion.button>
+        
+        <motion.button 
+          whileHover={{ scale: 1.02, y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full ${getGenericGlassButton(1)} rounded-xl py-3 font-medium`}
+          onClick={() => setLocation('/client-login-modern')}
+        >
+          Espace client
+        </motion.button>
+      </div>
+
+      {/* Footer - Identique à Landing.tsx */}
+      <div className="text-center text-xs text-gray-500 pb-4 mt-8">
+        <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
+      </div>
     </div>
   );
 }
