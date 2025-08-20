@@ -243,14 +243,8 @@ export default function PlanningResponsive() {
 
   return (
     <>
-      {/* Version Mobile - Interface COMPLÈTEMENT indépendante pleine largeur SANS SIDEBAR */}
-      <div className="lg:hidden block fixed inset-0 bg-white z-[9999] overflow-hidden"
-           style={{ 
-             width: '100vw', 
-             height: '100vh', 
-             left: 0, 
-             top: 0
-           }}>
+      {/* Version Mobile - Interface scrollable */}
+      <div className="lg:hidden block min-h-screen bg-white overflow-y-auto">
         {/* Header mobile avec navigation */}
         <div className="bg-white p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -413,7 +407,7 @@ export default function PlanningResponsive() {
         </div>
 
         {/* Grille horaire complète 6h-23h */}
-        <div className="bg-white flex-1 overflow-y-auto pb-20">
+        <div className="bg-white pb-20">
           <div className="relative">
             {/* Ligne violette d'heure actuelle */}
             {(() => {
@@ -519,16 +513,7 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Bouton flottant d'ajout */}
-        <div className="fixed bottom-20 right-4">
-          <Button 
-            size="lg" 
-            className="w-14 h-14 rounded-full bg-black hover:bg-gray-800 shadow-xl"
-            onClick={handleNewAppointment}
-          >
-            <Plus className="h-6 w-6 text-white" />
-          </Button>
-        </div>
+
 
         {/* Navigation mobile */}
         <MobileBottomNav />
