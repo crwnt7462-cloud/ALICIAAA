@@ -2,11 +2,11 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Calendar, Palette } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 
@@ -178,7 +178,7 @@ export default function PlanningResponsive() {
       service: '',
       employee: selectedEmployee === 'all' ? '' : selectedEmployee,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      time: timeSlot || '',
+      time: timeSlot || '08:00',
       duration: 60,
       notes: '',
       type: 'client'
@@ -194,7 +194,7 @@ export default function PlanningResponsive() {
       service: '',
       employee: selectedEmployee === 'all' ? '' : selectedEmployee,
       date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      time: timeSlot || '',
+      time: timeSlot || '08:00',
       duration: 60,
       notes: '',
       type: 'blocked'
@@ -458,59 +458,7 @@ export default function PlanningResponsive() {
 
 
 
-        {/* Calendrier mensuel compact */}
-        <div className="bg-white p-4 border-b border-gray-200">
-          {/* En-tête des jours */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
-              <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
-                {day}
-              </div>
-            ))}
-          </div>
-          
-          {/* Grille du calendrier */}
-          <div className="grid grid-cols-7 gap-1">
-            {monthDays.slice(0, 35).map((date, index) => {
-              const isToday = date.toDateString() === new Date().toDateString();
-              const isCurrentMonth = date.getMonth() === selectedMonth;
-              const isSelected = selectedDate?.toDateString() === date.toDateString();
-              
-              return (
-                <div
-                  key={index}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🎯 Date MOBILE cliquée:', date.toDateString());
-                    setSelectedDate(date);
-                    // Forcer un re-render avec une notification visuelle
-                    console.log('🎯 Date sélectionnée mise à jour:', date.toDateString());
-                  }}
-                  className={`w-10 h-10 text-sm rounded-lg transition-all relative cursor-pointer select-none flex items-center justify-center ${
-                    !isCurrentMonth 
-                      ? 'text-gray-300 pointer-events-none' 
-                      : isSelected
-                        ? 'bg-purple-500 text-white font-bold shadow-lg'
-                        : isToday
-                          ? 'bg-purple-400 text-white font-bold ring-2 ring-purple-200'
-                          : 'text-gray-700 hover:bg-purple-100 active:bg-purple-200 border border-transparent hover:border-purple-300'
-                  }`}
-                  style={{ 
-                    WebkitTapHighlightColor: 'transparent',
-                    touchAction: 'manipulation'
-                  }}
-                >
-                  {date.getDate()}
-                  {/* Repère supplémentaire pour aujourd'hui */}
-                  {isToday && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full border border-white"></div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {/* PLUS DE CALENDRIER SIDEBAR - SUPPRIMÉ */}
 
         {/* Grille horaire complète 6h-23h */}
         <div className="bg-white pb-20">
@@ -557,13 +505,12 @@ export default function PlanningResponsive() {
                       {hourStr}
                     </div>
                     
-                    {/* Zone cliquable pour ajouter RDV */}
+                    {/* Zone cliquable pour ajouter RDV ou bloquer créneau */}
                     <div 
                       className="flex-1 min-h-[40px] cursor-pointer rounded-lg transition-all hover:bg-purple-50 border border-transparent hover:border-purple-200 p-2"
                       onClick={() => {
-                        console.log(`🕒 Clic sur le créneau: ${hourStr}`);
-                        // Ici on pourrait ouvrir un modal pour ajouter un RDV
-                        handleNewAppointment();
+                        console.log(`📱 Mobile - Clic sur créneau: ${hourStr}`);
+                        handleTimeSlotClick(hourStr, selectedDate);
                       }}
                     >
                       {/* RDV existants pour cette heure */}
