@@ -337,7 +337,14 @@ export default function PlanningResponsive() {
         {/* Timeline des rendez-vous avec ligne violette d'heure actuelle */}
         <div className="bg-white flex-1 overflow-y-auto pb-20">
           <div className="relative p-4">
-            {/* Ligne violette d'heure actuelle supprimée - maintenant intégrée dans chaque RDV */}
+            {/* Ligne violette d'heure actuelle - indicateur temps réel */}
+            <div className="absolute left-0 right-0 z-20 flex items-center px-4" style={{ top: '20%' }}>
+              <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
+              <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
+              <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow border border-purple-200">
+                {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+              </div>
+            </div>
 
             {/* Rendez-vous de la journée sélectionnée */}
             {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
@@ -362,15 +369,7 @@ export default function PlanningResponsive() {
                             : 'bg-gray-300 border-gray-300'
                       }`}></div>
                       
-                      {/* Barre violette horizontale actuelle - commence sous l'heure */}
-                      {isCurrentAppointment && (
-                        <div className="absolute left-8 flex items-center z-10 mt-1">
-                          <div className="h-0.5 bg-purple-500 w-80"></div>
-                          <span className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow">
-                            {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                        </div>
-                      )}
+                      {/* Point violet pour RDV en cours */}
                     </div>
                     
                     <div className={`flex-1 p-3 rounded-lg border ${
