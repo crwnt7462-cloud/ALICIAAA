@@ -204,18 +204,20 @@ export default function ModernSalonMobileFixed() {
                         <h3 className="font-semibold text-lg text-gray-800">Coiffure</h3>
                         <p className="text-sm text-gray-600">Coupes, colorations et coiffages</p>
                       </div>
-                      <div className="text-sm text-gray-500 bg-white/60 px-3 py-1 rounded-full">3 services</div>
+                      <div className="text-sm text-gray-500 bg-white/60 px-3 py-1 rounded-full">4 services</div>
                     </div>
                   </div>
                   
                   {/* Services détaillés avec prix alignés */}
                   <div className="p-4 space-y-4">
                     <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl p-4 hover:bg-white/80 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 text-lg">Coupe homme classique</h4>
-                        <div className="text-xl font-bold text-purple-600">35€</div>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-lg mb-1">Coupe homme classique</h4>
+                          <p className="text-sm text-gray-600">Coupe traditionnelle avec finition soignée</p>
+                        </div>
+                        <div className="text-lg font-bold text-purple-600 ml-4">35€</div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Coupe traditionnelle avec finition soignée</p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -238,11 +240,13 @@ export default function ModernSalonMobileFixed() {
                     </div>
 
                     <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl p-4 hover:bg-white/80 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 text-lg">Coupe & Brushing femme</h4>
-                        <div className="text-xl font-bold text-purple-600">55€</div>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-lg mb-1">Coupe & Brushing femme</h4>
+                          <p className="text-sm text-gray-600">Coupe personnalisée avec mise en forme</p>
+                        </div>
+                        <div className="text-lg font-bold text-purple-600 ml-4">55€</div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Coupe personnalisée avec mise en forme</p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -253,6 +257,35 @@ export default function ModernSalonMobileFixed() {
                           <div className="flex items-center gap-1 text-sm text-gray-500">
                             <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
                             <span>4,8 (28)</span>
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => setLocation('/booking')}
+                          className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-2 rounded-lg text-sm font-medium hover:from-purple-700 hover:to-purple-800 transition-all shadow-lg"
+                        >
+                          Réserver
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl p-4 hover:bg-white/80 transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-lg mb-1">Soin Anti-Âge Premium</h4>
+                          <p className="text-sm text-gray-600">Traitement complet contre les signes de l'âge</p>
+                        </div>
+                        <div className="text-lg font-bold text-purple-600 ml-4">85€</div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Clock className="h-4 w-4" />
+                            <span>90 min</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-sm text-gray-500">
+                            <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                            <span>4,9 (127)</span>
                           </div>
                         </div>
                         <button 
@@ -280,11 +313,13 @@ export default function ModernSalonMobileFixed() {
                   
                   <div className="p-4 space-y-4">
                     <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-xl p-4 hover:bg-white/80 transition-all">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-gray-900 text-lg">Manucure classique</h4>
-                        <div className="text-xl font-bold text-purple-600">30€</div>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-lg mb-1">Manucure classique</h4>
+                          <p className="text-sm text-gray-600">Soin complet avec pose de vernis</p>
+                        </div>
+                        <div className="text-lg font-bold text-purple-600 ml-4">30€</div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-3">Soin complet avec pose de vernis</p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
