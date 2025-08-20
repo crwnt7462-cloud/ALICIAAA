@@ -169,6 +169,7 @@ import LoginClassic from "@/pages/LoginClassic";
 
 import NotificationCenter from "@/pages/NotificationCenter";
 import SalonPageEditor from "@/pages/SalonPageEditor";
+import SalonCreation from "@/pages/SalonCreation";
 import SalonBookingFlow from "@/pages/SalonBookingFlow";
 import StripeCheckout from "@/pages/StripeCheckout";
 import ImprovedSubscriptionPlans from "@/pages/ImprovedSubscriptionPlans";
@@ -1093,6 +1094,15 @@ function Router() {
     return (
       <div className="h-full">
         <ModernSalonCompact />
+      </div>
+    );
+  }
+
+  // Page création de salon - Template modifiable identique à /salon
+  if (location === '/salon-creation') {
+    return (
+      <div className="h-full">
+        <SalonCreation />
       </div>
     );
   }
