@@ -154,28 +154,50 @@ export default function ModernSalonCompact() {
     }
   ];
 
-  // Avis clients
+  // Avis clients avec réponses du salon
   const reviews = [
     {
       name: 'Marie L.',
       rating: 5,
       date: '2 jours',
       comment: 'Excellent salon ! Sophie a fait des merveilles avec ma couleur. Je recommande vivement !',
-      service: 'Coloration complète'
+      service: 'Coloration complète',
+      response: {
+        author: 'Sophie Martin - Salon Avyento',
+        date: '1 jour',
+        message: 'Merci beaucoup Marie pour ce retour ! J\'ai pris beaucoup de plaisir à réaliser cette coloration. À très bientôt ! 💜'
+      }
     },
     {
       name: 'Thomas R.',
       rating: 5,
       date: '1 semaine',
       comment: 'Lucas est un vrai professionnel. Coupe parfaite à chaque fois.',
-      service: 'Coupe homme classique'
+      service: 'Coupe homme classique',
+      response: {
+        author: 'Lucas Bernard - Salon Avyento',
+        date: '6 jours',
+        message: 'Merci Thomas ! C\'est toujours un plaisir de vous accueillir. Votre fidélité nous fait très plaisir !'
+      }
     },
     {
       name: 'Julie M.',
       rating: 4,
       date: '2 semaines',
       comment: 'Très bon soin du visage avec Emma. Peau toute douce après !',
-      service: 'Soin visage hydratant'
+      service: 'Soin visage hydratant',
+      response: {
+        author: 'Emma Dubois - Salon Avyento',
+        date: '1 semaine',
+        message: 'Ravie que le soin vous ait plu Julie ! N\'hésitez pas à revenir pour votre prochain soin. À bientôt !'
+      }
+    },
+    {
+      name: 'Camille P.',
+      rating: 5,
+      date: '3 semaines',
+      comment: 'Balayage sublime ! Emma a parfaitement cerné mes attentes. Résultat naturel et lumineux.',
+      service: 'Mèches & Balayage'
     }
   ];
 
@@ -628,7 +650,23 @@ export default function ModernSalonCompact() {
                         {review.service}
                       </span>
                     </div>
-                    <p className="text-gray-700">{review.comment}</p>
+                    <p className="text-gray-700 mb-4">{review.comment}</p>
+                    
+                    {/* Réponse du salon */}
+                    {review.response && (
+                      <div className="bg-gradient-to-r from-purple-50/80 to-violet-50/80 backdrop-blur-xl border border-purple-200/40 rounded-2xl p-4 mt-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">SA</span>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-purple-800 text-sm">{review.response.author}</p>
+                            <p className="text-xs text-purple-600">Il y a {review.response.date}</p>
+                          </div>
+                        </div>
+                        <p className="text-purple-700 text-sm leading-relaxed">{review.response.message}</p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
