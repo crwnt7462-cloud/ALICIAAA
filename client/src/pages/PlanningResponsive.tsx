@@ -253,9 +253,10 @@ export default function PlanningResponsive() {
   // Fonction supprimée car dupliquée plus haut
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Version Mobile - Interface pleine largeur SANS SIDEBAR */}
-      <div className="lg:hidden min-h-screen bg-white w-full">
+    <>
+      {/* Version Mobile - Interface COMPLÈTEMENT indépendante pleine largeur SANS SIDEBAR */}
+      <div className="lg:hidden fixed inset-0 bg-white z-50 overflow-hidden"
+           style={{ width: '100vw', height: '100vh', left: 0, top: 0 }}>
         {/* Header mobile avec navigation */}
         <div className="bg-white p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -298,7 +299,7 @@ export default function PlanningResponsive() {
         <div className="bg-white p-4 border-b border-gray-200">
           {/* En-tête des jours */}
           <div className="grid grid-cols-7 gap-1 mb-2">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+            {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
               <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
                 {day}
               </div>
@@ -336,19 +337,7 @@ export default function PlanningResponsive() {
         {/* Timeline des rendez-vous avec ligne violette d'heure actuelle */}
         <div className="bg-white flex-1 overflow-y-auto pb-20">
           <div className="relative p-4">
-            {/* Ligne violette d'heure actuelle - exactement comme la verte de votre photo */}
-            {getCurrentTimeLinePosition() !== null && (
-              <div 
-                className="absolute left-0 right-0 z-10 flex items-center px-4"
-                style={{ top: '30%' }}
-              >
-                <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
-                <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
-                <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow">
-                  {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </div>
-            )}
+            {/* Ligne violette d'heure actuelle supprimée - maintenant intégrée dans chaque RDV */}
 
             {/* Rendez-vous de la journée sélectionnée */}
             {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
@@ -356,8 +345,8 @@ export default function PlanningResponsive() {
               
               return (
                 <div key={index} className="relative mb-6">
-                  {/* Ligne de temps */}
-                  <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                  {/* Ligne de temps verticale grise */}
+                  <div className="absolute left-6 top-6 bottom-0 w-0.5 bg-gray-200"></div>
                   
                   {/* Point de temps */}
                   <div className="flex items-start">
@@ -372,6 +361,16 @@ export default function PlanningResponsive() {
                             ? 'bg-green-500 border-green-500'
                             : 'bg-gray-300 border-gray-300'
                       }`}></div>
+                      
+                      {/* Barre violette horizontale actuelle - commence sous l'heure */}
+                      {isCurrentAppointment && (
+                        <div className="absolute left-8 flex items-center z-10 mt-1">
+                          <div className="h-0.5 bg-purple-500 w-80"></div>
+                          <span className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow">
+                            {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     
                     <div className={`flex-1 p-3 rounded-lg border ${
@@ -424,7 +423,8 @@ export default function PlanningResponsive() {
       </div>
 
       {/* Version Desktop - Fonctionnelle avec vues dynamiques */}
-      <div className="hidden lg:block min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20">
+      <div className="hidden lg:block min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-pink-50/20"
+           style={{ width: '100%', height: '100vh' }}>
         <div className="container mx-auto p-6">
           {/* Header avec insights */}
           <motion.div
@@ -714,6 +714,6 @@ export default function PlanningResponsive() {
       </div>
 
       {/* Suppression temporaire du Dialog problématique */}
-    </div>
+    </>
   );
 }
