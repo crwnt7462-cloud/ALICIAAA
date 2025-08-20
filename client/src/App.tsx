@@ -1175,8 +1175,21 @@ function Router() {
     );
   }
 
-  // Pages professionnelles PROTÉGÉES avec sidebar persistant
-  const proPages = ['/planning', '/clients', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics', '/business-features', '/ai'];
+  // Planning - SANS SIDEBAR (interface propre)
+  if (location === '/planning') {
+    if (!isAuthenticated && !isLoading) {
+      window.location.href = '/';
+      return null;
+    }
+    return (
+      <div className="h-full">
+        <PlanningResponsive />
+      </div>
+    );
+  }
+
+  // Pages professionnelles PROTÉGÉES avec sidebar persistant (PLANNING EXCLU)
+  const proPages = ['/clients', '/clients-modern', '/services-management', '/messaging-hub', '/ai-assistant-fixed', '/client-analytics', '/business-features', '/ai'];
   if (proPages.includes(location)) {
     // Redirection immédiate vers l'accueil si pas authentifié
     if (!isAuthenticated && !isLoading) {
@@ -1267,7 +1280,6 @@ function Router() {
           
           {/* Contenu principal */}
           <div className="flex-1 overflow-hidden">
-            {location === '/planning' && <PlanningResponsive />}
             {(location === '/clients' || location === '/clients-modern') && <ClientsModern />}
             {location === '/services-management' && <ServicesManagement />}
             {location === '/messaging-hub' && <MessagingHub />}

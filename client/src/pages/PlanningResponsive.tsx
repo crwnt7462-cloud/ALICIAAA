@@ -265,89 +265,87 @@ export default function PlanningResponsive() {
 
 
 
-        {/* Section Navigation Moderne - Design Cards avec gradients */}
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 space-y-4">
-          {/* Navigation mois - Style moderne avec gradient */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-white/50">
-            <div className="flex items-center justify-between">
-              <button 
-                onClick={() => {
-                  const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
-                  setSelectedMonth(newMonth);
-                }}
-                className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-800">
-                  {new Date(selectedYear, selectedMonth).toLocaleDateString('fr-FR', { 
-                    month: 'long', 
-                    year: 'numeric' 
-                  })}
-                </p>
-                <p className="text-sm text-gray-500">Sélectionnez un mois</p>
-              </div>
-              
-              <button 
-                onClick={() => {
-                  const newMonth = selectedMonth === 11 ? 0 : selectedMonth + 1;
-                  setSelectedMonth(newMonth);
-                }}
-                className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-
-          {/* Navigation jours - Style moderne avec gradient */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-white/50">
-            <div className="flex items-center justify-between mb-4">
-              <button 
-                onClick={() => {
-                  const newDate = new Date(selectedDate);
-                  newDate.setDate(newDate.getDate() - 1);
-                  setSelectedDate(newDate);
-                }}
-                className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-800 capitalize">
-                  {selectedDate.toLocaleDateString('fr-FR', { 
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long'
-                  })}
-                </p>
-                <p className="text-sm text-gray-500">Jour sélectionné</p>
-              </div>
-              
-              <button 
-                onClick={() => {
-                  const newDate = new Date(selectedDate);
-                  newDate.setDate(newDate.getDate() + 1);
-                  setSelectedDate(newDate);
-                }}
-                className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg hover:shadow-xl transition-all"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {/* Bouton d'action moderne avec gradient */}
-            <button 
-              onClick={() => handleNewAppointment()} 
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white py-3 px-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all flex items-center justify-center"
+        {/* Navigation respectant la DA - Minimaliste et épuré */}
+        <div className="bg-white px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+                setSelectedMonth(newMonth);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gray-100"
             >
-              <Plus className="h-5 w-5 mr-2" />
-              Nouveau RDV
-            </button>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <h2 className="text-lg font-medium text-gray-900">
+              {new Date(selectedYear, selectedMonth).toLocaleDateString('fr-FR', { 
+                month: 'long', 
+                year: 'numeric' 
+              })}
+            </h2>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newMonth = selectedMonth === 11 ? 0 : selectedMonth + 1;
+                setSelectedMonth(newMonth);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gray-100"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
+        </div>
+
+        <div className="bg-white px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newDate = new Date(selectedDate);
+                newDate.setDate(newDate.getDate() - 1);
+                setSelectedDate(newDate);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gray-100"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            
+            <h3 className="text-base font-medium text-gray-900 capitalize">
+              {selectedDate.toLocaleDateString('fr-FR', { 
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long'
+              })}
+            </h3>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                const newDate = new Date(selectedDate);
+                newDate.setDate(newDate.getDate() + 1);
+                setSelectedDate(newDate);
+              }}
+              className="h-8 w-8 p-0 hover:bg-gray-100"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <Button 
+            onClick={() => handleNewAppointment()} 
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            size="sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Nouveau RDV
+          </Button>
         </div>
 
 
