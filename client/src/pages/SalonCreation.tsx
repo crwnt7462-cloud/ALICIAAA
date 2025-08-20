@@ -648,31 +648,70 @@ export default function SalonCreation() {
                                     </div>
                                     <span className="self-center text-sm text-gray-500">€</span>
                                     
-                                    {/* Champ Durée avec boutons +/- */}
-                                    <div className="relative">
-                                      <Input
-                                        type="number"
-                                        value={service.duration}
-                                        onChange={(e) => updateServiceField(category.id, index, 'duration', parseInt(e.target.value) || 0)}
-                                        className="w-20 pr-8"
-                                        placeholder="Durée"
-                                      />
-                                      <div className="absolute right-1 top-0 bottom-0 flex flex-col">
-                                        <button
-                                          onClick={() => updateServiceField(category.id, index, 'duration', service.duration + 15)}
-                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
-                                        >
-                                          <ChevronUp className="w-3 h-3" />
-                                        </button>
-                                        <button
-                                          onClick={() => updateServiceField(category.id, index, 'duration', Math.max(15, service.duration - 15))}
-                                          className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
-                                        >
-                                          <ChevronDown className="w-3 h-3" />
-                                        </button>
+                                    {/* Durée : Heures et Minutes séparées */}
+                                    <div className="flex items-center gap-2">
+                                      {/* Sélecteur Heures */}
+                                      <div className="relative">
+                                        <Input
+                                          type="number"
+                                          value={Math.floor(service.duration / 60)}
+                                          onChange={(e) => {
+                                            const hours = parseInt(e.target.value) || 0;
+                                            const minutes = service.duration % 60;
+                                            updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
+                                          }}
+                                          className="w-16 pr-8"
+                                          min="0"
+                                          max="8"
+                                          placeholder="0"
+                                        />
+                                        <div className="absolute right-1 top-0 bottom-0 flex flex-col">
+                                          <button
+                                            onClick={() => {
+                                              const currentHours = Math.floor(service.duration / 60);
+                                              const minutes = service.duration % 60;
+                                              const newHours = Math.min(8, currentHours + 1);
+                                              updateServiceField(category.id, index, 'duration', newHours * 60 + minutes);
+                                            }}
+                                            className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                          >
+                                            <ChevronUp className="w-3 h-3" />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              const currentHours = Math.floor(service.duration / 60);
+                                              const minutes = service.duration % 60;
+                                              const newHours = Math.max(0, currentHours - 1);
+                                              updateServiceField(category.id, index, 'duration', newHours * 60 + minutes);
+                                            }}
+                                            className="flex-1 px-1 text-gray-400 hover:text-gray-600 text-xs"
+                                          >
+                                            <ChevronDown className="w-3 h-3" />
+                                          </button>
+                                        </div>
                                       </div>
+                                      <span className="text-sm text-gray-500">h</span>
+                                      
+                                      {/* Sélecteur Minutes (par créneaux de 5) */}
+                                      <div className="relative">
+                                        <select
+                                          value={service.duration % 60}
+                                          onChange={(e) => {
+                                            const hours = Math.floor(service.duration / 60);
+                                            const minutes = parseInt(e.target.value);
+                                            updateServiceField(category.id, index, 'duration', hours * 60 + minutes);
+                                          }}
+                                          className="w-16 px-2 py-1 border border-gray-300 rounded text-sm bg-white"
+                                        >
+                                          {[...Array(12)].map((_, i) => (
+                                            <option key={i} value={i * 5}>
+                                              {(i * 5).toString().padStart(2, '0')}
+                                            </option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                      <span className="text-sm text-gray-500">min</span>
                                     </div>
-                                    <span className="self-center text-sm text-gray-500">min</span>
                                   </div>
                                 </div>
                               ) : (
