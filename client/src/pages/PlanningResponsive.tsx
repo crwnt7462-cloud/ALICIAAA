@@ -2,6 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { ChevronLeft, ChevronRight, Plus, Euro, Target, TrendingUp, Clock, User, Calendar, Palette } from "lucide-react";
 import { motion } from "framer-motion";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
@@ -87,6 +91,18 @@ export default function PlanningResponsive() {
   
   // États pour la date sélectionnée
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  
+  // États pour la popup de nouveau RDV
+  const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
+  const [newAppointment, setNewAppointment] = useState({
+    clientName: '',
+    service: '',
+    employee: '',
+    date: '',
+    time: '',
+    duration: 60,
+    notes: ''
+  });
 
   // Suppression des fonctions non utilisées pour corriger les erreurs
 
@@ -145,9 +161,33 @@ export default function PlanningResponsive() {
   };
 
   // Fonction pour gérer le nouveau RDV
-  const handleNewAppointment = () => {
-    // Placeholder pour le moment - will be implemented later
-    console.log("Nouveau rendez-vous demandé");
+  const handleNewAppointment = (timeSlot?: string, date?: Date) => {
+    setNewAppointment({
+      clientName: '',
+      service: '',
+      employee: selectedEmployee === 'all' ? '' : selectedEmployee,
+      date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      time: timeSlot || '',
+      duration: 60,
+      notes: ''
+    });
+    setIsNewAppointmentOpen(true);
+  };
+
+  // Fonction pour sauvegarder le nouveau RDV
+  const handleSaveAppointment = () => {
+    console.log("Nouveau RDV créé:", newAppointment);
+    // Ici on ajouterait la logique pour sauvegarder en base
+    setIsNewAppointmentOpen(false);
+    setNewAppointment({
+      clientName: '',
+      service: '',
+      employee: '',
+      date: '',
+      time: '',
+      duration: 60,
+      notes: ''
+    });
   };
 
   // Calcul des données calendrier
@@ -251,7 +291,7 @@ export default function PlanningResponsive() {
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold">Planning Pro - DÉMO</h1>
+            <h1 className="text-lg font-semibold">Planning</h1>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <User className="h-4 w-4" />
@@ -683,21 +723,47 @@ export default function PlanningResponsive() {
                         </div>
                       </div>
 
-                      {/* Événements de la journée */}
+                      {/* Événements de la journée avec créneaux cliquables */}
                       <div className="space-y-2 min-h-[600px] relative">
-                        {dayEvents.map((event, eventIndex) => {
-                          const service = beautyServices.find(s => s.id === event.serviceId);
-                          const serviceColor = service?.color || '#8B5CF6';
-
+                        {/* Créneaux horaires cliquables toutes les heures */}
+                        {Array.from({ length: 12 }, (_, i) => {
+                          const hour = 8 + i;
+                          const timeSlot = `${hour.toString().padStart(2, '0')}:00`;
+                          const hasEvent = dayEvents.some(event => event.time.startsWith(timeSlot));
+                          
                           return (
-                            <div
-                              key={eventIndex}
-                              className="bg-white p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                              style={{ borderLeftColor: serviceColor }}
-                            >
-                              <div className="font-medium text-sm">{event.title}</div>
-                              <div className="text-xs text-gray-600">{event.client}</div>
-                              <div className="text-xs text-gray-500">{event.time}</div>
+                            <div key={`slot-${hour}`} className="relative h-16 mb-2">
+                              {!hasEvent && (
+                                <div
+                                  className="absolute inset-0 border-2 border-dashed border-gray-200 rounded-lg hover:border-purple-300 hover:bg-purple-50 cursor-pointer transition-colors flex items-center justify-center text-gray-400 hover:text-purple-600"
+                                  onClick={() => {
+                                    console.log(`🕒 Clic sur le créneau: ${timeSlot}`);
+                                    handleNewAppointment(timeSlot, day);
+                                  }}
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </div>
+                              )}
+                              
+                              {/* Événements existants à cette heure */}
+                              {dayEvents
+                                .filter(event => event.time.startsWith(timeSlot))
+                                .map((event, eventIndex) => {
+                                  const service = beautyServices.find(s => s.id === event.serviceId);
+                                  const serviceColor = service?.color || '#8B5CF6';
+
+                                  return (
+                                    <div
+                                      key={eventIndex}
+                                      className="absolute inset-0 bg-white p-3 rounded-lg border-l-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                      style={{ borderLeftColor: serviceColor }}
+                                    >
+                                      <div className="font-medium text-sm">{event.title}</div>
+                                      <div className="text-xs text-gray-600">{event.client}</div>
+                                      <div className="text-xs text-gray-500">{event.time}</div>
+                                    </div>
+                                  );
+                                })}
                             </div>
                           );
                         })}
@@ -819,7 +885,112 @@ export default function PlanningResponsive() {
         </div>
       </div>
 
-      {/* Suppression temporaire du Dialog problématique */}
+      {/* Dialog pour nouveau RDV */}
+      <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Nouveau Rendez-vous</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="clientName">Nom du client</Label>
+              <Input
+                id="clientName"
+                value={newAppointment.clientName}
+                onChange={(e) => setNewAppointment({...newAppointment, clientName: e.target.value})}
+                placeholder="Nom et prénom"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="service">Service</Label>
+              <Select 
+                value={newAppointment.service} 
+                onValueChange={(value) => setNewAppointment({...newAppointment, service: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choisir un service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {beautyServices.map((service) => (
+                    <SelectItem key={service.id} value={service.id.toString()}>
+                      {service.name} - {service.duration}min - {service.price}€
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="employee">Employé</Label>
+              <Select 
+                value={newAppointment.employee} 
+                onValueChange={(value) => setNewAppointment({...newAppointment, employee: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choisir un employé" />
+                </SelectTrigger>
+                <SelectContent>
+                  {employees.map((employee) => (
+                    <SelectItem key={employee.id} value={employee.id}>
+                      {employee.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="date">Date</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={newAppointment.date}
+                  onChange={(e) => setNewAppointment({...newAppointment, date: e.target.value})}
+                />
+              </div>
+              <div>
+                <Label htmlFor="time">Heure</Label>
+                <Input
+                  id="time"
+                  type="time"
+                  value={newAppointment.time}
+                  onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Notes (optionnel)</Label>
+              <Textarea
+                id="notes"
+                value={newAppointment.notes}
+                onChange={(e) => setNewAppointment({...newAppointment, notes: e.target.value})}
+                placeholder="Remarques particulières..."
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsNewAppointmentOpen(false)}
+                className="flex-1"
+              >
+                Annuler
+              </Button>
+              <Button 
+                onClick={handleSaveAppointment}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                disabled={!newAppointment.clientName || !newAppointment.service || !newAppointment.date || !newAppointment.time}
+              >
+                Créer le RDV
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
