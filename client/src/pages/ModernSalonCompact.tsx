@@ -391,24 +391,16 @@ export default function ModernSalonCompact() {
                   </div>
                 </div>
                 
-                {/* Encadré stats avec bouton appeler - RESPONSIVE */}
+                {/* Encadré stats - RESPONSIVE */}
                 <div className="bg-white/20 backdrop-blur-xl border border-white/30 rounded-xl sm:rounded-2xl p-2 sm:p-4 shadow-xl">
-                  <div className="grid grid-cols-3 gap-1 sm:gap-4 text-center">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-6 text-center">
                     <div>
                       <div className="text-lg sm:text-2xl font-bold text-white">{salonData.rating}</div>
-                      <div className="text-[9px] sm:text-xs text-white/90">Note moyenne</div>
+                      <div className="text-[10px] sm:text-xs text-white/90">Note moyenne</div>
                     </div>
                     <div>
                       <div className="text-lg sm:text-2xl font-bold text-white">{salonData.reviewCount}</div>
-                      <div className="text-[9px] sm:text-xs text-white/90">Avis clients</div>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <button 
-                        onClick={() => window.location.href = 'tel:+33140123456'}
-                        className="bg-green-500/80 hover:bg-green-600/80 text-white p-2 sm:p-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-green/20"
-                      >
-                        <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </button>
+                      <div className="text-[10px] sm:text-xs text-white/90">Avis clients</div>
                     </div>
                   </div>
                 </div>
@@ -420,7 +412,7 @@ export default function ModernSalonCompact() {
 
 
         {/* Onglets modernes - MOBILE RESPONSIVE */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-4 sm:mb-6">
           <div className="flex justify-start gap-1 sm:gap-2 p-1 sm:p-2 bg-gray-100/80 backdrop-blur-xl rounded-xl sm:rounded-2xl shadow-lg overflow-x-auto">
             {tabs.map((tab) => (
               <button
