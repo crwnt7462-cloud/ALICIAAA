@@ -88,38 +88,29 @@ export default function PlanningResponsive() {
   // États pour la date sélectionnée
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  // Position de la ligne d'heure actuelle
-  const getCurrentTimeLinePosition = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const totalMinutes = hours * 60 + minutes;
-    const startMinutes = 8 * 60; // 8h00
-    const endMinutes = 20 * 60; // 20h00
-    
-    if (totalMinutes < startMinutes || totalMinutes > endMinutes) return null;
-    
-    const progress = (totalMinutes - startMinutes) / (endMinutes - startMinutes);
-    return progress * 100; // Pourcentage de la journée
-  };
+  // Suppression des fonctions non utilisées pour corriger les erreurs
 
-  // Rendez-vous d'exemple pour la timeline mobile
+  // Rendez-vous d'exemple pour démonstration avec différents statuts
+  const currentHour = new Date().getHours();
+  const currentMinutes = new Date().getMinutes();
+  const currentTimeStr = `${currentHour.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}`;
+  
   const sampleAppointmentsMobile = [
     {
       id: 1,
       serviceName: "Coupe + Brushing",
       clientName: "Sophie Martin",
-      startTime: "09:00",
-      endTime: "10:00",
+      startTime: "08:00",
+      endTime: "09:00", 
       status: "confirmed",
       date: new Date(),
     },
     {
       id: 2, 
-      serviceName: "Coloration",
+      serviceName: "Coloration EN COURS",
       clientName: "Emma Dubois",
-      startTime: "10:30",
-      endTime: "12:30", 
+      startTime: String(Math.max(8, currentHour - 1)).padStart(2, '0') + ":00",
+      endTime: String(Math.min(20, currentHour + 1)).padStart(2, '0') + ":00",
       status: "confirmed",
       date: new Date(),
     },
@@ -127,8 +118,8 @@ export default function PlanningResponsive() {
       id: 3,
       serviceName: "Manucure",
       clientName: "Julie Laurent", 
-      startTime: "14:00",
-      endTime: "14:45",
+      startTime: String(Math.min(18, currentHour + 2)).padStart(2, '0') + ":00",
+      endTime: String(Math.min(19, currentHour + 3)).padStart(2, '0') + ":00",
       status: "pending",
       date: new Date(),
     }
@@ -244,13 +235,7 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Fonctions utilitaires
-  const getCurrentTimePosition = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    return Math.max(0, (hours - 8) * 80 + (minutes / 60) * 80);
-  };
+  // Fonction supprimée car non utilisée
 
   // Fonction supprimée car dupliquée avec version plus haut
 
@@ -274,7 +259,7 @@ export default function PlanningResponsive() {
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg font-semibold">Appointment date</h1>
+            <h1 className="text-lg font-semibold">Planning Pro - DÉMO</h1>
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <User className="h-4 w-4" />
@@ -284,6 +269,13 @@ export default function PlanningResponsive() {
               </Button>
             </div>
           </div>
+        </div>
+
+        {/* Instructions de démonstration */}
+        <div className="bg-purple-50 px-4 py-2 border-b border-purple-100">
+          <p className="text-xs text-purple-700 text-center">
+            🎯 CLIQUEZ sur une date du calendrier | Points: Vert=Confirmé, Violet=En cours, Gris=Terminé
+          </p>
         </div>
 
         {/* Sélecteur de mois */}
