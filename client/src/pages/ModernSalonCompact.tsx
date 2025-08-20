@@ -841,10 +841,7 @@ export default function ModernSalonCompact() {
           )}
         </div>
 
-        {/* PIED DE PAGE - Identique à la page d'accueil */}
-        <div className="mt-16 text-center text-xs text-gray-500 pb-8">
-          <p>© 2025 Beauty Pro. Plateforme de gestion professionnelle.</p>
-        </div>
+
       </div>
       
       {/* MODAL AVIS SPÉCIFIQUES D'UN SERVICE */}
