@@ -1137,12 +1137,21 @@ export default function PlanningResponsive() {
               </div>
               <div>
                 <Label htmlFor="time">Heure</Label>
-                <Input
-                  id="time"
-                  type="time"
-                  value={newAppointment.time}
-                  onChange={(e) => setNewAppointment({...newAppointment, time: e.target.value})}
-                />
+                <Select 
+                  value={newAppointment.time} 
+                  onValueChange={(value) => setNewAppointment({...newAppointment, time: value})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choisir l'heure" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {timeSlots.map((time) => (
+                      <SelectItem key={time} value={time} className="py-3">
+                        {time}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
