@@ -317,17 +317,21 @@ export default function PlanningResponsive() {
                 <button
                   key={index}
                   onClick={() => setSelectedDate(date)}
-                  className={`w-10 h-10 text-sm rounded-lg transition-all ${
+                  className={`w-10 h-10 text-sm rounded-lg transition-all relative ${
                     !isCurrentMonth 
                       ? 'text-gray-300' 
                       : isSelected
                         ? 'bg-green-500 text-white font-bold'
                         : isToday
-                          ? 'bg-purple-100 text-purple-700 font-bold'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-purple-500 text-white font-bold ring-2 ring-purple-200'
+                          : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
                   }`}
                 >
                   {date.getDate()}
+                  {/* Repère supplémentaire pour aujourd'hui */}
+                  {isToday && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full border border-white"></div>
+                  )}
                 </button>
               );
             })}
