@@ -82,12 +82,12 @@ export default function PlanningResponsive() {
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedYear] = useState(new Date().getFullYear());
   const [selectedEmployee, setSelectedEmployee] = useState<string>("all");
   
-  // États des dialogs
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  
+  // États pour la date sélectionnée
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+
   // Position de la ligne d'heure actuelle
   const getCurrentTimeLinePosition = () => {
     const now = new Date();
@@ -153,7 +153,6 @@ export default function PlanningResponsive() {
     // Placeholder pour le moment - will be implemented later
     console.log("Nouveau rendez-vous demandé");
   };
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   // Calcul des données calendrier
   const { currentWeek, currentMonth, monthDays } = useMemo(() => {
@@ -238,7 +237,7 @@ export default function PlanningResponsive() {
     }
   ];
 
-  // Fonctions pour version mobile
+  // Fonctions utilitaires
   const getCurrentTimePosition = () => {
     const now = new Date();
     const hours = now.getHours();
@@ -260,9 +259,7 @@ export default function PlanningResponsive() {
              width: '100vw', 
              height: '100vh', 
              left: 0, 
-             top: 0,
-             position: 'fixed !important',
-             display: 'block !important'
+             top: 0
            }}>
         {/* Header mobile avec navigation */}
         <div className="bg-white p-4 border-b border-gray-200">
