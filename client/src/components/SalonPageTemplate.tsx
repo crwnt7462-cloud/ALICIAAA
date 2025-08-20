@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { useCustomColors } from '@/hooks/useCustomColors';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 import { 
   MapPin, 
   Phone, 
@@ -13,7 +16,10 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowLeft,
-  CheckCircle
+  CheckCircle,
+  Home,
+  Sparkles,
+  BarChart3
 } from 'lucide-react';
 
 interface SalonService {
@@ -102,6 +108,8 @@ export function SalonPageTemplate({
   
   // ✅ Utiliser les couleurs personnalisées du salon
   const { customColors } = useCustomColors(salonData.slug);
+  const isMobile = useIsMobile();
+  const [, setLocation] = useLocation();
   
   const [activeTab, setActiveTab] = useState('services');
   const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set([1]));
