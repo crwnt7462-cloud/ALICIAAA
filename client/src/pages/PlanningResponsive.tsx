@@ -254,8 +254,8 @@ export default function PlanningResponsive() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Version Mobile EXACTE selon votre maquette - SANS SIDEBAR */}
-      <div className="lg:hidden min-h-screen bg-gray-50">
+      {/* Version Mobile - Interface selon maquette */}
+      <div className="lg:hidden min-h-screen bg-white">
         {/* Header mobile avec navigation */}
         <div className="bg-white p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -274,33 +274,30 @@ export default function PlanningResponsive() {
           </div>
         </div>
 
-        {/* Sélecteur de mois EXACTEMENT comme votre maquette */}
-        <div className="bg-white px-4 py-3 border-b border-gray-100 flex justify-end">
-          <Select value="january" onValueChange={() => {}}>
-            <SelectTrigger className="w-28 h-8 text-sm border border-gray-300 rounded-lg">
-              <SelectValue placeholder="January" />
+        {/* Sélecteur de mois */}
+        <div className="bg-white px-4 py-2 border-b border-gray-100">
+          <Select value={currentMonth.toLowerCase()} onValueChange={(value) => {
+            const monthNames = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+            const monthIndex = monthNames.indexOf(value);
+            if (monthIndex !== -1) {
+              setSelectedMonth(monthIndex);
+            }
+          }}>
+            <SelectTrigger className="w-32 h-8">
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="january">January</SelectItem>
-              <SelectItem value="february">February</SelectItem>
-              <SelectItem value="march">March</SelectItem>
-              <SelectItem value="april">April</SelectItem>
-              <SelectItem value="may">May</SelectItem>
-              <SelectItem value="june">June</SelectItem>
-              <SelectItem value="july">July</SelectItem>
-              <SelectItem value="august">August</SelectItem>
-              <SelectItem value="september">September</SelectItem>
-              <SelectItem value="october">October</SelectItem>
-              <SelectItem value="november">November</SelectItem>
-              <SelectItem value="december">December</SelectItem>
+              {['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'].map((month) => (
+                <SelectItem key={month} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
 
-        {/* Calendrier mensuel EXACTEMENT comme votre maquette */}
-        <div className="bg-white px-4 py-3 border-b border-gray-200">
+        {/* Calendrier mensuel compact */}
+        <div className="bg-white p-4 border-b border-gray-200">
           {/* En-tête des jours */}
-          <div className="grid grid-cols-7 gap-2 mb-3">
+          <div className="grid grid-cols-7 gap-1 mb-2">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
               <div key={day} className="text-center text-xs font-medium text-gray-500 py-1">
                 {day}
@@ -308,122 +305,122 @@ export default function PlanningResponsive() {
             ))}
           </div>
           
-          {/* Grille du calendrier - Exactement comme votre photo */}
-          <div className="grid grid-cols-7 gap-2">
-            {/* Première semaine */}
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">1</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">2</button>
-            <button className="w-10 h-10 text-sm text-white bg-green-500 rounded-lg font-bold shadow-lg">3</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">4</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">5</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">6</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">7</button>
-            
-            {/* Deuxième semaine */}
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">8</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">9</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">10</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">11</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">12</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">13</button>
-            <button className="w-10 h-10 text-sm text-gray-900 hover:bg-gray-100 rounded-lg transition-all">14</button>
+          {/* Grille du calendrier */}
+          <div className="grid grid-cols-7 gap-1">
+            {monthDays.slice(0, 35).map((date, index) => {
+              const isToday = date.toDateString() === new Date().toDateString();
+              const isCurrentMonth = date.getMonth() === selectedMonth;
+              const isSelected = selectedDate?.toDateString() === date.toDateString();
+              
+              return (
+                <button
+                  key={index}
+                  onClick={() => setSelectedDate(date)}
+                  className={`w-10 h-10 text-sm rounded-lg transition-all ${
+                    !isCurrentMonth 
+                      ? 'text-gray-300' 
+                      : isSelected
+                        ? 'bg-green-500 text-white font-bold'
+                        : isToday
+                          ? 'bg-purple-100 text-purple-700 font-bold'
+                          : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {date.getDate()}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Timeline des rendez-vous avec ligne violette EXACTE comme votre photo */}
-        <div className="bg-white flex-1 overflow-y-auto pb-20 px-4">
-          <div className="relative">
-            {/* Ligne verticale grise - timeline principale */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-            {/* Rendez-vous exactement comme votre maquette */}
-            <div className="py-4 space-y-6">
-              {/* RDV 1 - Team meeting */}
-              <div className="flex items-start relative">
-                <div className="flex flex-col items-center w-16 mr-4">
-                  <span className="text-xs text-gray-400 mb-2 font-medium">08:00 AM</span>
-                  <div className="w-3 h-3 rounded-full bg-gray-300 border-2 border-white relative z-10"></div>
-                </div>
-                <div className="flex-1 bg-gray-50 p-3 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-1">Team meeting</h3>
-                  <div className="text-xs text-gray-500 mb-1">📍 Meeting room level 9</div>
-                  <div className="text-xs text-gray-500 mb-1">📅 january 3, 2022</div>
-                  <div className="text-xs text-gray-500">⏰ 08:00 - 09:00 AM</div>
+        {/* Timeline des rendez-vous avec ligne violette d'heure actuelle */}
+        <div className="bg-white flex-1 overflow-y-auto pb-20">
+          <div className="relative p-4">
+            {/* Ligne violette d'heure actuelle - exactement comme la verte de votre photo */}
+            {getCurrentTimeLinePosition() !== null && (
+              <div 
+                className="absolute left-0 right-0 z-10 flex items-center px-4"
+                style={{ top: '30%' }}
+              >
+                <div className="w-3 h-3 bg-purple-500 rounded-full border-2 border-white shadow-lg"></div>
+                <div className="flex-1 h-0.5 bg-purple-500 ml-2"></div>
+                <div className="text-xs font-medium text-purple-600 ml-2 bg-white px-2 py-1 rounded shadow">
+                  {new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
+            )}
 
-              {/* RDV 2 - Present a plan (ACTUEL avec effet vert) */}
-              <div className="flex items-start relative">
-                <div className="flex flex-col items-center w-16 mr-4">
-                  <span className="text-xs text-gray-900 mb-2 font-bold">09:00 AM</span>
-                  <div className="w-3 h-3 rounded-full bg-green-500 border-2 border-white relative z-10 shadow-lg"></div>
-                </div>
-                <div className="flex-1 bg-green-50 p-3 rounded-lg border border-green-200 relative">
-                  {/* Ligne verte horizontale EXACTE comme votre photo - effet surbrillance */}
-                  <div className="absolute -left-16 top-1/2 transform -translate-y-1/2 flex items-center z-20">
-                    <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-lg"></div>
-                    <div className="w-16 h-0.5 bg-green-500 ml-1"></div>
-                  </div>
+            {/* Rendez-vous de la journée sélectionnée */}
+            {getAppointmentsForDate(selectedDate || new Date()).map((appointment, index) => {
+              const isCurrentAppointment = isAppointmentCurrent(appointment);
+              
+              return (
+                <div key={index} className="relative mb-6">
+                  {/* Ligne de temps */}
+                  <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
                   
-                  <h3 className="font-semibold text-gray-900 mb-1">Present a plan</h3>
-                  <div className="text-xs text-green-600 mb-1">📍 Meeting room level 9</div>
-                  <div className="text-xs text-green-600 mb-1">📅 january 3, 2022</div>
-                  <div className="text-xs text-green-600">⏰ 09:00 - 10:00 AM</div>
+                  {/* Point de temps */}
+                  <div className="flex items-start">
+                    <div className="flex flex-col items-center mr-4">
+                      <span className="text-xs text-gray-500 mb-2 font-medium">
+                        {appointment.startTime}
+                      </span>
+                      <div className={`w-3 h-3 rounded-full border-2 ${
+                        isCurrentAppointment 
+                          ? 'bg-purple-500 border-purple-500' 
+                          : appointment.status === 'confirmed'
+                            ? 'bg-green-500 border-green-500'
+                            : 'bg-gray-300 border-gray-300'
+                      }`}></div>
+                    </div>
+                    
+                    <div className={`flex-1 p-3 rounded-lg border ${
+                      isCurrentAppointment 
+                        ? 'bg-purple-50 border-purple-200' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
+                      <h3 className="font-semibold text-gray-900 mb-1">{appointment.serviceName}</h3>
+                      <div className="flex items-center text-xs text-gray-500 mb-1">
+                        <User className="w-3 h-3 mr-1" />
+                        <span>{appointment.clientName}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500 mb-1">
+                        <CalendarDays className="w-3 h-3 mr-1" />
+                        <span>{selectedDate?.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <Clock className="w-3 h-3 mr-1" />
+                        <span>{appointment.startTime} - {appointment.endTime}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+              );
+            })}
+            
+            {/* Message si pas de rendez-vous */}
+            {getAppointmentsForDate(selectedDate || new Date()).length === 0 && (
+              <div className="p-8 text-center">
+                <CalendarDays className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">Aucun rendez-vous prévu</p>
               </div>
-
-              {/* RDV 3 - Meeting summary */}
-              <div className="flex items-start relative">
-                <div className="flex flex-col items-center w-16 mr-4">
-                  <span className="text-xs text-gray-400 mb-2 font-medium">10:00 AM</span>
-                  <div className="w-3 h-3 rounded-full bg-green-300 border-2 border-white relative z-10"></div>
-                </div>
-                <div className="flex-1 bg-gray-50 p-3 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-1">Meeting summary</h3>
-                  <div className="text-xs text-gray-500 mb-1">📍 Meeting room level 9</div>
-                  <div className="text-xs text-gray-500 mb-1">📅 january 3, 2022</div>
-                  <div className="text-xs text-gray-500">⏰ 10:00 - 11:00 AM</div>
-                </div>
-              </div>
-
-              {/* RDV 4 - Design first draft */}
-              <div className="flex items-start relative">
-                <div className="flex flex-col items-center w-16 mr-4">
-                  <span className="text-xs text-gray-400 mb-2 font-medium">11:00 AM</span>
-                  <div className="w-3 h-3 rounded-full bg-green-300 border-2 border-white relative z-10"></div>
-                </div>
-                <div className="flex-1 bg-gray-50 p-3 rounded-lg">
-                  <h3 className="font-semibold text-gray-900 mb-1">Design first draft</h3>
-                  <div className="text-xs text-gray-500 mb-1">📍 Meeting room level 9</div>
-                  <div className="text-xs text-gray-500 mb-1">📅 january 3, 2022</div>
-                  <div className="text-xs text-gray-500">⏰ 11:00 - 12:00 AM</div>
-                </div>
-              </div>
-            </div>
-
+            )}
           </div>
         </div>
 
-        {/* Bouton flottant noir EXACTEMENT comme votre maquette */}
-        <div className="fixed bottom-6 right-1/2 transform translate-x-1/2 z-20">
-          <button 
-            onClick={() => alert("Nouveau RDV à venir")}
-            className="w-14 h-14 bg-black text-white rounded-2xl shadow-2xl flex items-center justify-center hover:bg-gray-800 transition-all"
+        {/* Bouton flottant d'ajout */}
+        <div className="fixed bottom-20 right-4">
+          <Button 
+            size="lg" 
+            className="w-14 h-14 rounded-full bg-black hover:bg-gray-800 shadow-xl"
+            onClick={handleNewAppointment}
           >
-            <Plus className="w-6 h-6" />
-          </button>
+            <Plus className="h-6 w-6 text-white" />
+          </Button>
         </div>
 
-        {/* Navigation en bas comme votre maquette */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2">
-          <div className="flex justify-around items-center">
-            <button className="p-3 text-gray-400">☀️</button>
-            <button className="p-3 text-gray-400">📅</button>
-            <div className="w-14 h-14"></div> {/* Espace pour bouton + */}
-            <button className="p-3 text-gray-400">✉️</button>
-            <button className="p-3 text-gray-400">📤</button>
-          </div>
-        </div>
+        {/* Navigation mobile */}
+        <MobileBottomNav />
       </div>
 
       {/* Version Desktop - Fonctionnelle avec vues dynamiques */}
